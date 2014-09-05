@@ -4,7 +4,7 @@ describe('Controller: MainCtrl', function () {
 
   beforeEach(module('eums'));
 
-  scope;
+  var scope;
 
   beforeEach(inject(function ($controller, $rootScope) {
     scope = $rootScope.$new();

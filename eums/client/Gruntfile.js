@@ -84,7 +84,6 @@ module.exports = function (grunt) {
                     jshintrc: 'test/.jshintrc'
                 },
                 src: [
-                    '<%= yeoman.app %>/scripts/{,*/}*.js',
                     'test/spec/{,*/}*.js'
                 ]
             }
