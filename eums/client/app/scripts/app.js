@@ -2,11 +2,10 @@
 
 
 angular
-  .module('clientApp', [
+  .module('eums', [
     'ngCookies',
     'ngResource',
     'ngRoute',
-    'ngSanitize'
   ])
   .config(function ($routeProvider) {
     $routeProvider
