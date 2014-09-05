@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-  .module('eums', ['ngCookies', 'ngResource', 'ngRoute'])
+  .module('eums', ['ngRoute'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {

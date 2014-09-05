@@ -126,19 +126,19 @@ module.exports = function (grunt) {
     },
 
     // Run some tasks in parallel to speed up the build process
-    concurrent: {
-      server: [
-        'copy:styles'
-      ],
-      test: [
-        'copy:styles'
-      ],
-      dist: [
-        'copy:styles',
-        'imagemin',
-        'svgmin'
-      ]
-    },
+    // concurrent: {
+    //   server: [
+    //     'copy:styles'
+    //   ],
+    //   test: [
+    //     'copy:styles'
+    //   ],
+    //   dist: [
+    //     'copy:styles',
+    //     'imagemin',
+    //     'svgmin'
+    //   ]
+    // },
 
     // Test settings
     karma: {
@@ -186,7 +186,7 @@ module.exports = function (grunt) {
     'autoprefixer',
     'concat',
     'ngAnnotate',
-    'copy:dist',
+    // 'copy:dist',
     'cdnify',
     'cssmin',
     'uglify',
