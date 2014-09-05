@@ -1,0 +1,35 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title>EUMS</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body ng-app="eums">
+
+<div class="container">
+    <div class="header">
+        <ul class="nav nav-pills pull-right">
+            <li class="active"><a ng-href="#">Home</a></li>
+        </ul>
+        <h3 class="text-muted">EUMS</h3>
+    </div>
+
+    <div ng-view=""></div>
+
+    <div class="footer">
+        <p><span class="glyphicon glyphicon-heart"></span> EUMS </p>
+    </div>
+</div>
+
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+<script src="bower_components/angular-route/angular-route.js"></script>
+
+<!-- TODO Use bundled js instead -->
+<script src="scripts/app.js"></script>
+<script src="scripts/controllers/main.js"></script>
+</body>
+</html>
