@@ -17,14 +17,10 @@ module.exports = function (grunt) {
     // Define the configuration for all the tasks
     grunt.initConfig({
 
-        // Project settings
-        yeoman: appConfig,
-
         // The actual grunt server settings
         connect: {
             options: {
                 port: 9000,
-                // Change this to '0.0.0.0' to access the server from outside.
                 hostname: 'localhost',
                 livereload: 35729
             },
@@ -76,7 +72,7 @@ module.exports = function (grunt) {
             all: {
                 src: [
                     'Gruntfile.js',
-                    '<%= yeoman.app %>/scripts/{,*/}*.js'
+                    'app/scripts/{,*/}*.js'
                 ]
             },
             test: {
@@ -97,52 +93,14 @@ module.exports = function (grunt) {
                         dot: true,
                         src: [
                             '.tmp',
-                            '<%= yeoman.dist %>/{,*/}*',
-                            '!<%= yeoman.dist %>/.git*'
+                            'dist/{,*/}*',
+                            '!dist/.git*'
                         ]
                     }
                 ]
             },
             server: '.tmp'
         },
-
-        // Automatically inject Bower components into the app
-        wiredep: {
-            options: {
-                cwd: '<%= yeoman.app %>'
-            },
-            app: {
-                src: ['<%= yeoman.app %>/index.html'],
-                ignorePath: /\.\.\//
-            }
-        },
-
-        // Renames files for browser caching purposes
-        filerev: {
-            dist: {
-                src: [
-                    '<%= yeoman.dist %>/scripts/{,*/}*.js',
-                    '<%= yeoman.dist %>/styles/{,*/}*.css',
-                    '<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
-                    '<%= yeoman.dist %>/styles/fonts/*'
-                ]
-            }
-        },
-
-        // Run some tasks in parallel to speed up the build process
-        // concurrent: {
-        //   server: [
-        //     'copy:styles'
-        //   ],
-        //   test: [
-        //     'copy:styles'
-        //   ],
-        //   dist: [
-        //     'copy:styles',
-        //     'imagemin',
-        //     'svgmin'
-        //   ]
-        // },
 
         // Test settings
         karma: {
@@ -161,9 +119,7 @@ module.exports = function (grunt) {
 
         grunt.task.run([
             'clean:server',
-            'wiredep',
             'concurrent:server',
-            'autoprefixer',
             'connect:livereload',
             'watch'
         ]);
@@ -176,28 +132,11 @@ module.exports = function (grunt) {
 
     grunt.registerTask('test', [
         'clean:server',
-        'concurrent:test',
-        'autoprefixer',
         'connect:test',
         'karma'
     ]);
 
-    grunt.registerTask('build', [
-        'clean:dist',
-        'wiredep',
-        'useminPrepare',
-        'concurrent:dist',
-        'autoprefixer',
-        'concat',
-        'ngAnnotate',
-        // 'copy:dist',
-        'cdnify',
-        'cssmin',
-        'uglify',
-        'filerev',
-        'usemin',
-        'htmlmin'
-    ]);
+    grunt.registerTask('build', ['clean:dist']);
 
     grunt.registerTask('default', [
         'newer:jshint',
