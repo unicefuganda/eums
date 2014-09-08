@@ -1,15 +1,13 @@
-angular.module('SupplyPlanService', ['ngResource'])
-    .factory('SupplyPlan', function($resource) {
+'use strict';
 
-        var SupplyPlanResource = function() {
-            return $resource('/api/supply-plan/');
-        };
+angular.module('SupplyPlanService', [])
+    .factory('SupplyPlan', function($http) {
 
         return {
             all: function() {
-                return new SupplyPlanResource().query().$promise
+                return $http.get('/api/supply-plan');
             },
             get: {},
             create: {}
-        }
+        };
     });
