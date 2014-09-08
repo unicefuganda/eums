@@ -56,9 +56,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'eums/templates'),
-)
+TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'eums/templates'),)
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
 

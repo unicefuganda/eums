@@ -1,1 +1,1 @@
-__author__ = 'Nimrod'
+from eums.models.supply_plan import SupplyPlan
