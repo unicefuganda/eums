@@ -60,7 +60,7 @@ STATIC_URL = '/static/'
 DATABASES = {
    "default": {
        "ENGINE": "django.db.backends.postgresql_psycopg2",
-       "NAME": "eums",
+       "NAME": "app_test",
        "USER": "go",
        "PASSWORD": "go",
        "HOST": "localhost",
