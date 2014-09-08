@@ -15,5 +15,5 @@ class SupplyPlanViewSet(ModelViewSet):
     serializer_class = SupplyPlanSerialiser
 
 
-router = DefaultRouter()
-router.register(r'supply-plan', SupplyPlanViewSet)
+supplyPlanRouter = DefaultRouter()
+supplyPlanRouter.register(r'supply-plan', SupplyPlanViewSet)
