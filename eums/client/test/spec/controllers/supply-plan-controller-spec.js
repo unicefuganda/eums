@@ -5,7 +5,7 @@ describe('Controller: SupplyPlan', function() {
     beforeEach(module('SupplyPlan'));
 
     var scope, mockSupplyPlanService;
-    var mockPlans = {id: 1, program_code: 'STEP'};
+    var mockPlans = {'id': 1, 'program_code': 'STEP'};
     var mockHttpResponse = {data: mockPlans};
 
     beforeEach(inject(function($controller, $rootScope, $q) {
