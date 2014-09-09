@@ -1,11 +1,11 @@
 describe('SupplyPlanService', function() {
-    var supplyPlan, mockHttpService;
+    var supplyPlanService, mockHttpService;
     var mockPlans = [
         {'program_code': 'STEP'}
     ];
 
     beforeEach(function() {
-        module('SupplyPlanService');
+        module('SupplyPlan');
 
         mockHttpService = jasmine.createSpyObj('mockHttpService', ['get']);
 
@@ -13,17 +13,17 @@ describe('SupplyPlanService', function() {
             $provide.value('$http', mockHttpService);
         });
 
-        inject(function(SupplyPlan, $q) {
+        inject(function(SupplyPlanService, $q) {
             var supplyPlanRequest = $q.defer();
             supplyPlanRequest.resolve(mockPlans);
             mockHttpService.get.and.returnValue(supplyPlanRequest.promise);
-            supplyPlan = SupplyPlan;
+            supplyPlanService = SupplyPlanService;
         });
     });
 
     it('should fetch supply plans', function() {
-        supplyPlan.all().then(function(plans) {
-            expect(plans).toEqual(mockPlans);
+        supplyPlanService.all().then(function(plans) {
+            expect(plans).toEqual(mockPlans.data);
         });
     });
 });

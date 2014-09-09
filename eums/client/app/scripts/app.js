@@ -1,12 +1,12 @@
 'use strict';
 
 angular
-    .module('eums', ['ngRoute', 'mainController'])
+    .module('eums', ['ngRoute', 'SupplyPlan'])
     .config(function($routeProvider) {
         $routeProvider
             .when('/', {
                 templateUrl: '/static/app/views/main.html',
-                controller: 'MainCtrl'
+                controller: 'SupplyPlanController'
             })
             .otherwise({
                 redirectTo: '/'
