@@ -1,28 +1,28 @@
 {
-    "name": "client",
-    "version": "0.0.0",
-    "devDependencies": {
-        "grunt": "^0.4.1",
-        "grunt-concurrent": "^0.5.0",
-        "grunt-contrib-clean": "^0.5.0",
-        "grunt-contrib-connect": "^0.7.1",
-        "grunt-contrib-jshint": "^0.10.0",
-        "grunt-contrib-uglify": "^0.4.0",
-        "grunt-contrib-watch": "^0.6.1",
-        "grunt-newer": "^0.7.0",
-        "jshint-stylish": "^0.2.0",
-        "load-grunt-tasks": "^0.4.0",
-        "time-grunt": "^0.3.1",
-        "grunt-karma": "~0.9.0",
-        "karma": "~0.12.23",
-        "karma-jasmine": "~0.2.0",
-        "jasmine-node-karma": "~1.6.1",
-        "karma-phantomjs-launcher": "~0.1.4"
-    },
-    "engines": {
-        "node": ">=0.10.0"
-    },
-    "scripts": {
-        "test": "grunt test"
-    }
+  "name": "client",
+  "version": "0.0.0",
+  "devDependencies": {
+    "grunt": "^0.4.1",
+    "grunt-concurrent": "^0.5.0",
+    "grunt-contrib-clean": "^0.5.0",
+    "grunt-contrib-connect": "^0.7.1",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.4.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-newer": "^0.7.0",
+    "jshint-stylish": "^0.2.0",
+    "load-grunt-tasks": "^0.4.0",
+    "time-grunt": "^0.3.1",
+    "grunt-karma": "~0.9.0",
+    "karma": "~0.12.23",
+    "karma-jasmine": "~0.2.0",
+    "jasmine-node-karma": "~1.6.1",
+    "karma-phantomjs-launcher": "~0.1.4"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  }
 }

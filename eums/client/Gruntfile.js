@@ -63,6 +63,11 @@ module.exports = function(grunt) {
             }
         },
 
+        watch: {
+            files: ['app/scripts/**/*.js'],
+            tasks: ['jshint', 'build']
+        },
+
         uglify: {
             all: {
                 files: {
