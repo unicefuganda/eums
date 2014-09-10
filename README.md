@@ -5,7 +5,7 @@ End User Monitoring System
 
 Installation
 ------------
-* Postgres should be running and after cloning adjust localsettings.py accordingly for db setup 
+* Postgres should be running
 
 ##Git
 
@@ -16,6 +16,22 @@ Installation
         mkvirtualenv eums
 
         pip install -r requirements.txt
+        
+        cd eums/client
+        
+        "install node from http://nodejs.org/"
+        
+        npm install
+        
+        npm install -g bower
+        
+        bower install
+        
+        npm install -g grunt-cli
+        
+        grunt - tests should all pass
+        
+        cd ../..
 
         python manage.py syncdb --noinput
 
@@ -25,7 +41,7 @@ Installation
         
 ==
 
-* run test and harvest
+* run python manage.py test
 
 Done!! you're good to go :)
 
