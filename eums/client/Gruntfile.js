@@ -127,12 +127,23 @@ module.exports = function (grunt) {
         },
 
         protractor: {
-            functional: {
+            headless: {
                 options: {
                     configFile: 'test/functional_conf.js',
                     keepAlive: false,
                     args: {
-                        specs: ['test/functional/*-spec.js']
+                        specs: ['test/functional/*-spec.js'],
+                        browser: 'chrome'
+                    }
+                }
+            },
+            firefox: {
+                options: {
+                    configFile: 'test/functional_conf.js',
+                    keepAlive: false,
+                    args: {
+                        specs: ['test/functional/*-spec.js'],
+                        browser: 'firefox'
                     }
                 }
             }
@@ -173,7 +184,7 @@ module.exports = function (grunt) {
         'connect:test',
         'karma',
         'run',
-        'protractor:functional'
+        'protractor:headless'
     ]);
 
     grunt.registerTask('build', [

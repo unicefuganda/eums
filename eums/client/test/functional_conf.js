@@ -8,10 +8,6 @@ exports.config = {
 
     baseUrl: 'http://localhost:8000',
 
-    capabilities: {
-        'browserName': 'chrome'
-    },
-
     framework: 'jasmine',
 
     jasmineNodeOpts: {
