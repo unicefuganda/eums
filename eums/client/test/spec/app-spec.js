@@ -2,11 +2,11 @@ describe('Route Provider', function() {
     var routes;
 
     beforeEach(function() {
-        module("eums");
+        module('eums');
 
         inject(function($route) {
             routes = $route;
-        })
+        });
     });
 
     it('should have a home route', function() {
