@@ -4,6 +4,8 @@ exports.config = {
 
     chromeDriver: '/usr/local/bin/chromedriver',
 
+    chromeOnly: true,
+
     specs: ['test/functional/*-spec.js'],
 
     baseUrl: 'http://localhost:5000',
