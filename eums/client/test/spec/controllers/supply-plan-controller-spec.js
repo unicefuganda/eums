@@ -16,9 +16,9 @@ describe('Controller: SupplyPlan', function() {
         mockSupplyPlanService.all.and.returnValue(deferred.promise);
         deferred.resolve(mockHttpResponse);
 
-        $controller('SupplyPlanController', {
-            $scope: scope, SupplyPlanService: mockSupplyPlanService
-        });
+//        $controller('SupplyPlanController', {
+//            $scope: scope, SupplyPlanService: mockSupplyPlanService
+//        });
     }));
 
     it('should do nothing', function() {
