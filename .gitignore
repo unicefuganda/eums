@@ -1,4 +1,4 @@
 *.sqlite3
 *.pyc
 .idea/
-npm-debug.log
+*.log

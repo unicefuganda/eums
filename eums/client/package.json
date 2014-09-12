@@ -17,7 +17,13 @@
     "karma": "~0.12.23",
     "karma-jasmine": "~0.2.0",
     "jasmine-node-karma": "~1.6.1",
-    "karma-phantomjs-launcher": "~0.1.4"
+    "karma-phantomjs-launcher": "~0.1.4",
+    "grunt-protractor-runner": "~1.1.4",
+    "selenium-standalone": "~2.43.1-2.9.0",
+    "grunt-shell": "~1.1.1",
+    "grunt-shell-spawn": "~0.3.0",
+    "grunt-run": "~0.2.4",
+    "grunt-protractor": "0.0.0"
   },
   "engines": {
     "node": ">=0.10.0"
