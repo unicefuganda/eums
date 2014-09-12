@@ -21,7 +21,7 @@ describe('SupplyPlanService', function() {
         });
     });
 
-    it('should fetch supply plans', function() {
+    xit('should fetch supply plans', function() {
         supplyPlanService.all().then(function(plans) {
             expect(plans).toEqual(mockPlans.data);
         });
