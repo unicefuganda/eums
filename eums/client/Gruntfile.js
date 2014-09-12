@@ -179,12 +179,10 @@ module.exports = function (grunt) {
         grunt.task.run(['serve:' + target]);
     });
 
-    grunt.registerTask('test', [
+    grunt.registerTask('unit', [
         'clean:server',
         'connect:test',
-        'karma',
-        'run',
-        'protractor:headless'
+        'karma'
     ]);
 
     grunt.registerTask('build', [
@@ -192,9 +190,14 @@ module.exports = function (grunt) {
         'newer:uglify:all'
     ]);
 
+    grunt.registerTask('functional', [
+        'run',
+        'protractor:headless'
+    ]);
+
     grunt.registerTask('default', [
         'newer:jshint',
-        'test',
+        'unit',
         'build'
     ]);
 };
