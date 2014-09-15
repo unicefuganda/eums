@@ -191,7 +191,8 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('functional', [
-        'run',
+        'clean:server',
+        'connect:test',
         'protractor:headless'
     ]);
 
