@@ -8,7 +8,7 @@ exports.config = {
 
     specs: ['test/functional/*-spec.js'],
 
-    baseUrl: 'http://localhost:9001',
+    baseUrl: 'http://localhost:8000',
 
     framework: 'jasmine',
 
