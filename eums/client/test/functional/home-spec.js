@@ -8,10 +8,9 @@ describe('supply plan', function () {
     });
 
     it('should go to home page', function () {
+        browser.ignoreSynchronization = true;
         browser.get('/');
-        console.log('###################################');
         browser.waitForAngular();
-        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$');
         expect(supplyPlanPage.elementisPresent()).toBeTruthy();
     });
 });
