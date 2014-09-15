@@ -45,12 +45,12 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             connect.static('.tmp'),
-                            connect.static('test'),
+                            connect.static('/test'),
                             connect().use(
                                 '/bower_components',
                                 connect.static('./bower_components')
                             ),
-                            connect.static(appConfig.app)
+                            connect.static(require('./bower.json').appPath || 'app')
                         ];
                     }
                 }
