@@ -1,4 +1,5 @@
 from django.db import models
+
 from eums.models.consignee import Consignee
 from eums.models.item import Item
 
