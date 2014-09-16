@@ -4,7 +4,7 @@ from eums.models.consignee import Consignee
 from eums.models.item import Item
 
 
-class DistributionPlanItem(models.Model):
+class DistributionPlanLineItem(models.Model):
     item = models.ForeignKey(Item)
     quantity = models.IntegerField()
     under_current_supply_plan = models.BooleanField(default=True)

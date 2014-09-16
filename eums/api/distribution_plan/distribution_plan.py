@@ -1,12 +1,12 @@
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-from eums.models import DistributionPlan, DistributionPlanItem
+from eums.models import DistributionPlan, DistributionPlanLineItem
 
 
 class DistributionPlanItemSerialiser(serializers.ModelSerializer):
     class Meta:
-        model = DistributionPlanItem
+        model = DistributionPlanLineItem
         fields = (
             'id', 'item', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
             'consignee', 'destination_location', 'remark'

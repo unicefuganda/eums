@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 
-from eums.models import Programme, Item, ItemUnit, Consignee, DistributionPlanItem
+from eums.models import Programme, Item, ItemUnit, Consignee, DistributionPlanLineItem
 from eums.test.config import BACKEND_URL
 
 
@@ -29,7 +29,7 @@ class DistributionPlanEndPointTest(APITestCase):
         item = Item.objects.create(description="Item 1", unit=ItemUnit.objects.create(name='EA'))
         # TODO Add api endpoints for Consignee and LineItems
         consignee = Consignee.objects.create(name="Save the Children", contact_person_id='1234')
-        line_item = DistributionPlanItem.objects.create(
+        line_item = DistributionPlanLineItem.objects.create(
             item=item, quantity=10,
             under_current_supply_plan=False,
             planned_distribution_date='2014-01-21', consignee=consignee,
