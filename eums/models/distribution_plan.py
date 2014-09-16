@@ -6,7 +6,7 @@ from eums.models.programme import Programme
 
 class DistributionPlan(models.Model):
     programme = models.ForeignKey(Programme)
-    items = models.ManyToManyField(DistributionPlanItem)
+    line_items = models.ManyToManyField(DistributionPlanItem)
 
     class Meta:
         app_label = 'eums'
