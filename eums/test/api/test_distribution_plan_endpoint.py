@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 
 from eums.models import Programme, Item, ItemUnit, Consignee, DistributionPlanLineItem
+from eums.test.api.test_distribution_plan_line_item import create_distribution_plan_line_item
 from eums.test.config import BACKEND_URL
 
 
@@ -26,20 +27,13 @@ class DistributionPlanEndPointTest(APITestCase):
 
     def test_should_add_line_items_to_distribution_plan(self):
         plan_id = self.create_distribution_plan()
-        item = Item.objects.create(description="Item 1", unit=ItemUnit.objects.create(name='EA'))
-        # TODO Add api endpoints for Consignee and LineItems
-        consignee = Consignee.objects.create(name="Save the Children", contact_person_id='1234')
-        line_item = DistributionPlanLineItem.objects.create(
-            item=item, quantity=10,
-            under_current_supply_plan=False,
-            planned_distribution_date='2014-01-21', consignee=consignee,
-            destination_location='GULU', remark="Dispatched"
-        )
+        line_item = create_distribution_plan_line_item(self)
 
-        patch_data = {'line_items': [line_item.id]}
+        patch_data = {'line_items': [line_item['id']]}
         response = self.client.patch(
             "%s%d/" % (ENDPOINT_URL, plan_id), patch_data, format='json'
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(patch_data, response.data)
 
@@ -47,4 +41,5 @@ class DistributionPlanEndPointTest(APITestCase):
         if not plan_details:
             plan_details = {'programme': self.programme.id}
         response = self.client.post(ENDPOINT_URL, plan_details, format='json')
+        self.assertEqual(response.status_code, 201)
         return response.data['id']

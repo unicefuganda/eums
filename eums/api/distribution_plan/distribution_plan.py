@@ -4,15 +4,6 @@ from rest_framework.viewsets import ModelViewSet
 from eums.models import DistributionPlan, DistributionPlanLineItem
 
 
-class DistributionPlanItemSerialiser(serializers.ModelSerializer):
-    class Meta:
-        model = DistributionPlanLineItem
-        fields = (
-            'id', 'item', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
-            'consignee', 'destination_location', 'remark'
-        )
-
-
 class DistributionPlanSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionPlan
