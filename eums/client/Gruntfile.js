@@ -192,7 +192,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('functional', [
         'clean:server',
-        'connect:test',
         'run:djangoServer',
         'protractor:headless'
     ]);

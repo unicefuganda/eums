@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-    .module('eums', ['ngRoute', 'Home', 'SupplyPlan', 'NavigationTabs'])
+    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NavigationTabs'])
     .config(function($routeProvider) {
         $routeProvider
             .when('/', {
@@ -9,7 +9,7 @@ angular
                 controller: 'HomeController'
             })
             .when('/distribution-planning', {
-                templateUrl: '/static/app/views/distribution-planning.html',
+                templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
                 controller: 'DistributionPlanController'
             })
             .otherwise({

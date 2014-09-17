@@ -18,7 +18,7 @@ describe('Route Provider', function() {
     it('should know distribution plan route exists', function() {
         expect((Object.keys(routes.routes))).toContain('/distribution-planning');
         expect(routes.routes['/distribution-planning'].controller).toBe('DistributionPlanController');
-        expect(routes.routes['/distribution-planning'].templateUrl).toBe('/static/app/views/distribution-planning.html');
+        expect(routes.routes['/distribution-planning'].templateUrl).toBe('/static/app/views/distribution-planning/distribution-planning.html');
     });
 
 });

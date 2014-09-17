@@ -2,7 +2,7 @@
 
 describe('Controller: SupplyPlan', function() {
 
-    beforeEach(module('SupplyPlan'));
+    beforeEach(module('DistributionPlan'));
 
     var scope, mockSupplyPlanService;
     var mockPlans = {'id': 1, 'program_code': 'STEP'};

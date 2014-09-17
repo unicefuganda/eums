@@ -1,4 +1,4 @@
-describe('AddContactController', function () {
+describe('DistributionPlanController', function () {
 
     var scope;
     var location;
@@ -14,8 +14,14 @@ describe('AddContactController', function () {
         }
     };
 
+    var stubError = {
+        data: {
+            error: 'Phone number is not valid'
+        }
+    };
+
     beforeEach(function () {
-        module('contacts');
+        module('DistributionPlan');
         mockContactService = jasmine.createSpyObj('mockContactService', ['addContact']);
 
 
@@ -25,7 +31,7 @@ describe('AddContactController', function () {
             scope = $rootScope.$new();
             location = $location;
 
-            $controller('AddContactController', {$scope: scope, ContactService: mockContactService, $location: location});
+            $controller('DistributionPlanController', {$scope: scope, ContactService: mockContactService, $location: location});
         });
     });
 
@@ -37,9 +43,9 @@ describe('AddContactController', function () {
     });
 
     it('should add an error message to the scope when the contact is NOT saved', function () {
-        deferred.reject();
+        deferred.reject(stubError);
         scope.addContact();
         scope.$apply();
-        expect(scope.errorMessage).toBe('Contact not saved');
+        expect(scope.errorMessage).toBe('Phone number is not valid');
     });
 });
