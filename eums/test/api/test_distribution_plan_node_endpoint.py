@@ -24,13 +24,27 @@ class DistributionPlanNodeEndpoint(APITestCase):
 
         self.assertDictContainsSubset(child_node_details, created_child_node_details)
 
-    def test_should_get_distribution_plan_node_with_children(self):
+    def test_should_get_distribution_plan_node_pointing_to_parent(self):
         created_parent, created_child = self.create_distribution_plan_parent_and_child_nodes()
 
         returned_child = self.client.get("%s%d/" % (ENDPOINT_URL, created_child['id'])).data
 
         expected_child = {'parent': created_parent['id'], 'distribution_plan': created_parent['distribution_plan']}
+
         self.assertDictContainsSubset(expected_child, returned_child)
+
+    def test_should_get_distribution_plan_node_with_reference_to_children(self):
+        created_parent, created_child = self.create_distribution_plan_parent_and_child_nodes()
+
+        returned_parent = self.client.get("%s%d/" % (ENDPOINT_URL, created_parent['id'])).data
+
+        expected_parent = {
+            'parent': None,
+            'distribution_plan': created_parent['distribution_plan'],
+            'children': [created_child['id']]
+        }
+
+        self.assertDictContainsSubset(expected_parent, returned_parent)
 
     def create_distribution_plan_parent_and_child_nodes(self, parent_details=None, child_details=None):
         created_parent_details = self.create_distribution_plan_node(parent_details)
