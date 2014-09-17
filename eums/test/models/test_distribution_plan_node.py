@@ -8,5 +8,5 @@ class DistributionPlanNodeTest(TestCase):
         node = DistributionPlanNode()
         fields = node._meta._name_map
 
-        for field in ['parent']:
+        for field in ['parent', 'distribution_plan']:
             self.assertIn(field, fields)
