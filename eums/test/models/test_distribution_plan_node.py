@@ -1,11 +1,11 @@
 from unittest import TestCase
 
-from eums.models import DistributionPlanLineItem
+from eums.models import DistributionPlanNode
 
 
-class DistributionPlanItemTest(TestCase):
+class DistributionPlanNodeTest(TestCase):
     def test_should_have_all_expected_fields(self):
-        item = DistributionPlanLineItem()
+        item = DistributionPlanNode()
         fields_in_item = [field.attname for field in item._meta.fields]
 
         expected_fields = [

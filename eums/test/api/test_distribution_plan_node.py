@@ -4,7 +4,7 @@ from eums.models import Item, ItemUnit, Consignee
 from eums.test.config import BACKEND_URL
 
 
-ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
+ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
 
 class DistributionPlanLineItemTest(APITestCase):
