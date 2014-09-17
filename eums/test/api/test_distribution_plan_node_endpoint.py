@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+from eums.test.api.api_test_helpers import create_distribution_plan_node
 
 from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
@@ -12,15 +13,15 @@ class DistributionPlanNodeEndpoint(APITestCase):
         plan_id = create_distribution_plan(self)
         node_details = {'distribution_plan': plan_id}
 
-        created_node_data = self.create_distribution_plan_node(node_details)
+        created_node_data = create_distribution_plan_node(self, node_details)
 
         self.assertDictContainsSubset(node_details, created_node_data)
 
     def test_should_create_distribution_plan_node_with_parent_node(self):
-        parent_node = self.create_distribution_plan_node()
+        parent_node = create_distribution_plan_node(self)
         child_node_details = {'distribution_plan': parent_node['distribution_plan'], 'parent': parent_node['id']}
 
-        created_child_node_details = self.create_distribution_plan_node(child_node_details)
+        created_child_node_details = create_distribution_plan_node(self, child_node_details)
 
         self.assertDictContainsSubset(child_node_details, created_child_node_details)
 
@@ -46,19 +47,13 @@ class DistributionPlanNodeEndpoint(APITestCase):
 
         self.assertDictContainsSubset(expected_parent, returned_parent)
 
+    def test_should_provide_distribution_plan_nodes_with_their_line_items(self):
+        pass
+
     def create_distribution_plan_parent_and_child_nodes(self, parent_details=None, child_details=None):
-        created_parent_details = self.create_distribution_plan_node(parent_details)
+        created_parent_details = create_distribution_plan_node(self, parent_details)
         if not child_details:
             child_details = {'distribution_plan': created_parent_details['distribution_plan'],
                              'parent': created_parent_details['id']}
-        created_child_details = self.create_distribution_plan_node(child_details)
+        created_child_details = create_distribution_plan_node(self, child_details)
         return created_parent_details, created_child_details
-
-    def create_distribution_plan_node(self, node_details=None):
-        plan_id = create_distribution_plan(self)
-        if not node_details:
-            node_details = {'distribution_plan': plan_id}
-
-        response = self.client.post(ENDPOINT_URL, node_details, format='json')
-        self.assertEqual(response.status_code, 201)
-        return response.data
