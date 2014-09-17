@@ -1,8 +1,6 @@
-from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 
-from eums.models import Programme
-from eums.test.api.api_test_helpers import create_programme, create_distribution_plan
+from eums.test.api.api_test_helpers import create_programme, create_distribution_plan, create_distribution_plan_node
 from eums.test.api.test_distribution_plan_line_item_endpoint import create_distribution_plan_line_item
 from eums.test.config import BACKEND_URL
 
@@ -24,7 +22,14 @@ class DistributionPlanEndPointTest(APITestCase):
         self.assertDictContainsSubset(plan_details, response.data[0])
 
     def test_should_provide_distribution_plan_with_all_its_nodes(self):
-        pass
+        plan_id = create_distribution_plan(self)
+        node = create_distribution_plan_node(self, {'distribution_plan': plan_id})
+        expected_plan_partial = {'distributionplannode_set': [node['id']]}
+
+        response = self.client.get("%s%d/" % (ENDPOINT_URL, plan_id))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictContainsSubset(expected_plan_partial, response.data)
 
     # TODO Shouldn't do this. Line items are now part of Distribution Plan Nodes
     def xtest_should_add_line_items_to_distribution_plan(self):
