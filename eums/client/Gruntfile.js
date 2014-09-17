@@ -157,7 +157,32 @@ module.exports = function (grunt) {
             djangoServer: {
                 cmd: './start-server.sh'
             }
+        },
+        ngconstant: {
+            options: {
+                name: 'eums.config',
+                dest: 'app/scripts/config/config.js',
+                constants: {
+                    EumsConfig: grunt.file.readJSON('config/development.json')
+                }
+            },
+            dev: {
+                constants: {
+                    EumsConfig: grunt.file.readJSON('config/development.json')
+                }
+            },
+            staging: {
+                constants: {
+                    EumsConfig: grunt.file.readJSON('config/staging.json')
+                }
+            },
+            prod: {
+                constants: {
+                    EumsConfig: grunt.file.readJSON('config/production.json')
+                }
+            }
         }
+
     });
 
 
@@ -187,6 +212,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
+        'ngconstant:dev',
         'newer:uglify:all'
     ]);
 

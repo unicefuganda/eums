@@ -1,8 +1,5 @@
-'use strict';
+angular.module('eums.config', [])
 
-angular.module('config', [])
-    .factory('URLs', function () {
-        return{
-            CONTACTSERVICEURL: 'http://localhost:8005/api/contacts'
-        };
-    });
+.constant('EumsConfig', {CONTACTSERVICEURL:'http://localhost:8005/api/contacts'})
+
+;

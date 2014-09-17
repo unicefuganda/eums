@@ -21,7 +21,8 @@
     "grunt-protractor-runner": "~1.1.4",
     "selenium-standalone": "~2.43.1-2.9.0",
     "grunt-shell-spawn": "~0.3.0",
-    "grunt-run": "~0.2.4"
+    "grunt-run": "~0.2.4",
+    "grunt-ng-constant": "~1.0.0"
   },
   "engines": {
     "node": ">=0.10.0"

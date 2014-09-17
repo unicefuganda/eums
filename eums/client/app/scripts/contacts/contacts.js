@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('contacts', ['config'])
-    .factory('ContactService', function ($http, URLs) {
+angular.module('contacts', ['eums.config'])
+    .factory('ContactService', function ($http, EumsConfig) {
         return {
             addContact: function (contact) {
-                return $http.post(URLs.CONTACTSERVICEURL+'/add', contact);
+                return $http.post(EumsConfig.CONTACTSERVICEURL + '/add', contact);
             }
         };
     });
