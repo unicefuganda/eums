@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
 
 from eums.models import Programme
-from eums.test.api.test_distribution_plan_node import create_distribution_plan_line_item
+from eums.test.api.test_distribution_plan_line_item import create_distribution_plan_line_item
 from eums.test.config import BACKEND_URL
 
 
