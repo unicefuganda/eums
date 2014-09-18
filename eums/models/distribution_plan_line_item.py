@@ -9,7 +9,6 @@ class DistributionPlanLineItem(models.Model):
     quantity = models.IntegerField()
     under_current_supply_plan = models.BooleanField(default=True)
     planned_distribution_date = models.DateField()
-
     destination_location = models.CharField(max_length=255)
     remark = models.TextField()
     distribution_plan_node = models.ForeignKey(DistributionPlanNode)

@@ -1,4 +1,7 @@
 {
     "CONTACT_SERVICE_URL": "http://localhost:8005/api/contacts/",
-    "BACKEND_URLS": {"DISTRIBUTION_PLAN": "/api/distribution-plan/"}
+    "BACKEND_URLS": {
+        "DISTRIBUTION_PLAN": "/api/distribution-plan/",
+        "DISTRIBUTION_PLAN_NODE": "/api/distribution-plan-node/"
+    }
 }
