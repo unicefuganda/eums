@@ -1,16 +1,22 @@
 'use strict';
 
-angular.module('DistributionPlan', ['contacts'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location) {
+angular.module('DistributionPlan', ['contacts', 'eums.config'])
+    .controller('DistributionPlanController', function($scope, ContactService, $location) {
         $scope.contact = {};
         $scope.errorMessage = '';
 
-        $scope.addContact = function () {
-            ContactService.addContact($scope.contact).then(function () {
+        $scope.addContact = function() {
+            ContactService.addContact($scope.contact).then(function() {
                 $location.path('/');
-            }, function (error) {
+            }, function(error) {
                 $scope.errorMessage = error.data.error;
             });
+        };
+    }).factory('DistributionPlanService', function($http, EumsConfig) {
+        return {
+            fetchPlans: function() {
+                return $http.get(EumsConfig.DISTRIBUTION_PLAN_URL);
+            }
         };
     });
 

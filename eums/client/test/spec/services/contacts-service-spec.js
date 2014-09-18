@@ -12,7 +12,7 @@ describe('Contacts Service', function () {
 
         inject(function (ContactService, $q, $httpBackend, EumsConfig) {
             mockContactsBackend = $httpBackend;
-            mockContactsBackend.whenPOST(EumsConfig.CONTACTSERVICEURL + "/add").respond(stubContact);
+            mockContactsBackend.whenPOST(EumsConfig.CONTACT_SERVICE_URL + "add").respond(stubContact);
             contactService = ContactService;
         });
     });
