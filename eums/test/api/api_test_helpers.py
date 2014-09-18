@@ -35,10 +35,9 @@ def create_consignee(test_case, consignee_details=None):
 
 
 def create_distribution_plan_node(test_case, node_details=None):
-    # TODO Use API to create consignee
-    consignee = create_consignee(test_case)
     plan_id = create_distribution_plan(test_case)
     if not node_details:
+        consignee = create_consignee(test_case)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id']}
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
