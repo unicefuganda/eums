@@ -7,10 +7,11 @@ from eums.test.config import BACKEND_URL
 ENDPOINT_URL = BACKEND_URL + 'item/'
 
 
-class ItemUnitEndPointTest(APITestCase):
-    def test_should_create_item(self):
+class ProgrammeEndPointTest(APITestCase):
+    def test_should_create_programme(self):
         unit = create_item_unit(self)
         item_details = {'description': "Item 1", 'unit': unit['id']}
+
         response = self.client.post(ENDPOINT_URL, item_details, format='json')
 
         self.assertEqual(response.status_code, 201)

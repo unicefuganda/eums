@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 
-from eums.models import Programme, ItemUnit, Item, Consignee
+from eums.models import Programme, ItemUnit, Item
 from eums.test.config import BACKEND_URL
 
 
@@ -9,6 +9,7 @@ DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
 CONSIGNEE_ENDPOINT_URL = BACKEND_URL + 'consignee/'
 ITEM_UNIT_ENDPOINT_URL = BACKEND_URL + 'item-unit/'
+USER_ENDPOINT_URL = BACKEND_URL + 'user/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -79,6 +80,16 @@ def create_item_unit(test_case, item_unit_details=None):
         item_unit_details = {'name': "EA"}
 
     response = test_case.client.post(ITEM_UNIT_ENDPOINT_URL, item_unit_details, format='json')
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
+
+
+def create_user(test_case, user_details=None):
+    if not user_details:
+        user_details = {'username': 'test_user', 'first_name': 'test', 'last_name': 'user', 'email': 'test@email.com'}
+
+    response = test_case.client.post(USER_ENDPOINT_URL, user_details, format='json')
     test_case.assertEqual(response.status_code, 201)
 
     return response.data
