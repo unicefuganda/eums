@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-from eums.models import DistributionPlan, DistributionPlanLineItem
+
+from eums.models import DistributionPlan
 
 
 class DistributionPlanSerialiser(serializers.ModelSerializer):
