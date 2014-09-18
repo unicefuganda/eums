@@ -15,7 +15,7 @@ angular.module('DistributionPlan', ['contacts', 'eums.config'])
     }).factory('DistributionPlanService', function($http, EumsConfig) {
         return {
             fetchPlans: function() {
-                return $http.get(EumsConfig.BACKEND_URL + 'distribution-plan/');
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
             }
         };
     });

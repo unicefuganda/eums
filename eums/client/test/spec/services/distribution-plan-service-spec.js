@@ -16,7 +16,7 @@ describe('Distribution Plan Service', function() {
 
         inject(function(DistributionPlanService, $httpBackend, EumsConfig) {
             mockBackend = $httpBackend;
-            mockBackend.whenGET(EumsConfig.BACKEND_URL + 'distribution-plan/')
+            mockBackend.whenGET(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN)
                 .respond(stubDistributionPlans);
             distributionPlanService = DistributionPlanService;
         });
