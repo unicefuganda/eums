@@ -1,5 +1,6 @@
 from rest_framework.test import APITestCase
-from eums.test.api.api_test_helpers import create_distribution_plan_node
+from eums.test.api.api_test_helpers import create_distribution_plan_node, create_distribution_plan_line_item, \
+    make_line_item_details
 
 from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
@@ -48,7 +49,15 @@ class DistributionPlanNodeEndpoint(APITestCase):
         self.assertDictContainsSubset(expected_parent, returned_parent)
 
     def test_should_provide_distribution_plan_nodes_with_their_line_items(self):
-        pass
+        node_id = create_distribution_plan_node(self)['id']
+        line_item_details = make_line_item_details(self, node_id)
+        created_line_item = create_distribution_plan_line_item(self, line_item_details)
+        expected_node_partial = {'distributionplanlineitem_set': [created_line_item['id']]}
+
+        response = self.client.get("%s%d/" % (ENDPOINT_URL, node_id))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictContainsSubset(expected_node_partial, response.data)
 
     def create_distribution_plan_parent_and_child_nodes(self, parent_details=None, child_details=None):
         created_parent_details = create_distribution_plan_node(self, parent_details)

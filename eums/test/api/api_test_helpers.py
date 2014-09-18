@@ -1,11 +1,12 @@
 from django.contrib.auth.models import User
 
-from eums.models import Programme
+from eums.models import Programme, ItemUnit, Item, Consignee
 from eums.test.config import BACKEND_URL
 
 
 DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
+DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -33,3 +34,32 @@ def create_distribution_plan_node(test_case, node_details=None):
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
     test_case.assertEqual(response.status_code, 201)
     return response.data
+
+
+def make_line_item_details(test_case, node_id=None):
+    item_unit = ItemUnit.objects.create(name='EA')
+    item = Item.objects.create(description='Item 1', unit=item_unit)
+    # TODO Use API to create consignee
+    consignee = Consignee.objects.create(name="Save the Children", contact_person_id='1234')
+
+    if not node_id:
+        node_id = create_distribution_plan_node(test_case)['id']
+
+    line_item = {'item': item.id, 'quantity': 10, 'under_current_supply_plan': False,
+                 'planned_distribution_date': '2014-01-21', 'consignee': consignee.id, 'destination_location': 'GULU',
+                 'remark': "Dispatched", 'distribution_plan_node': node_id}
+
+    return line_item
+
+
+def create_distribution_plan_line_item(test_case, item_details=None):
+    if not item_details:
+        item_details = make_line_item_details(test_case)
+    response = test_case.client.post(DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL, item_details, format='json')
+
+    test_case.assertEqual(response.status_code, 201)
+
+    formatted_data = response.data
+    formatted_data['planned_distribution_date'] = str(formatted_data['planned_distribution_date'])
+
+    return formatted_data

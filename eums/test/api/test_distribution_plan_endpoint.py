@@ -1,7 +1,6 @@
 from rest_framework.test import APITestCase
 
 from eums.test.api.api_test_helpers import create_programme, create_distribution_plan, create_distribution_plan_node
-from eums.test.api.test_distribution_plan_line_item_endpoint import create_distribution_plan_line_item
 from eums.test.config import BACKEND_URL
 
 
@@ -30,16 +29,3 @@ class DistributionPlanEndPointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(expected_plan_partial, response.data)
-
-    # TODO Shouldn't do this. Line items are now part of Distribution Plan Nodes
-    def xtest_should_add_line_items_to_distribution_plan(self):
-        plan_id = create_distribution_plan(self)
-        line_item = create_distribution_plan_line_item(self)
-
-        patch_data = {'line_items': [line_item['id']]}
-        response = self.client.patch(
-            "%s%d/" % (ENDPOINT_URL, plan_id), patch_data, format='json'
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertDictContainsSubset(patch_data, response.data)
