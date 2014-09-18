@@ -207,6 +207,7 @@ module.exports = function (grunt) {
     grunt.registerTask('unit', [
         'clean:server',
         'connect:test',
+        'ngconstant:dev',
         'karma'
     ]);
 
