@@ -7,7 +7,7 @@ from eums.test.config import BACKEND_URL
 DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
-
+CONSIGNEE_ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 def create_distribution_plan(test_case, plan_details=None):
     if not plan_details:
@@ -26,10 +26,20 @@ def create_programme():
     return programme
 
 
+def create_consignee(test_case, consignee_details=None):
+    if not consignee_details:
+        consignee_details = {'name': "Save the Children", 'contact_person_id': u'1234'}
+    response = test_case.client.post(CONSIGNEE_ENDPOINT_URL, consignee_details, format='json')
+    test_case.assertEqual(response.status_code, 201)
+    return response.data
+
+
 def create_distribution_plan_node(test_case, node_details=None):
+    # TODO Use API to create consignee
+    consignee = create_consignee(test_case)
     plan_id = create_distribution_plan(test_case)
     if not node_details:
-        node_details = {'distribution_plan': plan_id}
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id']}
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
     test_case.assertEqual(response.status_code, 201)
@@ -39,14 +49,12 @@ def create_distribution_plan_node(test_case, node_details=None):
 def make_line_item_details(test_case, node_id=None):
     item_unit = ItemUnit.objects.create(name='EA')
     item = Item.objects.create(description='Item 1', unit=item_unit)
-    # TODO Use API to create consignee
-    consignee = Consignee.objects.create(name="Save the Children", contact_person_id='1234')
 
     if not node_id:
         node_id = create_distribution_plan_node(test_case)['id']
 
     line_item = {'item': item.id, 'quantity': 10, 'under_current_supply_plan': False,
-                 'planned_distribution_date': '2014-01-21', 'consignee': consignee.id, 'destination_location': 'GULU',
+                 'planned_distribution_date': '2014-01-21', 'destination_location': 'GULU',
                  'remark': "Dispatched", 'distribution_plan_node': node_id}
 
     return line_item

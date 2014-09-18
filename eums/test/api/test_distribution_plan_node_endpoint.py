@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 from eums.test.api.api_test_helpers import create_distribution_plan_node, create_distribution_plan_line_item, \
-    make_line_item_details
+    make_line_item_details, create_consignee
 
 from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
@@ -12,7 +12,8 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 class DistributionPlanNodeEndpoint(APITestCase):
     def test_should_create_distribution_plan_node_without_parent_node(self):
         plan_id = create_distribution_plan(self)
-        node_details = {'distribution_plan': plan_id}
+        consignee_id = create_consignee(self)['id']
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee_id}
 
         created_node_data = create_distribution_plan_node(self, node_details)
 
@@ -20,7 +21,9 @@ class DistributionPlanNodeEndpoint(APITestCase):
 
     def test_should_create_distribution_plan_node_with_parent_node(self):
         parent_node = create_distribution_plan_node(self)
-        child_node_details = {'distribution_plan': parent_node['distribution_plan'], 'parent': parent_node['id']}
+        consignee_id = create_consignee(self)['id']
+        child_node_details = {'distribution_plan': parent_node['distribution_plan'],
+                              'parent': parent_node['id'], 'consignee': consignee_id}
 
         created_child_node_details = create_distribution_plan_node(self, child_node_details)
 
@@ -61,8 +64,9 @@ class DistributionPlanNodeEndpoint(APITestCase):
 
     def create_distribution_plan_parent_and_child_nodes(self, parent_details=None, child_details=None):
         created_parent_details = create_distribution_plan_node(self, parent_details)
+        consignee_id = create_consignee(self)['id']
         if not child_details:
             child_details = {'distribution_plan': created_parent_details['distribution_plan'],
-                             'parent': created_parent_details['id']}
+                             'parent': created_parent_details['id'], 'consignee': consignee_id}
         created_child_details = create_distribution_plan_node(self, child_details)
         return created_parent_details, created_child_details

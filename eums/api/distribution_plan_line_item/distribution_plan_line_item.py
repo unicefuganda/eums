@@ -9,7 +9,7 @@ class DistributionPlanLineItemSerialiser(serializers.ModelSerializer):
         model = DistributionPlanLineItem
         fields = (
             'id', 'item', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
-            'consignee', 'destination_location', 'distribution_plan_node', 'remark'
+            'destination_location', 'distribution_plan_node', 'remark'
         )
 
 

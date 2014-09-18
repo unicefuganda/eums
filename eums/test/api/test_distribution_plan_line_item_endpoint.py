@@ -12,11 +12,10 @@ class DistributionPlanLineItemTest(APITestCase):
     def test_should_create_distribution_plan_line_item(self):
         item_unit = ItemUnit.objects.create(name='EA')
         item = Item.objects.create(description='Item 1', unit=item_unit)
-        consignee = Consignee.objects.create(name="Save the Children", contact_person_id='1234')
         node = create_distribution_plan_node(self)
         item_details = {'item': item.id, 'quantity': 10,
                         'under_current_supply_plan': False, 'planned_distribution_date': '2014-01-21',
-                        'consignee': consignee.id, 'destination_location': 'GULU',
+                        'destination_location': 'GULU',
                         'distribution_plan_node': node['id'], 'remark': "Dispatched"}
 
         returned_item = create_distribution_plan_line_item(self, item_details)

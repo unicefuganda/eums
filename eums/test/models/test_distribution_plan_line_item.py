@@ -10,7 +10,7 @@ class DistributionPlanLineItemTest(TestCase):
 
         expected_fields = [
             'item_id', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
-            'consignee_id', 'destination_location', 'remark', 'distribution_plan_node'
+            'destination_location', 'remark', 'distribution_plan_node'
         ]
 
         for field in expected_fields:
