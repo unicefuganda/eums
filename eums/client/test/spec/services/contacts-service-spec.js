@@ -10,7 +10,7 @@ describe('Contacts Service', function () {
     beforeEach(function () {
         module('contacts');
 
-        inject(function (ContactService, $q, $httpBackend, EumsConfig) {
+        inject(function (ContactService, $httpBackend, EumsConfig) {
             mockContactsBackend = $httpBackend;
             mockContactsBackend.whenPOST(EumsConfig.CONTACT_SERVICE_URL + "add").respond(stubContact);
             contactService = ContactService;

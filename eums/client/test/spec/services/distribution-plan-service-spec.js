@@ -1,4 +1,4 @@
-xdescribe('DistributionPlanService', function() {
+describe('Distribution Plan Service', function() {
     var distributionPlanService, mockBackend;
     var stubDistributionPlans = [
         {
@@ -12,21 +12,19 @@ xdescribe('DistributionPlanService', function() {
     ];
 
     beforeEach(function() {
-        
         module('DistributionPlan');
 
         inject(function(DistributionPlanService, $httpBackend, EumsConfig) {
             mockBackend = $httpBackend;
-//            mockBackend.whenGET(EumsConfig.BACKEND_URL + 'distribution-plan')
-            mockBackend.whenGET('/api/distribution-plan')
+            mockBackend.whenGET(EumsConfig.BACKEND_URL + 'distribution-plan/')
                 .respond(stubDistributionPlans);
             distributionPlanService = DistributionPlanService;
         });
     });
 
     it('should fetch all distribution plans', function(done) {
-        distributionPlanService.fetchPlans().then(function(plans) {
-            expect(plans).toEqual([]);
+        distributionPlanService.fetchPlans().then(function(response) {
+            expect(response.data).toEqual(stubDistributionPlans);
             done();
         });
         mockBackend.flush();
