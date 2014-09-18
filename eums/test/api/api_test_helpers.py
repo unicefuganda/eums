@@ -8,6 +8,8 @@ DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
 CONSIGNEE_ENDPOINT_URL = BACKEND_URL + 'consignee/'
+ITEM_UNIT_ENDPOINT_URL = BACKEND_URL + 'item-unit/'
+
 
 def create_distribution_plan(test_case, plan_details=None):
     if not plan_details:
@@ -70,3 +72,13 @@ def create_distribution_plan_line_item(test_case, item_details=None):
     formatted_data['planned_distribution_date'] = str(formatted_data['planned_distribution_date'])
 
     return formatted_data
+
+
+def create_item_unit(test_case, item_unit_details=None):
+    if not item_unit_details:
+        item_unit_details = {'name': "EA"}
+
+    response = test_case.client.post(ITEM_UNIT_ENDPOINT_URL, item_unit_details, format='json')
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
