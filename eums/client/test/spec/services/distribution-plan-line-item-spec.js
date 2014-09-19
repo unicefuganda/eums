@@ -9,7 +9,7 @@ describe('Distribution Plan Line Item Service', function() {
         under_current_supply_plan: false,
         planned_distribution_date: '2014-02-23',
         destination_location: 'Kampala',
-        remark: "In good condition",
+        remark: 'In good condition',
         distribution_plan_node: 1
     };
     var fullItem = {
@@ -24,7 +24,7 @@ describe('Distribution Plan Line Item Service', function() {
         under_current_supply_plan: false,
         planned_distribution_date: '2014-02-23',
         destination_location: 'Kampala',
-        remark: "In good condition",
+        remark: 'In good condition',
         distribution_plan_node: 1
     };
 
