@@ -4,6 +4,7 @@
         "DISTRIBUTION_PLAN": "/api/distribution-plan/",
         "DISTRIBUTION_PLAN_NODE": "/api/distribution-plan-node/",
         "ITEM": "/api/item/",
-        "ITEM_UNIT": "/api/item-unit/"
+        "ITEM_UNIT": "/api/item-unit/",
+        "CONSIGNEE": "/api/consignee/"
     }
 }
