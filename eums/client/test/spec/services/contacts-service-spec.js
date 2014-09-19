@@ -21,10 +21,11 @@ describe('Contacts Service', function() {
             contactService = ContactService;
             config = EumsConfig;
         });
+
+        mockContactsBackend.whenPOST(config.CONTACT_SERVICE_URL, stubContact).respond(expectedContact);
     });
 
     it('should add contact to', function(done) {
-        mockContactsBackend.whenPOST(config.CONTACT_SERVICE_URL, stubContact).respond(expectedContact);
         contactService.addContact(stubContact).then(function(response) {
             expect(response.data).toEqual(expectedContact);
             done();
@@ -32,7 +33,13 @@ describe('Contacts Service', function() {
         mockContactsBackend.flush();
     });
 
-    it('should get contact from contacts backend', function(done) {
-        done();
+    it('should get contact from contacts backend by id', function(done) {
+        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact.id + "/")
+            .respond(expectedContact);
+        contactService.getContactById(expectedContact.id).then(function(response) {
+            expect(response.data).toEqual(expectedContact);
+            done();
+        });
+        mockContactsBackend.flush();
     });
 });
