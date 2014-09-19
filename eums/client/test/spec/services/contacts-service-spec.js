@@ -1,10 +1,10 @@
 describe('Contacts Service', function () {
     var mockContactsBackend, contactService;
     var stubContact = {
+        id: 1,
         firstname: 'Tunji',
         lastname: 'Sunmonu',
         phone: '+234778945674'
-
     };
 
     beforeEach(function () {
