@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Contacts', ['eums.config'])
+angular.module('Contact', ['eums.config'])
     .factory('ContactService', function ($http, EumsConfig) {
         return {
             addContact: function (contact) {

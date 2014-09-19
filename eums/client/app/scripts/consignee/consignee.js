@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Consignee', ['eums.config', 'Contacts'])
+angular.module('Consignee', ['eums.config', 'Contact'])
     .factory('ConsigneeService', function($http, EumsConfig, ContactService) {
         var fillOutContactPerson = function(consignee) {
             return ContactService.getContactById(consignee.contact_person_id).then(function(response) {
