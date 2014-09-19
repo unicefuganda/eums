@@ -14,7 +14,7 @@ describe('Contacts Service', function() {
     };
 
     beforeEach(function() {
-        module('contacts');
+        module('Contacts');
 
         inject(function(ContactService, $httpBackend, EumsConfig) {
             mockContactsBackend = $httpBackend;

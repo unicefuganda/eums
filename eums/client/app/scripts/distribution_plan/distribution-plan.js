@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('DistributionPlan', ['contacts', 'eums.config'])
+angular.module('DistributionPlan', ['Contacts', 'eums.config'])
     .controller('DistributionPlanController', function($scope, ContactService, $location) {
         $scope.contact = {};
         $scope.errorMessage = '';
