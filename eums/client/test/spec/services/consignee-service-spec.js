@@ -15,7 +15,7 @@ describe('Consignee Service', function() {
     var fullContactResponse = {
         data: {
             id: contactPersonId, firstName: 'Andrew',
-            lastName: "Mukiza", phone: '+234778945674'
+            lastName: 'Mukiza', phone: '+234778945674'
         }
     };
 
