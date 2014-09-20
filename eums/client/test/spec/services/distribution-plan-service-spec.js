@@ -1,29 +1,69 @@
 describe('Distribution Plan Service', function() {
-    var distributionPlanService, mockBackend, distPlanEndpointUrl, nodeEndpointUrl;
+    var distributionPlanService, mockBackend, distPlanEndpointUrl, mockNodeService, q;
+    var planId = 1;
+
+    var stubPlanOne = {
+        id: planId,
+        programme: 'Step',
+        distributionplannode_set: [1, 2]
+    };
+
+    var fullNodeOne = {
+        id: 1,
+        parent: null,
+        distribution_plan: 1,
+        children: [2],
+        distributionplanlineitem_set: [1, 2],
+        consignee: {id: 1, details: 'placeholder'},
+        nodes: [{id: 1, details: 'placeholder'}, {id: 2, details: 'placeholder'}]
+    };
+
+    var fullNodeTwo = {
+        id: 2,
+        parent: 1,
+        distribution_plan: 1,
+        children: [],
+        distributionplanlineitem_set: [3, 4],
+        consignee: {id: 2, details: 'placeholder'},
+        nodes: [{id: 3, details: 'placeholder'}, {id: 4, details: 'placeholder'}]
+    };
+
+    var stubDistributionPlans = [
+        stubPlanOne,
+        {
+            id: 2,
+            programme: 'Alive',
+            distributionplannode_set: []
+        }
+    ];
+
+    var expectedPlan = {
+        id: planId,
+        programme: 'Step',
+        distributionplannode_set: [1, 2],
+        nodes: [fullNodeOne, fullNodeTwo]
+    };
 
     beforeEach(function() {
         module('DistributionPlan');
 
-        inject(function(DistributionPlanService, $httpBackend, EumsConfig) {
+        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails']);
+
+        module(function($provide) {
+            $provide.value('DistributionPlanNodeService', mockNodeService);
+        });
+
+        inject(function(DistributionPlanService, $httpBackend, $q, EumsConfig) {
+            mockNodeService.getPlanNodeDetails.and.callFake(fakeGetNodeDetails);
+            q = $q;
+
             mockBackend = $httpBackend;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
-            nodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
             distributionPlanService = DistributionPlanService;
         });
     });
 
     it('should fetch all distribution plans', function(done) {
-        var stubDistributionPlans = [
-            {
-                id: 1,
-                programme: 'Step'
-            },
-            {
-                id: 2,
-                programme: 'Alive'
-            }
-        ];
-
         mockBackend.whenGET(distPlanEndpointUrl).respond(stubDistributionPlans);
         distributionPlanService.fetchPlans().then(function(response) {
             expect(response.data).toEqual(stubDistributionPlans);
@@ -32,44 +72,31 @@ describe('Distribution Plan Service', function() {
         mockBackend.flush();
     });
 
-    xit('should get distribution plan details', function(done) {
-        var plan_id = 1;
-        var stubPlan = {
-            id: plan_id,
-            programme: 'Step',
-            distributionplannode_set: [1, 2]
-        };
-        var stubNode1 = {
-            id: 1, parent: null, distribution_plan: plan_id, consignee: 1,
-            children: [2], distributionplanlineitem_set: [1, 2]
-        };
-
-        var stubNode2 = {
-            id: 2, parent: 1, distribution_plan: plan_id, consignee: 2,
-            children: [], distributionplanlineitem_set: [3, 4]
-        };
-
-        var expectedNode1 = {
-            id: 1
-
-        };
-
-        var expectedPlan = {
-            id: plan_id,
-            programme: 'Step',
-            distributionplannode_set: [
-                expectedNode1,
-                {id: stubNode2.id}
-            ]
-        };
-
-
-        mockBackend.whenGET(distPlanEndpointUrl + plan_id + '/').respond(stubPlan);
-        mockBackend.whenGET(nodeEndpointUrl + stubNode1.id + '/').respond(stubPlan);
-        distributionPlanService.getPlanDetails(plan_id).then(function(response) {
-            expect(response.data).toEqual(expectedPlan);
+    it('should get distribution plan details', function(done) {
+        mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanOne);
+        distributionPlanService.getPlanDetails(planId).then(function(detailedPlan) {
+            expect(detailedPlan).toEqual(expectedPlan);
             done();
         });
         mockBackend.flush();
     });
+
+    var fakeGetNodeDetails = function() {
+        var nodeId = arguments[0];
+
+        var deferredNodeOneRequest = q.defer();
+        deferredNodeOneRequest.resolve(fullNodeOne);
+
+        var deferredNodeTwoRequest = q.defer();
+        deferredNodeTwoRequest.resolve(fullNodeTwo);
+
+        if(nodeId === fullNodeOne.id) {
+            return deferredNodeOneRequest.promise;
+        }
+        else if(nodeId === fullNodeTwo.id) {
+            return deferredNodeTwoRequest.promise;
+        }
+
+        return null;
+    };
 });
