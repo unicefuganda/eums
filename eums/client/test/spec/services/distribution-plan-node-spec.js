@@ -82,6 +82,20 @@ describe('Distribution Plan Node Service', function() {
         });
     });
 
+    it('should create distribution plan node neither parent nor children', function(done) {
+        var planId = 1, consigneeId = 1;
+        var stubCreatedNode = {
+            id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
+            distributionplanlineitem_set: [], children: []
+        };
+        mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
+        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId}).then(function(createdNode) {
+            expect(createdNode).toEqual(stubCreatedNode);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should get line item with full item details', function(done) {
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
         planNodeService.getPlanNodeDetails(planNodeId).then(function(returnedPlanNode) {

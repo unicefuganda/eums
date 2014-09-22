@@ -33,6 +33,16 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                         return planNode;
                     });
                 });
+            },
+            createNode: function(nodeDetails) {
+                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE, nodeDetails).then(function(response) {
+                    if(response.status === 201) {
+                        return response.data;
+                    }
+                    else {
+                        return response;
+                    }
+                });
             }
         };
     });

@@ -47,7 +47,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                         return response.data;
                     }
                     else {
-                        return {error: response}
+                        return {error: response};
                     }
                 });
             }
