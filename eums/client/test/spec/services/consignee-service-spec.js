@@ -45,6 +45,17 @@ describe('Consignee Service', function() {
         });
     });
 
+    it('should create consignee', function(done) {
+        var contactId = 1;
+        var stubCreatedConsignee = {id: 1, contact_person_id: contactId};
+        mockBackend.whenPOST(consigneeEndpointUrl).respond(201, stubCreatedConsignee);
+        consigneeService.createConsignee({contact_person_id: contactId}).then(function(createdConsignee) {
+            expect(createdConsignee).toEqual(stubCreatedConsignee);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should get consignee with full contact person details', function(done) {
         mockBackend.whenGET(consigneeEndpointUrl + consigneeId + '/').respond(stubConsignee);
         consigneeService.getConsigneeDetails(consigneeId).then(function(returnedConsignee) {

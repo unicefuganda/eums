@@ -42,7 +42,6 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             },
             createPlan: function(planDetails) {
                 return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function(response) {
-                    console.log(response.status);
                     if (response.status === 201) {
                         return response.data;
                     }

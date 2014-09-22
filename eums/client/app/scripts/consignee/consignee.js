@@ -17,6 +17,16 @@ angular.module('Consignee', ['eums.config', 'Contact'])
                     var consignee = response.data;
                     return fillOutContactPerson(consignee);
                 });
+            },
+            createConsignee: function(consigneeDetails) {
+                return $http.post(EumsConfig.BACKEND_URLS.CONSIGNEE, consigneeDetails).then(function(response) {
+                    if(response.status === 201) {
+                        return response.data;
+                    }
+                    else {
+                        return response;
+                    }
+                });
             }
         };
     });
