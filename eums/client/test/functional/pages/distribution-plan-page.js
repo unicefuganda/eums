@@ -1,7 +1,7 @@
 var DistributionPlanPage = function () {
     this.text = element(by.css('.container'));
-    this.firstNameElement = element(by.model('contact.firstname'));
-    this.lastNameElement = element(by.model('contact.lastname'));
+    this.firstNameElement = element(by.model('contact.firstName'));
+    this.lastNameElement = element(by.model('contact.lastName'));
     this.phone = element(by.model('contact.phone'));
     this.addContactButton = element(by.id('add-contact'));
     this.errorSpan = element(by.id('error-msg'));

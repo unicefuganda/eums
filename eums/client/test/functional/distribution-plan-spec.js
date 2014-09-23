@@ -13,14 +13,17 @@ describe('supply plan', function () {
 
     });
 
-    xit('should add contact', function () {
-        distributionPlanPage.addContact({firstname: 'Tunji', lastname: 'Sola', phone: '+256778854556'});
+    it('should add contact', function () {
+        var time = Date.now().toString();
+        var phoneNumber = time.substring(4);
+
+        distributionPlanPage.addContact({firstName: 'Tunji', lastName: 'Sola', phone: '+256'+ phoneNumber});
 
         expect(homePage.getHomeNavClass()).toEqual('active');
     });
 
-    xit('should show error when contact is NOT added', function () {
-        distributionPlanPage.addInvalidContact({firstname: 'Tunji', lastname: 'Sola', phone: '778934543'});
+    it('should show error when contact is NOT added', function () {
+        distributionPlanPage.addInvalidContact({firstName: 'Tunji', lastName: 'Sola', phone: '778934543'});
 
         expect(distributionPlanPage.errorSpan.getText()).toEqual('Phone number format is wrong');
     });
