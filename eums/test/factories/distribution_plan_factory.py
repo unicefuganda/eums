@@ -4,7 +4,7 @@ from eums.models import DistributionPlan
 from eums.test.factories.programme_factory import ProgrammeFactory
 
 
-class DistributionPlanFactory(factory.Factory):
+class DistributionPlanFactory(factory.DjangoModelFactory):
     class Meta:
         model = DistributionPlan
 

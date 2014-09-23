@@ -1,8 +1,9 @@
 import factory
+
 from eums.models import Consignee
 
 
-class ConsigneeFactory(factory.Factory):
+class ConsigneeFactory(factory.DjangoModelFactory):
     class Meta:
         model = Consignee
 

@@ -1,6 +1,6 @@
 from rest_framework.test import APITestCase
 
-from eums.models import Item, ItemUnit, Consignee
+from eums.models import Item, ItemUnit
 from eums.test.api.api_test_helpers import create_distribution_plan_node, create_distribution_plan_line_item
 from eums.test.config import BACKEND_URL
 

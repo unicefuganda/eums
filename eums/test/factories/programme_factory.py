@@ -4,7 +4,7 @@ from eums.models import Programme
 from eums.test.factories.user_factory import UserFactory
 
 
-class ProgrammeFactory(factory.Factory):
+class ProgrammeFactory(factory.DjangoModelFactory):
     class Meta:
         model = Programme
 

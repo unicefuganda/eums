@@ -1,4 +1,5 @@
 from django.db import models
+
 from eums.models import DistributionPlan, Consignee
 
 

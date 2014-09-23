@@ -1,4 +1,5 @@
 from rest_framework.test import APITestCase
+
 from eums.test.api.api_test_helpers import create_consignee
 from eums.test.config import BACKEND_URL
 
