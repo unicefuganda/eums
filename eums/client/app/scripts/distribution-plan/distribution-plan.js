@@ -16,8 +16,35 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         var fillOutNode = function(nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
                 .then(function(nodeDetails) {
-                    plan.nodes.push(nodeDetails);
+                    plan.nodeList.push(nodeDetails);
                 });
+        };
+
+        // TODO Make it non-blocking
+        var buildNodeTree = function(plan) {
+            var rootNode = plan.nodeList.filter(function(node) {
+                return node.parent === null;
+            })[0];
+            plan.nodeTree = addChildrenDetail(rootNode, plan);
+            delete plan.nodeList;
+        };
+
+        var addChildrenDetail = function(node, plan) {
+            node.childrenDetails = [];
+            node.children.forEach(function(childNodeId) {
+                var descendant = findDetailedNode(childNodeId, plan);
+                node.childrenDetails.push(descendant);
+                addChildrenDetail(descendant, plan);
+            });
+            node.children = node.childrenDetails;
+            delete node.childrenDetails;
+            return node;
+        };
+
+        var findDetailedNode =  function(nodeId, plan) {
+            return plan.nodeList.filter(function(node) {
+                return node.id === nodeId;
+            })[0];
         };
 
         return {
@@ -30,12 +57,13 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     var plan = response.data;
                     var nodeFillOutPromises = [];
 
-                    plan.nodes = [];
+                    plan.nodeList = [];
                     plan.distributionplannode_set.forEach(function(nodeId) {
                         nodeFillOutPromises.push(fillOutNode(nodeId, plan));
                     });
 
                     return $q.all(nodeFillOutPromises).then(function() {
+                        buildNodeTree(plan);
                         return plan;
                     });
                 });

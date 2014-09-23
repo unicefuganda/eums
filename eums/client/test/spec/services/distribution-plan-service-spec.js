@@ -5,33 +5,39 @@ describe('Distribution Plan Service', function() {
     var stubPlanOne = {
         id: planId,
         programme: 1,
-        distributionplannode_set: [1, 2]
+        distributionplannode_set: [1, 2, 3, 4]
     };
 
     var fullNodeOne = {
         id: 1,
         parent: null,
+        children: [2, 4],
         distribution_plan: 1,
-        children: [2],
-        distributionplanlineitem_set: [1, 2],
-        consignee: {id: 1, details: 'placeholder'},
-        nodes: [
-            {id: 1, details: 'placeholder'},
-            {id: 2, details: 'placeholder'}
-        ]
+        otherDetails: 'Further node 1 details'
     };
 
     var fullNodeTwo = {
         id: 2,
         parent: 1,
+        children: [3],
         distribution_plan: 1,
+        otherDetails: 'Further node 2 details'
+    };
+
+    var fullNodeThree = {
+        id: 3,
+        parent: 2,
         children: [],
-        distributionplanlineitem_set: [3, 4],
-        consignee: {id: 2, details: 'placeholder'},
-        nodes: [
-            {id: 3, details: 'placeholder'},
-            {id: 4, details: 'placeholder'}
-        ]
+        distribution_plan: 1,
+        otherDetails: 'Further node 3 details'
+    };
+
+    var fullNodeFour = {
+        id: 4,
+        parent: 1,
+        children: [],
+        distribution_plan: 1,
+        otherDetails: 'Further node 4 details'
     };
 
     var stubDistributionPlans = [
@@ -43,11 +49,34 @@ describe('Distribution Plan Service', function() {
         }
     ];
 
+    var expectedNodeTree = {
+        id: 1, parent: null, distribution_plan: 1,
+        children: [
+            {
+                id: 2,
+                parent: 1,
+                distribution_plan: 1,
+                children: [
+                    {
+                        id: 3,
+                        parent: 2,
+                        children: [],
+                        distribution_plan: 1,
+                        otherDetails: 'Further node 3 details'
+                    }
+                ],
+                otherDetails: 'Further node 2 details'
+            },
+            fullNodeFour
+        ],
+        otherDetails: 'Further node 1 details'
+    };
+
     var expectedPlan = {
         id: planId,
         programme: 1,
-        distributionplannode_set: [1, 2],
-        nodes: [fullNodeOne, fullNodeTwo]
+        distributionplannode_set: [1, 2, 3, 4],
+        nodeTree: expectedNodeTree
     };
 
     beforeEach(function() {
@@ -91,7 +120,7 @@ describe('Distribution Plan Service', function() {
         mockBackend.flush();
     });
 
-    it('should get distribution plan details', function(done) {
+    it('should get distribution plan details, with node tree built out', function(done) {
         mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanOne);
         distributionPlanService.getPlanDetails(planId).then(function(detailedPlan) {
             expect(detailedPlan).toEqual(expectedPlan);
@@ -102,20 +131,25 @@ describe('Distribution Plan Service', function() {
 
     var fakeGetNodeDetails = function() {
         var nodeId = arguments[0];
+        var deferred = q.defer();
 
-        var deferredNodeOneRequest = q.defer();
-        deferredNodeOneRequest.resolve(fullNodeOne);
-
-        var deferredNodeTwoRequest = q.defer();
-        deferredNodeTwoRequest.resolve(fullNodeTwo);
-
-        if(nodeId === fullNodeOne.id) {
-            return deferredNodeOneRequest.promise;
-        }
-        else if(nodeId === fullNodeTwo.id) {
-            return deferredNodeTwoRequest.promise;
+        // TODO Replace with map!
+        switch(nodeId) {
+            case fullNodeOne.id:
+                return resolveAndPromise(fullNodeOne, deferred);
+            case fullNodeTwo.id:
+                return resolveAndPromise(fullNodeTwo, deferred);
+            case fullNodeThree.id:
+                return resolveAndPromise(fullNodeThree, deferred);
+            case fullNodeFour.id:
+                return resolveAndPromise(fullNodeFour, deferred);
         }
 
         return null;
+    };
+
+    var resolveAndPromise = function(result, deferred) {
+        deferred.resolve(result);
+        return deferred.promise;
     };
 });
