@@ -161,7 +161,10 @@ module.exports = function (grunt) {
         ngconstant: {
             options: {
                 name: 'eums.config',
-                dest: 'app/scripts/config/config.js'
+                dest: 'app/scripts/config/config.js',
+                constants: {
+                    EumsConfig: grunt.file.readJSON('config/development.json')
+                }
             },
             dev: {
                 constants: {
@@ -210,7 +213,7 @@ module.exports = function (grunt) {
 
     grunt.registerTask('build', [
         'clean:dist',
-//        'ngconstant:dev',
+        'ngconstant:dev',
         'newer:uglify:all'
     ]);
 
