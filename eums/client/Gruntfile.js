@@ -217,7 +217,21 @@ module.exports = function (grunt) {
         'newer:uglify:all'
     ]);
 
+    grunt.registerTask('build-staging', [
+        'clean:dist',
+        'ngconstant:staging',
+        'newer:uglify:all'
+    ]);
+
+
     grunt.registerTask('functional', [
+        'clean:server',
+        'run:djangoServer',
+        'protractor:headless'
+    ]);
+
+    grunt.registerTask('functional-staging', [
+        'build-staging',
         'clean:server',
         'run:djangoServer',
         'protractor:headless'
