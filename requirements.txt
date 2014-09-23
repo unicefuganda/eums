@@ -1,6 +1,16 @@
 Django==1.7
+Factory==1.2
 Markdown==2.4.1
+amqp==1.4.6
+anyjson==0.3.3
+billiard==3.3.0.18
+celery==3.1.15
 django-filter==0.7
 djangorestframework==2.4.2
+factory-boy==2.4.1
+kombu==3.0.23
+mockito==0.5.2
 psycopg2==2.5.4
+pytz==2014.7
+redis==2.10.3
 wsgiref==0.1.2
