@@ -15,17 +15,14 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.renderHtml = function () {
-            var htmlToAppend = '';
             var nodeDetails = $scope.distribution_plan_details.nodes;
-            nodeDetails.forEach(function (nodeDetail) {
-                htmlToAppend += '<div class="node" id="nodeDetail' + nodeDetail.id + '">' + nodeDetail.consignee.name + '</div>';
-            });
+            var htmlToAppend = '<div class="node" id="nodeDetail' + nodeDetails.id + '">' + nodeDetails.consignee.name + '</div>';
             $scope.htmlToAppend = $sce.trustAsHtml(htmlToAppend);
         };
 
         $scope.showDistributionPlan = function (planId) {
             DistributionPlanService.getPlanDetails(planId).then(function (response) {
-                $scope.distribution_plan_details = {'nodes': response.nodes, 'lineItems': response.nodes[0].lineItems};
+                $scope.distribution_plan_details = {'nodes': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
                 $scope.renderHtml();
             });
         };
