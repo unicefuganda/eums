@@ -6,7 +6,6 @@ describe('supply plan', function () {
 
     beforeEach(function () {
         supplyPlanPage = require('./pages/home-page');
-//        browser.ignoreSynchronization = true;
     });
     
     it('should go to home page', function () {
