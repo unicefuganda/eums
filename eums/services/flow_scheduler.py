@@ -10,6 +10,8 @@ def schedule_flows_for(node):
 
 @app.task
 def _schedule_flow(node):
-    # start_delivery_flow(item=node.distributionplanlineitem_set, name=node.consignee.name,
-    # phone=node.consignee.contact_person_id)
-    start_delivery_flow()
+    line_item = node.distributionplanlineitem_set.all()[0]
+    start_delivery_flow(
+        item_description=line_item.item.description,
+        consignee=node.consignee
+    )
