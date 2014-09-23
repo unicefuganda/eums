@@ -12,32 +12,28 @@ describe('Distribution Plan Service', function() {
         id: 1,
         parent: null,
         children: [2, 4],
-        distribution_plan: 1,
-        otherDetails: 'Further node 1 details'
+        distribution_plan: 1
     };
 
     var fullNodeTwo = {
         id: 2,
         parent: 1,
         children: [3],
-        distribution_plan: 1,
-        otherDetails: 'Further node 2 details'
+        distribution_plan: 1
     };
 
     var fullNodeThree = {
         id: 3,
         parent: 2,
         children: [],
-        distribution_plan: 1,
-        otherDetails: 'Further node 3 details'
+        distribution_plan: 1
     };
 
     var fullNodeFour = {
         id: 4,
         parent: 1,
         children: [],
-        distribution_plan: 1,
-        otherDetails: 'Further node 4 details'
+        distribution_plan: 1
     };
 
     var stubDistributionPlans = [
@@ -61,15 +57,12 @@ describe('Distribution Plan Service', function() {
                         id: 3,
                         parent: 2,
                         children: [],
-                        distribution_plan: 1,
-                        otherDetails: 'Further node 3 details'
+                        distribution_plan: 1
                     }
-                ],
-                otherDetails: 'Further node 2 details'
+                ]
             },
             fullNodeFour
-        ],
-        otherDetails: 'Further node 1 details'
+        ]
     };
 
     var expectedPlan = {

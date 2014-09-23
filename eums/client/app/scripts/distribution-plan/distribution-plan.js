@@ -20,7 +20,6 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
         };
 
-        // TODO Make it non-blocking
         var buildNodeTree = function(plan) {
             var rootNode = plan.nodeList.filter(function(node) {
                 return node.parent === null;
@@ -30,14 +29,14 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         var addChildrenDetail = function(node, plan) {
-            node.childrenDetails = [];
+            node.temporaryChildrenList = [];
             node.children.forEach(function(childNodeId) {
                 var descendant = findDetailedNode(childNodeId, plan);
-                node.childrenDetails.push(descendant);
+                node.temporaryChildrenList.push(descendant);
                 addChildrenDetail(descendant, plan);
             });
-            node.children = node.childrenDetails;
-            delete node.childrenDetails;
+            node.children = node.temporaryChildrenList;
+            delete node.temporaryChildrenList;
             return node;
         };
 
