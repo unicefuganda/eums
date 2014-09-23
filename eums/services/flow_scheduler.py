@@ -4,9 +4,12 @@ from eums.rapid_pro.rapid_pro_facade import start_delivery_flow
 
 
 def schedule_flows_for(node):
-    return _schedule_flow.apply_async(10, countdown=3)
+    # return _schedule_flow.apply_async(args=[node], countdown=node.distribution_plan.date + 7)
+    _schedule_flow.apply_async(args=[node], countdown=7)
 
 
 @app.task
-def _schedule_flow(n):
-    return start_delivery_flow({})
+def _schedule_flow(node):
+    # start_delivery_flow(item=node.distributionplanlineitem_set, name=node.consignee.name,
+    # phone=node.consignee.contact_person_id)
+    start_delivery_flow()

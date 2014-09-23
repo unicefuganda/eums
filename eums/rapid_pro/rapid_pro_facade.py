@@ -1,3 +1,2 @@
-def start_delivery_flow(params):
-    print "*" * 20, "Start delivery flow called", "*" * 20
+def start_delivery_flow(*_, **kwargs):
     return "Delivery flow started"
