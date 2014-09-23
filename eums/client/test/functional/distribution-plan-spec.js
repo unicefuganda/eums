@@ -6,8 +6,8 @@ describe('supply plan', function () {
 
 
     beforeEach(function () {
-        browser.ignoreSynchronization = true;
         browser.get('/');
+        browser.ignoreSynchronization = true;
         homePage = require('./pages/home-page');
         distributionPlanPage = homePage.navigateToDistributionPlanTab();
 
