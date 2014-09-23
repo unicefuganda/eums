@@ -13,5 +13,5 @@ def _schedule_flow(node):
     line_item = node.distributionplanlineitem_set.all()[0]
     start_delivery_flow(
         item_description=line_item.item.description,
-        consignee=node.consignee.contact
+        consignee=node.consignee.build_contact()
     )

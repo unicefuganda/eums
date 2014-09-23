@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from mockito import mock, verify
+from mockito import mock, verify, when
 
 from eums import celery
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -20,9 +20,10 @@ from eums.services.flow_scheduler import schedule_flows_for
 
 class FlowSchedulerTest(TestCase):
     def test_should_schedule_a_flow_for_a_consignee_from_a_plan_node_with_one_line_item(self):
-        fake_consignee = ConsigneeFactory()
-        fake_consignee.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
-        node = DistributionPlanNodeFactory(consignee=fake_consignee)
+        consignee = ConsigneeFactory()
+        contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
+        when(consignee).build_contact().thenReturn(contact)
+        node = DistributionPlanNodeFactory(consignee=consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         schedule_flows_for(node)
@@ -30,6 +31,6 @@ class FlowSchedulerTest(TestCase):
         line_item = node.distributionplanlineitem_set.all()[0]
 
         verify(fake_facade).start_delivery_flow(
-            consignee=fake_consignee.contact,
+            consignee=contact,
             item_description=line_item.item.description,
         )

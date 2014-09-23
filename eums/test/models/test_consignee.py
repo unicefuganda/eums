@@ -11,3 +11,6 @@ class ConsigneeTest(TestCase):
 
         for field in ['name', 'contact_person_id']:
             self.assertIn(field, fields)
+
+    def test_should_build_contact_with_details_from_contacts_service(self):
+        pass
