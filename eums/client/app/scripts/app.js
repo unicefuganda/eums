@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NavigationTabs'])
+    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NavigationTabs', 'ngSanitize'])
     .config(function($routeProvider) {
         $routeProvider
             .when('/', {

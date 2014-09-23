@@ -1,21 +1,46 @@
 'use strict';
 
 angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode'])
-    .controller('DistributionPlanController', function($scope, ContactService, $location) {
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, $sce) {
         $scope.contact = {};
         $scope.errorMessage = '';
 
-        $scope.addContact = function() {
-            ContactService.addContact($scope.contact).then(function() {
+        $scope.distribution_plans = [];
+        $scope.distribution_plan_details = [];
+
+        $scope.initialize = function () {
+            DistributionPlanService.fetchPlans().then(function (response) {
+                $scope.distribution_plans = response.data;
+            });
+        };
+
+        $scope.renderHtml = function () {
+            var htmlToAppend = '';
+            var nodeDetails = $scope.distribution_plan_details.nodes;
+            nodeDetails.forEach(function (nodeDetail) {
+                htmlToAppend += '<div class="node" id="nodeDetail' + nodeDetail.id + '">' + nodeDetail.consignee.name + '</div>';
+            });
+            $scope.htmlToAppend = $sce.trustAsHtml(htmlToAppend);
+        };
+
+        $scope.showDistributionPlan = function (planId) {
+            DistributionPlanService.getPlanDetails(planId).then(function (response) {
+                $scope.distribution_plan_details = {'nodes': response.nodes, 'lineItems': response.nodes[0].lineItems};
+                $scope.renderHtml();
+            });
+        };
+
+        $scope.addContact = function () {
+            ContactService.addContact($scope.contact).then(function () {
                 $location.path('/');
-            }, function(error) {
+            }, function (error) {
                 $scope.errorMessage = error.data.error;
             });
         };
-    }).factory('DistributionPlanService', function($http, $q, EumsConfig, DistributionPlanNodeService) {
-        var fillOutNode = function(nodeId, plan) {
+    }).factory('DistributionPlanService', function ($http, $q, EumsConfig, DistributionPlanNodeService) {
+        var fillOutNode = function (nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
-                .then(function(nodeDetails) {
+                .then(function (nodeDetails) {
                     plan.nodeList.push(nodeDetails);
                 });
         };
@@ -40,35 +65,35 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             return node;
         };
 
-        var findDetailedNode =  function(nodeId, plan) {
-            return plan.nodeList.filter(function(node) {
+        var findDetailedNode = function (nodeId, plan) {
+            return plan.nodeList.filter(function (node) {
                 return node.id === nodeId;
             })[0];
         };
 
         return {
-            fetchPlans: function() {
+            fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
             },
-            getPlanDetails: function(planId) {
+            getPlanDetails: function (planId) {
                 var getPlanPromise = $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/');
-                return getPlanPromise.then(function(response) {
+                return getPlanPromise.then(function (response) {
                     var plan = response.data;
                     var nodeFillOutPromises = [];
 
                     plan.nodeList = [];
-                    plan.distributionplannode_set.forEach(function(nodeId) {
+                    plan.distributionplannode_set.forEach(function (nodeId) {
                         nodeFillOutPromises.push(fillOutNode(nodeId, plan));
                     });
 
-                    return $q.all(nodeFillOutPromises).then(function() {
+                    return $q.all(nodeFillOutPromises).then(function () {
                         buildNodeTree(plan);
                         return plan;
                     });
                 });
             },
-            createPlan: function(planDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function(response) {
+            createPlan: function (planDetails) {
+                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function (response) {
                     if (response.status === 201) {
                         return response.data;
                     }

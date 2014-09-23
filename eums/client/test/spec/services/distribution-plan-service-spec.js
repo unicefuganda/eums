@@ -1,4 +1,4 @@
-describe('Distribution Plan Service', function() {
+describe('Distribution Plan Service', function () {
     var distributionPlanService, mockBackend, distPlanEndpointUrl, mockNodeService, q, http, config;
     var planId = 1;
 
@@ -72,16 +72,16 @@ describe('Distribution Plan Service', function() {
         nodeTree: expectedNodeTree
     };
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('DistributionPlan');
 
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails']);
 
-        module(function($provide) {
+        module(function ($provide) {
             $provide.value('DistributionPlanNodeService', mockNodeService);
         });
 
-        inject(function(DistributionPlanService, $httpBackend, $q, EumsConfig, $http) {
+        inject(function (DistributionPlanService, $httpBackend, $q, EumsConfig, $http) {
             mockNodeService.getPlanNodeDetails.and.callFake(fakeGetNodeDetails);
             q = $q;
             http = $http;
@@ -93,20 +93,20 @@ describe('Distribution Plan Service', function() {
         });
     });
 
-    it('should create distribution plan', function(done) {
+    it('should create distribution plan', function (done) {
         var programmeId = 1;
         var stubCreatedPlan = {id: planId, programme: programmeId, distributionplannode_set: []};
         mockBackend.whenPOST(distPlanEndpointUrl).respond(201, stubCreatedPlan);
-        distributionPlanService.createPlan({programme: programmeId}).then(function(createdPlan) {
+        distributionPlanService.createPlan({programme: programmeId}).then(function (createdPlan) {
             expect(stubCreatedPlan).toEqual(createdPlan);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should fetch all distribution plans', function(done) {
+    it('should fetch all distribution plans', function (done) {
         mockBackend.whenGET(distPlanEndpointUrl).respond(stubDistributionPlans);
-        distributionPlanService.fetchPlans().then(function(response) {
+        distributionPlanService.fetchPlans().then(function (response) {
             expect(response.data).toEqual(stubDistributionPlans);
             done();
         });
@@ -115,18 +115,30 @@ describe('Distribution Plan Service', function() {
 
     it('should get distribution plan details, with node tree built out', function(done) {
         mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanOne);
-        distributionPlanService.getPlanDetails(planId).then(function(detailedPlan) {
+        distributionPlanService.getPlanDetails(planId).then(function (detailedPlan) {
             expect(detailedPlan).toEqual(expectedPlan);
             done();
         });
         mockBackend.flush();
     });
 
-    var fakeGetNodeDetails = function() {
+    var fakeGetNodeDetails = function () {
         var nodeId = arguments[0];
         var deferred = q.defer();
 
         var idNodeMap = {1: fullNodeOne, 2: fullNodeTwo, 3: fullNodeThree, 4: fullNodeFour};
+        var deferredNodeOneRequest = q.defer();
+        deferredNodeOneRequest.resolve(fullNodeOne);
+
+        var deferredNodeTwoRequest = q.defer();
+        deferredNodeTwoRequest.resolve(fullNodeTwo);
+
+        if (nodeId === fullNodeOne.id) {
+            return deferredNodeOneRequest.promise;
+        }
+        else if (nodeId === fullNodeTwo.id) {
+            return deferredNodeTwoRequest.promise;
+        }
 
         deferred.resolve(idNodeMap[nodeId]);
         return deferred.promise;

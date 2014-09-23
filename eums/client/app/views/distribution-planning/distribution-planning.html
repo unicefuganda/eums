@@ -1,8 +1,48 @@
 <div class="container">
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
-    <ng-include src="'/static/app/views/distribution-planning/partials/contact.html'"></ng-include>
-    <ul>
-        <li ng-repeat="plan in supplyPlans"> {{ plan }}</li>
-    </ul>
+    <!--<ng-include src="'/static/app/views/distribution-planning/partials/contact.html'"></ng-include>-->
+
+    <div ng-controller="DistributionPlanController" ng-init="initialize()">
+        <table id="plan-table" style="width:100%">
+            <tr>
+                <th>Plan Name</th>
+                <th>Program Name</th>
+            </tr>
+            <tr ng-repeat="plan in distribution_plans" ng-click="showDistributionPlan(plan.id)">
+                <td>{{plan.name}}</td>
+                <td>{{plan.programme}}</td>
+            </tr>
+        </table>
+
+        <table id="plan-table-details" style="width:100%">
+            <tr>
+                <th>S/N</th>
+                <th>Item Description</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Under Current Supply Plan</th>
+                <th>Distribution Date</th>
+                <th>Consignee Contact</th>
+                <th>Remark</th>
+            </tr>
+            <tr ng-repeat="plan_detail in distribution_plan_details.lineItems">
+                <td>{{plan_detail.id}}</td>
+                <td>{{plan_detail.item.description}}</td>
+                <td>{{plan_detail.quantity}}</td>
+                <td>{{plan_detail.item.unit.name}}</td>
+                <td>{{plan_detail.under_current_supply_plan}}</td>
+                <td>{{plan_detail.planned_distribution_date}}</td>
+                <td>{{distribution_plan_details.nodes[0].consignee.name}}</td>
+                <td>{{plan_detail.remark}}</td>
+            </tr>
+        </table>
+        <div ng-bind-html="htmlToAppend">
+        </div>
+
+    </div>
+
+    <!--<ul ng-controller="DistributionPlanController" ng-init="initialize()">-->
+    <!--</ul>-->
+
 </div>
 

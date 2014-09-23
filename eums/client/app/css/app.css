@@ -1,3 +1,113 @@
 body {
     padding-top: 70px;
 }
+
+
+#plan-table {
+	border: 1px solid #e3e3e3;
+    margin-top: 30px;
+	background-color: #f2f2f2;
+        width: 100%;
+	border-radius: 6px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+}
+#plan-table td, #table-2 th {
+	padding: 5px;
+	color: #333;
+}
+#plan-table thead {
+	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+	padding: .2em 0 .2em .5em;
+	text-align: left;
+	color: #4B4B4B;
+	background-color: #C8C8C8;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#e3e3e3), color-stop(.6,#B3B3B3));
+	background-image: -moz-linear-gradient(top, #D6D6D6, #B0B0B0, #B3B3B3 90%);
+	border-bottom: solid 1px #999;
+}
+#plan-table th {
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 17px;
+	line-height: 20px;
+	font-style: normal;
+	font-weight: normal;
+	text-align: left;
+	text-shadow: white 1px 1px 1px;
+}
+#plan-table td {
+	line-height: 20px;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	border-bottom: 1px solid #fff;
+	border-top: 1px solid #fff;
+}
+#plan-table tr:hover {
+	background-color: #fff;
+}
+
+.node {
+	border:0.1em dotted #d4e06b;
+	width:8em; height:4em;
+	line-height:4em;
+    text-align: center;
+}
+
+.node .add-button {
+	border:0.1em dotted #d4e06b;
+	width:1em; height:1em;
+	line-height:1em;
+    text-align: center;
+}
+
+.node:hover, .node._jsPlumb_source_hover, .node._jsPlumb_target_hover {
+    border:1px solid orange;
+    color:orange;
+}
+
+.node .add-button:hover, .node._jsPlumb_source_hover, .node._jsPlumb_target_hover {
+    border:1px solid orange;
+    color:orange;
+}
+
+#nodeDetail-1 {
+    position: absolute;
+    left: 25em;
+    top: 6em;
+}
+
+#state2 {
+    position: absolute;
+    left: 10em;
+    top: 18em;
+}
+
+#state3 {
+    position: absolute;
+    left: 40em;
+    top: 18em;
+}
+
+#state4 {
+    position: absolute;
+    left: 1em;
+    top: 30em;
+}
+
+#state5 {
+    position: absolute;
+    left: 18em;
+    top: 30em;
+}
+
+#state6 {
+    position: absolute;
+    left: 31em;
+    top: 30em;
+}
+
+#state7 {
+    position: absolute;
+    left: 50em;
+    top: 30em;
+}

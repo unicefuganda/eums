@@ -6,6 +6,7 @@ describe('Route Provider', function() {
 
         inject(function($route) {
             routes = $route;
+
         });
     });
 
