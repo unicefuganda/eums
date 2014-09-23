@@ -10,6 +10,7 @@ describe('supply plan', function () {
     });
     
     it('should go to home page', function () {
+        browser.ignoreSynchronization = true;
         browser.get('/');
         expect(supplyPlanPage.elementisPresent()).toBeTruthy();
     });
