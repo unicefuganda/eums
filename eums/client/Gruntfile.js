@@ -225,6 +225,7 @@ module.exports = function (grunt) {
 
 
     grunt.registerTask('functional', [
+        'build',
         'clean:server',
         'run:djangoServer',
         'protractor:headless'

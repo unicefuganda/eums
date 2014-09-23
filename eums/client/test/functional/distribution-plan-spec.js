@@ -1,6 +1,6 @@
 'use strict';
 
-describe('supply plan', function () {
+xdescribe('supply plan', function () {
     var distributionPlanPage;
     var homePage;
 
