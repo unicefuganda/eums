@@ -133,23 +133,9 @@ describe('Distribution Plan Service', function() {
         var nodeId = arguments[0];
         var deferred = q.defer();
 
-        // TODO Replace with map!
-        switch(nodeId) {
-            case fullNodeOne.id:
-                return resolveAndPromise(fullNodeOne, deferred);
-            case fullNodeTwo.id:
-                return resolveAndPromise(fullNodeTwo, deferred);
-            case fullNodeThree.id:
-                return resolveAndPromise(fullNodeThree, deferred);
-            case fullNodeFour.id:
-                return resolveAndPromise(fullNodeFour, deferred);
-        }
+        var idNodeMap = {1: fullNodeOne, 2: fullNodeTwo, 3: fullNodeThree, 4: fullNodeFour};
 
-        return null;
-    };
-
-    var resolveAndPromise = function(result, deferred) {
-        deferred.resolve(result);
+        deferred.resolve(idNodeMap[nodeId]);
         return deferred.promise;
     };
 });
