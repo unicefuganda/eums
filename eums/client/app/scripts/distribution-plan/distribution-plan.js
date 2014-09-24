@@ -10,19 +10,32 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.initialize = function () {
             DistributionPlanService.fetchPlans().then(function (response) {
+
                 $scope.distribution_plans = response.data;
             });
         };
 
         $scope.renderHtml = function () {
-            var nodeDetails = $scope.distribution_plan_details.nodes;
-            var htmlToAppend = '<div class="node" id="nodeDetail' + nodeDetails.id + '">' + nodeDetails.consignee.name + '</div>';
+            var nodeTree = $scope.distribution_plan_details.nodeTree;
+            var htmlToAppend = '<div class="node" id="nodeDetail' + nodeTree.id + '">' + nodeTree.consignee.name + '</div>';
+            htmlToAppend += buildTree(nodeTree);
+
             $scope.htmlToAppend = $sce.trustAsHtml(htmlToAppend);
+
+        };
+
+        var buildTree = function(node) {
+            var htmlToAppend = '';
+            node.children.forEach(function(child){
+                htmlToAppend += '<div class="node" id="nodeDetail' + child.id + '">' + child.consignee.name + '</div>';
+                buildTree(child);
+            });
+            return htmlToAppend;
         };
 
         $scope.showDistributionPlan = function (planId) {
             DistributionPlanService.getPlanDetails(planId).then(function (response) {
-                $scope.distribution_plan_details = {'nodes': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
+                $scope.distribution_plan_details = {'nodeTree': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
                 $scope.renderHtml();
             });
         };

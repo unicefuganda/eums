@@ -32,6 +32,35 @@ describe('DistributionPlanController', function () {
             consignee: {name: 'Test'}
         }};
 
+    var stubPlanThree = {name: 'Plan 3',
+        id: 1,
+        programme: 1,
+        distributionplannode_set: [1, 2],
+        nodeTree: {
+            id: 1,
+            children: [
+                {id: 2,
+                    children: [
+                        {id: 4,
+                            children: [],
+                            lineItems: [],
+                            distribution_plan: 1,
+                            consignee: {name: 'Consignee 4'}}
+                    ],
+                    lineItems: [],
+                    distribution_plan: 1,
+                    consignee: {name: 'Consignee 2'}},
+                {id: 3,
+                    children: [],
+                    lineItems: [],
+                    distribution_plan: 1,
+                    consignee: {name: 'Consignee 3'}}
+            ],
+            lineItems: [],
+            distribution_plan: 1,
+            consignee: {name: 'Test'}
+        }};
+
     var stubError = {
         data: {
             error: 'Phone number is not valid'
@@ -87,12 +116,12 @@ describe('DistributionPlanController', function () {
         deferredPlan.resolve(stubPlanTwo);
         scope.showDistributionPlan('1');
         scope.$apply();
-        expect(scope.distribution_plan_details).toEqual({nodes: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems});
+        expect(scope.distribution_plan_details).toEqual({nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems});
     });
 
     it('should know call the trustAsHtml function with the right node details', function () {
         var expectedHtml = '<div class="node" id="nodeDetail1">Test</div>';
-        scope.distribution_plan_details = {nodes: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems};
+        scope.distribution_plan_details = {nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems};
         scope.renderHtml();
         scope.$apply();
         expect(sce.trustAsHtml).toHaveBeenCalledWith(expectedHtml);
@@ -101,7 +130,20 @@ describe('DistributionPlanController', function () {
     it('should know how to construct the nodes html to be rendered on the view pages', function () {
         var expectedHtml = '<div class="node" id="nodeDetail1">Test</div>';
         sce.trustAsHtml.and.returnValue(expectedHtml);
-        scope.distribution_plan_details = {nodes: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems};
+        scope.distribution_plan_details = {nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems};
+        scope.renderHtml();
+        scope.$apply();
+        expect(scope.htmlToAppend).toEqual(expectedHtml);
+    });
+
+    it('should know how to construct the nodes html to be rendered on the view pages when children nodes are present', function () {
+        var expectedHtml = '<div class="node" id="nodeDetail1">Test</div>' +
+            '<div class="node" id="nodeDetail2">Test</div>' +
+            '<div class="node" id="nodeDetail4">Test</div>'+
+            '<div class="node" id="nodeDetail3">Test</div>';
+
+        sce.trustAsHtml.and.returnValue(expectedHtml);
+        scope.distribution_plan_details = {nodeTree: stubPlanThree.nodeTree, lineItems: stubPlanThree.nodeTree.lineItems};
         scope.renderHtml();
         scope.$apply();
         expect(scope.htmlToAppend).toEqual(expectedHtml);

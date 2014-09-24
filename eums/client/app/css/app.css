@@ -53,61 +53,7 @@ body {
     text-align: center;
 }
 
-.node .add-button {
-	border:0.1em dotted #d4e06b;
-	width:1em; height:1em;
-	line-height:1em;
-    text-align: center;
-}
-
 .node:hover, .node._jsPlumb_source_hover, .node._jsPlumb_target_hover {
     border:1px solid orange;
     color:orange;
-}
-
-.node .add-button:hover, .node._jsPlumb_source_hover, .node._jsPlumb_target_hover {
-    border:1px solid orange;
-    color:orange;
-}
-
-#nodeDetail-1 {
-    position: absolute;
-    left: 25em;
-    top: 6em;
-}
-
-#state2 {
-    position: absolute;
-    left: 10em;
-    top: 18em;
-}
-
-#state3 {
-    position: absolute;
-    left: 40em;
-    top: 18em;
-}
-
-#state4 {
-    position: absolute;
-    left: 1em;
-    top: 30em;
-}
-
-#state5 {
-    position: absolute;
-    left: 18em;
-    top: 30em;
-}
-
-#state6 {
-    position: absolute;
-    left: 31em;
-    top: 30em;
-}
-
-#state7 {
-    position: absolute;
-    left: 50em;
-    top: 30em;
 }

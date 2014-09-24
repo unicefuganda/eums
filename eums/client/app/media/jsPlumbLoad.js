@@ -1,10 +1,4 @@
-function createConnectors(color, instance) {
-    var arrowCommon = { foldback: 0.7, fillStyle: color, width: 14 },
-    // use three-arg spec to create two different arrows with the common values:
-        overlays = [
-            [ "Arrow", { location: 0.7 }, arrowCommon ],
-            [ "Arrow", { location: 0.3, direction: -1 }, arrowCommon ]
-        ];
+function createConnectors(instance) {
 
     // add endpoints, giving them a UUID.
     // you DO NOT NEED to use this method. You can use your library's selector method.
@@ -25,22 +19,6 @@ function createConnectors(color, instance) {
     return windows;
 }
 
-function createAnchors(instance) {
-    var windows = jsPlumb.getSelector(".node .new-state");
-    for (var i = 0; i < windows.length; i++) {
-        instance.addEndpoint(windows[i], {
-            uuid: windows[i].getAttribute("id") + "-bottom",
-            anchor: "Bottom",
-            maxConnections: -1
-        });
-        instance.addEndpoint(windows[i], {
-            uuid: windows[i].getAttribute("id") + "-top",
-            anchor: "Top",
-            maxConnections: -1
-        });
-    }
-}
-
 jsPlumb.ready(function () {
     var color = "gray";
 
@@ -59,7 +37,7 @@ jsPlumb.ready(function () {
     // suspend drawing and initialise.
     instance.doWhileSuspended(function () {
         // declare some common values:
-        var windows = createConnectors(color, instance);
+        var windows = createConnectors(instance);
         instance.connect({uuids: ["state1-bottom", "state3-top" ],  detachable: true, reattach: true});
         instance.connect({uuids: ["state1-bottom", "state2-top" ]});
         instance.connect({uuids: ["state2-bottom", "state4-top" ]});
