@@ -1,4 +1,6 @@
 from django.db import models
+import requests
+from eums.settings import CONTACTS_SERVICE_URL
 
 
 class Consignee(models.Model):
@@ -6,7 +8,8 @@ class Consignee(models.Model):
     contact_person_id = models.CharField(max_length=255)
 
     def build_contact(self):
-        return None
+        response = requests.get("%s%s/" % (CONTACTS_SERVICE_URL, self.contact_person_id))
+        return response.json()
 
     class Meta:
         app_label = 'eums'
