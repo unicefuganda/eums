@@ -32,6 +32,12 @@ describe('DistributionPlanController', function () {
             consignee: {name: 'Test'}
         }};
 
+    var stubPlanNoNodeList = {name: 'Plan 2',
+        id: 1,
+        programme: 1,
+        distributionplannode_set: [1, 2],
+        nodeList: []};
+
     var stubPlanThree = {name: 'Plan 3',
         id: 1,
         programme: 1,
@@ -117,6 +123,13 @@ describe('DistributionPlanController', function () {
         scope.showDistributionPlan('1');
         scope.$apply();
         expect(scope.distribution_plan_details).toEqual({nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems});
+    });
+
+    it('should know distribution plan details are empty if there is no node elements', function () {
+        deferredPlan.resolve(stubPlanNoNodeList);
+        scope.showDistributionPlan('1');
+        scope.$apply();
+        expect(scope.distribution_plan_details).toEqual([]);
     });
 
     it('should know call the trustAsHtml function with the right node details', function () {

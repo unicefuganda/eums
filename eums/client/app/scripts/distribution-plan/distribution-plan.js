@@ -35,8 +35,10 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.showDistributionPlan = function (planId) {
             DistributionPlanService.getPlanDetails(planId).then(function (response) {
-                $scope.distribution_plan_details = {'nodeTree': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
-                $scope.renderHtml();
+                if(response.nodeTree) {
+                    $scope.distribution_plan_details = {'nodeTree': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
+                    $scope.renderHtml();
+                }
             });
         };
 
@@ -59,8 +61,11 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             var rootNode = plan.nodeList.filter(function(node) {
                 return node.parent === null;
             })[0];
-            plan.nodeTree = addChildrenDetail(rootNode, plan);
-            delete plan.nodeList;
+
+            if(rootNode) {
+                plan.nodeTree = addChildrenDetail(rootNode, plan);
+                delete plan.nodeList;
+            }
         };
 
         var addChildrenDetail = function(node, plan) {
