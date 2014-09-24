@@ -154,11 +154,12 @@ module.exports = function (grunt) {
                 wait: false
             },
             djangoServer: {
-                cmd: '../../start-server.sh',
+                cmd: './start-server.sh',
                 args: ['eums.settings']
             },
             djangoServerStaging: {
-                cmd: './start-server.sh eums.snap_settings'
+                cmd: './start-server.sh',
+                args: ['eums.snap_settings']
             }
         },
         ngconstant: {
