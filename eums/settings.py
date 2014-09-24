@@ -37,16 +37,6 @@ ROOT_URLCONF = 'eums.urls'
 
 WSGI_APPLICATION = 'eums.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'eums',
-        'USER': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
-
 LANGUAGE_CODE = 'en-gb'
 
 TIME_ZONE = 'Africa/Kampala'
