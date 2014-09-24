@@ -151,11 +151,14 @@ module.exports = function (grunt) {
 
         run: {
             options: {
-                wait: false,
-                cwd: '../..'
+                wait: false
             },
             djangoServer: {
-                cmd: './start-server.sh'
+                cmd: '../../start-server.sh',
+                args: ['eums.settings']
+            },
+            djangoServerStaging: {
+                cmd: './start-server.sh eums.snap_settings'
             }
         },
         ngconstant: {
@@ -234,7 +237,7 @@ module.exports = function (grunt) {
     grunt.registerTask('functional-staging', [
         'build-staging',
         'clean:server',
-        'run:djangoServer',
+        'run:djangoServerStaging',
         'protractor:headless'
     ]);
 
