@@ -7,7 +7,6 @@ def schedule_flows_for(node):
     # return _schedule_flow.apply_async(args=[node], countdown=node.distribution_plan.date + 7)
     _schedule_flow.apply_async(args=[node], countdown=7)
 
-
 @app.task
 def _schedule_flow(node):
     line_item = node.distributionplanlineitem_set.all()[0]
