@@ -13,7 +13,7 @@ class DistributionPlanEndPointTest(APITestCase):
         self.programme = create_programme()
 
     def test_should_create_distribution_plan(self):
-        plan_details = {'programme': self.programme.id}
+        plan_details = {'programme': self.programme.id, 'name': 'Plan 1'}
         create_distribution_plan(self, plan_details)
 
         response = self.client.get(ENDPOINT_URL)

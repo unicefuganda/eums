@@ -15,7 +15,7 @@ USER_ENDPOINT_URL = BACKEND_URL + 'user/'
 def create_distribution_plan(test_case, plan_details=None):
     if not plan_details:
         programme = create_programme()
-        plan_details = {'programme': programme.id}
+        plan_details = {'programme': programme.id, 'name': 'Plan 1'}
     response = test_case.client.post(DISTRIBUTION_PLAN_ENDPOINT_URL, plan_details, format='json')
     test_case.assertEqual(response.status_code, 201)
     return response.data['id']

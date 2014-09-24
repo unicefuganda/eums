@@ -35,7 +35,7 @@ class ConsigneeTest(TestCase):
     def test_should_log_error_if_contact_error_is_encountered_when_fetching_contact_on_build_contact(self):
         pass
 
-    # TODO un-x this. 
+    # TODO un-x this.
     def xtest_should_not_fetch_contact_from_contacts_service_if_contact_was_already_built(self):
         stub = when(requests).get("%s%s/" % (CONTACTS_SERVICE_URL, self.contact_id)).thenReturn(self.fake_response)
         print "*" * 20, stub.__dict__, "*" * 20
