@@ -33,6 +33,16 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'eums',
+        'USER': 'postgres',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
+
 ROOT_URLCONF = 'eums.urls'
 
 WSGI_APPLICATION = 'eums.wsgi.application'
