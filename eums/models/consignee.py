@@ -9,7 +9,8 @@ class Consignee(models.Model):
 
     def build_contact(self):
         response = requests.get("%s%s/" % (CONTACTS_SERVICE_URL, self.contact_person_id))
-        return response.json()
+        self.contact = response.json()
+        return self.contact
 
     class Meta:
         app_label = 'eums'
