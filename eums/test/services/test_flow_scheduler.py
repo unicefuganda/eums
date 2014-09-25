@@ -76,11 +76,7 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory()
         schedule_flows_for(node)
 
-        verify(fake_facade, never).start_delivery_flow(
-            sender=any(str),
-            consignee=any(dict),
-            item_description=any(str),
-        )
+        verify(fake_facade, never).start_delivery_flow()
 
     def tearDown(self):
         fake_facade.invocations = []
