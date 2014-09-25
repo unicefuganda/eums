@@ -4,8 +4,7 @@ from mockito import when, verify
 import requests
 from eums.rapid_pro.rapid_pro_facade import start_delivery_flow
 
-from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID, RAPIDPRO_EXTRAS, DATABASES
-print "*" * 20, "Databases in settings = ", DATABASES, "*" * 20
+from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID, RAPIDPRO_EXTRAS
 from eums.test.helpers.fake_response import FakeResponse
 
 
