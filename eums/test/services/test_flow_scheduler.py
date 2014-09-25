@@ -1,7 +1,7 @@
 from unittest import TestCase
 import datetime
 
-from mockito import mock, verify, when
+from mockito import mock, verify, when, never, any
 
 from eums import celery
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -73,7 +73,14 @@ class FlowSchedulerTest(TestCase):
 
     # TODO Remove this when the line item is moved to the distribution plan
     def test_should_not_schedule_flow_if_node_has_no_line_items(self):
-        pass
+        node = DistributionPlanNodeFactory()
+        schedule_flows_for(node)
+
+        verify(fake_facade, never).start_delivery_flow(
+            sender=any(str),
+            consignee=any(dict),
+            item_description=any(str),
+        )
 
     def tearDown(self):
         fake_facade.invocations = []

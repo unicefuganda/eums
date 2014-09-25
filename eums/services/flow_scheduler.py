@@ -7,7 +7,8 @@ from eums.settings import DELIVERY_STATUS_CHECK_DELAY
 
 
 def schedule_flows_for(node):
-    _schedule_flow.apply_async(args=[node], countdown=__calculate_delay(node))
+    if len(node.distributionplanlineitem_set.all()):
+        _schedule_flow.apply_async(args=[node], countdown=__calculate_delay(node))
 
 
 @app.task
