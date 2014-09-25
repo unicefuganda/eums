@@ -19,13 +19,13 @@ from eums.services.flow_scheduler import schedule_flows_for
 
 
 class FlowSchedulerTest(TestCase):
-    def test_should_schedule_a_flow_for_a_consignee_from_a_plan_setting_sender_as_unicef_if_node_has_no_parent(self):
+    def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         consignee = ConsigneeFactory()
         contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
-        when(consignee).build_contact().thenReturn(contact)
         node = DistributionPlanNodeFactory(consignee=consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node)
 
+        when(consignee).build_contact().thenReturn(contact)
         schedule_flows_for(node)
 
         line_item = node.distributionplanlineitem_set.all()[0]
@@ -35,3 +35,26 @@ class FlowSchedulerTest(TestCase):
             consignee=contact,
             item_description=line_item.item.description,
         )
+
+    def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
+        consignee = ConsigneeFactory()
+        contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
+        sender_org_name = "Dwelling Places"
+        sender_org = ConsigneeFactory(name=sender_org_name)
+        parent_node = DistributionPlanNodeFactory(consignee=sender_org)
+        node = DistributionPlanNodeFactory(consignee=consignee, parent=parent_node)
+        DistributionPlanLineItemFactory(distribution_plan_node=node)
+
+        when(consignee).build_contact().thenReturn(contact)
+        schedule_flows_for(node)
+
+        line_item = node.distributionplanlineitem_set.all()[0]
+
+        verify(fake_facade).start_delivery_flow(
+            sender=sender_org_name,
+            consignee=contact,
+            item_description=line_item.item.description,
+        )
+
+    def tearDown(self):
+        fake_facade.invocations = []

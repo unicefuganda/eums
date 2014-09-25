@@ -21,3 +21,5 @@ def _schedule_flow(node):
 def __get_sender_name(node):
     if not node.parent:
         return "UNICEF"
+    else:
+        return node.parent.consignee.name
