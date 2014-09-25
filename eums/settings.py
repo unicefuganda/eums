@@ -75,3 +75,4 @@ RAPIDPRO_URLS = {
     'FLOW': "%sflows.json?id=%d" % (__RAPIDPRO_URL, RAPIDPRO_FLOW_ID),
     'RUNS': "%sruns.json" % __RAPIDPRO_URL
 }
+RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}

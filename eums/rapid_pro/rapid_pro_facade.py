@@ -1,6 +1,6 @@
 import requests
 
-from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID
+from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID, RAPIDPRO_EXTRAS
 
 
 def start_delivery_flow(*_, **kwargs):
@@ -10,9 +10,9 @@ def start_delivery_flow(*_, **kwargs):
         "flow": RAPIDPRO_FLOW_ID,
         "phone": [consignee['phone']],
         "extra": {
-            "contactName": consignee['first_name'] + consignee['last_name'],
-            "implementingPartner": "Save the children",
-            "product": item_description
+            RAPIDPRO_EXTRAS['CONTACT_NAME']: consignee['first_name'] + consignee['last_name'],
+            RAPIDPRO_EXTRAS['SENDER']: "Save the children",
+            RAPIDPRO_EXTRAS['PRODUCT']: item_description
         }
     }
     requests.post(RAPIDPRO_URLS['RUNS'], data=payload)

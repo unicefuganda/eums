@@ -4,7 +4,7 @@ from mockito import when, verify
 import requests
 from eums.rapid_pro.rapid_pro_facade import start_delivery_flow
 
-from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID
+from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID, RAPIDPRO_EXTRAS
 from eums.test.helpers.fake_response import FakeResponse
 
 
@@ -16,9 +16,9 @@ class RapidProFacadeTest(TestCase):
             "flow": RAPIDPRO_FLOW_ID,
             "phone": [self.contact['phone']],
             "extra": {
-                "contactName": self.contact['first_name'] + self.contact['last_name'],
-                "implementingPartner": "Save the children",
-                "product": self.item_description
+                RAPIDPRO_EXTRAS['CONTACT_NAME']: self.contact['first_name'] + self.contact['last_name'],
+                RAPIDPRO_EXTRAS['SENDER']: "Save the children",
+                RAPIDPRO_EXTRAS['PRODUCT']: self.item_description
             }
         }
         fake_json = [{"run": 1, "phone": self.contact['phone']}]
