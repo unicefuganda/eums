@@ -55,8 +55,6 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
-
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'eums/templates'),)
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
@@ -64,6 +62,9 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_URL = '/static/'
+
+# Number of days after expected delivery date after which messages to consignees are sent out
+DELIVERY_STATUS_CHECK_DELAY = 7
 
 # Contacts service settings
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'

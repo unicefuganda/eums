@@ -4,6 +4,7 @@ from inspect import getargspec
 class MockCelery():
     def __init__(self):
         self.method = None
+        self.invoked_after = None
 
     def task(self, *args, **_):
         self.method = args[0]
@@ -15,6 +16,7 @@ class MockCelery():
         if not len(arg_spec.args):
             self.method()
         else:
+            self.invoked_after = kwargs.get('countdown', None)
             method_args = kwargs.get('args', [])
             keyword_args = kwargs.get('kwargs', {})
             self.method(*method_args, **keyword_args)

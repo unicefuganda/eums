@@ -1,11 +1,13 @@
 from __future__ import absolute_import
+import datetime
+
 from eums.celery import app
 from eums.rapid_pro.rapid_pro_facade import start_delivery_flow
+from eums.settings import DELIVERY_STATUS_CHECK_DELAY
 
 
 def schedule_flows_for(node):
-    # return _schedule_flow.apply_async(args=[node], countdown=node.distribution_plan.date + 7)
-    _schedule_flow.apply_async(args=[node], countdown=7)
+    _schedule_flow.apply_async(args=[node], countdown=__calculate_delay(node))
 
 
 @app.task
@@ -23,3 +25,11 @@ def __get_sender_name(node):
         return "UNICEF"
     else:
         return node.parent.consignee.name
+
+
+def __calculate_delay(node):
+    line_item = node.distributionplanlineitem_set.all()[0]
+    expected_delivery_date = datetime.datetime.combine(line_item.planned_distribution_date,
+                                                       datetime.datetime.min.time())
+    when_to_send_message = expected_delivery_date + datetime.timedelta(days=DELIVERY_STATUS_CHECK_DELAY)
+    return (when_to_send_message - datetime.datetime.now()).total_seconds()
