@@ -19,7 +19,7 @@ from eums.services.flow_scheduler import schedule_flows_for
 
 
 class FlowSchedulerTest(TestCase):
-    def test_should_schedule_a_flow_for_a_consignee_from_a_plan_node_with_one_line_item(self):
+    def test_should_schedule_a_flow_for_a_consignee_from_a_plan_setting_sender_as_unicef_if_node_has_no_parent(self):
         consignee = ConsigneeFactory()
         contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
         when(consignee).build_contact().thenReturn(contact)
@@ -31,6 +31,7 @@ class FlowSchedulerTest(TestCase):
         line_item = node.distributionplanlineitem_set.all()[0]
 
         verify(fake_facade).start_delivery_flow(
+            sender='UNICEF',
             consignee=contact,
             item_description=line_item.item.description,
         )
