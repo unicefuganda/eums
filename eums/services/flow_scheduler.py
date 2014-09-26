@@ -2,19 +2,19 @@ from __future__ import absolute_import
 import datetime
 
 from eums.celery import app
+from eums.models import NodeRun
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from django.conf import settings
 
 
 def schedule_run_for(node):
-    task_id = node.scheduled_message_task_id
-    if task_id:
-        __cancel_flow(task_id)
+    current_run = node.current_node_run()
+    if current_run:
+        __cancel_run(current_run)
 
     if len(node.distributionplanlineitem_set.all()):
         task = _schedule_run.apply_async(args=[node], countdown=__calculate_delay(node))
-        node.scheduled_message_task_id = task.id
-        node.save()
+        NodeRun.objects.create(scheduled_message_task_id=task.id, node=node)
 
 
 @app.task
@@ -42,5 +42,5 @@ def __calculate_delay(node):
     return (when_to_send_message - datetime.datetime.now()).total_seconds()
 
 
-def __cancel_flow(task_id):
-    app.control.revoke(task_id)
+def __cancel_run(run):
+    app.control.revoke(run.scheduled_message_task_id)

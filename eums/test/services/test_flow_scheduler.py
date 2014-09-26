@@ -61,15 +61,15 @@ class FlowSchedulerTest(TestCase):
             item_description=line_item.item.description
         )
 
-    def test_should_set_the_task_id_on_the_node_and_save_after_scheduling_the_flow(self):
+    def test_should_save_a_node_run_with_task_id_after_scheduling_the_flow(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
-        when(node).save().thenReturn(None)
         schedule_run_for(node)
 
-        self.assertEqual(node.scheduled_message_task_id, mock_celery.task_id)
-        verify(node).save()
+        node_run_set = node.noderun_set.all()
+        self.assertEqual(len(node_run_set), 1)
+        self.assertEqual(node_run_set[0].scheduled_message_task_id, mock_celery.task_id)
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
@@ -85,7 +85,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(node)
 
-        task_id = node.scheduled_message_task_id
+        task_id = node.current_node_run().scheduled_message_task_id
         when(celery.app.control).revoke(task_id).thenReturn(None)
 
         schedule_run_for(node)
