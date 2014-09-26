@@ -7,8 +7,14 @@ from django.conf import settings
 
 
 def schedule_flows_for(node):
+    task_id = node.scheduled_message_task_id
+    if task_id:
+        __cancel_flow(task_id)
+
     if len(node.distributionplanlineitem_set.all()):
-        _schedule_flow.apply_async(args=[node], countdown=__calculate_delay(node))
+        task = _schedule_flow.apply_async(args=[node], countdown=__calculate_delay(node))
+        node.scheduled_message_task_id = task.id
+        node.save()
 
 
 @app.task
@@ -34,3 +40,7 @@ def __calculate_delay(node):
                                                        datetime.datetime.min.time())
     when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
     return (when_to_send_message - datetime.datetime.now()).total_seconds()
+
+
+def __cancel_flow(task_id):
+    app.control.revoke(task_id)

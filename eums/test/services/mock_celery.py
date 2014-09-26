@@ -5,6 +5,7 @@ class MockCelery():
     def __init__(self):
         self.method = None
         self.invoked_after = None
+        self.task_id = None
 
     def task(self, *args, **_):
         self.method = args[0]
@@ -20,3 +21,12 @@ class MockCelery():
             method_args = kwargs.get('args', [])
             keyword_args = kwargs.get('kwargs', {})
             self.method(*method_args, **keyword_args)
+
+        task = MockAsyncTask()
+        self.task_id = task.id
+        return task
+
+
+class MockAsyncTask():
+    def __init__(self):
+        self.id = '3ff44672-d7bd-42b2-bf54-b63b9f379546'
