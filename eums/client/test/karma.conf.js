@@ -17,6 +17,10 @@ module.exports = function(config) {
       'test/spec/**/*.js'
     ],
 
+    exclude: [
+      'test/spec/flowchart/*.js'
+    ],
+
     port: 8080,
 
     browsers: [

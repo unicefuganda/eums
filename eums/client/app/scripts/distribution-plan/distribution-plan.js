@@ -1,44 +1,92 @@
 'use strict';
 
-angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, $sce) {
+
+angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'FlowChart'])
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, flowchart) {
+        var chartDataModel = {nodes: [], connections: []};
+
         $scope.contact = {};
         $scope.errorMessage = '';
 
         $scope.distribution_plans = [];
         $scope.distribution_plan_details = [];
 
+
         $scope.initialize = function () {
             DistributionPlanService.fetchPlans().then(function (response) {
-
                 $scope.distribution_plans = response.data;
             });
         };
 
-        $scope.renderHtml = function () {
+        $scope.renderChart = function () {
             var nodeTree = $scope.distribution_plan_details.nodeTree;
-            var htmlToAppend = '<div class="node" id="nodeDetail' + nodeTree.id + '">' + nodeTree.consignee.name + '</div>';
-            htmlToAppend += buildTree(nodeTree);
+            var nodeInformation = {
+                name: nodeTree.consignee.name,
+                id: nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                    {
+                        name: ''
+                    }
+                ] };
+            chartDataModel.nodes.push(nodeInformation);
 
-            $scope.htmlToAppend = $sce.trustAsHtml(htmlToAppend);
+            buildTree(nodeTree, 0, 0);
 
         };
 
-        var buildTree = function(node) {
-            var htmlToAppend = '';
-            node.children.forEach(function(child){
-                htmlToAppend += '<div class="node" id="nodeDetail' + child.id + '">' + child.consignee.name + '</div>';
-                buildTree(child);
+        var buildTree = function (node, x_variable, y_variable) {
+            x_variable += 200;
+
+            node.children.forEach(function (child) {
+                var nodeInformation = {
+                    name: child.consignee.name,
+                    id: child.id,
+                    x: x_variable,
+                    y: y_variable,
+                    inputConnectors: [
+                        {
+                            name: ''
+                        }
+                    ], outputConnectors: [
+                        {
+                            name: ''
+                        }
+                    ] };
+
+                var connectionInformation = {
+                    source: {
+                        nodeID: child.parent,
+                        connectorIndex: 0
+                    },
+
+                    dest: {
+                        nodeID: child.id,
+                        connectorIndex: 0
+                    }
+                };
+
+                chartDataModel.nodes.push(nodeInformation);
+                chartDataModel.connections.push(connectionInformation);
+                buildTree(child, x_variable, y_variable);
+                y_variable += 100;
             });
-            return htmlToAppend;
         };
 
         $scope.showDistributionPlan = function (planId) {
+            chartDataModel = {nodes: [], connections: []};
             DistributionPlanService.getPlanDetails(planId).then(function (response) {
-                if(response.nodeTree) {
+                if (response.nodeTree) {
                     $scope.distribution_plan_details = {'nodeTree': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
-                    $scope.renderHtml();
+                    $scope.renderChart();
+                    $scope.chartViewModel = new flowchart.ChartViewModel(chartDataModel);
                 }
+
             });
         };
 
@@ -57,27 +105,29 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
         };
 
-        var buildNodeTree = function(plan) {
-            var rootNode = plan.nodeList.filter(function(node) {
+        var buildNodeTree = function (plan) {
+            var rootNode = plan.nodeList.filter(function (node) {
                 return node.parent === null;
             })[0];
 
-            if(rootNode) {
+            if (rootNode) {
                 plan.nodeTree = addChildrenDetail(rootNode, plan);
                 delete plan.nodeList;
             }
         };
 
-        var addChildrenDetail = function(node, plan) {
-            node.temporaryChildrenList = [];
-            node.children.forEach(function(childNodeId) {
-                var descendant = findDetailedNode(childNodeId, plan);
-                node.temporaryChildrenList.push(descendant);
-                addChildrenDetail(descendant, plan);
-            });
-            node.children = node.temporaryChildrenList;
-            delete node.temporaryChildrenList;
-            return node;
+        var addChildrenDetail = function (node, plan) {
+            if (node) {
+                node.temporaryChildrenList = [];
+                node.children.forEach(function (childNodeId) {
+                    var descendant = findDetailedNode(childNodeId, plan);
+                    node.temporaryChildrenList.push(descendant);
+                    addChildrenDetail(descendant, plan);
+                });
+                node.children = node.temporaryChildrenList;
+                delete node.temporaryChildrenList;
+                return node;
+            }
         };
 
         var findDetailedNode = function (nodeId, plan) {
@@ -118,5 +168,6 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             }
         };
-    });
+    })
+;
 

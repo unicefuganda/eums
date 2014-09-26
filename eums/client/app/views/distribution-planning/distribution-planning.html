@@ -36,9 +36,11 @@
                 <td>{{plan_detail.remark}}</td>
             </tr>
         </table>
-        <div ng-bind-html="htmlToAppend">
-        </div>
-
+        <flow-chart
+                style="margin: 5px; width: 100%; height: 600px;"
+                chart="chartViewModel"
+                >
+        </flow-chart>
     </div>
 
     <!--<ul ng-controller="DistributionPlanController" ng-init="initialize()">-->

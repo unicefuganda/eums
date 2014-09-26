@@ -88,7 +88,8 @@ module.exports = function (grunt) {
             all: {
                 src: [
                     'Gruntfile.js',
-                    'app/scripts/{,*/}*.js'
+                    'app/scripts/{,*/}*.js',
+                    '!app/scripts/flowchart/*.js'
                 ]
             },
             test: {
@@ -96,7 +97,8 @@ module.exports = function (grunt) {
                     jshintrc: 'test/.jshintrc'
                 },
                 src: [
-                    'test/spec/{,*/}*.js'
+                    'test/spec/{,*/}*.js',
+                    '!test/spec/flowchart/*.js'
                 ]
             }
         },

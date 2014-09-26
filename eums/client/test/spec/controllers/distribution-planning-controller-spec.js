@@ -1,8 +1,8 @@
 describe('DistributionPlanController', function () {
 
     var scope;
-    var location, sce, distPlanEndpointUrl;
-    var mockContactService, mockPlanService;
+    var location, distPlanEndpointUrl;
+    var mockContactService, flowchartService, mockPlanService;
     var deferred, deferredPlan;
 
     var stubResponse = {
@@ -46,8 +46,10 @@ describe('DistributionPlanController', function () {
             id: 1,
             children: [
                 {id: 2,
+                    parent: 1,
                     children: [
                         {id: 4,
+                            parent: 2,
                             children: [],
                             lineItems: [],
                             distribution_plan: 1,
@@ -57,6 +59,7 @@ describe('DistributionPlanController', function () {
                     distribution_plan: 1,
                     consignee: {name: 'Consignee 2'}},
                 {id: 3,
+                    parent: 1,
                     children: [],
                     lineItems: [],
                     distribution_plan: 1,
@@ -76,8 +79,8 @@ describe('DistributionPlanController', function () {
     beforeEach(function () {
         module('DistributionPlan');
         mockContactService = jasmine.createSpyObj('mockContactService', ['addContact']);
+        flowchartService = jasmine.createSpyObj('flowchartService', ['ChartViewModel']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails']);
-        sce = jasmine.createSpyObj('sce', ['trustAsHtml']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -93,7 +96,7 @@ describe('DistributionPlanController', function () {
             $controller('DistributionPlanController',
                 {$scope: scope, ContactService: mockContactService,
                     DistributionPlanService: mockPlanService,
-                    $location: location, $sce: sce});
+                    $location: location, flowchart: flowchartService});
         });
     });
 
@@ -125,6 +128,53 @@ describe('DistributionPlanController', function () {
         expect(scope.distribution_plan_details).toEqual({nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems});
     });
 
+    it('should know chart view model is called when show distribution plan is invoked', function () {
+        var chartDataModel = {nodes: [
+            {
+                name: stubPlanTwo.nodeTree.consignee.name,
+                id: stubPlanTwo.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }
+        ], connections: []};
+        deferredPlan.resolve(stubPlanTwo);
+        scope.showDistributionPlan('1');
+        scope.$apply();
+        expect(flowchartService.ChartViewModel).toHaveBeenCalledWith(chartDataModel);
+    });
+
+    it('should know how to initialise the chart model to be displayed for nodes with no children nodes', function () {
+        var chartDataModel = {nodes: [
+            {
+                name: stubPlanTwo.nodeTree.consignee.name,
+                id: stubPlanTwo.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }
+        ], connections: []};
+        deferredPlan.resolve(stubPlanTwo);
+        flowchartService.ChartViewModel.and.returnValue(chartDataModel);
+        scope.showDistributionPlan('1');
+        scope.$apply();
+        expect(scope.chartViewModel).toEqual(chartDataModel);
+    });
+
     it('should know distribution plan details are empty if there is no node elements', function () {
         deferredPlan.resolve(stubPlanNoNodeList);
         scope.showDistributionPlan('1');
@@ -132,33 +182,106 @@ describe('DistributionPlanController', function () {
         expect(scope.distribution_plan_details).toEqual([]);
     });
 
-    it('should know call the trustAsHtml function with the right node details', function () {
-        var expectedHtml = '<div class="node" id="nodeDetail1">Test</div>';
-        scope.distribution_plan_details = {nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems};
-        scope.renderHtml();
+    it('should know chart model is undefined when no nodes are present for plan', function () {
+        deferredPlan.resolve(stubPlanNoNodeList);
+        scope.showDistributionPlan('1');
         scope.$apply();
-        expect(sce.trustAsHtml).toHaveBeenCalledWith(expectedHtml);
+        expect(scope.chartViewModel).toBeUndefined();
     });
 
-    it('should know how to construct the nodes html to be rendered on the view pages', function () {
-        var expectedHtml = '<div class="node" id="nodeDetail1">Test</div>';
-        sce.trustAsHtml.and.returnValue(expectedHtml);
-        scope.distribution_plan_details = {nodeTree: stubPlanTwo.nodeTree, lineItems: stubPlanTwo.nodeTree.lineItems};
-        scope.renderHtml();
+    it('should know how to build connections given nested children that belong to parent', function () {
+        var chartDataModel = {nodes: [
+            {
+                name: stubPlanThree.nodeTree.consignee.name,
+                id: stubPlanThree.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].id,
+                x: 200,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].children[0].id,
+                x: 400,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }
+        ],
+            connections: [
+                {source: {
+                    nodeID: stubPlanThree.nodeTree.id,
+                    connectorIndex: 0
+                },
+
+                    dest: {
+                        nodeID: stubPlanThree.nodeTree.children[0].id,
+                        connectorIndex: 0
+                    }},
+                {source: {
+                    nodeID: stubPlanThree.nodeTree.children[0].id,
+                    connectorIndex: 0
+                },
+
+                    dest: {
+                        nodeID: stubPlanThree.nodeTree.children[0].children[0].id,
+                        connectorIndex: 0
+                    }},
+                {source: {
+                    nodeID: stubPlanThree.nodeTree.id,
+                    connectorIndex: 0
+                },
+
+                    dest: {
+                        nodeID: stubPlanThree.nodeTree.children[1].id,
+                        connectorIndex: 0
+                    }}
+
+            ]};
+        deferredPlan.resolve(stubPlanThree);
+        scope.showDistributionPlan('1');
         scope.$apply();
-        expect(scope.htmlToAppend).toEqual(expectedHtml);
+        expect(flowchartService.ChartViewModel).toHaveBeenCalledWith(chartDataModel);
     });
 
-    it('should know how to construct the nodes html to be rendered on the view pages when children nodes are present', function () {
-        var expectedHtml = '<div class="node" id="nodeDetail1">Test</div>' +
-            '<div class="node" id="nodeDetail2">Test</div>' +
-            '<div class="node" id="nodeDetail4">Test</div>'+
-            '<div class="node" id="nodeDetail3">Test</div>';
-
-        sce.trustAsHtml.and.returnValue(expectedHtml);
-        scope.distribution_plan_details = {nodeTree: stubPlanThree.nodeTree, lineItems: stubPlanThree.nodeTree.lineItems};
-        scope.renderHtml();
-        scope.$apply();
-        expect(scope.htmlToAppend).toEqual(expectedHtml);
-    });
 });
