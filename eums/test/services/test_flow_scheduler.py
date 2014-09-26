@@ -1,7 +1,7 @@
 from unittest import TestCase
 import datetime
 
-from mockito import mock, verify, when, never, any
+from mockito import mock, verify, when, never
 
 from eums import celery
 from eums.test.factories.consignee_factory import ConsigneeFactory
