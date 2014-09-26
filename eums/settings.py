@@ -70,10 +70,11 @@ DELIVERY_STATUS_CHECK_DELAY = 7
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
+RAPIDPRO_API_TOKEN = os.environ['RAPIDPRO_API_TOKEN']
 RAPIDPRO_URL = 'https://rapidpro.io/api/v1/'
 RAPIDPRO_FLOW_ID = 2436
 RAPIDPRO_URLS = {
-    'FLOW': "%sflows.json?id=%d" % (RAPIDPRO_URL, RAPIDPRO_FLOW_ID),
+    'FLOWS': "%sflows.json" % RAPIDPRO_URL,
     'RUNS': "%sruns.json" % RAPIDPRO_URL
 }
 RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}
