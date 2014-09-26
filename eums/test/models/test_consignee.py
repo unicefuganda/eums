@@ -4,7 +4,7 @@ from mockito import when, verify
 import requests
 
 from eums.models import Consignee
-from eums.settings import CONTACTS_SERVICE_URL
+from django.conf import settings
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.helpers.fake_response import FakeResponse
 
@@ -23,7 +23,7 @@ class ConsigneeTest(TestCase):
                              '_id': contact_id}
         fake_response = FakeResponse(fake_contact_json, 200)
         consignee = ConsigneeFactory(contact_person_id=contact_id)
-        when(requests).get("%s%s/" % (CONTACTS_SERVICE_URL, contact_id)).thenReturn(fake_response)
+        when(requests).get("%s%s/" % (settings.CONTACTS_SERVICE_URL, contact_id)).thenReturn(fake_response)
 
         contact = consignee.build_contact()
 
@@ -39,9 +39,9 @@ class ConsigneeTest(TestCase):
                              '_id': contact_id}
         fake_response = FakeResponse(fake_contact_json, 200)
         consignee = ConsigneeFactory(contact_person_id=contact_id)
-        when(requests).get("%s%s/" % (CONTACTS_SERVICE_URL, contact_id)).thenReturn(fake_response)
+        when(requests).get("%s%s/" % (settings.CONTACTS_SERVICE_URL, contact_id)).thenReturn(fake_response)
 
         consignee.build_contact()
         consignee.build_contact()
 
-        verify(requests, times=1).get("%s%s/" % (CONTACTS_SERVICE_URL, contact_id))
+        verify(requests, times=1).get("%s%s/" % (settings.CONTACTS_SERVICE_URL, contact_id))

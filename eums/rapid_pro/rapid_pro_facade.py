@@ -1,6 +1,6 @@
 import requests
 
-from eums.settings import RAPIDPRO_URLS, RAPIDPRO_FLOW_ID, RAPIDPRO_EXTRAS
+from django.conf import settings
 
 
 def start_delivery_flow(*_, **kwargs):
@@ -8,12 +8,12 @@ def start_delivery_flow(*_, **kwargs):
     item_description = kwargs['item_description']
     sender = kwargs['sender']
     payload = {
-        "flow": RAPIDPRO_FLOW_ID,
+        "flow": settings.RAPIDPRO_FLOW_ID,
         "phone": [consignee['phone']],
         "extra": {
-            RAPIDPRO_EXTRAS['CONTACT_NAME']: consignee['first_name'] + consignee['last_name'],
-            RAPIDPRO_EXTRAS['SENDER']: sender,
-            RAPIDPRO_EXTRAS['PRODUCT']: item_description
+            settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: consignee['first_name'] + consignee['last_name'],
+            settings.RAPIDPRO_EXTRAS['SENDER']: sender,
+            settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
         }
     }
-    requests.post(RAPIDPRO_URLS['RUNS'], data=payload)
+    requests.post(settings.RAPIDPRO_URLS['RUNS'], data=payload)
