@@ -16,4 +16,5 @@ def start_delivery_flow(*_, **kwargs):
             settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
         }
     }
-    requests.post(settings.RAPIDPRO_URLS['RUNS'], data=payload)
+    headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
+    requests.post(settings.RAPIDPRO_URLS['RUNS'], data=payload, headers=headers)

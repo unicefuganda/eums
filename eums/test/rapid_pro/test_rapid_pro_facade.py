@@ -27,5 +27,6 @@ class RapidProFacadeTest(TestCase):
             FakeResponse(fake_json, 201))
 
     def test_should_start_a_flow_run_for_a_contact(self):
+        expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
         start_delivery_flow(consignee=self.contact, item_description=self.item_description, sender=self.sender)
-        verify(requests).post(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload)
+        verify(requests).post(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload, headers=expected_headers)
