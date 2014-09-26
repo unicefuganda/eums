@@ -7,6 +7,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.contact = {};
         $scope.errorMessage = '';
+        $scope.consigneeName = '';
+        $scope.consigneeParent = '';
 
         $scope.distribution_plans = [];
         $scope.distribution_plan_details = [];
@@ -78,6 +80,56 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             });
         };
 
+        $scope.getNextNodeID = function () {
+            var nodes = $scope.chartViewModel.data.nodes;
+            var nodeIDs = [];
+            nodes.forEach(function (node) {
+                nodeIDs.push(node.id);
+            });
+
+            nodeIDs.sort(function (a, b) {
+                return a - b;
+            });
+
+            return nodeIDs[nodeIDs.length - 1] + 1;
+        };
+
+        $scope.addNodeToFlow = function (consigneeName, consigneeParent) {
+            $scope.hide_modal();
+            var parentDetails = {parentNodeId: consigneeParent.id, parentXCoordinate: consigneeParent.x};
+            chartDataModel = $scope.chartViewModel.data;
+
+            var nodeInformation = {
+                name: consigneeName,
+                id: $scope.getNextNodeID(),
+                x: parentDetails.parentXCoordinate + 200,
+                y: 200,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                    {
+                        name: ''
+                    }
+                ] };
+            var connectionInformation = {
+                source: {
+                    nodeID: parentDetails.parentNodeId,
+                    connectorIndex: 0
+                },
+
+                dest: {
+                    nodeID: nodeInformation.id,
+                    connectorIndex: 0
+                }
+            };
+            chartDataModel.nodes.push(nodeInformation);
+            chartDataModel.connections.push(connectionInformation);
+            $scope.chartViewModel = new flowchart.ChartViewModel(chartDataModel);
+            $scope.nodes = chartDataModel.nodes;
+        };
+
         $scope.showDistributionPlan = function (planId) {
             chartDataModel = {nodes: [], connections: []};
             DistributionPlanService.getPlanDetails(planId).then(function (response) {
@@ -85,6 +137,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     $scope.distribution_plan_details = {'nodeTree': response.nodeTree, 'lineItems': response.nodeTree.lineItems};
                     $scope.renderChart();
                     $scope.chartViewModel = new flowchart.ChartViewModel(chartDataModel);
+                    $scope.nodes = chartDataModel.nodes;
                 }
 
             });
@@ -166,6 +219,18 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                         return {error: response};
                     }
                 });
+            }
+        };
+    }).directive('addNodeModal', function () {
+        return{
+            scope: true,
+            link: function (scope) {
+                scope.show_modal = function () {
+                    $('#addNode').modal('show');
+                };
+                scope.hide_modal = function () {
+                    $('#addNode').modal('hide');
+                };
             }
         };
     })

@@ -1,6 +1,7 @@
-<div class="container" mouse-capture>
+<div class="container" mouse-capture add-node-modal>
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
     <!--<ng-include src="'/static/app/views/distribution-planning/partials/contact.html'"></ng-include>-->
+
 
     <div ng-controller="DistributionPlanController" ng-init="initialize()">
         <table id="plan-table" style="width:100%">
@@ -36,6 +37,13 @@
                 <td>{{plan_detail.remark}}</td>
             </tr>
         </table>
+
+        <div class="add-button" ng-click="show_modal()">
+            <span>Add Node</span>
+        </div>
+
+        <ng-include src="'/static/app/views/distribution-planning/partials/modal.html'"></ng-include>
+
         <flow-chart
                 style="margin: 5px; width: 100%; height: 600px;"
                 chart="chartViewModel"

@@ -61,9 +61,11 @@
                     ng-attr-y="{{connector.y()}}"
                     text-anchor="left"
                     alignment-baseline="middle"
+                    ng-bind-html-unsafe="connector.name()"
                     >
                 {{connector.name()}}
             </text>
+
 
             <circle
                     ng-attr-class="{{connector == mouseOverConnector && 'mouseover-connector-circle' || 'connector-circle'}}"

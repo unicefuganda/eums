@@ -90,6 +90,7 @@ describe('DistributionPlanController', function () {
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
 
             scope = $rootScope.$new();
+
             location = $location;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
 
@@ -282,6 +283,426 @@ describe('DistributionPlanController', function () {
         scope.showDistributionPlan('1');
         scope.$apply();
         expect(flowchartService.ChartViewModel).toHaveBeenCalledWith(chartDataModel);
+    });
+
+    it('should get the maximum id in the current chartModel', function () {
+        scope.chartViewModel = {data: {nodes: [
+            {
+                name: stubPlanThree.nodeTree.consignee.name,
+                id: stubPlanThree.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].id,
+                x: 200,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].children[0].id,
+                x: 400,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }
+        ]
+
+        }};
+        expect(scope.getNextNodeID()).toEqual(5);
+    });
+
+    it('should know chart view model is called with the right details given consignee Name', function () {
+        var consigneeName = 'Test Consignee';
+        var originalNodes = [
+            {
+                name: stubPlanThree.nodeTree.consignee.name,
+                id: stubPlanThree.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].id,
+                x: 200,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].children[0].id,
+                x: 400,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }
+        ];
+
+        var expectedNodes = [{
+                name: stubPlanThree.nodeTree.consignee.name,
+                id: stubPlanThree.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                    {
+                        name: ''
+                    }
+                ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].id,
+                x: 200,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].children[0].id,
+                x: 400,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }, {
+                name: consigneeName,
+                id: 5,
+                x: 400,
+                y: 200,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                    {
+                        name: ''
+                    }
+                ] }];
+        var expectedConnections = [
+            {
+                source: {
+                    nodeID: 3,
+                    connectorIndex: 0
+                },
+
+                dest: {
+                    nodeID: 5,
+                    connectorIndex: 0
+                }
+            }
+        ];
+
+        scope.chartViewModel = {data: {nodes: originalNodes,
+            connections: []
+
+        }};
+
+        var consigneeParent = {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] };
+
+
+        scope.hide_modal = function () {
+
+        };
+
+        scope.addNodeToFlow(consigneeName, consigneeParent);
+        expect(flowchartService.ChartViewModel).toHaveBeenCalledWith({nodes: expectedNodes, connections: expectedConnections});
+    });
+
+    it('should know how to add a new node given consignee Name', function () {
+
+
+        var consigneeName = 'Test Consignee';
+        var originalNodes = [
+            {
+                name: stubPlanThree.nodeTree.consignee.name,
+                id: stubPlanThree.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].id,
+                x: 200,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].children[0].id,
+                x: 400,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }
+        ];
+
+        var expectedNodes = [
+            {
+                name: stubPlanThree.nodeTree.consignee.name,
+                id: stubPlanThree.nodeTree.id,
+                x: 0,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                    {
+                        name: ''
+                    }
+                ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].id,
+                x: 200,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
+                id: stubPlanThree.nodeTree.children[0].children[0].id,
+                x: 400,
+                y: 0,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] },
+            {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] }, {
+                name: consigneeName,
+                id: 5,
+                x: 400,
+                y: 200,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                    {
+                        name: ''
+                    }
+                ] }];
+
+        var expectedConnections = [
+            {
+                source: {
+                    nodeID: 16,
+                    connectorIndex: 0
+                },
+
+                dest: {
+                    nodeID: 5,
+                    connectorIndex: 0
+                }
+            }
+        ];
+
+        scope.chartViewModel = {data: {nodes: originalNodes,
+            connections: []
+
+        }};
+
+        scope.hide_modal = function () {
+
+        };
+
+        var expectedScopeData = {nodes: expectedNodes, connections: expectedConnections};
+
+        flowchartService.ChartViewModel.and.returnValue(expectedScopeData);
+
+        var consigneeParent = {
+                name: stubPlanThree.nodeTree.children[1].consignee.name,
+                id: stubPlanThree.nodeTree.children[1].id,
+                x: 200,
+                y: 100,
+                inputConnectors: [
+                    {
+                        name: ''
+                    }
+                ], outputConnectors: [
+                {
+                    name: ''
+                }
+            ] };
+
+        scope.addNodeToFlow(consigneeName, consigneeParent);
+        scope.$apply();
+
+        expect(scope.chartViewModel).toEqual(expectedScopeData);
+        expect(scope.nodes).toEqual(expectedScopeData.nodes);
     });
 
 });
