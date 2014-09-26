@@ -19,9 +19,9 @@ celery.app.task = mock_celery.task
 from eums.rapid_pro import rapid_pro_facade
 
 fake_facade = mock()
-rapid_pro_facade.start_delivery_flow = fake_facade.start_delivery_flow
+rapid_pro_facade.start_delivery_run = fake_facade.start_delivery_flow
 
-from eums.services.flow_scheduler import schedule_flows_for
+from eums.services.flow_scheduler import schedule_run_for
 
 
 class FlowSchedulerTest(TestCase):
@@ -34,7 +34,7 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         line_item = node.distributionplanlineitem_set.all()[0]
 
@@ -51,7 +51,7 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee, parent=parent_node)
         DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         line_item = node.distributionplanlineitem_set.all()[0]
 
@@ -66,7 +66,7 @@ class FlowSchedulerTest(TestCase):
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
         when(node).save().thenReturn(None)
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         self.assertEqual(node.scheduled_message_task_id, mock_celery.task_id)
         verify(node).save()
@@ -75,7 +75,7 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
@@ -83,12 +83,12 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         task_id = node.scheduled_message_task_id
         when(celery.app.control).revoke(task_id).thenReturn(None)
 
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         verify(celery.app.control).revoke(task_id)
         verify(fake_facade, times=2).start_delivery_flow(sender=any(), consignee=any(), item_description=any())
@@ -96,7 +96,7 @@ class FlowSchedulerTest(TestCase):
     # TODO Remove this when the line item is moved to the distribution plan
     def test_should_not_schedule_flow_if_node_has_no_line_items(self):
         node = DistributionPlanNodeFactory()
-        schedule_flows_for(node)
+        schedule_run_for(node)
 
         verify(fake_facade, never).start_delivery_flow()
 

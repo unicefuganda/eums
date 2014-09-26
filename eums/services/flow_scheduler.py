@@ -2,25 +2,25 @@ from __future__ import absolute_import
 import datetime
 
 from eums.celery import app
-from eums.rapid_pro.rapid_pro_facade import start_delivery_flow
+from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from django.conf import settings
 
 
-def schedule_flows_for(node):
+def schedule_run_for(node):
     task_id = node.scheduled_message_task_id
     if task_id:
         __cancel_flow(task_id)
 
     if len(node.distributionplanlineitem_set.all()):
-        task = _schedule_flow.apply_async(args=[node], countdown=__calculate_delay(node))
+        task = _schedule_run.apply_async(args=[node], countdown=__calculate_delay(node))
         node.scheduled_message_task_id = task.id
         node.save()
 
 
 @app.task
-def _schedule_flow(node):
+def _schedule_run(node):
     line_item = node.distributionplanlineitem_set.all()[0]
-    start_delivery_flow(
+    start_delivery_run(
         sender=__get_sender_name(node),
         item_description=line_item.item.description,
         consignee=node.consignee.build_contact()

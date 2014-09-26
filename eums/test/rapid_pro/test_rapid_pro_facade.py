@@ -4,7 +4,7 @@ from mockito import when, verify
 import requests
 from django.conf import settings
 
-from eums.rapid_pro.rapid_pro_facade import start_delivery_flow
+from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.test.helpers.fake_response import FakeResponse
 
 
@@ -28,5 +28,5 @@ class RapidProFacadeTest(TestCase):
 
     def test_should_start_a_flow_run_for_a_contact(self):
         expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
-        start_delivery_flow(consignee=self.contact, item_description=self.item_description, sender=self.sender)
+        start_delivery_run(consignee=self.contact, item_description=self.item_description, sender=self.sender)
         verify(requests).post(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload, headers=expected_headers)

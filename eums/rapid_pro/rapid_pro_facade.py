@@ -3,7 +3,7 @@ import requests
 from django.conf import settings
 
 
-def start_delivery_flow(*_, **kwargs):
+def start_delivery_run(*_, **kwargs):
     consignee = kwargs['consignee']
     item_description = kwargs['item_description']
     sender = kwargs['sender']
