@@ -78,4 +78,6 @@ RAPIDPRO_URLS = {
     'RUNS': "%sruns.json" % RAPIDPRO_URL
 }
 RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}
+
+# WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
 RAPIDPRO_LIVE = False
