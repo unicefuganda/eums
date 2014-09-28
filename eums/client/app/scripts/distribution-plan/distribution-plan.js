@@ -2,13 +2,15 @@
 
 
 angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'FlowChart'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, flowchart) {
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, DistributionPlanNodeService, flowchart) {
         var chartDataModel = {nodes: [], connections: []};
 
         $scope.contact = {};
         $scope.errorMessage = '';
+        $scope.nodeErrorMessage = false;
         $scope.consigneeName = '';
         $scope.consigneeParent = '';
+        $scope.planId = '';
 
         $scope.distribution_plans = [];
         $scope.distribution_plan_details = [];
@@ -95,42 +97,58 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.addNodeToFlow = function (consigneeName, consigneeParent) {
-            $scope.hide_modal();
-            var parentDetails = {parentNodeId: consigneeParent.id, parentXCoordinate: consigneeParent.x};
-            chartDataModel = $scope.chartViewModel.data;
+            DistributionPlanNodeService.createNode({'consignee': '1',
+                'parent': consigneeParent.id,
+                'distribution_plan': $scope.planId}).then(function (response) {
+                if (response.status === undefined) {
+                    $scope.hide_modal();
+                    var parentDetails = {parentNodeId: consigneeParent.id, parentXCoordinate: consigneeParent.x};
+                    chartDataModel = $scope.chartViewModel.data;
 
-            var nodeInformation = {
-                name: consigneeName,
-                id: $scope.getNextNodeID(),
-                x: parentDetails.parentXCoordinate + 200,
-                y: 200,
-                inputConnectors: [
-                    {
-                        name: ''
-                    }
-                ], outputConnectors: [
-                    {
-                        name: ''
-                    }
-                ] };
-            var connectionInformation = {
-                source: {
-                    nodeID: parentDetails.parentNodeId,
-                    connectorIndex: 0
-                },
+                    var nodeInformation = {
+                        name: consigneeName,
+                        id: $scope.getNextNodeID(),
+                        x: parentDetails.parentXCoordinate + 200,
+                        y: 200,
+                        inputConnectors: [
+                            {
+                                name: ''
+                            }
+                        ], outputConnectors: [
+                            {
+                                name: ''
+                            }
+                        ] };
+                    var connectionInformation = {
+                        source: {
+                            nodeID: parentDetails.parentNodeId,
+                            connectorIndex: 0
+                        },
 
-                dest: {
-                    nodeID: nodeInformation.id,
-                    connectorIndex: 0
+                        dest: {
+                            nodeID: nodeInformation.id,
+                            connectorIndex: 0
+                        }
+                    };
+                    chartDataModel.nodes.push(nodeInformation);
+                    chartDataModel.connections.push(connectionInformation);
+                    $scope.chartViewModel = new flowchart.ChartViewModel(chartDataModel);
+                    $scope.nodes = chartDataModel.nodes;
                 }
-            };
-            chartDataModel.nodes.push(nodeInformation);
-            chartDataModel.connections.push(connectionInformation);
-            $scope.chartViewModel = new flowchart.ChartViewModel(chartDataModel);
-            $scope.nodes = chartDataModel.nodes;
+                else {
+                    $scope.nodeErrorMessage = true;
+                }
+
+            }, function (error) {
+                $scope.nodeErrorMessage = true;
+                $scope.customErrorMessage = error.data.detail + ' ';
+
+            });
         };
 
         $scope.showDistributionPlan = function (planId) {
+            $scope.planId = planId;
+
             chartDataModel = {nodes: [], connections: []};
             DistributionPlanService.getPlanDetails(planId).then(function (response) {
                 if (response.nodeTree) {
