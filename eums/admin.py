@@ -1,9 +1,8 @@
 from django.contrib import admin
 
-from eums.models import SupplyPlan, DistributionPlan, Programme, DistributionPlanNode, DistributionPlanLineItem, Item, \
+from eums.models import DistributionPlan, Programme, DistributionPlanNode, DistributionPlanLineItem, Item, \
     ItemUnit, Consignee, NodeRun
 
-admin.site.register(SupplyPlan)
 admin.site.register(DistributionPlan)
 admin.site.register(Programme)
 admin.site.register(Item)

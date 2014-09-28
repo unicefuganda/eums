@@ -1,3 +1,4 @@
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -60,7 +61,6 @@ TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'eums/templates'),)
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATIC_URL = '/static/'
 
 # Number of days after expected delivery date after which messages to consignees are sent out
@@ -78,3 +78,4 @@ RAPIDPRO_URLS = {
     'RUNS': "%sruns.json" % RAPIDPRO_URL
 }
 RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}
+RAPIDPRO_LIVE = False

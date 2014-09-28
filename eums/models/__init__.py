@@ -1,4 +1,3 @@
-from eums.models.supply_plan import SupplyPlan
 from eums.models.distribution_plan import DistributionPlan
 from eums.models.consignee import Consignee
 from eums.models.item_unit import ItemUnit
@@ -10,13 +9,12 @@ from eums.models.node_run import NodeRun
 
 
 __all__ = [
-    'SupplyPlan',
     'DistributionPlan',
     'Consignee',
     'DistributionPlanLineItem',
     'Item',
     'ItemUnit',
     'Programme',
-    'DistributionPlanNode',
-    'NodeRun'
+    'NodeRun',
+    'DistributionPlanNode'
 ]
