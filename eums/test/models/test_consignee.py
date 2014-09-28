@@ -2,9 +2,9 @@ from unittest import TestCase
 
 from mockito import when, verify
 import requests
+from django.conf import settings
 
 from eums.models import Consignee
-from django.conf import settings
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.helpers.fake_response import FakeResponse
 

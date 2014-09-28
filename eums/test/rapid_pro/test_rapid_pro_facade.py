@@ -3,8 +3,8 @@ from unittest import TestCase
 from mockito import when, verify, any
 import requests
 from django.conf import settings
-from eums.rapid_pro import fake_rapid_pro
 
+from eums.rapid_pro import fake_rapid_pro
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.test.helpers.fake_response import FakeResponse
 

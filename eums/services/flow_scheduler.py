@@ -1,10 +1,11 @@
 from __future__ import absolute_import
 import datetime
 
+from django.conf import settings
+
 from eums.celery import app
 from eums.models import NodeRun
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
-from django.conf import settings
 
 
 def schedule_run_for(node):

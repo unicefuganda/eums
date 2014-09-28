@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from eums.models import DistributionPlanNode, NodeRun
+from eums.models import DistributionPlanNode
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
 

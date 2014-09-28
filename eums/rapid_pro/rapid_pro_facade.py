@@ -1,6 +1,6 @@
 import requests
-
 from django.conf import settings
+
 from eums.rapid_pro import fake_rapid_pro
 
 
