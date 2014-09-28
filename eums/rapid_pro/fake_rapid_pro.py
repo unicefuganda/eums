@@ -1,11 +1,14 @@
 class RunsEndpoint():
     def __init__(self):
-        pass
+        self.last_run_id = 0
 
-    @staticmethod
-    def post(data=None):
+    def post(self, data=None):
         phone = data.get('phone', '+256 772 123456')
-        return [{"run": 1, "phone": phone}]
+        self.last_run_id += 1
+        return [{"run": self.last_run_id, "phone": phone}]
+
+    def clear(self):
+        self.last_run_id = 0
 
 
 runs = RunsEndpoint()
