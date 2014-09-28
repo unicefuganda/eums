@@ -6,7 +6,7 @@ from django.conf import settings
 
 from eums.models import Consignee
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.helpers.fake_response import FakeResponse
+from eums.rapid_pro.fake_response import FakeResponse
 
 
 class ConsigneeTest(TestCase):

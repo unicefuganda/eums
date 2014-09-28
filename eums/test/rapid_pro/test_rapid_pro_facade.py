@@ -6,7 +6,7 @@ from django.conf import settings
 
 from eums.rapid_pro import fake_rapid_pro
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
-from eums.test.helpers.fake_response import FakeResponse
+from eums.rapid_pro.fake_response import FakeResponse
 
 
 contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
