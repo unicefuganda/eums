@@ -29,4 +29,6 @@ class RapidProFacadeTest(TestCase):
     def test_should_start_a_flow_run_for_a_contact(self):
         expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
         start_delivery_run(consignee=self.contact, item_description=self.item_description, sender=self.sender)
+        print '*' * 20, 'EXPECTED HEADER', expected_headers, '*' * 20
         verify(requests).post(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload, headers=expected_headers)
+        print '*' * 20, 'URL', settings.RAPIDPRO_URLS['RUNS'], '*' * 20
