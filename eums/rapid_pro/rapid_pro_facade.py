@@ -17,4 +17,6 @@ def start_delivery_run(*_, **kwargs):
         }
     }
     headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
+    print '*' * 20, 'EXPECTED HEADER', headers, '*' * 20
+    print '*' * 20, 'URLS', settings.RAPIDPRO_URLS['RUNS'], '*' * 20
     requests.post(settings.RAPIDPRO_URLS['RUNS'], data=payload, headers=headers)
