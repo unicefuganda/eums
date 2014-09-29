@@ -1111,66 +1111,69 @@ describe('DistributionPlanController', function () {
         expect(scope.customErrorMessage).toEqual(response.data.detail + ' ');
     });
 
+    it('should have an error when there is an error status text with no data detail when posting the data and set the custom error message', function () {
+
+        var response = {status: 403, statusText: 'Forbidden Request',  data: {}};
+        deferredPlan.reject(response);
+        scope.addNodeToFlow('2', '1');
+        scope.$apply();
+
+        expect(scope.nodeErrorMessage).toBeTruthy();
+        expect(scope.customErrorMessage).toEqual(response.statusText + '. ');
+    });
+
 });
 
-//describe('Distribution Directive: ', function () {
-//    var element, scope;
-//
-//    beforeEach(module('DistributionPlan'));
-//
-//    beforeEach(inject(function ($rootScope) {
-//        scope = $rootScope.$new();
-//        scope.nodes = [
-//            {name: 'fakeNode1'},
-//            {name: 'fakeNode2'},
-//            {name: 'fakeNode3'}
-//        ];
-//
-//        scope.value = false;
-//        scope.hide_value = false;
-//
-//        scope.show_modal = function () {
-//            scope.value = true;
-//        };
-//        scope.hide_modal = function () {
-//            scope.hide_value = true;
-//        };
-//    }));
-//
-//    function compileDirective(fakeTemplate) {
-//        if (!fakeTemplate) {
-//            fakeTemplate = '<div addNodeModal ng-model="nodes"></div></form>';
-//        }
-//        fakeTemplate = '<form name="form">' + fakeTemplate + '</fakeTemplate>';
-//        inject(function ($compile) {
-//            var form = $compile(fakeTemplate)(scope);
-//            element = form.find('div');
-//        });
-//
-//        scope.$digest();
-//    }
-//
-//    describe('initialisation', function () {
-//        beforeEach(function () {
-//            compileDirective();
-//        });
-//
-//        it('should produce a div', function () {
-//            expect(element.find('button').length).toEqual(0);
-//            expect(element.length).toEqual(1);
-//        });
-//        it('should check validity on init', function () {
-//            expect(scope.form.$valid).toBeTruthy();
-//        });
-//        it('should have the show modal defined', function () {
-//            spyOn(scope, 'show_modal').andCallThrough();
-//            expect(scope.value).toBeTruthy();
-//        });
-//        it('should have the hide modal defined', function () {
-//            expect(scope.hide_modal()).toBeDefined();
-//        });
-//
-//    });
-//
-//
-//});
+describe('Distribution Directive: ', function () {
+    var element, scope;
+
+    beforeEach(module('DistributionPlan'));
+
+    beforeEach(inject(function ($rootScope) {
+        scope = $rootScope.$new();
+        scope.nodes = [
+            {name: 'fakeNode1'},
+            {name: 'fakeNode2'},
+            {name: 'fakeNode3'}
+        ];
+
+        scope.value = false;
+        scope.hide_value = false;
+
+        scope.show_modal = function () {
+            scope.value = true;
+        };
+        scope.hide_modal = function () {
+            scope.hide_value = true;
+        };
+    }));
+
+    function compileDirective(fakeTemplate) {
+        if (!fakeTemplate) {
+            fakeTemplate = '<div addNodeModal ng-model="nodes"></div></form>';
+        }
+        fakeTemplate = '<form name="form">' + fakeTemplate + '</fakeTemplate>';
+        inject(function ($compile) {
+            var form = $compile(fakeTemplate)(scope);
+            element = form.find('div');
+        });
+
+        scope.$digest();
+    }
+
+    describe('initialisation', function () {
+        beforeEach(function () {
+            compileDirective();
+        });
+
+        it('should produce a div', function () {
+            expect(element.find('button').length).toEqual(0);
+            expect(element.length).toEqual(1);
+        });
+        it('should check validity on init', function () {
+            expect(scope.form.$valid).toBeTruthy();
+        });
+    });
+
+
+});

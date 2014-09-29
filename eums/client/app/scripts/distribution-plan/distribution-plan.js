@@ -141,7 +141,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
             }, function (error) {
                 $scope.nodeErrorMessage = true;
-                $scope.customErrorMessage = error.data.detail + ' ';
+                $scope.customErrorMessage = (error.data.detail||(error.statusText + '.')) + ' ';
 
             });
         };

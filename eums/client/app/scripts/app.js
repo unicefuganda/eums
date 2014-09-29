@@ -2,7 +2,7 @@
 
 angular
     .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NavigationTabs', 'ngSanitize', 'flowChart'])
-    .config(function($routeProvider) {
+    .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
                 templateUrl: '/static/app/views/home.html',
