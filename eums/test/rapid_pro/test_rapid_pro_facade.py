@@ -1,10 +1,14 @@
 from unittest import TestCase
 
-from mockito import when, verify, any
+from mockito import when, verify, any, mock
 import requests
 from django.conf import settings
 
 from eums.rapid_pro import fake_rapid_pro
+mock_runs_endpoint = mock()
+fake_rapid_pro.runs = mock_runs_endpoint
+
+
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.rapid_pro.fake_response import FakeResponse
 
@@ -41,18 +45,18 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
 
     def tearDown(self):
         settings.RAPIDPRO_LIVE = self.original_rapid_pro_live_setting
-        
+
 
 class RapidProFacadeTestWithRapidProNotLive(TestCase):
     def setUp(self):
         self.original_rapid_pro_live_setting = settings.RAPIDPRO_LIVE
         settings.RAPIDPRO_LIVE = False
-        when(fake_rapid_pro.runs).post(data=any()).thenReturn(None)
-    
+        when(mock_runs_endpoint).post(data=any()).thenReturn(None)
+
     def test_should_post_to_fake_rapid_pro_when_starting_a_run(self):
         print "*" * 20, "[In test not live] Rapid pro live = ", settings.RAPIDPRO_LIVE, "*" * 20
         start_delivery_run(consignee=contact, item_description=item_description, sender=sender)
-        verify(fake_rapid_pro.runs).post(data=any())
-    
+        verify(mock_runs_endpoint).post(data=any())
+
     def tearDown(self):
         settings.RAPIDPRO_LIVE = self.original_rapid_pro_live_setting
