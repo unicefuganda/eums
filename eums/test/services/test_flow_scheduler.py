@@ -4,6 +4,7 @@ import datetime
 from mockito import mock, verify, when, never, any
 
 from eums import celery
+from eums.models import DistributionPlanNode
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -12,7 +13,6 @@ from eums.test.services.mock_celery import MockCelery
 
 
 datetime.datetime = FakeDatetime
-
 mock_celery = MockCelery()
 celery.app.task = mock_celery.task
 
@@ -28,11 +28,13 @@ class FlowSchedulerTest(TestCase):
     def setUp(self):
         self.consignee = ConsigneeFactory()
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
-        when(self.consignee).build_contact().thenReturn(self.contact)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node)
+
+        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(node.consignee).build_contact().thenReturn(self.contact)
 
         schedule_run_for(node)
 
@@ -51,6 +53,9 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee, parent=parent_node)
         DistributionPlanLineItemFactory(distribution_plan_node=node)
 
+        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(node.consignee).build_contact().thenReturn(self.contact)
+
         schedule_run_for(node)
 
         line_item = node.distributionplanlineitem_set.all()[0]
@@ -65,6 +70,9 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
+        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(node.consignee).build_contact().thenReturn(self.contact)
+
         schedule_run_for(node)
 
         node_run_set = node.noderun_set.all()
@@ -75,6 +83,9 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
+        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(node.consignee).build_contact().thenReturn(self.contact)
+
         schedule_run_for(node)
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
@@ -82,6 +93,9 @@ class FlowSchedulerTest(TestCase):
     def test_should_cancel_scheduled_flow_for_a_consignee_before_scheduling_another_one_for_the_same_node(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
+
+        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(node.consignee).build_contact().thenReturn(self.contact)
 
         schedule_run_for(node)
 

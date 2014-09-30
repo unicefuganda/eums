@@ -4,7 +4,7 @@ import datetime
 from django.conf import settings
 
 from eums.celery import app
-from eums.models import NodeRun
+from eums.models import NodeRun, DistributionPlanNode
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
 
@@ -14,12 +14,13 @@ def schedule_run_for(node):
         __cancel_run(current_run)
 
     if len(node.distributionplanlineitem_set.all()):
-        task = _schedule_run.apply_async(args=[node], countdown=__calculate_delay(node))
+        task = _schedule_run.apply_async(args=[node.id], countdown=__calculate_delay(node))
         NodeRun.objects.create(scheduled_message_task_id=task.id, node=node)
 
 
 @app.task
-def _schedule_run(node):
+def _schedule_run(node_id):
+    node = DistributionPlanNode.objects.get(id=node_id)
     line_item = node.distributionplanlineitem_set.all()[0]
     start_delivery_run(
         sender=__get_sender_name(node),
