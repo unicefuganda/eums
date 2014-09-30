@@ -525,8 +525,10 @@ describe('DistributionPlanController', function () {
 
         };
 
+        scope.node = {consigneeName: consigneeName, consigneeParent: consigneeParent};
+
         deferredPlan.resolve({data: []});
-        scope.addNodeToFlow(consigneeName, consigneeParent);
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(flowchartService.ChartViewModel).toHaveBeenCalledWith({nodes: expectedNodes, connections: expectedConnections});
@@ -710,8 +712,10 @@ describe('DistributionPlanController', function () {
                 }
             ] };
 
+        scope.node = {consigneeName: consigneeName, consigneeParent: consigneeParent};
+
         deferredPlan.resolve({data: []});
-        scope.addNodeToFlow(consigneeName, consigneeParent);
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(scope.chartViewModel).toEqual(expectedScopeData);
@@ -897,10 +901,11 @@ describe('DistributionPlanController', function () {
                 }
             ] };
 
+        scope.node = {consigneeName: consigneeName, consigneeParent: consigneeParent};
         deferredPlan.resolve(stubPlanTwo);
 
         var expectedPostData = {'consignee': '1', 'parent': consigneeParent.id, 'distribution_plan': scope.planId};
-        scope.addNodeToFlow(consigneeName, consigneeParent);
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(mockPlanNodeService.createNode).toHaveBeenCalledWith(expectedPostData);
@@ -1085,16 +1090,20 @@ describe('DistributionPlanController', function () {
                 }
             ] };
 
+        scope.node = {consigneeName: consigneeName, consigneeParent: consigneeParent};
+
         deferredPlan.resolve({data: {}});
-        scope.addNodeToFlow(consigneeName, consigneeParent);
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(scope.nodeErrorMessage).toBeFalsy();
     });
 
     it('should have an error when the response to create node is unsuccessful with error status', function () {
+        scope.node = {consigneeName: '', consigneeParent: []};
         deferredPlan.resolve({status: 304, data: {}});
-        scope.addNodeToFlow('', []);
+
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(scope.nodeErrorMessage).toBeTruthy();
@@ -1102,9 +1111,10 @@ describe('DistributionPlanController', function () {
 
     it('should have an error when there is an error when posting the data and set the custom error message', function () {
 
+        scope.node = {consigneeName: '2', consigneeParent: '1'};
         var response = {status: 404, data: {detail: 'Invalid data supplied.'}};
         deferredPlan.reject(response);
-        scope.addNodeToFlow('2', '1');
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(scope.nodeErrorMessage).toBeTruthy();
@@ -1112,10 +1122,10 @@ describe('DistributionPlanController', function () {
     });
 
     it('should have an error when there is an error status text with no data detail when posting the data and set the custom error message', function () {
-
-        var response = {status: 403, statusText: 'Forbidden Request',  data: {}};
+        scope.node = {consigneeName: '2', consigneeParent: '1'};
+        var response = {status: 403, statusText: 'Forbidden Request', data: {}};
         deferredPlan.reject(response);
-        scope.addNodeToFlow('2', '1');
+        scope.addNodeToFlow();
         scope.$apply();
 
         expect(scope.nodeErrorMessage).toBeTruthy();

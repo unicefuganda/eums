@@ -8,8 +8,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.contact = {};
         $scope.errorMessage = '';
         $scope.nodeErrorMessage = false;
-        $scope.consigneeName = '';
-        $scope.consigneeParent = '';
+        $scope.node = {};
         $scope.planId = '';
 
         $scope.distribution_plans = [];
@@ -96,17 +95,17 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             return nodeIDs[nodeIDs.length - 1] + 1;
         };
 
-        $scope.addNodeToFlow = function (consigneeName, consigneeParent) {
+        $scope.addNodeToFlow = function () {
             DistributionPlanNodeService.createNode({'consignee': '1',
-                'parent': consigneeParent.id,
+                'parent': $scope.node.consigneeParent.id,
                 'distribution_plan': $scope.planId}).then(function (response) {
                 if (response.status === undefined) {
                     $scope.hide_modal();
-                    var parentDetails = {parentNodeId: consigneeParent.id, parentXCoordinate: consigneeParent.x};
+                    var parentDetails = {parentNodeId: $scope.node.consigneeParent.id, parentXCoordinate: $scope.node.consigneeParent.x};
                     chartDataModel = $scope.chartViewModel.data;
 
                     var nodeInformation = {
-                        name: consigneeName,
+                        name: $scope.node.consigneeName,
                         id: $scope.getNextNodeID(),
                         x: parentDetails.parentXCoordinate + 200,
                         y: 210,
@@ -141,7 +140,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
             }, function (error) {
                 $scope.nodeErrorMessage = true;
-                $scope.customErrorMessage = (error.data.detail||(error.statusText + '.')) + ' ';
+                $scope.customErrorMessage = (error.data.detail || (error.statusText + '.')) + ' ';
 
             });
         };
@@ -251,6 +250,5 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 };
             }
         };
-    })
-;
+    });
 
