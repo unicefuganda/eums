@@ -138,8 +138,8 @@ describe('DistributionPlanController', function () {
             {
                 name: stubPlanTwo.nodeTree.consignee.name,
                 id: stubPlanTwo.nodeTree.id,
-                x: 0,
-                y: 0,
+                x: 10,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -199,8 +199,8 @@ describe('DistributionPlanController', function () {
             {
                 name: stubPlanThree.nodeTree.consignee.name,
                 id: stubPlanThree.nodeTree.id,
-                x: 0,
-                y: 0,
+                x: 10,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -214,7 +214,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].id,
                 x: 200,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -228,7 +228,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].children[0].id,
                 x: 400,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -242,7 +242,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[1].consignee.name,
                 id: stubPlanThree.nodeTree.children[1].id,
                 x: 200,
-                y: 100,
+                y: 110,
                 inputConnectors: [
                     {
                         name: ''
@@ -294,8 +294,8 @@ describe('DistributionPlanController', function () {
             {
                 name: stubPlanThree.nodeTree.consignee.name,
                 id: stubPlanThree.nodeTree.id,
-                x: 0,
-                y: 0,
+                x: 10,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -309,7 +309,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].id,
                 x: 200,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -323,7 +323,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].children[0].id,
                 x: 400,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -359,8 +359,8 @@ describe('DistributionPlanController', function () {
             {
                 name: stubPlanThree.nodeTree.consignee.name,
                 id: stubPlanThree.nodeTree.id,
-                x: 0,
-                y: 0,
+                x: 10,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -374,7 +374,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].id,
                 x: 200,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -388,7 +388,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].children[0].id,
                 x: 400,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -402,7 +402,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[1].consignee.name,
                 id: stubPlanThree.nodeTree.children[1].id,
                 x: 200,
-                y: 100,
+                y: 110,
                 inputConnectors: [
                     {
                         name: ''
@@ -418,8 +418,8 @@ describe('DistributionPlanController', function () {
             {
                 name: stubPlanThree.nodeTree.consignee.name,
                 id: stubPlanThree.nodeTree.id,
-                x: 0,
-                y: 0,
+                x: 10,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -433,7 +433,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].id,
                 x: 200,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -447,7 +447,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[0].children[0].consignee.name,
                 id: stubPlanThree.nodeTree.children[0].children[0].id,
                 x: 400,
-                y: 0,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -461,7 +461,7 @@ describe('DistributionPlanController', function () {
                 name: stubPlanThree.nodeTree.children[1].consignee.name,
                 id: stubPlanThree.nodeTree.children[1].id,
                 x: 200,
-                y: 100,
+                y: 110,
                 inputConnectors: [
                     {
                         name: ''
@@ -475,7 +475,7 @@ describe('DistributionPlanController', function () {
                 name: consigneeName,
                 id: 5,
                 x: 400,
-                y: 200,
+                y: 210,
                 inputConnectors: [
                     {
                         name: ''
@@ -509,7 +509,7 @@ describe('DistributionPlanController', function () {
             name: stubPlanThree.nodeTree.children[1].consignee.name,
             id: stubPlanThree.nodeTree.children[1].id,
             x: 200,
-            y: 100,
+            y: 110,
             inputConnectors: [
                 {
                     name: ''
@@ -656,7 +656,7 @@ describe('DistributionPlanController', function () {
                 name: consigneeName,
                 id: 5,
                 x: 400,
-                y: 200,
+                y: 210,
                 inputConnectors: [
                     {
                         name: ''
@@ -699,7 +699,7 @@ describe('DistributionPlanController', function () {
             name: stubPlanThree.nodeTree.children[1].consignee.name,
             id: stubPlanThree.nodeTree.children[1].id,
             x: 200,
-            y: 100,
+            y: 110,
             inputConnectors: [
                 {
                     name: ''

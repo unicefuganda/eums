@@ -27,8 +27,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             var nodeInformation = {
                 name: nodeTree.consignee.name,
                 id: nodeTree.id,
-                x: 0,
-                y: 0,
+                x: 10,
+                y: 10,
                 inputConnectors: [
                     {
                         name: ''
@@ -40,7 +40,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 ] };
             chartDataModel.nodes.push(nodeInformation);
 
-            buildTree(nodeTree, 0, 0);
+            buildTree(nodeTree, 0, 10);
 
         };
 
@@ -109,7 +109,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                         name: consigneeName,
                         id: $scope.getNextNodeID(),
                         x: parentDetails.parentXCoordinate + 200,
-                        y: 200,
+                        y: 210,
                         inputConnectors: [
                             {
                                 name: ''

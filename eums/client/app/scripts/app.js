@@ -2,7 +2,7 @@
 
 angular
     .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NavigationTabs', 'ngSanitize', 'flowChart'])
-    .config(function ($routeProvider) {
+    .config(function ($routeProvider, $httpProvider) {
         $routeProvider
             .when('/', {
                 templateUrl: '/static/app/views/home.html',
@@ -15,4 +15,7 @@ angular
             .otherwise({
                 redirectTo: '/'
             });
+
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     });
