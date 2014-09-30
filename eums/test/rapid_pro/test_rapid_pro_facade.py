@@ -38,7 +38,6 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
             FakeResponse(fake_json, 201))
 
     def test_should_start_a_flow_run_for_a_contact(self):
-        print "*" * 20, "[In test with live] Rapid pro live = ", settings.RAPIDPRO_LIVE, "*" * 20
         expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
         start_delivery_run(consignee=contact, item_description=item_description, sender=sender)
         verify(requests).post(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload, headers=expected_headers)
@@ -54,7 +53,6 @@ class RapidProFacadeTestWithRapidProNotLive(TestCase):
         when(mock_runs_endpoint).post(data=any()).thenReturn(None)
 
     def test_should_post_to_fake_rapid_pro_when_starting_a_run(self):
-        print "*" * 20, "[In test not live] Rapid pro live = ", settings.RAPIDPRO_LIVE, "*" * 20
         start_delivery_run(consignee=contact, item_description=item_description, sender=sender)
         verify(mock_runs_endpoint).post(data=any())
 
