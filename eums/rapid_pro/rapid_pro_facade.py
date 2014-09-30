@@ -1,7 +1,6 @@
 import requests
 from django.conf import settings
-
-from eums.rapid_pro import fake_rapid_pro
+from eums.rapid_pro.fake_endpoints import runs
 
 
 def start_delivery_run(*_, **kwargs):
@@ -22,4 +21,4 @@ def start_delivery_run(*_, **kwargs):
     if settings.RAPIDPRO_LIVE:
         requests.post(settings.RAPIDPRO_URLS['RUNS'], data=payload, headers=headers)
     else:
-        fake_rapid_pro.runs.post(data=payload)
+        runs.post(data=payload)

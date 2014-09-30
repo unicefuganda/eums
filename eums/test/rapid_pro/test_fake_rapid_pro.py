@@ -1,6 +1,5 @@
 from unittest import TestCase
-
-from eums.rapid_pro.fake_rapid_pro import RunsEndpoint, runs
+from eums.rapid_pro.fake_endpoints import runs
 
 
 class FakeRapidProdRunsEndpointTest(TestCase):

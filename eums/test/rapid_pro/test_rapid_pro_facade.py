@@ -1,14 +1,10 @@
 from unittest import TestCase
 
-from mockito import when, verify, any, mock
+from mockito import when, verify, any
 import requests
 from django.conf import settings
 
-from eums.rapid_pro import fake_rapid_pro
-mock_runs_endpoint = mock()
-fake_rapid_pro.runs = mock_runs_endpoint
-
-
+from eums.rapid_pro.fake_endpoints import runs
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.rapid_pro.fake_response import FakeResponse
 
@@ -32,10 +28,10 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
                 settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
             }
         }
+        runs_url = settings.RAPIDPRO_URLS['RUNS']
         fake_json = [{"run": 1, "phone": contact['phone']}]
 
-        when(requests).post(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload).thenReturn(
-            FakeResponse(fake_json, 201))
+        when(requests).post(runs_url, data=self.expected_payload).thenReturn(FakeResponse(fake_json, 201))
 
     def test_should_start_a_flow_run_for_a_contact(self):
         expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
@@ -50,11 +46,11 @@ class RapidProFacadeTestWithRapidProNotLive(TestCase):
     def setUp(self):
         self.original_rapid_pro_live_setting = settings.RAPIDPRO_LIVE
         settings.RAPIDPRO_LIVE = False
-        when(mock_runs_endpoint).post(data=any()).thenReturn(None)
+        when(runs).post(data=any()).thenReturn(None)
 
     def test_should_post_to_fake_rapid_pro_when_starting_a_run(self):
         start_delivery_run(consignee=contact, item_description=item_description, sender=sender)
-        verify(mock_runs_endpoint).post(data=any())
+        verify(runs).post(data=any())
 
     def tearDown(self):
         settings.RAPIDPRO_LIVE = self.original_rapid_pro_live_setting
