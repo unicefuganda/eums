@@ -18,6 +18,7 @@ def start_delivery_run(*_, **kwargs):
         }
     }
     headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
+    print "*" * 20, "[In facade] Rapid pro live = ", settings.RAPIDPRO_LIVE, "*" * 20
 
     if settings.RAPIDPRO_LIVE:
         requests.post(settings.RAPIDPRO_URLS['RUNS'], data=payload, headers=headers)
