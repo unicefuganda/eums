@@ -53,3 +53,4 @@ e.g: test_location_form.py, test_location_model.py, test_location_views.py
 
 [![Build Status](https://snap-ci.com/unicefuganda/eums/branch/master/build_image)](https://snap-ci.com/unicefuganda/eums/branch/master)
 [![Coverage Status](https://img.shields.io/coveralls/unicefuganda/eums.svg)](https://coveralls.io/r/unicefuganda/eums)
+[ ![Codeship Status for unicefuganda/eums](https://codeship.io/projects/0a030d30-2b87-0132-280f-02633035c302/status)](https://codeship.io/projects/38576)
