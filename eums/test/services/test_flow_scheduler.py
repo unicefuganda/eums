@@ -19,6 +19,7 @@ celery.app.task = mock_celery.task
 from eums.rapid_pro import rapid_pro_facade
 
 fake_facade = mock()
+real_start_delivery_flow = rapid_pro_facade.start_delivery_run
 rapid_pro_facade.start_delivery_run = fake_facade.start_delivery_flow
 
 from eums.services.flow_scheduler import schedule_run_for
@@ -116,3 +117,5 @@ class FlowSchedulerTest(TestCase):
 
     def tearDown(self):
         fake_facade.invocations = []
+
+rapid_pro_facade.start_delivery_run = real_start_delivery_flow
