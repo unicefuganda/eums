@@ -46,6 +46,7 @@ class RapidProFacadeTestWithRapidProNotLive(TestCase):
     def setUp(self):
         self.original_rapid_pro_live_setting = settings.RAPIDPRO_LIVE
         settings.RAPIDPRO_LIVE = False
+        self.original_runs_post = runs.post
         when(runs).post(data=any()).thenReturn(None)
 
     def test_should_post_to_fake_rapid_pro_when_starting_a_run(self):
@@ -54,3 +55,4 @@ class RapidProFacadeTestWithRapidProNotLive(TestCase):
 
     def tearDown(self):
         settings.RAPIDPRO_LIVE = self.original_rapid_pro_live_setting
+        runs.post = self.original_runs_post
