@@ -8,5 +8,5 @@ class ItemTest(TestCase):
         item = Item()
         fields_in_item = [field.attname for field in item._meta.fields]
 
-        for field in ['description', 'unit_id', 'code']:
+        for field in ['description', 'unit_id', 'material_code']:
             self.assertIn(field, fields_in_item)

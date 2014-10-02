@@ -9,5 +9,5 @@ class ItemFactory(factory.DjangoModelFactory):
         model = Item
 
     description = factory.Sequence(lambda n: "Item {0}".format(n))
-    code = factory.Sequence(lambda n: "Code {0}".format(n))
+    material_code = factory.Sequence(lambda n: "Code {0}".format(n))
     unit = factory.SubFactory(ItemUnitFactory)

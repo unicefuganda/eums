@@ -10,7 +10,7 @@ ENDPOINT_URL = BACKEND_URL + 'item/'
 class ProgrammeEndPointTest(APITestCase):
     def test_should_create_programme(self):
         unit = create_item_unit(self)
-        item_details = {'description': "Item 1", 'unit': unit['id'], 'code': "Item Code 1"}
+        item_details = {'description': "Item 1", 'unit': unit['id'], 'material_code': "Item Code 1"}
 
         response = self.client.post(ENDPOINT_URL, item_details, format='json')
 
