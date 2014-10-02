@@ -8,7 +8,7 @@ from eums.models import Item
 class ItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Item
-        fields = ('id', 'description', 'unit')
+        fields = ('id', 'description', 'unit', 'code')
 
 
 class ItemViewSet(ModelViewSet):
