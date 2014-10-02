@@ -7,8 +7,8 @@ from eums.test.config import BACKEND_URL
 ENDPOINT_URL = BACKEND_URL + 'item/'
 
 
-class ProgrammeEndPointTest(APITestCase):
-    def test_should_create_programme(self):
+class ItemEndPointTest(APITestCase):
+    def test_should_create_item(self):
         unit = create_item_unit(self)
         item_details = {'description': "Item 1", 'unit': unit['id'], 'material_code': "Item Code 1"}
 

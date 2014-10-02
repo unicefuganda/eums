@@ -9,7 +9,9 @@ DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
 CONSIGNEE_ENDPOINT_URL = BACKEND_URL + 'consignee/'
 ITEM_UNIT_ENDPOINT_URL = BACKEND_URL + 'item-unit/'
+ITEM_ENDPOINT_URL = BACKEND_URL + 'item/'
 USER_ENDPOINT_URL = BACKEND_URL + 'user/'
+SALES_ORDER_ENDPOINT_URL = BACKEND_URL + 'sales-order/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -75,11 +77,36 @@ def create_distribution_plan_line_item(test_case, item_details=None):
     return formatted_data
 
 
+def create_sales_order(test_case, sales_order_details=None):
+    response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')
+
+    test_case.assertEqual(response.status_code, 201)
+
+    formatted_data = response.data
+    formatted_data['issue_date'] = str(formatted_data['issue_date'])
+    formatted_data['delivery_date'] = str(formatted_data['delivery_date'])
+
+    return formatted_data
+
+
+
 def create_item_unit(test_case, item_unit_details=None):
     if not item_unit_details:
         item_unit_details = {'name': "EA"}
 
     response = test_case.client.post(ITEM_UNIT_ENDPOINT_URL, item_unit_details, format='json')
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
+
+
+def create_item(test_case, item_details=None):
+    if not item_details:
+        item_details = {'description': "Item description", 'material_code': "code2344",
+                        'unit': create_item_unit(test_case)['id']}
+
+    response = test_case.client.post(ITEM_ENDPOINT_URL, item_details, format='json')
+
     test_case.assertEqual(response.status_code, 201)
 
     return response.data
