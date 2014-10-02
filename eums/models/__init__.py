@@ -8,6 +8,7 @@ from eums.models.sales_order import SalesOrder
 from eums.models.sales_order_item import SalesOrderItem
 from eums.models.distribution_plan_line_item import DistributionPlanLineItem
 from eums.models.node_run import NodeRun
+from eums.models.sales_order import SalesOrder
 
 
 __all__ = [

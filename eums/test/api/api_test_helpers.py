@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.auth.models import User
 
 from eums.models import Programme, ItemUnit, Item
@@ -116,7 +117,17 @@ def create_item(test_case, item_details=None):
                         'unit': create_item_unit(test_case)['id']}
 
     response = test_case.client.post(ITEM_ENDPOINT_URL, item_details, format='json')
+    return response.data
 
+
+def create_sales_order_with_more_info(test_case, sales_order_details=None):
+    if not sales_order_details:
+        sales_order_details = {'sales_document': '00001',
+                               'material_code': '1234', 'order_quantity': '100',
+                               'date_created': datetime.date.today(),
+                               'net_value': '1000', 'net_price': '10', 'description': 'Test'}
+
+    response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')
     test_case.assertEqual(response.status_code, 201)
 
     return response.data
