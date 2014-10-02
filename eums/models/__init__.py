@@ -4,6 +4,7 @@ from eums.models.item_unit import ItemUnit
 from eums.models.item import Item
 from eums.models.programme import Programme
 from eums.models.distribution_plan_node import DistributionPlanNode
+from eums.models.sales_order import SalesOrder
 from eums.models.distribution_plan_line_item import DistributionPlanLineItem
 from eums.models.node_run import NodeRun
 
@@ -17,4 +18,5 @@ __all__ = [
     'Programme',
     'NodeRun',
     'DistributionPlanNode'
+    'SalesOrder'
 ]
