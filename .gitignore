@@ -3,3 +3,4 @@
 .idea/
 *.log
 dump.rdb
+local_settings.py
