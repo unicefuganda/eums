@@ -10,6 +10,8 @@ from eums.models.distribution_plan_line_item import DistributionPlanLineItem
 from eums.models.sales_order import SalesOrder
 from eums.models.node_line_item_run import NodeLineItemRun
 from eums.models.question import Question
+from eums.models.option import Option
+from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
 
 
 __all__ = [
@@ -24,4 +26,9 @@ __all__ = [
     'SalesOrder',
     'SalesOrderItem'
     'Question'
+    'Question',
+    'Option',
+    'TextAnswer',
+    'MultipleChoiceAnswer',
+    'NumericAnswer'
 ]
