@@ -9,6 +9,7 @@ from eums.models.sales_order_item import SalesOrderItem
 from eums.models.distribution_plan_line_item import DistributionPlanLineItem
 from eums.models.sales_order import SalesOrder
 from eums.models.node_line_item_run import NodeLineItemRun
+from eums.models.question import Question
 
 
 __all__ = [
@@ -22,4 +23,5 @@ __all__ = [
     'DistributionPlanNode',
     'SalesOrder',
     'SalesOrderItem'
+    'Question'
 ]
