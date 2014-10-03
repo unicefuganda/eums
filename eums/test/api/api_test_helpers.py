@@ -12,6 +12,7 @@ ITEM_UNIT_ENDPOINT_URL = BACKEND_URL + 'item-unit/'
 ITEM_ENDPOINT_URL = BACKEND_URL + 'item/'
 USER_ENDPOINT_URL = BACKEND_URL + 'user/'
 SALES_ORDER_ENDPOINT_URL = BACKEND_URL + 'sales-order/'
+SALES_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'sales-order-item/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -78,7 +79,17 @@ def create_distribution_plan_line_item(test_case, item_details=None):
 
 
 def create_sales_order(test_case, sales_order_details=None):
+    if not sales_order_details:
+        sales_order_details = {'order_number': "23E3EA"}
+
     response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
+
+
+def create_sales_order_item(test_case, sales_order_item_details=None):
+    response = test_case.client.post(SALES_ORDER_ITEM_ENDPOINT_URL, sales_order_item_details, format='json')
 
     test_case.assertEqual(response.status_code, 201)
 
@@ -87,7 +98,6 @@ def create_sales_order(test_case, sales_order_details=None):
     formatted_data['delivery_date'] = str(formatted_data['delivery_date'])
 
     return formatted_data
-
 
 
 def create_item_unit(test_case, item_unit_details=None):
