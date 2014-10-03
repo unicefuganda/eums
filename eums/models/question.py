@@ -7,7 +7,7 @@ class Question(models.Model):
     NUMERIC = 'NUMERIC'
 
     text = models.TextField()
-    uuid = models.CharField(max_length=255)
+    label = models.CharField(max_length=255, unique=True)
     type = models.CharField(max_length=255, choices=(
         (MULTIPLE_CHOICE, 'Multiple Choice'), (TEXT, 'Open Ended'), (NUMERIC, 'Numeric')))
 
