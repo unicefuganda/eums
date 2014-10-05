@@ -3,6 +3,11 @@
     "BACKEND_URLS": {
         "DISTRIBUTION_PLAN": "/api/distribution-plan/",
         "DISTRIBUTION_PLAN_NODE": "/api/distribution-plan-node/",
-        "ITEM": "/api/item/"
+        "ITEM": "/api/item/",
+        "ITEM_UNIT": "/api/item-unit/",
+        "CONSIGNEE": "/api/consignee/",
+        "DISTRIBUTION_PLAN_LINE_ITEM": "/api/distribution-plan-line-item/",
+        "SALES_ORDER": "/api/sales-order/",
+        "PROGRAMME": "/api/programme/"
     }
 }

@@ -1,58 +1,86 @@
-<div class="container" mouse-capture add-node-modal>
+<div class="container">
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
     <!--<ng-include src="'/static/app/views/distribution-planning/partials/contact.html'"></ng-include>-->
 
 
     <div ng-controller="DistributionPlanController" ng-init="initialize()">
-        <table id="plan-table" style="width:100%">
-            <tr>
-                <th>Plan Name</th>
-                <th>Program Name</th>
-            </tr>
-            <tr ng-repeat="plan in distribution_plans" ng-click="showDistributionPlan(plan.id)">
-                <td>{{plan.name}}</td>
-                <td>{{plan.programme}}</td>
-            </tr>
-        </table>
+        <h1>Distribution Plans</h1>
 
-        <table id="plan-table-details" style="width:100%">
-            <tr>
-                <th>S/N</th>
-                <th>Item Description</th>
-                <th>Quantity</th>
-                <th>Unit</th>
-                <th>Under Current Supply Plan</th>
-                <th>Distribution Date</th>
-                <th>Consignee Contact</th>
-                <th>Remark</th>
-            </tr>
-            <tr ng-repeat="plan_detail in distribution_plan_details.lineItems">
-                <td>{{plan_detail.id}}</td>
-                <td>{{plan_detail.item.description}}</td>
-                <td>{{plan_detail.quantity}}</td>
-                <td>{{plan_detail.item.unit.name}}</td>
-                <td>{{plan_detail.under_current_supply_plan}}</td>
-                <td>{{plan_detail.planned_distribution_date}}</td>
-                <td>{{distribution_plan_details.nodeTree.consignee.name}}</td>
-                <td>{{plan_detail.remark}}</td>
-            </tr>
-        </table>
+        <div style="float:left; width:60%;">
+            <span style="float: left"> <h4>Distribution Plans</h4> </span>
 
-        <div class="add-button" ng-click="show_modal()">
-            <span>Add Node</span>
+            <div>
+                <table style="width: 100%" si-table>
+                    <th sort-by="date_created">Date Created</th>
+                    <th sort-by="sales_document">Programme Name</th>
+                    <th>Action</th>
+
+                    <tr ng-repeat="distributionPlan in distribution_plans">
+                        <td>
+                            {{distributionPlan.date}}
+                        </td>
+                        <td>
+                            {{distributionPlan.programme.name}}
+                        </td>
+                        <td>
+                            <a href="">View</a> / <a href="">Edit</a>
+                        </td>
+                    </tr>
+
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="25"/>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div style="float:left; width:30%; margin-left:10px;">
+            <span style="float: left"> <h4>Sales Orders</h4> </span>
+            <span style="float: right"><button type="button" style="float: right" disabled>Add New Distribution Plan
+            </button></span>
+
+            <div>
+                <!--<table ng-table="tableParams" class="table">-->
+                <!--<tr ng-repeat="salesOrder in $data">-->
+                <!--<td data-title="'Date Created'" sortable="'date_created'">{{salesOrder.date_created}}</td>-->
+                <!--<td data-title="'Document No.'" sortable="'sales_document'"><a href="#">{{salesOrder.sales_document}}</a></td>-->
+                <!--<td data-title="'Select'"><input type="checkbox" ng-click="isChecked(salesOrder)"></td>-->
+                <!--</tr>-->
+                <!--</table>-->
+                <table style="width: 100%" si-table>
+                    <th sort-by="date_created">Date Created</th>
+                    <th sort-by="sales_document">Document No.</th>
+                    <th>Select</th>
+
+                    <tr ng-repeat="salesOrder in salesOrders">
+                        <td>
+                            {{salesOrder.date_created}}
+                        </td>
+                        <td>
+                            <a href="#">{{salesOrder.sales_document}}</a>
+                        </td>
+                        <td>
+                            <input type="checkbox" ng-click="isChecked(salesOrder)">
+                        </td>
+                    </tr>
+
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="25"/>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <span style="float: right"><button type="button" style="float: right" ng-click="newDistributionPlan()">Add New Distribution Plan
+            </button></span>
         </div>
 
-        <ng-include src="'/static/app/views/distribution-planning/partials/modal.html'"></ng-include>
-
-        <flow-chart
-                style="margin: 5px; width: 100%; height: 600px;"
-                chart="chartViewModel"
-                >
-        </flow-chart>
     </div>
-
-    <!--<ul ng-controller="DistributionPlanController" ng-init="initialize()">-->
-    <!--</ul>-->
 
 </div>
 

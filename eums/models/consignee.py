@@ -14,5 +14,8 @@ class Consignee(models.Model):
             self.contact = response.json()
         return self.contact
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         app_label = 'eums'

@@ -1,5 +1,5 @@
 describe('Distribution Plan Service', function () {
-    var distributionPlanService, mockBackend, distPlanEndpointUrl, mockNodeService, q, http, config;
+    var distributionPlanService, mockBackend, distPlanEndpointUrl, salesOrdersEndpointUrl, mockNodeService, q, http, config;
     var planId = 1;
 
     var stubPlanOne = {
@@ -72,6 +72,12 @@ describe('Distribution Plan Service', function () {
         nodeTree: expectedNodeTree
     };
 
+    var sales_order_details = {'sales_document': '00001',
+                               'material_code': '1234', 'order_quantity': '100',
+                               'date_created': '2014-09-10',
+                               'net_value': '1000', 'net_price': '10', 'description': 'Test'};
+
+
     beforeEach(function () {
         module('DistributionPlan');
 
@@ -89,6 +95,7 @@ describe('Distribution Plan Service', function () {
 
             mockBackend = $httpBackend;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
+            salesOrdersEndpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER;
             distributionPlanService = DistributionPlanService;
         });
     });
@@ -99,6 +106,15 @@ describe('Distribution Plan Service', function () {
         mockBackend.whenPOST(distPlanEndpointUrl).respond(201, stubCreatedPlan);
         distributionPlanService.createPlan({programme: programmeId}).then(function (createdPlan) {
             expect(stubCreatedPlan).toEqual(createdPlan);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should fetch all sales orders', function (done) {
+        mockBackend.whenGET(salesOrdersEndpointUrl).respond(sales_order_details);
+        distributionPlanService.getSalesOrders().then(function (response) {
+            expect(response.data).toEqual(sales_order_details);
             done();
         });
         mockBackend.flush();
@@ -143,4 +159,24 @@ describe('Distribution Plan Service', function () {
         deferred.resolve(idNodeMap[nodeId]);
         return deferred.promise;
     };
+});
+
+
+describe('Distribution Plan Parameters Service', function () {
+    var distributionPlanParameterService;
+
+     beforeEach(function () {
+         module('DistributionPlan');
+
+         inject(function (DistributionPlanParameters){
+             distributionPlanParameterService = DistributionPlanParameters;
+         });
+     });
+
+    it('should save and retrieve parameters based on key-value', function(){
+        var key = 'salesOrders';
+        var value = ['1', '2'];
+        distributionPlanParameterService.saveVariable(key, value);
+        expect(value).toEqual(distributionPlanParameterService.retrieveVariable(key));
+    });
 });

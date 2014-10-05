@@ -19,7 +19,7 @@ class SalesOrderEndPointTest(APITestCase):
     def test_should_create_sales_order_with_more_information(self):
         sales_order_details = {'sales_document': '00001',
                                'material_code': '1234', 'order_quantity': '100',
-                               'date_created': '2014-10-02',
+                               'date_created': str(datetime.date.today()),
                                'net_value': '1000', 'net_price': '10', 'description': 'Test'}
 
         created_sales_order = create_sales_order_with_more_info(self)

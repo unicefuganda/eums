@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'FlowChart'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, DistributionPlanNodeService, flowchart) {
+angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'FlowChart', 'ngTable', 'siTable', 'Programme'])
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, DistributionPlanNodeService, flowchart, DistributionPlanParameters, ProgrammeService) {
         var chartDataModel = {nodes: [], connections: []};
 
         $scope.contact = {};
@@ -13,12 +13,65 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.distribution_plans = [];
         $scope.distribution_plan_details = [];
-
+        $scope.salesOrders = [];
+        $scope.selectedSalesOrders = [];
 
         $scope.initialize = function () {
-            DistributionPlanService.fetchPlans().then(function (response) {
-                $scope.distribution_plans = response.data;
+
+            DistributionPlanService.getSalesOrders().then(function (response) {
+                $scope.salesOrders = response.data;
+                DistributionPlanParameters.saveVariable('salesOrders', $scope.salesOrders);
+
+//                $scope.tableParams = new ngTableParams({
+//                    page: 1,
+//                    count: 25,
+//                    sorting: {
+//                        name: 'asc'
+//                    }
+////                    filter: {
+////                        sales_document: ''
+////                    }
+//                }, {
+//                    total: $scope.salesOrders.length,
+//                    getData: function ($defer, params) {
+//                        // use build-in angular filter
+//                        var orderedData = params.sorting() ?
+//                            $filter('orderBy')($scope.salesOrders, params.orderBy()) : $scope.salesOrders;
+//
+////                        var orderedData = params.filter() ? $filter('filter')(orderedData, params.filter()) : orderedData;
+//
+////                        params.total(orderedData.length);
+//
+//                        $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+//                    }
+//                });
             });
+
+            DistributionPlanService.fetchPlans().then(function (response) {
+                var distributionPlans = response.data;
+                distributionPlans.forEach(function(distributionPlan){
+                     ProgrammeService.getProgramme(distributionPlan.programme).then(function(result){
+                         distributionPlan.programme = result;
+                     });
+                    return distributionPlan;
+                });
+
+                $scope.distribution_plans = distributionPlans;
+            });
+        };
+
+        $scope.isChecked = function (salesOrder) {
+            var indexOfSalesOrder = $scope.selectedSalesOrders.indexOf(salesOrder);
+            if (indexOfSalesOrder !== -1) {
+                $scope.selectedSalesOrders.splice(indexOfSalesOrder, 1);
+            }
+            else {
+                $scope.selectedSalesOrders.push(salesOrder);
+            }
+        };
+
+        $scope.newDistributionPlan = function () {
+            $location.path('/distribution-plan/new/');
         };
 
         $scope.renderChart = function () {
@@ -167,7 +220,32 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 $scope.errorMessage = error.data.error;
             });
         };
-    }).factory('DistributionPlanService', function ($http, $q, EumsConfig, DistributionPlanNodeService) {
+    }).controller('NewDistributionPlanController', function ($scope, ContactService, DistributionPlanParameters, ProgrammeService) {
+        $scope.salesOrders = [];
+        $scope.selectedSalesOrders = [];
+
+        $scope.initialize = function () {
+            $scope.salesOrders = DistributionPlanParameters.retrieveVariable('salesOrders');
+            ProgrammeService.fetchProgrammes().then(function(response){
+                $scope.programmes = response.data;
+            });
+        };
+
+        $scope.isChecked = function (salesOrder) {
+            var indexOfSalesOrder = $scope.selectedSalesOrders.indexOf(salesOrder);
+            if (indexOfSalesOrder !== -1) {
+                $scope.selectedSalesOrders.splice(indexOfSalesOrder, 1);
+            }
+            else {
+                $scope.selectedSalesOrders.push(salesOrder);
+            }
+        };
+
+        $scope.savePlan = function(){
+
+        };
+    })
+    .factory('DistributionPlanService', function ($http, $q, EumsConfig, DistributionPlanNodeService) {
         var fillOutNode = function (nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
                 .then(function (nodeDetails) {
@@ -210,6 +288,10 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
             },
+            getSalesOrders: function () {
+                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER);
+
+            },
             getPlanDetails: function (planId) {
                 var getPlanPromise = $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/');
                 return getPlanPromise.then(function (response) {
@@ -250,5 +332,16 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 };
             }
         };
-    });
+    }).factory('DistributionPlanParameters', function () {
+        var distributionPlanParameters = {};
+        return{
+            saveVariable: function (key, value) {
+                distributionPlanParameters[key] = value;
+            },
+            retrieveVariable: function (key) {
+                return distributionPlanParameters[key];
+            }
+        };
+    })
+;
 

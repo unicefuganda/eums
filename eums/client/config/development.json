@@ -6,6 +6,8 @@
         "ITEM": "/api/item/",
         "ITEM_UNIT": "/api/item-unit/",
         "CONSIGNEE": "/api/consignee/",
-        "DISTRIBUTION_PLAN_LINE_ITEM": "/api/distribution-plan-line-item/"
+        "DISTRIBUTION_PLAN_LINE_ITEM": "/api/distribution-plan-line-item/",
+        "SALES_ORDER": "/api/sales-order/",
+        "PROGRAMME": "/api/programme/"
     }
 }

@@ -1,3 +1,4 @@
+import datetime
 from rest_framework.test import APITestCase
 
 from eums.test.api.api_test_helpers import create_programme, create_distribution_plan, create_distribution_plan_node, \
@@ -13,7 +14,7 @@ class DistributionPlanEndPointTest(APITestCase):
         self.programme = create_programme()
 
     def test_should_create_distribution_plan(self):
-        plan_details = {'programme': self.programme.id, 'name': 'Plan 1'}
+        plan_details = {'programme': self.programme.id, 'name': 'Plan 1', 'date': datetime.date.today()}
         create_distribution_plan(self, plan_details)
 
         response = self.client.get(ENDPOINT_URL)

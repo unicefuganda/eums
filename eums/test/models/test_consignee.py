@@ -17,6 +17,11 @@ class ConsigneeTest(TestCase):
         for field in ['name', 'contact_person_id']:
             self.assertIn(field, fields)
 
+    def test_string_representation_of_consignee_is_consignee_name(self):
+        test_consignee = 'Test Consignee'
+        consignee = Consignee(name=test_consignee)
+        self.assertEqual(test_consignee, str(consignee))
+
     def test_should_build_contact_with_details_from_contacts_service(self):
         contact_id = '54335c56b3ae9d92f038abb0'
         fake_contact_json = {'firstName': "test", 'lastName': "user1", 'phone': "+256 782 443439",

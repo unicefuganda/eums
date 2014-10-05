@@ -1,0 +1,57 @@
+<div class="container">
+    <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
+
+    <div ng-controller="NewDistributionPlanController" ng-init="initialize()">
+        <div>
+            <div>
+                <label>Programme Name</label><input type="text" ng-model="programmeName">
+                <label>Distribution Date</label><input type="date" ng-model="date">
+            </div>
+            <div>
+                <label>Select Programme</label><select ng-model="programmeSelected" required="required"
+                                                       ng-options="programme.name for programme in programmes"></select>
+                <label>Consignee</label><select ng-model="consigneeSelected" required="required"
+                                                ng-options="consignee.name for consignee in consignees"></select>
+            </div>
+        </div>
+        <div>
+            <span style="float: left"> <h4>Select Sales Orders</h4> </span>
+
+            <div>
+                <!--<table ng-table="tableParams" class="table">-->
+                <!--<tr ng-repeat="salesOrder in $data">-->
+                <!--<td data-title="'Date Created'" sortable="'date_created'">{{salesOrder.date_created}}</td>-->
+                <!--<td data-title="'Document No.'" sortable="'sales_document'"><a href="#">{{salesOrder.sales_document}}</a></td>-->
+                <!--<td data-title="'Select'"><input type="checkbox" ng-click="isChecked(salesOrder)"></td>-->
+                <!--</tr>-->
+                <!--</table>-->
+                <table style="width: 100%" si-table>
+                    <th sort-by="date_created">Date</th>
+                    <th sort-by="sales_document">Order No.</th>
+                    <th></th>
+
+                    <tr ng-repeat="salesOrder in salesOrders">
+                        <td>
+                            {{salesOrder.date_created}}
+                        </td>
+                        <td>
+                            <a href="#">{{salesOrder.sales_document}}</a>
+                        </td>
+                        <td>
+                            <input type="checkbox" ng-click="isChecked(salesOrder)">
+                        </td>
+                    </tr>
+
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="25"/>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <span style="float: left"><button type="button" style="float: right" disabled>Next</button></span>
+    </div>
+</div>
