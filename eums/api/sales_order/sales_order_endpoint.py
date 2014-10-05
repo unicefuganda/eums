@@ -8,7 +8,7 @@ from eums.models import SalesOrder
 class SalesOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = SalesOrder
-        fields = ('id', 'order_number')
+        fields = ('id', 'order_number', 'date', 'salesorderitem_set')
 
 
 class SalesOrderViewSet(ModelViewSet):

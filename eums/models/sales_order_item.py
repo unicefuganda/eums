@@ -12,6 +12,7 @@ class SalesOrderItem(models.Model):
     net_value = models.DecimalField(max_digits=20, decimal_places=4)
     issue_date = models.DateField()
     delivery_date = models.DateField(null=True)
+    description = models.CharField(max_length=255)
 
     class Meta:
         app_label = 'eums'

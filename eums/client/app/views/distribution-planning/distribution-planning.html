@@ -11,7 +11,7 @@
 
             <div>
                 <table style="width: 100%" si-table>
-                    <th sort-by="date_created">Date Created</th>
+                    <th sort-by="date">Date Created</th>
                     <th sort-by="sales_document">Programme Name</th>
                     <th>Action</th>
 
@@ -51,19 +51,15 @@
                 <!--</tr>-->
                 <!--</table>-->
                 <table style="width: 100%" si-table>
-                    <th sort-by="date_created">Date Created</th>
-                    <th sort-by="sales_document">Document No.</th>
-                    <th>Select</th>
+                    <th sort-by="date">Date</th>
+                    <th sort-by="order_number">Document No.</th>
 
                     <tr ng-repeat="salesOrder in salesOrders">
                         <td>
-                            {{salesOrder.date_created}}
+                            {{salesOrder.date}}
                         </td>
                         <td>
-                            <a href="#">{{salesOrder.sales_document}}</a>
-                        </td>
-                        <td>
-                            <input type="checkbox" ng-click="isChecked(salesOrder)">
+                            <a href="#">{{salesOrder.order_number}}</a>
                         </td>
                     </tr>
 

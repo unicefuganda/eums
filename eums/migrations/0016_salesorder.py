@@ -22,9 +22,6 @@ class Migration(migrations.Migration):
                 ('issue_date', models.DateField()),
                 ('delivery_date', models.DateField(null=True)),
                 ('item', models.ForeignKey(to='eums.Item')),
-                ('sales_document', models.CharField(max_length=255)),
-                ('material_code', models.CharField(max_length=255)),
-                ('description', models.CharField(max_length=255)),
             ],
             options={
             },

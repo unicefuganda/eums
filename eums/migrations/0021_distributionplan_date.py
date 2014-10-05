@@ -8,14 +8,14 @@ import datetime
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0016_salesorder'),
+        ('eums', '0020_salesorderitem'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='salesorder',
-            name='date_created',
-            field=models.CharField(default=datetime.date(2014, 10, 2), max_length=255),
+            model_name='distributionplan',
+            name='date',
+            field=models.DateField(default=datetime.date(2014, 10, 4), auto_now=True),
             preserve_default=False,
         ),
     ]

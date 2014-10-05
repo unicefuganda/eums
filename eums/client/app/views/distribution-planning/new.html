@@ -26,16 +26,16 @@
                 <!--</tr>-->
                 <!--</table>-->
                 <table style="width: 100%" si-table>
-                    <th sort-by="date_created">Date</th>
-                    <th sort-by="sales_document">Order No.</th>
+                    <th sort-by="date">Date</th>
+                    <th sort-by="order_number">Order No.</th>
                     <th></th>
 
                     <tr ng-repeat="salesOrder in salesOrders">
                         <td>
-                            {{salesOrder.date_created}}
+                            {{salesOrder.date}}
                         </td>
                         <td>
-                            <a href="#">{{salesOrder.sales_document}}</a>
+                            <a href="#">{{salesOrder.order_number}}</a>
                         </td>
                         <td>
                             <input type="checkbox" ng-click="isChecked(salesOrder)">

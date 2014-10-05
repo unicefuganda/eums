@@ -120,19 +120,6 @@ def create_item(test_case, item_details=None):
     return response.data
 
 
-def create_sales_order_with_more_info(test_case, sales_order_details=None):
-    if not sales_order_details:
-        sales_order_details = {'sales_document': '00001',
-                               'material_code': '1234', 'order_quantity': '100',
-                               'date_created': datetime.date.today(),
-                               'net_value': '1000', 'net_price': '10', 'description': 'Test'}
-
-    response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')
-    test_case.assertEqual(response.status_code, 201)
-
-    return response.data
-
-
 def create_user(test_case, user_details=None):
     if not user_details:
         user_details = {'username': 'test_user', 'first_name': 'test', 'last_name': 'user', 'email': 'test@email.com'}
