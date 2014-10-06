@@ -21,7 +21,6 @@ def __get_value(params):
     return {}
 
 
-# TODO Potential performance bottleneck. Could use some cache-based optimisation
 def __find_line_item_run_for(phone):
     consignees = Consignee.get_consignees_with_phone(phone)
     for consignee in consignees:
