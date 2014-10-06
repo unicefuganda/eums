@@ -42,6 +42,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 $scope.salesOrderItems = salesOrderItems;
             }
             else {
+
                 ProgrammeService.fetchProgrammes().then(function (response) {
                     $scope.programmes = response.data;
                 });

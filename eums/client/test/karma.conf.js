@@ -1,41 +1,42 @@
-module.exports = function(config) {
-  'use strict';
+module.exports = function (config) {
+    'use strict';
 
-  config.set({
-    autoWatch: true,
+    config.set({
+        autoWatch: true,
 
-    basePath: '../',
+        basePath: '../',
 
-    frameworks: ['jasmine'],
+        frameworks: ['jasmine'],
 
-    files: [
-      'bower_components/angular/angular.min.js',
-      'bower_components/angular-mocks/angular-mocks.js',
-      'bower_components/angular-route/angular-route.min.js',
-      'bower_components/ng-table/ng-table.js',
-      'bower_components/si-table/dist/si-table.js',
-      'app/scripts/**/*.js',
-      'test/spec/**/*.js'
-    ],
+        files: [
+            'bower_components/angular/angular.min.js',
+            'bower_components/angular-mocks/angular-mocks.js',
+            'bower_components/angular-route/angular-route.min.js',
+            'bower_components/ng-table/ng-table.js',
+            'bower_components/si-table/dist/si-table.js',
+            'app/scripts/**/*.js',
+            'test/spec/**/*.js',
+            'test/spec/controllers/plan-controller-spec.js'
+        ],
 
-    exclude: [
-    ],
+        exclude: [
+        ],
 
-    port: 8080,
+        port: 8080,
 
-    browsers: [
-      'PhantomJS'
-    ],
+        browsers: [
+            'PhantomJS'
+        ],
 
-    plugins: [
-      'karma-phantomjs-launcher',
-      'karma-jasmine'
-    ],
+        plugins: [
+            'karma-phantomjs-launcher',
+            'karma-jasmine'
+        ],
 
-    singleRun: false,
+        singleRun: false,
 
-    colors: true,
+        colors: true,
 
-    logLevel: config.LOG_INFO
-  });
+        logLevel: config.LOG_INFO
+    });
 };
