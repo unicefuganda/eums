@@ -2,6 +2,7 @@ from __future__ import absolute_import
 import datetime
 
 from django.conf import settings
+import requests
 
 from eums.celery import app
 from eums.models import NodeLineItemRun, DistributionPlanLineItem
@@ -13,9 +14,10 @@ def schedule_run_for(node_line_item):
     if current_run:
         __cancel_run(current_run)
 
+    contact = node_line_item.distribution_plan_node.consignee.build_contact()
     task = _schedule_run.apply_async(args=[node_line_item.id], countdown=__calculate_delay(node_line_item))
     NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
-                                   status=NodeLineItemRun.STATUS.not_started)
+                                   status=NodeLineItemRun.STATUS.not_started, phone=contact['phone'])
 
 
 @app.task

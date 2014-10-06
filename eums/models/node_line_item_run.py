@@ -10,6 +10,7 @@ class NodeLineItemRun(models.Model):
     scheduled_message_task_id = models.CharField(max_length=255)
     node_line_item = models.ForeignKey(DistributionPlanLineItem)
     status = StatusField()
+    phone = models.CharField(max_length=255)
 
     class Meta:
         app_label = 'eums'
