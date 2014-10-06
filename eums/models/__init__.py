@@ -15,6 +15,7 @@ from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
 from eums.models.question import Question
 from eums.models.option import Option
 from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
+from eums.models.run_queue import RunQueue
 
 
 __all__ = [
@@ -25,6 +26,7 @@ __all__ = [
     'ItemUnit',
     'Programme',
     'NodeLineItemRun',
+    'RunQueue',
     'DistributionPlanNode',
     'SalesOrder',
     'SalesOrderItem'

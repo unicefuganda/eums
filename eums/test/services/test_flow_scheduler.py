@@ -66,7 +66,8 @@ class FlowSchedulerTest(TestCase):
 
     def test_should_save_a_node_line_item_run_with_task_id_after_scheduling_the_flow(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
-        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node,
+                                                    planned_distribution_date=datetime.datetime.now())
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
@@ -80,7 +81,8 @@ class FlowSchedulerTest(TestCase):
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
-        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node,
+                                                    planned_distribution_date=datetime.datetime.now())
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
@@ -89,6 +91,19 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(line_item)
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
+
+    def xtest_should_change_status_of_node_run_to_in_progress_when_scheduled_task_is_started(self):
+        node = DistributionPlanNodeFactory(consignee=self.consignee)
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node,
+                                                    planned_distribution_date=datetime.datetime.now())
+
+        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
+        when(node.consignee).build_contact().thenReturn(self.contact)
+
+        schedule_run_for(line_item)
+
+        self.assertEqual(line_item.current_node_line_item_run().status, 'in_progress')
 
     def test_should_cancel_scheduled_flow_for_a_consignee_before_scheduling_another_one_for_that_node_line_item(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)

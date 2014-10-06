@@ -3,6 +3,8 @@ from django.db import models
 from eums.models import DistributionPlanNode
 from eums.models.item import Item
 
+from django.db.models import Q
+
 
 class DistributionPlanLineItem(models.Model):
     item = models.ForeignKey(Item)
@@ -17,7 +19,7 @@ class DistributionPlanLineItem(models.Model):
         app_label = 'eums'
 
     def current_node_line_item_run(self):
-        runs = self.nodelineitemrun_set.all()
+        runs = self.nodelineitemrun_set.filter(Q(status='not_started') | Q(status='in_progress'))
         if len(runs):
             return runs[0]
         return None
