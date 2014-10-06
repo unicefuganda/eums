@@ -1,15 +1,13 @@
 from django.http.response import HttpResponse
-from django.utils.http import urlunquote_plus
-from eums.models import Question, Option, MultipleChoiceAnswer
+
+from eums.models import Question, MultipleChoiceAnswer, Consignee
+from eums.models import DistributionPlanLineItem as LineItem
+from eums.models import DistributionPlanNode as Node
 
 
 def hook(request):
     params = request.GET
-    phone = params['phone']
-    step = params['step']
-    values = params['values']
-    print "*" * 20, values, "*" * 20
-    value = __get_value(step, values)
+    value = __get_value(params)
     return HttpResponse(status=200)
 
 
@@ -19,9 +17,15 @@ def __get_value(params):
     if matching_question.type is Question.MULTIPLE_CHOICE:
         matching_option = matching_question.option_set.get(text=value['category'])
         MultipleChoiceAnswer.objects.create(question=matching_question, value=matching_option)
-        node_run = __find_node_run_for(params['phone'])
+        run = __find_line_item_run_for(params['phone'])
+    return {}
 
 
-def __find_node_line_item_run_for(phone):
-
+# TODO Potential performance bottleneck. Could use some cache-based optimisation
+def __find_line_item_run_for(phone):
+    consignees = Consignee.get_consignees_with_phone(phone)
+    for consignee in consignees:
+        nodes = Node.objects.filter(consignee=consignee)
+        line_item = LineItem.objects.all()
+        return {}
     return None

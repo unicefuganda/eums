@@ -1,9 +1,8 @@
 from django.db import models
+from django.db.models import Q
 
 from eums.models import DistributionPlanNode
 from eums.models.item import Item
-
-from django.db.models import Q
 
 
 class DistributionPlanLineItem(models.Model):

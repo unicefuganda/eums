@@ -6,7 +6,11 @@ from django.conf import settings
 
 from eums.models import Consignee
 from eums.test.factories.consignee_factory import ConsigneeFactory
+
 from eums.rapid_pro.fake_response import FakeResponse
+from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
+from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory as LineItemFactory
 
 
 class ConsigneeTest(TestCase):
@@ -49,3 +53,40 @@ class ConsigneeTest(TestCase):
         consignee.build_contact()
 
         verify(requests, times=1).get("%s%s/" % (settings.CONTACTS_SERVICE_URL, contact_id))
+
+    def test_should_get_consignees_that_have_contact_person_with_specified_phone_number(self):
+        phone = "%2B256 782 443439"
+        contact_1_id = '54335c56b3ae9d92f038abb2'
+        contact_2_id = '54335c56b3ae9d92f038abb3'
+        fake_contact_json = [
+            {'firstName': "test", 'lastName': "user1", 'phone': phone, '_id': contact_1_id},
+            {'firstName': "test", 'lastName': "user1", 'phone': phone, '_id': contact_2_id}]
+        fake_response = FakeResponse(fake_contact_json, 200)
+        consignee_1 = ConsigneeFactory(contact_person_id=contact_1_id)
+        consignee_2 = ConsigneeFactory(contact_person_id=contact_2_id)
+
+        when(requests).get("%s?searchfield=%s/" % (settings.CONTACTS_SERVICE_URL, phone)).thenReturn(fake_response)
+
+        consignees = Consignee.get_consignees_with_phone(phone)
+
+        verify(requests).get("%s?searchfield=%s/" % (settings.CONTACTS_SERVICE_URL, phone))
+
+        self.assertIn(consignee_1, consignees)
+        self.assertIn(consignee_2, consignees)
+
+    def test_should_get_current_line_item_run(self):
+        consignee = ConsigneeFactory()
+        node = NodeFactory(consignee=consignee)
+        line_item = LineItemFactory(distribution_plan_node=node)
+        run = NodeLineItemRunFactory(node_line_item=line_item)
+        when(line_item).current_node_line_item_run().thenReturn({})
+
+        current_run = consignee.get_current_line_item_run()
+
+        self.assertEqual(current_run, run)
+
+    def test_should_get_current_run_from_the_first_node_with_a_line_item_that_has_an_active_run(self):
+        pass
+
+    def tearDown(self):
+        Consignee.objects.all().delete()
