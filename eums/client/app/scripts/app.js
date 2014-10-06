@@ -1,7 +1,7 @@
 'use strict';
 
 angular
-    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NavigationTabs', 'ngSanitize', 'flowChart', 'ngTable', 'siTable'])
+    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
@@ -14,6 +14,10 @@ angular
             })
             .when('/distribution-plan/new/', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
+                controller: 'NewDistributionPlanController'
+            })
+            .when('/distribution-plan/proceed/', {
+                templateUrl: '/static/app/views/distribution-planning/select-items.html',
                 controller: 'NewDistributionPlanController'
             })
             .otherwise({

@@ -1,0 +1,81 @@
+<div class="container">
+    <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
+
+    <div ng-controller="NewDistributionPlanController" ng-init="initialize()">
+        <div>
+            <div>
+                <label style="width: 150px;">Name: </label><span style="width: 150px; display:inline-block">{{programmeName}}</span>
+                <label style="width: 150px;">Distribution Date: </label><span style="width: 150px; display:inline-block">{{date}}</span>
+            </div>
+            <div>
+                <label style="width: 150px;">Programme: </label><span style="width: 150px; display:inline-block">{{programmeSelected.name}}</span>
+                <label style="width: 150px;">Consignee: </label><span style="width: 150px; display:inline-block">{{consigneeSelected.name}}</span>
+            </div>
+        </div>
+        <div>
+            <div>
+                <table style="width: 100%" si-table>
+                    <th style="width: 100px;">Sales Order</th>
+                    <th>Item</th>
+                    <th>Unit</th>
+                    <th>Qty</th>
+                    <th style="width: 100px;">Under Current Supply Plan</th>
+                    <th style="width: 100px; text-align: center">Focal</th>
+                    <th>Contact</th>
+                    <th style="width: 100px;">Phone</th>
+                    <th>Region/Dist</th>
+                    <th>Tracked</th>
+                    <th>Required</th>
+
+                    <tr ng-repeat="salesOrderItem in salesOrderItems">
+                        <td>
+                            {{salesOrderItem.salesOrder}}
+                        </td>
+                        <td>
+                            {{salesOrderItem.item.item.description}}
+                        </td>
+                        <td>
+                            {{salesOrderItem.item.item.unit.name}}
+                        </td>
+                        <td>
+                            <input style="width: 30px;" type="text" ng-model="salesOrderItem.quantity">
+                        </td>
+                        <td>
+                            <input style="width: 30px;" type="checkbox" ng-click="setSupplyPlan(salesOrderItem)">
+                        </td>
+                        <td>
+                            {{consigneeSelected.name}}
+                        </td>
+                        <td>
+                            <select style="width: 80px;" ng-model="focalPerson" required="required"
+                                    ng-options="contact.name for contact in contacts"></select>
+                        </td>
+                        <td>
+                            {{focalPerson.number}}
+                        </td>
+                        <td>
+                            <select style="width: 80px;" ng-model="selectedRegion" required="required"
+                                    ng-options="region.name for region in regions"></select>
+                        </td>
+                        <td>
+                            <input style="width: 30px;" type="checkbox" ng-click="setTracked(salesOrderItem)">
+                        </td>
+                        <td>
+                            <input style="width: 30px;" type="checkbox" ng-click="setRequired(salesOrderItem)">
+                        </td>
+                    </tr>
+
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="25"/>
+                        </td>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <span style="float: left"><button type="button" style="float: right" ng-click="selectItems()" disabled>Next
+        </button></span>
+    </div>
+</div>

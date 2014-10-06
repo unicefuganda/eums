@@ -6,8 +6,11 @@
     <div ng-controller="DistributionPlanController" ng-init="initialize()">
         <h1>Distribution Plans</h1>
 
-        <div style="float:left; width:60%;">
+        <div style="float:left; width:65%;">
             <span style="float: left"> <h4>Distribution Plans</h4> </span>
+            <span style="float: right"><button type="button" style="float: right" disabled>Add New Distribution Plan
+            </button></span>
+
 
             <div>
                 <table style="width: 100%" si-table>
@@ -36,11 +39,11 @@
                     </tfoot>
                 </table>
             </div>
-        </div>
-        <div style="float:left; width:30%; margin-left:10px;">
-            <span style="float: left"> <h4>Sales Orders</h4> </span>
-            <span style="float: right"><button type="button" style="float: right" disabled>Add New Distribution Plan
+            <span style="float: right"><button type="button" style="float: right" ng-click="newDistributionPlan()">Add New Distribution Plan
             </button></span>
+        </div>
+        <div style="float:left; width:25%; margin-left:10px;">
+            <span style="float: left"> <h4>Sales Orders</h4> </span>
 
             <div>
                 <!--<table ng-table="tableParams" class="table">-->
@@ -72,10 +75,7 @@
                     </tfoot>
                 </table>
             </div>
-            <span style="float: right"><button type="button" style="float: right" ng-click="newDistributionPlan()">Add New Distribution Plan
-            </button></span>
         </div>
-
     </div>
 
 </div>
