@@ -4,7 +4,7 @@ from eums.models import Question, NodeLineItemRun, Option
 
 class Answer(models.Model):
     question = models.ForeignKey(Question)
-    node_run = models.ForeignKey(NodeLineItemRun)
+    line_item_run = models.ForeignKey(NodeLineItemRun)
 
     class Meta:
         abstract = True

@@ -22,6 +22,6 @@ def __get_value(params):
         node_run = __find_node_run_for(params['phone'])
 
 
-def __find_node_run_for(phone):
+def __find_node_line_item_run_for(phone):
 
     return None
