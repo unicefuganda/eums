@@ -1,3 +1,4 @@
+import datetime
 from rest_framework.test import APITestCase
 
 from eums.test.api.api_test_helpers import create_sales_order
@@ -9,7 +10,7 @@ ENDPOINT_URL = BACKEND_URL + 'sales-order/'
 
 class SalesOrderEndPointTest(APITestCase):
     def test_should_create_sales_order(self):
-        sales_order_details = {'order_number': "25432SW"}
+        sales_order_details = {'order_number': "25432SW", 'date': datetime.date(2014, 10, 5)}
 
         response = self.client.post(ENDPOINT_URL, sales_order_details, format='json')
 

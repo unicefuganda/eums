@@ -21,15 +21,15 @@ class TestVisionFacade(TestCase):
                        'Net price', 'Net Value', 'Schedule Line Number', 'Description']
 
         self.first_row = ['ZCOM', '20155548', 'Z43801', '1500', 'Open', 'RNAULA', '10', 'SL004594', '224,000',
-                          '224,000', '9/2/2014', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
+                          '224,000', '2014/09/02', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
                           '42,560.00', '2', 'Tally sheets printed on A4 Paper']
 
         self.second_row = ['ZCOM', '20155981', 'Z43801', '1500', 'Open', 'RNAULA', '10', 'SL006645', '224,000',
-                           '224,000', '9/2/2014', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
+                           '224,000', '2014/09/02', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
                            '42,560.00', '2', 'Round Neck T-Shirts']
 
         self.third_row = ['ZCOM', '20155981', 'Z43801', '1500', 'Open', 'RNAULA', '10', 'SL004594', '224,000',
-                          '224,000', '9/2/2014', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
+                          '224,000', '2014/09/02', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
                           '42,560.00', '2', 'Round Neck T-Shirts']
 
         for row_index, row in enumerate([self.header, self.first_row, self.second_row, self.third_row]):
@@ -46,14 +46,14 @@ class TestVisionFacade(TestCase):
 
     def test_should_load_sales_order_data(self):
         expected_data = [{'order_number': '20155548',
-                          'items': [{'material_code': 'SL004594', 'quantity': '224,000', 'issue_date': '9/23/2014',
+                          'items': [{'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014/09/02', 'issue_date': '9/23/2014',
                                      'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                      'order_number': '20155548'}]},
                          {'order_number': '20155981',
-                          'items': [{'material_code': 'SL006645', 'quantity': '224,000', 'issue_date': '9/23/2014',
+                          'items': [{'material_code': 'SL006645', 'quantity': '224,000', 'date': '2014/09/02', 'issue_date': '9/23/2014',
                                      'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                      'order_number': '20155981'},
-                                    {'material_code': 'SL004594', 'quantity': '224,000', 'issue_date': '9/23/2014',
+                                    {'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014/09/02', 'issue_date': '9/23/2014',
                                      'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                      'order_number': '20155981'}]}]
 
@@ -69,14 +69,14 @@ class TestVisionFacade(TestCase):
         ItemFactory(material_code='SL006645')
 
         sales_order_data = [{'order_number': '20155548',
-                             'items': [{'material_code': 'SL004594', 'quantity': '224,000', 'issue_date': '9/23/2014',
+                             'items': [{'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014-09-02', 'issue_date': '9/23/2014',
                                         'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                         'order_number': '20155548'}]},
                             {'order_number': '20155981',
-                             'items': [{'material_code': 'SL006645', 'quantity': '224,000', 'issue_date': '9/23/2014',
+                             'items': [{'material_code': 'SL006645', 'quantity': '224,000', 'date': '2014-09-02', 'issue_date': '9/23/2014',
                                         'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                         'order_number': '20155981'},
-                                       {'material_code': 'SL004594', 'quantity': '224,000', 'issue_date': '9/23/2014',
+                                       {'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014-09-02', 'issue_date': '9/23/2014',
                                         'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                         'order_number': '20155981'}]}]
 

@@ -81,7 +81,7 @@ def create_distribution_plan_line_item(test_case, item_details=None):
 
 def create_sales_order(test_case, sales_order_details=None):
     if not sales_order_details:
-        sales_order_details = {'order_number': "23E3EA"}
+        sales_order_details = {'order_number': "23E3EA", 'date': datetime.date(2014, 10, 5)}
 
     response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')
     test_case.assertEqual(response.status_code, 201)
