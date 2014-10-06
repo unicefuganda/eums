@@ -4,3 +4,9 @@
 *.log
 dump.rdb
 local_settings.py
+
+# virtualenv
+.Python
+eums/bin/
+eums/include/
+eums/lib/
