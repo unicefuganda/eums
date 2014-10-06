@@ -10,7 +10,8 @@ def import_sales_orders(location):
 
 def load_sales_order_data(location):
     view = View(location)
-    relevant_data = {1: 'order_number', 7: 'material_code', 8: 'quantity', 10: 'date', 11: 'issue_date', 12: 'delivery_date',
+    relevant_data = {1: 'order_number', 7: 'material_code', 8: 'quantity', 10: 'date', 11: 'issue_date',
+                     12: 'delivery_date',
                      15: 'net_price', 16: 'net_value'}
 
     return _convert_view_to_list_of_dicts(view[0][1:, :], relevant_data)
@@ -20,14 +21,11 @@ def save_sales_order_data(sales_orders_data):
     for sales_order_data in sales_orders_data:
         _create_sales_order_from_dict(sales_order_data)
 
-def _convert_date(date):
-	date_array = date.split('/');
-	return date_array[2] + '-' + date_array[0] + '-' + date_array[1]
 
 def _create_sales_order_from_dict(sales_order_data):
     sales_order = SalesOrder()
     sales_order.order_number = sales_order_data['order_number']
-    sales_order.date = _convert_date(sales_order_data['items'][0]['issue_date'])
+    sales_order.date = datetime.strptime(sales_order_data['items'][0]['issue_date'], "%m/%d/%Y")
     sales_order.save()
 
     for sales_order_item_data in sales_order_data['items']:
