@@ -1,10 +1,10 @@
 from django.db import models
-from eums.models import Question, NodeRun, Option
+from eums.models import Question, NodeLineItemRun, Option
 
 
 class Answer(models.Model):
     question = models.ForeignKey(Question)
-    node_run = models.ForeignKey(NodeRun)
+    node_run = models.ForeignKey(NodeLineItemRun)
 
     class Meta:
         abstract = True

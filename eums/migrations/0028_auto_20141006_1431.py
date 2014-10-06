@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0017_answer'),
+        ('eums', '0027_merge'),
     ]
 
     operations = [
@@ -15,8 +15,7 @@ class Migration(migrations.Migration):
             name='MultipleChoiceAnswer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('node_run', models.ForeignKey(to='eums.NodeRun')),
-                ('question', models.ForeignKey(to='eums.Question')),
+                ('node_run', models.ForeignKey(to='eums.NodeLineItemRun')),
             ],
             options={
                 'abstract': False,
@@ -28,8 +27,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.BigIntegerField()),
-                ('node_run', models.ForeignKey(to='eums.NodeRun')),
-                ('question', models.ForeignKey(to='eums.Question')),
+                ('node_run', models.ForeignKey(to='eums.NodeLineItemRun')),
             ],
             options={
                 'abstract': False,
@@ -47,11 +45,24 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
+            name='Question',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', models.TextField()),
+                ('uuids', models.TextField()),
+                ('label', models.CharField(unique=True, max_length=255)),
+                ('type', models.CharField(max_length=255, choices=[(b'MULTIPLE_CHOICE', b'Multiple Choice'), (b'TEXT', b'Open Ended'), (b'NUMERIC', b'Numeric')])),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
             name='TextAnswer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.CharField(max_length=255)),
-                ('node_run', models.ForeignKey(to='eums.NodeRun')),
+                ('node_run', models.ForeignKey(to='eums.NodeLineItemRun')),
                 ('question', models.ForeignKey(to='eums.Question')),
             ],
             options={
@@ -59,21 +70,37 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.RemoveField(
-            model_name='answer',
-            name='node_run',
-        ),
-        migrations.RemoveField(
-            model_name='answer',
+        migrations.AddField(
+            model_name='option',
             name='question',
+            field=models.ForeignKey(to='eums.Question'),
+            preserve_default=True,
         ),
-        migrations.DeleteModel(
-            name='Answer',
+        migrations.AlterUniqueTogether(
+            name='option',
+            unique_together=set([('text', 'question')]),
+        ),
+        migrations.AddField(
+            model_name='numericanswer',
+            name='question',
+            field=models.ForeignKey(to='eums.Question'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='multiplechoiceanswer',
+            name='question',
+            field=models.ForeignKey(to='eums.Question'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='multiplechoiceanswer',
             name='value',
             field=models.ForeignKey(to='eums.Option'),
             preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='salesorderitem',
+            name='quantity',
+            field=models.IntegerField(),
         ),
     ]

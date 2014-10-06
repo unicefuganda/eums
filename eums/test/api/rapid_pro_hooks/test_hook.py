@@ -5,7 +5,7 @@ from eums.fixtures.questions import *
 from eums.models import MultipleChoiceAnswer
 
 from eums.test.config import BACKEND_URL
-from eums.test.factories.node_run_factory import NodeRunFactory
+from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
 
 
 HOOK_URL = BACKEND_URL + 'hook/'
@@ -16,7 +16,7 @@ class HookTest(APITestCase):
 
         seed_questions()
 
-        node_run = NodeRunFactory()
+        node_run = NodeLineItemRunFactory()
         url_params = '?run=4621789&phone=%2B12065551212&text=Yes&flow=2436&relayer=-1&' \
                      'step=2ff9fab3-4c12-400e-a2fe-4551fa1ebc18&' \
                      'values=%5B%7B%22category%22%3A+%22Yes%22%2C+%22time%22%3A+%222014-10-06T08%3A17%' \
