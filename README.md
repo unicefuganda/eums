@@ -5,7 +5,8 @@ End User Monitoring System
 
 Installation
 ------------
-* Postgres should be running
+* Postgres should be running "install postgresql from http://www.postgresql.org/download/"
+* Ensure that postgres user exits" (createuser -s -r postgres)
 
 ##Git
 
@@ -13,32 +14,34 @@ Installation
 
         cd eums
 
-        mkvirtualenv eums
+        virtualenv eums
 
         pip install -r requirements.txt
-        
+
         cd eums/client
-        
+
         "install node from http://nodejs.org/"
-        
+
         npm install
-        
+
         npm install -g bower
-        
+
         bower install
-        
+
         npm install -g grunt-cli
-        
+
         grunt - tests should all pass
-        
+
         cd ../..
+
+        createdb -O postgres eums
 
         python manage.py syncdb --noinput
 
         python manage.py migrate
 
         python manage.py runserver
-        
+
 ==
 
 * run python manage.py test
