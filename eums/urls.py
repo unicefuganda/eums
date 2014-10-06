@@ -16,6 +16,7 @@ from eums.api.user.user_endpoint import userRouter
 urlpatterns = patterns(
     '',
     url(r'^$', 'eums.views.home', name='home'),
+    url(r'^api/hook', 'eums.api.rapid_pro_hooks.hook.hook', name='hook'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(distributionPlanRouter.urls)),
     url(r'^api/', include(distributionPlanNodeRouter.urls)),
