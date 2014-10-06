@@ -5,8 +5,7 @@ from eums.models import Programme
 
 class ProgrammeTest(TestCase):
     def test_should_have_all_expected_fields(self):
-        programme = Programme()
-        fields_in_item = [field.attname for field in programme._meta.fields]
+        fields_in_item = Programme()._meta._name_map
 
         for field in ['name', 'focal_person_id']:
             self.assertIn(field, fields_in_item)

@@ -7,8 +7,7 @@ from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactor
 
 class DistributionPlanLineItemTest(TestCase):
     def test_should_have_all_expected_fields(self):
-        item = DistributionPlanLineItem()
-        fields_in_item = item._meta._name_map
+        fields_in_item = DistributionPlanLineItem()._meta._name_map
 
         expected_fields = [
             'item_id', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
