@@ -10,4 +10,5 @@ class NodeRunFactory(factory.DjangoModelFactory):
 
     scheduled_message_task_id = factory.Sequence(lambda n: '{0}'.format(n))
     node = factory.SubFactory(DistributionPlanNodeFactory)
+    status = NodeRun.STATUS.not_started
 
