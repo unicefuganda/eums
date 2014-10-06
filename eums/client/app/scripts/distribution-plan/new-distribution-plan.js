@@ -37,8 +37,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     });
                 });
 
-                console.log();
-
                 $scope.salesOrderItems = salesOrderItems;
             }
             else {

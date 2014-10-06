@@ -4,11 +4,24 @@ describe('NewDistributionPlanController', function () {
     var scope, mockPlanService, mockDistributionPlanParametersService, mockProgrammeService,
         deferred, deferredPlan, location, distPlanEndpointUrl, mockSalesOrderItemService;
 
+    var orderNumber = '00001';
+
     var salesOrderDetails = [
-        {'order_number': '00001',
+        {'order_number': orderNumber,
             'date': '2014-10-05',
             'salesorderitem_set': ['1']}
     ];
+
+    var stubSalesOrderItem = {
+        id: 1,
+        sales_order: '1',
+        item: 1,
+        quantity: 100,
+        net_price: 10.00,
+        net_value: 1000.00,
+        issue_date: '2014-10-02',
+        delivery_date: '2014-10-02'
+    };
 
     var programmes = [
         {id: 1, name: 'Test', focal_person: 1}
@@ -43,6 +56,16 @@ describe('NewDistributionPlanController', function () {
                 {$scope: scope, $location: location, DistributionPlanParameters: mockDistributionPlanParametersService,
                     ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService});
         });
+    });
+
+    it('should format the selected sales order appropriately for the view', function () {
+        deferred.resolve(stubSalesOrderItem);
+        mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails);
+
+        scope.initialize();
+        scope.$apply();
+
+        expect(scope.salesOrderItems).toEqual([{salesOrder: orderNumber, item: stubSalesOrderItem}]);
     });
 
     it('should have the sales orders in the scope when the controller is initialized', function () {
@@ -123,6 +146,5 @@ describe('NewDistributionPlanController', function () {
 
         expect(scope.selectedSalesOrders).toEqual(salesOrderDetails);
     });
-
 
 });
