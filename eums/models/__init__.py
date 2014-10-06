@@ -7,8 +7,8 @@ from eums.models.distribution_plan_node import DistributionPlanNode
 from eums.models.sales_order import SalesOrder
 from eums.models.sales_order_item import SalesOrderItem
 from eums.models.distribution_plan_line_item import DistributionPlanLineItem
-from eums.models.node_run import NodeRun
 from eums.models.sales_order import SalesOrder
+from eums.models.node_line_item_run import NodeLineItemRun
 
 
 __all__ = [
@@ -18,7 +18,7 @@ __all__ = [
     'Item',
     'ItemUnit',
     'Programme',
-    'NodeRun',
+    'NodeLineItemRun',
     'DistributionPlanNode',
     'SalesOrder',
     'SalesOrderItem'

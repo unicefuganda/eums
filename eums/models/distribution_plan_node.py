@@ -11,9 +11,3 @@ class DistributionPlanNode(models.Model):
     class Meta:
         app_label = 'eums'
         unique_together = ('distribution_plan', 'consignee')
-
-    def current_node_run(self):
-        runs = self.noderun_set.all()
-        if len(runs):
-            return runs[0]
-        return None

@@ -4,7 +4,7 @@ import datetime
 from mockito import mock, verify, when, never, any
 
 from eums import celery
-from eums.models import DistributionPlanNode
+from eums.models import DistributionPlanNode, DistributionPlanLineItem
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -31,14 +31,13 @@ class FlowSchedulerTest(TestCase):
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
-        DistributionPlanLineItemFactory(distribution_plan_node=node)
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
         when(node.consignee).build_contact().thenReturn(self.contact)
 
-        schedule_run_for(node)
-
-        line_item = node.distributionplanlineitem_set.all()[0]
+        schedule_run_for(line_item)
 
         verify(fake_facade).start_delivery_flow(
             sender='UNICEF',
@@ -51,14 +50,13 @@ class FlowSchedulerTest(TestCase):
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = DistributionPlanNodeFactory(consignee=sender_org)
         node = DistributionPlanNodeFactory(consignee=self.consignee, parent=parent_node)
-        DistributionPlanLineItemFactory(distribution_plan_node=node)
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
         when(node.consignee).build_contact().thenReturn(self.contact)
 
-        schedule_run_for(node)
-
-        line_item = node.distributionplanlineitem_set.all()[0]
+        schedule_run_for(line_item)
 
         verify(fake_facade).start_delivery_flow(
             sender=sender_org_name,
@@ -66,53 +64,52 @@ class FlowSchedulerTest(TestCase):
             item_description=line_item.item.description
         )
 
-    def test_should_save_a_node_run_with_task_id_after_scheduling_the_flow(self):
+    def test_should_save_a_node_line_item_run_with_task_id_after_scheduling_the_flow(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
-        DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
         when(node.consignee).build_contact().thenReturn(self.contact)
 
-        schedule_run_for(node)
+        schedule_run_for(line_item)
 
-        node_run_set = node.noderun_set.all()
-        self.assertEqual(len(node_run_set), 1)
-        self.assertEqual(node_run_set[0].scheduled_message_task_id, mock_celery.task_id)
+        node_line_item_run_set = line_item.nodelineitemrun_set.all()
+        self.assertEqual(len(node_line_item_run_set), 1)
+        self.assertEqual(node_line_item_run_set[0].scheduled_message_task_id, mock_celery.task_id)
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
-        DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
+        line_item = DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
         when(node.consignee).build_contact().thenReturn(self.contact)
 
-        schedule_run_for(node)
+        schedule_run_for(line_item)
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
-    def test_should_cancel_scheduled_flow_for_a_consignee_before_scheduling_another_one_for_the_same_node(self):
+    def test_should_cancel_scheduled_flow_for_a_consignee_before_scheduling_another_one_for_that_node_line_item(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
-        DistributionPlanLineItemFactory(distribution_plan_node=node, planned_distribution_date=datetime.datetime.now())
+        line_item_one = DistributionPlanLineItemFactory(distribution_plan_node=node,
+                                                        planned_distribution_date=datetime.datetime.now())
+        DistributionPlanLineItemFactory(distribution_plan_node=node,
+                                        planned_distribution_date=datetime.datetime.now())
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
+        when(DistributionPlanLineItem.objects).get(id=line_item_one.id).thenReturn(line_item_one)
         when(node.consignee).build_contact().thenReturn(self.contact)
 
-        schedule_run_for(node)
+        schedule_run_for(line_item_one)
 
-        task_id = node.current_node_run().scheduled_message_task_id
+        task_id = line_item_one.current_node_line_item_run().scheduled_message_task_id
         when(celery.app.control).revoke(task_id).thenReturn(None)
 
-        schedule_run_for(node)
+        schedule_run_for(line_item_one)
 
         verify(celery.app.control).revoke(task_id)
         verify(fake_facade, times=2).start_delivery_flow(sender=any(), consignee=any(), item_description=any())
-
-    # TODO Remove this when the line item is moved to the distribution plan
-    def test_should_not_schedule_flow_if_node_has_no_line_items(self):
-        node = DistributionPlanNodeFactory()
-        schedule_run_for(node)
-
-        verify(fake_facade, never).start_delivery_flow()
 
     def tearDown(self):
         fake_facade.invocations = []

@@ -15,3 +15,9 @@ class DistributionPlanLineItem(models.Model):
 
     class Meta:
         app_label = 'eums'
+
+    def current_node_line_item_run(self):
+        runs = self.nodelineitemrun_set.all()
+        if len(runs):
+            return runs[0]
+        return None
