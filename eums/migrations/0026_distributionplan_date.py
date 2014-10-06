@@ -8,7 +8,7 @@ import datetime
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0023_salesorder_date'),
+        ('eums', '0025_salesorder_date'),
     ]
 
     operations = [
