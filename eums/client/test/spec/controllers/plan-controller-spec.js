@@ -33,7 +33,8 @@ describe('NewDistributionPlanController', function () {
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem']);
-        mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable']);
+        mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
+        location = jasmine.createSpyObj('location', ['path']);
 
         inject(function ($controller, $rootScope, $location, $q, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -46,8 +47,6 @@ describe('NewDistributionPlanController', function () {
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails);
 
             scope = $rootScope.$new();
-
-            location = $location;
 
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
 
@@ -65,7 +64,9 @@ describe('NewDistributionPlanController', function () {
         scope.initialize();
         scope.$apply();
 
-        expect(scope.salesOrderItems).toEqual([{salesOrder: orderNumber, item: stubSalesOrderItem}]);
+        expect(scope.salesOrderItems).toEqual([
+            {salesOrder: orderNumber, item: stubSalesOrderItem}
+        ]);
     });
 
     it('should have the sales orders in the scope when the controller is initialized', function () {
@@ -147,4 +148,73 @@ describe('NewDistributionPlanController', function () {
         expect(scope.selectedSalesOrders).toEqual(salesOrderDetails);
     });
 
+    it('should have location changed to proceed when the items need to be selected', function () {
+        var proceedLocation = '/distribution-plan/proceed/';
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(location.path).toHaveBeenCalledWith(proceedLocation);
+    });
+
+    it('should have selected sales orders to be saved when the items need to be selected', function () {
+        var variable = 'selectedSalesOrders';
+        scope.selectedSalesOrders = salesOrderDetails;
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith(variable, salesOrderDetails);
+    });
+
+    it('should have proceeding flag saved when the items need to be selected', function () {
+        var variable = 'isProceeding';
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith(variable, true);
+    });
+
+    it('should have programme name saved when the items need to be selected', function () {
+        var variable = 'programmeName';
+        scope.programmeName = programmes[0].name;
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith(variable, programmes[0].name);
+    });
+
+    it('should have date selected saved when the items need to be selected', function () {
+        var variable = 'date';
+        scope.date = '2014-10-06';
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith(variable, '2014-10-06');
+    });
+
+    it('should have programme selected saved when the items need to be selected', function () {
+        var variable = 'programmeSelected';
+        scope.programmeSelected = programmes[0];
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith(variable, programmes[0]);
+    });
+
+    it('should have consignee selected saved when the items need to be selected', function () {
+        var variable = 'consigneeSelected';
+        var consignee = {id: 1, name: 'Test Consignee'};
+
+        scope.consigneeSelected = consignee;
+
+        scope.selectItems();
+        scope.$apply();
+
+        expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith(variable, consignee);
+    });
 });
