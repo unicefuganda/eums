@@ -3,11 +3,11 @@
 
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()">
         <div>
-            <div>
-                <label style="width: 150px;">Programme Name </label><input style="width: 150px;" type="text" ng-model="programmeName">
+            <div style="margin-top: 20px;">
+                <label style="width: 150px;">Programme Name </label><input style="width: 150px; height: 40px" type="text" ng-model="programmeName">
                 <label style="width: 150px;">Distribution Date </label><input style="width: 150px;" type="date" ng-model="date">
             </div>
-            <div>
+            <div style="margin-top: 10px;">
                 <label style="width: 150px;">Select Programme </label><select style="width: 150px;" ng-model="programmeSelected" required="required"
                                                        ng-options="programme.name for programme in programmes"></select>
                 <label style="width: 150px;">Consignee </label><select style="width: 150px;" ng-model="consigneeSelected" required="required"
