@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0021_distributionplan_date'),
+        ('eums', '0021_noderun_status'),
     ]
 
     operations = [

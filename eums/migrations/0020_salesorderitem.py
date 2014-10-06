@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='SalesOrderItem',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('quantity', models.IntegerField()),
+                ('quantity', models.IntegerField(default=0)),
                 ('net_price', models.DecimalField(max_digits=20, decimal_places=4)),
                 ('net_value', models.DecimalField(max_digits=20, decimal_places=4)),
                 ('issue_date', models.DateField()),
