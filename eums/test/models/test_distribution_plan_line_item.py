@@ -37,3 +37,8 @@ class DistributionPlanLineItemTest(TestCase):
         NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.expired)
         self.assertEqual(node_line_item.current_run(), None)
 
+    def test_should_not_get_node_line_item_run_with_status_cancelled(self):
+        node_line_item = DistributionPlanLineItemFactory()
+        NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.cancelled)
+        self.assertEqual(node_line_item.current_run(), None)
+

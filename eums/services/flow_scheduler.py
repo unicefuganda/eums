@@ -13,14 +13,14 @@ def schedule_run_for(node_line_item):
     if current_run:
         __cancel_run(current_run)
 
-    run_start_date = __calculate_delay(node_line_item)
-    # if node_line_item.distribution_plan_node.consignee.current_run():
-    #     RunQueue.enqueue(node_line_item, run_start_date)
-    # else:
-    contact = node_line_item.distribution_plan_node.consignee.build_contact()
-    task = _schedule_run.apply_async(args=[node_line_item.id], countdown=run_start_date)
-    NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
-                                   status=NodeLineItemRun.STATUS.not_started, phone=contact['phone'])
+    run_delay = __calculate_delay(node_line_item)
+    if NodeLineItemRun.current_run_for_consignee(node_line_item.distribution_plan_node.consignee.id):
+        RunQueue.enqueue(node_line_item, run_delay)
+    else:
+        contact = node_line_item.distribution_plan_node.consignee.build_contact()
+        task = _schedule_run.apply_async(args=[node_line_item.id], countdown=run_delay)
+        NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
+                                       status=NodeLineItemRun.STATUS.not_started, phone=contact['phone'])
 
 
 @app.task
@@ -57,3 +57,5 @@ def _flag_run_as_in_progress(node_line_item):
 
 def __cancel_run(run):
     app.control.revoke(run.scheduled_message_task_id)
+    run.status = NodeLineItemRun.STATUS.cancelled
+    run.save()

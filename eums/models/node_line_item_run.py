@@ -7,7 +7,7 @@ from eums.models import DistributionPlanLineItem
 
 
 class NodeLineItemRun(models.Model):
-    STATUS = Choices('not_started', 'in_progress', 'completed', 'expired')
+    STATUS = Choices('not_started', 'in_progress', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
     node_line_item = models.ForeignKey(DistributionPlanLineItem)
     status = StatusField()

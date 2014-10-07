@@ -97,15 +97,21 @@ class FlowSchedulerTest(TestCase):
     def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self):
         DistributionPlanLineItemFactory(distribution_plan_node=self.node,
                                         planned_distribution_date=datetime.datetime.now())
+        line_item_run_two = NodeLineItemRunFactory(node_line_item=self.line_item,
+                                                    status=NodeLineItemRun.STATUS.not_started)
+
+        when(self.line_item).current_run().thenReturn(self.line_item_run).thenReturn(line_item_run_two)
+        when(NodeLineItemRun).current_run_for_consignee(any()).thenReturn(None)
 
         schedule_run_for(self.line_item)
         schedule_run_for(self.line_item)
 
-        #TODO Refactor to make it a single call
-        verify(celery.app.control, times=2).revoke(self.task_id)
+        self.assertEqual(self.line_item_run.status, NodeLineItemRun.STATUS.cancelled)
+        verify(celery.app.control).revoke(self.task_id)
         verify(fake_facade, times=2).start_delivery_flow(sender=any(), consignee=any(), item_description=any())
 
-    def xtest_should_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self):
+
+    def test_should_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self):
         node_two = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=node_two)
         line_item_run_two = NodeLineItemRunFactory(node_line_item=line_item_two,
