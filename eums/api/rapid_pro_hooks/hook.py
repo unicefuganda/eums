@@ -1,30 +1,40 @@
+import ast
 from django.http.response import HttpResponse
 
-from eums.models import Question, MultipleChoiceAnswer, Consignee
-from eums.models import DistributionPlanLineItem as LineItem
-from eums.models import DistributionPlanNode as Node
+from eums.models import Question, MultipleChoiceAnswer, NodeLineItemRun, TextAnswer, NumericAnswer
 
 
 def hook(request):
     params = request.GET
-    value = __get_value(params)
+    __create_answer(params)
+
     return HttpResponse(status=200)
 
 
-def __get_value(params):
+def __store_multiple_choice_answer(matching_question, value, line_item_run):
+    matching_option = matching_question.option_set.get(text=value['category'])
+    MultipleChoiceAnswer.objects.create(question=matching_question, value=matching_option,
+                                        line_item_run=line_item_run)
+
+
+def __store_text_answer(matching_question, value, line_item_run):
+    TextAnswer.objects.create(question=matching_question, value=value, line_item_run=line_item_run)
+
+
+def __store_numeric_answer(matching_question, value, line_item_run):
+    NumericAnswer.objects.create(question=matching_question, value=value, line_item_run=line_item_run)
+
+
+def __create_answer(params):
+    line_item_run = NodeLineItemRun.objects.filter(phone=params['phone']).first()
     matching_question = Question.objects.get(uuids=params['step'])
-    value = filter(lambda v: matching_question.label == v['label'], params['values'])[0]
-    if matching_question.type is Question.MULTIPLE_CHOICE:
-        matching_option = matching_question.option_set.get(text=value['category'])
-        MultipleChoiceAnswer.objects.create(question=matching_question, value=matching_option)
-        run = __find_line_item_run_for(params['phone'])
-    return {}
-
-
-def __find_line_item_run_for(phone):
-    consignees = Consignee.get_consignees_with_phone(phone)
-    for consignee in consignees:
-        nodes = Node.objects.filter(consignee=consignee)
-        line_item = LineItem.objects.all()
-        return {}
-    return None
+    if matching_question.type == Question.MULTIPLE_CHOICE:
+        values = ast.literal_eval(params['values'])
+        value = filter(lambda v: matching_question.label == v['label'], values)[0]
+        __store_multiple_choice_answer(matching_question, value, line_item_run)
+    elif matching_question.type == Question.NUMERIC:
+        value = params['text']
+        __store_numeric_answer(matching_question, value, line_item_run)
+    else:
+        value = params['text']
+        __store_text_answer(matching_question, value, line_item_run)

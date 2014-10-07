@@ -1,43 +1,64 @@
+from urllib import  quote_plus
 from rest_framework.test import APITestCase
-
 from eums.fixtures.questions import *
-
-from eums.models import MultipleChoiceAnswer
-
+from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer
 from eums.test.config import BACKEND_URL
 from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
 
 
 HOOK_URL = BACKEND_URL + 'hook/'
 
-
 class HookTest(APITestCase):
-    def xtest_should_record_an_answer_of_type_multi_choice_for_a_node_from_request_data(self):
+    def __create_rapid_pro_url_params(self, phone, uuid, text="Yes", category=None, label=""):
+        unencoded_url = 'run=4621789&phone=%s&text=%s&flow=2436&relayer=-1&step=%s&values=[{"category": "%s", "time": "2014-10-06T08:17:11.813785Z", "text": "Yes", "rule_value": "Yes", "value": "Yes", "label": "%s"}]&time=2014-10-06T08:17:16.214821Z&steps=[{"node": "9f946daf-91aa-4ed2-8679-4529eb6a9938", "arrived_on": "2014-10-06T08:17:11.806305Z", "left_on": "2014-10-06T08:17:11.812105Z", "text": "Hi @extra.contactName, @extra.sender, has sent @extra.product to you provided by UNICEF. Have you received it? Please reply YES or NO.", "type": "A", "value": null}, {"node": "23ac84cf-cd9c-4d10-a365-0c7e2e57b019", "arrived_on": "2014-10-06T08:17:11.813785Z", "left_on": null, "text": "Yes", "type": "R", "value": "Yes"}]' % (phone, text, uuid, category, label)
+        return '?' + quote_plus(unencoded_url, '=&')
 
+    def setUp(self):
         seed_questions()
+        self.PHONE = '+12065551212'
 
-        node_run = NodeLineItemRunFactory()
-        url_params = '?run=4621789&phone=%2B12065551212&text=Yes&flow=2436&relayer=-1&' \
-                     'step=2ff9fab3-4c12-400e-a2fe-4551fa1ebc18&' \
-                     'values=%5B%7B%22category%22%3A+%22Yes%22%2C+%22time%22%3A+%222014-10-06T08%3A17%' \
-                     '3A11.813785Z%22%2C+%22text%22%3A+%22Yes%22%2C+%22rule_value%22%3A+%22Yes%22%2C+' \
-                     '%22value%22%3A+%22Yes%22%2C+%22label%22%3A+%22productReceived%22%7D%5D&' \
-                     'time=2014-10-06T08%3A17%3A16.214821Z&steps=%5B%7B%22node%22%3A+%' \
-                     '229f946daf-91aa-4ed2-8679-4529eb6a9938%22%2C+%22arrived_on' \
-                     '%22%3A+%222014-10-06T08%3A17%3A11.806305Z%22%2C+%22left_on%22%3A+%222014-10-06T08%3A17%' \
-                     '3A11.812105Z%22%2C+%22text%22%3A+%22Hi+%40extra.contactName%2C+%40extra.sender%2C+has+sent+%' \
-                     '40extra.product+to+you+provided+by+UNICEF.+Have+you+received+it%3F+Please+reply+YES+or+NO.%22%' \
-                     '2C+%22type%22%3A+%22A%22%2C+%22value%22%3A+null%7D%2C+%7B%22node%22%3A+%' \
-                     '2223ac84cf-cd9c-4d10-a365-0c7e2e57b019%22%2C+%22arrived_on%22%3A+%222014-10-06T08%3A17%' \
-                     '3A11.813785Z%22%2C+%22left_on%22%3A+null%2C+%22text%22%3A+%22Yes%22%2C+%22type%22%3A+%22R%22%2C' \
-                     '+%22value%22%3A+%22Yes%22%7D%5D'
+    def test_should_record_an_answer_of_type_multi_choice_for_a_node_from_request_data(self):
+        UUID = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
+
+        node_line_item_run = NodeLineItemRunFactory(phone=self.PHONE)
+
+        url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 'Yes', 'Yes', 'productReceived')
 
         response = self.client.post(HOOK_URL + url_params)
-        uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
-        expected_question = Question.objects.get(uuids=uuid)
+        expected_question = Question.objects.get(uuids=UUID)
         yes_option = expected_question.option_set.get(text='Yes')
 
-        created_answer = MultipleChoiceAnswer.objects.filter(question__uuids=uuid, node_run=node_run).first()
+        answers = MultipleChoiceAnswer.objects.filter(question__uuids=UUID, line_item_run=node_line_item_run)
+        created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(created_answer.value, yes_option)
+
+    def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self):
+        UUID = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
+
+        node_line_item_run = NodeLineItemRunFactory(phone=('%s' % self.PHONE))
+        url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 'Some Text', None, 'dateOfReceipt')
+
+        response = self.client.post(HOOK_URL + url_params)
+
+        answers =  TextAnswer.objects.filter(question__uuids=UUID, line_item_run=node_line_item_run)
+        created_answer = answers.first()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(created_answer.value, 'Some Text')
+
+    def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self):
+        UUID = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
+
+        node_line_item_run = NodeLineItemRunFactory(phone=('%s' % self.PHONE))
+        url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 42, None, 'amountReceived')
+
+        response = self.client.post(HOOK_URL + url_params)
+
+        answers =  NumericAnswer.objects.filter(question__uuids=UUID, line_item_run=node_line_item_run)
+        created_answer = answers.first()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(created_answer.value, 42)
+
