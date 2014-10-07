@@ -2,8 +2,13 @@ describe('DistributionPlanController', function () {
 
     var scope;
     var location, distPlanEndpointUrl;
-    var mockContactService, flowchartService, mockPlanService, mockProgrammeService, mockPlanNodeService;
-    var deferred, deferredPlan;
+    var mockContactService, mockPlanService, mockProgrammeService, mockSalesOrderService;
+    var deferred, deferredPlan, deferredSalesOrder;
+
+    var programmes = [
+        {id: '1', name: 'Test Programme', salesorder_set: ['1', '2']},
+        {id: '2', name: 'Another Test Programme', salesorder_set: ['3', '4']}
+    ];
 
     var stubResponse = {
         data: {
@@ -18,15 +23,6 @@ describe('DistributionPlanController', function () {
         {'order_number': '00001', 'date': '2014-10-02', 'salesorderitem_set': ['1', '2', '3']}
     ];
 
-    var stubPlanOne = {data: [
-        {
-            id: 1,
-            programme: 1,
-            distributionplannode_set: [1, 2]
-        }
-    ]};
-
-
     var stubError = {
         data: {
             error: 'Phone number is not valid'
@@ -36,21 +32,20 @@ describe('DistributionPlanController', function () {
     beforeEach(function () {
         module('DistributionPlan');
         mockContactService = jasmine.createSpyObj('mockContactService', ['addContact']);
-        flowchartService = jasmine.createSpyObj('flowchartService', ['ChartViewModel']);
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails',
-            'createDistributionPlanNode', 'getSalesOrders']);
-        mockPlanNodeService = jasmine.createSpyObj('mockPlanNodeService', ['createNode']);
-        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme']);
+        mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails', 'getSalesOrders']);
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme', 'fetchProgrammes']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $httpBackend, EumsConfig) {
             deferred = $q.defer();
             deferredPlan = $q.defer();
+            deferredSalesOrder = $q.defer();
             mockContactService.addContact.and.returnValue(deferred.promise);
             mockProgrammeService.getProgramme.and.returnValue(deferred.promise);
-            mockPlanService.fetchPlans.and.returnValue(deferredPlan.promise);
+            mockProgrammeService.fetchProgrammes.and.returnValue(deferred.promise);
             mockPlanService.getSalesOrders.and.returnValue(deferredPlan.promise);
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
-            mockPlanNodeService.createNode.and.returnValue(deferredPlan.promise);
+            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
 
             scope = $rootScope.$new();
 
@@ -60,26 +55,40 @@ describe('DistributionPlanController', function () {
             $controller('DistributionPlanController',
                 {$scope: scope, ContactService: mockContactService,
                     DistributionPlanService: mockPlanService,
-                    DistributionPlanNodeService: mockPlanNodeService,
                     ProgrammeService: mockProgrammeService,
-                    $location: location, flowchart: flowchartService});
+                    SalesOrderService: mockSalesOrderService,
+                    $location: location});
         });
     });
 
-    it('should know that the programme service is invoked when initialized', function () {
-        deferredPlan.resolve(stubPlanOne);
+    it('should fetch all programmes when initialized', function () {
         scope.initialize();
         scope.$apply();
-        expect(mockProgrammeService.getProgramme).toHaveBeenCalledWith(1);
+        expect(mockProgrammeService.fetchProgrammes).toHaveBeenCalled();
     });
 
-    it('should replace program id with programme object when initialized', function () {
-        var programme = {id: '1', name: 'Test Programme'};
-        deferred.resolve(programme);
-        deferredPlan.resolve(stubPlanOne);
+    it('should have all programmes in the scope when initialized', function () {
+        deferred.resolve({data: programmes});
         scope.initialize();
         scope.$apply();
-        expect(scope.distribution_plans[0].programme).toEqual(programme);
+        expect(scope.programmes).toEqual(programmes);
+    });
+
+    it('should fetch the sales orders linked to the first programme on initialize', function () {
+        deferred.resolve({data: programmes});
+        scope.initialize();
+        scope.$apply();
+
+        expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[0]);
+        expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[1]);
+    });
+
+    it('should set sales orders linked to the first programme on initialize to the scope', function () {
+        deferred.resolve({data: programmes});
+        deferredSalesOrder.resolve(salesOrderDetails[0]);
+        scope.initialize();
+        scope.$apply();
+        expect(scope.salesOrders).toEqual([salesOrderDetails[0], salesOrderDetails[0]]);
     });
 
 
@@ -95,13 +104,6 @@ describe('DistributionPlanController', function () {
         scope.addContact();
         scope.$apply();
         expect(scope.errorMessage).toBe('Phone number is not valid');
-    });
-
-    it('should know that the plan information is stored in the scope when controller is invoked', function () {
-        deferredPlan.resolve(stubPlanOne);
-        scope.initialize();
-        scope.$apply();
-        expect(scope.distribution_plans).toEqual(stubPlanOne.data);
     });
 
     it('should call the get sales order service from distribution plan', function () {
