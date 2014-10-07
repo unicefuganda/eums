@@ -11,6 +11,6 @@ class RunQueueFactory(factory.DjangoModelFactory):
 
     node_line_item = factory.SubFactory(DistributionPlanLineItemFactory)
     contact_person_id = 'b8f951a0-4d5a-11e4-9af8-0002a5d5c51b'
-    start_run_date = datetime.now()
+    run_delay = 0
     status = RunQueue.STATUS.not_started
 

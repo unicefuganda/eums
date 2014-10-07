@@ -16,16 +16,16 @@ class RunQueueTest(TestCase):
         node_line_item_run = RunQueue()
         fields_in_run_queue = [field.attname for field in node_line_item_run._meta.fields]
 
-        for field in ['node_line_item_id', 'contact_person_id', 'status', 'start_run_date']:
+        for field in ['node_line_item_id', 'contact_person_id', 'status', 'run_delay']:
             self.assertIn(field, fields_in_run_queue)
 
     def test_can_deque_next_run_for_a_particular_contact_person(self):
         contact_person_id = 'id'
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started)
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started,
-                        start_run_date=datetime(2014, 12, 10))
+                        run_delay=1000.0)
         run_queue = RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started,
-                                    start_run_date=datetime(2014, 10, 10))
+                                    run_delay=1500.0)
 
         self.assertEqual(RunQueue.deque(contact_person_id), run_queue)
 
@@ -33,19 +33,19 @@ class RunQueueTest(TestCase):
         contact_person_id = 'id'
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started)
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started,
-                        start_run_date=datetime(2014, 12, 10))
+                        run_delay=1000.0)
 
         self.assertEqual(RunQueue.deque(contact_person_id), None)
 
     def test_queues_run_for_particular_line_item_node(self):
         contact_person_id = 'id'
-        start_run_date = datetime.now()
+        run_delay = 1000
 
         consignee = ConsigneeFactory(contact_person_id=contact_person_id)
         node = DistributionPlanNodeFactory(consignee=consignee)
         node_line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        RunQueue.enqueue(node_line_item, start_run_date)
+        RunQueue.enqueue(node_line_item, run_delay)
         queued_run = RunQueue.deque(contact_person_id)
 
         self.assertEqual(queued_run.status, RunQueue.STATUS.not_started)
