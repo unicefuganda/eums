@@ -122,18 +122,6 @@ describe('DistributionPlanController', function () {
             expect(scope.salesOrders).toEqual([salesOrderDetails[0], salesOrderDetails[0]]);
         });
 
-        it('should expect all sales orders to be on the local scope when the controller is initialised', function () {
-            deferredPlan.resolve({data: salesOrderDetails});
-            scope.initialize();
-            scope.$apply();
-            expect(scope.salesOrders).toEqual(salesOrderDetails);
-        });
-
-        it('should call the get sales order service from distribution plan', function () {
-            scope.initialize();
-            expect(mockPlanService.getSalesOrders).toHaveBeenCalled();
-        });
-
         it('should set the sorter', function () {
             scope.initialize();
             scope.$apply();

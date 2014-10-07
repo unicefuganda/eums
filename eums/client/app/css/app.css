@@ -2,6 +2,11 @@ body {
     padding-top: 70px;
 }
 
+tbody {
+ height: 50px;
+ overflow: auto;
+}
+
 .sales-order-list {
     background: white;
     border: 0.5em solid rgb(240, 240, 239);
@@ -11,47 +16,6 @@ body {
     display: block;
     width: 100%;
 }
-
-.input-group-button {
-    padding: 0.7em;
-}
-
-.input-group-button .input, button {
-    display: inline-block;
-    padding: 0.5em;
-}
-
-.input-group-button input[type='text'], input[type='number'] {
-    width: auto;
-}
-
-.input-group {
-    margin: 0;
-    padding: 0;
-}
-
-.input-group input[type='text'], input[type='number'] {
-    margin: 0;
-    width: 100%;
-    padding-left: 30px;
-}
-
-.input-group .icon {
-    font-size: 0.9em;
-    padding: inherit;
-    position: absolute;
-    top: -2px;
-    left: 0;
-    color: royalblue;
-}
-
-.icon-times {
-    float: right;
-    right: 0;
-    left: auto;
-    background: none;
-    border: none;
-  }
 
 
 

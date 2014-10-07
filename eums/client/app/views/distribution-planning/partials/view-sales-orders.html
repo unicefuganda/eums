@@ -1,18 +1,27 @@
-<form>
-    <div class="right input-group">
-        <input type="text"
-               id="filter"
-               class="filter"
-               name="filter"
-               ng-model="query"
-               placeholder="Search by document number, date or description"/>
-        <span class="icon icon-search"></span>
-        <button class="icon icon-times" ng-click="resetFilter()" type="reset"></button>
-    </div>
-</form>
+
+<span style="float: left">
+    <label>PCR: </label>
+    <select style="width: 80px;" ng-model="programmeSelected" required="required"
+                                    ng-options="programme.name for programme in programmes"></select>
+</span>
+
+<span style="float: right">
+    <form>
+        <div class="right input-group">
+            <input style="width: 350px" type="text"
+                   id="filter"
+                   class="filter"
+                   name="filter"
+                   ng-model="query"
+                   placeholder="Search by document number, date or description"/>
+            <span class="icon icon-search" style="margin-right: 5px"></span>
+            <button class="icon icon-times" ng-click="resetFilter()" type="reset">X</button>
+        </div>
+    </form>
+</span>
 
 <div class="sales-order-list">
-    <table style="width: 100%">
+    <table style="width: 100%; overflow:auto;">
         <thead ng-init="initialize()">
         <tr>
             <th style="width: 20%">
