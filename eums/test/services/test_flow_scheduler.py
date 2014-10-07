@@ -1,13 +1,14 @@
 from unittest import TestCase
 import datetime
 
-from mockito import mock, verify, when, never, any
+from mockito import mock, verify, when, any
 
 from eums import celery
-from eums.models import DistributionPlanNode, DistributionPlanLineItem
+from eums.models import DistributionPlanNode, DistributionPlanLineItem, NodeLineItemRun
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
 from eums.test.services.mock_celery import MockCelery
 
@@ -32,6 +33,11 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
+        line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
+
+        when(line_item).current_run().thenReturn(line_item_run)
+        task_id = line_item_run.scheduled_message_task_id
+        when(celery.app.control).revoke(task_id).thenReturn(None)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
@@ -43,7 +49,7 @@ class FlowSchedulerTest(TestCase):
             sender='UNICEF',
             consignee=self.contact,
             item_description=line_item.item.description,
-        )
+            )
 
     def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
@@ -51,6 +57,11 @@ class FlowSchedulerTest(TestCase):
         parent_node = DistributionPlanNodeFactory(consignee=sender_org)
         node = DistributionPlanNodeFactory(consignee=self.consignee, parent=parent_node)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
+        line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
+
+        when(line_item).current_run().thenReturn(line_item_run)
+        task_id = line_item_run.scheduled_message_task_id
+        when(celery.app.control).revoke(task_id).thenReturn(None)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
@@ -68,6 +79,11 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node,
                                                     planned_distribution_date=datetime.datetime.now())
+        line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
+
+        when(line_item).current_run().thenReturn(line_item_run)
+        task_id = line_item_run.scheduled_message_task_id
+        when(celery.app.control).revoke(task_id).thenReturn(None)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
@@ -76,7 +92,9 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(line_item)
 
         node_line_item_run_set = line_item.nodelineitemrun_set.all()
-        self.assertEqual(len(node_line_item_run_set), 1)
+
+        #TODO remove the extra line item run to make this set have 1 item
+        self.assertEqual(len(node_line_item_run_set), 2)
         self.assertEqual(node_line_item_run_set[0].phone, self.contact['phone'])
         self.assertEqual(node_line_item_run_set[0].scheduled_message_task_id, mock_celery.task_id)
 
@@ -84,6 +102,11 @@ class FlowSchedulerTest(TestCase):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node,
                                                     planned_distribution_date=datetime.datetime.now())
+        line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
+
+        when(line_item).current_run().thenReturn(line_item_run)
+        task_id = line_item_run.scheduled_message_task_id
+        when(celery.app.control).revoke(task_id).thenReturn(None)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
@@ -93,18 +116,21 @@ class FlowSchedulerTest(TestCase):
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
-    def xtest_should_change_status_of_node_run_to_in_progress_when_scheduled_task_is_started(self):
+    def test_should_change_status_of_node_run_to_in_progress_when_scheduled_task_is_started(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node,
                                                     planned_distribution_date=datetime.datetime.now())
+        line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
+        when(line_item).current_run().thenReturn(line_item_run)
         when(node.consignee).build_contact().thenReturn(self.contact)
+        when(celery.app.control).revoke(line_item_run.scheduled_message_task_id).thenReturn(None)
 
         schedule_run_for(line_item)
 
-        self.assertEqual(line_item.current_node_line_item_run().status, 'in_progress')
+        self.assertEqual(line_item_run.status, 'in_progress')
 
     def test_should_cancel_scheduled_flow_for_a_consignee_before_scheduling_another_one_for_that_node_line_item(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee)
@@ -112,19 +138,22 @@ class FlowSchedulerTest(TestCase):
                                                         planned_distribution_date=datetime.datetime.now())
         DistributionPlanLineItemFactory(distribution_plan_node=node,
                                         planned_distribution_date=datetime.datetime.now())
+        line_item_run = NodeLineItemRunFactory(node_line_item=line_item_one, status=NodeLineItemRun.STATUS.not_started)
 
         when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
         when(DistributionPlanLineItem.objects).get(id=line_item_one.id).thenReturn(line_item_one)
         when(node.consignee).build_contact().thenReturn(self.contact)
+        when(line_item_one).current_run().thenReturn(line_item_run)
+        task_id = line_item_run.scheduled_message_task_id
 
-        schedule_run_for(line_item_one)
-
-        task_id = line_item_one.current_node_line_item_run().scheduled_message_task_id
         when(celery.app.control).revoke(task_id).thenReturn(None)
 
         schedule_run_for(line_item_one)
 
-        verify(celery.app.control).revoke(task_id)
+        schedule_run_for(line_item_one)
+
+        #TODO Refactor to make it a single call
+        verify(celery.app.control, times=2).revoke(task_id)
         verify(fake_facade, times=2).start_delivery_flow(sender=any(), consignee=any(), item_description=any())
 
     def tearDown(self):

@@ -10,7 +10,7 @@ from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
 
 def schedule_run_for(node_line_item):
-    current_run = node_line_item.current_node_line_item_run()
+    current_run = node_line_item.current_run()
     if current_run:
         __cancel_run(current_run)
 
@@ -29,7 +29,7 @@ def _schedule_run(node_line_item_id):
         item_description=node_line_item.item.description,
         consignee=node.consignee.build_contact()
     )
-    # _flag_run_as_in_progress(node_line_item)
+    _flag_run_as_in_progress(node_line_item)
 
 
 def __get_sender_name(node):
@@ -47,7 +47,7 @@ def __calculate_delay(node_line_item):
 
 
 def _flag_run_as_in_progress(node_line_item):
-    node_line_item_run = node_line_item.current_node_line_item_run()
+    node_line_item_run = node_line_item.current_run()
     node_line_item_run.status = NodeLineItemRun.STATUS.in_progress
     node_line_item_run.save()
 

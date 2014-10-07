@@ -20,20 +20,20 @@ class DistributionPlanLineItemTest(TestCase):
     def test_should_get_node_line_item_run_with_status_not_started(self):
         node_line_item = DistributionPlanLineItemFactory()
         line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.not_started)
-        self.assertEqual(node_line_item.current_node_line_item_run(), line_item_run)
+        self.assertEqual(node_line_item.current_run(), line_item_run)
 
     def test_should_get_node_line_item_run_with_status_in_progress(self):
         node_line_item = DistributionPlanLineItemFactory()
         line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.in_progress)
-        self.assertEqual(node_line_item.current_node_line_item_run(), line_item_run)
+        self.assertEqual(node_line_item.current_run(), line_item_run)
 
     def test_should_not_get_node_line_item_run_with_status_completed(self):
         node_line_item = DistributionPlanLineItemFactory()
         NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.completed)
-        self.assertEqual(node_line_item.current_node_line_item_run(), None)
+        self.assertEqual(node_line_item.current_run(), None)
 
     def test_should_not_get_node_line_item_run_with_status_expired(self):
         node_line_item = DistributionPlanLineItemFactory()
         NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.expired)
-        self.assertEqual(node_line_item.current_node_line_item_run(), None)
+        self.assertEqual(node_line_item.current_run(), None)
 

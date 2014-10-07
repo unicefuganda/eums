@@ -17,7 +17,7 @@ class DistributionPlanLineItem(models.Model):
     class Meta:
         app_label = 'eums'
 
-    def current_node_line_item_run(self):
+    def current_run(self):
         runs = self.nodelineitemrun_set.filter(Q(status='not_started') | Q(status='in_progress'))
         if len(runs):
             return runs[0]
