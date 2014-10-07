@@ -17,12 +17,12 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self):
         UUID = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
-        question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
+        question, _ = MultipleChoiceQuestion.objects.get_or_create(
             uuids=[UUID], text='Was item received?', label='productReceived'
         )
 
-        Option.objects.get_or_create(text='Yes', question=question_1)
-        Option.objects.get_or_create(text='No', question=question_1)
+        Option.objects.get_or_create(text='Yes', question=question)
+        Option.objects.get_or_create(text='No', question=question)
 
         node_line_item_run = NodeLineItemRunFactory(phone=self.PHONE)
 
@@ -37,6 +37,31 @@ class HookTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(created_answer.value, yes_option)
+
+    def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self):
+        UUIDS = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
+
+        question, _ = MultipleChoiceQuestion.objects.get_or_create(
+            uuids=[UUIDS], text='Was item received?', label='productReceived'
+        )
+
+        Option.objects.get_or_create(text='Yes', question=question)
+        Option.objects.get_or_create(text='No', question=question)
+
+        node_line_item_run = NodeLineItemRunFactory(phone=self.PHONE)
+
+        uuid_for_no = UUIDS[1]
+        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid_for_no, 'No', 'No', 'productReceived')
+
+        response = self.client.post(HOOK_URL + url_params)
+        expected_question = MultipleChoiceQuestion.objects.get(uuids=[UUIDS])
+        no_option = expected_question.option_set.get(text='No')
+
+        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[UUIDS], line_item_run=node_line_item_run)
+        created_answer = answers.first()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(created_answer.value, no_option)
 
     def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self):
         UUID = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'

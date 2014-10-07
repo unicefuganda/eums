@@ -6,7 +6,6 @@ from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQu
 def hook(request):
     params = request.GET
     __create_answer(params)
-
     return HttpResponse(status=200)
 
 
@@ -19,5 +18,5 @@ def __create_answer(params):
 def __get_matching_question(uuid):
     numeric_question = NumericQuestion.objects.filter(uuids=uuid)
     text_question = TextQuestion.objects.filter(uuids=uuid)
-    multi_question = MultipleChoiceQuestion.objects.filter(uuids=uuid)
+    multi_question = MultipleChoiceQuestion.objects.filter(uuids__contains=uuid)
     return (numeric_question or text_question or multi_question).first()
