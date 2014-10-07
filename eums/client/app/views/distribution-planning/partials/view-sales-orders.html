@@ -1,8 +1,10 @@
 
 <span style="float: left">
     <label>PCR: </label>
-    <select style="width: 80px;" ng-model="programmeSelected" required="required"
-                                    ng-options="programme.name for programme in programmes"></select>
+    <select style="width: 140px;" ng-model="programmeSelected" required="required"
+                                    ng-options="programme.name for programme in programmes">
+        <option value="" selected="selected">Select Programme</option>
+                                    </select>
 </span>
 
 <span style="float: right">
@@ -44,7 +46,7 @@
         <tbody>
         <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
             <td data-header="Document Number">
-                {{salesOrder.order_number}}
+                <a href="">{{salesOrder.order_number}}</a>
             </td>
             <td data-header="Date Created">
                 {{salesOrder.date}}
