@@ -154,6 +154,31 @@ describe('DistributionPlanController', function () {
 
     });
 
+    describe('when programme selected changes', function () {
+        it('should know the sales orders for new programme are retrieved when the programme selected changes', function () {
+            scope.initialize();
+            scope.$apply();
+            scope.programmeSelected = programmes[1];
+            scope.$apply();
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[1].salesorder_set[0]);
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[1].salesorder_set[1]);
+        });
+
+        it('should know the search query is reset when the programme selected changes', function () {
+            scope.query = 'Test';
+            scope.programmeSelected = programmes[1];
+            scope.$apply();
+            expect(scope.query).toEqual('');
+        });
+
+        it('should know the search query is not reset when no programme is selected', function () {
+            scope.query = 'Test';
+            scope.programmeSelected = null;
+            scope.$apply();
+            expect(scope.query).toEqual('Test');
+        });
+    });
+
     it('should save contact and return contact with an id', function () {
         deferred.resolve(stubResponse);
         scope.addContact();
