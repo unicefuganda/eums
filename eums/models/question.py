@@ -16,3 +16,6 @@ class Question(models.Model):
         super(Question, self).save(*args, **kwargs)
         if self.type is self.MULTIPLE_CHOICE:
             self.option_set.create(text='UNCATEGORISED')
+
+    def __str__(self):
+        return self.text

@@ -21,5 +21,10 @@ class QuestionTest(TestCase):
         uncategorised_option = Option.objects.filter(question=question, text=Option.UNCATEGORISED)
         self.assertEqual(uncategorised_option.count(), 0)
 
+    def test_text_should_be_the_string_representation_of_the_question(self):
+        text = 'Whats your gender?'
+        question = Question.objects.create(text=text, type=Question.TEXT, label="gender")
+        self.assertEqual(str(question), text)
+
     def tearDown(self):
         Question.objects.all().delete()
