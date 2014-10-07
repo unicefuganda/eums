@@ -9,6 +9,7 @@ from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactor
 
 HOOK_URL = BACKEND_URL + 'hook/'
 
+
 class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
@@ -17,8 +18,7 @@ class HookTest(APITestCase):
         UUID = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
         question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
-            uuids=UUID, text='Was item received?',
-            type=Question.MULTIPLE_CHOICE, label='productReceived'
+            uuids=UUID, text='Was item received?', label='productReceived'
         )
 
         Option.objects.get_or_create(text='Yes', question=question_1)
@@ -41,10 +41,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self):
         UUID = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
 
-        TextQuestion.objects.get_or_create(
-            uuids=UUID, text='What date was it received?',
-            type=Question.TEXT, label='dateOfReceipt'
-        )
+        TextQuestion.objects.get_or_create(uuids=UUID, text='What date was it received?', label='dateOfReceipt')
 
         node_line_item_run = NodeLineItemRunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 'Some Text', None, 'dateOfReceipt')
@@ -60,10 +57,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self):
         UUID = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        NumericQuestion.objects.get_or_create(
-            uuids=UUID, text='How much was received?',
-            type=Question.NUMERIC, label='amountReceived'
-        )
+        NumericQuestion.objects.get_or_create(uuids=UUID, text='How much was received?', label='amountReceived')
 
         node_line_item_run = NodeLineItemRunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 42, None, 'amountReceived')
