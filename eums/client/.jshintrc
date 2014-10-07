@@ -21,6 +21,7 @@
   "globals": {
     "angular": false,
       "$": false,
+      "_": false,
       "ngTableParams": false
   }
 }

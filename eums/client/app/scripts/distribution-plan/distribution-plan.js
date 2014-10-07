@@ -138,6 +138,23 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 return distributionPlanParameters[key];
             }
         };
+    }).directive('salesOrdersTable', [function () {
+        return {
+            controller: 'DistributionPlanController',
+            restrict  : 'E',
+            scope     : {
+                onSelect: '&',
+                actionable: '@'
+            },
+            templateUrl: '/static/app/views/distribution-planning/distribution-planning.html'
+        };
+    }]).filter('salesOrderFilter', function ($filter) {
+        return  function (salesOrders, query) {
+            var results = $filter('filter')(salesOrders, {order_number: query});
+            results = _.union(results, $filter('filter')(salesOrders, {date: query}));
+            results = _.union(results, $filter('filter')(salesOrders, {description: query}));
+            return results;
+        };
     })
 ;
 
