@@ -6,11 +6,7 @@ from django.conf import settings
 
 from eums.models import Consignee
 from eums.test.factories.consignee_factory import ConsigneeFactory
-
 from eums.rapid_pro.fake_response import FakeResponse
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
-from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory as LineItemFactory
 
 
 class ConsigneeTest(TestCase):
