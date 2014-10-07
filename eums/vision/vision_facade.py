@@ -1,5 +1,5 @@
 from xlutils.view import View
-from eums.models import SalesOrder, Item, SalesOrderItem
+from eums.models import SalesOrder, Item, SalesOrderItem, Programme
 from datetime import datetime
 
 
@@ -10,9 +10,10 @@ def import_sales_orders(location):
 
 def load_sales_order_data(location):
     view = View(location)
+
     relevant_data = {1: 'order_number', 7: 'material_code', 8: 'quantity', 10: 'date', 11: 'issue_date',
                      12: 'delivery_date',
-                     15: 'net_price', 16: 'net_value'}
+                     15: 'net_price', 16: 'net_value', 19: 'programme_name'}
 
     return _convert_view_to_list_of_dicts(view[0][1:, :], relevant_data)
 
@@ -26,6 +27,7 @@ def _create_sales_order_from_dict(sales_order_data):
     sales_order = SalesOrder()
     sales_order.order_number = sales_order_data['order_number']
     sales_order.date = datetime.strptime(sales_order_data['items'][0]['issue_date'], "%m/%d/%Y")
+    sales_order.programme = Programme.objects.get(name=sales_order_data['programme_name'])
     sales_order.save()
 
     for sales_order_item_data in sales_order_data['items']:
@@ -50,12 +52,14 @@ def _convert_view_to_list_of_dicts(sheet, relevant_data):
                 sales_order_item_dict[relevant_data.get(col_index)] = str(value)
 
         sales_order_number = sales_order_item_dict['order_number']
+        sales_order_program = sales_order_item_dict['programme_name']
         sales_order_index = _sales_order_index_in_list(sales_order_number, sales_orders_list)
 
         if sales_order_index > -1:
             sales_orders_list[sales_order_index].get('items').append(sales_order_item_dict)
         else:
-            sales_orders_list.append({'order_number': sales_order_number, 'items': [sales_order_item_dict]})
+            sales_orders_list.append({'order_number': sales_order_number, 'programme_name': sales_order_program,
+                                      'items': [sales_order_item_dict]})
 
     return sales_orders_list
 

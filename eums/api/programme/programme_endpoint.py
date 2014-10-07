@@ -8,7 +8,7 @@ from eums.models import Programme
 class ProgrammeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Programme
-        fields = ('id', 'name', 'focal_person')
+        fields = ('id', 'name', 'focal_person', 'salesorder_set')
 
 
 class ProgrammeViewSet(ModelViewSet):
