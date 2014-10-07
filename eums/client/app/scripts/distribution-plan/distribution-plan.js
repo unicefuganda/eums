@@ -2,7 +2,11 @@
 
 
 angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, DistributionPlanParameters, ProgrammeService, SalesOrderService) {
+    .controller('DistributionPlanController', function ($scope, ContactService, $location,
+                                                        DistributionPlanService, DistributionPlanParameters,
+                                                        ProgrammeService, SalesOrderService, $sorter) {
+
+        $scope.sortBy = $sorter;
         $scope.contact = {};
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -15,7 +19,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.programmes = [];
 
         $scope.initialize = function () {
-
+            this.sortBy('order_number');
             ProgrammeService.fetchProgrammes().then(function (response) {
                 $scope.programmes = response.data;
                 $scope.programmes[0].salesorder_set.forEach(function (salesOrderID) {
@@ -25,13 +29,23 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             });
 
-
-
             DistributionPlanService.getSalesOrders().then(function (response) {
                 $scope.salesOrders = response.data;
                 DistributionPlanParameters.saveVariable('salesOrders', $scope.salesOrders);
             });
+        };
 
+        $scope.resetFilter = function () {
+            $scope.query = '';
+        };
+
+        $scope.sortArrowClass = function (criteria) {
+            var output = 'icon icon-sort';
+
+            if (this.sort.criteria === criteria) {
+                output = 'active icon icon-sort';
+            }
+            return output;
         };
 
         $scope.newDistributionPlan = function () {
@@ -138,7 +152,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 return distributionPlanParameters[key];
             }
         };
-    }).directive('salesOrdersTable', [function () {
+    }).directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',
             restrict  : 'E',
@@ -146,7 +160,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 onSelect: '&',
                 actionable: '@'
             },
-            templateUrl: '/static/app/views/distribution-planning/distribution-planning.html'
+            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
         };
     }]).filter('salesOrderFilter', function ($filter) {
         return  function (salesOrders, query) {
@@ -154,6 +168,11 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             results = _.union(results, $filter('filter')(salesOrders, {date: query}));
             results = _.union(results, $filter('filter')(salesOrders, {description: query}));
             return results;
+        };
+    }).factory('$sorter', function () {
+        return function (field) {
+            this.sort = this.sort || {};
+            angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
         };
     })
 ;

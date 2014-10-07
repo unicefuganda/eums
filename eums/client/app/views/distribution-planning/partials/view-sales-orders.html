@@ -1,0 +1,55 @@
+<form>
+    <div class="right input-group">
+        <input type="text"
+               id="filter"
+               class="filter"
+               name="filter"
+               ng-model="query"
+               placeholder="Search by document number, date or description"/>
+        <span class="icon icon-search"></span>
+        <button class="icon icon-times" ng-click="resetFilter()" type="reset"></button>
+    </div>
+</form>
+
+<div class="sales-order-list">
+    <table style="width: 100%">
+        <thead ng-init="initialize()">
+        <tr>
+            <th style="width: 20%">
+                <a ng-click="sortBy('order_number')">Document Number <i
+                        ng-class="sortArrowClass('order_number')"></i></a>
+            </th>
+            <th style="width: 30%">
+                <a ng-click="sortBy('date')">Date Created
+                    <i ng-class="sortArrowClass('date');"></i>
+                </a>
+            </th>
+            <th style="width: 50%">
+                <a ng-click="sortBy('description')">Description
+                    <i ng-class="sortArrowClass('description')"></i>
+                </a>
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+            <td data-header="Document Number">
+                {{salesOrder.order_number}}
+            </td>
+            <td data-header="Date Created">
+                {{salesOrder.date}}
+            </td>
+            <td data-header="Description">
+                {{salesOrder.description}}
+            </td>
+        </tr>
+        </tbody>
+    <span class="information message"
+          ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
+    There are no matches to your search criteria.
+    </span>
+        <span class="information message" ng-show="salesOrders.length == 0">There are no beneficiaries linked to your profile.</span>
+    </table>
+</div>
+

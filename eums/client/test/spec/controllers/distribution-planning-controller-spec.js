@@ -1,6 +1,6 @@
 describe('DistributionPlanController', function () {
 
-    var scope;
+    var scope, sorter, filter;
     var location, distPlanEndpointUrl;
     var mockContactService, mockPlanService, mockProgrammeService, mockSalesOrderService;
     var deferred, deferredPlan, deferredSalesOrder;
@@ -36,7 +36,7 @@ describe('DistributionPlanController', function () {
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme', 'fetchProgrammes']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
 
-        inject(function ($controller, $rootScope, ContactService, $location, $q, $httpBackend, EumsConfig) {
+        inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
             deferred = $q.defer();
             deferredPlan = $q.defer();
             deferredSalesOrder = $q.defer();
@@ -48,6 +48,8 @@ describe('DistributionPlanController', function () {
             mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
 
             scope = $rootScope.$new();
+            sorter = $sorter;
+            filter = $filter;
 
             location = $location;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
@@ -57,40 +59,112 @@ describe('DistributionPlanController', function () {
                     DistributionPlanService: mockPlanService,
                     ProgrammeService: mockProgrammeService,
                     SalesOrderService: mockSalesOrderService,
+                    $sorter: sorter,
+                    $filter: filter,
                     $location: location});
         });
     });
 
-    it('should fetch all programmes when initialized', function () {
-        scope.initialize();
-        scope.$apply();
-        expect(mockProgrammeService.fetchProgrammes).toHaveBeenCalled();
+    describe('when sorted', function () {
+        it('should set the sort criteria', function () {
+            scope.sortBy('field');
+            expect(scope.sort.criteria).toBe('field');
+        });
+        it('should set the sort order as descending by default', function () {
+            scope.sortBy('field');
+            expect(scope.sort.descending).toBe(true);
+        });
+        it('should toggle the sort order', function () {
+            scope.sortBy('field');
+            scope.sortBy('field');
+            expect(scope.sort.descending).toBe(false);
+        });
     });
 
-    it('should have all programmes in the scope when initialized', function () {
-        deferred.resolve({data: programmes});
-        scope.initialize();
-        scope.$apply();
-        expect(scope.programmes).toEqual(programmes);
+    describe('when filtering', function () {
+        it('should reset the query parameter when reset filter is clicked', function () {
+            scope.query = 'Name';
+            scope.resetFilter();
+            scope.$apply();
+
+            expect(scope.query).toEqual('');
+        });
     });
 
-    it('should fetch the sales orders linked to the first programme on initialize', function () {
-        deferred.resolve({data: programmes});
-        scope.initialize();
-        scope.$apply();
+    describe('when initialized', function () {
+        it('should fetch all programmes when initialized', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(mockProgrammeService.fetchProgrammes).toHaveBeenCalled();
+        });
 
-        expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[0]);
-        expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[1]);
+        it('should have all programmes in the scope when initialized', function () {
+            deferred.resolve({data: programmes});
+            scope.initialize();
+            scope.$apply();
+            expect(scope.programmes).toEqual(programmes);
+        });
+
+        it('should fetch the sales orders linked to the first programme on initialize', function () {
+            deferred.resolve({data: programmes});
+            scope.initialize();
+            scope.$apply();
+
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[0]);
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[1]);
+        });
+
+        it('should set sales orders linked to the first programme on initialize to the scope', function () {
+            deferred.resolve({data: programmes});
+            deferredSalesOrder.resolve(salesOrderDetails[0]);
+            scope.initialize();
+            scope.$apply();
+            expect(scope.salesOrders).toEqual([salesOrderDetails[0], salesOrderDetails[0]]);
+        });
+
+        it('should expect all sales orders to be on the local scope when the controller is initialised', function () {
+            deferredPlan.resolve({data: salesOrderDetails});
+            scope.initialize();
+            scope.$apply();
+            expect(scope.salesOrders).toEqual(salesOrderDetails);
+        });
+
+        it('should call the get sales order service from distribution plan', function () {
+            scope.initialize();
+            expect(mockPlanService.getSalesOrders).toHaveBeenCalled();
+        });
+
+        it('should set the sorter', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(scope.sortBy).toBe(sorter);
+        });
+
+        it('should sort by order number', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(scope.sort.criteria).toBe('order_number');
+        });
+
+        it('should sort in descending order', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(scope.sort.descending).toBe(true);
+        });
+
+        it('should have the sort arrow icon on the order number column by default', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(scope.sortArrowClass('')).toEqual('icon icon-sort');
+        });
+
+        it('should set the clicked column as active', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(scope.sortArrowClass('order_number')).toEqual('active icon icon-sort');
+        });
+
     });
-
-    it('should set sales orders linked to the first programme on initialize to the scope', function () {
-        deferred.resolve({data: programmes});
-        deferredSalesOrder.resolve(salesOrderDetails[0]);
-        scope.initialize();
-        scope.$apply();
-        expect(scope.salesOrders).toEqual([salesOrderDetails[0], salesOrderDetails[0]]);
-    });
-
 
     it('should save contact and return contact with an id', function () {
         deferred.resolve(stubResponse);
@@ -104,17 +178,5 @@ describe('DistributionPlanController', function () {
         scope.addContact();
         scope.$apply();
         expect(scope.errorMessage).toBe('Phone number is not valid');
-    });
-
-    it('should call the get sales order service from distribution plan', function () {
-        scope.initialize();
-        expect(mockPlanService.getSalesOrders).toHaveBeenCalled();
-    });
-
-    it('should expect all sales orders to be on the local scope when the controller is initialised', function () {
-        deferredPlan.resolve({data: salesOrderDetails});
-        scope.initialize();
-        scope.$apply();
-        expect(scope.salesOrders).toEqual(salesOrderDetails);
     });
 });
