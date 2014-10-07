@@ -1,14 +1,12 @@
 import ast
 from django.db import models
+from djorm_pgarray.fields import TextArrayField
 
 class Question(models.Model):
-    MULTIPLE_CHOICE = 'MULTIPLE_CHOICE'
-    TEXT = 'TEXT'
-    NUMERIC = 'NUMERIC'
-
     text = models.TextField()
-    uuids = models.TextField()
     label = models.CharField(max_length=255, unique=True)
+
+    uuids = TextArrayField(dimension=1)
 
     def __str__(self):
         return self.text

@@ -1,5 +1,5 @@
 from urllib import quote_plus
-from eums.models.question import MultipleChoiceQuestion, TextQuestion, NumericQuestion
+
 from rest_framework.test import APITestCase
 from eums.fixtures.questions import *
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer
@@ -14,11 +14,11 @@ class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
 
-    def test_should_record_an_answer_of_type_multi_choice_for_a_node_from_request_data(self):
+    def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self):
         UUID = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
         question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
-            uuids=UUID, text='Was item received?', label='productReceived'
+            uuids=[UUID], text='Was item received?', label='productReceived'
         )
 
         Option.objects.get_or_create(text='Yes', question=question_1)
@@ -29,10 +29,10 @@ class HookTest(APITestCase):
         url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 'Yes', 'Yes', 'productReceived')
 
         response = self.client.post(HOOK_URL + url_params)
-        expected_question = MultipleChoiceQuestion.objects.get(uuids=UUID)
+        expected_question = MultipleChoiceQuestion.objects.get(uuids=[UUID])
         yes_option = expected_question.option_set.get(text='Yes')
 
-        answers = MultipleChoiceAnswer.objects.filter(question__uuids=UUID, line_item_run=node_line_item_run)
+        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[UUID], line_item_run=node_line_item_run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -41,14 +41,14 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self):
         UUID = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
 
-        TextQuestion.objects.get_or_create(uuids=UUID, text='What date was it received?', label='dateOfReceipt')
+        TextQuestion.objects.get_or_create(uuids=[UUID], text='What date was it received?', label='dateOfReceipt')
 
         node_line_item_run = NodeLineItemRunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 'Some Text', None, 'dateOfReceipt')
 
         response = self.client.post(HOOK_URL + url_params)
 
-        answers = TextAnswer.objects.filter(question__uuids=UUID, line_item_run=node_line_item_run)
+        answers = TextAnswer.objects.filter(question__uuids=[UUID], line_item_run=node_line_item_run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -57,14 +57,14 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self):
         UUID = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        NumericQuestion.objects.get_or_create(uuids=UUID, text='How much was received?', label='amountReceived')
+        NumericQuestion.objects.get_or_create(uuids=[UUID], text='How much was received?', label='amountReceived')
 
         node_line_item_run = NodeLineItemRunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, UUID, 42, None, 'amountReceived')
 
         response = self.client.post(HOOK_URL + url_params)
 
-        answers = NumericAnswer.objects.filter(question__uuids=UUID, line_item_run=node_line_item_run)
+        answers = NumericAnswer.objects.filter(question__uuids=[UUID], line_item_run=node_line_item_run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)

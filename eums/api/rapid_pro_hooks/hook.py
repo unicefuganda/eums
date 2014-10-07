@@ -12,7 +12,7 @@ def hook(request):
 
 def __create_answer(params):
     line_item_run = NodeLineItemRun.objects.filter(phone=params['phone']).first()
-    question = __get_matching_question(params['step'])
+    question = __get_matching_question([params['step']])
     question.create_answer(params, line_item_run)
 
 
