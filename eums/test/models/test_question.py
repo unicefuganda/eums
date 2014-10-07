@@ -23,7 +23,7 @@ class QuestionTest(TestCase):
 
     def test_text_should_be_the_string_representation_of_the_question(self):
         text = 'Whats your gender?'
-        question = Question.objects.create(text=text, type=Question.TEXT, label="gender")
+        question = TextQuestion.objects.create(text=text, label="gender")
         self.assertEqual(str(question), text)
 
     def tearDown(self):
