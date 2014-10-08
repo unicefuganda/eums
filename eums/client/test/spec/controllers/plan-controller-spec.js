@@ -64,8 +64,8 @@ describe('NewDistributionPlanController', function () {
     });
 
     describe('when the controller is initialized', function () {
-        it('should have the distributionPlanItems defaulted to an empty list', function(){
-             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
+        it('should have the distributionPlanItems defaulted to an empty list', function () {
+            mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
             scope.initialize();
             scope.$apply();
 
@@ -96,6 +96,14 @@ describe('NewDistributionPlanController', function () {
             expect(scope.hasSalesOrderItems).toBeFalsy();
         });
 
+        it('should have the distribution plan item flag as false by default', function () {
+            mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
+            scope.initialize();
+            scope.$apply();
+
+            expect(scope.hasDistributionPlanItems).toBeFalsy();
+        });
+
         it('should format the selected sales order appropriately for the view', function () {
 
             deferred.resolve(stubSalesOrderItem);
@@ -115,6 +123,30 @@ describe('NewDistributionPlanController', function () {
             scope.salesOrderItemSelected = expectedFormattedSalesOrderItem;
             scope.$apply();
             expect(scope.hasSalesOrderItems).toBeTruthy();
+        });
+
+        it('should set the distribution plan items flag to true if there are distribution plan items for sales order item selected', function () {
+            scope.hasDistributionPlanItems = false;
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem,
+                distribution_plan_items: ['1', '2']};
+            scope.$apply();
+            expect(scope.hasDistributionPlanItems).toBeTruthy();
+        });
+
+        it('should set the distribution plan items flag to false if there are no distribution plan items for sales order item selected', function () {
+            scope.hasDistributionPlanItems = false;
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem,
+                distribution_plan_items: []};
+            scope.$apply();
+            expect(scope.hasDistributionPlanItems).toBeFalsy();
         });
 
         it('should know the has sales order items flag is set to false if sales item is null', function () {

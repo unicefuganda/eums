@@ -84,16 +84,6 @@ describe('DistributionPlanController', function () {
         });
     });
 
-    describe('when filtering', function () {
-        it('should reset the query parameter when reset filter is clicked', function () {
-            scope.query = 'Name';
-            scope.resetFilter();
-            scope.$apply();
-
-            expect(scope.query).toEqual('');
-        });
-    });
-
     describe('when initialized', function () {
         it('should fetch all programmes when initialized', function () {
             scope.initialize();

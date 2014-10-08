@@ -1,66 +1,66 @@
-
 <span style="float: left">
     <label>PCR: </label>
     <select style="width: 140px;" ng-model="programmeSelected" required="required"
-                                    ng-options="programme.name for programme in programmes">
+            ng-options="programme.name for programme in programmes">
         <option value="" selected="selected">Select Programme</option>
-                                    </select>
+    </select>
 </span>
 
-<span style="float: right">
+<span style="float: right;">
     <form>
-        <div class="right input-group">
+        <div class="inner-addon left-addon">
+            <i class="glyphicon glyphicon-search"></i>
             <input style="width: 350px" type="text"
                    id="filter"
-                   class="filter"
+                   class="form-control"
                    name="filter"
                    ng-model="query"
-                   placeholder="Search by document number, date or description"/>
-            <span class="icon icon-search" style="margin-right: 5px"></span>
-            <button class="icon icon-times" ng-click="resetFilter()" type="reset">X</button>
+                   placeholder="Search by doc number, date or description"/>
         </div>
     </form>
 </span>
 
-<div class="sales-order-list">
-    <table style="width: 100%; overflow:auto;">
-        <thead ng-init="initialize()">
-        <tr>
-            <th style="width: 20%">
-                <a ng-click="sortBy('order_number')">Document Number <i
-                        ng-class="sortArrowClass('order_number')"></i></a>
-            </th>
-            <th style="width: 30%">
-                <a ng-click="sortBy('date')">Date Created
-                    <i ng-class="sortArrowClass('date');"></i>
-                </a>
-            </th>
-            <th style="width: 50%">
-                <a ng-click="sortBy('description')">Description
-                    <i ng-class="sortArrowClass('description')"></i>
-                </a>
-            </th>
-        </tr>
-        </thead>
+<div style="padding-top: 1px">
+    <div class="sales-order-list">
+        <table style="width: 100%; overflow:auto;">
+            <thead ng-init="initialize()">
+            <tr>
+                <th style="width: 20%">
+                    <a ng-click="sortBy('order_number')">Document Number <i
+                            ng-class="sortArrowClass('order_number')"></i></a>
+                </th>
+                <th style="width: 30%">
+                    <a ng-click="sortBy('date')">Date Created
+                        <i ng-class="sortArrowClass('date');"></i>
+                    </a>
+                </th>
+                <th style="width: 50%">
+                    <a ng-click="sortBy('description')">Description
+                        <i ng-class="sortArrowClass('description')"></i>
+                    </a>
+                </th>
+            </tr>
+            </thead>
 
-        <tbody>
-        <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
-            <td data-header="Document Number">
-                <a ng-click="selectSalesOrder(salesOrder)">{{salesOrder.order_number}}</a>
-            </td>
-            <td data-header="Date Created">
-                {{salesOrder.date}}
-            </td>
-            <td data-header="Description">
-                {{salesOrder.description}}
-            </td>
-        </tr>
-        </tbody>
+            <tbody>
+            <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+                <td data-header="Document Number">
+                    <a ng-click="selectSalesOrder(salesOrder)">{{salesOrder.order_number}}</a>
+                </td>
+                <td data-header="Date Created">
+                    {{salesOrder.date}}
+                </td>
+                <td data-header="Description">
+                    {{salesOrder.description}}
+                </td>
+            </tr>
+            </tbody>
     <span class="information message"
           ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
     There are no matches to your search criteria.
     </span>
-        <span class="information message" ng-show="salesOrders.length == 0">There are no beneficiaries linked to your profile.</span>
-    </table>
+            <span class="information message" ng-show="salesOrders.length == 0">There are no beneficiaries linked to your profile.</span>
+        </table>
+    </div>
 </div>
 

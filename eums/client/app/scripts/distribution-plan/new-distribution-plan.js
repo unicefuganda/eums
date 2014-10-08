@@ -9,6 +9,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.initialize = function () {
             $scope.salesOrderItemSelected = undefined;
             $scope.hasSalesOrderItems = false;
+            $scope.hasDistributionPlanItems = false;
 
             $scope.selectedSalesOrder = DistributionPlanParameters.retrieveVariable('selectedSalesOrder');
 
@@ -35,6 +36,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
             else{
                 $scope.hasSalesOrderItems = true;
+
+                var distributionPlanItems = $scope.salesOrderItemSelected.distribution_plan_items;
+
+                if(distributionPlanItems && distributionPlanItems.length > 0){
+                    $scope.hasDistributionPlanItems = true;
+                }
             }
         });
 

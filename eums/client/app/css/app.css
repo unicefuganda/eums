@@ -7,6 +7,33 @@ tbody {
  overflow: auto;
 }
 
+table#distributionPlanTable tr:nth-child(even) {
+    background-color: #eee;
+}
+table#distributionPlanTable tr:nth-child(odd) {
+   background-color:#fff;
+}
+table#distributionPlanTable th	{
+    background-color: lightgrey;
+    color: #000000;
+}
+
+.inner-addon {
+    position: relative;
+}
+
+/* style icon */
+.inner-addon .glyphicon {
+  position: absolute;
+  padding: 10px;
+}
+
+/* align icon */
+.left-addon .glyphicon  { left:  0px;}
+
+/* add padding  */
+.left-addon input  { padding-left:  30px; }
+
 .sales-order-list {
     background: white;
     border: 0.5em solid rgb(240, 240, 239);

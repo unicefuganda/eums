@@ -30,10 +30,6 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             });
         };
 
-        $scope.resetFilter = function () {
-            $scope.query = '';
-        };
-
         $scope.$watch('programmeSelected', function () {
 
             $scope.salesOrders = [];

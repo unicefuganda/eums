@@ -31,37 +31,44 @@
             </div>
 
             <div ng-show="hasSalesOrderItems" class="sales-order-list">
-                <table style="width: 100%">
-                    <th style="width: 10%">Sales Order</th>
-                    <th style="width: 10%">Item Description</th>
-                    <th style="width: 5%">Sales Order Qty</th>
-                    <th style="width: 5%">Unit</th>
-                    <th style="width: 5%">Targeted Qty</th>
-                    <th style="width: 10%">Planned Distr Date</th>
-                    <th style="width: 10%">Programme Focal</th>
-                    <th style="width: 10%">Consignee</th>
-                    <th style="width: 10%">Contact Person</th>
-                    <th style="width: 5%">Phone</th>
-                    <th style="width: 10%">Region/District</th>
-                    <th style="width: 10%">Mode of Delivery</th>
-                    <th style="width: 5%">Trackable</th>
+                <div ng-show="hasDistributionPlanItems">
+                    <table style="width: 100%" id="distributionPlanTable">
+                        <th style="width: 10%">Sales Order</th>
+                        <th style="width: 10%">Item Description</th>
+                        <th style="width: 5%">Sales Order Qty</th>
+                        <th style="width: 5%">Unit</th>
+                        <th style="width: 5%">Targeted Qty</th>
+                        <th style="width: 10%">Planned Distr Date</th>
+                        <th style="width: 10%">Programme Focal</th>
+                        <th style="width: 10%">Consignee</th>
+                        <th style="width: 10%">Contact Person</th>
+                        <th style="width: 5%">Phone</th>
+                        <th style="width: 10%">Region/District</th>
+                        <th style="width: 10%">Mode of Delivery</th>
+                        <th style="width: 5%">Trackable</th>
 
-                    <tr ng-repeat="distributionPlanItem in distributionPlanItems">
-                        <td>{{selectedSalesOrder.order_number}}</td>
-                        <td>{{salesOrderItemSelected.display}}</td>
-                        <td>{{salesOrderItemSelected.quantity}}</td>
-                        <td>{{salesOrderItemSelected.unit}}</td>
-                        <td>{{distributionPlanItem.targeted_quantity}}</td>
-                        <td>{{distributionPlanItem.planned_distribution_date}}</td>
-                        <td>{{distributionPlanItem.programme_focal}}</td>
-                        <td>{{distributionPlanItem.consignee}}</td>
-                        <td>{{distributionPlanItem.contact_person}}</td>
-                        <td>{{distributionPlanItem.contact_phone_number}}</td>
-                        <td>{{distributionPlanItem.district}}</td>
-                        <td>{{distributionPlanItem.mode_of_delivery}}</td>
-                        <td><input type="checkbox" checked="distributionPlanItem.tracked"></td>
-                    </tr>
-                </table>
+                        <tr ng-repeat="distributionPlanItem in distributionPlanItems">
+                            <td>{{selectedSalesOrder.order_number}}</td>
+                            <td>{{salesOrderItemSelected.display}}</td>
+                            <td>{{salesOrderItemSelected.quantity}}</td>
+                            <td>{{salesOrderItemSelected.unit}}</td>
+                            <td>{{distributionPlanItem.targeted_quantity}}</td>
+                            <td>{{distributionPlanItem.planned_distribution_date}}</td>
+                            <td>{{distributionPlanItem.programme_focal}}</td>
+                            <td>{{distributionPlanItem.consignee}}</td>
+                            <td>{{distributionPlanItem.contact_person}}</td>
+                            <td>{{distributionPlanItem.contact_phone_number}}</td>
+                            <td>{{distributionPlanItem.district}}</td>
+                            <td>{{distributionPlanItem.mode_of_delivery}}</td>
+                            <td><input type="checkbox" checked="distributionPlanItem.tracked"></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div>
+                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-plus"> </i>Add IP
+                    </button>
+                </div>
             </div>
         </div>
     </div>
