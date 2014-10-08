@@ -6,6 +6,7 @@ from mock import MagicMock, ANY
 
 from eums import celery
 from eums.models import NodeLineItemRun, DistributionPlanNode, DistributionPlanLineItem
+from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -17,11 +18,6 @@ from eums.test.services.mock_celery import MockCelery
 datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
 celery.app.task = mock_celery.task
-
-from eums.rapid_pro import rapid_pro_facade
-
-fake_facade = MagicMock()
-rapid_pro_facade.start_delivery_run = fake_facade.start_delivery_run
 
 from eums.services.flow_scheduler import schedule_run_for
 
@@ -86,7 +82,9 @@ class FlowSchedulerTest(TestCase):
         fake_facade.start_delivery_run.assert_called_with(sender='UNICEF', consignee=self.contact, flow=ANY,
                                                           item_description=self.line_item.item.description)
 
-    def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
+    @patch('rapid_pro_facade.start_delivery_run')
+    def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self, fake_delivery_run):
+        fake_delivery_run.return_value = None
         sender_org_name = "Dwelling Places"
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = DistributionPlanNodeFactory(consignee=sender_org)
@@ -104,7 +102,6 @@ class FlowSchedulerTest(TestCase):
         fake_facade.start_delivery_run.assert_called_with(consignee=self.contact, flow=ANY, sender=sender_org_name,
                                                           item_description=line_item.item.description)
 
-    def test_should_save_a_node_line_item_run_with_task_id_after_and_phone_as_cache_scheduling_the_flow(self):
         schedule_run_for(self.line_item)
 
         node_line_item_run_set = self.line_item.nodelineitemrun_set.all()
@@ -130,7 +127,11 @@ class FlowSchedulerTest(TestCase):
 
         self.assertEqual(self.line_item_run.status, 'in_progress')
 
-    def xtest_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self):
+    @patch('rapid_pro_facade.start_delivery_run')
+    def xtest_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
+                                                                                                                  fake_delivery_run):
+        fake_delivery_run.return_value = None
+
         DistributionPlanLineItemFactory(distribution_plan_node=self.node,
                                         planned_distribution_date=datetime.datetime.now())
         NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.not_started)
@@ -142,9 +143,13 @@ class FlowSchedulerTest(TestCase):
 
         self.assertEqual(self.line_item_run.status, NodeLineItemRun.STATUS.cancelled)
         celery.app.control.revoke.assert_called_with(self.task_id)
-        fake_facade.start_delivery_run.assert_called()
+        fake_delivery_run.assert_called()
 
-    def xtest_should_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self):
+    @patch('rapid_pro_facade.start_delivery_run')
+    def xtest_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
+                                                                                                     fake_delivery_run):
+        fake_delivery_run.return_value = None
+
         node_two = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=node_two)
         line_item_run_two = NodeLineItemRunFactory(node_line_item=line_item_two,
@@ -164,4 +169,4 @@ class FlowSchedulerTest(TestCase):
     def tearDown(self):
         NodeLineItemRun.current_run_for_consignee = self.original_run_class
 
-    reload(rapid_pro_facade)
+reload(rapid_pro_facade)
