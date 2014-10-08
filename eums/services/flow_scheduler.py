@@ -11,6 +11,7 @@ from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 def schedule_run_for(node_line_item):
     current_run = node_line_item.current_run()
     if current_run:
+        print '*'*20, 'CANCELING RUN'
         __cancel_run(current_run)
 
     run_delay = __calculate_delay(node_line_item)
