@@ -100,7 +100,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(line_item)
 
-        fake_facade.start_delivery_run.assert_called_with(consignee=self.contact, flow=ANY, sender=sender_org_name,
+        fake_delivery_run.assert_called_with(consignee=self.contact, flow=ANY, sender=sender_org_name,
                                                           item_description=line_item.item.description)
 
         schedule_run_for(self.line_item)

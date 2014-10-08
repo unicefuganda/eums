@@ -21,7 +21,7 @@ def schedule_run_for(node_line_item):
         contact = consignee.build_contact()
         task = _schedule_run.apply_async(args=[node_line_item.id], countdown=run_delay)
         NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
-                                       status=NodeLineItemRun.STATUS.not_started, phone=contact['phone'],
+                                       status=NodeLineItemRun.STATUS.scheduled, phone=contact['phone'],
                                        consignee=consignee)
 
 
@@ -36,7 +36,6 @@ def _schedule_run(node_line_item_id):
         consignee=node.consignee.build_contact(),
         flow=flow
     )
-    _flag_run_as_in_progress(node_line_item)
 
 
 def __select_flow_for(node):
@@ -57,12 +56,6 @@ def __calculate_delay(node_line_item):
                                                        datetime.datetime.min.time())
     when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
     return (when_to_send_message - datetime.datetime.now()).total_seconds()
-
-
-def _flag_run_as_in_progress(node_line_item):
-    node_line_item_run = node_line_item.current_run()
-    node_line_item_run.status = NodeLineItemRun.STATUS.in_progress
-    node_line_item_run.save()
 
 
 def __cancel_run(run):

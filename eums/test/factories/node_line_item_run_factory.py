@@ -11,7 +11,7 @@ class NodeLineItemRunFactory(factory.DjangoModelFactory):
 
     scheduled_message_task_id = factory.Sequence(lambda n: '{0}'.format(n))
     node_line_item = factory.SubFactory(DistributionPlanLineItemFactory)
-    status = NodeLineItemRun.STATUS.not_started
+    status = NodeLineItemRun.STATUS.scheduled
     phone = factory.Sequence(lambda n: '{0}'.format(n))
     consignee = factory.SubFactory(ConsigneeFactory)
 

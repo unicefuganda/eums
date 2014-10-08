@@ -7,7 +7,7 @@ from eums.models import DistributionPlanLineItem, Consignee
 
 
 class NodeLineItemRun(models.Model):
-    STATUS = Choices('not_started', 'in_progress', 'completed', 'expired', 'cancelled')
+    STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
     node_line_item = models.ForeignKey(DistributionPlanLineItem)
     status = StatusField()
@@ -21,8 +21,7 @@ class NodeLineItemRun(models.Model):
     def current_run_for_consignee(cls, consignee_id):
         line_item_runs = NodeLineItemRun.objects.filter(
             Q(node_line_item__distribution_plan_node__consignee_id=consignee_id) &
-            (Q(status=NodeLineItemRun.STATUS.not_started) |
-             Q(status=NodeLineItemRun.STATUS.in_progress)))
+            Q(status=NodeLineItemRun.STATUS.scheduled))
         if len(line_item_runs):
             return line_item_runs[0]
         return None

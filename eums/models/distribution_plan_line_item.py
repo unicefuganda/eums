@@ -23,7 +23,7 @@ class DistributionPlanLineItem(models.Model):
         app_label = 'eums'
 
     def current_run(self):
-        runs = self.nodelineitemrun_set.filter(Q(status='not_started') | Q(status='in_progress'))
+        runs = self.nodelineitemrun_set.filter(Q(status='scheduled'))
         if len(runs):
             return runs[0]
         return None

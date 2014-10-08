@@ -21,17 +21,12 @@ class NodeLineItemRunTest(TestCase):
         for field in ['scheduled_message_task_id', 'node_line_item_id', 'status', 'consignee_id', 'phone']:
             self.assertIn(field, fields_in_node_line_item_run)
 
-    def test_should_get_current_run_for_consignee_with_run_with_status_not_started(self):
+    def test_should_get_current_run_for_consignee_with_run_with_status_scheduled(self):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
 
         self.assertEqual(NodeLineItemRun.current_run_for_consignee(self.consignee.id), line_item_run)
 
-    def test_should_get_current_run_for_consignee_with_run_with_status_in_progress(self):
-        line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.in_progress)
-
-        self.assertEqual(NodeLineItemRun.current_run_for_consignee(self.consignee.id), line_item_run)
-
-    def test_should_get_none_when_current_run_is_called_for_a_consignee_with_no_runs_in_progress_or_not_started(self):
+    def test_should_get_none_when_current_run_is_called_for_a_consignee_with_no_runs_scheduled(self):
         NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.expired)
         NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.completed)
 
