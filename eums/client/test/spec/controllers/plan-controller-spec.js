@@ -64,6 +64,14 @@ describe('NewDistributionPlanController', function () {
     });
 
     describe('when the controller is initialized', function () {
+        it('should have the distributionPlanItems defaulted to an empty list', function(){
+             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
+            scope.initialize();
+            scope.$apply();
+
+            expect(scope.distributionPlanItems).toEqual([]);
+        });
+
         it('should have the selected sales orders in the scope', function () {
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
             scope.initialize();

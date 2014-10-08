@@ -4,6 +4,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
     .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService) {
 
         $scope.salesOrderItems = [];
+        $scope.distributionPlanItems = [];
 
         $scope.initialize = function () {
             $scope.salesOrderItemSelected = undefined;
