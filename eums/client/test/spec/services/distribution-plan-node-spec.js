@@ -82,17 +82,18 @@ describe('Distribution Plan Node Service', function() {
         });
     });
 
-    it('should create distribution plan node neither parent nor children', function(done) {
+    it('should create distribution plan node with neither parent nor children', function(done) {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
             id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
-            distributionplanlineitem_set: [], children: []
+            distributionplanlineitem_set: [], children: [], tree_position: 'END_USER'
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
-        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId}).then(function(createdNode) {
-            expect(createdNode).toEqual(stubCreatedNode);
-            done();
-        });
+        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER'})
+            .then(function(createdNode) {
+                expect(createdNode).toEqual(stubCreatedNode);
+                done();
+            });
         mockBackend.flush();
     });
 
