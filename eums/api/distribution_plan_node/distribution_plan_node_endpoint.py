@@ -9,7 +9,7 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionPlanNode
         fields = ('id', 'parent', 'distribution_plan', 'children',
-                  'distributionplanlineitem_set', 'consignee')
+                  'distributionplanlineitem_set', 'consignee', 'tree_position')
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):

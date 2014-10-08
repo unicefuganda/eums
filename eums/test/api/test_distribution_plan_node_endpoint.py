@@ -10,10 +10,15 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
 
 class DistributionPlanNodeEndpoint(APITestCase):
+    def setUp(self):
+        self.MIDDLEMAN_POSITION = 'MIDDLE_MAN'
+        self.END_USER_POSITION = 'END_USER'
+
     def test_should_create_distribution_plan_node_without_parent_node(self):
         plan_id = create_distribution_plan(self)
         consignee_id = create_consignee(self)['id']
-        node_details = {'distribution_plan': plan_id, 'consignee': consignee_id}
+        node_details = {'distribution_plan': plan_id, 'tree_position': self.MIDDLEMAN_POSITION,
+                        'consignee': consignee_id}
 
         created_node_data = create_distribution_plan_node(self, node_details)
 
@@ -22,8 +27,8 @@ class DistributionPlanNodeEndpoint(APITestCase):
     def test_should_create_distribution_plan_node_with_parent_node(self):
         parent_node = create_distribution_plan_node(self)
         consignee_id = create_consignee(self)['id']
-        child_node_details = {'distribution_plan': parent_node['distribution_plan'],
-                              'parent': parent_node['id'], 'consignee': consignee_id}
+        child_node_details = {'distribution_plan': parent_node['distribution_plan'], 'consignee': consignee_id,
+                              'tree_position': self.MIDDLEMAN_POSITION, 'parent': parent_node['id']}
 
         created_child_node_details = create_distribution_plan_node(self, child_node_details)
 
@@ -62,11 +67,44 @@ class DistributionPlanNodeEndpoint(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(expected_node_partial, response.data)
 
+    def test_should_create_node_of_type_middleman(self):
+        plan_id = create_distribution_plan(self)
+        consignee = create_consignee(self)
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
+                        'tree_position': self.MIDDLEMAN_POSITION}
+
+        node = create_distribution_plan_node(self, node_details=node_details)
+
+        response = self.client.get("%s%d/" % (ENDPOINT_URL, node['id']))
+        self.assertDictContainsSubset({'tree_position': node['tree_position']}, response.data)
+
+    def test_should_create_node_of_type_end_user(self):
+        plan_id = create_distribution_plan(self)
+        consignee = create_consignee(self)
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
+                        'tree_position': self.END_USER_POSITION}
+
+        node = create_distribution_plan_node(self, node_details=node_details)
+
+        response = self.client.get("%s%d/" % (ENDPOINT_URL, node['id']))
+        self.assertDictContainsSubset({'tree_position': node['tree_position']}, response.data)
+
+    def test_should_not_create_node_with_bad_tree_position_parameter(self):
+        plan_id = create_distribution_plan(self)
+        consignee = create_consignee(self)
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
+                        'tree_position': 'UNKNOWN POSITION'}
+
+        response = self.client.post(ENDPOINT_URL, node_details, format='json')
+
+        self.assertEqual(response.status_code, 400)
+
     def create_distribution_plan_parent_and_child_nodes(self, parent_details=None, child_details=None):
         created_parent_details = create_distribution_plan_node(self, parent_details)
         consignee_id = create_consignee(self)['id']
         if not child_details:
             child_details = {'distribution_plan': created_parent_details['distribution_plan'],
-                             'parent': created_parent_details['id'], 'consignee': consignee_id}
+                             'consignee': consignee_id,
+                             'tree_position': self.MIDDLEMAN_POSITION, 'parent': created_parent_details['id'], }
         created_child_details = create_distribution_plan_node(self, child_details)
         return created_parent_details, created_child_details

@@ -42,10 +42,10 @@ def create_consignee(test_case, consignee_details=None):
 
 
 def create_distribution_plan_node(test_case, node_details=None):
-    plan_id = create_distribution_plan(test_case)
     if not node_details:
+        plan_id = create_distribution_plan(test_case)
         consignee = create_consignee(test_case)
-        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id']}
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER'}
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
     test_case.assertEqual(response.status_code, 201)
