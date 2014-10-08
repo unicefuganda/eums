@@ -87,7 +87,7 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         schedule_run_for(self.line_item)
 
-        self.assertEqual(mock_celery.invoked_after, 1641600.0)
+        self.assertEqual(mock_celery.invoked_after, 1728000.0)
 
     def test_should_change_status_of_node_run_to_in_progress_when_scheduled_task_is_started(self):
         schedule_run_for(self.line_item)
