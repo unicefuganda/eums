@@ -7,8 +7,9 @@ def start_delivery_run(*_, **kwargs):
     consignee = kwargs['consignee']
     item_description = kwargs['item_description']
     sender = kwargs['sender']
+    flow = kwargs['flow']
     payload = {
-        "flow": settings.RAPIDPRO_FLOW_ID,
+        "flow": flow,
         "phone": [consignee['phone']],
         "extra": {
             settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: consignee['first_name'] + consignee['last_name'],

@@ -1,6 +1,6 @@
 from unittest import TestCase
-from mock import MagicMock
 
+from mock import MagicMock
 import requests
 from django.conf import settings
 
@@ -20,7 +20,7 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
         settings.RAPIDPRO_LIVE = True
 
         self.expected_payload = {
-            "flow": settings.RAPIDPRO_FLOW_ID,
+            "flow": settings.RAPIDPRO_FLOWS['END_USER'],
             "phone": [contact['phone']],
             "extra": {
                 settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: contact['first_name'] + contact['last_name'],
@@ -28,15 +28,16 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
                 settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
             }
         }
-        runs_url = settings.RAPIDPRO_URLS['RUNS']
+        self.runs_url = settings.RAPIDPRO_URLS['RUNS']
         fake_json = [{"run": 1, "phone": contact['phone']}]
 
         requests.post = MagicMock(return_value=FakeResponse(fake_json, 201))
 
     def test_should_start_a_flow_run_for_a_contact(self):
         expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
-        start_delivery_run(consignee=contact, item_description=item_description, sender=sender)
-        requests.post.assert_called_with(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload,
+        start_delivery_run(consignee=contact, item_description=item_description, sender=sender,
+                           flow=settings.RAPIDPRO_FLOWS['END_USER'])
+        requests.post.assert_called_with(self.runs_url, data=self.expected_payload,
                                          headers=expected_headers)
 
     def tearDown(self):
@@ -50,7 +51,8 @@ class RapidProFacadeTestWithRapidProNotLive(TestCase):
         runs.post = MagicMock(return_value=None)
 
     def test_should_post_to_fake_rapid_pro_when_starting_a_run(self):
-        start_delivery_run(consignee=contact, item_description=item_description, sender=sender)
+        start_delivery_run(consignee=contact, item_description=item_description, sender=sender,
+                           flow=settings.RAPIDPRO_FLOWS['MIDDLE_MAN'])
         runs.post.assert_called()
 
     def tearDown(self):

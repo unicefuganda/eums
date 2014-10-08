@@ -12,3 +12,4 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     parent = None
     distribution_plan = factory.SubFactory(DistributionPlanFactory)
     consignee = factory.SubFactory(ConsigneeFactory)
+    tree_position = DistributionPlanNode.END_USER

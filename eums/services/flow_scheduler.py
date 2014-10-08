@@ -4,7 +4,7 @@ import datetime
 from django.conf import settings
 
 from eums.celery import app
-from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue
+from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue, DistributionPlanNode
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
 
@@ -29,12 +29,20 @@ def schedule_run_for(node_line_item):
 def _schedule_run(node_line_item_id):
     node_line_item = DistributionPlanLineItem.objects.get(id=node_line_item_id)
     node = node_line_item.distribution_plan_node
+    flow = __select_flow_for(node)
     start_delivery_run(
         sender=__get_sender_name(node),
         item_description=node_line_item.item.description,
-        consignee=node.consignee.build_contact()
+        consignee=node.consignee.build_contact(),
+        flow=flow
     )
     _flag_run_as_in_progress(node_line_item)
+
+
+def __select_flow_for(node):
+    if node.tree_position is DistributionPlanNode.END_USER:
+        return settings.RAPIDPRO_FLOWS['END_USER']
+    return settings.RAPIDPRO_FLOWS['MIDDLE_MAN']
 
 
 def __get_sender_name(node):
