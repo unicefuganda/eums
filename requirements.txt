@@ -14,7 +14,6 @@ djorm-pgarray==1.0.4
 factory-boy==2.4.1
 kombu==3.0.23
 mock==1.0.1
-mockito==0.5.2
 psycopg2==2.5.4
 pytz==2014.7
 redis==2.10.3

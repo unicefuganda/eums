@@ -1,10 +1,10 @@
 from unittest import TestCase
 import datetime
 
-from mockito import mock, verify, when, any
+from mock import MagicMock
 
 from eums import celery
-from eums.models import DistributionPlanNode, DistributionPlanLineItem, NodeLineItemRun, RunQueue
+from eums.models import NodeLineItemRun, DistributionPlanNode, DistributionPlanLineItem, RunQueue
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -19,8 +19,8 @@ celery.app.task = mock_celery.task
 
 from eums.rapid_pro import rapid_pro_facade
 
-fake_facade = mock()
-rapid_pro_facade.start_delivery_run = fake_facade.start_delivery_flow
+fake_facade = MagicMock()
+rapid_pro_facade.start_delivery_run = fake_facade.start_delivery_run
 
 from eums.services.flow_scheduler import schedule_run_for
 
@@ -36,43 +36,36 @@ class FlowSchedulerTest(TestCase):
                                                     status=NodeLineItemRun.STATUS.not_started)
         self.task_id = self.line_item_run.scheduled_message_task_id
 
-        when(self.line_item).current_run().thenReturn(self.line_item_run)
-        when(celery.app.control).revoke(self.task_id).thenReturn(None)
-        when(DistributionPlanNode.objects).get(id=self.node.id).thenReturn(self.node)
-        when(DistributionPlanLineItem.objects).get(id=self.line_item.id).thenReturn(self.line_item)
-        when(self.node.consignee).build_contact().thenReturn(self.contact)
+        self.line_item.current_run = MagicMock(return_value=self.line_item_run)
+        celery.app.control.revoke = MagicMock(return_value=None)
+        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
+        DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
+        self.node.consignee.build_contact = MagicMock(return_value=self.contact)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         schedule_run_for(self.line_item)
 
-        verify(fake_facade).start_delivery_flow(
-            sender='UNICEF',
-            consignee=self.contact,
-            item_description=self.line_item.item.description)
+        #TODO Consider making the check for method called once
+        fake_facade.start_delivery_run.assert_called_with(sender='UNICEF', consignee=self.contact,
+                                                          item_description=self.line_item.item.description)
 
     def xtest_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = DistributionPlanNodeFactory(consignee=sender_org)
-        node = DistributionPlanNodeFactory(consignee=self.consignee, parent=parent_node)
+        node = DistributionPlanNodeFactory(consignee=sender_org, parent=parent_node)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
         line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
 
-        when(line_item).current_run().thenReturn(line_item_run)
-        task_id = line_item_run.scheduled_message_task_id
-        when(celery.app.control).revoke(task_id).thenReturn(None)
-
-        when(DistributionPlanNode.objects).get(id=node.id).thenReturn(node)
-        when(DistributionPlanLineItem.objects).get(id=line_item.id).thenReturn(line_item)
-        when(node.consignee).build_contact().thenReturn(self.contact)
+        line_item.current_run = MagicMock(return_value=line_item_run)
+        DistributionPlanNode.objects.get = MagicMock(return_value=node)
+        DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
+        node.consignee.build_contact = MagicMock(return_value=self.contact)
 
         schedule_run_for(line_item)
 
-        verify(fake_facade).start_delivery_flow(
-            sender=sender_org_name,
-            consignee=self.contact,
-            item_description=line_item.item.description
-        )
+        fake_facade.start_delivery_run.assert_called_with(sender=sender_org_name, consignee=self.contact,
+                                                          item_description=line_item.item.description)
 
     def test_should_save_a_node_line_item_run_with_task_id_after_and_phone_as_cache_scheduling_the_flow(self):
         schedule_run_for(self.line_item)
@@ -98,17 +91,16 @@ class FlowSchedulerTest(TestCase):
         DistributionPlanLineItemFactory(distribution_plan_node=self.node,
                                         planned_distribution_date=datetime.datetime.now())
         line_item_run_two = NodeLineItemRunFactory(node_line_item=self.line_item,
-                                                    status=NodeLineItemRun.STATUS.not_started)
+                                                   status=NodeLineItemRun.STATUS.not_started)
 
-        when(self.line_item).current_run().thenReturn(self.line_item_run).thenReturn(line_item_run_two)
-        when(NodeLineItemRun).current_run_for_consignee(any()).thenReturn(None)
+        NodeLineItemRun.current_run_for_consignee = MagicMock(return_value=None)
 
         schedule_run_for(self.line_item)
         schedule_run_for(self.line_item)
 
         self.assertEqual(self.line_item_run.status, NodeLineItemRun.STATUS.cancelled)
-        verify(celery.app.control).revoke(self.task_id)
-        verify(fake_facade, times=2).start_delivery_flow(sender=any(), consignee=any(), item_description=any())
+        celery.app.control.revoke.assert_called_with(self.task_id)
+        fake_facade.start_delivery_run.assert_called()
 
     def xtest_should_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self):
         node_two = DistributionPlanNodeFactory(consignee=self.consignee)
@@ -117,18 +109,13 @@ class FlowSchedulerTest(TestCase):
                                                    status=NodeLineItemRun.STATUS.not_started)
         task_id = line_item_run_two.scheduled_message_task_id
 
-        when(DistributionPlanNode.objects).get(id=node_two.id).thenReturn(node_two)
-        when(DistributionPlanLineItem.objects).get(id=line_item_two.id).thenReturn(line_item_two)
-        when(NodeLineItemRun).current_run_for_consignee(self.consignee.id).thenReturn(self.line_item_run)
-        when(RunQueue).enqueue(any(), any()).thenReturn(None)
-        when(line_item_two).current_run().thenReturn(line_item_run_two)
-        when(celery.app.control).revoke(task_id).thenReturn(None)
+        # when(DistributionPlanNode.objects).get(id=node_two.id).thenReturn(node_two)
+        # when(DistributionPlanLineItem.objects).get(id=line_item_two.id).thenReturn(line_item_two)
+        # when(NodeLineItemRun).current_run_for_consignee(self.consignee.id).thenReturn(self.line_item_run)
+        RunQueue.enqueue = MagicMock(return_value=None)
+        line_item_two.current_run = MagicMock(return_value=line_item_run_two)
 
         schedule_run_for(line_item_two)
 
-        verify(RunQueue).enqueue(any(), any())
+        RunQueue.enqueue.assert_called()
 
-    def tearDown(self):
-        fake_facade.invocations = []
-
-reload(rapid_pro_facade)
