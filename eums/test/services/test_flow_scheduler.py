@@ -49,7 +49,7 @@ class FlowSchedulerTest(TestCase):
         fake_facade.start_delivery_run.assert_called_with(sender='UNICEF', consignee=self.contact,
                                                           item_description=self.line_item.item.description)
 
-    def xtest_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
+    def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = DistributionPlanNodeFactory(consignee=sender_org)
@@ -119,3 +119,4 @@ class FlowSchedulerTest(TestCase):
 
         RunQueue.enqueue.assert_called()
 
+reload(rapid_pro_facade)
