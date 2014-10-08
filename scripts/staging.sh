@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "ssh into staging"
-ssh -t -t -i $HOME/.ssh/id_rsa_staging staging@196.0.26.51 tunji tunjis << EOF
+ssh -t -t -i $HOME/.ssh/id_rsa_staging staging@196.0.26.51 $username $password << EOF
 echo "change to root user"
 sudo su
 echo "Go to home"
