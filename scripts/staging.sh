@@ -7,6 +7,7 @@ echo "Go to home"
 cd /home
 echo "remove previous code"
 rm -rf eums-provisioning
+source /etc/profile
 echo "clone the provisoning repository"
 git clone https://github.com/unicefuganda/eums-provisioning.git
 echo "create chef directory"
@@ -28,6 +29,8 @@ echo "list contents of file"
 echo "provision eums to staging"
 chef-solo -o role[all-in-one]
 echo "admin credentials"
+killall -9 nginx
+service nginx restart
 exit
 exit
 EOF
