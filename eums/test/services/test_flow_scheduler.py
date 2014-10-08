@@ -43,6 +43,7 @@ class FlowSchedulerTest(TestCase):
 
         self.END_USER_FLOW_ID = settings.RAPIDPRO_FLOWS['END_USER']
         self.MIDDLEMAN_FLOW_ID = settings.RAPIDPRO_FLOWS['MIDDLE_MAN']
+        self.original_run_class = NodeLineItemRun.current_run_for_consignee
 
     def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self):
         self.node = DistributionPlanNodeFactory(consignee=self.consignee, tree_position=DistributionPlanNode.MIDDLE_MAN)
@@ -63,7 +64,6 @@ class FlowSchedulerTest(TestCase):
 
         fake_facade.start_delivery_run.assert_called_with(consignee=self.contact, flow=self.MIDDLEMAN_FLOW_ID,
                                                           item_description=ANY, sender=ANY)
-
 
     def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self):
         node = DistributionPlanNodeFactory(consignee=self.consignee, tree_position=DistributionPlanNode.END_USER)
@@ -160,5 +160,8 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(line_item_two)
 
         # RunQueue.enqueue.assert_called()
+
+    def tearDown(self):
+        NodeLineItemRun.current_run_for_consignee = self.original_run_class
 
     reload(rapid_pro_facade)
