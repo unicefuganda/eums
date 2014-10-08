@@ -3,7 +3,7 @@ from django.db.models import Q
 from model_utils.fields import StatusField
 from model_utils import Choices
 
-from eums.models import DistributionPlanLineItem
+from eums.models import DistributionPlanLineItem, Consignee
 
 
 class NodeLineItemRun(models.Model):
@@ -11,6 +11,7 @@ class NodeLineItemRun(models.Model):
     scheduled_message_task_id = models.CharField(max_length=255)
     node_line_item = models.ForeignKey(DistributionPlanLineItem)
     status = StatusField()
+    consignee = models.ForeignKey(Consignee)
     phone = models.CharField(max_length=255)
 
     class Meta:

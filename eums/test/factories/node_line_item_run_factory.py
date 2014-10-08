@@ -1,3 +1,4 @@
+from eums.test.factories.consignee_factory import ConsigneeFactory
 import factory
 
 from eums.models import NodeLineItemRun
@@ -12,4 +13,5 @@ class NodeLineItemRunFactory(factory.DjangoModelFactory):
     node_line_item = factory.SubFactory(DistributionPlanLineItemFactory)
     status = NodeLineItemRun.STATUS.not_started
     phone = factory.Sequence(lambda n: '{0}'.format(n))
+    consignee = factory.SubFactory(ConsigneeFactory)
 

@@ -16,9 +16,9 @@ class NodeLineItemRunTest(TestCase):
     def test_should_have_all_expected_fields(self):
         node_line_item_run = NodeLineItemRun()
         fields_in_node_line_item_run = [field.attname for field in node_line_item_run._meta.fields]
-        self.assertEqual(len(fields_in_node_line_item_run), 5)
+        self.assertEqual(len(fields_in_node_line_item_run), 6)
 
-        for field in ['scheduled_message_task_id', 'node_line_item_id', 'status', 'phone']:
+        for field in ['scheduled_message_task_id', 'node_line_item_id', 'status', 'consignee_id', 'phone']:
             self.assertIn(field, fields_in_node_line_item_run)
 
     def test_should_get_current_run_for_consignee_with_run_with_status_not_started(self):

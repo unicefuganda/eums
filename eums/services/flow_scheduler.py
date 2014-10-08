@@ -14,13 +14,15 @@ def schedule_run_for(node_line_item):
         __cancel_run(current_run)
 
     run_delay = __calculate_delay(node_line_item)
-    if NodeLineItemRun.current_run_for_consignee(node_line_item.distribution_plan_node.consignee.id):
+    consignee = node_line_item.distribution_plan_node.consignee
+    if NodeLineItemRun.current_run_for_consignee(consignee.id):
         RunQueue.enqueue(node_line_item, run_delay)
     else:
-        contact = node_line_item.distribution_plan_node.consignee.build_contact()
+        contact = consignee.build_contact()
         task = _schedule_run.apply_async(args=[node_line_item.id], countdown=run_delay)
         NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
-                                       status=NodeLineItemRun.STATUS.not_started, phone=contact['phone'])
+                                       status=NodeLineItemRun.STATUS.not_started, phone=contact['phone'],
+                                       consignee=consignee)
 
 
 @app.task
