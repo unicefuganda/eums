@@ -10,3 +10,4 @@ local_settings.py
 eums/bin/
 eums/include/
 eums/lib/
+initaluser.json

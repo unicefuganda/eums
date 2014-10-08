@@ -28,8 +28,6 @@ echo "list contents of file"
 echo "provision eums to staging"
 chef-solo -o role[all-in-one]
 echo "admin credentials"
-echo $1 
-echo $2
 exit
 exit
 EOF
