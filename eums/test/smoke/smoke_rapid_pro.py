@@ -12,10 +12,12 @@ class RapidProSmoke(TestCase):
         response = requests.get(settings.RAPIDPRO_URLS['RUNS'], headers=self.headers)
         self.assertEqual(response.status_code, 200)
 
-    def test_flow_with_id_specified_in_settings_exists(self):
+    def test_flows_specified_in_settings_exist(self):
         response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=self.headers)
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(self.flow_exists(settings.RAPIDPRO_FLOW_ID, response.json()['results']))
+        flows = settings.RAPIDPRO_FLOWS
+        for flow_id in map(lambda key: flows[key], flows.keys()):
+            self.assertTrue(self.flow_exists(flow_id, response.json()['results']))
 
     def flow_exists(self, flow_id, flows):
         matching_flows = filter(lambda flow: flow['flow'] == flow_id, flows)
