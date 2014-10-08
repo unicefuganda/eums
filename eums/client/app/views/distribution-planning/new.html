@@ -3,55 +3,32 @@
 
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()">
         <div>
-            <div style="margin-top: 20px;">
-                <label style="width: 150px;">Programme Name </label><input style="width: 150px; height: 40px" type="text" ng-model="programmeName">
-                <label style="width: 150px;">Distribution Date </label><input style="width: 150px;" type="date" ng-model="date">
-            </div>
-            <div style="margin-top: 10px;">
-                <label style="width: 150px;">Select Programme </label><select style="width: 150px;" ng-model="programmeSelected" required="required"
-                                                       ng-options="programme.name for programme in programmes"></select>
-                <label style="width: 150px;">Consignee </label><select style="width: 150px;" ng-model="consigneeSelected" required="required"
-                                                ng-options="consignee.name for consignee in consignees"></select>
-            </div>
-        </div>
-        <div>
-            <span style="float: left"> <h4>Select Sales Orders</h4> </span>
+            <h4>Create A Distribution Plan</h4>
 
             <div>
-                <!--<table ng-table="tableParams" class="table">-->
-                <!--<tr ng-repeat="salesOrder in $data">-->
-                <!--<td data-title="'Date Created'" sortable="'date_created'">{{salesOrder.date_created}}</td>-->
-                <!--<td data-title="'Document No.'" sortable="'sales_document'"><a href="#">{{salesOrder.sales_document}}</a></td>-->
-                <!--<td data-title="'Select'"><input type="checkbox" ng-click="isChecked(salesOrder)"></td>-->
-                <!--</tr>-->
-                <!--</table>-->
-                <table style="width: 100%" si-table>
-                    <th sort-by="date">Date</th>
-                    <th sort-by="order_number">Order No.</th>
-                    <th></th>
+                <select style="width: 140px;" ng-model="salesOrderItemSelected" required="required"
+                        ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                    <option value="" selected="selected">Select Item</option>
+                </select>
+            </div>
 
-                    <tr ng-repeat="salesOrder in salesOrders">
-                        <td>
-                            {{salesOrder.date}}
-                        </td>
-                        <td>
-                            <a href="#">{{salesOrder.order_number}}</a>
-                        </td>
-                        <td>
-                            <input type="checkbox" ng-click="isChecked(salesOrder)">
-                        </td>
-                    </tr>
+            <div ng-show="hasSalesOrderItems" class="sales-order-list">
+                <table style="width: 60%">
+                    <th>Sales Order</th>
+                    <th>Material</th>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
 
-                    <tfoot>
                     <tr>
-                        <td colspan="5">
-                            <si-table-pagination limit="25"/>
-                        </td>
+                        <td>{{selectedSalesOrder.order_number}}</td>
+                        <td>{{salesOrderItemSelected.material_code}}</td>
+                        <td>{{salesOrderItemSelected.display}}</td>
+                        <td>{{salesOrderItemSelected.quantity}}</td>
+                        <td>{{salesOrderItemSelected.unit}}</td>
                     </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
-        <span style="float: left"><button type="button" style="float: right" ng-click="selectItems()">Next</button></span>
     </div>
 </div>

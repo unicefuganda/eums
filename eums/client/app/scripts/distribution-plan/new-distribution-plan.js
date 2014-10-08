@@ -1,81 +1,40 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem'])
-    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, ProgrammeService, SalesOrderItemService, $location) {
-        $scope.salesOrders = [];
-        $scope.selectedSalesOrders = [];
-        $scope.programmeName = '';
-        $scope.focalPerson = '';
-        $scope.date = '';
-        $scope.programmeSelected = {name: ''};
-        $scope.consigneeSelected = {name: ''};
+    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService) {
 
-        function retrieveScopeVariables() {
-            $scope.selectedSalesOrders = DistributionPlanParameters.retrieveVariable('selectedSalesOrders');
-            $scope.programmeName = DistributionPlanParameters.retrieveVariable('programmeName');
-            $scope.date = DistributionPlanParameters.retrieveVariable('date');
-            $scope.programmeSelected = DistributionPlanParameters.retrieveVariable('programmeSelected');
-            $scope.consigneeSelected = DistributionPlanParameters.retrieveVariable('consigneeSelected');
-        }
+        $scope.salesOrderItems = [];
 
         $scope.initialize = function () {
+            $scope.salesOrderItemSelected = undefined;
+            $scope.hasSalesOrderItems = false;
 
-            $scope.salesOrders = DistributionPlanParameters.retrieveVariable('salesOrders');
+            $scope.selectedSalesOrder = DistributionPlanParameters.retrieveVariable('selectedSalesOrder');
 
-            if (DistributionPlanParameters.retrieveVariable('isProceeding')) {
-                retrieveScopeVariables();
-                var salesOrderItems = [];
+            $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
+                SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
+                    var formattedSalesOrderItem = {display: result.item.description,
+                    material_code: result.item.material_code,
+                    quantity: result.quantity,
+                    unit: result.item.unit.name,
+                    information: result};
 
-                $scope.selectedSalesOrders.forEach(function (selectedOrder) {
-                    var orderNumber = selectedOrder.order_number;
-                    selectedOrder.salesorderitem_set.forEach(function (salesOrderItem) {
-                        var salesOrderItemInformation = [];
-                        SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
-                            salesOrderItemInformation = result;
-                            salesOrderItems.push({salesOrder: orderNumber, item: salesOrderItemInformation});
-                        });
-                    });
+                    $scope.salesOrderItems.push(formattedSalesOrderItem);
                 });
+            });
+        };
 
-                $scope.salesOrderItems = salesOrderItems;
+        $scope.$watch('salesOrderItemSelected', function (){
+
+            var emptySalesOrders = ['', undefined];
+
+            if(emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1)
+            {
+                $scope.hasSalesOrderItems = false;
             }
-            else {
-
-                ProgrammeService.fetchProgrammes().then(function (response) {
-                    $scope.programmes = response.data;
-                });
+            else{
+                $scope.hasSalesOrderItems = true;
             }
-        };
+        });
 
-        $scope.setSupplyPlan = function () {
-
-        };
-
-        $scope.setTracked = function () {
-
-        };
-
-        $scope.setRequired = function () {
-
-        };
-
-        $scope.isChecked = function (salesOrder) {
-            var indexOfSalesOrder = $scope.selectedSalesOrders.indexOf(salesOrder);
-            if (indexOfSalesOrder !== -1) {
-                $scope.selectedSalesOrders.splice(indexOfSalesOrder, 1);
-            }
-            else {
-                $scope.selectedSalesOrders.push(salesOrder);
-            }
-        };
-
-        $scope.selectItems = function () {
-            DistributionPlanParameters.saveVariable('selectedSalesOrders', $scope.selectedSalesOrders);
-            DistributionPlanParameters.saveVariable('isProceeding', true);
-            DistributionPlanParameters.saveVariable('programmeName', $scope.programmeName);
-            DistributionPlanParameters.saveVariable('date', $scope.date);
-            DistributionPlanParameters.saveVariable('programmeSelected', $scope.programmeSelected);
-            DistributionPlanParameters.saveVariable('consigneeSelected', $scope.consigneeSelected);
-            $location.path('/distribution-plan/proceed/');
-        };
     });

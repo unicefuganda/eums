@@ -9,23 +9,24 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.errorMessage = '';
         $scope.planId = '';
 
-        $scope.distribution_plans = [];
-        $scope.distribution_plan_details = [];
-
         $scope.salesOrders = [];
-        $scope.selectedSalesOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
         $scope.initialize = function () {
-            this.sortBy('order_number');
+            this.sortBy('date');
+            this.sort.descending = false;
+
             ProgrammeService.fetchProgrammes().then(function (response) {
                 $scope.programmes = response.data;
-                $scope.programmes[0].salesorder_set.forEach(function (salesOrderID) {
-                    SalesOrderService.getSalesOrder(salesOrderID).then(function (salesOrder) {
-                        $scope.salesOrders.push(salesOrder);
+                $scope.programmes.forEach(function (programme) {
+                    programme.salesorder_set.forEach(function (salesOrderID) {
+                        SalesOrderService.getSalesOrder(salesOrderID).then(function (salesOrder) {
+                            $scope.salesOrders.push(salesOrder);
+                        });
                     });
                 });
+
             });
         };
 
@@ -34,12 +35,23 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.$watch('programmeSelected', function () {
+
+            $scope.salesOrders = [];
+            $scope.query = '';
+
             if ($scope.programmeSelected) {
-                $scope.salesOrders = [];
                 $scope.programmeSelected.salesorder_set.forEach(function (salesOrderID) {
-                    $scope.query = '';
                     SalesOrderService.getSalesOrder(salesOrderID).then(function (salesOrder) {
                         $scope.salesOrders.push(salesOrder);
+                    });
+                });
+            }
+            else {
+                $scope.programmes.forEach(function (programme) {
+                    programme.salesorder_set.forEach(function (salesOrderID) {
+                        SalesOrderService.getSalesOrder(salesOrderID).then(function (salesOrder) {
+                            $scope.salesOrders.push(salesOrder);
+                        });
                     });
                 });
             }
@@ -54,7 +66,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             return output;
         };
 
-        $scope.newDistributionPlan = function () {
+        $scope.selectSalesOrder = function (selectedSalesOrder) {
+            DistributionPlanParameters.saveVariable('selectedSalesOrder', selectedSalesOrder);
             $location.path('/distribution-plan/new/');
         };
 

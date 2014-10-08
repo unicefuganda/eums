@@ -1,6 +1,6 @@
 describe('DistributionPlanController', function () {
 
-    var scope, sorter, filter;
+    var scope, sorter, filter, mockDistributionPlanParametersService;
     var location, distPlanEndpointUrl;
     var mockContactService, mockPlanService, mockProgrammeService, mockSalesOrderService;
     var deferred, deferredPlan, deferredSalesOrder;
@@ -35,6 +35,9 @@ describe('DistributionPlanController', function () {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails', 'getSalesOrders']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme', 'fetchProgrammes']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
+        mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
+        location = jasmine.createSpyObj('location', ['path']);
+
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -47,11 +50,10 @@ describe('DistributionPlanController', function () {
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
             mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
 
+
             scope = $rootScope.$new();
             sorter = $sorter;
             filter = $filter;
-
-            location = $location;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
 
             $controller('DistributionPlanController',
@@ -59,6 +61,7 @@ describe('DistributionPlanController', function () {
                     DistributionPlanService: mockPlanService,
                     ProgrammeService: mockProgrammeService,
                     SalesOrderService: mockSalesOrderService,
+                    DistributionPlanParameters: mockDistributionPlanParametersService,
                     $sorter: sorter,
                     $filter: filter,
                     $location: location});
@@ -119,7 +122,8 @@ describe('DistributionPlanController', function () {
             deferredSalesOrder.resolve(salesOrderDetails[0]);
             scope.initialize();
             scope.$apply();
-            expect(scope.salesOrders).toEqual([salesOrderDetails[0], salesOrderDetails[0]]);
+            expect(scope.salesOrders).toEqual([salesOrderDetails[0], salesOrderDetails[0],
+                salesOrderDetails[0], salesOrderDetails[0]]);
         });
 
         it('should set the sorter', function () {
@@ -131,13 +135,13 @@ describe('DistributionPlanController', function () {
         it('should sort by order number', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sort.criteria).toBe('order_number');
+            expect(scope.sort.criteria).toBe('date');
         });
 
         it('should sort in descending order', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sort.descending).toBe(true);
+            expect(scope.sort.descending).toBe(false);
         });
 
         it('should have the sort arrow icon on the order number column by default', function () {
@@ -149,7 +153,7 @@ describe('DistributionPlanController', function () {
         it('should set the clicked column as active', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sortArrowClass('order_number')).toEqual('active icon icon-sort');
+            expect(scope.sortArrowClass('date')).toEqual('active icon icon-sort');
         });
 
     });
@@ -164,6 +168,18 @@ describe('DistributionPlanController', function () {
             expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[1].salesorder_set[1]);
         });
 
+        it('should know the sales orders for all programmes are retrieved when the programme selected is empty changes', function () {
+            scope.initialize();
+            scope.$apply();
+            scope.programmes = programmes;
+            scope.programmeSelected = '';
+            scope.$apply();
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[0]);
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[0].salesorder_set[1]);
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[1].salesorder_set[0]);
+            expect(mockSalesOrderService.getSalesOrder).toHaveBeenCalledWith(programmes[1].salesorder_set[1]);
+        });
+
         it('should know the search query is reset when the programme selected changes', function () {
             scope.query = 'Test';
             scope.programmeSelected = programmes[1];
@@ -171,11 +187,25 @@ describe('DistributionPlanController', function () {
             expect(scope.query).toEqual('');
         });
 
-        it('should know the search query is not reset when no programme is selected', function () {
+        it('should know the search query is reset when no programme is selected', function () {
             scope.query = 'Test';
             scope.programmeSelected = null;
             scope.$apply();
-            expect(scope.query).toEqual('Test');
+            expect(scope.query).toEqual('');
+        });
+    });
+
+    describe('when sales order number is clicked', function () {
+        it('should set the selected sales order in the distribution parameters', function () {
+            scope.selectSalesOrder(salesOrderDetails[0]);
+            scope.$apply();
+            expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith('selectedSalesOrder', salesOrderDetails[0]);
+        });
+
+        it('should change location to create distribution plan path', function () {
+            scope.selectSalesOrder(salesOrderDetails[0]);
+            scope.$apply();
+            expect(location.path).toHaveBeenCalledWith('/distribution-plan/new/');
         });
     });
 
@@ -183,7 +213,7 @@ describe('DistributionPlanController', function () {
         deferred.resolve(stubResponse);
         scope.addContact();
         scope.$apply();
-        expect(location.path()).toBe('/');
+        expect(location.path).toHaveBeenCalledWith('/');
     });
 
     it('should add an error message to the scope when the contact is NOT saved', function () {
