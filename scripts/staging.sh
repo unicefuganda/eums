@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "ssh into staging"
-ssh -t -t -i $HOME/.ssh/id_rsa_staging staging@196.0.26.51 << EOF
+ssh -t -t -i $HOME/.ssh/id_rsa_staging staging@196.0.26.51 $username $password << EOF
 echo "change to root user"
 sudo su
 echo "Go to home"
@@ -27,6 +27,9 @@ echo 'role_path ["/home/contacts-service/provisioning/chef/roles"'] >> /etc/chef
 echo "list contents of file"
 echo "provision eums to staging"
 chef-solo -o role[all-in-one]
+echo "admin credentials"
+echo $1 
+echo $2
 exit
 exit
 EOF
