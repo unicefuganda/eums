@@ -10,8 +10,9 @@ class DistributionPlanLineItemTest(TestCase):
         fields_in_item = DistributionPlanLineItem()._meta._name_map
 
         expected_fields = [
-            'item_id', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
-            'destination_location', 'remark', 'distribution_plan_node'
+            'item_id', 'targeted_quantity', 'planned_distribution_date', 'programme_focal_id', 'consignee_id',
+            'contact_person', 'contact_phone_number', 'destination_location', 'mode_of_delivery', 'remark',
+            'tracked'
         ]
 
         for field in expected_fields:

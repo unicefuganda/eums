@@ -9,8 +9,9 @@ class DistributionPlanLineItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionPlanLineItem
         fields = (
-            'id', 'item', 'quantity', 'under_current_supply_plan', 'planned_distribution_date',
-            'destination_location', 'distribution_plan_node', 'remark'
+            'id', 'item', 'targeted_quantity', 'planned_distribution_date', 'programme_focal', 'consignee',
+            'contact_person', 'contact_phone_number', 'destination_location', 'mode_of_delivery', 'tracked',
+            'distribution_plan_node', 'remark'
         )
 
 

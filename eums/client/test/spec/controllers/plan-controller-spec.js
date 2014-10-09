@@ -163,6 +163,10 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
             expect(scope.hasSalesOrderItems).toBeFalsy();
         });
+
+        it('should get the distribution plan items linked to the particular sales order item', function(){
+
+        });
     });
 
     describe('when add IP button is clicked', function () {

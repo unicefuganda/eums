@@ -56,12 +56,27 @@ def make_line_item_details(test_case, node_id=None):
     item_unit = ItemUnit.objects.create(name='EA')
     item = Item.objects.create(description='Item 1', unit=item_unit)
 
+    sales_order = create_sales_order(test_case)
+
+    sales_order_details = {'sales_order': sales_order['id'], 'item': item.id, 'quantity': 23,
+                           'net_price': 12000.0, 'net_value': 100.0, 'issue_date': '2014-01-21',
+                           'delivery_date': '2014-01-21'}
+
+    sales_item_id = create_sales_order_item(test_case, sales_order_details)['id']
+
+    focal_person, _ = User.objects.get_or_create(
+        username="Test", first_name="Test", last_name="User", email="me@you.com"
+    )
+
+    consignee_id = create_consignee(test_case)['id']
+
     if not node_id:
         node_id = create_distribution_plan_node(test_case)['id']
 
-    line_item = {'item': item.id, 'quantity': 10, 'under_current_supply_plan': False,
-                 'planned_distribution_date': '2014-01-21', 'destination_location': 'GULU',
-                 'remark': "Dispatched", 'distribution_plan_node': node_id}
+    line_item = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
+                 'destination_location': 'GULU', 'programme_focal': focal_person.id, 'consignee': consignee_id,
+                 'contact_person': 'Test', 'contact_phone_number': '0110110111', 'mode_of_delivery': 'Road',
+                 'tracked': True, 'remark': "Dispatched", 'distribution_plan_node': node_id}
 
     return line_item
 
