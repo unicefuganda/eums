@@ -19,10 +19,12 @@ datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
 celery.app.task = mock_celery.task
 
+mock_start_delivery_run = MagicMock()
+rapid_pro_facade.start_delivery_run = mock_start_delivery_run
+
 from eums.services.flow_scheduler import schedule_run_for
 
 
-@patch('eums.rapid_pro.rapid_pro_facade.start_delivery_run')
 class FlowSchedulerTest(TestCase):
     def setUp(self):
         self.consignee = ConsigneeFactory()
@@ -33,122 +35,104 @@ class FlowSchedulerTest(TestCase):
 
         celery.app.control.revoke = MagicMock(return_value=None)
         self.node.consignee.build_contact = MagicMock(return_value=self.contact)
+        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
+        DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
 
         self.END_USER_FLOW_ID = settings.RAPIDPRO_FLOWS['END_USER']
         self.MIDDLEMAN_FLOW_ID = settings.RAPIDPRO_FLOWS['MIDDLE_MAN']
 
-    def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self, mock_start_delivery_run):
+    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
+    def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self, mock_current_run_for_consignee):
         node = DistributionPlanNodeFactory(consignee=self.consignee, tree_position=DistributionPlanNode.MIDDLE_MAN)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
-        NodeLineItemRun.current_run_for_consignee = MagicMock(return_value=None)
 
+        mock_current_run_for_consignee.return_value = None
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
         DistributionPlanNode.objects.get = MagicMock(return_value=node)
 
         schedule_run_for(line_item)
 
-        print mock_start_delivery_run.call_args
-
         mock_start_delivery_run.assert_called_with(consignee=self.contact, flow=self.MIDDLEMAN_FLOW_ID,
                                                    item_description=ANY, sender=ANY)
 
-    def xtest_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self, fake_facade):
+    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
+    def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self, mock_current_run_for_consignee):
         node = DistributionPlanNodeFactory(consignee=self.consignee, tree_position=DistributionPlanNode.END_USER)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
-        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
+
+        mock_current_run_for_consignee.return_value = None
+        DistributionPlanNode.objects.get = MagicMock(return_value=node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
 
         schedule_run_for(line_item)
 
-        fake_facade.start_delivery_run.assert_called_with(consignee=self.contact, flow=self.END_USER_FLOW_ID,
-                                                          item_description=ANY, sender=ANY)
+        mock_start_delivery_run.assert_called_with(consignee=self.contact, flow=self.END_USER_FLOW_ID,
+                                                   item_description=ANY, sender=ANY)
 
-    def xtest_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self, fake_facade):
-        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
-        DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
-
+    def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         schedule_run_for(self.line_item)
 
-        # TODO Consider making the check for method called once
-        fake_facade.start_delivery_run.assert_called_with(sender='UNICEF', consignee=self.contact, flow=ANY,
-                                                          item_description=self.line_item.item.description)
+        mock_start_delivery_run.assert_called_with(sender='UNICEF', consignee=self.contact, flow=ANY,
+                                                   item_description=self.line_item.item.description)
 
-    def xtest_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self, fake_delivery_run):
-        fake_delivery_run.return_value = None
+    def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = DistributionPlanNodeFactory(consignee=sender_org)
         node = DistributionPlanNodeFactory(consignee=sender_org, parent=parent_node)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
-        line_item_run = NodeLineItemRunFactory(node_line_item=line_item, status=NodeLineItemRun.STATUS.not_started)
 
-        line_item.current_run = MagicMock(return_value=line_item_run)
         DistributionPlanNode.objects.get = MagicMock(return_value=node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
         node.consignee.build_contact = MagicMock(return_value=self.contact)
 
         schedule_run_for(line_item)
 
-        fake_delivery_run.assert_called_with(consignee=self.contact, flow=ANY, sender=sender_org_name,
-                                                          item_description=line_item.item.description)
+        mock_start_delivery_run.assert_called_with(consignee=self.contact, flow=ANY, sender=sender_org_name,
+                                                   item_description=line_item.item.description)
 
+    def test_should_save_a_node_line_item_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
         schedule_run_for(self.line_item)
 
         node_line_item_run_set = self.line_item.nodelineitemrun_set.all()
 
-        # TODO remove the extra line item run to make this set have 1 item
-        self.assertEqual(len(node_line_item_run_set), 2)
+        self.assertEqual(len(node_line_item_run_set), 1)
         self.assertEqual(node_line_item_run_set[0].phone, self.contact['phone'])
         self.assertEqual(node_line_item_run_set[0].scheduled_message_task_id, mock_celery.task_id)
 
-    def xtest_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
-        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
-        DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
-
+    def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         schedule_run_for(self.line_item)
 
         self.assertEqual(mock_celery.invoked_after, 1814400.0)
 
-    def xtest_should_change_status_of_node_run_to_in_progress_when_scheduled_task_is_started(self):
-        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
-        DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
+    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
+    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
+                                                                                                                 mock_current_run_for_consignee):
+        line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
+
+        self.line_item.current_run = MagicMock(return_value=line_item_run)
+        mock_current_run_for_consignee.return_value = None
 
         schedule_run_for(self.line_item)
 
-        self.assertEqual(self.line_item_run.status, 'in_progress')
+        self.assertEqual(line_item_run.status, NodeLineItemRun.STATUS.cancelled)
+        celery.app.control.revoke.assert_called()
+        mock_start_delivery_run.assert_called()
 
-    def xtest_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
-                                                                                                                  fake_delivery_run):
-        fake_delivery_run.return_value = None
-
-        DistributionPlanLineItemFactory(distribution_plan_node=self.node,
-                                        planned_distribution_date=datetime.datetime.now())
-        NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.not_started)
-
-        NodeLineItemRun.current_run_for_consignee = MagicMock(return_value=None)
-
-        schedule_run_for(self.line_item)
-        schedule_run_for(self.line_item)
-
-        self.assertEqual(self.line_item_run.status, NodeLineItemRun.STATUS.cancelled)
-        celery.app.control.revoke.assert_called_with(self.task_id)
-        fake_delivery_run.assert_called()
-
-    @patch('rapid_pro_facade.start_delivery_run')
-    def xtest_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
-                                                                                                     fake_delivery_run):
-        fake_delivery_run.return_value = None
-
+    @patch('eums.models.RunQueue.enqueue')
+    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
+    def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
+                                                                                                          mock_current_run_for_consignee,
+                                                                                                          mock_run_queue_enqueue):
+        line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
         node_two = DistributionPlanNodeFactory(consignee=self.consignee)
         line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=node_two)
-        line_item_run_two = NodeLineItemRunFactory(node_line_item=line_item_two,
-                                                   status=NodeLineItemRun.STATUS.not_started)
-        task_id = line_item_run_two.scheduled_message_task_id
 
-        # when(DistributionPlanNode.objects).get(id=node_two.id).thenReturn(node_two)
-        # when(DistributionPlanLineItem.objects).get(id=line_item_two.id).thenReturn(line_item_two)
-        # when(NodeLineItemRun).current_run_for_consignee(self.consignee.id).thenReturn(self.line_item_run)
-        # RunQueue.enqueue = MagicMock(return_value=None)
-        line_item_two.current_run = MagicMock(return_value=line_item_run_two)
+        self.line_item.current_run = MagicMock(return_value=None)
+        mock_current_run_for_consignee.return_value = line_item_run
+        mock_run_queue_enqueue.return_value = None
 
         schedule_run_for(line_item_two)
+        mock_run_queue_enqueue.assert_called_with(line_item_two, ANY)
+
+reload(rapid_pro_facade)
