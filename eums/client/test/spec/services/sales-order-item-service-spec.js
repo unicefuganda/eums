@@ -13,7 +13,8 @@ describe('Sales Order Item Service', function () {
         net_price: 10.00,
         net_value: 1000.00,
         issue_date: '2014-10-02',
-        delivery_date: '2014-10-02'
+        delivery_date: '2014-10-02',
+        distributionplanlineitem_set: []
     };
 
     var stubItem = {
@@ -44,7 +45,8 @@ describe('Sales Order Item Service', function () {
 
         var expectedSalesOrderItem = { id: 1, sales_order: '1',
             item: { id: 1, description: 'item description', unit: { id: 1, name: 'Unit name' } },
-            quantity: 100, net_price: 10, net_value: 1000, issue_date: '2014-10-02', delivery_date: '2014-10-02' };
+            quantity: 100, net_price: 10, net_value: 1000, issue_date: '2014-10-02', delivery_date: '2014-10-02',
+            distributionplanlineitem_set: []};
 
         salesOrderItemService.getSalesOrderItem(salesOrderItemId).then(function (salesOrderItem) {
             expect(salesOrderItem).toEqual(expectedSalesOrderItem);

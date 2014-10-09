@@ -2,7 +2,7 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var scope, mockPlanService, mockDistributionPlanParametersService, mockProgrammeService,
-        deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService;
+        deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService, mockDistributionPlanLineItemService;
 
     var orderNumber = '00001';
 
@@ -40,6 +40,7 @@ describe('NewDistributionPlanController', function () {
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem']);
+        mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails']);
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
 
         inject(function ($controller, $rootScope, $q, $httpBackend, EumsConfig) {
@@ -51,6 +52,7 @@ describe('NewDistributionPlanController', function () {
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails);
+            mockDistributionPlanLineItemService.getLineItemDetails.and.returnValue(deferred.promise);
 
             scope = $rootScope.$new();
 
@@ -59,7 +61,8 @@ describe('NewDistributionPlanController', function () {
 
             $controller('NewDistributionPlanController',
                 {$scope: scope, DistributionPlanParameters: mockDistributionPlanParametersService,
-                    ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService});
+                    ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService,
+                    DistributionPlanLineItemService: mockDistributionPlanLineItemService});
         });
     });
 
@@ -128,6 +131,7 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to true if there are distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = ['1', '2'];
+            stubSalesOrderItem.distributionplanlineitem_set = ['1', '2'];
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
@@ -164,8 +168,51 @@ describe('NewDistributionPlanController', function () {
             expect(scope.hasSalesOrderItems).toBeFalsy();
         });
 
-        it('should get the distribution plan items linked to the particular sales order item', function(){
+        it('should call the get distribution plan items service linked to the particular sales order item', function () {
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+            scope.$apply();
 
+            expect(mockDistributionPlanLineItemService.getLineItemDetails).toHaveBeenCalledWith('1');
+            expect(mockDistributionPlanLineItemService.getLineItemDetails).toHaveBeenCalledWith('2');
+        });
+
+        it('should get distribution plan items linked to the particular sales order item and put in the scope', function () {
+            deferred.resolve(stubSalesOrderItem);
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+            scope.$apply();
+
+            expect(scope.distributionPlanItems).toEqual([stubSalesOrderItem, stubSalesOrderItem]);
+        });
+
+        it('should not get distribution plan items service linked to the particular sales order item with no line item set', function () {
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem,
+                distributionplanlineitem_set: []};
+            scope.$apply();
+
+            expect(scope.distributionPlanItems).toEqual([]);
+        });
+
+        it('should not get distribution plan items service linked to the particular sales order item with undefined line item set', function () {
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+            scope.$apply();
+
+            expect(scope.distributionPlanItems).toEqual([]);
         });
     });
 
@@ -176,6 +223,7 @@ describe('NewDistributionPlanController', function () {
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
+            scope.$apply();
 
             var distributionPlanLineItem = {item: stubSalesOrderItem.item,
                 quantity: scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
@@ -207,7 +255,7 @@ describe('NewDistributionPlanController', function () {
             expect(scope.salesOrderItemSelected).toEqual(expectedSalesOrderItemSelected);
         });
 
-        it('should modify the distribution plan items flag to true if it is currently false', function(){
+        it('should modify the distribution plan items flag to true if it is currently false', function () {
             scope.hasDistributionPlanItems = false;
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,

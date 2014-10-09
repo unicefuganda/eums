@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem'])
-    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService) {
+    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService) {
 
         $scope.salesOrderItems = [];
         $scope.distributionPlanItems = [];
@@ -42,7 +42,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             $scope.distributionPlanItems = currentDistributionPlanItems;
         };
 
-        $scope.saveDistributionPlanItem = function(){
+        $scope.saveDistributionPlanItem = function () {
             console.log('Trying to save the plan items information.');
         };
 
@@ -54,11 +54,23 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
             else {
                 $scope.hasSalesOrderItems = true;
+                var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
+                if (distributionPlanLineItems && distributionPlanLineItems.length > 0) {
+                    distributionPlanLineItems.forEach(function(planLineItemID){
+                        DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function(result){
+                            $scope.distributionPlanItems.push(result);
+                        });
+                    });
+                }
+                else {
+                    $scope.distributionPlanItems = [];
+                }
+
                 var currentDistributionPlanItems = $scope.distributionPlanItems;
 
                 if (currentDistributionPlanItems && currentDistributionPlanItems.length > 0) {
-                $scope.hasDistributionPlanItems = true;
-            }
+                    $scope.hasDistributionPlanItems = true;
+                }
             }
         });
 

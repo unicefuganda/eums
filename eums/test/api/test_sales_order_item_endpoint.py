@@ -19,3 +19,4 @@ class SalesOrderEndPointTest(APITestCase):
         created_sales_order = create_sales_order_item(self, sales_order_details)
 
         self.assertDictContainsSubset(sales_order_details, created_sales_order)
+        self.assertDictContainsSubset({'distributionplanlineitem_set': []}, created_sales_order)
