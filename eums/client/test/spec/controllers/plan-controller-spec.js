@@ -24,7 +24,7 @@ describe('NewDistributionPlanController', function () {
             description: 'Test Item',
             material_code: '12345AS',
             unit: {name: 'EA'}},
-        quantity: 100,
+        quantity: '100',
         net_price: 10.00,
         net_value: 1000.00,
         issue_date: '2014-10-02',
@@ -34,6 +34,7 @@ describe('NewDistributionPlanController', function () {
     var expectedFormattedSalesOrderItem = {display: stubSalesOrderItem.item.description,
         material_code: stubSalesOrderItem.item.material_code,
         quantity: stubSalesOrderItem.quantity,
+        quantityLeft: stubSalesOrderItem.quantity,
         unit: stubSalesOrderItem.item.unit.name,
         information: stubSalesOrderItem};
 
@@ -126,7 +127,6 @@ describe('NewDistributionPlanController', function () {
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);
         });
     });
-
 
     describe('when sales order item selected changes', function () {
         it('should know the has sales order items flag is set to true if sales item is selected', function () {
@@ -251,6 +251,21 @@ describe('NewDistributionPlanController', function () {
 
             expect(scope.distributionPlanItems).toEqual([]);
         });
+
+        it('should subtract the targeted quantity from the quantity left for the sales order item', function(){
+            deferred.resolve({targeted_quantity: 20});
+            var quantity = '100';
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: quantity,
+                quantityLeft: quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+            scope.$apply();
+
+            var expectedQuantityRemaining = '60';
+            expect(scope.salesOrderItemSelected.quantityLeft).toEqual(expectedQuantityRemaining);
+        });
     });
 
     describe('when add IP button is clicked', function () {
@@ -258,12 +273,13 @@ describe('NewDistributionPlanController', function () {
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
+                quantityLeft: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
             scope.$apply();
 
             var distributionPlanLineItem = {item: stubSalesOrderItem.item,
-                quantity: scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
+                quantity: scope.salesOrderItemSelected.quantityLeft, planned_distribution_date: '2014-10-10',
                 targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
                 contact_phone_number: '', programme_focal: '', contact_person: ''};
 
@@ -277,12 +293,14 @@ describe('NewDistributionPlanController', function () {
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
+                quantityLeft: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
 
             var expectedSalesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
+                quantityLeft: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
 

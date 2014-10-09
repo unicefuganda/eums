@@ -18,6 +18,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     var formattedSalesOrderItem = {display: result.item.description,
                         material_code: result.item.material_code,
                         quantity: result.quantity,
+                        quantityLeft: result.quantity,
                         unit: result.item.unit.name,
                         information: result};
 
@@ -28,7 +29,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {item: $scope.salesOrderItemSelected.information.item,
-                quantity: $scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
+                quantity: $scope.salesOrderItemSelected.quantityLeft, planned_distribution_date: '2014-10-10',
                 targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
                 contact_phone_number: '', programme_focal: '', contact_person: ''};
 
@@ -76,18 +77,25 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
                 if (distributionPlanLineItems && distributionPlanLineItems.length > 0) {
                     var itemCounter = 0;
+                    var quantityLeft = parseInt($scope.salesOrderItemSelected.quantity);
 
                     distributionPlanLineItems.forEach(function (planLineItemID) {
                         DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function (result) {
+                            result.quantity = quantityLeft.toString();
                             $scope.distributionPlanItems.push(result);
                             if (itemCounter === 0) {
                                 DistributionPlanNodeService.getPlanNodeDetails(result.distribution_plan_node).then(function (nodeInformation) {
                                     $scope.planId = nodeInformation.distribution_plan;
                                 });
                             }
+                            quantityLeft = quantityLeft - parseInt(result.targeted_quantity);
                             itemCounter++;
+                            $scope.salesOrderItemSelected.quantityLeft = quantityLeft.toString();
                         });
                     });
+
+
+
 
 
                 }
