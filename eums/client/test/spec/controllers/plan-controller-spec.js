@@ -127,24 +127,24 @@ describe('NewDistributionPlanController', function () {
 
         it('should set the distribution plan items flag to true if there are distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
+            scope.distributionPlanItems = ['1', '2'];
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem,
-                distribution_plan_items: ['1', '2']};
+                information: stubSalesOrderItem};
             scope.$apply();
             expect(scope.hasDistributionPlanItems).toBeTruthy();
         });
 
         it('should set the distribution plan items flag to false if there are no distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
+            scope.distributionPlanItems = [];
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem,
-                distribution_plan_items: []};
+                information: stubSalesOrderItem};
             scope.$apply();
             expect(scope.hasDistributionPlanItems).toBeFalsy();
         });
@@ -162,6 +162,59 @@ describe('NewDistributionPlanController', function () {
             scope.salesOrderItemSelected = '';
             scope.$apply();
             expect(scope.hasSalesOrderItems).toBeFalsy();
+        });
+    });
+
+    describe('when add IP button is clicked', function () {
+        it('should add a default distribution plan line item to the salesOrderItemSelected', function () {
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            var distributionPlanLineItem = {item: stubSalesOrderItem.item,
+                quantity: scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
+                targeted_quantity: '', destination_location: '', mode_of_delivery: '',
+                contact_phone_number: '', programme_focal: '', contact_person: ''};
+
+            scope.addDistributionPlanItem();
+            scope.$apply();
+
+            expect(scope.distributionPlanItems).toEqual([distributionPlanLineItem]);
+        });
+
+        it('should not change information in the salesOrderItemSelected', function () {
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            var expectedSalesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            scope.addDistributionPlanItem();
+            scope.$apply();
+
+            expect(scope.salesOrderItemSelected).toEqual(expectedSalesOrderItemSelected);
+        });
+
+        it('should modify the distribution plan items flag to true if it is currently false', function(){
+            scope.hasDistributionPlanItems = false;
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            scope.addDistributionPlanItem();
+            scope.$apply();
+
+            expect(scope.hasDistributionPlanItems).toBeTruthy();
         });
     });
 

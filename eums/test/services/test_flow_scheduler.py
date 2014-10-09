@@ -120,7 +120,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(self.line_item)
 
-        self.assertEqual(mock_celery.invoked_after, 1728000.0)
+        self.assertEqual(mock_celery.invoked_after, 1814400.0)
 
     def test_should_change_status_of_node_run_to_in_progress_when_scheduled_task_is_started(self):
         DistributionPlanNode.objects.get = MagicMock(return_value=self.node)

@@ -16,32 +16,49 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
                     var formattedSalesOrderItem = {display: result.item.description,
-                    material_code: result.item.material_code,
-                    quantity: result.quantity,
-                    unit: result.item.unit.name,
-                    information: result};
+                        material_code: result.item.material_code,
+                        quantity: result.quantity,
+                        unit: result.item.unit.name,
+                        information: result};
 
                     $scope.salesOrderItems.push(formattedSalesOrderItem);
                 });
             });
         };
 
-        $scope.$watch('salesOrderItemSelected', function (){
+        $scope.addDistributionPlanItem = function () {
+            var distributionPlanLineItem = {item: $scope.salesOrderItemSelected.information.item,
+                quantity: $scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
+                targeted_quantity: '', destination_location: '', mode_of_delivery: '',
+                contact_phone_number: '', programme_focal: '', contact_person: ''};
 
+            var currentDistributionPlanItems = $scope.distributionPlanItems;
+            currentDistributionPlanItems.push(distributionPlanLineItem);
+
+            if (currentDistributionPlanItems && currentDistributionPlanItems.length > 0) {
+                $scope.hasDistributionPlanItems = true;
+            }
+
+            $scope.distributionPlanItems = currentDistributionPlanItems;
+        };
+
+        $scope.saveDistributionPlanItem = function(){
+            console.log('Trying to save the plan items information.');
+        };
+
+        $scope.$watch('salesOrderItemSelected', function () {
             var emptySalesOrders = ['', undefined];
 
-            if(emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1)
-            {
+            if (emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1) {
                 $scope.hasSalesOrderItems = false;
             }
-            else{
+            else {
                 $scope.hasSalesOrderItems = true;
+                var currentDistributionPlanItems = $scope.distributionPlanItems;
 
-                var distributionPlanItems = $scope.salesOrderItemSelected.distribution_plan_items;
-
-                if(distributionPlanItems && distributionPlanItems.length > 0){
-                    $scope.hasDistributionPlanItems = true;
-                }
+                if (currentDistributionPlanItems && currentDistributionPlanItems.length > 0) {
+                $scope.hasDistributionPlanItems = true;
+            }
             }
         });
 

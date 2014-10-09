@@ -7,13 +7,13 @@ tbody {
  overflow: auto;
 }
 
-table#distributionPlanTable tr:nth-child(even) {
+table tr:nth-child(even) {
     background-color: #eee;
 }
-table#distributionPlanTable tr:nth-child(odd) {
+table tr:nth-child(odd) {
    background-color:#fff;
 }
-table#distributionPlanTable th	{
+table th	{
     background-color: lightgrey;
     color: #000000;
 }

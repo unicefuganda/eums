@@ -58,7 +58,7 @@
                             <td>{{distributionPlanItem.consignee}}</td>
                             <td>{{distributionPlanItem.contact_person}}</td>
                             <td>{{distributionPlanItem.contact_phone_number}}</td>
-                            <td>{{distributionPlanItem.district}}</td>
+                            <td>{{distributionPlanItem.destination_location}}</td>
                             <td>{{distributionPlanItem.mode_of_delivery}}</td>
                             <td><input type="checkbox" checked="distributionPlanItem.tracked"></td>
                         </tr>
@@ -66,8 +66,14 @@
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-primary"><i class="glyphicon glyphicon-plus"> </i>Add IP
-                    </button>
+                        <button type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
+                                class="glyphicon glyphicon-plus"> </i>Add IP
+                        </button>
+                    <div ng-show="hasDistributionPlanItems" style="float: right">
+                        <button type="button" class="btn btn-primary" ng-click="saveDistributionPlanItem()"><i
+                                class="glyphicon glyphicon-save"> </i>Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
