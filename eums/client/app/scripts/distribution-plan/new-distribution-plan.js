@@ -29,7 +29,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {item: $scope.salesOrderItemSelected.information.item,
                 quantity: $scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
-                targeted_quantity: '', destination_location: '', mode_of_delivery: '',
+                targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
                 contact_phone_number: '', programme_focal: '', contact_person: ''};
 
             var currentDistributionPlanItems = $scope.distributionPlanItems;
@@ -43,7 +43,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         };
 
         $scope.saveDistributionPlanItem = function () {
-            console.log('Trying to save the plan items information.');
+
+            $scope.distributionPlanItems.forEach(function (distributionPlanItem) {
+                var lineItemDetails = {item: distributionPlanItem.item.id, targeted_quantity: distributionPlanItem.targeted_quantity,
+                    distribution_plan_node: 1, planned_distribution_date: distributionPlanItem.planned_distribution_date,
+                    programme_focal: distributionPlanItem.programme_focal.id, consignee: distributionPlanItem.consignee.id,
+                    contact_person: distributionPlanItem.contact_person, contact_phone_number: distributionPlanItem.contact_phone_number,
+                    destination_location: distributionPlanItem.destination_location, mode_of_delivery: distributionPlanItem.mode_of_delivery,
+                    tracked: distributionPlanItem.tracked, remark: distributionPlanItem.remark};
+                DistributionPlanLineItemService.createLineItem(lineItemDetails);
+            });
         };
 
         $scope.$watch('salesOrderItemSelected', function () {
@@ -56,8 +65,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 $scope.hasSalesOrderItems = true;
                 var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
                 if (distributionPlanLineItems && distributionPlanLineItems.length > 0) {
-                    distributionPlanLineItems.forEach(function(planLineItemID){
-                        DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function(result){
+                    distributionPlanLineItems.forEach(function (planLineItemID) {
+                        DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function (result) {
                             $scope.distributionPlanItems.push(result);
                         });
                     });

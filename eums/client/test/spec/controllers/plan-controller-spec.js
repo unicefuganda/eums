@@ -18,7 +18,8 @@ describe('NewDistributionPlanController', function () {
     var stubSalesOrderItem = {
         id: 1,
         sales_order: '1',
-        item: {description: 'Test Item',
+        item: {id: 1,
+            description: 'Test Item',
             material_code: '12345AS',
             unit: {name: 'EA'}},
         quantity: 100,
@@ -40,7 +41,7 @@ describe('NewDistributionPlanController', function () {
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem']);
-        mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails']);
+        mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails', 'createLineItem']);
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
 
         inject(function ($controller, $rootScope, $q, $httpBackend, EumsConfig) {
@@ -53,6 +54,7 @@ describe('NewDistributionPlanController', function () {
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails);
             mockDistributionPlanLineItemService.getLineItemDetails.and.returnValue(deferred.promise);
+            mockDistributionPlanLineItemService.createLineItem.and.returnValue(deferred.promise);
 
             scope = $rootScope.$new();
 
@@ -227,7 +229,7 @@ describe('NewDistributionPlanController', function () {
 
             var distributionPlanLineItem = {item: stubSalesOrderItem.item,
                 quantity: scope.salesOrderItemSelected.quantity, planned_distribution_date: '2014-10-10',
-                targeted_quantity: '', destination_location: '', mode_of_delivery: '',
+                targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
                 contact_phone_number: '', programme_focal: '', contact_person: ''};
 
             scope.addDistributionPlanItem();
@@ -267,6 +269,36 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
 
             expect(scope.hasDistributionPlanItems).toBeTruthy();
+        });
+    });
+
+    describe('when save is cliked', function () {
+        it('should call the create line item service for all the line items added', function () {
+            scope.distributionPlanItems = [
+                {item: stubSalesOrderItem.item,
+                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
+                    targeted_quantity: '', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
+                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
+                    remark: 'Good', distribution_plan_node: 1},
+                {item: {id: 2},
+                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
+                    targeted_quantity: 20, destination_location: '', mode_of_delivery: '', consignee: {id: 1},
+                    contact_phone_number: '', programme_focal: {id: 2}, contact_person: '', tracked: false,
+                remark: 'Bad', distribution_plan_node: 1}
+            ];
+            scope.saveDistributionPlanItem();
+            scope.$apply();
+
+            var lineItemDetails = {item: stubSalesOrderItem.item.id, targeted_quantity: '', distribution_plan_node: 1,
+                planned_distribution_date: '2014-10-10', programme_focal: 1, consignee: 1, contact_person: '',
+            contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: true, remark: 'Good'};
+
+            var anotherLineItemDetails = {item: 2, targeted_quantity: 20, distribution_plan_node: 1,
+                planned_distribution_date: '2014-10-10', programme_focal: 2, consignee: 1, contact_person: '',
+            contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: false, remark: 'Bad'};
+
+            expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(lineItemDetails);
+            expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(anotherLineItemDetails);
         });
     });
 
