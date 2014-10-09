@@ -7,10 +7,12 @@ describe('NewDistributionPlanController', function () {
     var orderNumber = '00001';
 
     var salesOrderDetails = [
-        {'order_number': orderNumber,
+        {'programme': 1,
+            'order_number': orderNumber,
             'date': '2014-10-05',
             'salesorderitem_set': ['1']},
-        {'order_number': '22221',
+        {'programme': 1,
+            'order_number': '22221',
             'date': '2014-10-05',
             'salesorderitem_set': []}
     ];
@@ -64,6 +66,7 @@ describe('NewDistributionPlanController', function () {
             $controller('NewDistributionPlanController',
                 {$scope: scope, DistributionPlanParameters: mockDistributionPlanParametersService,
                     ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService,
+                    DistributionPlanService: mockPlanService,
                     DistributionPlanLineItemService: mockDistributionPlanLineItemService});
         });
     });
@@ -274,6 +277,7 @@ describe('NewDistributionPlanController', function () {
 
     describe('when save is cliked', function () {
         it('should call the create line item service for all the line items added', function () {
+            scope.selectedSalesOrder = salesOrderDetails[0];
             scope.distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
                     quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
@@ -284,22 +288,53 @@ describe('NewDistributionPlanController', function () {
                     quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
                     targeted_quantity: 20, destination_location: '', mode_of_delivery: '', consignee: {id: 1},
                     contact_phone_number: '', programme_focal: {id: 2}, contact_person: '', tracked: false,
-                remark: 'Bad', distribution_plan_node: 1}
+                    remark: 'Bad', distribution_plan_node: 1}
             ];
             scope.saveDistributionPlanItem();
             scope.$apply();
 
             var lineItemDetails = {item: stubSalesOrderItem.item.id, targeted_quantity: '', distribution_plan_node: 1,
                 planned_distribution_date: '2014-10-10', programme_focal: 1, consignee: 1, contact_person: '',
-            contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: true, remark: 'Good'};
+                contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: true, remark: 'Good'};
 
             var anotherLineItemDetails = {item: 2, targeted_quantity: 20, distribution_plan_node: 1,
                 planned_distribution_date: '2014-10-10', programme_focal: 2, consignee: 1, contact_person: '',
-            contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: false, remark: 'Bad'};
+                contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: false, remark: 'Bad'};
 
             expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(lineItemDetails);
             expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(anotherLineItemDetails);
         });
+
+        it('should call the create distribution plan service if no plan has been created for sales order item', function () {
+            scope.distributionPlanItems = [];
+            scope.selectedSalesOrder = salesOrderDetails[0];
+            scope.saveDistributionPlanItem();
+            scope.$apply();
+
+            expect(mockPlanService.createPlan).toHaveBeenCalledWith({'programme': 1});
+        });
+
+        it('should save the distribution plan ID in the scope variable', function () {
+            scope.distributionPlanItems = [];
+            scope.selectedSalesOrder = salesOrderDetails[0];
+            deferredPlan.resolve({id: 1, date: '2014-10-09'});
+            scope.saveDistributionPlanItem();
+            scope.$apply();
+
+            expect(scope.planId).toEqual(1);
+        });
+
+        it('should not call the create distribution plan service if plan has already been created for sales order item', function () {
+            scope.distributionPlanItems = [];
+            scope.selectedSalesOrder = salesOrderDetails[0];
+            scope.planId = 1;
+            scope.saveDistributionPlanItem();
+            scope.$apply();
+
+            expect(mockPlanService.createPlan).not.toHaveBeenCalledWith({'programme': 1});
+        });
+
+
     });
 
 

@@ -8,7 +8,7 @@ from eums.models import DistributionPlan
 class DistributionPlanSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionPlan
-        fields = ('id', 'name', 'programme', 'date', 'distributionplannode_set')
+        fields = ('id', 'programme', 'date', 'distributionplannode_set')
 
 
 class DistributionPlanViewSet(ModelViewSet):

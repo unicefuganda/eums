@@ -4,7 +4,6 @@ from eums.models.programme import Programme
 
 
 class DistributionPlan(models.Model):
-    name = models.CharField(max_length=255)
     programme = models.ForeignKey(Programme)
     date = models.DateField(auto_now=True)
 

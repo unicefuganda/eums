@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem'])
-    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService) {
+    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService) {
 
         $scope.salesOrderItems = [];
         $scope.distributionPlanItems = [];
@@ -43,7 +43,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         };
 
         $scope.saveDistributionPlanItem = function () {
-
+            if ($scope.planId === undefined) {
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme}).then(function(result){
+                    $scope.planId = result.id;
+                });
+            }
             $scope.distributionPlanItems.forEach(function (distributionPlanItem) {
                 var lineItemDetails = {item: distributionPlanItem.item.id, targeted_quantity: distributionPlanItem.targeted_quantity,
                     distribution_plan_node: 1, planned_distribution_date: distributionPlanItem.planned_distribution_date,
