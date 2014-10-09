@@ -9,15 +9,19 @@ from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
 
 def schedule_run_for(node_line_item):
+    print '*'*20, 'IN METHOD'
     current_run = node_line_item.current_run()
     if current_run:
+        print '*'*20, 'CANCELLING RUN'
         __cancel_run(current_run)
 
     run_delay = __calculate_delay(node_line_item)
     consignee = node_line_item.distribution_plan_node.consignee
     if NodeLineItemRun.current_run_for_consignee(consignee.id):
+        print '*'*20, 'QUEUING RUN'
         RunQueue.enqueue(node_line_item, run_delay)
     else:
+        print '*'*20, 'SCHEDULING RUN'
         contact = consignee.build_contact()
         task = _schedule_run.apply_async(args=[node_line_item.id], countdown=run_delay)
         NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
@@ -30,6 +34,10 @@ def _schedule_run(node_line_item_id):
     node_line_item = DistributionPlanLineItem.objects.get(id=node_line_item_id)
     node = node_line_item.distribution_plan_node
     flow = __select_flow_for(node)
+    print __get_sender_name(node)
+    print node_line_item.item.description
+    print node.consignee.build_contact()
+    print flow
     start_delivery_run(
         sender=__get_sender_name(node),
         item_description=node_line_item.item.description,
