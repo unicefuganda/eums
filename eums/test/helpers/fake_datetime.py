@@ -1,10 +1,14 @@
-from datetime import datetime
+from datetime import datetime, date
 
 
 class FakeDatetime(datetime):
-    fixed_now = None
-
     @classmethod
     def now(cls, **kwargs):
-        cls.fixed_now = cls(2014, 9, 25)
-        return cls.fixed_now
+        return cls(2014, 9, 25)
+
+
+class FakeDate(date):
+    @classmethod
+    def today(cls):
+        return cls(2014, 9, 25)
+

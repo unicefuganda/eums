@@ -103,7 +103,7 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         schedule_run_for(self.line_item)
 
-        self.assertEqual(mock_celery.invoked_after, 1814400.0)
+        self.assertEqual(mock_celery.invoked_after, 604800.0)
 
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
     def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
