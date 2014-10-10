@@ -18,15 +18,11 @@ class RunQueue(models.Model):
 
     @classmethod
     def enqueue(cls, node_line_item, run_delay):
-        queued_run = RunQueue(node_line_item=node_line_item, status=RunQueue.STATUS.not_started,
-                              contact_person_id=node_line_item.distribution_plan_node.consignee.contact_person_id,
-                              run_delay=run_delay)
-        queued_run.save()
-
+        cls.objects.create(node_line_item=node_line_item, status=RunQueue.STATUS.not_started,
+                         contact_person_id=node_line_item.distribution_plan_node.consignee.contact_person_id,
+                         run_delay=run_delay)
+        
     @classmethod
-    def deque(cls, contact_person_id):
-        not_started_runs = RunQueue.objects.filter(Q(contact_person_id=contact_person_id) & Q(status='not_started')).\
-            order_by('-run_delay')
-        if len(not_started_runs):
-            return not_started_runs[0]
-        return None
+    def dequeue(cls, contact_person_id):
+        return cls.objects.filter(Q(contact_person_id=contact_person_id) & Q(status='not_started')). \
+            order_by('-run_delay').first()

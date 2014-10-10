@@ -27,7 +27,7 @@ class RunQueueTest(TestCase):
         run_queue = RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started,
                                     run_delay=1500.0)
 
-        self.assertEqual(RunQueue.deque(contact_person_id), run_queue)
+        self.assertEqual(RunQueue.dequeue(contact_person_id), run_queue)
 
     def test_deque_returns_none_when_contact_person_no_pending_runs(self):
         contact_person_id = 'id'
@@ -35,7 +35,7 @@ class RunQueueTest(TestCase):
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started,
                         run_delay=1000.0)
 
-        self.assertEqual(RunQueue.deque(contact_person_id), None)
+        self.assertEqual(RunQueue.dequeue(contact_person_id), None)
 
     def test_queues_run_for_particular_line_item_node(self):
         contact_person_id = 'id'
@@ -46,7 +46,7 @@ class RunQueueTest(TestCase):
         node_line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         RunQueue.enqueue(node_line_item, run_delay)
-        queued_run = RunQueue.deque(contact_person_id)
+        queued_run = RunQueue.dequeue(contact_person_id)
 
         self.assertEqual(queued_run.status, RunQueue.STATUS.not_started)
         self.assertEqual(queued_run.contact_person_id, contact_person_id)
