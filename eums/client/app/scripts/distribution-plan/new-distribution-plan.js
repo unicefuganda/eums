@@ -50,7 +50,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         function saveNodeAndLineItems(nodeDetails, distributionPlanItem) {
             DistributionPlanNodeService.createNode(nodeDetails).then(function (response) {
-                var lineItemDetails = {item: distributionPlanItem.item.id, targeted_quantity: distributionPlanItem.targeted_quantity,
+                var lineItemDetails = {item: distributionPlanItem.item.id, targeted_quantity: distributionPlanItem.target_quantity,
                     distribution_plan_node: response.id, planned_distribution_date: distributionPlanItem.planned_distribution_date,
                     programme_focal: distributionPlanItem.programme_focal.id, consignee: distributionPlanItem.consignee.id,
                     contact_person: distributionPlanItem.contact_person, contact_phone_number: distributionPlanItem.contact_phone_number,

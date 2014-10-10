@@ -368,12 +368,12 @@ describe('NewDistributionPlanController', function () {
                     quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
                     targeted_quantity: '', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
                     contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
-                    remark: 'Good'},
+                    remark: 'Good', target_quantity: ''},
                 {item: {id: 2},
                     quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
                     targeted_quantity: 20, destination_location: '', mode_of_delivery: '', consignee: {id: 1},
                     contact_phone_number: '', programme_focal: {id: 2}, contact_person: '', tracked: false,
-                    remark: 'Bad'}
+                    remark: 'Bad', target_quantity: 20}
             ];
             scope.saveDistributionPlanItem(distributionPlanItems);
             scope.$apply();
