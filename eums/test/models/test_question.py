@@ -7,7 +7,7 @@ from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactor
 class QuestionTest(TestCase):
     def setUp(self):
         self.multiple_choice_question = MultipleChoiceQuestion.objects.create(text='Whats your gender?', label='gender')
-        self.text_question = TextQuestion.objects.create(text='Are you happy?', label="gender")
+        self.text_question = TextQuestion.objects.create(text='Are you happy?', label="happiness")
 
     def test_should_have_all_expected_fields(self):
         question = Question()

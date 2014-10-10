@@ -12,9 +12,6 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
-    class Meta:
-        abstract = True
-
 
 class NumericQuestion(Question):
     def create_answer(self, params, line_item_run):

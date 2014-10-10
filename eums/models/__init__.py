@@ -16,6 +16,7 @@ from eums.models.question import TextQuestion, MultipleChoiceQuestion, NumericQu
 from eums.models.option import Option
 from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
 from eums.models.run_queue import RunQueue
+from eums.models.flow import Flow
 
 
 __all__ = [
@@ -38,5 +39,6 @@ __all__ = [
     'NumericAnswer',
     'TextQuestion',
     'MultipleChoiceQuestion',
-    'NumericQuestion'
+    'NumericQuestion',
+    'Flow'
 ]

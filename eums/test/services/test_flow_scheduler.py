@@ -1,15 +1,15 @@
 from unittest import TestCase
 import datetime
 
-from django.conf import settings
 from mock import MagicMock, ANY, patch
 
 from eums import celery
-from eums.models import NodeLineItemRun, DistributionPlanNode, DistributionPlanLineItem
+from eums.models import NodeLineItemRun, DistributionPlanNode as Node, DistributionPlanLineItem, Flow
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
 from eums.test.services.mock_celery import MockCelery
@@ -30,25 +30,28 @@ class FlowSchedulerTest(TestCase):
         self.consignee = ConsigneeFactory()
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
-        self.node = DistributionPlanNodeFactory(consignee=self.consignee)
+        self.node = NodeFactory(consignee=self.consignee)
         self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=self.node)
 
         celery.app.control.revoke = MagicMock(return_value=None)
         self.node.consignee.build_contact = MagicMock(return_value=self.contact)
-        DistributionPlanNode.objects.get = MagicMock(return_value=self.node)
+        Node.objects.get = MagicMock(return_value=self.node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
 
-        self.END_USER_FLOW_ID = settings.RAPIDPRO_FLOWS['END_USER']
-        self.MIDDLEMAN_FLOW_ID = settings.RAPIDPRO_FLOWS['MIDDLE_MAN']
+        self.MIDDLEMAN_FLOW_ID = FlowFactory(for_node_type=Node.MIDDLE_MAN).rapid_pro_id
+        self.END_USER_FLOW_ID = FlowFactory(for_node_type=Node.END_USER).rapid_pro_id
+
+    def tearDown(self):
+        Flow.objects.all().delete()
 
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
     def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self, mock_current_run_for_consignee):
-        node = DistributionPlanNodeFactory(consignee=self.consignee, tree_position=DistributionPlanNode.MIDDLE_MAN)
+        node = NodeFactory(consignee=self.consignee, tree_position=Node.MIDDLE_MAN)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         mock_current_run_for_consignee.return_value = None
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
-        DistributionPlanNode.objects.get = MagicMock(return_value=node)
+        Node.objects.get = MagicMock(return_value=node)
 
         schedule_run_for(line_item)
 
@@ -57,11 +60,11 @@ class FlowSchedulerTest(TestCase):
 
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
     def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self, mock_current_run_for_consignee):
-        node = DistributionPlanNodeFactory(consignee=self.consignee, tree_position=DistributionPlanNode.END_USER)
+        node = NodeFactory(consignee=self.consignee, tree_position=Node.END_USER)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         mock_current_run_for_consignee.return_value = None
-        DistributionPlanNode.objects.get = MagicMock(return_value=node)
+        Node.objects.get = MagicMock(return_value=node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
 
         schedule_run_for(line_item)
@@ -78,11 +81,11 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
         sender_org = ConsigneeFactory(name=sender_org_name)
-        parent_node = DistributionPlanNodeFactory(consignee=sender_org)
-        node = DistributionPlanNodeFactory(consignee=sender_org, parent=parent_node)
+        parent_node = NodeFactory(consignee=sender_org)
+        node = NodeFactory(consignee=sender_org, parent=parent_node)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        DistributionPlanNode.objects.get = MagicMock(return_value=node)
+        Node.objects.get = MagicMock(return_value=node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
         node.consignee.build_contact = MagicMock(return_value=self.contact)
 
@@ -106,8 +109,7 @@ class FlowSchedulerTest(TestCase):
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
-    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
-                                                                                                                 mock_current_run_for_consignee):
+    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self, mock_current_run_for_consignee):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
 
         self.line_item.current_run = MagicMock(return_value=line_item_run)
@@ -121,11 +123,9 @@ class FlowSchedulerTest(TestCase):
 
     @patch('eums.models.RunQueue.enqueue')
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
-    def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
-                                                                                                          mock_current_run_for_consignee,
-                                                                                                          mock_run_queue_enqueue):
+    def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self, mock_current_run_for_consignee, mock_run_queue_enqueue):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
-        node_two = DistributionPlanNodeFactory(consignee=self.consignee)
+        node_two = NodeFactory(consignee=self.consignee)
         line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=node_two)
 
         self.line_item.current_run = MagicMock(return_value=None)
@@ -134,5 +134,6 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(line_item_two)
         mock_run_queue_enqueue.assert_called_with(line_item_two, ANY)
+
 
 reload(rapid_pro_facade)

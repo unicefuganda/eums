@@ -72,7 +72,6 @@ CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 # RapidPro settings
 RAPIDPRO_API_TOKEN = os.environ['RAPIDPRO_API_TOKEN']
 RAPIDPRO_URL = 'https://rapidpro.io/api/v1/'
-RAPIDPRO_FLOWS = {'END_USER': 2436, 'MIDDLE_MAN': 2662}
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
     'RUNS': "%sruns.json" % RAPIDPRO_URL
