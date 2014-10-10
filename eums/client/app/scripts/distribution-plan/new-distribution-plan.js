@@ -36,7 +36,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             var distributionPlanLineItem = {item: $scope.salesOrderItemSelected.information.item,
                 quantity: $scope.salesOrderItemSelected.quantityLeft, planned_distribution_date: '2014-10-10',
                 targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
-                contact_phone_number: '', programme_focal: '', contact_person: ''};
+                contact_phone_number: '', programme_focal: '', contact_person: '', tracked: false};
 
             var currentDistributionPlanItems = $scope.distributionPlanItems;
             currentDistributionPlanItems.push(distributionPlanLineItem);
