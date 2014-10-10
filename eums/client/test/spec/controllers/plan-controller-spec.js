@@ -126,6 +126,16 @@ describe('NewDistributionPlanController', function () {
 
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);
         });
+
+        it('should retrieve the programme selected from the distribution parameters', function(){
+            deferred.resolve(stubSalesOrderItem);
+            mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
+
+            scope.initialize();
+            scope.$apply();
+
+            expect(mockDistributionPlanParametersService.retrieveVariable).toHaveBeenCalledWith('programmeSelected');
+        });
     });
 
     describe('when sales order item selected changes', function () {

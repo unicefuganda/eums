@@ -192,6 +192,13 @@ describe('DistributionPlanController', function () {
             expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith('selectedSalesOrder', salesOrderDetails[0]);
         });
 
+        it('should set the programme selected in the distribution parameters', function () {
+            scope.programmeSelected = {name: 'Testing', salesorder_set: ['1']};
+            scope.selectSalesOrder(salesOrderDetails[0]);
+            scope.$apply();
+            expect(mockDistributionPlanParametersService.saveVariable).toHaveBeenCalledWith('programmeSelected', scope.programmeSelected);
+        });
+
         it('should change location to create distribution plan path', function () {
             scope.selectSalesOrder(salesOrderDetails[0]);
             scope.$apply();

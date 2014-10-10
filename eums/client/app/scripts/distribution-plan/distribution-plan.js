@@ -64,6 +64,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
             DistributionPlanParameters.saveVariable('selectedSalesOrder', selectedSalesOrder);
+            DistributionPlanParameters.saveVariable('programmeSelected', $scope.programmeSelected);
             $location.path('/distribution-plan/new/');
         };
 

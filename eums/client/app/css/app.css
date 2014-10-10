@@ -18,6 +18,29 @@ table th	{
     color: #000000;
 }
 
+input[type=date]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    display: none;
+}
+
+input[type=date] {
+    width: 100px;
+    height: 80%;
+    font-size: 10px;
+}
+
+.table-select {
+    width: 80px;
+}
+
+.input-phone-number {
+    width: 100px;
+}
+
+.input-quantity {
+    width: 40px;
+}
+
 .inner-addon {
     position: relative;
 }

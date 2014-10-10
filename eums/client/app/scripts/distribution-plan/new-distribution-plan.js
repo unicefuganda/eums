@@ -12,6 +12,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             $scope.hasDistributionPlanItems = false;
 
             $scope.selectedSalesOrder = DistributionPlanParameters.retrieveVariable('selectedSalesOrder');
+            $scope.programmeSelected = DistributionPlanParameters.retrieveVariable('programmeSelected');
 
             $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
@@ -25,6 +26,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     $scope.salesOrderItems.push(formattedSalesOrderItem);
                 });
             });
+
+
         };
 
         $scope.hasTargetedQuantity = function (distributionPlanLineItem) {
@@ -123,6 +126,21 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     $scope.hasDistributionPlanItems = true;
                 }
             }
+        });
+
+        $scope.$watch('distributionPlanItem.programme_focal', function(){
+            // TO DO: Change the consignees in the scope when the program focal changes
+//            $scope.consignees =
+        });
+
+        $scope.$watch('distributionPlanItem.consignee', function(){
+            // TO DO: Change the contact_persons in the scope when the consignee changes
+//            $scope.consignees =
+        });
+
+        $scope.$watch('distributionPlanItem.contact_person', function(){
+            // TO DO: Change the contact_phone_number in the scope when the contact_person changes
+//            $scope.consignees =
         });
 
     });

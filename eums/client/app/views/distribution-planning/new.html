@@ -52,26 +52,96 @@
                             <td>{{salesOrderItemSelected.display}}</td>
                             <td>{{distributionPlanItem.quantity}}</td>
                             <td>{{salesOrderItemSelected.unit}}</td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">{{distributionPlanItem.targeted_quantity}}</td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text" style="width: 40px" ng-model="distributionPlanItem.target_quantity"></td>
-                            <td>{{distributionPlanItem.planned_distribution_date}}</td>
-                            <td>{{distributionPlanItem.programme_focal}}</td>
-                            <td>{{distributionPlanItem.consignee}}</td>
-                            <td>{{distributionPlanItem.contact_person}}</td>
-                            <td>{{distributionPlanItem.contact_phone_number}}</td>
-                            <td>{{distributionPlanItem.destination_location}}</td>
-                            <td>{{distributionPlanItem.mode_of_delivery}}</td>
-                            <td><input type="checkbox" checked="distributionPlanItem.tracked"></td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.targeted_quantity}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.planned_distribution_date}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.programme_focal}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">{{distributionPlanItem.consignee}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.contact_person}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.contact_phone_number}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.destination_location}}
+                            </td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
+                                {{distributionPlanItem.mode_of_delivery}}
+                            </td>
+
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text"
+                                                                                            class="input-quantity"
+                                                                                            ng-model="distributionPlanItem.target_quantity">
+                            </td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="date"
+                                                                                            required="required"
+                                                                                            ng-model="distributionPlanItem.planned_distribution_date">
+                            </td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
+                                                                                             ng-model="distributionPlanItem.programme_focal"
+                                                                                             required="required"
+                                                                                             ng-options="focal.name for focal in programme_focals">
+                                <option value="" selected="selected">Select</option>
+                            </select></td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
+                                                                                             ng-model="distributionPlanItem.consignee"
+                                                                                             required="required"
+                                                                                             ng-options="consignee.name for consignee in consignees">
+                                <option value="" selected="selected">Select</option>
+                            </select></td>
+
+
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
+                                                                                             ng-model="distributionPlanItem.contact_person"
+                                                                                             required="required"
+                                                                                             ng-options="contact_person.name for contact_person in contact_persons">
+                                <option value="" selected="selected">Select</option>
+                            </select></td>
+
+
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text"
+                                                                                            class="input-phone-number"
+                                                                                            value="{{distributionPlanItem.contact_phone_number}}"
+                                                                                            ng-model="distributionPlanItem.contact_phone_number"></td>
+
+
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
+                                                                                             ng-model="distributionPlanItem.destination_location"
+                                                                                             required="required"
+                                                                                             ng-options="district.name for district in districts">
+                                <option value="" selected="selected">Select</option>
+                            </select></td>
+
+
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
+                                                                                             ng-model="distributionPlanItem.mode_of_delivery"
+                                                                                             required="required">
+                                <option value="Direct Delivery">Direct Delivery</option>
+                                <option value="WH(warehouse)">WH(warehouse)</option>
+                                <option value="" selected="selected">Select</option>
+                            </select>
+                            </td>
+
+                            <td><input type="checkbox" ng-model="distributionPlanItem.tracked"
+                                       checked="distributionPlanItem.tracked"></td>
                         </tr>
                     </table>
                 </div>
 
                 <div>
-                        <button type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
-                                class="glyphicon glyphicon-plus"> </i>Add IP
-                        </button>
+                    <button type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
+                            class="glyphicon glyphicon-plus"> </i>Add IP
+                    </button>
                     <div ng-show="hasDistributionPlanItems" style="float: right">
-                        <button type="button" class="btn btn-primary" ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
+                        <button type="button" class="btn btn-primary"
+                                ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
                                 class="glyphicon glyphicon-save"> </i>Save
                         </button>
                     </div>
