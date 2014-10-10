@@ -3,26 +3,33 @@ import datetime
 
 from mock import MagicMock, ANY, patch
 
-from eums import celery
-from eums.models import NodeLineItemRun, DistributionPlanNode as Node, DistributionPlanLineItem, Flow
+from eums.models import DistributionPlanNode as Node, Flow
+from eums.test.services.mock_celery import MockCelery
+
+
+patch('celery.schedules.crontab', lambda: None)
+patch('celery.task.periodic_task', lambda run_every=(lambda: None): None).start()
+
+from eums import celery as local_celery
+from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue
 from eums.rapid_pro import rapid_pro_facade
+from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
-from eums.test.services.mock_celery import MockCelery
 
 
 datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
-celery.app.task = mock_celery.task
+local_celery.app.task = mock_celery.task
 
 mock_start_delivery_run = MagicMock()
 rapid_pro_facade.start_delivery_run = mock_start_delivery_run
 
-from eums.services.flow_scheduler import schedule_run_for
+from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
 
 
 class FlowSchedulerTest(TestCase):
@@ -31,9 +38,8 @@ class FlowSchedulerTest(TestCase):
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
         self.node = NodeFactory(consignee=self.consignee)
-        self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=self.node)
-
-        celery.app.control.revoke = MagicMock(return_value=None)
+        self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=self.node, consignee=self.consignee)
+        local_celery.app.control.revoke = MagicMock(return_value=None)
         self.node.consignee.build_contact = MagicMock(return_value=self.contact)
         Node.objects.get = MagicMock(return_value=self.node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
@@ -109,7 +115,8 @@ class FlowSchedulerTest(TestCase):
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
-    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self, mock_current_run_for_consignee):
+    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
+                                                                                                                 mock_current_run_for_consignee):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
 
         self.line_item.current_run = MagicMock(return_value=line_item_run)
@@ -118,12 +125,14 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(self.line_item)
 
         self.assertEqual(line_item_run.status, NodeLineItemRun.STATUS.cancelled)
-        celery.app.control.revoke.assert_called()
+        local_celery.app.control.revoke.assert_called()
         mock_start_delivery_run.assert_called()
 
     @patch('eums.models.RunQueue.enqueue')
     @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
-    def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self, mock_current_run_for_consignee, mock_run_queue_enqueue):
+    def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
+                                                                                                          mock_current_run_for_consignee,
+                                                                                                          mock_run_queue_enqueue):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
         node_two = NodeFactory(consignee=self.consignee)
         line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=node_two)
@@ -134,6 +143,39 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(line_item_two)
         mock_run_queue_enqueue.assert_called_with(line_item_two, ANY)
+
+
+    @patch('eums.models.NodeLineItemRun.overdue_runs')
+    def test_should_expire_overdue_runs(self, mock_get_overdue_runs):
+        node_line_item_run = NodeLineItemRunFactory()
+        mock_get_overdue_runs.return_value = [node_line_item_run]
+
+        expire_overdue_runs()
+
+        mock_get_overdue_runs.assert_called()
+        self.assertEqual(node_line_item_run.status, NodeLineItemRun.STATUS.expired)
+
+
+    @patch('eums.models.RunQueue.dequeue')
+    @patch('eums.services.flow_scheduler.schedule_run_for')
+    @patch('eums.models.NodeLineItemRun.overdue_runs')
+    def test_should_schedule_queued_runs_for_a_consignee_after_expiring_over_due_runs(self, mock_get_overdue_runs,
+                                                                                      mock_schedule_run_for,
+                                                                                      mock_deque):
+        overdue_line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item, consignee=self.consignee)
+        node_line_item = DistributionPlanLineItemFactory(consignee=self.consignee)
+        run_queue_item = RunQueueFactory(node_line_item=node_line_item,
+                                         contact_person_id=self.consignee.contact_person_id)
+
+        mock_get_overdue_runs.return_value = [overdue_line_item_run]
+        mock_schedule_run_for.return_value = None
+        mock_deque.return_value = run_queue_item
+
+        expire_overdue_runs()
+
+        mock_deque.assert_called_with(self.consignee.contact_person_id)
+        mock_schedule_run_for.assert_called_with(run_queue_item.node_line_item)
+        self.assertEqual(run_queue_item.status, RunQueue.STATUS.started)
 
 
 reload(rapid_pro_facade)

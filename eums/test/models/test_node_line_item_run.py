@@ -1,6 +1,8 @@
 from unittest import TestCase
+import datetime
 
-from eums.models import NodeLineItemRun, DistributionPlanNode, DistributionPlanLineItem
+from eums import settings
+from eums.models import NodeLineItemRun, DistributionPlanLineItem, DistributionPlanNode
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -12,6 +14,11 @@ class NodeLineItemRunTest(TestCase):
         self.consignee = ConsigneeFactory()
         node = DistributionPlanNodeFactory(consignee=self.consignee)
         self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
+
+    def tearDown(self):
+        NodeLineItemRun.objects.all().delete()
+        DistributionPlanLineItem.objects.all().delete()
+        DistributionPlanNode.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
         node_line_item_run = NodeLineItemRun()
@@ -31,3 +38,41 @@ class NodeLineItemRunTest(TestCase):
         NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.completed)
 
         self.assertEqual(NodeLineItemRun.current_run_for_consignee(self.consignee.id), None)
+
+    def test_should_get_over_due_runs(self):
+        delivery_status_check_delay = datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
+        max_allowed_reply_period = datetime.timedelta(days=settings.MAX_ALLOWED_REPLY_PERIOD)
+        one_day = datetime.timedelta(days=1)
+
+        today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
+        expired_run_date = today - delivery_status_check_delay - max_allowed_reply_period - \
+                           one_day
+        valid_run_date = today - delivery_status_check_delay - max_allowed_reply_period + one_day
+
+        expired_line_item_run = NodeLineItemRunFactory(status=NodeLineItemRun.STATUS.scheduled,
+                                                       node_line_item=DistributionPlanLineItemFactory(
+                                                           planned_distribution_date=expired_run_date))
+        NodeLineItemRunFactory(status=NodeLineItemRun.STATUS.scheduled,
+                               node_line_item=DistributionPlanLineItemFactory(
+                                   planned_distribution_date=valid_run_date))
+
+        overdue_runs = NodeLineItemRun.overdue_runs()
+
+        self.assertEqual(len(overdue_runs), 1)
+        self.assertEqual(overdue_runs[0], expired_line_item_run)
+
+    def test_should_not_get_completed_expired_or_cancelled_runs_when_getting_expired_runs(self):
+        expired_run_date = datetime.date(1990, 1, 1)
+
+        NodeLineItemRunFactory(status=NodeLineItemRun.STATUS.completed,
+                               node_line_item=DistributionPlanLineItemFactory(
+                                   planned_distribution_date=expired_run_date))
+        NodeLineItemRunFactory(status=NodeLineItemRun.STATUS.expired,
+                               node_line_item=DistributionPlanLineItemFactory(
+                                   planned_distribution_date=expired_run_date))
+        NodeLineItemRunFactory(status=NodeLineItemRun.STATUS.cancelled,
+                               node_line_item=DistributionPlanLineItemFactory(
+                                   planned_distribution_date=expired_run_date))
+
+        overdue_runs = NodeLineItemRun.overdue_runs()
+        self.assertEqual(len(overdue_runs), 0)

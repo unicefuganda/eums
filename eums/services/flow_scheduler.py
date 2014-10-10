@@ -1,6 +1,10 @@
 from __future__ import absolute_import
 import datetime
 
+from celery.schedules import crontab
+
+from celery.task import periodic_task
+
 from django.conf import settings
 
 from eums.celery import app
@@ -62,3 +66,16 @@ def _cancel_run(run):
     app.control.revoke(run.scheduled_message_task_id)
     run.status = NodeLineItemRun.STATUS.cancelled
     run.save()
+
+
+# @periodic_task(run_every=crontab())
+def expire_overdue_runs():
+    overdue_runs = NodeLineItemRun.overdue_runs()
+    for overdue_run in overdue_runs:
+        overdue_run.status = NodeLineItemRun.STATUS.expired
+        overdue_run.save()
+        next_run = RunQueue.dequeue(overdue_run.consignee.contact_person_id)
+        if next_run:
+            schedule_run_for(next_run.node_line_item)
+            next_run.status = RunQueue.STATUS.started
+            next_run.save()
