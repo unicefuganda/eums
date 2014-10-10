@@ -52,7 +52,8 @@
                             <td>{{salesOrderItemSelected.display}}</td>
                             <td>{{distributionPlanItem.quantity}}</td>
                             <td>{{salesOrderItemSelected.unit}}</td>
-                            <td>{{distributionPlanItem.targeted_quantity}}</td>
+                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">{{distributionPlanItem.targeted_quantity}}</td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text" style="width: 40px" ng-model="distributionPlanItem.target_quantity"></td>
                             <td>{{distributionPlanItem.planned_distribution_date}}</td>
                             <td>{{distributionPlanItem.programme_focal}}</td>
                             <td>{{distributionPlanItem.consignee}}</td>
@@ -70,7 +71,7 @@
                                 class="glyphicon glyphicon-plus"> </i>Add IP
                         </button>
                     <div ng-show="hasDistributionPlanItems" style="float: right">
-                        <button type="button" class="btn btn-primary" ng-click="saveDistributionPlanItem()"><i
+                        <button type="button" class="btn btn-primary" ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
                                 class="glyphicon glyphicon-save"> </i>Save
                         </button>
                     </div>

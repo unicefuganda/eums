@@ -252,7 +252,7 @@ describe('NewDistributionPlanController', function () {
             expect(scope.distributionPlanItems).toEqual([]);
         });
 
-        it('should subtract the targeted quantity from the quantity left for the sales order item', function(){
+        it('should subtract the targeted quantity from the quantity left for the sales order item', function () {
             deferred.resolve({targeted_quantity: 20});
             var quantity = '100';
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
@@ -323,14 +323,47 @@ describe('NewDistributionPlanController', function () {
 
             expect(scope.hasDistributionPlanItems).toBeTruthy();
         });
+
+        it('should know distribution plan has targeted quantity', function () {
+            var distributedPlanItem = {targeted_quantity: '100'};
+            expect(scope.hasTargetedQuantity(distributedPlanItem)).toBeTruthy();
+
+        });
+
+        it('should know distribution plan has no targeted quantity', function () {
+            var distributedPlanItem = {targeted_quantity: '0'};
+            expect(scope.hasTargetedQuantity(distributedPlanItem)).toBeFalsy();
+        });
+
+        it('should know distribution plan has no targeted quantity for zero value', function () {
+            var distributedPlanItem = {targeted_quantity: 0};
+            expect(scope.hasTargetedQuantity(distributedPlanItem)).toBeFalsy();
+        });
+
+        it('should know distribution plan has no targeted quantity for undefined value', function () {
+            var distributedPlanItem = {};
+            expect(scope.hasTargetedQuantity(distributedPlanItem)).toBeFalsy();
+        });
+
+        it('should know distribution plan has no targeted quantity for empty value', function () {
+            var distributedPlanItem = {targeted_quantity: ''};
+            expect(scope.hasTargetedQuantity(distributedPlanItem)).toBeFalsy();
+        });
     });
 
-    describe('when save is cliked', function () {
+    describe('when save is clicked', function () {
         it('should call the create line item service for all the line items added', function () {
             deferredPlanNode.resolve({id: 1, parent: null, distribution_plan: 1, consignee: 1, tree_position: 'END_USER'});
 
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
             scope.selectedSalesOrder = salesOrderDetails[0];
-            scope.distributionPlanItems = [
+            var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
                     quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
                     targeted_quantity: '', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
@@ -342,7 +375,7 @@ describe('NewDistributionPlanController', function () {
                     contact_phone_number: '', programme_focal: {id: 2}, contact_person: '', tracked: false,
                     remark: 'Bad'}
             ];
-            scope.saveDistributionPlanItem();
+            scope.saveDistributionPlanItem(distributionPlanItems);
             scope.$apply();
 
             var lineItemDetails = {item: stubSalesOrderItem.item.id, targeted_quantity: '', distribution_plan_node: 1,
@@ -358,37 +391,63 @@ describe('NewDistributionPlanController', function () {
         });
 
         it('should call the create distribution plan service if no plan has been created for sales order item', function () {
-            scope.distributionPlanItems = [];
+            var distributionPlanItems = [];
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: '100',
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
             scope.selectedSalesOrder = salesOrderDetails[0];
-            scope.saveDistributionPlanItem();
+            scope.saveDistributionPlanItem(distributionPlanItems);
             scope.$apply();
 
             expect(mockPlanService.createPlan).toHaveBeenCalledWith({'programme': 1});
         });
 
         it('should save the distribution plan ID in the scope variable', function () {
-            scope.distributionPlanItems = [];
+            var distributionPlanItems = [];
             scope.selectedSalesOrder = salesOrderDetails[0];
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: '100',
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
             deferredPlan.resolve({id: 1, date: '2014-10-09'});
-            scope.saveDistributionPlanItem();
+            scope.saveDistributionPlanItem(distributionPlanItems);
             scope.$apply();
 
             expect(scope.planId).toEqual(1);
         });
 
         it('should not call the create distribution plan service if plan has already been created for sales order item', function () {
-            scope.distributionPlanItems = [];
+            var distributionPlanItems = [];
             scope.selectedSalesOrder = salesOrderDetails[0];
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: '100',
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
             scope.planId = 1;
-            scope.saveDistributionPlanItem();
+            scope.saveDistributionPlanItem(distributionPlanItems);
             scope.$apply();
 
             expect(mockPlanService.createPlan).not.toHaveBeenCalledWith({'programme': 1});
         });
 
-        it('should invoke the distribution plan node service to create nodes for each distribution line item', function(){
+        it('should invoke the distribution plan node service to create nodes for each distribution line item', function () {
             scope.planId = 1;
-            scope.distributionPlanItems = [
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: stubSalesOrderItem.quantity,
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
                     quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
                     targeted_quantity: '', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
@@ -396,11 +455,75 @@ describe('NewDistributionPlanController', function () {
                     remark: 'Good'}
             ];
 
-            scope.saveDistributionPlanItem();
+            scope.saveDistributionPlanItem(distributionPlanItems);
             scope.$apply();
 
             expect(mockDistributionPlanNodeService.createNode).toHaveBeenCalledWith({distribution_plan: 1,
                 consignee: 1, tree_position: 'END_USER'});
+        });
+
+        it('should reduce the quantity left for the sales order item', function () {
+            scope.planId = 1;
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: '100',
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            var distributionPlanItems = [
+                {item: stubSalesOrderItem.item,
+                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
+                    targeted_quantity: '10', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
+                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
+                    remark: 'Good', target_quantity: '10'}
+            ];
+
+            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.$apply();
+
+            var expectedQuantityLeft = '90';
+            expect(scope.salesOrderItemSelected.quantityLeft).toEqual(expectedQuantityLeft);
+        });
+
+        it('should reduce the quantity left for the sales order item for multiple items', function () {
+            scope.planId = 1;
+            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code,
+                quantity: '100',
+                quantityLeft: '100',
+                unit: stubSalesOrderItem.item.unit.name,
+                information: stubSalesOrderItem};
+
+            var distributionPlanItems = [
+                {item: stubSalesOrderItem.item,
+                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
+                    targeted_quantity: '10', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
+                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
+                    remark: 'Good'}
+            ];
+
+            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.$apply();
+
+            var multipleDistributionPlanItems = [
+                {item: stubSalesOrderItem.item,
+                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
+                    targeted_quantity: '10', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
+                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
+                    remark: 'Good', target_quantity: '10'},
+                {item: stubSalesOrderItem.item,
+                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
+                    targeted_quantity: '20', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
+                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
+                    remark: 'Good', target_quantity: '20'}
+            ];
+
+            scope.saveDistributionPlanItem(multipleDistributionPlanItems);
+            scope.$apply();
+
+            var expectedQuantityLeft = '70';
+            expect(scope.salesOrderItemSelected.quantityLeft).toEqual(expectedQuantityLeft);
         });
     });
 
