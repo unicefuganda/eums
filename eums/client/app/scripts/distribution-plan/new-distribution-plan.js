@@ -85,6 +85,14 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             });
         };
 
+        $scope.hasItemsLeft = function(){
+            if($scope.salesOrderItemSelected){
+                return parseInt($scope.salesOrderItemSelected.quantityLeft) !== 0;
+            }
+
+            return true;
+        };
+
         $scope.$watch('salesOrderItemSelected', function () {
             var emptySalesOrders = ['', undefined];
 

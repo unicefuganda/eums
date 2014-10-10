@@ -537,5 +537,19 @@ describe('NewDistributionPlanController', function () {
         });
     });
 
+    describe('when checking for item quantities', function(){
+        it('should know the item selected is defaulted to true when no selected sales order item', function(){
+            expect(scope.hasItemsLeft()).toBeTruthy();
+        });
 
+        it('should know the item selected still has quantities that can be assigned to IPs', function(){
+            scope.salesOrderItemSelected = {quantityLeft: '10'};
+            expect(scope.hasItemsLeft()).toBeTruthy();
+        });
+
+        it('should know the item selected does not have any quantity that can be assigned to IPs', function(){
+            scope.salesOrderItemSelected = {quantityLeft: '0'};
+            expect(scope.hasItemsLeft()).toBeFalsy();
+        });
+    });
 });

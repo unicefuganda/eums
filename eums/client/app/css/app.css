@@ -40,6 +40,11 @@ input[type=date] {
 .input-quantity {
     width: 40px;
 }
+.sales-order-information{
+    color: blue;
+    font-style: italic;
+    font-weight: bold;
+}
 
 .inner-addon {
     position: relative;

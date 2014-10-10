@@ -13,6 +13,7 @@
             </div>
 
             <div ng-show="hasSalesOrderItems" class="sales-order-list">
+                <span ng-show="!hasItemsLeft()" class="sales-order-information">All quantities have been assigned for this item.</span>
                 <table style="width: 60%">
                     <th>Sales Order</th>
                     <th>Material</th>
@@ -136,11 +137,11 @@
                 </div>
 
                 <div>
-                    <button type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
+                    <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
                             class="glyphicon glyphicon-plus"> </i>Add IP
                     </button>
                     <div ng-show="hasDistributionPlanItems" style="float: right">
-                        <button type="button" class="btn btn-primary"
+                        <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
                                 ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
                                 class="glyphicon glyphicon-save"> </i>Save
                         </button>
