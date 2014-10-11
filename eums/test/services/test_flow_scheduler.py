@@ -1,16 +1,13 @@
 from unittest import TestCase
 import datetime
 
+import celery
+from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
 
+from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
+from eums import local_celery
 from eums.models import DistributionPlanNode as Node, Flow
-from eums.test.services.mock_celery import MockCelery
-
-
-patch('celery.schedules.crontab', lambda: None)
-patch('celery.task.periodic_task', lambda run_every=(lambda: None): None).start()
-
-from eums import celery as local_celery
 from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
@@ -25,6 +22,7 @@ from eums.test.helpers.fake_datetime import FakeDatetime
 datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
 local_celery.app.task = mock_celery.task
+celery.task.periodic_task = MockPeriodicTask
 
 mock_start_delivery_run = MagicMock()
 rapid_pro_facade.start_delivery_run = mock_start_delivery_run
@@ -142,6 +140,7 @@ class FlowSchedulerTest(TestCase):
         mock_run_queue_enqueue.return_value = None
 
         schedule_run_for(line_item_two)
+
         mock_run_queue_enqueue.assert_called_with(line_item_two, ANY)
 
 
@@ -176,6 +175,14 @@ class FlowSchedulerTest(TestCase):
         mock_deque.assert_called_with(self.consignee.contact_person_id)
         mock_schedule_run_for.assert_called_with(run_queue_item.node_line_item)
         self.assertEqual(run_queue_item.status, RunQueue.STATUS.started)
+
+    @patch('eums.services.flow_scheduler.expire_overdue_runs')
+    def test_should_schedule_expire_runs_to_execute_at_midnight_every_day(self, mock_expire_overdue_runs):
+        mock_expire_overdue_runs.return_value = None
+
+        mock_expire_overdue_runs()
+
+        MockPeriodicTask.assert_called_with(crontab(minute=0, hour=0))
 
 
 reload(rapid_pro_facade)

@@ -7,7 +7,7 @@ from celery.task import periodic_task
 
 from django.conf import settings
 
-from eums.celery import app
+from eums.local_celery import app
 from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue, DistributionPlanNode, Flow
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
@@ -68,7 +68,7 @@ def _cancel_run(run):
     run.save()
 
 
-# @periodic_task(run_every=crontab())
+@periodic_task(run_every=crontab(minute=0, hour=0))
 def expire_overdue_runs():
     overdue_runs = NodeLineItemRun.overdue_runs()
     for overdue_run in overdue_runs:
