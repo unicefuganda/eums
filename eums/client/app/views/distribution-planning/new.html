@@ -13,7 +13,7 @@
             </div>
 
             <div ng-show="hasSalesOrderItems" class="sales-order-list">
-                <span ng-show="!hasItemsLeft()" class="sales-order-information">All quantities have been assigned for this item.</span>
+                <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
                 <table style="width: 60%">
                     <th>Sales Order</th>
                     <th>Material</th>
@@ -81,7 +81,7 @@
                                                                                             class="input-quantity"
                                                                                             ng-model="distributionPlanItem.target_quantity">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="date"
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input data-provide="datepicker" class="datepicker" data-date-format="yyyy-mm-dd"
                                                                                             required="required"
                                                                                             ng-model="distributionPlanItem.planned_distribution_date">
                             </td>

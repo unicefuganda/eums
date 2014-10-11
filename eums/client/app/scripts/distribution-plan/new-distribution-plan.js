@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode'])
+angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap'])
     .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService) {
 
         $scope.salesOrderItems = [];
@@ -85,8 +85,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             });
         };
 
-        $scope.hasItemsLeft = function(){
-            if($scope.salesOrderItemSelected){
+        $scope.hasItemsLeft = function () {
+            var emptySalesOrders = ['', undefined];
+            if (emptySalesOrders.indexOf($scope.salesOrderItemSelected) === -1) {
                 return parseInt($scope.salesOrderItemSelected.quantityLeft) !== 0;
             }
 
@@ -101,6 +102,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
             else {
                 $scope.hasSalesOrderItems = true;
+                $scope.salesOrderItemSelected.quantityLeft = $scope.salesOrderItemSelected.quantity;
+
                 var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
                 if (distributionPlanLineItems && distributionPlanLineItems.length > 0) {
                     var itemCounter = 0;
@@ -136,17 +139,17 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
         });
 
-        $scope.$watch('distributionPlanItem.programme_focal', function(){
+        $scope.$watch('distributionPlanItem.programme_focal', function () {
             // TO DO: Change the consignees in the scope when the program focal changes
 //            $scope.consignees =
         });
 
-        $scope.$watch('distributionPlanItem.consignee', function(){
+        $scope.$watch('distributionPlanItem.consignee', function () {
             // TO DO: Change the contact_persons in the scope when the consignee changes
 //            $scope.consignees =
         });
 
-        $scope.$watch('distributionPlanItem.contact_person', function(){
+        $scope.$watch('distributionPlanItem.contact_person', function () {
             // TO DO: Change the contact_phone_number in the scope when the contact_person changes
 //            $scope.consignees =
         });

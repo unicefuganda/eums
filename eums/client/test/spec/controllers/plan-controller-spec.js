@@ -480,6 +480,7 @@ describe('NewDistributionPlanController', function () {
                 quantityLeft: '100',
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
+            scope.$apply();
 
             var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
@@ -504,6 +505,7 @@ describe('NewDistributionPlanController', function () {
                 quantityLeft: '100',
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
+            scope.$apply();
 
             var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
