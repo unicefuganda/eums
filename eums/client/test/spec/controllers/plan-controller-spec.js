@@ -1,10 +1,11 @@
 describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
-    var scope, mockPlanService, mockDistributionPlanParametersService, mockProgrammeService, mockDistributionPlanNodeService,
+    var scope, mockPlanService, mockDistributionPlanParametersService, mockProgrammeService, mockDistributionPlanNodeService, mockDistrictService,
         deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService, mockDistributionPlanLineItemService, deferredPlanNode;
 
     var orderNumber = '00001';
+    var expectedDistricts = ['Abim', 'Gulu'];
 
     var salesOrderDetails = [
         {'programme': 1,
@@ -46,6 +47,7 @@ describe('NewDistributionPlanController', function () {
         mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails', 'createLineItem']);
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails', 'createNode']);
+        mockDistrictService = jasmine.createSpyObj('mockDistrictService', ['getAllDistricts']);
 
         inject(function ($controller, $rootScope, $q, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -61,6 +63,7 @@ describe('NewDistributionPlanController', function () {
             mockDistributionPlanLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockDistributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockDistributionPlanNodeService.createNode.and.returnValue(deferredPlanNode.promise);
+            mockDistrictService.getAllDistricts.and.returnValue(expectedDistricts);
 
             scope = $rootScope.$new();
 
@@ -71,7 +74,19 @@ describe('NewDistributionPlanController', function () {
                 {$scope: scope, DistributionPlanParameters: mockDistributionPlanParametersService,
                     ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService,
                     DistributionPlanService: mockPlanService, DistributionPlanNodeService: mockDistributionPlanNodeService,
-                    DistributionPlanLineItemService: mockDistributionPlanLineItemService});
+                    DistributionPlanLineItemService: mockDistributionPlanLineItemService,
+                    Districts: mockDistrictService});
+        });
+    });
+
+    describe('when change selected sales order item', function(){
+        it('should change the scope selected order item', function(){
+            var expectedSalesOrderItem = {information: {distributionplanlineitem_set: []}};
+            scope.salesOrderItemSelected = [];
+            scope.changeSelectedSalesOrderItem(expectedSalesOrderItem);
+            scope.$apply();
+
+            expect(scope.salesOrderItemSelected).toEqual(expectedSalesOrderItem);
         });
     });
 
@@ -82,6 +97,23 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
 
             expect(scope.distributionPlanItems).toEqual([]);
+        });
+
+        it('should have called the get districts function', function () {
+            mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
+            scope.initialize();
+            scope.$apply();
+
+            expect(mockDistrictService.getAllDistricts).toHaveBeenCalled();
+        });
+
+        it('should set districts in the scope variable', function () {
+            mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
+            mockDistrictService.getAllDistricts.and.returnValue(expectedDistricts);
+            scope.initialize();
+            scope.$apply();
+
+            expect(scope.districts).toEqual(expectedDistricts);
         });
 
         it('should have the selected sales orders in the scope', function () {
@@ -127,7 +159,7 @@ describe('NewDistributionPlanController', function () {
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);
         });
 
-        it('should retrieve the programme selected from the distribution parameters', function(){
+        it('should retrieve the programme selected from the distribution parameters', function () {
             deferred.resolve(stubSalesOrderItem);
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
 
@@ -291,7 +323,7 @@ describe('NewDistributionPlanController', function () {
             var distributionPlanLineItem = {item: stubSalesOrderItem.item,
                 quantity: scope.salesOrderItemSelected.quantityLeft, planned_distribution_date: '2014-10-10',
                 targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
-                contact_phone_number: '', programme_focal: '', contact_person: '', tracked : false};
+                contact_phone_number: '', programme_focal: '', contact_person: '', tracked: false};
 
             scope.addDistributionPlanItem();
             scope.$apply();
@@ -539,17 +571,17 @@ describe('NewDistributionPlanController', function () {
         });
     });
 
-    describe('when checking for item quantities', function(){
-        it('should know the item selected is defaulted to true when no selected sales order item', function(){
+    describe('when checking for item quantities', function () {
+        it('should know the item selected is defaulted to true when no selected sales order item', function () {
             expect(scope.hasItemsLeft()).toBeTruthy();
         });
 
-        it('should know the item selected still has quantities that can be assigned to IPs', function(){
+        it('should know the item selected still has quantities that can be assigned to IPs', function () {
             scope.salesOrderItemSelected = {quantityLeft: '10'};
             expect(scope.hasItemsLeft()).toBeTruthy();
         });
 
-        it('should know the item selected does not have any quantity that can be assigned to IPs', function(){
+        it('should know the item selected does not have any quantity that can be assigned to IPs', function () {
             scope.salesOrderItemSelected = {quantityLeft: '0'};
             expect(scope.hasItemsLeft()).toBeFalsy();
         });

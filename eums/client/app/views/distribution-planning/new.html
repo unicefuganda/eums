@@ -10,6 +10,16 @@
                         ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
                     <option value="" selected="selected">Select Item</option>
                 </select>
+
+                <div class="btn-group" dropdown>
+                    <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+                        Select Item <span class="caret"></span></button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li ng-repeat="salesOrderItem in salesOrderItems"
+                            ng-click="changeSelectedSalesOrderItem(salesOrderItem)"><a>{{salesOrderItem.display}}</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
 
             <div ng-show="hasSalesOrderItems" class="sales-order-list">
@@ -81,7 +91,7 @@
                                                                                             class="input-quantity"
                                                                                             ng-model="distributionPlanItem.target_quantity">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input data-provide="datepicker" class="datepicker" data-date-format="yyyy-mm-dd"
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="date"
                                                                                             required="required"
                                                                                             ng-model="distributionPlanItem.planned_distribution_date">
                             </td>
@@ -110,15 +120,21 @@
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text"
                                                                                             class="input-phone-number"
                                                                                             value="{{distributionPlanItem.contact_phone_number}}"
-                                                                                            ng-model="distributionPlanItem.contact_phone_number"></td>
+                                                                                            ng-model="distributionPlanItem.contact_phone_number">
+                            </td>
 
 
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
-                                                                                             ng-model="distributionPlanItem.destination_location"
-                                                                                             required="required"
-                                                                                             ng-options="district.name for district in districts">
-                                <option value="" selected="selected">Select</option>
-                            </select></td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <!--<select class="table-select"-->
+                                <!--ng-model="distributionPlanItem.destination_location"-->
+                                <!--required="required"-->
+                                <!--ng-options="district.name for district in districts">-->
+                                <!--<option value="" selected="selected">Select</option>-->
+                                <!--</select>-->
+                                <input style="width: 100px; height: 80%; font-size: 10px;" type="text" ng-model="distributionPlanItem.destination_location"
+                                       typeahead="district for district in districts | filter:$viewValue | limitTo:8"
+                                       class="form-control">
+                            </td>
 
 
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
@@ -137,7 +153,8 @@
                 </div>
 
                 <div>
-                    <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
+                    <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
+                            ng-click="addDistributionPlanItem()"><i
                             class="glyphicon glyphicon-plus"> </i>Add IP
                     </button>
                     <div ng-show="hasDistributionPlanItems" style="float: right">
