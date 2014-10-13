@@ -1,0 +1,1778 @@
+[
+    {
+        "fields": {
+            "model": "logentry",
+            "name": "log entry",
+            "app_label": "admin"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "model": "permission",
+            "name": "permission",
+            "app_label": "auth"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "model": "group",
+            "name": "group",
+            "app_label": "auth"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "model": "user",
+            "name": "user",
+            "app_label": "auth"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "model": "contenttype",
+            "name": "content type",
+            "app_label": "contenttypes"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "model": "session",
+            "name": "session",
+            "app_label": "sessions"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "model": "programme",
+            "name": "programme",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "model": "distributionplan",
+            "name": "distribution plan",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "model": "consignee",
+            "name": "consignee",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "model": "itemunit",
+            "name": "item unit",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "model": "item",
+            "name": "item",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "model": "distributionplannode",
+            "name": "distribution plan node",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "model": "salesorder",
+            "name": "sales order",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "model": "salesorderitem",
+            "name": "sales order item",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "model": "distributionplanlineitem",
+            "name": "distribution plan line item",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "model": "nodelineitemrun",
+            "name": "node line item run",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "model": "question",
+            "name": "question",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "model": "numericquestion",
+            "name": "numeric question",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "model": "textquestion",
+            "name": "text question",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "model": "multiplechoicequestion",
+            "name": "multiple choice question",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 20
+    },
+    {
+        "fields": {
+            "model": "option",
+            "name": "option",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 21
+    },
+    {
+        "fields": {
+            "model": "textanswer",
+            "name": "text answer",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 22
+    },
+    {
+        "fields": {
+            "model": "numericanswer",
+            "name": "numeric answer",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 23
+    },
+    {
+        "fields": {
+            "model": "multiplechoiceanswer",
+            "name": "multiple choice answer",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 24
+    },
+    {
+        "fields": {
+            "model": "runqueue",
+            "name": "run queue",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 25
+    },
+    {
+        "fields": {
+            "model": "flow",
+            "name": "flow",
+            "app_label": "eums"
+        },
+        "model": "contenttypes.contenttype",
+        "pk": 26
+    },
+    {
+        "fields": {
+            "expire_date": "2014-10-27T11:22:37.764",
+            "session_data": "ZDQ4MjhkNmUwMzA2ODNjYjBjMmUyMTEyZjI3YjlkMTAwNDQxMjQzNTp7Il9hdXRoX3VzZXJfaGFzaCI6ImZiYzRmMmRlODZjNjRiNmYzMjJhYzgyMDgwMjcxMzI1ZTZjY2U0M2QiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9"
+        },
+        "model": "sessions.session",
+        "pk": "mdhjkj68jjyqxofrwdez7gd5ra7htu41"
+    },
+    {
+        "fields": {
+            "date": "2014-10-13",
+            "programme": 1
+        },
+        "model": "eums.distributionplan",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "name": "first consignee",
+            "contact_person_id": "2435346786543"
+        },
+        "model": "eums.consignee",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "name": "second consigne",
+            "contact_person_id": "dfg34534534344564"
+        },
+        "model": "eums.consignee",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "name": "end user consignee",
+            "contact_person_id": "dfgsdfk3345646575"
+        },
+        "model": "eums.consignee",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "name": "kgs"
+        },
+        "model": "eums.itemunit",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "material_code": "DEFE2454534534",
+            "description": "flour",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "material_code": "SDER34545645",
+            "description": "sugar",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "distribution_plan": 1,
+            "tree_position": "MIDDLE_MAN",
+            "consignee": 1,
+            "parent": null
+        },
+        "model": "eums.distributionplannode",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "distribution_plan": 1,
+            "tree_position": "MIDDLE_MAN",
+            "consignee": 2,
+            "parent": 2
+        },
+        "model": "eums.distributionplannode",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "distribution_plan": 1,
+            "tree_position": "END_USER",
+            "consignee": 3,
+            "parent": 3
+        },
+        "model": "eums.distributionplannode",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "date": "2014-01-01",
+            "order_number": "ODER12345",
+            "description": "sample sales order",
+            "programme": 1
+        },
+        "model": "eums.salesorder",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "issue_date": "2014-01-01",
+            "description": "flour",
+            "sales_order": 1,
+            "net_price": "20000.0000",
+            "item": 1,
+            "delivery_date": "2014-01-01",
+            "net_value": "20000.0000",
+            "quantity": 20
+        },
+        "model": "eums.salesorderitem",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "issue_date": "2014-01-01",
+            "description": "sugar",
+            "sales_order": 1,
+            "net_price": "2500.0000",
+            "item": 2,
+            "delivery_date": "2014-01-01",
+            "net_value": "2500.0000",
+            "quantity": 25
+        },
+        "model": "eums.salesorderitem",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "status": "completed",
+            "consignee": 1,
+            "scheduled_message_task_id": "234535934549",
+            "phone": "+256795655430",
+            "node_line_item": 3
+        },
+        "model": "eums.nodelineitemrun",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "status": "completed",
+            "consignee": 1,
+            "scheduled_message_task_id": "345934530430",
+            "phone": "+25678554333",
+            "node_line_item": 4
+        },
+        "model": "eums.nodelineitemrun",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "status": "completed",
+            "consignee": 2,
+            "scheduled_message_task_id": "34583493232",
+            "phone": "+25679838322",
+            "node_line_item": 5
+        },
+        "model": "eums.nodelineitemrun",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "status": "completed",
+            "consignee": 2,
+            "scheduled_message_task_id": "3454345345",
+            "phone": "+256772345469",
+            "node_line_item": 6
+        },
+        "model": "eums.nodelineitemrun",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "status": "completed",
+            "consignee": 3,
+            "scheduled_message_task_id": "3449993888",
+            "phone": "+256772345469",
+            "node_line_item": 7
+        },
+        "model": "eums.nodelineitemrun",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "status": "scheduled",
+            "consignee": 3,
+            "scheduled_message_task_id": "9949733733776",
+            "phone": "+256772345469",
+            "node_line_item": 8
+        },
+        "model": "eums.nodelineitemrun",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "text": "What is your name",
+            "uuids": "[\"<factory.declarations.Sequence object at 0x1023d21d0>\"]",
+            "final": false,
+            "label": "label 1"
+        },
+        "model": "eums.question",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "text": "What is your name",
+            "uuids": "[\"<factory.declarations.Sequence object at 0x10f6581d0>\"]",
+            "final": false,
+            "label": "label 2"
+        },
+        "model": "eums.question",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "text": "What is your name",
+            "uuids": "[\"<factory.declarations.Sequence object at 0x1090d91d0>\"]",
+            "final": false,
+            "label": "label 3"
+        },
+        "model": "eums.question",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "text": "What is your name",
+            "uuids": "[\"<factory.declarations.Sequence object at 0x10a37c1d0>\"]",
+            "final": false,
+            "label": "label 4"
+        },
+        "model": "eums.question",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "text": "What is your name",
+            "uuids": "[\"<factory.declarations.Sequence object at 0x10ce821d0>\"]",
+            "final": false,
+            "label": "label 5"
+        },
+        "model": "eums.question",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "text": "What is your name",
+            "uuids": "[\"<factory.declarations.Sequence object at 0x104ee21d0>\"]",
+            "final": false,
+            "label": "label 6"
+        },
+        "model": "eums.question",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "codename": "add_logentry",
+            "name": "Can add log entry",
+            "content_type": 1
+        },
+        "model": "auth.permission",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "codename": "change_logentry",
+            "name": "Can change log entry",
+            "content_type": 1
+        },
+        "model": "auth.permission",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "codename": "delete_logentry",
+            "name": "Can delete log entry",
+            "content_type": 1
+        },
+        "model": "auth.permission",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "codename": "add_permission",
+            "name": "Can add permission",
+            "content_type": 2
+        },
+        "model": "auth.permission",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "codename": "change_permission",
+            "name": "Can change permission",
+            "content_type": 2
+        },
+        "model": "auth.permission",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "codename": "delete_permission",
+            "name": "Can delete permission",
+            "content_type": 2
+        },
+        "model": "auth.permission",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "codename": "add_group",
+            "name": "Can add group",
+            "content_type": 3
+        },
+        "model": "auth.permission",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "codename": "change_group",
+            "name": "Can change group",
+            "content_type": 3
+        },
+        "model": "auth.permission",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "codename": "delete_group",
+            "name": "Can delete group",
+            "content_type": 3
+        },
+        "model": "auth.permission",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "codename": "add_user",
+            "name": "Can add user",
+            "content_type": 4
+        },
+        "model": "auth.permission",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "codename": "change_user",
+            "name": "Can change user",
+            "content_type": 4
+        },
+        "model": "auth.permission",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "codename": "delete_user",
+            "name": "Can delete user",
+            "content_type": 4
+        },
+        "model": "auth.permission",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "codename": "add_contenttype",
+            "name": "Can add content type",
+            "content_type": 5
+        },
+        "model": "auth.permission",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "codename": "change_contenttype",
+            "name": "Can change content type",
+            "content_type": 5
+        },
+        "model": "auth.permission",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "codename": "delete_contenttype",
+            "name": "Can delete content type",
+            "content_type": 5
+        },
+        "model": "auth.permission",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "codename": "add_session",
+            "name": "Can add session",
+            "content_type": 6
+        },
+        "model": "auth.permission",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "codename": "change_session",
+            "name": "Can change session",
+            "content_type": 6
+        },
+        "model": "auth.permission",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "codename": "delete_session",
+            "name": "Can delete session",
+            "content_type": 6
+        },
+        "model": "auth.permission",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "codename": "add_programme",
+            "name": "Can add programme",
+            "content_type": 7
+        },
+        "model": "auth.permission",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "codename": "change_programme",
+            "name": "Can change programme",
+            "content_type": 7
+        },
+        "model": "auth.permission",
+        "pk": 20
+    },
+    {
+        "fields": {
+            "codename": "delete_programme",
+            "name": "Can delete programme",
+            "content_type": 7
+        },
+        "model": "auth.permission",
+        "pk": 21
+    },
+    {
+        "fields": {
+            "codename": "add_distributionplan",
+            "name": "Can add distribution plan",
+            "content_type": 8
+        },
+        "model": "auth.permission",
+        "pk": 22
+    },
+    {
+        "fields": {
+            "codename": "change_distributionplan",
+            "name": "Can change distribution plan",
+            "content_type": 8
+        },
+        "model": "auth.permission",
+        "pk": 23
+    },
+    {
+        "fields": {
+            "codename": "delete_distributionplan",
+            "name": "Can delete distribution plan",
+            "content_type": 8
+        },
+        "model": "auth.permission",
+        "pk": 24
+    },
+    {
+        "fields": {
+            "codename": "add_consignee",
+            "name": "Can add consignee",
+            "content_type": 9
+        },
+        "model": "auth.permission",
+        "pk": 25
+    },
+    {
+        "fields": {
+            "codename": "change_consignee",
+            "name": "Can change consignee",
+            "content_type": 9
+        },
+        "model": "auth.permission",
+        "pk": 26
+    },
+    {
+        "fields": {
+            "codename": "delete_consignee",
+            "name": "Can delete consignee",
+            "content_type": 9
+        },
+        "model": "auth.permission",
+        "pk": 27
+    },
+    {
+        "fields": {
+            "codename": "add_itemunit",
+            "name": "Can add item unit",
+            "content_type": 10
+        },
+        "model": "auth.permission",
+        "pk": 28
+    },
+    {
+        "fields": {
+            "codename": "change_itemunit",
+            "name": "Can change item unit",
+            "content_type": 10
+        },
+        "model": "auth.permission",
+        "pk": 29
+    },
+    {
+        "fields": {
+            "codename": "delete_itemunit",
+            "name": "Can delete item unit",
+            "content_type": 10
+        },
+        "model": "auth.permission",
+        "pk": 30
+    },
+    {
+        "fields": {
+            "codename": "add_item",
+            "name": "Can add item",
+            "content_type": 11
+        },
+        "model": "auth.permission",
+        "pk": 31
+    },
+    {
+        "fields": {
+            "codename": "change_item",
+            "name": "Can change item",
+            "content_type": 11
+        },
+        "model": "auth.permission",
+        "pk": 32
+    },
+    {
+        "fields": {
+            "codename": "delete_item",
+            "name": "Can delete item",
+            "content_type": 11
+        },
+        "model": "auth.permission",
+        "pk": 33
+    },
+    {
+        "fields": {
+            "codename": "add_distributionplannode",
+            "name": "Can add distribution plan node",
+            "content_type": 12
+        },
+        "model": "auth.permission",
+        "pk": 34
+    },
+    {
+        "fields": {
+            "codename": "change_distributionplannode",
+            "name": "Can change distribution plan node",
+            "content_type": 12
+        },
+        "model": "auth.permission",
+        "pk": 35
+    },
+    {
+        "fields": {
+            "codename": "delete_distributionplannode",
+            "name": "Can delete distribution plan node",
+            "content_type": 12
+        },
+        "model": "auth.permission",
+        "pk": 36
+    },
+    {
+        "fields": {
+            "codename": "add_salesorder",
+            "name": "Can add sales order",
+            "content_type": 13
+        },
+        "model": "auth.permission",
+        "pk": 37
+    },
+    {
+        "fields": {
+            "codename": "change_salesorder",
+            "name": "Can change sales order",
+            "content_type": 13
+        },
+        "model": "auth.permission",
+        "pk": 38
+    },
+    {
+        "fields": {
+            "codename": "delete_salesorder",
+            "name": "Can delete sales order",
+            "content_type": 13
+        },
+        "model": "auth.permission",
+        "pk": 39
+    },
+    {
+        "fields": {
+            "codename": "add_salesorderitem",
+            "name": "Can add sales order item",
+            "content_type": 14
+        },
+        "model": "auth.permission",
+        "pk": 40
+    },
+    {
+        "fields": {
+            "codename": "change_salesorderitem",
+            "name": "Can change sales order item",
+            "content_type": 14
+        },
+        "model": "auth.permission",
+        "pk": 41
+    },
+    {
+        "fields": {
+            "codename": "delete_salesorderitem",
+            "name": "Can delete sales order item",
+            "content_type": 14
+        },
+        "model": "auth.permission",
+        "pk": 42
+    },
+    {
+        "fields": {
+            "codename": "add_distributionplanlineitem",
+            "name": "Can add distribution plan line item",
+            "content_type": 15
+        },
+        "model": "auth.permission",
+        "pk": 43
+    },
+    {
+        "fields": {
+            "codename": "change_distributionplanlineitem",
+            "name": "Can change distribution plan line item",
+            "content_type": 15
+        },
+        "model": "auth.permission",
+        "pk": 44
+    },
+    {
+        "fields": {
+            "codename": "delete_distributionplanlineitem",
+            "name": "Can delete distribution plan line item",
+            "content_type": 15
+        },
+        "model": "auth.permission",
+        "pk": 45
+    },
+    {
+        "fields": {
+            "codename": "add_nodelineitemrun",
+            "name": "Can add node line item run",
+            "content_type": 16
+        },
+        "model": "auth.permission",
+        "pk": 46
+    },
+    {
+        "fields": {
+            "codename": "change_nodelineitemrun",
+            "name": "Can change node line item run",
+            "content_type": 16
+        },
+        "model": "auth.permission",
+        "pk": 47
+    },
+    {
+        "fields": {
+            "codename": "delete_nodelineitemrun",
+            "name": "Can delete node line item run",
+            "content_type": 16
+        },
+        "model": "auth.permission",
+        "pk": 48
+    },
+    {
+        "fields": {
+            "codename": "add_question",
+            "name": "Can add question",
+            "content_type": 17
+        },
+        "model": "auth.permission",
+        "pk": 49
+    },
+    {
+        "fields": {
+            "codename": "change_question",
+            "name": "Can change question",
+            "content_type": 17
+        },
+        "model": "auth.permission",
+        "pk": 50
+    },
+    {
+        "fields": {
+            "codename": "delete_question",
+            "name": "Can delete question",
+            "content_type": 17
+        },
+        "model": "auth.permission",
+        "pk": 51
+    },
+    {
+        "fields": {
+            "codename": "add_numericquestion",
+            "name": "Can add numeric question",
+            "content_type": 18
+        },
+        "model": "auth.permission",
+        "pk": 52
+    },
+    {
+        "fields": {
+            "codename": "change_numericquestion",
+            "name": "Can change numeric question",
+            "content_type": 18
+        },
+        "model": "auth.permission",
+        "pk": 53
+    },
+    {
+        "fields": {
+            "codename": "delete_numericquestion",
+            "name": "Can delete numeric question",
+            "content_type": 18
+        },
+        "model": "auth.permission",
+        "pk": 54
+    },
+    {
+        "fields": {
+            "codename": "add_textquestion",
+            "name": "Can add text question",
+            "content_type": 19
+        },
+        "model": "auth.permission",
+        "pk": 55
+    },
+    {
+        "fields": {
+            "codename": "change_textquestion",
+            "name": "Can change text question",
+            "content_type": 19
+        },
+        "model": "auth.permission",
+        "pk": 56
+    },
+    {
+        "fields": {
+            "codename": "delete_textquestion",
+            "name": "Can delete text question",
+            "content_type": 19
+        },
+        "model": "auth.permission",
+        "pk": 57
+    },
+    {
+        "fields": {
+            "codename": "add_multiplechoicequestion",
+            "name": "Can add multiple choice question",
+            "content_type": 20
+        },
+        "model": "auth.permission",
+        "pk": 58
+    },
+    {
+        "fields": {
+            "codename": "change_multiplechoicequestion",
+            "name": "Can change multiple choice question",
+            "content_type": 20
+        },
+        "model": "auth.permission",
+        "pk": 59
+    },
+    {
+        "fields": {
+            "codename": "delete_multiplechoicequestion",
+            "name": "Can delete multiple choice question",
+            "content_type": 20
+        },
+        "model": "auth.permission",
+        "pk": 60
+    },
+    {
+        "fields": {
+            "codename": "add_option",
+            "name": "Can add option",
+            "content_type": 21
+        },
+        "model": "auth.permission",
+        "pk": 61
+    },
+    {
+        "fields": {
+            "codename": "change_option",
+            "name": "Can change option",
+            "content_type": 21
+        },
+        "model": "auth.permission",
+        "pk": 62
+    },
+    {
+        "fields": {
+            "codename": "delete_option",
+            "name": "Can delete option",
+            "content_type": 21
+        },
+        "model": "auth.permission",
+        "pk": 63
+    },
+    {
+        "fields": {
+            "codename": "add_textanswer",
+            "name": "Can add text answer",
+            "content_type": 22
+        },
+        "model": "auth.permission",
+        "pk": 64
+    },
+    {
+        "fields": {
+            "codename": "change_textanswer",
+            "name": "Can change text answer",
+            "content_type": 22
+        },
+        "model": "auth.permission",
+        "pk": 65
+    },
+    {
+        "fields": {
+            "codename": "delete_textanswer",
+            "name": "Can delete text answer",
+            "content_type": 22
+        },
+        "model": "auth.permission",
+        "pk": 66
+    },
+    {
+        "fields": {
+            "codename": "add_numericanswer",
+            "name": "Can add numeric answer",
+            "content_type": 23
+        },
+        "model": "auth.permission",
+        "pk": 67
+    },
+    {
+        "fields": {
+            "codename": "change_numericanswer",
+            "name": "Can change numeric answer",
+            "content_type": 23
+        },
+        "model": "auth.permission",
+        "pk": 68
+    },
+    {
+        "fields": {
+            "codename": "delete_numericanswer",
+            "name": "Can delete numeric answer",
+            "content_type": 23
+        },
+        "model": "auth.permission",
+        "pk": 69
+    },
+    {
+        "fields": {
+            "codename": "add_multiplechoiceanswer",
+            "name": "Can add multiple choice answer",
+            "content_type": 24
+        },
+        "model": "auth.permission",
+        "pk": 70
+    },
+    {
+        "fields": {
+            "codename": "change_multiplechoiceanswer",
+            "name": "Can change multiple choice answer",
+            "content_type": 24
+        },
+        "model": "auth.permission",
+        "pk": 71
+    },
+    {
+        "fields": {
+            "codename": "delete_multiplechoiceanswer",
+            "name": "Can delete multiple choice answer",
+            "content_type": 24
+        },
+        "model": "auth.permission",
+        "pk": 72
+    },
+    {
+        "fields": {
+            "codename": "add_runqueue",
+            "name": "Can add run queue",
+            "content_type": 25
+        },
+        "model": "auth.permission",
+        "pk": 73
+    },
+    {
+        "fields": {
+            "codename": "change_runqueue",
+            "name": "Can change run queue",
+            "content_type": 25
+        },
+        "model": "auth.permission",
+        "pk": 74
+    },
+    {
+        "fields": {
+            "codename": "delete_runqueue",
+            "name": "Can delete run queue",
+            "content_type": 25
+        },
+        "model": "auth.permission",
+        "pk": 75
+    },
+    {
+        "fields": {
+            "codename": "add_flow",
+            "name": "Can add flow",
+            "content_type": 26
+        },
+        "model": "auth.permission",
+        "pk": 76
+    },
+    {
+        "fields": {
+            "codename": "change_flow",
+            "name": "Can change flow",
+            "content_type": 26
+        },
+        "model": "auth.permission",
+        "pk": 77
+    },
+    {
+        "fields": {
+            "codename": "delete_flow",
+            "name": "Can delete flow",
+            "content_type": 26
+        },
+        "model": "auth.permission",
+        "pk": 78
+    },
+    {
+        "fields": {
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2014-10-13T11:22:37.763",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$Qm6uxNGdbAJk$bia6J/PwzJ67iK9gC1fbY0nlKgNNK0F1x8fcST48BAY=",
+            "email": "admin@tw.org",
+            "date_joined": "2014-10-13T11:21:57.796"
+        },
+        "model": "auth.user",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "username": "unicef-focal-person",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2014-10-13T11:23:44.514",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$BcOqtcL2QY68$EbnZLeBtcwEpV42iYHrjBwDKTdwlNaJOHynAPAJD2eY=",
+            "email": "",
+            "date_joined": "2014-10-13T11:23:44.514"
+        },
+        "model": "auth.user",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "focal_person": 2,
+            "name": "sample programme"
+        },
+        "model": "eums.programme",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "targeted_quantity": 5,
+            "remark": "remark",
+            "contact_phone_number": "+25679843564",
+            "tracked": true,
+            "planned_distribution_date": "2014-02-01",
+            "distribution_plan_node": 2,
+            "mode_of_delivery": "bus",
+            "consignee": 1,
+            "programme_focal": 2,
+            "item": 1,
+            "contact_person": "first consignee",
+            "destination_location": "lira"
+        },
+        "model": "eums.distributionplanlineitem",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "targeted_quantity": 5,
+            "remark": "remark",
+            "contact_phone_number": "+25679843564",
+            "tracked": true,
+            "planned_distribution_date": "2014-02-01",
+            "distribution_plan_node": 2,
+            "mode_of_delivery": "bus",
+            "consignee": 1,
+            "programme_focal": 2,
+            "item": 2,
+            "contact_person": "first consignee",
+            "destination_location": "lira"
+        },
+        "model": "eums.distributionplanlineitem",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "targeted_quantity": 5,
+            "remark": "remark",
+            "contact_phone_number": "+256779534343",
+            "tracked": true,
+            "planned_distribution_date": "2014-03-01",
+            "distribution_plan_node": 3,
+            "mode_of_delivery": "bus",
+            "consignee": 2,
+            "programme_focal": 2,
+            "item": 1,
+            "contact_person": "second consignee",
+            "destination_location": "lira town council"
+        },
+        "model": "eums.distributionplanlineitem",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "targeted_quantity": 5,
+            "remark": "remark",
+            "contact_phone_number": "+256779534343",
+            "tracked": true,
+            "planned_distribution_date": "2014-03-01",
+            "distribution_plan_node": 3,
+            "mode_of_delivery": "bus",
+            "consignee": 2,
+            "programme_focal": 2,
+            "item": 2,
+            "contact_person": "second consignee",
+            "destination_location": "lira town council"
+        },
+        "model": "eums.distributionplanlineitem",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "targeted_quantity": 5,
+            "remark": "remark",
+            "contact_phone_number": "+2567723454656",
+            "tracked": true,
+            "planned_distribution_date": "2014-04-01",
+            "distribution_plan_node": 4,
+            "mode_of_delivery": "bicycle",
+            "consignee": 3,
+            "programme_focal": 2,
+            "item": 1,
+            "contact_person": "end user community worker",
+            "destination_location": "lira village"
+        },
+        "model": "eums.distributionplanlineitem",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "targeted_quantity": 5,
+            "remark": "remark",
+            "contact_phone_number": "+2567723454656",
+            "tracked": true,
+            "planned_distribution_date": "2014-04-01",
+            "distribution_plan_node": 4,
+            "mode_of_delivery": "bicycle",
+            "consignee": 3,
+            "programme_focal": 2,
+            "item": 2,
+            "contact_person": "end user community worker",
+            "destination_location": "lira village"
+        },
+        "model": "eums.distributionplanlineitem",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:23:44.586",
+            "object_repr": "unicef-focal-person",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 4
+        },
+        "model": "admin.logentry",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:23:49.317",
+            "object_repr": "sample programme",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 7
+        },
+        "model": "admin.logentry",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:24:07.230",
+            "object_repr": "ItemUnit object",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 10
+        },
+        "model": "admin.logentry",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:24:29.524",
+            "object_repr": "Item object",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 11
+        },
+        "model": "admin.logentry",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:24:54.001",
+            "object_repr": "Item object",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 11
+        },
+        "model": "admin.logentry",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:25:33.821",
+            "object_repr": "SalesOrder object",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 13
+        },
+        "model": "admin.logentry",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:26:30.333",
+            "object_repr": "flour",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 14
+        },
+        "model": "admin.logentry",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:27:18.524",
+            "object_repr": "sugar",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 14
+        },
+        "model": "admin.logentry",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:30:40.808",
+            "object_repr": "first consignee",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 9
+        },
+        "model": "admin.logentry",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:30:57.587",
+            "object_repr": "DistributionPlan object",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 8
+        },
+        "model": "admin.logentry",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:36:48.723",
+            "object_repr": "sample programme first consignee",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 12
+        },
+        "model": "admin.logentry",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:37:40.938",
+            "object_repr": "second consigne",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 9
+        },
+        "model": "admin.logentry",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:37:45.462",
+            "object_repr": "sample programme second consigne",
+            "object_id": "3",
+            "change_message": "",
+            "user": 1,
+            "content_type": 12
+        },
+        "model": "admin.logentry",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:38:06.596",
+            "object_repr": "end user consignee",
+            "object_id": "3",
+            "change_message": "",
+            "user": 1,
+            "content_type": 9
+        },
+        "model": "admin.logentry",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:38:10.587",
+            "object_repr": "sample programme end user consignee",
+            "object_id": "4",
+            "change_message": "",
+            "user": 1,
+            "content_type": 12
+        },
+        "model": "admin.logentry",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:45:18.825",
+            "object_repr": "sample programme flour",
+            "object_id": "3",
+            "change_message": "",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:46:07.188",
+            "object_repr": "sample programme sugar",
+            "object_id": "4",
+            "change_message": "",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:47:05.855",
+            "object_repr": "sample programme flour",
+            "object_id": "5",
+            "change_message": "",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:47:37.549",
+            "object_repr": "sample programme sugar",
+            "object_id": "6",
+            "change_message": "",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:48:28.895",
+            "object_repr": "sample programme flour",
+            "object_id": "7",
+            "change_message": "",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 20
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:48:59.734",
+            "object_repr": "sample programme sugar",
+            "object_id": "8",
+            "change_message": "",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 21
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:59:18.354",
+            "object_repr": "NodeLineItemRun object",
+            "object_id": "1",
+            "change_message": "",
+            "user": 1,
+            "content_type": 16
+        },
+        "model": "admin.logentry",
+        "pk": 22
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T11:59:35.485",
+            "object_repr": "NodeLineItemRun object",
+            "object_id": "2",
+            "change_message": "",
+            "user": 1,
+            "content_type": 16
+        },
+        "model": "admin.logentry",
+        "pk": 23
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T12:00:03.636",
+            "object_repr": "NodeLineItemRun object",
+            "object_id": "3",
+            "change_message": "",
+            "user": 1,
+            "content_type": 16
+        },
+        "model": "admin.logentry",
+        "pk": 24
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T12:00:25.135",
+            "object_repr": "NodeLineItemRun object",
+            "object_id": "4",
+            "change_message": "",
+            "user": 1,
+            "content_type": 16
+        },
+        "model": "admin.logentry",
+        "pk": 25
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T12:00:46.522",
+            "object_repr": "NodeLineItemRun object",
+            "object_id": "5",
+            "change_message": "",
+            "user": 1,
+            "content_type": 16
+        },
+        "model": "admin.logentry",
+        "pk": 26
+    },
+    {
+        "fields": {
+            "action_flag": 1,
+            "action_time": "2014-10-13T12:01:06.388",
+            "object_repr": "NodeLineItemRun object",
+            "object_id": "6",
+            "change_message": "",
+            "user": 1,
+            "content_type": 16
+        },
+        "model": "admin.logentry",
+        "pk": 27
+    },
+    {
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2014-10-13T12:17:48.499",
+            "object_repr": "sample programme sugar 8",
+            "object_id": "8",
+            "change_message": "Changed targeted_quantity.",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 28
+    },
+    {
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2014-10-13T12:17:54.718",
+            "object_repr": "sample programme flour 7",
+            "object_id": "7",
+            "change_message": "Changed targeted_quantity.",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 29
+    },
+    {
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2014-10-13T12:18:00.880",
+            "object_repr": "sample programme sugar 6",
+            "object_id": "6",
+            "change_message": "Changed targeted_quantity.",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 30
+    },
+    {
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2014-10-13T12:18:08.050",
+            "object_repr": "sample programme flour 5",
+            "object_id": "5",
+            "change_message": "Changed targeted_quantity.",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 31
+    },
+    {
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2014-10-13T12:18:14.140",
+            "object_repr": "sample programme sugar 4",
+            "object_id": "4",
+            "change_message": "Changed targeted_quantity.",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 32
+    },
+    {
+        "fields": {
+            "action_flag": 2,
+            "action_time": "2014-10-13T12:18:26.237",
+            "object_repr": "sample programme flour 3",
+            "object_id": "3",
+            "change_message": "Changed targeted_quantity.",
+            "user": 1,
+            "content_type": 15
+        },
+        "model": "admin.logentry",
+        "pk": 33
+    }
+]

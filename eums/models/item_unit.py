@@ -6,3 +6,6 @@ class ItemUnit(models.Model):
 
     class Meta:
         app_label = 'eums'
+
+    def __str__(self):
+        return self.name
