@@ -7,7 +7,7 @@ from celery.task import periodic_task
 
 from django.conf import settings
 
-from eums.local_celery import app
+from eums.celery import app
 from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue, DistributionPlanNode, Flow
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 

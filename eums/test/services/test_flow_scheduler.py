@@ -6,7 +6,7 @@ from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
 
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
-from eums import local_celery
+from eums import celery as local_celery
 from eums.models import DistributionPlanNode as Node, Flow
 from eums.models import NodeLineItemRun, DistributionPlanLineItem, RunQueue
 from eums.rapid_pro import rapid_pro_facade
