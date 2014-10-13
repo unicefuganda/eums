@@ -54,10 +54,14 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         });
 
         $scope.sortArrowClass = function (criteria) {
-            var output = 'icon icon-sort';
+            var output = 'glyphicon glyphicon-arrow-down';
 
             if (this.sort.criteria === criteria) {
-                output = 'active icon icon-sort';
+                output = 'active glyphicon glyphicon-arrow-down';
+                if(this.sort.descending)
+                {
+                    output = 'active glyphicon glyphicon-arrow-up';
+                }
             }
             return output;
         };

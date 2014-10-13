@@ -35,7 +35,7 @@
                     </a>
                 </th>
                 <th style="width: 50%">
-                    <a ng-click="sortBy('description')">Description
+                    <a ng-click="sortBy('description')">Summary Description
                         <i ng-class="sortArrowClass('description')"></i>
                     </a>
                 </th>
@@ -59,7 +59,7 @@
           ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
     There are no matches to your search criteria.
     </span>
-            <span class="information message" ng-show="salesOrders.length == 0">There are no beneficiaries linked to your profile.</span>
+            <span class="information message" ng-show="salesOrders.length == 0">There are no programmes available right now.</span>
         </table>
     </div>
 </div>

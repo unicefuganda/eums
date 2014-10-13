@@ -137,13 +137,20 @@ describe('DistributionPlanController', function () {
         it('should have the sort arrow icon on the order number column by default', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sortArrowClass('')).toEqual('icon icon-sort');
+            expect(scope.sortArrowClass('')).toEqual('glyphicon glyphicon-arrow-down');
         });
 
         it('should set the clicked column as active', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sortArrowClass('date')).toEqual('active icon icon-sort');
+            expect(scope.sortArrowClass('date')).toEqual('active glyphicon glyphicon-arrow-down');
+        });
+
+        it('should set the clicked column as active and have the up arrow when ascending', function () {
+            scope.initialize();
+            scope.sort.descending = true;
+            scope.$apply();
+            expect(scope.sortArrowClass('date')).toEqual('active glyphicon glyphicon-arrow-up');
         });
 
     });
