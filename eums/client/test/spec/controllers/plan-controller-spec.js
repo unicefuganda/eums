@@ -29,7 +29,23 @@ describe('NewDistributionPlanController', function () {
         net_price: 10.00,
         net_value: 1000.00,
         issue_date: '2014-10-02',
-        delivery_date: '2014-10-02'
+        delivery_date: '2014-10-02',
+        distributionplanlineitem_set: ['1', '2']
+    };
+
+    var stubSalesOrderItemNoDistributionPlanItems = {
+        id: 1,
+        sales_order: '1',
+        item: {id: 1,
+            description: 'Test Item',
+            material_code: '12345AS',
+            unit: {name: 'EA'}},
+        quantity: '100',
+        net_price: 10.00,
+        net_value: 1000.00,
+        issue_date: '2014-10-02',
+        delivery_date: '2014-10-02',
+        distributionplanlineitem_set: []
     };
 
     var expectedFormattedSalesOrderItem = {display: stubSalesOrderItem.item.description,
@@ -210,7 +226,6 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to true if there are distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = ['1', '2'];
-            stubSalesOrderItem.distributionplanlineitem_set = ['1', '2'];
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
@@ -223,11 +238,11 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to false if there are no distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = [];
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
-                material_code: stubSalesOrderItem.item.material_code,
-                quantity: stubSalesOrderItem.quantity,
-                unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+            scope.salesOrderItemSelected = {display: stubSalesOrderItemNoDistributionPlanItems.item.description,
+                material_code: stubSalesOrderItemNoDistributionPlanItems.item.material_code,
+                quantity: stubSalesOrderItemNoDistributionPlanItems.quantity,
+                unit: stubSalesOrderItemNoDistributionPlanItems.item.unit.name,
+                information: stubSalesOrderItemNoDistributionPlanItems};
             scope.$apply();
             expect(scope.hasDistributionPlanItems).toBeFalsy();
         });
@@ -272,12 +287,11 @@ describe('NewDistributionPlanController', function () {
         });
 
         it('should not get distribution plan items service linked to the particular sales order item with no line item set', function () {
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
-                material_code: stubSalesOrderItem.item.material_code,
-                quantity: stubSalesOrderItem.quantity,
-                unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem,
-                distributionplanlineitem_set: []};
+            scope.salesOrderItemSelected = {display: stubSalesOrderItemNoDistributionPlanItems.item.description,
+                material_code: stubSalesOrderItemNoDistributionPlanItems.item.material_code,
+                quantity: stubSalesOrderItemNoDistributionPlanItems.quantity,
+                unit: stubSalesOrderItemNoDistributionPlanItems.item.unit.name,
+                information: stubSalesOrderItemNoDistributionPlanItems};
             scope.$apply();
 
             expect(scope.distributionPlanItems).toEqual([]);
@@ -288,7 +302,7 @@ describe('NewDistributionPlanController', function () {
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+                information: {}};
             scope.$apply();
 
             expect(scope.distributionPlanItems).toEqual([]);

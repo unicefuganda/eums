@@ -113,7 +113,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 $scope.salesOrderItemSelected.quantityLeft = $scope.salesOrderItemSelected.quantity;
 
                 var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
+
                 if (distributionPlanLineItems && distributionPlanLineItems.length > 0) {
+                    $scope.hasDistributionPlanItems = true;
                     var itemCounter = 0;
                     var quantityLeft = parseInt($scope.salesOrderItemSelected.quantity);
 
@@ -132,17 +134,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             $scope.salesOrderItemSelected.quantityLeft = quantityLeft.toString();
                         });
                     });
-
-
                 }
                 else {
                     $scope.distributionPlanItems = [];
-                }
-
-                var currentDistributionPlanItems = $scope.distributionPlanItems;
-
-                if (currentDistributionPlanItems && currentDistributionPlanItems.length > 0) {
-                    $scope.hasDistributionPlanItems = true;
                 }
             }
         });
