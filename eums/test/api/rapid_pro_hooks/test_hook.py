@@ -5,8 +5,8 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from mock import patch
 from rest_framework.test import APITestCase
-from eums.fixtures.questions import *
-from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, NodeLineItemRun, Flow
+from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, NodeLineItemRun, Flow, \
+    MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion
 from eums.test.config import BACKEND_URL
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
