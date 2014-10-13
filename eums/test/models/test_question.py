@@ -1,4 +1,5 @@
 from unittest import TestCase
+
 from eums.models import Option
 from eums.models.question import Question, MultipleChoiceQuestion, TextQuestion, NumericQuestion
 from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
@@ -31,8 +32,7 @@ class QuestionTest(TestCase):
         self.assertEqual(str(self.text_question), text)
 
     def tearDown(self):
-        TextQuestion.objects.all().delete()
-        MultipleChoiceQuestion.objects.all().delete()
+        Question.objects.all().delete()
 
 
 class TextQuestionTest(QuestionTest):
