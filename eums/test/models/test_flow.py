@@ -30,10 +30,10 @@ class FlowTest(TestCase):
 
     def test_should_tell_if_text_question_ends_the_flow(self):
         answer = TextAnswerFactory()
-        flow = Flow(end_nodes=[[answer.question.id, None]])
+        flow = Flow(end_nodes=[[answer.question.id, Flow.NO_OPTION]])
         self.assertTrue(flow.is_end(answer))
 
     def test_should_tell_if_numeric_question_ends_the_flow(self):
         answer = NumericAnswerFactory()
-        flow = Flow(end_nodes=[[answer.question.id, None]])
+        flow = Flow(end_nodes=[[answer.question.id, Flow.NO_OPTION]])
         self.assertTrue(flow.is_end(answer))

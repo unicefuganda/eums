@@ -5,6 +5,7 @@ from eums.models import Question, DistributionPlanNode as Node, Option
 
 
 class Flow(models.Model):
+    NO_OPTION = -1
     rapid_pro_id = models.IntegerField()
     questions = models.ManyToManyField(Question)
     end_nodes = IntegerArrayField(dimension=2)
@@ -13,5 +14,5 @@ class Flow(models.Model):
 
     def is_end(self, answer):
         question_id = answer.question.id
-        value_id = answer.value.id if type(answer.value) is Option else None
+        value_id = answer.value.id if type(answer.value) is Option else self.NO_OPTION
         return self.end_nodes and [question_id, value_id] in self.end_nodes

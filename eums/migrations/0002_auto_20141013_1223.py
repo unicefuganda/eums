@@ -16,6 +16,10 @@ class Migration(migrations.Migration):
             model_name='flow',
             name='end_questions',
         ),
+        migrations.RemoveField(
+            model_name='question',
+            name='final',
+        ),
         migrations.AddField(
             model_name='flow',
             name='end_nodes',

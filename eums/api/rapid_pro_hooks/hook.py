@@ -1,17 +1,18 @@
 from django.http.response import HttpResponse
-from eums.models import NodeLineItemRun, RunQueue
+from eums.models import NodeLineItemRun, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
 
 
 def hook(request):
     params = request.GET
+    flow = Flow.objects.get(rapid_pro_id=params['flow'])
     node_line_item_run = NodeLineItemRun.objects.filter(phone=params['phone']).first()
 
     question = _get_matching_question([params['step']])
-    question.create_answer(params, node_line_item_run)
+    answer = question.create_answer(params, node_line_item_run)
 
-    if question.final:
+    if flow.is_end(answer):
         _mark_as_complete(node_line_item_run)
         _dequeue_next_run(node_line_item_run)
 
