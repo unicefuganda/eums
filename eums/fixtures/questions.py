@@ -1,5 +1,8 @@
-from eums.models import Option
+from eums.models import Option, Flow
 from eums.models.question import MultipleChoiceQuestion, NumericQuestion, TextQuestion
+
+END_USER_FLOW = Flow.objects.get(rapid_pro_id=2436)
+MIDDLEMAN_FLOW = Flow.objects.get(rapid_pro_id=2662)
 
 
 def seed_questions():
@@ -16,25 +19,37 @@ def seed_questions():
         text='What date was it received?', label='dateOfReceipt'
     )
 
-    NumericQuestion.objects.get_or_create(
+    question_7, _ = NumericQuestion.objects.get_or_create(
         uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'],
         text='How much was received?', label='amountReceived'
     )
+    MIDDLEMAN_FLOW.end_nodes = [[question_7.id, Flow.NO_OPTION]]
+    MIDDLEMAN_FLOW.save()
 
     question_2, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['6c1cf92d-59b8-4bd3-815b-783abd3dfad9', 'fe368546-1b9c-4a15-926d-68b7caaa0380'],
         text='What is the quality of the product?', label='qualityOfProduct'
     )
     Option.objects.get_or_create(text='Good', question=question_2)
-    Option.objects.get_or_create(text='Damaged', question=question_2)
-    Option.objects.get_or_create(text='Substandard', question=question_2)
-    Option.objects.get_or_create(text='Expired', question=question_2)
+    damaged, _ = Option.objects.get_or_create(text='Damaged', question=question_2)
+    substandard, _ = Option.objects.get_or_create(text='Substandard', question=question_2)
+    expired, _ = Option.objects.get_or_create(text='Expired', question=question_2)
+    unclassified = question_2.option_set.get(text=MultipleChoiceQuestion.UNCATEGORISED)
+    END_USER_FLOW.end_nodes = [
+        [question_2.id, damaged.id],
+        [question_2.id, substandard.id],
+        [question_2.id, expired.id],
+        [question_2.id, unclassified.id]
+    ]
+    END_USER_FLOW.save()
 
     question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'],
         text='Are you satisfied with the product?', label='satisfiedWithProduct')
-    Option.objects.get_or_create(text='Yes', question=question_3)
+    yes, _ = Option.objects.get_or_create(text='Yes', question=question_3)
     Option.objects.get_or_create(text='No', question=question_3)
+    END_USER_FLOW.end_nodes.append([question_3.id, yes.id])
+    END_USER_FLOW.save()
 
     question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['18b2ea96-cb63-40d8-8c26-1985a944ff1c', '84150f15-b18b-4efa-be6b-ad24bc68a08f',
@@ -42,14 +57,24 @@ def seed_questions():
         text='Have you been informed of the delay?', label='informedOfDelay'
     )
     Option.objects.get_or_create(text='Yes', question=question_4)
-    Option.objects.get_or_create(text='No', question=question_4)
+    no, _ = Option.objects.get_or_create(text='No', question=question_4)
+    END_USER_FLOW.end_nodes.append([question_4.id, no.id])
+    END_USER_FLOW.save()
+    MIDDLEMAN_FLOW.end_nodes.append([question_4.id, no.id])
+    MIDDLEMAN_FLOW.save()
 
     question_5, _ = TextQuestion.objects.get_or_create(
         uuids=['e9c35020-e751-4611-b222-5573b7040c49', '3f5d290a-067d-4cb9-bb09-ed7c424a6abd'],
         text='What did the partner say is the revised delivery date?', label='revisedDeliveryDate'
     )
+    END_USER_FLOW.end_nodes.append([question_5.id, Flow.NO_OPTION])
+    END_USER_FLOW.save()
+    MIDDLEMAN_FLOW.end_nodes.append([question_5.id, Flow.NO_OPTION])
+    MIDDLEMAN_FLOW.save()
 
     question_6, _ = TextQuestion.objects.get_or_create(
         uuids=['4dd1a813-27d4-4511-82e3-cc470fcd3baa'],
         text='Feedback about Dissatisfaction', label='feedbackAboutDissatisfaction'
     )
+    END_USER_FLOW.end_nodes.append([question_6.id, Flow.NO_OPTION])
+    END_USER_FLOW.save()

@@ -1,13 +1,12 @@
 from django.db import models
 from djorm_pgarray.fields import IntegerArrayField
 
-from eums.models import Question, DistributionPlanNode as Node, Option
+from eums.models import DistributionPlanNode as Node, Option
 
 
 class Flow(models.Model):
     NO_OPTION = -1
     rapid_pro_id = models.IntegerField()
-    questions = models.ManyToManyField(Question)
     end_nodes = IntegerArrayField(dimension=2)
     for_node_type = models.CharField(
         max_length=255, choices=((Node.END_USER, 'End user'), (Node.MIDDLE_MAN, 'Middleman')), unique=True)

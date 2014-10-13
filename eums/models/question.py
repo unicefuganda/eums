@@ -25,9 +25,11 @@ class TextQuestion(Question):
 
 
 class MultipleChoiceQuestion(Question):
+    UNCATEGORISED = 'UNCATEGORISED'
+
     def save(self, *args, **kwargs):
         super(MultipleChoiceQuestion, self).save(*args, **kwargs)
-        self.option_set.create(text='UNCATEGORISED')
+        self.option_set.create(text=self.UNCATEGORISED)
 
     def create_answer(self, params, line_item_run):
         values = ast.literal_eval(params['values'])
