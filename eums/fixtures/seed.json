@@ -436,7 +436,6 @@
         "fields": {
             "text": "What is your name",
             "uuids": "[\"<factory.declarations.Sequence object at 0x1023d21d0>\"]",
-            "final": false,
             "label": "label 1"
         },
         "model": "eums.question",
@@ -446,7 +445,6 @@
         "fields": {
             "text": "What is your name",
             "uuids": "[\"<factory.declarations.Sequence object at 0x10f6581d0>\"]",
-            "final": false,
             "label": "label 2"
         },
         "model": "eums.question",
@@ -456,7 +454,6 @@
         "fields": {
             "text": "What is your name",
             "uuids": "[\"<factory.declarations.Sequence object at 0x1090d91d0>\"]",
-            "final": false,
             "label": "label 3"
         },
         "model": "eums.question",
@@ -466,7 +463,6 @@
         "fields": {
             "text": "What is your name",
             "uuids": "[\"<factory.declarations.Sequence object at 0x10a37c1d0>\"]",
-            "final": false,
             "label": "label 4"
         },
         "model": "eums.question",
@@ -476,7 +472,6 @@
         "fields": {
             "text": "What is your name",
             "uuids": "[\"<factory.declarations.Sequence object at 0x10ce821d0>\"]",
-            "final": false,
             "label": "label 5"
         },
         "model": "eums.question",
@@ -486,7 +481,6 @@
         "fields": {
             "text": "What is your name",
             "uuids": "[\"<factory.declarations.Sequence object at 0x104ee21d0>\"]",
-            "final": false,
             "label": "label 6"
         },
         "model": "eums.question",
