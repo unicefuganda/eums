@@ -34,8 +34,6 @@
             <div ng-show="hasSalesOrderItems" class="sales-order-list">
                 <div ng-show="hasDistributionPlanItems">
                     <table style="width: 100%" id="distributionPlanTable">
-                        <th style="width: 10%">Sales Order</th>
-                        <th style="width: 10%">Item Description</th>
                         <th style="width: 5%">Sales Order Qty</th>
                         <th style="width: 5%">Unit</th>
                         <th style="width: 5%">Targeted Qty</th>
@@ -46,11 +44,8 @@
                         <th style="width: 5%">Phone</th>
                         <th style="width: 10%">Region/District</th>
                         <th style="width: 10%">Mode of Delivery</th>
-                        <th style="width: 5%">Trackable</th>
 
                         <tr ng-repeat="distributionPlanItem in distributionPlanItems">
-                            <td>{{ selectedSalesOrder.order_number }}</td>
-                            <td>{{ salesOrderItemSelected.display }}</td>
                             <td>{{ distributionPlanItem.quantity }}</td>
                             <td>{{ salesOrderItemSelected.unit }}</td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
@@ -136,9 +131,6 @@
                                 <option value="" selected="selected">Select</option>
                             </select>
                             </td>
-
-                            <td><input type="checkbox" ng-model="distributionPlanItem.tracked"
-                                       checked="distributionPlanItem.tracked"></td>
                         </tr>
                     </table>
                 </div>
