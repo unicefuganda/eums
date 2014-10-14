@@ -12,7 +12,7 @@ def start_delivery_run(*_, **kwargs):
         "flow": flow,
         "phone": [consignee['phone']],
         "extra": {
-            settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: consignee['first_name'] + consignee['last_name'],
+            settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: consignee['firstName'] + consignee['lastName'],
             settings.RAPIDPRO_EXTRAS['SENDER']: sender,
             settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
         }

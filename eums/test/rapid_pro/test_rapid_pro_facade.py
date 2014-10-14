@@ -9,7 +9,7 @@ from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.flow_factory import FlowFactory
 
 
-contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
+contact = {'firstName': 'Test', 'lastName': 'User', 'phone': '+256 772 123456'}
 item_description = "Plumpynut"
 sender = 'Save the Children'
 
@@ -24,7 +24,7 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
             "flow": self.flow.rapid_pro_id,
             "phone": [contact['phone']],
             "extra": {
-                settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: contact['first_name'] + contact['last_name'],
+                settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: contact['firstName'] + contact['lastName'],
                 settings.RAPIDPRO_EXTRAS['SENDER']: sender,
                 settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
             }
