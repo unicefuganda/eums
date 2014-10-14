@@ -20,15 +20,15 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
         settings.RAPIDPRO_LIVE = True
         self.flow = FlowFactory()
 
-        self.expected_payload = {
-            "flow": self.flow.rapid_pro_id,
-            "phone": [contact['phone']],
-            "extra": {
-                settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: contact['firstName'] + contact['lastName'],
-                settings.RAPIDPRO_EXTRAS['SENDER']: sender,
-                settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
-            }
-        }
+        self.expected_payload = '{' \
+                                    '"phone": ["+256 772 123456"],' \
+                                    ' "flow": 1234, ' \
+                                    '"extra": {' \
+                                        '"product": "Plumpynut",' \
+                                        ' "sender": "Save the Children",' \
+                                        ' "contactName": "Test User"' \
+                                    '}' \
+                                '}'
 
         self.runs_url = settings.RAPIDPRO_URLS['RUNS']
         self.fake_json = [{"run": 1, "phone": contact['phone']}]
@@ -36,7 +36,8 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
     @patch('requests.post')
     def test_should_start_a_flow_run_for_a_contact(self, mock_post):
         mock_post.return_value = FakeResponse(self.fake_json, 201)
-        expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN}
+        expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN,
+                            'Content-Type': 'application/json'}
         start_delivery_run(consignee=contact, item_description=item_description, sender=sender,
                            flow=self.flow.rapid_pro_id)
         mock_post.assert_called_with(settings.RAPIDPRO_URLS['RUNS'], data=self.expected_payload,
