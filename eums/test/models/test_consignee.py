@@ -12,7 +12,7 @@ class ConsigneeTest(TestCase):
     def test_should_have_all_expected_fields(self):
         fields_in_consignee = Consignee()._meta._name_map
 
-        for field in ['name', 'contact_person_id']:
+        for field in ['name', 'contact_person_id', 'customer_id']:
             self.assertIn(field, fields_in_consignee)
 
     def test_string_representation_of_consignee_is_consignee_name(self):

@@ -6,6 +6,7 @@ from django.conf import settings
 class Consignee(models.Model):
     name = models.CharField(max_length=255)
     contact_person_id = models.CharField(max_length=255)
+    customer_id = models.CharField(max_length=255)
     contact = None
 
     def build_contact(self):
