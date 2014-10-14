@@ -14,6 +14,10 @@
             map.fitBounds(layer.getBounds())
         };
 
+        this.getCenter = function () {
+            return layer.getBounds().getCenter();
+        };
+
         this.highlight = function () {
             layer.setStyle(layerOptions.selectedLayerStyle);
             selected = true;
@@ -40,6 +44,9 @@
             },
             getLayer: function (layerName) {
                 return layerList[layerName];
+            },
+            getLayerCenter: function (layerName) {
+                return layerList[layerName].getCenter();
             },
             getSelectedLayer: function () {
                 var highlightedLayer = {};
@@ -84,7 +91,6 @@
 
         function addDistrictsLayer(map) {
             return GeoJsonService.districts().then(function (response) {
-                console.log(response.data);
                 L.geoJson(response.data, {
                     style: EumsConfig.districtLayerStyle,
                     onEachFeature: function (feature, layer) {
@@ -116,6 +122,9 @@
             },
             getHighlightedLayer: function () {
                 return LayerMap.getSelectedLayer();
+            },
+            getLayerCenter: function (layerName) {
+                return LayerMap.getLayerCenter(layerName.toLowerCase());
             },
             clickLayer: function (layerName) {
                 if (layerName) {

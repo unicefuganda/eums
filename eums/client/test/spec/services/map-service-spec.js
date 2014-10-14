@@ -1,4 +1,4 @@
-describe('dms.map', function () {
+describe('eums.map', function () {
 
     beforeEach(function () {
         module('eums.map');
@@ -89,6 +89,14 @@ describe('dms.map', function () {
             expect(layer.click).toHaveBeenCalled();
         });
 
+        it('should get center of a given layer', function () {
+           var layer = jasmine.createSpyObj('layer', ['getLayerCenter']);
+            layer.name = 'Bukoto';
+
+            layerMap.addLayer(layer, layer.name);
+            layer.getLayerCenter(layer.name);
+            expect(layer.getLayerCenter).toHaveBeenCalled();
+        });
 
     });
 
