@@ -1,17 +1,16 @@
 from unittest import TestCase
-from django.contrib.auth.models import User
 import os
-from mock import patch
 
+from django.contrib.auth.models import User
+from mock import patch, MagicMock
 from xlwt import Workbook
+
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, ReleaseOrderItem, Consignee
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
-
-from eums.vision.vision_facade import load_sales_order_data, save_sales_order_data, import_sales_orders, \
-    load_release_order_data, save_release_order_data, import_release_orders
+from eums.vision.vision_facade import ReleaseOrderFacade, SalesOrderFacade
 
 
 class TestSalesOrdersVisionFacade(TestCase):
@@ -45,6 +44,8 @@ class TestSalesOrdersVisionFacade(TestCase):
 
         work_book.save(self.sales_order_file_location)
 
+        self.facade = SalesOrderFacade(self.sales_order_file_location)
+
     def tearDown(self):
         os.remove(self.sales_order_file_location)
         Item.objects.all().delete()
@@ -71,7 +72,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                      'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
                                      'order_number': '20155981'}]}]
 
-        sales_order_data = load_sales_order_data(self.sales_order_file_location)
+        sales_order_data = self.facade.load_order_data()
 
         self.assertEqual(sales_order_data, expected_data)
 
@@ -99,7 +100,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                         'delivery_date': '9/23/2014', 'net_price': '0.19', 'programme_name': 'ALIVE',
                                         'net_value': '42,560.00', 'order_number': '20155981'}]}]
 
-        save_sales_order_data(sales_order_data)
+        self.facade.save_order_data(sales_order_data)
 
         self.assertEqual(SalesOrder.objects.count(), 2)
         self.assertEqual(SalesOrderItem.objects.count(), 3)
@@ -110,7 +111,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         ItemFactory(material_code='SL004594')
         ItemFactory(material_code='SL006645')
 
-        import_sales_orders(self.sales_order_file_location)
+        self.facade.import_orders()
 
         self.assertEqual(SalesOrder.objects.count(), 2)
         self.assertEqual(SalesOrderItem.objects.count(), 3)
@@ -174,6 +175,8 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
         work_book.save(self.release_order_file_location)
 
+        self.facade = ReleaseOrderFacade(self.release_order_file_location)
+
         self.order_data = [{'order_number': '54101099',
                             'sales_order': '20148031',
                             'consignee': 'L438000393',
@@ -219,7 +222,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         Consignee.objects.all().delete()
 
     def test_can_load_release_order_data(self):
-        release_order_data = load_release_order_data(self.release_order_file_location)
+        release_order_data = self.facade.load_order_data()
 
         self.assertEqual(release_order_data, self.order_data)
 
@@ -234,7 +237,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         ItemFactory(material_code='SL002248')
         ItemFactory(material_code='S0000208')
 
-        save_release_order_data(self.order_data)
+        self.facade.save_order_data(self.order_data)
 
         self.assertEqual(ReleaseOrder.objects.count(), 2)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
@@ -261,16 +264,14 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assertEqual(str(last_item.value), '1188.79')
         self.assertEqual(str(int(last_item.quantity)), '20')
 
-    @patch('eums.vision.vision_facade.save_release_order_data')
-    @patch('eums.vision.vision_facade.load_release_order_data')
-    def test_should_load_release_orders_from_excel_and_save(self, mock_load_release_orders,
-                                                            mock_save_release_orders):
-        mock_load_release_orders.return_value = self.order_data
+    def test_should_load_release_orders_from_excel_and_save(self):
+        self.facade.load_order_data = MagicMock(return_value=self.order_data)
+        self.facade.save_order_data = MagicMock(return_value=None)
 
-        import_release_orders(self.release_order_file_location)
+        self.facade.import_orders()
 
-        mock_load_release_orders.assert_called_with(self.release_order_file_location)
-        mock_save_release_orders.assert_called_with(self.order_data)
+        self.facade.load_order_data.assert_called_with()
+        self.facade.save_order_data.assert_called_with(self.order_data)
 
 
 
