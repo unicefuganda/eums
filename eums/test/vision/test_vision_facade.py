@@ -10,7 +10,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
-from eums.vision.vision_facade import ReleaseOrderFacade, SalesOrderFacade
+from eums.vision.vision_facade import ReleaseOrderFacade, SalesOrderFacade, Facade
 
 
 class TestSalesOrdersVisionFacade(TestCase):

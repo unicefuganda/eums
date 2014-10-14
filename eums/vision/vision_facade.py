@@ -1,3 +1,4 @@
+from abc import ABCMeta, abstractmethod
 from xlutils.view import View
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem
 from datetime import datetime
@@ -5,6 +6,8 @@ from datetime import datetime
 
 class Facade():
     RELEVANT_DATA = {}
+
+    __metaclass__ = ABCMeta
 
     def __init__(self, location):
         self.location = location
@@ -58,12 +61,15 @@ class Facade():
         for item in order['items']:
             self._create_new_item(item, new_order)
 
+    @abstractmethod
     def _append_new_order(self, item_dict, order_list, order_number):
         pass
 
+    @abstractmethod
     def _create_new_order(self, order):
         pass
 
+    @abstractmethod
     def _create_new_item(self, item, order):
         pass
 
