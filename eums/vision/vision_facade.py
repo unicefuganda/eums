@@ -91,6 +91,11 @@ class SalesOrderFacade(Facade):
         order_item.net_value = float(item['net_value'].replace(',', ''))
         order_item.save()
 
+    def _append_new_order(self, item_dict, order_list, order_number):
+        sales_order_program = item_dict['programme_name']
+        order_list.append({'order_number': order_number, 'programme_name': sales_order_program,
+                           'items': [item_dict]})
+
     def _create_new_order(self, order):
         new_order = SalesOrder()
         new_order.order_number = order['order_number']
@@ -99,15 +104,20 @@ class SalesOrderFacade(Facade):
         new_order.save()
         return new_order
 
-    def _append_new_order(self, item_dict, order_list, order_number):
-        sales_order_program = item_dict['programme_name']
-        order_list.append({'order_number': order_number, 'programme_name': sales_order_program,
-                           'items': [item_dict]})
-
 
 class ReleaseOrderFacade(Facade):
     RELEVANT_DATA = {0: 'order_number', 3: 'recommended_delivery_date', 4: 'material_code', 5: 'description',
-                     6: 'quantity', 7: 'value', 11: 'consignee', 14: 'sales_order', 15: 'purchase_order'}
+                     6: 'quantity', 7: 'value', 11: 'consignee', 14: 'sales_order', 15: 'purchase_order', 22: 'waybill'}
+
+    def _create_new_order(self, order):
+        new_order = ReleaseOrder()
+        new_order.order_number = order['order_number']
+        new_order.sales_order = SalesOrder.objects.get(order_number=order['sales_order'])
+        new_order.waybill = order['waybill']
+        new_order.delivery_date = datetime.strptime(order['recommended_delivery_date'], "%m/%d/%Y")
+        new_order.consignee = Consignee.objects.get(customer_id=order['consignee'])
+        new_order.save()
+        return new_order
 
     def _create_new_item(self, item, order):
         order_item = ReleaseOrderItem()
@@ -118,18 +128,11 @@ class ReleaseOrderFacade(Facade):
         order_item.value = float(item['value'])
         order_item.save()
 
-    def _create_new_order(self, order):
-        new_order = ReleaseOrder()
-        new_order.order_number = order['order_number']
-        new_order.sales_order = SalesOrder.objects.get(order_number=order['sales_order'])
-        new_order.delivery_date = datetime.strptime(order['recommended_delivery_date'], "%m/%d/%Y")
-        new_order.consignee = Consignee.objects.get(customer_id=order['consignee'])
-        new_order.save()
-        return new_order
-
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['sales_order']
         consignee = item_dict['consignee']
+        waybill = item_dict['waybill']
         recommended_delivery_date = item_dict['recommended_delivery_date']
         order_list.append({'sales_order': sales_order, 'order_number': order_number, 'consignee': consignee,
-                           'recommended_delivery_date': recommended_delivery_date, 'items': [item_dict]})
+                           'recommended_delivery_date': recommended_delivery_date, 'waybill': waybill,
+                           'items': [item_dict]})

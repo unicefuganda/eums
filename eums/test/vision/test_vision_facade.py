@@ -180,6 +180,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.order_data = [{'order_number': '54101099',
                             'sales_order': '20148031',
                             'consignee': 'L438000393',
+                            'waybill': '72081598',
                             'recommended_delivery_date': '08/01/2014',
                             'items': [{'material_code': 'SL005144',
                                        'description': 'Laptop Lenovo ThinkPad T510',
@@ -187,6 +188,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                        'value': '1167.66',
                                        'purchase_order': '81018523',
                                        'order_number': '54101099',
+                                       'waybill': '72081598',
                                        'sales_order': '20148031',
                                        'consignee': 'L438000393',
                                        'recommended_delivery_date': '08/01/2014'},
@@ -196,12 +198,14 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                        'value': '26.81',
                                        'purchase_order': '81018523',
                                        'order_number': '54101099',
+                                       'waybill': '72081598',
                                        'sales_order': '20148031',
                                        'consignee': 'L438000393',
                                        'recommended_delivery_date': '08/01/2014'}]},
                            {'order_number': '54101128',
                             'sales_order': '20147537',
                             'consignee': 'L438000181',
+                            'waybill': '72081746',
                             'recommended_delivery_date': '08/04/2014',
                             'items': [{'material_code': 'S0000208',
                                        'description': 'F-75 therap.diet sachet 102.5g/CAR-120',
@@ -209,6 +213,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                        'value': '1188.79',
                                        'purchase_order': '45132639',
                                        'order_number': '54101128',
+                                       'waybill': '72081746',
                                        'sales_order': '20147537',
                                        'consignee': 'L438000181',
                                        'recommended_delivery_date': '08/04/2014'}]}]
@@ -243,6 +248,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
 
         first_order = ReleaseOrder.objects.get(order_number='54101099')
+        self.assertEqual(first_order.waybill, '72081598')
         self.assertEqual(first_order.sales_order.order_number, '20148031')
         formatted_date = first_order.delivery_date.strftime("%m/%d/%Y")
         self.assertEqual(formatted_date, '08/01/2014')
@@ -254,6 +260,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assertEqual(str(int(first_item.quantity)), '1')
 
         last_order = ReleaseOrder.objects.get(order_number='54101128')
+        self.assertEqual(last_order.waybill, '72081746')
         self.assertEqual(last_order.sales_order.order_number, '20147537')
         formatted_date = last_order.delivery_date.strftime("%m/%d/%Y")
         self.assertEqual(formatted_date, '08/04/2014')
