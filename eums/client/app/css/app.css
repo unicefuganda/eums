@@ -3,19 +3,16 @@ body {
 }
 
 tbody {
- height: 50px;
- overflow: auto;
+    height: 50px;
+    overflow: auto;
 }
 
 table tr:nth-child(even) {
     background-color: #eee;
 }
+
 table tr:nth-child(odd) {
-   background-color:#fff;
-}
-table th	{
-    background-color: lightgrey;
-    color: #000000;
+    background-color: #fff;
 }
 
 input[type=date]::-webkit-inner-spin-button {
@@ -40,7 +37,8 @@ input[type=date] {
 .input-quantity {
     width: 40px;
 }
-.sales-order-information{
+
+.sales-order-information {
     color: blue;
     font-style: italic;
     font-weight: bold;
@@ -52,25 +50,35 @@ input[type=date] {
 
 /* style icon */
 .inner-addon .glyphicon {
-  position: absolute;
-  padding: 10px;
+    position: absolute;
+    padding: 10px;
 }
 
 /* align icon */
-.left-addon .glyphicon  { left:  0px;}
-
-/* add padding  */
-.left-addon input  { padding-left:  30px; }
-
-.sales-order-list {
-    background: white;
-    border: 0.5em solid rgb(240, 240, 239);
-    padding: 1em;
-    margin-top: 3em;
-    position: relative;
-    display: block;
-    width: 100%;
+.left-addon .glyphicon {
+    left: 0px;
 }
 
+/* add padding  */
+.left-addon input {
+    padding-left: 30px;
+}
 
+@media (min-width: 1200px) {
+    .container{
+        max-width: 1000px;
+    }
+}
 
+.line-order-panel{
+    padding: 8px;
+    margin-top: 6px;
+}
+
+.form-elements {
+    margin-bottom: 10px;
+}
+
+a, #distribution-plan-nav {
+    cursor: pointer;
+}

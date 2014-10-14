@@ -2,38 +2,45 @@
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
 
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()">
-        <div>
-            <h4>Create A Distribution Plan</h4>
-
-            <div>
-                <select style="width: 140px;" ng-model="salesOrderItemSelected" required="required"
-                        ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                    <option value="" selected="selected">Select Item</option>
-                </select>
+        <h4 class="page-header">Create A Distribution Plan</h4>
+        <div class="panel panel-default line-order-panel">
+            <div class="panel-title">
+                <div class="panel-body">
+                <div class="form-group form-group-md col-lg-6">
+                    <select ng-model="salesOrderItemSelected" required="required"
+                            class="form-control input-md"
+                            ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                        <option value="" selected="selected">Select Item</option>
+                    </select>
+                </div>
             </div>
 
-            <div ng-show="hasSalesOrderItems" class="sales-order-list">
-                <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
-                <table style="width: 60%">
-                    <th>Sales Order</th>
-                    <th>Material</th>
-                    <th>Item Description</th>
-                    <th>Quantity</th>
-                    <th>Unit</th>
+            <div ng-show="hasSalesOrderItems">
+                    <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
+                    <table class="table table-hover table-striped table-bordered">
+                        <th>Sales Order</th>
+                        <th>Material</th>
+                        <th>Item Description</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
 
-                    <tr>
-                        <td>{{ selectedSalesOrder.order_number }}</td>
-                        <td>{{ salesOrderItemSelected.material_code }}</td>
-                        <td>{{ salesOrderItemSelected.display }}</td>
-                        <td>{{ salesOrderItemSelected.quantity }}</td>
-                        <td>{{ salesOrderItemSelected.unit }}</td>
-                    </tr>
-                </table>
+                        <tr>
+                            <td>{{ selectedSalesOrder.order_number }}</td>
+                            <td>{{ salesOrderItemSelected.material_code }}</td>
+                            <td>{{ salesOrderItemSelected.display }}</td>
+                            <td>{{ salesOrderItemSelected.quantity }}</td>
+                            <td>{{ salesOrderItemSelected.unit }}</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
+        </div>
 
-            <div ng-show="hasSalesOrderItems" class="sales-order-list">
+        <div ng-show="hasSalesOrderItems" class="panel panel-default">
+            <div class="panel-body">
                 <div ng-show="hasDistributionPlanItems">
-                    <table style="width: 100%" id="distributionPlanTable">
+                    <table style="width: 100%" id="distributionPlanTable"
+                           class="table table-bordered table-striped table-hover">
                         <th style="width: 5%">Sales Order Qty</th>
                         <th style="width: 5%">Unit</th>
                         <th style="width: 5%">Targeted Qty</th>
@@ -80,24 +87,27 @@
                                                                                             required="required"
                                                                                             ng-model="distributionPlanItem.planned_distribution_date">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
-                                                                                             ng-model="distributionPlanItem.programme_focal"
-                                                                                             required="required"
-                                                                                             ng-options="focal.name for focal in programme_focals">
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
+                                    class="table-select"
+                                    ng-model="distributionPlanItem.programme_focal"
+                                    required="required"
+                                    ng-options="focal.name for focal in programme_focals">
                                 <option value="" selected="selected">Select</option>
                             </select></td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
-                                                                                             ng-model="distributionPlanItem.consignee"
-                                                                                             required="required"
-                                                                                             ng-options="consignee.name for consignee in consignees">
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
+                                    class="table-select"
+                                    ng-model="distributionPlanItem.consignee"
+                                    required="required"
+                                    ng-options="consignee.name for consignee in consignees">
                                 <option value="" selected="selected">Select</option>
                             </select></td>
 
 
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
-                                                                                             ng-model="distributionPlanItem.contact_person"
-                                                                                             required="required"
-                                                                                             ng-options="contact_person.name for contact_person in contact_persons">
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
+                                    class="table-select"
+                                    ng-model="distributionPlanItem.contact_person"
+                                    required="required"
+                                    ng-options="contact_person.name for contact_person in contact_persons">
                                 <option value="" selected="selected">Select</option>
                             </select></td>
 
@@ -123,9 +133,10 @@
                             </td>
 
 
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select class="table-select"
-                                                                                             ng-model="distributionPlanItem.mode_of_delivery"
-                                                                                             required="required">
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
+                                    class="table-select"
+                                    ng-model="distributionPlanItem.mode_of_delivery"
+                                    required="required">
                                 <option value="Direct Delivery">Direct Delivery</option>
                                 <option value="WH(warehouse)">WH(warehouse)</option>
                                 <option value="" selected="selected">Select</option>
@@ -135,18 +146,20 @@
                     </table>
                 </div>
 
-                <div>
-                    <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
-                            ng-click="addDistributionPlanItem()"><i
-                            class="glyphicon glyphicon-plus"> </i>Add IP
-                    </button>
-                    <div ng-show="hasDistributionPlanItems" style="float: right">
-                        <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
-                                ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
-                                class="glyphicon glyphicon-save"> </i>Save
-                        </button>
-                    </div>
-                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
+                    ng-click="addDistributionPlanItem()"><i
+                    class="glyphicon glyphicon-plus"> </i>Add IP
+            </button>
+            <div ng-show="hasDistributionPlanItems" style="float: right">
+                <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
+                        ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
+                        class="glyphicon glyphicon-save"> </i>Save
+                </button>
             </div>
         </div>
     </div>
