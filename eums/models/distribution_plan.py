@@ -9,3 +9,7 @@ class DistributionPlan(models.Model):
 
     class Meta:
         app_label = 'eums'
+
+    def __str__(self):
+        return "%s, %s" % (self.programme.name, str(self.date))
+

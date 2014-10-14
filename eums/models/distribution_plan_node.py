@@ -14,3 +14,6 @@ class DistributionPlanNode(models.Model):
     class Meta:
         app_label = 'eums'
         unique_together = ('distribution_plan', 'consignee')
+
+    def __str__(self):
+        return "%s %s %s " % (self.consignee.name, self.tree_position, str(self.distribution_plan))
