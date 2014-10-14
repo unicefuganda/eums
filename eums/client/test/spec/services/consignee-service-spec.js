@@ -19,10 +19,15 @@ describe('Consignee Service', function() {
         }
     };
 
-    var expectedConsignee = {
+    var expectedConsigneeDetails = {
         id: consigneeId,
         name: 'Save the Children',
         contactPerson: fullContactResponse.data
+    };
+
+    var expectedConsignee = {
+        id: consigneeId,
+        name: 'Save the Children'
     };
 
     beforeEach(function() {
@@ -59,10 +64,20 @@ describe('Consignee Service', function() {
     it('should get consignee with full contact person details', function(done) {
         mockBackend.whenGET(consigneeEndpointUrl + consigneeId + '/').respond(stubConsignee);
         consigneeService.getConsigneeDetails(consigneeId).then(function(returnedConsignee) {
+            expect(returnedConsignee).toEqual(expectedConsigneeDetails);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+        it('should get consignee name', function(done) {
+        mockBackend.whenGET(consigneeEndpointUrl + consigneeId + '/').respond(stubConsignee);
+        consigneeService.getConsigneeById(consigneeId).then(function(returnedConsignee) {
             expect(returnedConsignee).toEqual(expectedConsignee);
             done();
         });
         mockBackend.flush();
     });
+
 });
 

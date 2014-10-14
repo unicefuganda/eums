@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap'])
+angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee'])
     .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService,
                                                            DistributionPlanLineItemService, DistributionPlanService,
-                                                           DistributionPlanNodeService, Districts) {
+                                                           DistributionPlanNodeService, Districts, ConsigneeService) {
 
         $scope.districts = Districts.getAllDistricts();
 
@@ -121,6 +121,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
                     distributionPlanLineItems.forEach(function (planLineItemID) {
                         DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function (result) {
+                            ConsigneeService.getConsigneeById(result.consignee).then(function(consignee){
+                                result.consignee = consignee.name;
+                            });
                             result.quantity = quantityLeft.toString();
                             result.target_quantity = result.targeted_quantity;
                             $scope.distributionPlanItems.push(result);

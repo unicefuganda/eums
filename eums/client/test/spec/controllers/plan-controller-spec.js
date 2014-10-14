@@ -2,7 +2,7 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var scope, mockPlanService, mockDistributionPlanParametersService, mockProgrammeService, mockDistributionPlanNodeService, mockDistrictService,
-        deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService, mockDistributionPlanLineItemService, deferredPlanNode;
+        deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService, mockDistributionPlanLineItemService, deferredPlanNode, mockConsigneeService;
 
     var orderNumber = '00001';
     var expectedDistricts = ['Abim', 'Gulu'];
@@ -48,6 +48,7 @@ describe('NewDistributionPlanController', function () {
         distributionplanlineitem_set: []
     };
 
+
     var expectedFormattedSalesOrderItem = {display: stubSalesOrderItem.item.description,
         material_code: stubSalesOrderItem.item.material_code,
         quantity: stubSalesOrderItem.quantity,
@@ -63,6 +64,7 @@ describe('NewDistributionPlanController', function () {
         mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails', 'createLineItem']);
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails', 'createNode']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
         mockDistrictService = jasmine.createSpyObj('mockDistrictService', ['getAllDistricts']);
 
         inject(function ($controller, $rootScope, $q, $httpBackend, EumsConfig) {
@@ -80,6 +82,7 @@ describe('NewDistributionPlanController', function () {
             mockDistributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockDistributionPlanNodeService.createNode.and.returnValue(deferredPlanNode.promise);
             mockDistrictService.getAllDistricts.and.returnValue(expectedDistricts);
+            mockConsigneeService.getConsigneeById.and.returnValue(deferred.promise);
 
             scope = $rootScope.$new();
 
@@ -91,7 +94,8 @@ describe('NewDistributionPlanController', function () {
                     ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService,
                     DistributionPlanService: mockPlanService, DistributionPlanNodeService: mockDistributionPlanNodeService,
                     DistributionPlanLineItemService: mockDistributionPlanLineItemService,
-                    Districts: mockDistrictService});
+                    Districts: mockDistrictService,
+                    ConsigneeService: mockConsigneeService});
         });
     });
 
