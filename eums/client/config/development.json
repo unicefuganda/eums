@@ -23,5 +23,6 @@
     "selectedLayerStyle": {
         "weight": 4,
         "fillOpacity": 0.8
-    }
+    },
+    "IPJSONURL": "http://localhost:8000/static/app/data/ip.json"
 }
