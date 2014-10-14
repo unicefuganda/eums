@@ -11,5 +11,17 @@
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/"
+    },
+    "DISTRICTGEOJSONURL": "http://localhost:8000/static/app/data/districts.json",
+    "districtLayerStyle": {
+        "weight": 2,
+        "color": "#3E9CB8",
+        "fillColor": "#eee",
+        "fillOpacity": 0.2,
+        "opacity": 0.7
+    },
+    "selectedLayerStyle": {
+        "weight": 4,
+        "fillOpacity": 0.8
     }
 }

@@ -88,7 +88,8 @@ module.exports = function (grunt) {
             all: {
                 src: [
                     'Gruntfile.js',
-                    'app/scripts/{,*/}*.js'
+                    'app/scripts/{,*/}*.js',
+                    '!app/scripts/map/map.js'
                 ]
             },
             test: {

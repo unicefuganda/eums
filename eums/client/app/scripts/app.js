@@ -1,10 +1,14 @@
 'use strict';
 
 angular
-    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap'])
+    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap','eums.map'])
     .config(function ($routeProvider) {
         $routeProvider
             .when('/', {
+                templateUrl: '/static/app/views/home.html',
+                controller: 'HomeController'
+            })
+            .when('/:district', {
                 templateUrl: '/static/app/views/home.html',
                 controller: 'HomeController'
             })
@@ -24,4 +28,6 @@ angular
                 redirectTo: '/'
             });
 
+    }).run(function ($rootScope, $routeParams) {
+        $rootScope.params = {location: $routeParams};
     });

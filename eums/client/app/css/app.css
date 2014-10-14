@@ -75,6 +75,11 @@ input[type=date] {
     margin-top: 6px;
 }
 
+#map {
+  width: 1210px;
+  height: 600px;
+}
+
 .form-elements {
     margin-bottom: 10px;
 }
