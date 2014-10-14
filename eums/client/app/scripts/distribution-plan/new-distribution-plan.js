@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee'])
+angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User'])
     .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService,
                                                            DistributionPlanLineItemService, DistributionPlanService,
-                                                           DistributionPlanNodeService, Districts, ConsigneeService) {
+                                                           DistributionPlanNodeService, Districts, ConsigneeService, UserService) {
 
         $scope.districts = Districts.getAllDistricts();
 
@@ -123,6 +123,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                         DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function (result) {
                             ConsigneeService.getConsigneeById(result.consignee).then(function(consignee){
                                 result.consignee = consignee.name;
+                            });
+
+                            UserService.getUserByIdAsProgrammeFocal(result.programme_focal).then(function(user){
+                                result.programme_focal = user.firstName + ' ' + user.lastName;
                             });
                             result.quantity = quantityLeft.toString();
                             result.target_quantity = result.targeted_quantity;

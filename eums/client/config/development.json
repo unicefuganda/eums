@@ -9,6 +9,7 @@
         "DISTRIBUTION_PLAN_LINE_ITEM": "/api/distribution-plan-line-item/",
         "SALES_ORDER": "/api/sales-order/",
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
-        "PROGRAMME": "/api/programme/"
+        "PROGRAMME": "/api/programme/",
+        "USER": "/api/user/"
     }
 }

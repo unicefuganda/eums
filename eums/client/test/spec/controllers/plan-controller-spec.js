@@ -2,7 +2,8 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var scope, mockPlanService, mockDistributionPlanParametersService, mockProgrammeService, mockDistributionPlanNodeService, mockDistrictService,
-        deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService, mockDistributionPlanLineItemService, deferredPlanNode, mockConsigneeService;
+        deferred, deferredPlan, distPlanEndpointUrl, mockSalesOrderItemService, mockDistributionPlanLineItemService, deferredPlanNode, mockConsigneeService,
+        mockUserService;
 
     var orderNumber = '00001';
     var expectedDistricts = ['Abim', 'Gulu'];
@@ -65,6 +66,7 @@ describe('NewDistributionPlanController', function () {
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails', 'createNode']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['getUserByIdAsProgrammeFocal']);
         mockDistrictService = jasmine.createSpyObj('mockDistrictService', ['getAllDistricts']);
 
         inject(function ($controller, $rootScope, $q, $httpBackend, EumsConfig) {
@@ -83,6 +85,7 @@ describe('NewDistributionPlanController', function () {
             mockDistributionPlanNodeService.createNode.and.returnValue(deferredPlanNode.promise);
             mockDistrictService.getAllDistricts.and.returnValue(expectedDistricts);
             mockConsigneeService.getConsigneeById.and.returnValue(deferred.promise);
+            mockUserService.getUserByIdAsProgrammeFocal.and.returnValue(deferred.promise);
 
             scope = $rootScope.$new();
 
@@ -95,7 +98,8 @@ describe('NewDistributionPlanController', function () {
                     DistributionPlanService: mockPlanService, DistributionPlanNodeService: mockDistributionPlanNodeService,
                     DistributionPlanLineItemService: mockDistributionPlanLineItemService,
                     Districts: mockDistrictService,
-                    ConsigneeService: mockConsigneeService});
+                    ConsigneeService: mockConsigneeService,
+                    UserService: mockUserService});
         });
     });
 
