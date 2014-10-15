@@ -8,15 +8,15 @@ logger = get_task_logger(__name__)
 
 
 def start_delivery_run(*_, **kwargs):
-    consignee = kwargs['consignee']
+    contact_person = kwargs['contact_person']
     item_description = kwargs['item_description']
     sender = kwargs['sender']
     flow = kwargs['flow']
     payload = {
         "flow": flow,
-        "phone": [consignee['phone']],
+        "phone": [contact_person['phone']],
         "extra": {
-            settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: "%s %s" % (consignee['firstName'], consignee['lastName']),
+            settings.RAPIDPRO_EXTRAS['CONTACT_NAME']: "%s %s" % (contact_person['firstName'], contact_person['lastName']),
             settings.RAPIDPRO_EXTRAS['SENDER']: sender,
             settings.RAPIDPRO_EXTRAS['PRODUCT']: item_description
         }

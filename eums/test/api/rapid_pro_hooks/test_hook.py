@@ -107,7 +107,6 @@ class HookTest(APITestCase):
     @patch('eums.models.RunQueue.dequeue')
     def test_should_dequeue_current_line_item_when_question_is_final(self, mock_run_queue_dequeue,
                                                                      mock_flow_scheduler_schedule_run_for):
-        consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
@@ -115,10 +114,11 @@ class HookTest(APITestCase):
 
         node_line_item = DistributionPlanLineItemFactory()
 
-        NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE, consignee=consignee)
+        NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE)
 
-        mock_run_queue_dequeue.return_value = RunQueueFactory(node_line_item=node_line_item,
-                                                              contact_person_id=consignee.contact_person_id)
+        mock_run_queue_dequeue.return_value = RunQueueFactory(
+            node_line_item=node_line_item,
+            contact_person_id=node_line_item.distribution_plan_node.contact_person_id)
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
@@ -130,7 +130,6 @@ class HookTest(APITestCase):
     @patch('eums.services.flow_scheduler.schedule_run_for')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_mark_line_item_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue, _):
-        consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
@@ -138,10 +137,11 @@ class HookTest(APITestCase):
 
         node_line_item = DistributionPlanLineItemFactory()
         node_line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE,
-                                                    consignee=consignee, status=NodeLineItemRun.STATUS.scheduled)
+                                                    status=NodeLineItemRun.STATUS.scheduled)
 
-        mock_run_queue_dequeue.return_value = RunQueueFactory(node_line_item=node_line_item,
-                                                              contact_person_id=consignee.contact_person_id)
+        mock_run_queue_dequeue.return_value = RunQueueFactory(
+            node_line_item=node_line_item,
+            contact_person_id=node_line_item.distribution_plan_node.contact_person_id)
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
@@ -155,7 +155,6 @@ class HookTest(APITestCase):
     @patch('eums.services.flow_scheduler.schedule_run_for')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_not_mark_line_item_run_as_complete_when_question_is_not_final(self, mock_run_queue_dequeue, _):
-        consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
@@ -163,10 +162,11 @@ class HookTest(APITestCase):
         node_line_item = DistributionPlanLineItemFactory()
         original_status = NodeLineItemRun.STATUS.scheduled
         node_line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE,
-                                                    consignee=consignee, status=original_status)
+                                                    status=original_status)
 
-        mock_run_queue_dequeue.return_value = RunQueueFactory(node_line_item=node_line_item,
-                                                              contact_person_id=consignee.contact_person_id)
+        mock_run_queue_dequeue.return_value = RunQueueFactory(
+            node_line_item=node_line_item,
+            contact_person_id=node_line_item.distribution_plan_node.contact_person_id)
 
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL + url_params)
@@ -177,7 +177,6 @@ class HookTest(APITestCase):
     @patch('eums.services.flow_scheduler.schedule_run_for')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_mark_run_returned_by_dequeue_as_started(self, mock_run_queue_dequeue, _):
-        consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
@@ -186,9 +185,10 @@ class HookTest(APITestCase):
         node_line_item = DistributionPlanLineItemFactory()
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
-        NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE, consignee=consignee)
+        NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE)
 
-        next_run = RunQueueFactory(node_line_item=node_line_item, contact_person_id=consignee.contact_person_id)
+        next_run = RunQueueFactory(node_line_item=node_line_item,
+                                   contact_person_id=node_line_item.distribution_plan_node.contact_person_id)
         mock_run_queue_dequeue.return_value = next_run
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]

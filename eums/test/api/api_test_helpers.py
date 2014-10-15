@@ -36,7 +36,7 @@ def create_programme():
 
 def create_consignee(test_case, consignee_details=None):
     if not consignee_details:
-        consignee_details = {'name': "Save the Children", 'contact_person_id': u'1234'}
+        consignee_details = {'name': "Save the Children"}
     response = test_case.client.post(CONSIGNEE_ENDPOINT_URL, consignee_details, format='json')
     test_case.assertEqual(response.status_code, 201)
     return response.data
@@ -47,7 +47,7 @@ def create_distribution_plan_node(test_case, node_details=None):
         plan_id = create_distribution_plan(test_case)
         consignee = create_consignee(test_case)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER',
-                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
+                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234'}
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
     test_case.assertEqual(response.status_code, 201)

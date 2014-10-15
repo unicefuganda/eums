@@ -9,7 +9,7 @@ ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 class ConsigneeEndpointTest(APITestCase):
     def test_should_create_consignee(self):
-        consignee_details = {'name': "Save the Children", 'contact_person_id': u'1234'}
+        consignee_details = {'name': "Save the Children"}
 
         created_consignee = create_consignee(self)
 

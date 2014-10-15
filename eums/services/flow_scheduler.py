@@ -2,9 +2,7 @@ from __future__ import absolute_import
 import datetime
 
 from celery.schedules import crontab
-
 from celery.task import periodic_task
-
 from django.conf import settings
 
 from eums.celery import app
@@ -18,15 +16,14 @@ def schedule_run_for(node_line_item):
         _cancel_run(current_run)
 
     run_delay = _calculate_delay(node_line_item)
-    consignee = node_line_item.distribution_plan_node.consignee
-    if NodeLineItemRun.current_run_for_consignee(consignee.id):
+    node = node_line_item.distribution_plan_node
+    if NodeLineItemRun.current_run_for_node(node):
         RunQueue.enqueue(node_line_item, run_delay)
     else:
-        contact = consignee.build_contact()
+        contact = node.build_contact()
         task = _schedule_run.apply_async(args=[node_line_item.id], countdown=run_delay)
         NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node_line_item=node_line_item,
-                                       status=NodeLineItemRun.STATUS.scheduled, phone=contact['phone'],
-                                       consignee=consignee)
+                                       status=NodeLineItemRun.STATUS.scheduled, phone=contact['phone'])
 
 
 @app.task
@@ -37,7 +34,7 @@ def _schedule_run(node_line_item_id):
     start_delivery_run(
         sender=_get_sender_name(node),
         item_description=node_line_item.item.description,
-        consignee=node.consignee.build_contact(),
+        contact_person=node.build_contact(),
         flow=flow.rapid_pro_id
     )
 
@@ -74,7 +71,7 @@ def expire_overdue_runs():
     for overdue_run in overdue_runs:
         overdue_run.status = NodeLineItemRun.STATUS.expired
         overdue_run.save()
-        next_run = RunQueue.dequeue(overdue_run.consignee.contact_person_id)
+        next_run = RunQueue.dequeue(overdue_run.node_line_item.distribution_plan_node.contact_person_id)
         if next_run:
             schedule_run_for(next_run.node_line_item)
             next_run.status = RunQueue.STATUS.started

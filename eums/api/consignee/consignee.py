@@ -8,7 +8,7 @@ from eums.models import Consignee
 class ConsigneeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Consignee
-        fields = ('id', 'name', 'contact_person_id')
+        fields = ('id', 'name')
 
 
 class ConsigneeViewSet(ModelViewSet):

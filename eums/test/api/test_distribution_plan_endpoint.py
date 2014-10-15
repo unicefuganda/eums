@@ -27,7 +27,7 @@ class DistributionPlanEndPointTest(APITestCase):
         plan_id = create_distribution_plan(self)
         consignee = create_consignee(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER',
-                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
+                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234'}
         node = create_distribution_plan_node(self, node_details)
         expected_plan_partial = {'distributionplannode_set': [node['id']]}
 

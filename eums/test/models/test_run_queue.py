@@ -1,4 +1,3 @@
-from datetime import datetime
 from unittest import TestCase
 
 from eums.models import RunQueue
@@ -41,8 +40,7 @@ class RunQueueTest(TestCase):
         contact_person_id = 'id'
         run_delay = 1000
 
-        consignee = ConsigneeFactory(contact_person_id=contact_person_id)
-        node = DistributionPlanNodeFactory(consignee=consignee)
+        node = DistributionPlanNodeFactory(contact_person_id=contact_person_id)
         node_line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         RunQueue.enqueue(node_line_item, run_delay)

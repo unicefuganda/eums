@@ -23,21 +23,21 @@ class NodeLineItemRunTest(TestCase):
     def test_should_have_all_expected_fields(self):
         node_line_item_run = NodeLineItemRun()
         fields_in_node_line_item_run = [field.attname for field in node_line_item_run._meta.fields]
-        self.assertEqual(len(fields_in_node_line_item_run), 6)
+        self.assertEqual(len(fields_in_node_line_item_run), 5)
 
-        for field in ['scheduled_message_task_id', 'node_line_item_id', 'status', 'consignee_id', 'phone']:
+        for field in ['scheduled_message_task_id', 'node_line_item_id', 'status', 'phone']:
             self.assertIn(field, fields_in_node_line_item_run)
 
     def test_should_get_current_run_for_consignee_with_run_with_status_scheduled(self):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
 
-        self.assertEqual(NodeLineItemRun.current_run_for_consignee(self.consignee.id), line_item_run)
+        self.assertEqual(NodeLineItemRun.current_run_for_node(self.line_item.distribution_plan_node), line_item_run)
 
     def test_should_get_none_when_current_run_is_called_for_a_consignee_with_no_runs_scheduled(self):
         NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.expired)
         NodeLineItemRunFactory(node_line_item=self.line_item, status=NodeLineItemRun.STATUS.completed)
 
-        self.assertEqual(NodeLineItemRun.current_run_for_consignee(self.consignee.id), None)
+        self.assertEqual(NodeLineItemRun.current_run_for_node(self.line_item.distribution_plan_node), None)
 
     def test_should_get_over_due_runs(self):
         delivery_status_check_delay = datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)

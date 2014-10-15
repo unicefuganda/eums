@@ -32,14 +32,13 @@ from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
 
 class FlowSchedulerTest(TestCase):
     def setUp(self):
-        self.consignee = ConsigneeFactory()
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
-        self.node = NodeFactory(consignee=self.consignee)
-        self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=self.node)
+        node = NodeFactory()
+        self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
         local_celery.app.control.revoke = MagicMock(return_value=None)
-        self.node.consignee.build_contact = MagicMock(return_value=self.contact)
-        Node.objects.get = MagicMock(return_value=self.node)
+        node.build_contact = MagicMock(return_value=self.contact)
+        Node.objects.get = MagicMock(return_value=node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=self.line_item)
 
         self.MIDDLEMAN_FLOW_ID = FlowFactory(for_node_type=Node.MIDDLE_MAN).rapid_pro_id
@@ -48,38 +47,40 @@ class FlowSchedulerTest(TestCase):
     def tearDown(self):
         Flow.objects.all().delete()
 
-    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
-    def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self, mock_current_run_for_consignee):
-        node = NodeFactory(consignee=self.consignee, tree_position=Node.MIDDLE_MAN)
+    @patch('eums.models.NodeLineItemRun.current_run_for_node')
+    def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self, mock_current_run_for_node):
+        node = NodeFactory(tree_position=Node.MIDDLE_MAN)
+        node.build_contact = MagicMock(return_value=self.contact)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        mock_current_run_for_consignee.return_value = None
+        mock_current_run_for_node.return_value = None
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
         Node.objects.get = MagicMock(return_value=node)
 
         schedule_run_for(line_item)
 
-        mock_start_delivery_run.assert_called_with(consignee=self.contact, flow=self.MIDDLEMAN_FLOW_ID,
+        mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=self.MIDDLEMAN_FLOW_ID,
                                                    item_description=ANY, sender=ANY)
 
-    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
-    def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self, mock_current_run_for_consignee):
-        node = NodeFactory(consignee=self.consignee, tree_position=Node.END_USER)
+    @patch('eums.models.NodeLineItemRun.current_run_for_node')
+    def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self, mock_current_run_for_node):
+        node = NodeFactory(tree_position=Node.END_USER)
+        node.build_contact = MagicMock(return_value=self.contact)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        mock_current_run_for_consignee.return_value = None
+        mock_current_run_for_node.return_value = None
         Node.objects.get = MagicMock(return_value=node)
         DistributionPlanLineItem.objects.get = MagicMock(return_value=line_item)
 
         schedule_run_for(line_item)
 
-        mock_start_delivery_run.assert_called_with(consignee=self.contact, flow=self.END_USER_FLOW_ID,
+        mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=self.END_USER_FLOW_ID,
                                                    item_description=ANY, sender=ANY)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         schedule_run_for(self.line_item)
 
-        mock_start_delivery_run.assert_called_with(sender='UNICEF', consignee=self.contact, flow=ANY,
+        mock_start_delivery_run.assert_called_with(sender='UNICEF', contact_person=self.contact, flow=ANY,
                                                    item_description=self.line_item.item.description)
 
     def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
@@ -87,6 +88,7 @@ class FlowSchedulerTest(TestCase):
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = NodeFactory(consignee=sender_org)
         node = NodeFactory(consignee=sender_org, parent=parent_node)
+        node.build_contact = MagicMock(return_value=self.contact)
         line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
         Node.objects.get = MagicMock(return_value=node)
@@ -95,7 +97,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(line_item)
 
-        mock_start_delivery_run.assert_called_with(consignee=self.contact, flow=ANY, sender=sender_org_name,
+        mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=ANY, sender=sender_org_name,
                                                    item_description=line_item.item.description)
 
     def test_should_save_a_node_line_item_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
@@ -112,13 +114,13 @@ class FlowSchedulerTest(TestCase):
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
-    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
+    @patch('eums.models.NodeLineItemRun.current_run_for_node')
     def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self,
-                                                                                                                 mock_current_run_for_consignee):
+                                                                                                                 mock_current_run_for_node):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
 
         self.line_item.current_run = MagicMock(return_value=line_item_run)
-        mock_current_run_for_consignee.return_value = None
+        mock_current_run_for_node.return_value = None
 
         schedule_run_for(self.line_item)
 
@@ -127,16 +129,16 @@ class FlowSchedulerTest(TestCase):
         mock_start_delivery_run.assert_called()
 
     @patch('eums.models.RunQueue.enqueue')
-    @patch('eums.models.NodeLineItemRun.current_run_for_consignee')
+    @patch('eums.models.NodeLineItemRun.current_run_for_node')
     def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
-                                                                                                          mock_current_run_for_consignee,
+                                                                                                          mock_current_run_for_node,
                                                                                                           mock_run_queue_enqueue):
         line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
-        node_two = NodeFactory(consignee=self.consignee)
+        node_two = NodeFactory()
         line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=node_two)
 
         self.line_item.current_run = MagicMock(return_value=None)
-        mock_current_run_for_consignee.return_value = line_item_run
+        mock_current_run_for_node.return_value = line_item_run
         mock_run_queue_enqueue.return_value = None
 
         schedule_run_for(line_item_two)
@@ -161,10 +163,10 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_queued_runs_for_a_consignee_after_expiring_over_due_runs(self, mock_get_overdue_runs,
                                                                                       mock_schedule_run_for,
                                                                                       mock_deque):
-        overdue_line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item, consignee=self.consignee)
+        overdue_line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item)
         node_line_item = DistributionPlanLineItemFactory()
         run_queue_item = RunQueueFactory(node_line_item=node_line_item,
-                                         contact_person_id=self.consignee.contact_person_id)
+                                         contact_person_id=self.line_item.distribution_plan_node.contact_person_id)
 
         mock_get_overdue_runs.return_value = [overdue_line_item_run]
         mock_schedule_run_for.return_value = None
@@ -172,7 +174,7 @@ class FlowSchedulerTest(TestCase):
 
         expire_overdue_runs()
 
-        mock_deque.assert_called_with(self.consignee.contact_person_id)
+        mock_deque.assert_called_with(self.line_item.distribution_plan_node.contact_person_id)
         mock_schedule_run_for.assert_called_with(run_queue_item.node_line_item)
         self.assertEqual(run_queue_item.status, RunQueue.STATUS.started)
 

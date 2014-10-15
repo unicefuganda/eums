@@ -251,24 +251,21 @@
     },
     {
         "fields": {
-            "name": "first consignee",
-            "contact_person_id": "2435346786543"
+            "name": "first consignee"
         },
         "model": "eums.consignee",
         "pk": 1
     },
     {
         "fields": {
-            "name": "second consigne",
-            "contact_person_id": "dfg34534534344564"
+            "name": "second consigne"
         },
         "model": "eums.consignee",
         "pk": 2
     },
     {
         "fields": {
-            "name": "end user consignee",
-            "contact_person_id": "dfgsdfk3345646575"
+            "name": "end user consignee"
         },
         "model": "eums.consignee",
         "pk": 3
@@ -369,7 +366,6 @@
     {
         "fields": {
             "status": "completed",
-            "consignee": 1,
             "scheduled_message_task_id": "234535934549",
             "phone": "+256795655430",
             "node_line_item": 3
@@ -380,7 +376,6 @@
     {
         "fields": {
             "status": "completed",
-            "consignee": 1,
             "scheduled_message_task_id": "345934530430",
             "phone": "+25678554333",
             "node_line_item": 4
@@ -391,7 +386,6 @@
     {
         "fields": {
             "status": "completed",
-            "consignee": 2,
             "scheduled_message_task_id": "34583493232",
             "phone": "+25679838322",
             "node_line_item": 5
@@ -402,7 +396,6 @@
     {
         "fields": {
             "status": "completed",
-            "consignee": 2,
             "scheduled_message_task_id": "3454345345",
             "phone": "+256772345469",
             "node_line_item": 6
@@ -413,7 +406,6 @@
     {
         "fields": {
             "status": "completed",
-            "consignee": 3,
             "scheduled_message_task_id": "3449993888",
             "phone": "+256772345469",
             "node_line_item": 7
@@ -424,7 +416,6 @@
     {
         "fields": {
             "status": "scheduled",
-            "consignee": 3,
             "scheduled_message_task_id": "9949733733776",
             "phone": "+256772345469",
             "node_line_item": 8
@@ -1236,16 +1227,9 @@
         "fields": {
             "targeted_quantity": 5,
             "remark": "remark",
-            "contact_phone_number": "+25679843564",
-            "tracked": true,
             "planned_distribution_date": "2014-02-01",
             "distribution_plan_node": 2,
-            "mode_of_delivery": "bus",
-            "consignee": 1,
-            "programme_focal": 2,
-            "item": 1,
-            "contact_person": "first consignee",
-            "destination_location": "lira"
+            "item": 1
         },
         "model": "eums.distributionplanlineitem",
         "pk": 3
@@ -1254,16 +1238,9 @@
         "fields": {
             "targeted_quantity": 5,
             "remark": "remark",
-            "contact_phone_number": "+25679843564",
-            "tracked": true,
             "planned_distribution_date": "2014-02-01",
             "distribution_plan_node": 2,
-            "mode_of_delivery": "bus",
-            "consignee": 1,
-            "programme_focal": 2,
-            "item": 2,
-            "contact_person": "first consignee",
-            "destination_location": "lira"
+            "item": 2
         },
         "model": "eums.distributionplanlineitem",
         "pk": 4
@@ -1272,16 +1249,9 @@
         "fields": {
             "targeted_quantity": 5,
             "remark": "remark",
-            "contact_phone_number": "+256779534343",
-            "tracked": true,
             "planned_distribution_date": "2014-03-01",
             "distribution_plan_node": 3,
-            "mode_of_delivery": "bus",
-            "consignee": 2,
-            "programme_focal": 2,
-            "item": 1,
-            "contact_person": "second consignee",
-            "destination_location": "lira town council"
+            "item": 1
         },
         "model": "eums.distributionplanlineitem",
         "pk": 5
@@ -1290,16 +1260,9 @@
         "fields": {
             "targeted_quantity": 5,
             "remark": "remark",
-            "contact_phone_number": "+256779534343",
-            "tracked": true,
             "planned_distribution_date": "2014-03-01",
             "distribution_plan_node": 3,
-            "mode_of_delivery": "bus",
-            "consignee": 2,
-            "programme_focal": 2,
-            "item": 2,
-            "contact_person": "second consignee",
-            "destination_location": "lira town council"
+            "item": 2
         },
         "model": "eums.distributionplanlineitem",
         "pk": 6
@@ -1308,16 +1271,9 @@
         "fields": {
             "targeted_quantity": 5,
             "remark": "remark",
-            "contact_phone_number": "+2567723454656",
-            "tracked": true,
             "planned_distribution_date": "2014-04-01",
             "distribution_plan_node": 4,
-            "mode_of_delivery": "bicycle",
-            "consignee": 3,
-            "programme_focal": 2,
-            "item": 1,
-            "contact_person": "end user community worker",
-            "destination_location": "lira village"
+            "item": 1
         },
         "model": "eums.distributionplanlineitem",
         "pk": 7
@@ -1326,16 +1282,9 @@
         "fields": {
             "targeted_quantity": 5,
             "remark": "remark",
-            "contact_phone_number": "+2567723454656",
-            "tracked": true,
             "planned_distribution_date": "2014-04-01",
             "distribution_plan_node": 4,
-            "mode_of_delivery": "bicycle",
-            "consignee": 3,
-            "programme_focal": 2,
-            "item": 2,
-            "contact_person": "end user community worker",
-            "destination_location": "lira village"
+            "item": 2
         },
         "model": "eums.distributionplanlineitem",
         "pk": 8
