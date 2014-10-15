@@ -8,12 +8,6 @@ describe('Distribution Plan Line Item Service', function () {
         targeted_quantity: 10,
         planned_distribution_date: '2014-02-23',
         programme_focal: 1,
-        consignee: 1,
-        contact_person: 'Test User',
-        contact_phone_number: '0110110111',
-        mode_of_delivery: 'Road',
-        destination_location: 'Kampala',
-        tracked: true,
         remark: 'In good condition',
         distribution_plan_node: 1
     };
@@ -23,13 +17,6 @@ describe('Distribution Plan Line Item Service', function () {
         item: itemId,
         targeted_quantity: 10,
         planned_distribution_date: '2014-02-23',
-        programme_focal: 1,
-        consignee: 1,
-        contact_person: 'Test User',
-        contact_phone_number: '0110110111',
-        mode_of_delivery: 'Road',
-        destination_location: 'Kampala',
-        tracked: true,
         remark: 'In good condition',
         distribution_plan_node: 1
     };

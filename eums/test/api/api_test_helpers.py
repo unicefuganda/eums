@@ -1,4 +1,5 @@
 import datetime
+
 from django.contrib.auth.models import User
 
 from eums.models import Programme, ItemUnit, Item
@@ -45,7 +46,8 @@ def create_distribution_plan_node(test_case, node_details=None):
     if not node_details:
         plan_id = create_distribution_plan(test_case)
         consignee = create_consignee(test_case)
-        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER'}
+        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER',
+                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
     test_case.assertEqual(response.status_code, 201)

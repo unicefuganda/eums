@@ -11,6 +11,8 @@ describe('Distribution Plan Node Service', function() {
         id: planNodeId,
         parent: null,
         distribution_plan: 1,
+        location: 'Kampala',
+        mode_of_delivery: 'Warehouse',
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: consigneeId
@@ -22,7 +24,6 @@ describe('Distribution Plan Node Service', function() {
         quantity: 10,
         under_current_supply_plan: false,
         planned_distribution_date: '2014-02-23',
-        destination_location: 'Kampala',
         remark: 'In good condition',
         distribution_plan_node: planNodeId
     };
@@ -33,7 +34,6 @@ describe('Distribution Plan Node Service', function() {
         quantity: 10,
         under_current_supply_plan: false,
         planned_distribution_date: '2014-02-23',
-        destination_location: 'Kampala',
         remark: 'In bad condition',
         distribution_plan_node: planNodeId
     };
@@ -51,6 +51,8 @@ describe('Distribution Plan Node Service', function() {
         id: planNodeId,
         parent: null,
         distribution_plan: 1,
+        location: 'Kampala',
+        mode_of_delivery: 'Warehouse',
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: fullConsignee,

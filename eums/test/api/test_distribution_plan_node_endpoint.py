@@ -18,7 +18,7 @@ class DistributionPlanNodeEndpoint(APITestCase):
         plan_id = create_distribution_plan(self)
         consignee_id = create_consignee(self)['id']
         node_details = {'distribution_plan': plan_id, 'tree_position': self.MIDDLEMAN_POSITION,
-                        'consignee': consignee_id}
+                        'consignee': consignee_id, 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
 
         created_node_data = create_distribution_plan_node(self, node_details)
 
@@ -28,7 +28,8 @@ class DistributionPlanNodeEndpoint(APITestCase):
         parent_node = create_distribution_plan_node(self)
         consignee_id = create_consignee(self)['id']
         child_node_details = {'distribution_plan': parent_node['distribution_plan'], 'consignee': consignee_id,
-                              'tree_position': self.MIDDLEMAN_POSITION, 'parent': parent_node['id']}
+                              'tree_position': self.MIDDLEMAN_POSITION, 'parent': parent_node['id'],
+                              'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
 
         created_child_node_details = create_distribution_plan_node(self, child_node_details)
 
@@ -71,7 +72,8 @@ class DistributionPlanNodeEndpoint(APITestCase):
         plan_id = create_distribution_plan(self)
         consignee = create_consignee(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
-                        'tree_position': self.MIDDLEMAN_POSITION}
+                        'tree_position': self.MIDDLEMAN_POSITION, 'location': 'Kampala',
+                        'mode_of_delivery': 'WAREHOUSE'}
 
         node = create_distribution_plan_node(self, node_details=node_details)
 
@@ -82,7 +84,7 @@ class DistributionPlanNodeEndpoint(APITestCase):
         plan_id = create_distribution_plan(self)
         consignee = create_consignee(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
-                        'tree_position': self.END_USER_POSITION}
+                        'tree_position': self.END_USER_POSITION, 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
 
         node = create_distribution_plan_node(self, node_details=node_details)
 
@@ -93,7 +95,7 @@ class DistributionPlanNodeEndpoint(APITestCase):
         plan_id = create_distribution_plan(self)
         consignee = create_consignee(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
-                        'tree_position': 'UNKNOWN POSITION'}
+                        'tree_position': 'UNKNOWN POSITION', 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
 
         response = self.client.post(ENDPOINT_URL, node_details, format='json')
 
@@ -104,7 +106,7 @@ class DistributionPlanNodeEndpoint(APITestCase):
         consignee_id = create_consignee(self)['id']
         if not child_details:
             child_details = {'distribution_plan': created_parent_details['distribution_plan'],
-                             'consignee': consignee_id,
-                             'tree_position': self.MIDDLEMAN_POSITION, 'parent': created_parent_details['id'], }
+                             'consignee': consignee_id, 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE',
+                             'tree_position': self.MIDDLEMAN_POSITION, 'parent': created_parent_details['id']}
         created_child_details = create_distribution_plan_node(self, child_details)
         return created_parent_details, created_child_details
