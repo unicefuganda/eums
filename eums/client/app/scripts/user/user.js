@@ -2,7 +2,7 @@
 
 angular.module('User', ['eums.config']).factory('UserService', function ($http) {
                  return {
-                     getUserByIdAsProgrammeFocal: function (userId){
+                     getUserById: function (userId){
                          return $http.get('/api/user/' + userId + '/').then(function(response){
                              return {
                                  id: response.data.id,

@@ -28,9 +28,9 @@ describe('User Service', function () {
         });
     });
 
-    it('should get user as contact person', function (done) {
+    it('should get user by id', function (done) {
         mockBackend.whenGET(userEndpointUrl + userId + '/').respond(stubUser);
-        userService.getUserByIdAsProgrammeFocal(userId).then(function (returnedUser) {
+        userService.getUserById(userId).then(function (returnedUser) {
             expect(returnedUser).toEqual(expectedUser);
             done();
         });

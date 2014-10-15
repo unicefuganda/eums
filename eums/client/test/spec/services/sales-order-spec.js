@@ -1,6 +1,6 @@
 describe('Sales Order Service', function() {
 
-    var salesOrderService, mockBackend, endpointUrl, programmeEndpointUrl;
+    var salesOrderService, mockBackend, endpointUrl, mockProgrammeService, scope;
     var orderId = 1, programmeOneId = 1;
 
     var stubOrderOne = {
@@ -19,7 +19,7 @@ describe('Sales Order Service', function() {
         programme: {
             id: programmeOneId,
             name: 'Test Programme',
-            focal_person: {
+            focalPerson: {
                 id: 1,
                 firstName: 'Musoke',
                 lastName: 'Stephen'
@@ -46,10 +46,21 @@ describe('Sales Order Service', function() {
     beforeEach(function() {
         module('SalesOrder');
 
-        inject(function(SalesOrderService, $httpBackend, EumsConfig) {
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgrammeDetails']);
+
+        module(function($provide) {
+            $provide.value('ProgrammeService', mockProgrammeService);
+        });
+
+        inject(function(SalesOrderService, $httpBackend, EumsConfig, $q, $rootScope) {
+            var deferred = $q.defer();
+
+            scope =  $rootScope.$new();
+            deferred.resolve(fullOrderOne.programme);
+            mockProgrammeService.getProgrammeDetails.and.returnValue(deferred.promise);
+
             mockBackend = $httpBackend;
             endpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER;
-            programmeEndpointUrl = EumsConfig.BACKEND_URLS.PROGRAMME;
             salesOrderService = SalesOrderService;
         });
     });
@@ -65,11 +76,10 @@ describe('Sales Order Service', function() {
     });
 
     it('should get sales order details', function(done) {
-        mockBackend.whenGET(programmeEndpointUrl + programmeOneId + '/').respond(fullOrderOne.programme);
         salesOrderService.getOrderDetails(stubOrderOne).then(function(detailedOrder) {
             expect(detailedOrder).toEqual(fullOrderOne);
             done();
         });
-        mockBackend.flush();
+        scope.$apply();
     });
 });

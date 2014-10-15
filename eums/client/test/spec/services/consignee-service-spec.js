@@ -70,7 +70,7 @@ describe('Consignee Service', function() {
         mockBackend.flush();
     });
 
-        it('should get consignee name', function(done) {
+    it('should get consignee name', function(done) {
         mockBackend.whenGET(consigneeEndpointUrl + consigneeId + '/').respond(stubConsignee);
         consigneeService.getConsigneeById(consigneeId).then(function(returnedConsignee) {
             expect(returnedConsignee).toEqual(expectedConsignee);
