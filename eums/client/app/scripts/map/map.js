@@ -96,7 +96,9 @@
         var map;
 
         function initMap(elementId) {
-            var map = L.map(elementId).setView([1.436, 32.884], 7);
+            var map = L.map(elementId, {
+                zoomControl: false
+            }).setView([1.436, 32.884], 7);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
@@ -118,8 +120,7 @@
 
         function addIPMarker(center, ip) {
             var popup = L.popup({ closeButton: false, offset: new L.Point(0, 44), className: "marker-popup", autoPan: false});
-            var popupContent = '<p> name: ' + ip.Name + '<br />location: ' + ip.City + '</p>';
-
+            var popupContent = "<p> name: " + ip.Name + "<br />location: " + ip.City + "</p>";
 
             var marker = L.marker(center, {icon: markerIcon()});
 
@@ -208,7 +209,6 @@
     });
 
     module.directive('map', function (MapService, $window, IPService) {
-        var ipsWithTheirCoordinates = [];
         return {
             scope: false,
             link: function (scope, element, attrs) {
@@ -218,11 +218,10 @@
                     map.mapAllIPsToRandomLayerCoordinates().then(function (response) {
                         response.forEach(function (ips) {
                             ips.map(function (ip) {
-                                ipsWithTheirCoordinates.push(ip);
-                                map.addMarker(ip.coordinates, ip)
+                                var ipCoordinates = ip.coordinates;
+                                map.addMarker([ipCoordinates.lat, ipCoordinates.lng], ip)
                             });
                         });
-                        console.log(JSON.stringify(ipsWithTheirCoordinates));
                     });
 
                     IPService.getAllIps().then(function (response) {
@@ -237,6 +236,41 @@
                     scope.$watch('params.location', function (newLocation) {
                         newLocation && MapService.clickLayer(newLocation.district);
                     }, true);
+                });
+            }
+        }
+    }).directive('panel', function () {
+        return {
+            scope: true,
+            link: function (scope, element, attrs) {
+                scope.expanded = true;
+
+                var expandAnimation = JSON.parse(attrs.panelExpand);
+                var collapseAnimation = JSON.parse(attrs.panelCollapse);
+                var panel = $(element);
+
+                var togglePanel = function () {
+                    if (scope.expanded) {
+                        panel.removeClass("expanded");
+                        panel.animate(collapseAnimation);
+                        scope.expanded = false;
+                        $('.close-panel span').removeClass("glyphicon-chevron-down");
+                        $('.close-panel span').addClass("glyphicon-chevron-up");
+                        $("#filter-panel").css("position", "absolute");
+
+                    } else {
+                        panel.addClass("expanded");
+                        panel.animate(expandAnimation);
+                        scope.expanded = true;
+                        $('.close-panel span').removeClass("glyphicon-chevron-up");
+                        $('.close-panel span').addClass("glyphicon-chevron-down");
+                        $("#filter-panel").css("position", "fixed", "height", "493px");
+                        $("#filter-panel").css("height", "593px");
+                    }
+                    return false;
+                };
+                $(".close-panel").click(function () {
+                    togglePanel();
                 });
             }
         }

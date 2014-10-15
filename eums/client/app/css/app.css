@@ -65,19 +65,19 @@ input[type=date] {
 }
 
 @media (min-width: 1200px) {
-    .container{
+    .container {
         max-width: 1000px;
     }
 }
 
-.line-order-panel{
+.line-order-panel {
     padding: 8px;
     margin-top: 6px;
 }
 
 #map {
-  width: 1210px;
-  height: 600px;
+    width: 1210px;
+    height: 600px;
 }
 
 .form-elements {
@@ -90,12 +90,12 @@ a, #distribution-plan-nav {
 
 .disabled-icon .pin:after {
     background-color: #CCC;
-    background-image: radial-gradient(25% 25%, circle, hsla(0,0%,100%,.2), hsla(0,0%,0%,.2));
+    background-image: radial-gradient(25% 25%, circle, hsla(0, 0%, 100%, .2), hsla(0, 0%, 0%, .2));
     border-radius: 50%;
-    box-shadow: inset 0 0 0 1px hsla(0,0%,0%,.1),
-    inset .2em .2em .2em hsla(0,0%,100%,.2),
-    inset -.2em -.2em .2em hsla(0,0%,0%,.2),
-    0.65em 0.9em .25em hsla(0,0%,0%,.15);
+    box-shadow: inset 0 0 0 1px hsla(0, 0%, 0%, .1),
+    inset .2em .2em .2em hsla(0, 0%, 100%, .2),
+    inset -.2em -.2em .2em hsla(0, 0%, 0%, .2),
+    0.65em 0.9em .25em hsla(0, 0%, 0%, .15);
     content: '';
     height: .6em;
     left: -.25em;
@@ -106,7 +106,7 @@ a, #distribution-plan-nav {
 
 .pin {
     background-color: #9A999B;
-    background-image: linear-gradient(left, hsla(0,0%,100%,.2), hsla(0,0%,0%,.2));
+    background-image: linear-gradient(left, hsla(0, 0%, 100%, .2), hsla(0, 0%, 0%, .2));
     display: block;
     height: 1em;
     left: 34%;
@@ -117,11 +117,11 @@ a, #distribution-plan-nav {
 
 .pin span {
     background-color: #D5D5D5;
-    background-image: radial-gradient(25% 25%, circle, hsla(0,0%,100%,.2), hsla(0,0%,0%,.2));
+    background-image: radial-gradient(25% 25%, circle, hsla(0, 0%, 100%, .2), hsla(0, 0%, 0%, .2));
     border-radius: 50%;
-    box-shadow: inset 0 0 0 1px hsla(0,0%,0%,.1),
-    inset .2em .2em .2em hsla(0,0%,100%,.2),
-    inset -.2em -.2em .2em hsla(0,0%,0%,.2);
+    box-shadow: inset 0 0 0 1px hsla(0, 0%, 0%, .1),
+    inset .2em .2em .2em hsla(0, 0%, 100%, .2),
+    inset -.2em -.2em .2em hsla(0, 0%, 0%, .2);
     content: '';
     height: .6em;
     left: -0.25em;
@@ -132,7 +132,7 @@ a, #distribution-plan-nav {
 
 .pin:before {
     /*background-color: hsla(0,0%,0%,.1);*/
-    box-shadow: 0 0 .25em hsla(0,0%,0%,.1);
+    box-shadow: 0 0 .25em hsla(0, 0%, 0%, .1);
     content: '';
     height: 0.5em;
     left: 0;
@@ -142,3 +142,102 @@ a, #distribution-plan-nav {
     transform-origin: 40% 100%;
     width: .1em;
 }
+
+.filter-panel .close-panel {
+    font-size: 14px;
+    color: #fff;
+    /*float: right;*/
+    background-color: black;
+    opacity: 1;
+    padding: 5px 8px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.close-panel:hover {
+    background-color: rgba(0, 0, 0, 0.32);
+}
+
+#right-hand-panel {
+    position: relative;
+    float: right;
+    width: 100%;
+    border-left: 1px solid #AAA;
+    height: 95%;
+    -webkit-box-shadow: 0px 2px 16px #000;
+    -moz-box-shadow: 0px 2px 16px #000;
+    box-shadow: 0px 2px 16px #000;
+}
+
+.panel-title {
+    font-size: inherit;
+}
+
+.panel-group .panel {
+    border-radius: 0;
+}
+
+.panel-heading {
+    padding: 4px 6px;
+}
+
+.panel-body {
+    padding: 6px;
+}
+
+.panel {
+    border-bottom: none;
+}
+
+.panel-title a {
+    display: block;
+}
+
+.detail-panel {
+    border-top: 1px solid #666;
+    background-color: rgba(27, 27, 27, 0.55);
+    width: 100%;
+    float: left;
+    color: black;
+    padding-left: 360px;
+}
+
+.detail-panel h3 {
+    color: black;
+
+}
+
+.breadcrumb-section {
+    padding-top: 5px;
+    position: absolute;
+    height: 40px;
+    width: 100%;
+    cursor: pointer;
+    top: 0px;
+    z-index: 0;
+    text-align: center;
+}
+
+.filters-section {
+    height: 100%;
+    overflow: auto;
+}
+
+.filters-container {
+    height: 100%;
+    padding-top: 14px;
+}
+
+.tab-pane.active {
+    padding: 12px 0px;
+}
+
+.filter-panel {
+    z-index: 10000;
+    position: absolute;
+    width: 272px;
+    height: 100%;
+    background: #909090;
+    opacity: 0.7;
+}
+
