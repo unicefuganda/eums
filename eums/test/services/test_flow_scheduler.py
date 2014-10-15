@@ -36,7 +36,7 @@ class FlowSchedulerTest(TestCase):
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
         self.node = NodeFactory(consignee=self.consignee)
-        self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=self.node, consignee=self.consignee)
+        self.line_item = DistributionPlanLineItemFactory(distribution_plan_node=self.node)
         local_celery.app.control.revoke = MagicMock(return_value=None)
         self.node.consignee.build_contact = MagicMock(return_value=self.contact)
         Node.objects.get = MagicMock(return_value=self.node)
@@ -162,7 +162,7 @@ class FlowSchedulerTest(TestCase):
                                                                                       mock_schedule_run_for,
                                                                                       mock_deque):
         overdue_line_item_run = NodeLineItemRunFactory(node_line_item=self.line_item, consignee=self.consignee)
-        node_line_item = DistributionPlanLineItemFactory(consignee=self.consignee)
+        node_line_item = DistributionPlanLineItemFactory()
         run_queue_item = RunQueueFactory(node_line_item=node_line_item,
                                          contact_person_id=self.consignee.contact_person_id)
 

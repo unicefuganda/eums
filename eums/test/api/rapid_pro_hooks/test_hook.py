@@ -1,10 +1,11 @@
 from urllib import quote_plus
 
+from mock import patch
+from rest_framework.test import APITestCase
+
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
-from mock import patch
-from rest_framework.test import APITestCase
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, NodeLineItemRun, Flow, \
     MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion
 from eums.test.config import BACKEND_URL
@@ -109,9 +110,10 @@ class HookTest(APITestCase):
         consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
+        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
+                                                            label='amountReceived')
 
-        node_line_item = DistributionPlanLineItemFactory(consignee=consignee)
+        node_line_item = DistributionPlanLineItemFactory()
 
         NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE, consignee=consignee)
 
@@ -131,9 +133,10 @@ class HookTest(APITestCase):
         consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
+        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
+                                                            label='amountReceived')
 
-        node_line_item = DistributionPlanLineItemFactory(consignee=consignee)
+        node_line_item = DistributionPlanLineItemFactory()
         node_line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE,
                                                     consignee=consignee, status=NodeLineItemRun.STATUS.scheduled)
 
@@ -157,7 +160,7 @@ class HookTest(APITestCase):
 
         NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
 
-        node_line_item = DistributionPlanLineItemFactory(consignee=consignee)
+        node_line_item = DistributionPlanLineItemFactory()
         original_status = NodeLineItemRun.STATUS.scheduled
         node_line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE,
                                                     consignee=consignee, status=original_status)
@@ -177,9 +180,10 @@ class HookTest(APITestCase):
         consignee = ConsigneeFactory()
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
+        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
+                                                            label='amountReceived')
 
-        node_line_item = DistributionPlanLineItemFactory(consignee=consignee)
+        node_line_item = DistributionPlanLineItemFactory()
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
         NodeLineItemRunFactory(node_line_item=node_line_item, phone=self.PHONE, consignee=consignee)

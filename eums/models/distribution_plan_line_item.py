@@ -9,13 +9,6 @@ class DistributionPlanLineItem(models.Model):
     item = models.ForeignKey(SalesOrderItem)
     targeted_quantity = models.IntegerField()
     planned_distribution_date = models.DateField()
-    programme_focal = models.ForeignKey(User)
-    consignee = models.ForeignKey(Consignee)
-    contact_person = models.CharField(max_length=255)
-    contact_phone_number = models.CharField(max_length=255)
-    destination_location = models.CharField(max_length=255)
-    mode_of_delivery = models.CharField(max_length=255)
-    tracked = models.BooleanField(default=False)
     remark = models.TextField()
     distribution_plan_node = models.ForeignKey(DistributionPlanNode)
 

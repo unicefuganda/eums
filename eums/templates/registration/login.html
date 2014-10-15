@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>EUMS</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.css">
+</head>
+
+<body>
+
+{% include "header.html" %}
+
+<div class="col-md-offset-5 col-md-2" style="padding-top: 150px">
+    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
+
+        <input class="form-control" placeholder="Username" required autofocus name="username" type="text">
+        <input class="form-control" placeholder="Password" type="password" required name="password">
+
+        {% if form.errors %}
+            <div class="alert-danger">Invalid Credentials.</div>
+        {% endif %}
+
+        <div>
+            <input type="submit" value="Sign In" class="btn btn-primary btn-block"/>
+        </div>
+        <input type="hidden" name="next" value="{{ next }}"/>
+    </form>
+</div>
+
+</body>
+</html>

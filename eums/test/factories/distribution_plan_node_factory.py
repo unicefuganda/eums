@@ -13,3 +13,5 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     distribution_plan = factory.SubFactory(DistributionPlanFactory)
     consignee = factory.SubFactory(ConsigneeFactory)
     tree_position = DistributionPlanNode.END_USER
+    location = "Kampala"
+    mode_of_delivery = DistributionPlanNode.THROUGH_WAREHOUSE

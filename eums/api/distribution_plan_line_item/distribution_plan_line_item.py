@@ -8,11 +8,7 @@ from eums.models import DistributionPlanLineItem
 class DistributionPlanLineItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionPlanLineItem
-        fields = (
-            'id', 'item', 'targeted_quantity', 'planned_distribution_date', 'programme_focal', 'consignee',
-            'contact_person', 'contact_phone_number', 'destination_location', 'mode_of_delivery', 'tracked',
-            'distribution_plan_node', 'remark'
-        )
+        fields = ('id', 'item', 'targeted_quantity', 'planned_distribution_date', 'distribution_plan_node', 'remark')
 
 
 class DistributionPlanLineItemViewSet(ModelViewSet):
