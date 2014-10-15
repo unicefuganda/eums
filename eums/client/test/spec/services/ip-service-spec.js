@@ -1,5 +1,5 @@
 describe('IP Service', function () {
-    var IPJSONURL, mockBackend, ipService;
+    var IPJSONURL, DISTRICTJSONURL, mockBackend, ipService;
     var stubIPs = [
         {
             'Name': 'Elizabeth Glaser Pediatric Aids',
@@ -14,13 +14,18 @@ describe('IP Service', function () {
             'City': 'Kampala'
         },
     ];
+
+    var stubDistricts = ['Kampala', 'Isingiro'];
+
     beforeEach(function () {
         module('eums.ip');
         inject(function ($httpBackend, EumsConfig, IPService) {
             mockBackend = $httpBackend;
             IPJSONURL = EumsConfig.IPJSONURL;
+            DISTRICTJSONURL = EumsConfig.DISTRICTJSONURL;
             ipService = IPService;
             mockBackend.whenGET(IPJSONURL).respond(stubIPs);
+            mockBackend.whenGET(DISTRICTJSONURL).respond(stubDistricts);
         });
     });
 
@@ -33,26 +38,18 @@ describe('IP Service', function () {
     });
 
     it('should group all IPs by district', function (done) {
-        var district = 'kampala';
-        ipService.groupIPsByDistrict(district).then(function (ips) {
-            expect(ips).toEqual([
-                { Name: 'Elizabeth Glaser Pediatric Aids', City: 'Kampala' },
-                { Name: 'Transcultural Psychosocial', City: 'Kampala' }
+        ipService.groupAllIPsByDistrict().then(function (groups) {
+            expect(groups).toEqual([
+                [
+                    { Name: 'Elizabeth Glaser Pediatric Aids', City: 'Kampala' },
+                    { Name: 'Transcultural Psychosocial', City: 'Kampala' }
+                ],
+                [
+                    { Name: 'Isingiro District Local Government', City: 'Isingiro' }
+                ]
             ]);
             done();
         });
         mockBackend.flush();
     });
-
-//    xdescribe('District geometry mapping', function () {
-//        var stubIPMapping = [
-//            { Name: 'Elizabeth Glaser Pediatric Aids', City: 'Kampala', Lat: 1.123, Lng: 32.123 },
-//            { Name: 'Isingiro District Local Government', City: 'Isingiro', Lat: 1.123, Lng: 32.123 },
-//            {'Name': 'Transcultural Psychosocial', 'City': 'Kampala', Lat: 1.143, Lng: 32.023}
-//        ];
-//        it('should map ips to latitude and longitude', function () {
-//            var ipWithGeometry = ipService.mapIPToGeometry(stubIPs);
-//            expect(ipWithGeometry).toEqual(stubIPMapping);
-//        });
-//    });
 });

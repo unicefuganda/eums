@@ -8,10 +8,6 @@ angular
                 templateUrl: '/static/app/views/home.html',
                 controller: 'HomeController'
             })
-            .when('/:district', {
-                templateUrl: '/static/app/views/home.html',
-                controller: 'HomeController'
-            })
             .when('/distribution-planning', {
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
                 controller: 'DistributionPlanController'
