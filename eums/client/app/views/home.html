@@ -1,13 +1,17 @@
 <div class="container">
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
-    <div map="" id="map">
-            <div panel panel-expand='{"bottom":"-70px"}' panel-collapse='{"bottom":"-96%"}'
-         class='filter-panel expanded dt-panel ng-cloak' id="filter-panel">
-        <div class="close-panel"><span class="glyphicon glyphicon-chevron-down"></span></div>
-        <div class='filters-container'>
-            <div ng-include="'/static/app/views/partials/filters.html'" class='filters-section'></div>
+    <div class="content-container">
+        <div class="panel panel-default line-order-panel">
+            <div map="" id="map">
+
+                <div panel panel-expand='{"bottom":"0px"}' panel-collapse='{"bottom":"-96%"}'
+                     class='filter-panel expanded dt-panel ng-cloak' id="filter-panel">
+                    <div class="close-panel"><span class="glyphicon glyphicon-chevron-down"></span></div>
+                    <div class='filters-container'>
+                        <div ng-include="'/static/app/views/partials/filters.html'" class='filters-section'></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    </div>
 </div>
-

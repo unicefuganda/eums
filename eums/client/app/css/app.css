@@ -76,7 +76,6 @@ input[type=date] {
 }
 
 #map {
-    width: 1210px;
     height: 600px;
 }
 
@@ -236,8 +235,7 @@ a, #distribution-plan-nav {
     z-index: 10000;
     position: absolute;
     width: 272px;
-    height: 100%;
+    height: inherit;
     background: #909090;
     opacity: 0.7;
 }
-

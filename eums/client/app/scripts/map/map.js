@@ -251,21 +251,16 @@
 
                 var togglePanel = function () {
                     if (scope.expanded) {
-                        panel.removeClass("expanded");
                         panel.animate(collapseAnimation);
                         scope.expanded = false;
                         $('.close-panel span').removeClass("glyphicon-chevron-down");
                         $('.close-panel span').addClass("glyphicon-chevron-up");
-                        $("#filter-panel").css("position", "absolute");
 
                     } else {
-                        panel.addClass("expanded");
                         panel.animate(expandAnimation);
                         scope.expanded = true;
                         $('.close-panel span').removeClass("glyphicon-chevron-up");
                         $('.close-panel span').addClass("glyphicon-chevron-down");
-                        $("#filter-panel").css("position", "fixed", "height", "493px");
-                        $("#filter-panel").css("height", "593px");
                     }
                     return false;
                 };
