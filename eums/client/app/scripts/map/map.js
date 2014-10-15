@@ -14,6 +14,10 @@
             map.fitBounds(layer.getBounds());
         };
 
+        this.getLayerBounds = function () {
+            return layer.getBounds();
+        };
+
         this.getCenter = function () {
             return layer.getBounds().getCenter();
         };
@@ -38,12 +42,26 @@
     module.factory('LayerMap', function () {
         var layerList = {};
 
+        function getRandomCoordinates(bound) {
+            return {
+                lat: Math.random() * (bound._northEast.lat - bound._southWest.lat) + bound._southWest.lat,
+                lng: Math.random() * (bound._northEast.lng - bound._southWest.lng) + bound._southWest.lng
+            }
+        }
+
         return {
             addLayer: function (layer, layerName) {
                 layerList[layerName] = layer;
             },
             getLayer: function (layerName) {
-                return layerList[layerName];
+                return layerList[layerName.toLowerCase()];
+            },
+            getRandomCoordinates: function (layerName) {
+                var bound = this.getLayerBoundsBy(layerName);
+                return getRandomCoordinates(bound)
+            },
+            getLayerBoundsBy: function (layerName) {
+                return this.getLayer(layerName).getLayerBounds();
             },
             getLayerCenter: function (layerName) {
                 return layerList[layerName].getCenter();
@@ -74,7 +92,7 @@
         }
     });
 
-    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap) {
+    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q) {
         var map;
 
         function initMap(elementId) {
@@ -142,14 +160,40 @@
             getHighlightedLayer: function () {
                 return LayerMap.getSelectedLayer();
             },
+            mapIPsToRandomLayerCoordinates: function (layerName) {
+                var self = this;
+                return IPService.groupIPsByDistrict(layerName).then(function (ips) {
+                    return ips.map(function (ip) {
+                        return {
+                            ip: ip,
+                            coordinates: self.getRandomCoordinates(layerName)
+                        }
+                    });
+                });
+            },
+            mapAllIPsToRandomLayerCoordinates: function () {
+                var self = this;
+                return IPService.loadAllDistricts().then(function (districtNames) {
+                    var ipWithCoordinatesPromises = districtNames.data.map(function (districtName) {
+                        return self.mapIPsToRandomLayerCoordinates(districtName);
+                    });
+                    return $q.all(ipWithCoordinatesPromises);
+                });
+            },
             getLayerCenter: function (layerName) {
                 return LayerMap.getLayerCenter(layerName.toLowerCase());
+            },
+            getLayerBounds: function (layerName) {
+                return LayerMap.getLayerBoundsBy(layerName);
             },
             clickLayer: function (layerName) {
                 if (layerName) {
                     LayerMap.clickLayer(layerName.toLowerCase());
                     this.highlightLayer(layerName);
                 }
+            },
+            getRandomCoordinates: function (layerName) {
+                return LayerMap.getRandomCoordinates(layerName)
             }
         };
     });
@@ -160,6 +204,14 @@
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
+
+                    map.mapAllIPsToRandomLayerCoordinates().then(function (response) {
+                        response.forEach(function (ips) {
+                            ips.map(function (ip) {
+                                map.addMarker(ip.coordinates, ip)
+                            });
+                        });
+                    });
 
                     IPService.getAllIps().then(function (response) {
                         response.data.forEach(function (ip) {
@@ -178,4 +230,5 @@
         }
     });
 
-})(angular.module('eums.map', ['eums.config']));
+})
+(angular.module('eums.map', ['eums.config', 'eums.ip']));

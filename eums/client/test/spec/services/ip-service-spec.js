@@ -15,7 +15,7 @@ describe('IP Service', function () {
         },
     ];
 
-    var stubDistricts = ['Kampala', 'Isingiro'];
+    var stubDistricts = ['Kampala','Isingiro'];
 
     beforeEach(function () {
         module('eums.ip');
@@ -45,11 +45,13 @@ describe('IP Service', function () {
                     { Name: 'Transcultural Psychosocial', City: 'Kampala' }
                 ],
                 [
-                    { Name: 'Isingiro District Local Government', City: 'Isingiro' }
+                    { Name: 'Isingiro District Local Government', City: 'Isingiro'  }
                 ]
             ]);
             done();
         });
         mockBackend.flush();
     });
+
 });
+

@@ -51,7 +51,7 @@ describe('eums.map', function () {
         });
 
         it('should add a layer to the layerlist', function () {
-            var layer = {'name': 'Bukoto'};
+            var layer = {'name': 'bukoto'};
             layerMap.addLayer(layer, layer.name);
             expect(layerMap.getLayer(layer.name)).toEqual(layer);
         });
