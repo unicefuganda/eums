@@ -3,10 +3,10 @@
 angular.module('Programme', ['eums.config'])
     .factory('ProgrammeService', function($http, EumsConfig) {
         return {
-            getProgramme: function(programmeId) {
-                var getProgrammePromise = $http.get(EumsConfig.BACKEND_URLS.PROGRAMME + programmeId + '/');
-                return getProgrammePromise.then(function(response) {
-                    return response.data;
+            getProgrammeDetails: function(programme) {
+                return $http.get(EumsConfig.BACKEND_URLS.USER + programme.focal_person + '/').then(function(response) {
+                    programme.focal_person = response.data;
+                    return programme;
                 });
             },
             fetchProgrammes: function(){
