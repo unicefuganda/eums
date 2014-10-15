@@ -1,52 +1,73 @@
-describe('Sales Order Service', function () {
+describe('Sales Order Service', function() {
 
-    var salesOrderService, mockBackend, salesOrderEndpointUrl;
-    var salesOrderId = 1;
-    var anotherSalesOrderId = 2;
+    var salesOrderService, mockBackend, endpointUrl, programmeEndpointUrl;
+    var orderId = 1, programmeOneId = 1;
 
-    var stubSalesOrder = {
-        order_number: '1234',
-        'date': '2014-10-06',
-        'description': 'Midwife Supplies',
-        'salesorderitem_set': [1, 2]
+    var stubOrderOne = {
+        order_number: orderId,
+        date: '2014-10-06',
+        description: 'Midwife Supplies',
+        salesorderitem_set: [1, 2],
+        programme: programmeOneId
     };
 
-    var anotherStubSalesOrder = {
-        order_number: '2345',
-        'date': '2014-10-10',
-        'description': 'Printing Supplies',
-        'salesorderitem_set': [3, 4]
+    var fullOrderOne = {
+        order_number: stubOrderOne.order_number,
+        date: stubOrderOne.date,
+        description: stubOrderOne.description,
+        salesorderitem_set: stubOrderOne.salesorderitem_set,
+        programme: {
+            id: programmeOneId,
+            name: 'Test Programme',
+            focal_person: {
+                id: 1,
+                firstName: 'Musoke',
+                lastName: 'Stephen'
+            }
+        }
     };
+    var stubOrders = [
+        {
+            order_number: 1,
+            date: '2014-10-06',
+            description: 'Midwife Supplies',
+            salesorderitem_set: [1, 2],
+            programme: programmeOneId
+        },
+        {
+            order_number: 2,
+            date: '2014-10-06',
+            description: 'Midwife Supplies',
+            salesorderitem_set: [1, 2],
+            programme: 2
+        }
+    ];
 
-    var programme = {id: '1', name: 'Test Programme', salesorder_set: [salesOrderId, anotherSalesOrderId]};
-
-    beforeEach(function () {
+    beforeEach(function() {
         module('SalesOrder');
 
-        inject(function (SalesOrderService, $httpBackend, EumsConfig) {
+        inject(function(SalesOrderService, $httpBackend, EumsConfig) {
             mockBackend = $httpBackend;
-            salesOrderEndpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER;
+            endpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER;
+            programmeEndpointUrl = EumsConfig.BACKEND_URLS.PROGRAMME;
             salesOrderService = SalesOrderService;
         });
     });
 
-    it('should get first sales order detail given the sales order id details', function (done) {
-        mockBackend.whenGET(salesOrderEndpointUrl + salesOrderId + '/').respond(stubSalesOrder);
-        mockBackend.whenGET(salesOrderEndpointUrl + anotherSalesOrderId + '/').respond(anotherStubSalesOrder);
+    it('should get all sales orders', function(done) {
+        mockBackend.whenGET(endpointUrl).respond(stubOrders);
 
-        salesOrderService.getSalesOrder(programme.salesorder_set[0]).then(function (salesOrder) {
-            expect(salesOrder).toEqual(stubSalesOrder);
+        salesOrderService.getSalesOrders().then(function(orders) {
+            expect(orders).toEqual(stubOrders);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should get another sales order detail given the sales order id details', function (done) {
-        mockBackend.whenGET(salesOrderEndpointUrl + salesOrderId + '/').respond(stubSalesOrder);
-        mockBackend.whenGET(salesOrderEndpointUrl + anotherSalesOrderId + '/').respond(anotherStubSalesOrder);
-
-        salesOrderService.getSalesOrder(programme.salesorder_set[1]).then(function (salesOrder) {
-            expect(salesOrder).toEqual(anotherStubSalesOrder);
+    it('should get sales order details', function(done) {
+        mockBackend.whenGET(programmeEndpointUrl + programmeOneId + '/').respond(fullOrderOne.programme);
+        salesOrderService.getOrderDetails(stubOrderOne).then(function(detailedOrder) {
+            expect(detailedOrder).toEqual(fullOrderOne);
             done();
         });
         mockBackend.flush();
