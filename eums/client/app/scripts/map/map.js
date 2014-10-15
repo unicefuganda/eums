@@ -107,12 +107,21 @@
             return map;
         }
 
+        var markerIcon = function () {
+            return new L.DivIcon({
+                iconSize: new L.Point([10, 10]),
+                className: "ips-marker-icon marker-icon ",
+                html: "<div><i class='pin' ><span style='background-color: #000000'></span></i></div>",
+                popupAnchor: [5, -10]
+            });
+        };
+
         function addIPMarker(center, ip) {
             var popup = L.popup({ closeButton: false, offset: new L.Point(0, 44), className: "marker-popup", autoPan: false});
             var popupContent = '<p> name: ' + ip.Name + '<br />location: ' + ip.City + '</p>';
 
 
-            var marker = L.marker(center);
+            var marker = L.marker(center, {icon: markerIcon()});
 
             marker.on('click', function () {
                 popup.setLatLng(center)
@@ -199,6 +208,7 @@
     });
 
     module.directive('map', function (MapService, $window, IPService) {
+        var ipsWithTheirCoordinates = [];
         return {
             scope: false,
             link: function (scope, element, attrs) {
@@ -208,9 +218,11 @@
                     map.mapAllIPsToRandomLayerCoordinates().then(function (response) {
                         response.forEach(function (ips) {
                             ips.map(function (ip) {
+                                ipsWithTheirCoordinates.push(ip);
                                 map.addMarker(ip.coordinates, ip)
                             });
                         });
+                        console.log(JSON.stringify(ipsWithTheirCoordinates));
                     });
 
                     IPService.getAllIps().then(function (response) {
