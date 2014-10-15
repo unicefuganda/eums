@@ -1,8 +1,7 @@
-<div class="container">
+<div class="containe-fluidr">
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
 
-    <div ng-controller="NewDistributionPlanController" ng-init="initialize()">
-        <div>
+    <div ng-controller="NewDistributionPlanController" ng-init="initialize()" class="content">
             <div>
                 <label style="width: 150px;">Name: </label><span style="width: 150px; display:inline-block">{{programmeName}}</span>
                 <label style="width: 150px;">Distribution Date: </label><span style="width: 150px; display:inline-block">{{date}}</span>
@@ -11,7 +10,6 @@
                 <label style="width: 150px;">Programme: </label><span style="width: 150px; display:inline-block">{{programmeSelected.name}}</span>
                 <label style="width: 150px;">Consignee: </label><span style="width: 150px; display:inline-block">{{consigneeSelected.name}}</span>
             </div>
-        </div>
         <div>
             <div>
                 <table style="width: 100%" si-table>

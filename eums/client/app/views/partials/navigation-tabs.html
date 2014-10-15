@@ -1,6 +1,10 @@
-<div class="container">
-    <ul class="nav nav-tabs nav-justified" role="tablist" ng-controller="NavigationTabsController">
-        <li id="home-nav" ng-class="{ active: isActive('/')}"><a href="#">HOME</a></li>
-        <li id="distribution-plan-nav" ng-class="{ active: isActive('/distribution-planning,/distribution-plan/new/')} "><a href="#/distribution-planning">DISTRIBUTION PLANNING</a></li>
-    </ul>
+<div class="container-fluid">
+    <div class="content">
+        <ul class="nav nav-tabs nav-justified" role="tablist" ng-controller="NavigationTabsController">
+            <li id="home-nav" ng-class="{ active: isActive('/')}"><a href="#">HOME</a></li>
+            <li id="distribution-plan-nav"
+                ng-class="{ active: isActive('/distribution-planning,/distribution-plan/new/')} "><a
+                    href="#/distribution-planning">DISTRIBUTION PLANNING</a></li>
+        </ul>
+    </div>
 </div>

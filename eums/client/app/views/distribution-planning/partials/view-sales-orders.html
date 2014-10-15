@@ -25,48 +25,46 @@
         </div>
     </div>
     <span class="well-sm"></span>
+
     <div class="table-wrapper">
-        <div>
-            <table class="table table-bordered table-hover table-striped">
-                <thead ng-init="initialize()">
-                <tr>
-                    <th style="width: 20%">
-                        <a ng-click="sortBy('order_number')">Document Number <i
-                                ng-class="sortArrowClass('order_number')"></i></a>
-                    </th>
-                    <th style="width: 30%">
-                        <a ng-click="sortBy('date')">Date Created
-                            <i ng-class="sortArrowClass('date');"></i>
-                        </a>
-                    </th>
-                    <th style="width: 50%">
-                        <a ng-click="sortBy('description')">Summary Description
-                            <i ng-class="sortArrowClass('description')"></i>
-                        </a>
-                    </th>
-                </tr>
-                </thead>
+        <table class="table table-bordered table-hover table-striped">
+            <thead ng-init="initialize()">
+            <tr>
+                <th style="width: 20%">
+                    <a ng-click="sortBy('order_number')">Document Number <i
+                            ng-class="sortArrowClass('order_number')"></i></a>
+                </th>
+                <th style="width: 30%">
+                    <a ng-click="sortBy('date')">Date Created
+                        <i ng-class="sortArrowClass('date');"></i>
+                    </a>
+                </th>
+                <th style="width: 50%">
+                    <a ng-click="sortBy('description')">Summary Description
+                        <i ng-class="sortArrowClass('description')"></i>
+                    </a>
+                </th>
+            </tr>
+            </thead>
 
-                <tbody>
-                <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
-                    <td data-header="Document Number">
-                        <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.order_number }}</a>
-                    </td>
-                    <td data-header="Date Created">
-                        {{ salesOrder.date }}
-                    </td>
-                    <td data-header="Description">
-                        {{ salesOrder.description }}
-                    </td>
-                </tr>
-                </tbody>
-    <span class="information message"
-          ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
-    There are no matches to your search criteria.
-    </span>
-                <span class="information message" ng-show="salesOrders.length == 0">There are no programmes available right now.</span>
-            </table>
-        </div>
+            <tbody>
+            <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+                <td data-header="Document Number">
+                    <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.order_number }}</a>
+                </td>
+                <td data-header="Date Created">
+                    {{ salesOrder.date }}
+                </td>
+                <td data-header="Description">
+                    {{ salesOrder.description }}
+                </td>
+            </tr>
+            </tbody>
+                <span class="information message"
+                      ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
+                There are no matches to your search criteria.
+                </span>
+            <span class="information message" ng-show="salesOrders.length == 0">There are no programmes available right now.</span>
+        </table>
     </div>
-
 </div>
