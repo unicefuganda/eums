@@ -133,7 +133,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
                             DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
                                 $scope.planId = node.distribution_plan;
-                                lineItem.consignee = node.consignee.name;
+                                lineItem.consignee = node.consignee.id;
                                 lineItem.destinationLocation = node.location;
 
                                 $scope.distributionPlanItems.push(lineItem);
@@ -151,7 +151,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
         });
 
-    }).factory('Districts', function() {
+    })
+    .factory('Districts', function() {
         return {
             getAllDistricts: function() {
                 return  ['Buikwe', 'Bukomansimbi', 'Butambala', 'Buvuma', 'Gomba', 'Kalangala', 'Kalungu', 'Oyam',
@@ -170,7 +171,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     'Western Region'];
             }
         };
-    }).directive('searchContacts', function($http, EumsConfig, ContactService) {
+    })
+    .directive('searchContacts', function($http, EumsConfig, ContactService) {
         function formatResponse(data) {
             return data.map(function(contact) {
                 return {
@@ -185,6 +187,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             scope: true,
             require: 'ngModel',
             link: function(scope, element, _, ngModel) {
+
                 element.select2({
                     minimumInputLength: 1,
                     width: '150px',
@@ -200,11 +203,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 element.change(function() {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
-                    scope.$apply();
                 });
             }
         };
-    }).directive('searchFromList', function() {
+    })
+    .directive('searchFromList', function() {
         return {
             restrict: 'A',
             scope: true,
@@ -223,7 +226,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                         data.results = matches.map(function(match) {
                             return {
                                 id: match.id,
-                                text: match.name,
+                                text: match.name
                             };
                         });
                         query.callback(data);
