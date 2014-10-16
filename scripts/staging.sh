@@ -19,19 +19,11 @@ echo "add cookbook and roles path to solo.rb"
 rm /etc/chef/solo.rb
 echo 'cookbook_path "/home/eums-staging/provisioning/chef/cookbooks"' >> /etc/chef/solo.rb
 echo 'role_path "/home/eums-staging/provisioning/chef/roles"' >> /etc/chef/solo.rb
-echo "list contents of file"
 echo "provision eums to staging"
 chef-solo -o role[all-in-one]
-rm /etc/chef/solo.rb
-echo 'cookbook_path "/home/contacts-service/provisioning/chef/cookbooks"' >> /etc/chef/solo.rb
-echo 'role_path ["/home/contacts-service/provisioning/chef/roles"'] >> /etc/chef/solo.rb
-echo "list contents of file"
-echo "provision eums to staging"
-chef-solo -o role[all-in-one]
-echo "admin credentials"
+echo "restart nginx"
 killall -9 nginx
 service nginx restart
 exit
 exit
 EOF
-
