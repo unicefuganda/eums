@@ -85,6 +85,10 @@ RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT':
 # WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
 RAPIDPRO_LIVE = False
 
+LOGIN_REDIRECT_URL = "/"
+
+LOGIN_URL ="/login"
+
 try:
     from local_settings import *
 except ImportError:
