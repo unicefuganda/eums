@@ -120,7 +120,7 @@
 
         function addIPMarker(center, ip) {
             var popup = L.popup({ closeButton: false, offset: new L.Point(0, 44), className: "marker-popup", autoPan: false});
-            var popupContent = "<p> name: " + ip.Name + "<br />location: " + ip.City + "</p>";
+            var popupContent = "<p> name: " + ip.contact_person_id + "<br />location: " + ip.mode_of_delivery + "</p>";
 
             var marker = L.marker(center, {icon: markerIcon()});
 
@@ -208,30 +208,41 @@
         };
     });
 
-    module.directive('map', function (MapService, $window, IPService) {
+    module.directive('map', function (MapService, $window, IPService, DistributionPlanService) {
         return {
             scope: false,
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
 
-                    map.mapAllIPsToRandomLayerCoordinates().then(function (response) {
-                        response.forEach(function (ips) {
-                            ips.map(function (ip) {
-                                var ipCoordinates = ip.coordinates;
-                                map.addMarker([ipCoordinates.lat, ipCoordinates.lng], ip)
+//                    map.mapAllIPsToRandomLayerCoordinates().then(function (response) {
+//                        response.forEach(function (ips) {
+//                            ips.map(function (ip) {
+//                                var ipCoordinates = ip.coordinates;
+//                                map.addMarker([ipCoordinates.lat, ipCoordinates.lng], ip)
+//                            });
+//                        });
+//                    });
+
+                    DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
+                        ips.map(function (ip) {
+                            ip.consignees().then(function (consigneesResponses) {
+                                consigneesResponses.map(function (consigneesResponse) {
+                                    var consigneeCoordinates = map.getRandomCoordinates(consigneesResponse.data.location.toLowerCase());
+                                    map.addMarker([consigneeCoordinates.lat, consigneeCoordinates.lng], consigneesResponse.data)
+                                });
                             });
                         });
                     });
-
-                    IPService.getAllIps().then(function (response) {
-                        response.data.forEach(function (ip) {
-                            if (ip.City) {
-                                var center = map.getLayerCenter(ip.City.toLowerCase());
-                                map.addMarker(center, ip);
-                            }
-                        });
-                    });
+//
+//                    IPService.getAllIps().then(function (response) {
+//                        response.data.forEach(function (ip) {
+//                            if (ip.City) {
+//                                var center = map.getLayerCenter(ip.City.toLowerCase());
+//                                map.addMarker(center, ip);
+//                            }
+//                        });
+//                    });
 
                     scope.$watch('params.location', function (newLocation) {
                         newLocation && MapService.clickLayer(newLocation.district);
