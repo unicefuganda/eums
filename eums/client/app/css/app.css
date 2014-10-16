@@ -1,5 +1,7 @@
-body {
-    padding-top: 70px;
+html, body {
+    padding-top: 40px;
+    height: 100%;
+    width: 100%;
 }
 
 tbody {
@@ -234,14 +236,14 @@ a, #distribution-plan-nav {
 .filter-panel {
     z-index: 10000;
     position: absolute;
-    width: 272px;
+    width: 274px;
     height: inherit;
     background: #909090;
-    opacity: 0.7;
+    opacity: 0.9;
 }
 
 .content {
-    width: 80%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
 }

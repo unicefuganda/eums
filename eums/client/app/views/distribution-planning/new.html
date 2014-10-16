@@ -3,20 +3,22 @@
 
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()" class="content">
         <h4 class="page-header">Create A Distribution Plan</h4>
+
         <div class="panel panel-default line-order-panel">
             <div class="panel-title">
                 <div class="panel-body">
-                <div class="form-group form-group-md col-lg-6">
-                    <select ng-model="salesOrderItemSelected" required="required"
-                            class="form-control input-md"
-                            ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                        <option value="" selected="selected">Select Item</option>
-                    </select>
+                    <div class="form-group form-group-sm col-lg-4">
+                        <select ng-model="salesOrderItemSelected" required="required"
+                                class="form-control input-sm"
+                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                            <option value="" selected="selected">Select Item</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div ng-show="hasSalesOrderItems">
-                    <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
+                <div ng-show="hasSalesOrderItems">
+                    <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.
+                    </alert>
                     <table class="table table-hover table-striped table-bordered">
                         <th>Sales Order</th>
                         <th>Material</th>
@@ -79,37 +81,39 @@
                                 {{ distributionPlanItem.mode_of_delivery }}
                             </td>
 
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text"
-                                                                                            class="input-quantity"
-                                                                                            ng-model="distributionPlanItem.target_quantity">
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <input type="text" class="input-quantity"
+                                       ng-model="distributionPlanItem.target_quantity">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="date"
-                                                                                            required="required"
-                                                                                            ng-model="distributionPlanItem.planned_distribution_date">
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <input type="date"
+                                       required="required"
+                                       ng-model="distributionPlanItem.planned_distribution_date">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
-                                    class="table-select"
-                                    ng-model="distributionPlanItem.programme_focal"
-                                    required="required"
-                                    ng-options="focal.name for focal in programme_focals">
-                                <option value="" selected="selected">Select</option>
-                            </select></td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
-                                    class="table-select"
-                                    ng-model="distributionPlanItem.consignee"
-                                    required="required"
-                                    ng-options="consignee.name for consignee in consignees">
-                                <option value="" selected="selected">Select</option>
-                            </select></td>
-
-
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><select
-                                    class="table-select"
-                                    ng-model="distributionPlanItem.contact_person"
-                                    required="required"
-                                    ng-options="contact_person.name for contact_person in contact_persons">
-                                <option value="" selected="selected">Select</option>
-                            </select></td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <select class="table-select"
+                                        ng-model="distributionPlanItem.programme_focal"
+                                        required="required"
+                                        ng-options="focal.name for focal in programme_focals">
+                                    <option value="" selected="selected">Select</option>
+                                </select>
+                            </td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <select class="table-select"
+                                        ng-model="distributionPlanItem.consignee"
+                                        required="required"
+                                        ng-options="consignee.name for consignee in consignees">
+                                    <option value="" selected="selected">Select</option>
+                                </select>
+                            </td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <select class="table-select"
+                                        ng-model="distributionPlanItem.contact_person"
+                                        required="required"
+                                        ng-options="contact_person.name for contact_person in contact_persons">
+                                    <option value="" selected="selected">Select</option>
+                                </select>
+                            </td>
 
 
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)"><input type="text"
