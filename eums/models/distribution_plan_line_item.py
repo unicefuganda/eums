@@ -20,3 +20,6 @@ class DistributionPlanLineItem(models.Model):
         if len(runs):
             return runs[0]
         return None
+
+    def __str__(self):
+        return "%s %s %s" % (self.item, str(self.planned_distribution_date), self.distribution_plan_node)
