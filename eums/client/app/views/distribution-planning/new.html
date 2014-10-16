@@ -82,12 +82,12 @@
 
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
                                 <input type="text" class="input-quantity"
-                                       ng-model="distributionPlanItem.target_quantity">
+                                       ng-model="distributionPlanItem.targetQuantity">
                             </td>
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
 
                                 <input type="date" required="required"
-                                       ng-model="distributionPlanItem.planned_distribution_date">
+                                       ng-model="distributionPlanItem.plannedDistributionDate">
                             </td>
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
                                 {{ selectedSalesOrder.programme.focalPerson.firstName }}
@@ -100,18 +100,18 @@
 
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
                                 <input type="hidden" search-contacts
-                                       ng-model="distributionPlanItem.contact_person" required="required">
+                                       ng-model="distributionPlanItem.contactPerson" required="required">
                                 <i class="glyphicon glyphicon-plus pull-right"></i>
                             </td>
 
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
                                 <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="distributionPlanItem.destination_location">
+                                       ng-model="distributionPlanItem.destinationLocation">
                             </td>
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
                                 <input type="hidden" search-from-list
                                        list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"}, {"id": "WAREHOUSE", "name": "Warehouse"}]'
-                                       ng-model="distributionPlanItem.mode_of_delivery">
+                                       ng-model="distributionPlanItem.modeOfDelivery">
                             </td>
                         </tr>
                     </table>
@@ -128,7 +128,7 @@
             </button>
             <div ng-show="hasDistributionPlanItems" style="float: right">
                 <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
-                        ng-click="saveDistributionPlanItem(distributionPlanItems)"><i
+                        ng-click="saveDistributionPlanItems(distributionPlanItems)"><i
                         class="glyphicon glyphicon-save"> </i>Save
                 </button>
             </div>

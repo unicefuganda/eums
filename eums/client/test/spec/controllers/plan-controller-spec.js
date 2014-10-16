@@ -434,26 +434,22 @@ describe('NewDistributionPlanController', function() {
             scope.selectedSalesOrder = salesOrderDetails[0];
             var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
-                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
-                    targeted_quantity: '', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
-                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
-                    remark: 'Good', target_quantity: ''},
+                    quantity: stubSalesOrderItem.quantity, plannedDistributionDate: '2014-10-10',
+                    destinationLocation: '', modeOfDelivery: '', consignee: {id: 1},
+                    contactPerson: '', remark: 'Good', targetQuantity: ''},
                 {item: {id: 2},
-                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
-                    targeted_quantity: 20, destination_location: '', mode_of_delivery: '', consignee: {id: 1},
-                    contact_phone_number: '', programme_focal: {id: 2}, contact_person: '', tracked: false,
-                    remark: 'Bad', target_quantity: 20}
+                    quantity: stubSalesOrderItem.quantity, plannedDistributionDate: '2014-10-10',
+                    destinationLocation: '', modeOfDelivery: '', consignee: {id: 1},
+                    contactPerson: '', remark: 'Bad', targetQuantity: 20}
             ];
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
             var lineItemDetails = {item: stubSalesOrderItem.item.id, targeted_quantity: '', distribution_plan_node: 1,
-                planned_distribution_date: '2014-10-10', programme_focal: 1, consignee: 1, contact_person: '',
-                contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: true, remark: 'Good'};
+                planned_distribution_date: '2014-10-10', remark: 'Good'};
 
             var anotherLineItemDetails = {item: 2, targeted_quantity: 20, distribution_plan_node: 1,
-                planned_distribution_date: '2014-10-10', programme_focal: 2, consignee: 1, contact_person: '',
-                contact_phone_number: '', destination_location: '', mode_of_delivery: '', tracked: false, remark: 'Bad'};
+                planned_distribution_date: '2014-10-10', remark: 'Bad'};
 
             expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(lineItemDetails);
             expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(anotherLineItemDetails);
@@ -461,14 +457,16 @@ describe('NewDistributionPlanController', function() {
 
         it('should call the create distribution plan service if no plan has been created for sales order item', function() {
             var distributionPlanItems = [];
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: '100',
                 quantityLeft: '100',
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+                information: stubSalesOrderItem
+            };
             scope.selectedSalesOrder = salesOrderDetails[0];
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
             expect(mockPlanService.createPlan).toHaveBeenCalledWith({'programme': 1});
@@ -485,7 +483,7 @@ describe('NewDistributionPlanController', function() {
                 information: stubSalesOrderItem};
 
             deferredPlan.resolve({id: 1, date: '2014-10-09'});
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
             expect(scope.planId).toEqual(1);
@@ -501,7 +499,7 @@ describe('NewDistributionPlanController', function() {
                 unit: stubSalesOrderItem.item.unit.name,
                 information: stubSalesOrderItem};
             scope.planId = 1;
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
             expect(mockPlanService.createPlan).not.toHaveBeenCalledWith({'programme': 1});
@@ -518,17 +516,19 @@ describe('NewDistributionPlanController', function() {
 
             var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
-                    quantity: stubSalesOrderItem.quantity, planned_distribution_date: '2014-10-10',
-                    targeted_quantity: '', destination_location: '', mode_of_delivery: '', consignee: {id: 1},
-                    contact_phone_number: '', programme_focal: {id: 1}, contact_person: '', tracked: true,
-                    remark: 'Good'}
+                    quantity: stubSalesOrderItem.quantity, plannedDistributionDate: '2014-10-10',
+                    targetQuantity: '', destinationLocation: 'Kampala', modeOfDelivery: 'WAREHOUSE', consignee: {id: 1},
+                    contactPerson: 1, remark: 'Good'}
             ];
 
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
-            expect(mockDistributionPlanNodeService.createNode).toHaveBeenCalledWith({distribution_plan: 1,
-                consignee: 1, tree_position: 'END_USER'});
+            expect(mockDistributionPlanNodeService.createNode).toHaveBeenCalledWith({
+                    distribution_plan: 1, contact_person_id: 1,  location: 'Kampala',
+                    consignee: 1, tree_position: 'MIDDLE_MAN', mode_of_delivery: 'WAREHOUSE'
+                }
+            );
         });
 
         it('should reduce the quantity left for the sales order item', function() {
@@ -549,7 +549,7 @@ describe('NewDistributionPlanController', function() {
                     remark: 'Good', target_quantity: '10'}
             ];
 
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
             var expectedQuantityLeft = '90';
@@ -574,7 +574,7 @@ describe('NewDistributionPlanController', function() {
                     remark: 'Good'}
             ];
 
-            scope.saveDistributionPlanItem(distributionPlanItems);
+            scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();
 
             var multipleDistributionPlanItems = [
@@ -590,7 +590,7 @@ describe('NewDistributionPlanController', function() {
                     remark: 'Good', target_quantity: '20'}
             ];
 
-            scope.saveDistributionPlanItem(multipleDistributionPlanItems);
+            scope.saveDistributionPlanItems(multipleDistributionPlanItems);
             scope.$apply();
 
             var expectedQuantityLeft = '70';
