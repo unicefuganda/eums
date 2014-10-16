@@ -422,8 +422,8 @@ describe('NewDistributionPlanController', function() {
 
     describe('when save is clicked', function() {
         it('should call the create line item service for all the line items added', function() {
-            deferredPlanNode.resolve({id: 1, parent: null, distribution_plan: 1, consignee: 1, tree_position: 'END_USER'});
-
+            deferredPlanNode.resolve({id: 1, parent: null, distribution_plan: 1, consignee: 1, tree_position: 'MIDDLE_MAN'});
+            scope.planId = 1;
             scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
@@ -517,7 +517,7 @@ describe('NewDistributionPlanController', function() {
             var distributionPlanItems = [
                 {item: stubSalesOrderItem.item,
                     quantity: stubSalesOrderItem.quantity, plannedDistributionDate: '2014-10-10',
-                    targetQuantity: '', destinationLocation: 'Kampala', modeOfDelivery: 'WAREHOUSE', consignee: {id: 1},
+                    targetQuantity: '', destinationLocation: 'Kampala', modeOfDelivery: 'WAREHOUSE', consignee: 1,
                     contactPerson: 1, remark: 'Good'}
             ];
 

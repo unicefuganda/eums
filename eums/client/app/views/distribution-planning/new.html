@@ -54,30 +54,33 @@
                         <th class="col-lg-2">Contact Person</th>
                         <th class="col-lg-1">Region/District</th>
                         <th class="col-lg-1">Mode of Delivery</th>
+                        <th class="col-lg-1">Remark</th>
 
                         <tr ng-repeat="distributionPlanItem in distributionPlanItems">
                             <td>{{ distributionPlanItem.quantity }}</td>
                             <td>{{ salesOrderItemSelected.unit }}</td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.targeted_quantity }}
+                                {{ distributionPlanItem.targetQuantity }}
                             </td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.planned_distribution_date }}
+                                {{ distributionPlanItem.plannedDistributionDate }}
                             </td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.programme_focal }}
+                                {{ selectedSalesOrder.programme.focalPerson.firstName }}
+                                {{ selectedSalesOrder.programme.focalPerson.lastName }}
                             </td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
                                 {{ distributionPlanItem.consignee }}
                             </td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.contact_person }}
+                                {{ distributionPlanItem.contactPerson }}
                             </td>
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.destination_location }}
+                                {{ distributionPlanItem.destinationLocation }}
                             </td>
+
                             <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.mode_of_delivery }}
+                                {{ distributionPlanItem.remark }}
                             </td>
 
                             <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
@@ -112,6 +115,10 @@
                                 <input type="hidden" search-from-list
                                        list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"}, {"id": "WAREHOUSE", "name": "Warehouse"}]'
                                        ng-model="distributionPlanItem.modeOfDelivery">
+                            </td>
+                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                                <input type="text" class="input"
+                                       ng-model="distributionPlanItem.remark">
                             </td>
                         </tr>
                     </table>
