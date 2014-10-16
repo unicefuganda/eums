@@ -73,7 +73,8 @@ MAX_ALLOWED_REPLY_PERIOD = 7
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
-RAPIDPRO_API_TOKEN = os.environ['RAPIDPRO_API_TOKEN']
+token = None
+RAPIDPRO_API_TOKEN = token or os.environ['RAPIDPRO_API_TOKEN']
 RAPIDPRO_URL = 'https://rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
