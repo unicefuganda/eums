@@ -1,10 +1,18 @@
 'use strict';
 
-angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem', 'Consignee'])
-    .factory('DistributionPlanNodeService', function($http, $q, EumsConfig, DistributionPlanLineItemService, ConsigneeService) {
+angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem', 'Contact', 'Consignee'])
+    .factory('DistributionPlanNodeService', function($http, $q, EumsConfig, DistributionPlanLineItemService, ContactService, ConsigneeService) {
+        var fillOutContactPerson = function(planNode) {
+            return ContactService.getContactById(planNode.contact_person_id).then(function(contact) {
+                delete planNode.contact_person_id;
+                planNode.contactPerson = contact;
+                return planNode;
+            });
+        };
+
         var fillOutConsignee = function(planNode) {
-            return ConsigneeService.getConsigneeDetails(planNode.consignee).then(function(consigneeDetails) {
-                planNode.consignee = consigneeDetails;
+            return ConsigneeService.getConsigneeById(planNode.consignee).then(function(consignee) {
+                planNode.consignee = consignee;
                 return planNode;
             });
         };
@@ -25,6 +33,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                 return getPlanNodePromise.then(function(response) {
                     var planNode = response.data;
                     var fillOutPromises = [];
+                    fillOutPromises.push(fillOutContactPerson(planNode));
                     fillOutPromises.push(fillOutConsignee(planNode));
 
                     planNode.lineItems = [];

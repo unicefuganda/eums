@@ -2,14 +2,6 @@
 
 angular.module('Consignee', ['eums.config', 'Contact'])
     .factory('ConsigneeService', function ($http, EumsConfig) {
-//                 var fillOutContactPerson = function (consignee) {
-//                     return ContactService.getContactById(consignee.contact_person_id).then(function (response) {
-//                         delete consignee.contact_person_id;
-//                         consignee.contactPerson = response.data;
-//                         return consignee;
-//                     });
-//                 };
-
                  return {
                      fetchConsignees: function() {
                           return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE).then(function (response) {
@@ -21,13 +13,6 @@ angular.module('Consignee', ['eums.config', 'Contact'])
                              return { id: response.data.id, name: response.data.name};
                          });
                      },
-//                     getConsigneeDetails: function (consigneeId) {
-//                         var getConsigneePromise = $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + consigneeId + '/');
-//                         return getConsigneePromise.then(function (response) {
-//                             var consignee = response.data;
-//                             return fillOutContactPerson(consignee);
-//                         });
-//                     },
                      createConsignee: function (consigneeDetails) {
                          return $http.post(EumsConfig.BACKEND_URLS.CONSIGNEE, consigneeDetails).then(function (response) {
                              if (response.status === 201) {

@@ -34,10 +34,9 @@ describe('Contacts Service', function() {
     });
 
     it('should get contact from contacts backend by id', function(done) {
-        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact.id + '/')
-            .respond(expectedContact);
-        contactService.getContactById(expectedContact.id).then(function(response) {
-            expect(response.data).toEqual(expectedContact);
+        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact.id + '/').respond(expectedContact);
+        contactService.getContactById(expectedContact.id).then(function(contact) {
+            expect(contact).toEqual(expectedContact);
             done();
         });
         mockContactsBackend.flush();

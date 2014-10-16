@@ -1,11 +1,9 @@
 describe('Distribution Plan Node Service', function() {
 
-    var planNodeService, mockBackend, planNodeEndpointUrl, mockLineItemService, mockConsigneeService, q;
+    var planNodeService, mockBackend, planNodeEndpointUrl, mockLineItemService, mockConsigneeService, q,
+        mockContactService;
 
-    var planNodeId = 1;
-    var lineItemOneId = 1;
-    var lineItemTwoId = 2;
-    var consigneeId = 1;
+    var planNodeId = 1, lineItemOneId = 1, lineItemTwoId = 2, consigneeId = 1, contactId = 1;
 
     var stubPlanNode = {
         id: planNodeId,
@@ -13,6 +11,7 @@ describe('Distribution Plan Node Service', function() {
         distribution_plan: 1,
         location: 'Kampala',
         mode_of_delivery: 'Warehouse',
+        contact_person_id: contactId,
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: consigneeId
@@ -40,11 +39,12 @@ describe('Distribution Plan Node Service', function() {
 
     var fullConsignee = {
         id: consigneeId,
-        name: 'Save the Children',
-        contactPerson: {
-            id: 1, firstName: 'Andrew',
-            lastName: 'Mukiza', phone: '+234778945674'
-        }
+        name: 'Save the Children'
+    };
+
+    var fullContact = {
+        id: contactId, firstName: 'Andrew',
+        lastName: 'Mukiza', phone: '+234778945674'
     };
 
     var expectedPlanNode = {
@@ -56,6 +56,7 @@ describe('Distribution Plan Node Service', function() {
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: fullConsignee,
+        contactPerson: fullContact,
         lineItems: [fullLineItemOne, fullLineItemTwo]
     };
 
@@ -63,11 +64,13 @@ describe('Distribution Plan Node Service', function() {
         module('DistributionPlanNode');
 
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItemDetails']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeDetails']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
         module(function($provide) {
             $provide.value('DistributionPlanLineItemService', mockLineItemService);
             $provide.value('ConsigneeService', mockConsigneeService);
+            $provide.value('ContactService', mockContactService);
         });
 
         inject(function(DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
@@ -76,7 +79,11 @@ describe('Distribution Plan Node Service', function() {
 
             var deferredConsigneeRequest = q.defer();
             deferredConsigneeRequest.resolve(fullConsignee);
-            mockConsigneeService.getConsigneeDetails.and.returnValue(deferredConsigneeRequest.promise);
+            mockConsigneeService.getConsigneeById.and.returnValue(deferredConsigneeRequest.promise);
+
+            var deferredContactRequest = q.defer();
+            deferredContactRequest.resolve(fullContact);
+            mockContactService.getContactById.and.returnValue(deferredContactRequest.promise);
 
             mockBackend = $httpBackend;
             planNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
@@ -84,7 +91,7 @@ describe('Distribution Plan Node Service', function() {
         });
     });
 
-    it('should create distribution plan node with neither parent nor children', function(done) {
+    it('should create node with neither parent nor children', function(done) {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
             id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
@@ -99,7 +106,7 @@ describe('Distribution Plan Node Service', function() {
         mockBackend.flush();
     });
 
-    it('should get line item with full item details', function(done) {
+    it('should get node with full details', function(done) {
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
         planNodeService.getPlanNodeDetails(planNodeId).then(function(returnedPlanNode) {
             expect(returnedPlanNode).toEqual(expectedPlanNode);
@@ -123,7 +130,6 @@ describe('Distribution Plan Node Service', function() {
         else if(lineItemId === lineItemTwoId) {
             return deferredLineItemTwoRequest.promise;
         }
-
         return null;
     };
 });
