@@ -215,15 +215,6 @@
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
 
-//                    map.mapAllIPsToRandomLayerCoordinates().then(function (response) {
-//                        response.forEach(function (ips) {
-//                            ips.map(function (ip) {
-//                                var ipCoordinates = ip.coordinates;
-//                                map.addMarker([ipCoordinates.lat, ipCoordinates.lng], ip)
-//                            });
-//                        });
-//                    });
-
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
                             ip.consignees().then(function (consigneesResponses) {
@@ -234,16 +225,6 @@
                             });
                         });
                     });
-//
-//                    IPService.getAllIps().then(function (response) {
-//                        response.data.forEach(function (ip) {
-//                            if (ip.City) {
-//                                var center = map.getLayerCenter(ip.City.toLowerCase());
-//                                map.addMarker(center, ip);
-//                            }
-//                        });
-//                    });
-
                     scope.$watch('params.location', function (newLocation) {
                         newLocation && MapService.clickLayer(newLocation.district);
                     }, true);
