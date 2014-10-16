@@ -8,7 +8,7 @@ from eums.models import ReleaseOrder
 class ReleaseOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ReleaseOrder
-        fields = ('id', 'order_number', 'purchase_order', 'waybill', 'delivery_date', 'sales_order_id', 'consignee_id',
+        fields = ('id', 'order_number', 'sales_order', 'consignee', 'waybill', 'delivery_date',
                   'releaseorderitem_set')
 
 

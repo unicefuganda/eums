@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 from eums.models import Programme, ItemUnit, Item
 from eums.test.config import BACKEND_URL
+from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 
 DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
@@ -15,6 +17,7 @@ ITEM_ENDPOINT_URL = BACKEND_URL + 'item/'
 USER_ENDPOINT_URL = BACKEND_URL + 'user/'
 SALES_ORDER_ENDPOINT_URL = BACKEND_URL + 'sales-order/'
 SALES_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'sales-order-item/'
+RELEASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'release-order/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -106,6 +109,23 @@ def create_sales_order(test_case, sales_order_details=None):
     test_case.assertEqual(response.status_code, 201)
 
     return response.data
+
+
+def create_release_order(test_case, release_order_details=None):
+    if not release_order_details:
+        sales_order = SalesOrderFactory()
+        consignee = ConsigneeFactory()
+
+        release_order_details = {'order_number': "232345434", 'delivery_date': datetime.date(2014, 10, 5),
+                                 'sales_order': sales_order.id, 'consignee': consignee.id, 'waybill': '234256'}
+
+    response = test_case.client.post(RELEASE_ORDER_ENDPOINT_URL, release_order_details, format='json')
+
+    formatted_data = response.data
+    formatted_data['delivery_date'] = str(formatted_data['delivery_date'])
+    test_case.assertEqual(response.status_code, 201)
+
+    return formatted_data
 
 
 def create_sales_order_item(test_case, sales_order_item_details=None):

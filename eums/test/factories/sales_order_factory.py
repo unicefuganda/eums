@@ -9,5 +9,5 @@ class SalesOrderFactory(factory.DjangoModelFactory):
         model = SalesOrder
 
     programme = factory.SubFactory(ProgrammeFactory)
-    order_number = factory.Sequence(lambda n: "2014{0}{0}{0}{0}".format(n))
+    order_number = factory.Sequence(lambda n: "2014{0}".format(n))
     date = datetime.date.today()
