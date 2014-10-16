@@ -17,8 +17,11 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
         };
 
         return {
+            getPlanNodeById: function(planNodeId){
+                return  $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeId + '/');
+            },
             getPlanNodeDetails: function(planNodeId) {
-                var getPlanNodePromise = $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeId + '/');
+                var getPlanNodePromise = this.getPlanNodeById(planNodeId);
                 return getPlanNodePromise.then(function(response) {
                     var planNode = response.data;
                     var fillOutPromises = [];

@@ -103,9 +103,30 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER);
 
             },
-            getPlanDetails: function(planId) {
-                var getPlanPromise = $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/');
-                return getPlanPromise.then(function(response) {
+            getNodes: function (plan) {
+                var distributionPlanNodesPromises = plan.distributionplannode_set.map(function (nodeId) {
+                    return DistributionPlanNodeService.getPlanNodeById(nodeId);
+                });
+                return $q.all(distributionPlanNodesPromises);
+            },
+            getAllPlansNodes: function () {
+                var self = this, mergedpromise = [];
+                return self.fetchPlans().then(function (response) {
+                    var nodePlanPromises = response.data.map(function (plan) {
+                        return self.getNodes(plan);
+                    });
+
+                    return $q.all(nodePlanPromises).then(function(nodePlans){
+                         return mergedpromise.concat.apply(mergedpromise, nodePlans);
+                    });
+                });
+            },
+            getPlanById: function (planId) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/');
+            },
+            getPlanDetails: function (planId) {
+                var getPlanPromise = this.getPlanById(planId);
+                return getPlanPromise.then(function (response) {
                     var plan = response.data;
                     var nodeFillOutPromises = [];
 
