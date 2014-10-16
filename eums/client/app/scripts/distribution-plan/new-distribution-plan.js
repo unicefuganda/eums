@@ -77,16 +77,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         }
 
         function saveDistributionPlanItems(distributionPlanItems) {
-                saveScopeVariables(distributionPlanItems);
-                $scope.distributionPlanItems.forEach(function(item) {
-                    var nodeDetails = {
-                        consignee: item.consignee, location: item.destinationLocation, contact_person_id: item.contactPerson,
-                        distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', mode_of_delivery: item.modeOfDelivery
-                    };
-                    $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.target_quantity)).toString();
-                    saveNodeAndLineItems(nodeDetails, item);
-                });
-            }
+            saveScopeVariables(distributionPlanItems);
+            $scope.distributionPlanItems.forEach(function(item) {
+                var nodeDetails = {
+                    consignee: item.consignee, location: item.destinationLocation, contact_person_id: item.contactPerson,
+                    distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', mode_of_delivery: item.modeOfDelivery
+                };
+                $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.target_quantity)).toString();
+                saveNodeAndLineItems(nodeDetails, item);
+            });
+        }
 
         $scope.saveDistributionPlanItems = function(distributionPlanItems) {
             if($scope.planId) {
@@ -121,29 +121,24 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
                 var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
 
-                if(distributionPlanLineItems && distributionPlanLineItems.length > 0) {
+                if(distributionPlanLineItems && distributionPlanLineItems.length) {
                     $scope.hasDistributionPlanItems = true;
                     var itemCounter = 0;
                     var quantityLeft = parseInt($scope.salesOrderItemSelected.quantity);
 
-                    distributionPlanLineItems.forEach(function(planLineItemID) {
-                        DistributionPlanLineItemService.getLineItemDetails(planLineItemID).then(function(result) {
-                            ConsigneeService.getConsigneeById(result.consignee).then(function(consignee) {
-                                result.consignee = consignee.name;
+                    distributionPlanLineItems.forEach(function(lineItemId) {
+                        DistributionPlanLineItemService.getLineItem(lineItemId).then(function(lineItem) {
+                            lineItem.quantity = quantityLeft.toString();
+                            lineItem.targetQuantity = lineItem.targeted_quantity;
+
+                            DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
+                                $scope.planId = node.distribution_plan;
+                                lineItem.consignee = node.consignee.name;
+
+                                $scope.distributionPlanItems.push(lineItem);
                             });
 
-                            UserService.getUserById(result.programme_focal).then(function(user) {
-                                result.programme_focal = user.firstName + ' ' + user.lastName;
-                            });
-                            result.quantity = quantityLeft.toString();
-                            result.target_quantity = result.targeted_quantity;
-                            $scope.distributionPlanItems.push(result);
-                            if(itemCounter === 0) {
-                                DistributionPlanNodeService.getPlanNodeDetails(result.distribution_plan_node).then(function(nodeInformation) {
-                                    $scope.planId = nodeInformation.distribution_plan;
-                                });
-                            }
-                            quantityLeft = quantityLeft - parseInt(result.targeted_quantity);
+                            quantityLeft = quantityLeft - parseInt(lineItem.targeted_quantity);
                             itemCounter++;
                             $scope.salesOrderItemSelected.quantityLeft = quantityLeft.toString();
                         });

@@ -31,7 +31,7 @@ describe('NewDistributionPlanController', function() {
         net_value: 1000.00,
         issue_date: '2014-10-02',
         delivery_date: '2014-10-02',
-        distributionplanlineitem_set: ['1', '2']
+        distributionplanlineitem_set: [1, 2]
     };
 
     var stubSalesOrderItemNoDistributionPlanItems = {
@@ -62,7 +62,7 @@ describe('NewDistributionPlanController', function() {
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem']);
-        mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails', 'createLineItem']);
+        mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItem', 'createLineItem']);
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails', 'createNode']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById', 'fetchConsignees']);
@@ -79,7 +79,7 @@ describe('NewDistributionPlanController', function() {
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails);
-            mockDistributionPlanLineItemService.getLineItemDetails.and.returnValue(deferred.promise);
+            mockDistributionPlanLineItemService.getLineItem.and.returnValue(deferred.promise);
             mockDistributionPlanLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockDistributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockDistributionPlanNodeService.createNode.and.returnValue(deferredPlanNode.promise);
@@ -207,7 +207,7 @@ describe('NewDistributionPlanController', function() {
             expect(scope.hasSalesOrderItems).toBeTruthy();
         });
 
-        it('should know the plan ID is undefined', function() {
+        it('should know the plan id is undefined', function() {
             scope.hasSalesOrderItems = false;
             scope.salesOrderItemSelected = '';
             scope.$apply();
@@ -228,9 +228,9 @@ describe('NewDistributionPlanController', function() {
             expect(mockDistributionPlanNodeService.getPlanNodeDetails).toHaveBeenCalledWith(1);
         });
 
-        it('should know plan ID is set based on first item if line items exists', function() {
+        it('should know plan id is set based on first item if line items exists', function() {
             deferred.resolve({distribution_plan_node: 1});
-            deferredPlanNode.resolve({distribution_plan: 2});
+            deferredPlanNode.resolve({distribution_plan: 2, consignee: {id: 1, name: 'Save the Children'}});
             scope.salesOrderItemSelected = {information: {distributionplanlineitem_set: ['1']}};
             scope.$apply();
             expect(scope.planId).toEqual(2);
@@ -276,24 +276,25 @@ describe('NewDistributionPlanController', function() {
         });
 
         it('should call the get distribution plan items service linked to the particular sales order item', function() {
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
-                material_code: stubSalesOrderItem.item.material_code,
-                quantity: stubSalesOrderItem.quantity,
-                unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code, quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name, information: stubSalesOrderItem
+            };
             scope.$apply();
 
-            expect(mockDistributionPlanLineItemService.getLineItemDetails).toHaveBeenCalledWith('1');
-            expect(mockDistributionPlanLineItemService.getLineItemDetails).toHaveBeenCalledWith('2');
+            expect(mockDistributionPlanLineItemService.getLineItem).toHaveBeenCalledWith(1);
+            expect(mockDistributionPlanLineItemService.getLineItem).toHaveBeenCalledWith(2);
         });
 
         it('should get distribution plan items linked to the particular sales order item and put in the scope', function() {
+            deferredPlanNode.resolve({consignee: {name: 'Save the Children'}});
             deferred.resolve(stubSalesOrderItem);
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
-                material_code: stubSalesOrderItem.item.material_code,
-                quantity: stubSalesOrderItem.quantity,
-                unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
+                material_code: stubSalesOrderItem.item.material_code, quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name, information: stubSalesOrderItem
+            };
             scope.$apply();
 
             expect(scope.distributionPlanItems).toEqual([stubSalesOrderItem, stubSalesOrderItem]);

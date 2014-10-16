@@ -3,15 +3,17 @@
 angular.module('DistributionPlanLineItem', ['eums.config', 'Item'])
     .factory('DistributionPlanLineItemService', function($http, EumsConfig) {
 
+        var getLineItem = function(lineItemId) {
+            return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItemId + '/').then(function(response) {
+                return response.data;
+            });
+        };
+
         return {
-            getLineItemDetails: function(lineItemId) {
-                var getLineItemPromise = $http.get(
-                        EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItemId + '/');
-                return getLineItemPromise.then(function(response) {
-                    return response.data;
-                });
+            getLineItem: function(lineItemId) {
+                return getLineItem(lineItemId);
             },
-            createLineItem: function(lineItemDetails){
+            createLineItem: function(lineItemDetails) {
                 return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM, lineItemDetails);
             }
         };

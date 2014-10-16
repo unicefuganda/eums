@@ -36,7 +36,7 @@ describe('Distribution Plan Line Item Service', function () {
 
     it('should get line item', function (done) {
         mockBackend.whenGET(lineItemEndpointUrl + lineItemId + '/').respond(stubLineItem);
-        lineItemService.getLineItemDetails(lineItemId).then(function (returnedLineItem) {
+        lineItemService.getLineItem(lineItemId).then(function (returnedLineItem) {
             expect(returnedLineItem).toEqual(stubLineItem);
             done();
         });

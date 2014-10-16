@@ -18,7 +18,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
         };
 
         var fillOutLineItem = function(lineItemId, node) {
-            return DistributionPlanLineItemService.getLineItemDetails(lineItemId)
+            return DistributionPlanLineItemService.getLineItem(lineItemId)
                 .then(function(lineItemDetails) {
                     node.lineItems.push(lineItemDetails);
                 });

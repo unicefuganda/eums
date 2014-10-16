@@ -63,7 +63,7 @@ describe('Distribution Plan Node Service', function() {
     beforeEach(function() {
         module('DistributionPlanNode');
 
-        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItemDetails']);
+        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
@@ -75,7 +75,7 @@ describe('Distribution Plan Node Service', function() {
 
         inject(function(DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
             q = $q;
-            mockLineItemService.getLineItemDetails.and.callFake(fakeGetLineItemDetails);
+            mockLineItemService.getLineItem.and.callFake(fakeGetLineItemDetails);
 
             var deferredConsigneeRequest = q.defer();
             deferredConsigneeRequest.resolve(fullConsignee);
