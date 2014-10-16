@@ -10,3 +10,6 @@ class SalesOrder(models.Model):
 
     class Meta:
         app_label = 'eums'
+
+    def __str__(self):
+        return "%s, %s %s" % (self.programme.name, self.order_number, str(self.date))
