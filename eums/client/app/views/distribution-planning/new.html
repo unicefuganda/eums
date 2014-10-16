@@ -59,66 +59,46 @@
                         <tr ng-repeat="distributionPlanItem in distributionPlanItems">
                             <td>{{ distributionPlanItem.quantity }}</td>
                             <td>{{ salesOrderItemSelected.unit }}</td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.targetQuantity }}
-                            </td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.plannedDistributionDate }}
-                            </td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ selectedSalesOrder.programme.focalPerson.firstName }}
-                                {{ selectedSalesOrder.programme.focalPerson.lastName }}
-                            </td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.consignee }}
-                            </td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.contactPerson }}
-                            </td>
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.destinationLocation }}
-                            </td>
-
-                            <td ng-show="hasTargetedQuantity(distributionPlanItem)">
-                                {{ distributionPlanItem.remark }}
-                            </td>
-
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                            <td>
                                 <input type="text" class="input-quantity"
                                        ng-model="distributionPlanItem.targetQuantity">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
-
+                            <td>
                                 <input type="date" required="required"
-                                       ng-model="distributionPlanItem.plannedDistributionDate">
+                                       ng-model="distributionPlanItem.plannedDistributionDate"
+                                       value="{{ distributionPlanItem.plannedDistributionDate }}">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                            <td>
                                 {{ selectedSalesOrder.programme.focalPerson.firstName }}
                                 {{ selectedSalesOrder.programme.focalPerson.lastName }}
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                            <td>
                                 <input type="hidden" search-from-list list="{{ consignees }}"
-                                       ng-model="distributionPlanItem.consignee">
+                                       ng-model="distributionPlanItem.consignee"
+                                       value="{{ distributionPlanItem.consignee }}">
                             </td>
 
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
-                                <input type="hidden" search-contacts
+                            <td>
+                                <input type="hidden" search-contacts value="{{ distributionPlanItem.contactPerson }}"
                                        ng-model="distributionPlanItem.contactPerson" required="required">
                                 <i class="glyphicon glyphicon-plus pull-right"></i>
                             </td>
 
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                            <td>
                                 <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="distributionPlanItem.destinationLocation">
+                                       ng-model="distributionPlanItem.destinationLocation"
+                                       value="{{ distributionPlanItem.destinationLocation }}">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
+                            <td>
                                 <input type="hidden" search-from-list
-                                       list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"}, {"id": "WAREHOUSE", "name": "Warehouse"}]'
-                                       ng-model="distributionPlanItem.modeOfDelivery">
+                                       list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"},
+                                        {"id": "WAREHOUSE", "name": "Warehouse"}]'
+                                       ng-model="distributionPlanItem.modeOfDelivery"
+                                       value="Warehouse">
                             </td>
-                            <td ng-show="!hasTargetedQuantity(distributionPlanItem)">
-                                <input type="text" class="input"
-                                       ng-model="distributionPlanItem.remark">
+                            <td>
+                                <input type="text" class="input" ng-model="distributionPlanItem.remark"
+                                       value="{{ distributionPlanItem.remark }}">
                             </td>
                         </tr>
                     </table>

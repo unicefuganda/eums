@@ -288,7 +288,7 @@ describe('NewDistributionPlanController', function() {
         });
 
         it('should get distribution plan items linked to the particular sales order item and put in the scope', function() {
-            deferredPlanNode.resolve({consignee: {name: 'Save the Children'}});
+            deferredPlanNode.resolve({consignee: {name: 'Save the Children'}, location: 'Kampala'});
             deferred.resolve(stubSalesOrderItem);
             scope.salesOrderItemSelected = {
                 display: stubSalesOrderItem.item.description,

@@ -134,6 +134,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
                                 $scope.planId = node.distribution_plan;
                                 lineItem.consignee = node.consignee.name;
+                                lineItem.destinationLocation = node.location;
 
                                 $scope.distributionPlanItems.push(lineItem);
                             });
