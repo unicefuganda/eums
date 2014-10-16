@@ -78,7 +78,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         $scope.saveDistributionPlanItems = function(distributionPlanItems) {
             if($scope.planId === undefined) {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme}).then(function(result) {
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id}).then(function(result) {
                     $scope.planId = result.id;
                 });
             }

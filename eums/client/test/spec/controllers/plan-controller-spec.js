@@ -9,11 +9,11 @@ describe('NewDistributionPlanController', function() {
     var plainDistricts = ['Abim', 'Gulu'];
 
     var salesOrderDetails = [
-        {'programme': 1,
+        {'programme': {id: 1, name: 'Alive'},
             'order_number': orderNumber,
             'date': '2014-10-05',
             'salesorderitem_set': ['1']},
-        {'programme': 1,
+        {'programme': {id: 1, name: 'Alive'},
             'order_number': '22221',
             'date': '2014-10-05',
             'salesorderitem_set': []}
