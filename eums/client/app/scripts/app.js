@@ -1,8 +1,9 @@
 'use strict';
 
-angular
-    .module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap','eums.map','eums.ip'])
-    .config(function ($routeProvider) {
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip'])
+    .config(function($routeProvider, $httpProvider) {
+        $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+        $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $routeProvider
             .when('/', {
                 templateUrl: '/static/app/views/home.html',
@@ -24,6 +25,6 @@ angular
                 redirectTo: '/'
             });
 
-    }).run(function ($rootScope, $routeParams) {
+    }).run(function($rootScope, $routeParams) {
         $rootScope.params = {location: $routeParams};
     });
