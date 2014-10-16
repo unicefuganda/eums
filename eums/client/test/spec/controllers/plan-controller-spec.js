@@ -6,7 +6,7 @@ describe('NewDistributionPlanController', function() {
         mockUserService;
 
     var orderNumber = '00001';
-    var expectedDistricts = ['Abim', 'Gulu'];
+    var plainDistricts = ['Abim', 'Gulu'];
 
     var salesOrderDetails = [
         {'programme': 1,
@@ -65,7 +65,7 @@ describe('NewDistributionPlanController', function() {
         mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemDetails', 'createLineItem']);
         mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails', 'createNode']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById', 'fetchConsignees']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getUserById']);
         mockDistrictService = jasmine.createSpyObj('mockDistrictService', ['getAllDistricts']);
 
@@ -83,8 +83,9 @@ describe('NewDistributionPlanController', function() {
             mockDistributionPlanLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockDistributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockDistributionPlanNodeService.createNode.and.returnValue(deferredPlanNode.promise);
-            mockDistrictService.getAllDistricts.and.returnValue(expectedDistricts);
+            mockDistrictService.getAllDistricts.and.returnValue(plainDistricts);
             mockConsigneeService.getConsigneeById.and.returnValue(deferred.promise);
+            mockConsigneeService.fetchConsignees.and.returnValue(deferred.promise);
             mockUserService.getUserById.and.returnValue(deferred.promise);
 
             scope = $rootScope.$new();
@@ -132,8 +133,12 @@ describe('NewDistributionPlanController', function() {
         });
 
         it('should set districts in the scope variable', function() {
+            var expectedDistricts = [
+                {id: 'Abim', name: 'Abim'},
+                { id: 'Gulu', name: 'Gulu'}
+            ];
             mockDistributionPlanParametersService.retrieveVariable.and.returnValue(salesOrderDetails[0]);
-            mockDistrictService.getAllDistricts.and.returnValue(expectedDistricts);
+            mockDistrictService.getAllDistricts.and.returnValue(plainDistricts);
             scope.initialize();
             scope.$apply();
 

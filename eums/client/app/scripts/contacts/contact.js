@@ -8,6 +8,11 @@ angular.module('Contact', ['eums.config'])
             },
             getContactById: function(id) {
                 return $http.get(EumsConfig.CONTACT_SERVICE_URL + id + '/');
+            },
+            getContactsBySearchQuery: function(searchString) {
+                return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString ).then(function(response) {
+                    return response.data;
+                });
             }
         };
     });
