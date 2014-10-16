@@ -37,3 +37,11 @@ class DistributionPlanLineItemTest(TestCase):
         NodeLineItemRunFactory(node_line_item=node_line_item, status=NodeLineItemRun.STATUS.cancelled)
         self.assertEqual(node_line_item.current_run(), None)
 
+    def test_should_get_the_current_completed_line_item_run(self):
+        node_line_item = DistributionPlanLineItemFactory()
+
+        self.assertIsNone(node_line_item.completed_run())
+
+        line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, status='completed')
+
+        self.assertEqual(node_line_item.completed_run(), line_item_run)

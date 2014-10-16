@@ -3,23 +3,19 @@ from eums.models import NodeLineItemRun, Option
 from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQuestion
 
 
-class Answer(models.Model):
+class TextAnswer(models.Model):
     line_item_run = models.ForeignKey(NodeLineItemRun)
-
-    class Meta:
-        abstract = True
-
-
-class TextAnswer(Answer):
     question = models.ForeignKey(TextQuestion)
     value = models.CharField(max_length=255)
 
 
-class NumericAnswer(Answer):
+class NumericAnswer(models.Model):
+    line_item_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
 
 
-class MultipleChoiceAnswer(Answer):
+class MultipleChoiceAnswer(models.Model):
+    line_item_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(MultipleChoiceQuestion)
     value = models.ForeignKey(Option)

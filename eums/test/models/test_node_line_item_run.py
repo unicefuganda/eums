@@ -3,6 +3,7 @@ import datetime
 
 from eums import settings
 from eums.models import NodeLineItemRun, DistributionPlanLineItem, DistributionPlanNode
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -76,3 +77,12 @@ class NodeLineItemRunTest(TestCase):
 
         overdue_runs = NodeLineItemRun.overdue_runs()
         self.assertEqual(len(overdue_runs), 0)
+
+    def test_should_get_all_responses(self):
+        sugar_line_item_run = NodeLineItemRunFactory()
+
+        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=sugar_line_item_run)
+        numeric_answer_one = NumericAnswerFactory(line_item_run=sugar_line_item_run)
+        line_item_run_answers = sugar_line_item_run.answers()
+        self.assertIn(multiple_answer_one, line_item_run_answers)
+        self.assertIn(numeric_answer_one, line_item_run_answers)

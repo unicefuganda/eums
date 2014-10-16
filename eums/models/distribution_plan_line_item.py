@@ -16,10 +16,10 @@ class DistributionPlanLineItem(models.Model):
         app_label = 'eums'
 
     def current_run(self):
-        runs = self.nodelineitemrun_set.filter(Q(status='scheduled'))
-        if len(runs):
-            return runs[0]
-        return None
+        return self.nodelineitemrun_set.filter(Q(status='scheduled')).first()
+
+    def completed_run(self):
+        return self.nodelineitemrun_set.filter(Q(status='completed')).first()
 
     def __str__(self):
         return "%s %s %s" % (self.item, str(self.planned_distribution_date), self.distribution_plan_node)

@@ -1,11 +1,12 @@
 import datetime
+
 from django.db import models
 from django.db.models import Q
 from model_utils.fields import StatusField
 from model_utils import Choices
-from eums import settings
 
-from eums.models import DistributionPlanLineItem, Consignee, DistributionPlanNode
+from eums import settings
+from eums.models import DistributionPlanLineItem
 
 
 class NodeLineItemRun(models.Model):
@@ -18,14 +19,20 @@ class NodeLineItemRun(models.Model):
     class Meta:
         app_label = 'eums'
 
+    def answers(self):
+        numeric_answers = self.numericanswer_set.all()
+        text_answers = self.textanswer_set.all()
+        multiple_choice_answers = self.multiplechoiceanswer_set.all()
+        return list(numeric_answers) + list(text_answers) + list(multiple_choice_answers)
+
+    def __str__(self):
+        return "Item: %s - Phone: %s" % (self.node_line_item.item.description, self.phone)
+
     @classmethod
     def current_run_for_node(cls, node):
-        line_item_runs = NodeLineItemRun.objects.filter(
+        return NodeLineItemRun.objects.filter(
             Q(node_line_item__distribution_plan_node=node) &
-            Q(status=NodeLineItemRun.STATUS.scheduled))
-        if len(line_item_runs):
-            return line_item_runs[0]
-        return None
+            Q(status=NodeLineItemRun.STATUS.scheduled)).first()
 
     @classmethod
     def overdue_runs(cls):
@@ -37,5 +44,3 @@ class NodeLineItemRun(models.Model):
 
         return NodeLineItemRun.objects.filter(Q(status=NodeLineItemRun.STATUS.scheduled) &
                                        Q(node_line_item__planned_distribution_date__lt=latest_allowed_date))
-
-

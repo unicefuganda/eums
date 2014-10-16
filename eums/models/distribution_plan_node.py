@@ -27,3 +27,11 @@ class DistributionPlanNode(models.Model):
 
     def __str__(self):
         return "%s %s %s " % (self.consignee.name, self.tree_position, str(self.distribution_plan))
+
+    def responses(self):
+        run_answers_map = {}
+        all_line_items = self.distributionplanlineitem_set.all()
+        completed_line_item_runs = filter(None, map(lambda line_item: line_item.completed_run(), all_line_items))
+        for run in completed_line_item_runs:
+            run_answers_map[run] = run.answers()
+        return run_answers_map
