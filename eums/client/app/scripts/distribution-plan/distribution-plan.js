@@ -121,6 +121,9 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     });
                 });
             },
+            getResponsesFromBackend: function () {
+                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
+            },
             mapUnicefIpsWithConsignees: function () {
                 var allNodePromises = this.getAllPlansNodes();
                 var parentNodePromises = allNodePromises.then(function (planNodes) {
@@ -175,7 +178,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             }
         };
-    }).factory('DistributionPlanParameters', function () {
+    }).
+    factory('DistributionPlanParameters', function () {
         var distributionPlanParameters = {};
         return{
             saveVariable: function (key, value) {

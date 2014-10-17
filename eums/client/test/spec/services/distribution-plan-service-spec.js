@@ -291,4 +291,33 @@ describe('UNICEF IP', function () {
         scope.$apply();
         httpBackend.flush();
     });
+
+    it('should get all responses from backend', function (done) {
+        var expectedResponse = [
+            {
+                item: 'IEHK2006,kit,suppl.1-drugs',
+                amountSent: 1,
+                consignee: 'L438000484',
+                details: [
+                    {answer: 'Its ish ish', questionLabel: 'feedbackAboutDissatisfaction'},
+                    {answer: '20', questionLabel: 'amountReceived'}
+
+                ]},
+            {
+                item: 'IEHK2006,Laptops',
+                amountSent: 1,
+                consignee: 'L438000484',
+                details: [
+                    {answer: 'Its ish ish', questionLabel: 'feedbackAboutDissatisfaction'},
+                    {answer: '20', questionLabel: 'amountReceived'}
+                ]}
+        ];
+
+        httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(expectedResponse);
+        distributionPlanService.getResponsesFromBackend().then(function (response) {
+            expect(response.data).toEqual(expectedResponse);
+            done();
+        });
+        httpBackend.flush();
+    });
 });

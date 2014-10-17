@@ -10,7 +10,8 @@
         "SALES_ORDER": "/api/sales-order/",
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
         "PROGRAMME": "/api/programme/",
-        "USER": "/api/user/"
+        "USER": "/api/user/",
+        "RESPONSES": "/api/responses/"
     },
     "DISTRICTGEOJSONURL": "http://localhost:8000/static/app/data/districts.json",
     "DISTRICTJSONURL":"http://localhost:8000/static/app/data/district_name.json",
