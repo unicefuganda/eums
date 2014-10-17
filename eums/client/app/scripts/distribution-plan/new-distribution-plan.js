@@ -60,15 +60,38 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             $scope.distributionPlanItems = currentDistributionPlanItems;
         };
 
-        function saveNodeAndLineItems(nodeDetails, lineItem) {
+        function getLineItemFromUILineItem(uiLineItem, node) {
+            return {
+                item: uiLineItem.item.id, targeted_quantity: uiLineItem.targetQuantity,
+                distribution_plan_node: uiLineItem.distribution_plan_node,
+                planned_distribution_date: uiLineItem.planned_distribution_date,
+                remark: uiLineItem.remark
+            };
+        }
+
+        function createNewNodeAndLineItem(nodeDetails, lineItem) {
             DistributionPlanNodeService.createNode(nodeDetails).then(function(createdNode) {
-                var lineItemDetails = {
-                    item: lineItem.item.id, targeted_quantity: lineItem.targetQuantity,
-                    distribution_plan_node: createdNode.id, planned_distribution_date: lineItem.plannedDistributionDate,
-                    remark: lineItem.remark
-                };
+                var lineItemDetails = getLineItemFromUILineItem(lineItem, createdNode);
                 DistributionPlanLineItemService.createLineItem(lineItemDetails);
             });
+        }
+
+        function updateNodeAndLineItem(nodeDetails, lineItem) {
+            DistributionPlanNodeService.updateNode(nodeDetails);
+            DistributionPlanLineItemService.updateLineItem(lineItem)
+        }
+
+        function saveNodeAndLineItem(nodeDetails, uiLineItem, uiItem) {
+            if(uiLineItem.alreadySaved) {
+                var lineItemDetails = getLineItemFromUILineItem(uiLineItem, nodeDetails);
+                lineItemDetails.id = uiItem.lineItemIdInBackend;
+                lineItemDetails.item = uiItem.item;
+                nodeDetails.id = uiItem.nodeId;
+                updateNodeAndLineItem(nodeDetails, lineItemDetails);
+            }
+            else {
+                createNewNodeAndLineItem(nodeDetails, uiLineItem);
+            }
         }
 
         function saveScopeVariables(distributionPlanItems) {
@@ -84,7 +107,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', mode_of_delivery: item.modeOfDelivery
                 };
                 $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.target_quantity)).toString();
-                saveNodeAndLineItems(nodeDetails, item);
+                saveNodeAndLineItem(nodeDetails, item, item);
             });
         }
 
@@ -130,11 +153,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                         DistributionPlanLineItemService.getLineItem(lineItemId).then(function(lineItem) {
                             lineItem.quantity = quantityLeft.toString();
                             lineItem.targetQuantity = lineItem.targeted_quantity;
+                            lineItem.lineItemIdInBackend = lineItem.id;
 
                             DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
                                 $scope.planId = node.distribution_plan;
                                 lineItem.consignee = node.consignee.id;
+                                lineItem.nodeId = node.id;
+                                lineItem.contactPerson = node.contactPerson._id;
+                                lineItem.modeOfDelivery = node.mode_of_delivery;
                                 lineItem.destinationLocation = node.location;
+                                lineItem.alreadySaved = true;
 
                                 $scope.distributionPlanItems.push(lineItem);
                             });

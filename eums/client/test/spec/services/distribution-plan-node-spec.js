@@ -115,6 +115,16 @@ describe('Distribution Plan Node Service', function() {
         mockBackend.flush();
     });
 
+    it('should update node', function(done) {
+        var updatedNode = {id: 1};
+        mockBackend.whenPUT(planNodeEndpointUrl + planNodeId + '/').respond(updatedNode);
+        planNodeService.updateNode(updatedNode).then(function(returnedNode) {
+            expect(returnedNode).toEqual(updatedNode);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     var fakeGetLineItemDetails = function() {
         var lineItemId = arguments[0];
 

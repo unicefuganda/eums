@@ -15,6 +15,12 @@ angular.module('DistributionPlanLineItem', ['eums.config', 'Item'])
             },
             createLineItem: function(lineItemDetails) {
                 return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM, lineItemDetails);
+            },
+            updateLineItem: function(lineItem) {
+                return $http.put(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItem.id + '/', lineItem)
+                    .then(function(response) {
+                        return response.data;
+                    });
             }
         };
     });
