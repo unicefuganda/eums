@@ -42,8 +42,14 @@ class DistributionPlanEndPointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         response_data = json.loads(response.data)
+        consignee = node.consignee
 
-        expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'consignee': u'11', u'details': [
-            {u'answer': u'%s' % numeric_answer_one.format(), u'questionLabel': u'%s' % numeric_question.label},
-            {u'answer': u'%s' % multiple_answer_one.format(), u'questionLabel': u'%s' % multichoice_question.label}]}
+        expected_data = {u'item': u'10 bags of salt', u'amountSent': 100,
+                         u'consignee': {u'id': consignee.id, u'name': consignee.name},
+                         u'details': [
+                             {u'answer': u'%s' % numeric_answer_one.format(),
+                              u'questionLabel': u'%s' % numeric_question.label},
+                             {u'answer': u'%s' % multiple_answer_one.format(),
+                              u'questionLabel': u'%s' % multichoice_question.label}]
+                         }
         self.assertDictContainsSubset(expected_data, response_data[0])
