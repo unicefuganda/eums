@@ -1,13 +1,13 @@
+import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-import json
 from eums.models import DistributionPlanNode
 
 
-class Responses(APIView):
-    def get(self, request, *args, **kwargs):
-        all_nodes = DistributionPlanNode.objects.filter(parent__isnull=False)
+class ConsigneeResponses(APIView):
+    def get(self, request, consignee_id, *args, **kwargs):
+        all_nodes = DistributionPlanNode.objects.filter(consignee__id=consignee_id)
         result = []
         for node in all_nodes:
             node_responses = node.responses()
@@ -16,7 +16,6 @@ class Responses(APIView):
                 formatted_run_responses.update({'item': item_run.node_line_item.item.description, 'details': [],
                                                 'amountSent': item_run.node_line_item.targeted_quantity})
                 for response in responses:
-                    question_response_map = {'questionLabel': response.question.label, 'answer': response.format()}
-                    formatted_run_responses['details'].append(question_response_map)
+                    formatted_run_responses.update({response.question.label: response.format()})
                 result.append(formatted_run_responses)
         return Response(json.dumps(result), status=status.HTTP_200_OK)

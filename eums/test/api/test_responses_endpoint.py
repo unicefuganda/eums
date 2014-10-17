@@ -38,18 +38,17 @@ class DistributionPlanEndPointTest(APITestCase):
                                                           value=yes_option)
         numeric_answer_one = NumericAnswerFactory(line_item_run=line_item_run, value=80, question=numeric_question)
 
-        response = self.client.get("%s/" % ENDPOINT_URL, format='json')
+        url = "%s%d/" % (ENDPOINT_URL, node.consignee.id)
 
-        self.assertEqual(response.status_code, 200)
+        response = self.client.get(url, format='json')
+
         response_data = json.loads(response.data)
         consignee = node.consignee
 
         expected_data = {u'item': u'10 bags of salt', u'amountSent': 100,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name},
-                         u'details': [
-                             {u'answer': u'%s' % numeric_answer_one.format(),
-                              u'questionLabel': u'%s' % numeric_question.label},
-                             {u'answer': u'%s' % multiple_answer_one.format(),
-                              u'questionLabel': u'%s' % multichoice_question.label}]
-                         }
+                         u'%s' % numeric_question.label: u'%s' % numeric_answer_one.format(),
+                         u'%s' % multichoice_question.label: u'%s' % multiple_answer_one.format()}
+
+        self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(expected_data, response_data[0])

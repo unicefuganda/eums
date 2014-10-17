@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
-from eums.api.answer.answers_endpoint import Responses
+from eums.api.answer.answers_endpoint import ConsigneeResponses
 
 from eums.api.consignee.consignee import consigneeRouter
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
@@ -24,7 +24,7 @@ urlpatterns = patterns(
     url(r'^logout/$', 'django.contrib.auth.views.logout',
         {'template_name': 'registration/login.html'}, name="logout"),
     url(r'^api/hook', 'eums.api.rapid_pro_hooks.hook.hook', name='hook'),
-    url(r'^api/responses', Responses.as_view(), name='hook'),
+    url(r'^api/responses/(?P<consignee_id>\d+)/', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^admin/', include(admin.site.urls)),
     url('', include('django.contrib.auth.urls')),
     url(r'^api/', include(distributionPlanRouter.urls)),
