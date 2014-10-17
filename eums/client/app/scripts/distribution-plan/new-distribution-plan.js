@@ -206,7 +206,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
         };
     })
-    .directive('searchContacts', function($http, EumsConfig, ContactService) {
+    .directive('searchContacts', function($http, EumsConfig, ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function(contact) {
                 return {
@@ -231,6 +231,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             data.results = formatResponse(foundContacts);
                             query.callback(data);
                         });
+                    },
+                    initSelection: function(element, callback) {
+                        $timeout(function() {
+                            ContactService.getContactById(ngModel.$modelValue).then(function(contact) {
+                                 callback({
+                                     id: contact._id,
+                                     text: contact.firstName + ' ' + contact.lastName + ', ' + contact.phone
+                                 });
+                            });
+                        });
                     }
                 });
 
@@ -241,10 +251,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
         };
     })
-    .directive('searchFromList', function() {
+    .directive('searchFromList', function($timeout) {
         return {
             restrict: 'A',
-            scope: true,
+            scope: false,
             require: 'ngModel',
             link: function(scope, element, attrs, ngModel) {
                 var list = JSON.parse(attrs.list);
@@ -264,6 +274,14 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             };
                         });
                         query.callback(data);
+                    },
+                    initSelection: function(element, callback) {
+                        $timeout(function() {
+                            var matchingItem = list.filter(function(item) {
+                                return item.id === ngModel.$modelValue;
+                            })[0];
+                            callback({id: matchingItem.id, text: matchingItem.name});
+                        });
                     }
                 });
 

@@ -94,7 +94,7 @@
                                        list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"},
                                         {"id": "WAREHOUSE", "name": "Warehouse"}]'
                                        ng-model="distributionPlanItem.modeOfDelivery"
-                                       value="Warehouse">
+                                       value="{{ distributionPlanItem.modeOfDelivery }}">
                             </td>
                             <td>
                                 <input type="text" class="input" ng-model="distributionPlanItem.remark"
@@ -106,8 +106,6 @@
 
             </div>
         </div>
-
-        {{ distributionPlanItems }}
         <div>
             <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
                     ng-click="addDistributionPlanItem()"><i
