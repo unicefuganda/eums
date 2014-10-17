@@ -18,7 +18,7 @@ ENDPOINT_URL = BACKEND_URL + 'responses/'
 
 
 class DistributionPlanEndPointTest(APITestCase):
-    def test_should_provide_sumary_data_from_node_response(self):
+    def xtest_should_provide_summary_data_from_node_response(self):
         ip_node = DistributionPlanNodeFactory()
         multichoice_question = MultipleChoiceQuestionFactory(label='productReceived')
         yes_option = OptionFactory(text='Yes', question=multichoice_question)
