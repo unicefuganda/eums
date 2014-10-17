@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User'])
-    .controller('NewDistributionPlanController', function($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService) {
+    .controller('NewDistributionPlanController', function($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService, $q, $timeout) {
 
         $scope.districts = Districts.getAllDistricts().map(function(district) {
             return {id: district, name: district};
@@ -77,13 +77,24 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     planned_distribution_date: lineItem.plannedDistributionDate,
                     remark: lineItem.remark
                 };
-                DistributionPlanLineItemService.createLineItem(lineItemDetails);
+                DistributionPlanLineItemService.createLineItem(lineItemDetails).then(function() {
+                    $scope.planSaved = true;
+                    $timeout(function() {
+                        $scope.planSaved = false;
+                    }, 2000);
+                });
             });
         }
 
         function updateNodeAndLineItem(nodeDetails, lineItem) {
-            DistributionPlanNodeService.updateNode(nodeDetails);
-            DistributionPlanLineItemService.updateLineItem(lineItem);
+            var nodeSavePromise = DistributionPlanNodeService.updateNode(nodeDetails);
+            var lineItemSavePromise = DistributionPlanLineItemService.updateLineItem(lineItem);
+            $q.all([nodeSavePromise, lineItemSavePromise]).then(function() {
+                $scope.planSaved = true;
+                $timeout(function() {
+                    $scope.planSaved = false;
+                }, 2000);
+            });
         }
 
         function saveNodeAndLineItem(nodeDetails, uiLineItem, uiItem) {

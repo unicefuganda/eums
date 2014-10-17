@@ -2,6 +2,7 @@
     <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
 
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()" class="content">
+        <div  ng-show="planSaved"><alert type="success">Plan saved.</alert></div>
         <h4 class="page-header">Create A Distribution Plan</h4>
 
         <div class="panel panel-default line-order-panel">
@@ -17,8 +18,7 @@
                 </div>
 
                 <div ng-show="hasSalesOrderItems">
-                    <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.
-                    </alert>
+                    <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
                     <table class="table table-hover table-striped table-bordered">
                         <th>Sales Order</th>
                         <th>Material</th>
