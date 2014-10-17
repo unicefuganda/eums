@@ -139,6 +139,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         $scope.$watch('salesOrderItemSelected', function() {
             var emptySalesOrders = ['', undefined];
+            $scope.distributionPlanItems = [];
 
             if(emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1) {
                 $scope.hasSalesOrderItems = false;
@@ -234,12 +235,17 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     },
                     initSelection: function(element, callback) {
                         $timeout(function() {
-                            ContactService.getContactById(ngModel.$modelValue).then(function(contact) {
-                                 callback({
-                                     id: contact._id,
-                                     text: contact.firstName + ' ' + contact.lastName + ', ' + contact.phone
-                                 });
-                            });
+                            var modelValue = ngModel.$modelValue;
+                            if(modelValue) {
+                                ContactService.getContactById(modelValue).then(function(contact) {
+                                    if(contact._id) {
+                                        callback({
+                                            id: contact._id,
+                                            text: contact.firstName + ' ' + contact.lastName + ', ' + contact.phone
+                                        });
+                                    }
+                                });
+                            }
                         });
                     }
                 });
@@ -280,7 +286,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             var matchingItem = list.filter(function(item) {
                                 return item.id === ngModel.$modelValue;
                             })[0];
-                            callback({id: matchingItem.id, text: matchingItem.name});
+                            if(matchingItem) {
+                                callback({id: matchingItem.id, text: matchingItem.name});
+                            }
                         });
                     }
                 });
