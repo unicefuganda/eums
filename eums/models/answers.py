@@ -8,14 +8,23 @@ class TextAnswer(models.Model):
     question = models.ForeignKey(TextQuestion)
     value = models.CharField(max_length=255)
 
+    def format(self):
+        return self.value
+
 
 class NumericAnswer(models.Model):
     line_item_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
 
+    def format(self):
+        return '%s' % self.value
+
 
 class MultipleChoiceAnswer(models.Model):
     line_item_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(MultipleChoiceQuestion)
     value = models.ForeignKey(Option)
+
+    def format(self):
+        return self.value.text

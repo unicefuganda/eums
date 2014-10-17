@@ -95,7 +95,6 @@ def create_distribution_plan_line_item(test_case, item_details=None):
 
     formatted_data = response.data
     formatted_data['planned_distribution_date'] = str(formatted_data['planned_distribution_date'])
-
     return formatted_data
 
 
