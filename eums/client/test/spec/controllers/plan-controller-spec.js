@@ -230,7 +230,10 @@ describe('NewDistributionPlanController', function() {
 
         it('should know plan id is set based on first item if line items exists', function() {
             deferred.resolve({distribution_plan_node: 1});
-            deferredPlanNode.resolve({distribution_plan: 2, consignee: {id: 1, name: 'Save the Children'}});
+            deferredPlanNode.resolve({
+                distribution_plan: 2, consignee: {id: 1, name: 'Save the Children'},
+                contactPerson: {_id: 1}
+            });
             scope.salesOrderItemSelected = {information: {distributionplanlineitem_set: ['1']}};
             scope.$apply();
             expect(scope.planId).toEqual(2);
@@ -288,7 +291,10 @@ describe('NewDistributionPlanController', function() {
         });
 
         it('should get distribution plan items linked to the particular sales order item and put in the scope', function() {
-            deferredPlanNode.resolve({consignee: {name: 'Save the Children'}, location: 'Kampala'});
+            deferredPlanNode.resolve({
+                consignee: {name: 'Save the Children'}, location: 'Kampala',
+                contactPerson: {_id: 1}
+            });
             deferred.resolve(stubSalesOrderItem);
             scope.salesOrderItemSelected = {
                 display: stubSalesOrderItem.item.description,
