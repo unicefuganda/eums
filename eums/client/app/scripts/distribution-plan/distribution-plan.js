@@ -121,8 +121,9 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     });
                 });
             },
-            getResponsesFromBackend: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
+
+            getConsigneeDetails: function (consigneeId) {
+                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/');
             },
             mapUnicefIpsWithConsignees: function () {
                 var allNodePromises = this.getAllPlansNodes();

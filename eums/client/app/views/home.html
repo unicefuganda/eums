@@ -2,14 +2,17 @@
 <div class="container-fluid">
     <div class="content">
         <div class="panel panel-default line-order-panel">
-            <div map="" id="map">
-
+            <div id="map" map>
                 <div panel panel-expand='{"bottom":"0px"}' panel-collapse='{"bottom":"-96%"}'
                      class='filter-panel expanded dt-panel ng-cloak' id="filter-panel">
-                    <div class="close-panel"><span class="glyphicon glyphicon-chevron-down"></span></div>
-                    <div class='filters-container'>
-                        <div ng-include="'/static/app/views/partials/filters.html'" class='filters-section'></div>
+                    <div class="close-panel">
+                        <span class="glyphicon glyphicon-chevron-down"></span>
                     </div>
+                    <div map-filter=""></div>
+                </div>
+
+                <div map-summary="" consigneeDetails="" class='ng-cloak panel panel-default well well-sm'
+                     id="summary-panel">
                 </div>
             </div>
         </div>

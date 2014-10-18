@@ -1,4 +1,25 @@
 (function (module) {
+    var markerList = {};
+
+    function Marker(center, data) {
+        var markerIcon = function () {
+            return new L.DivIcon({
+                iconSize: new L.Point([10, 10]),
+                className: "ips-marker-icon marker-icon ",
+                html: "<div><i class='pin' ><span style='background-color: #000000'></span></i></div>",
+                popupAnchor: [5, -10]
+            });
+        };
+
+        var marker = L.marker(center, {icon: markerIcon()});
+
+        marker.on('click', function () {
+            data.show = true;
+        });
+
+        return marker;
+
+    }
 
     function Layer(map, layer, layerOptions) {
         var selected = false;
@@ -118,18 +139,7 @@
             });
         };
 
-        function addIPMarker(center, ip) {
-            var popup = L.popup({ closeButton: false, offset: new L.Point(0, 44), className: "marker-popup", autoPan: false});
-            var popupContent = "<p> name: " + ip.contact_person_id + "<br />location: " + ip.mode_of_delivery + "</p>";
-
-            var marker = L.marker(center, {icon: markerIcon()});
-
-            marker.on('click', function () {
-                popup.setLatLng(center)
-                    .setContent(popupContent)
-                    .openOn(map);
-            });
-
+        function addIPMarker(marker) {
             return marker.addTo(map);
         }
 
@@ -161,8 +171,12 @@
             getCenter: function () {
                 return map.getCenter();
             },
-            addMarker: function (center, ip) {
-                return addIPMarker(center, ip);
+            selectIcon: function (icon) {
+                displayIconSummary(icon);
+            },
+            addMarker: function (marker) {
+                markerList = marker;
+                return addIPMarker(marker);
             },
             highlightLayer: function (layerName) {
                 LayerMap.selectLayer(layerName.toLowerCase());
@@ -214,13 +228,19 @@
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
+                    scope.markers = [];
 
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
                             ip.consignees().then(function (consigneesResponses) {
                                 consigneesResponses.map(function (consigneesResponse) {
                                     var consigneeCoordinates = map.getRandomCoordinates(consigneesResponse.data.location.toLowerCase());
-                                    map.addMarker([consigneeCoordinates.lat, consigneeCoordinates.lng], consigneesResponse.data)
+                                    DistributionPlanService.getConsigneeDetails(consigneesResponse.data.id).then(function (response) {
+                                        var consigneeDetailsCollection = JSON.parse(JSON.parse(response.data));
+                                        var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], consigneeDetailsCollection);
+                                        map.addMarker(marker, consigneeDetailsCollection.id);
+                                    });
+
                                 });
                             });
                         });
@@ -242,23 +262,42 @@
                 var panel = $(element);
 
                 var togglePanel = function () {
+                    var $closePannel = $('.close-panel span');
                     if (scope.expanded) {
                         panel.animate(collapseAnimation);
                         scope.expanded = false;
-                        $('.close-panel span').removeClass("glyphicon-chevron-down");
-                        $('.close-panel span').addClass("glyphicon-chevron-up");
+                        $closePannel.removeClass("glyphicon-chevron-down");
+                        $closePannel.addClass("glyphicon-chevron-up");
 
                     } else {
                         panel.animate(expandAnimation);
                         scope.expanded = true;
-                        $('.close-panel span').removeClass("glyphicon-chevron-up");
-                        $('.close-panel span').addClass("glyphicon-chevron-down");
+                        $closePannel.removeClass("glyphicon-chevron-up");
+                        $closePannel.addClass("glyphicon-chevron-down");
                     }
                     return false;
                 };
                 $(".close-panel").click(function () {
                     togglePanel();
                 });
+            }
+        }
+    }).directive('mapFilter', function () {
+        return{
+            restrict: 'A',
+            templateUrl: '/static/app/views/partials/filters.html',
+            link: function (scope) {
+            }
+        }
+    }).directive('mapSummary', function (MapService) {
+        return{
+            restrict: 'A',
+            controller: function ($scope) {
+                $scope.markers = 'Hahahaha';
+            },
+            scope: {consigneedetails: '='},
+            templateUrl: '/static/app/views/partials/marker-summary.html',
+            link: function (scope, elem, attrs) {
             }
         }
     });

@@ -251,3 +251,12 @@ a, #distribution-plan-nav {
     margin-left: auto;
     margin-right: auto;
 }
+
+#summary-panel {
+    float: right;
+    width: 300px;
+    height: 97%;
+    z-index: 1000;
+    position: absolute;
+    right: 0;
+}
