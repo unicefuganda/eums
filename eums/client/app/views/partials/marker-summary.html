@@ -1,5 +1,25 @@
-<div id='marker-summary'>
-    <h4>Filter Forms</h4>
+<div id='marker-summary' class="table-responsive">
+    <h4 class="page-header"> {{ clickedMarker[0].consignee.name }}</h4>
+    <table class="table table-bordered table-condensed" ng-show="clickedMarker">
+        <thead>
+        <tr>
+            <th>Item</th>
+            <th>Amount Sent</th>
+            <th>Amount Received</th>
+            <th>Quality</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="answer in clickedMarker">
+            <td>{{ answer.item }}</td>
+            <td>{{ answer.amountSent }}</td>
+            <td>{{ answer.amountReceived }}</td>
+            <td>{{ answer.qualityOfProduct }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
     <div>
         <span>STATS</span>
         <table>

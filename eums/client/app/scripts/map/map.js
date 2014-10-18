@@ -1,24 +1,42 @@
 (function (module) {
-    var markerList = {};
 
-    function Marker(center, data) {
+    function getNumberof(receivedCriteria, data) {
+        return data.filter(function (answer) {
+            return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase();
+        });
+    }
+
+    function getPinColourFromResponses(data) {
+        var noProductRecieved = getNumberof("yes", data).length;
+        var RED = '#DF0101', GREEN = '#088A29', YELLOW = '#F3F781';
+        if (noProductRecieved === data.length) return GREEN;
+        if (noProductRecieved > 0 && noProductRecieved < data.length) return YELLOW;
+        return RED;
+    }
+
+    function Marker(center, data, scope) {
         var markerIcon = function () {
             return new L.DivIcon({
                 iconSize: new L.Point([10, 10]),
                 className: "ips-marker-icon marker-icon ",
-                html: "<div><i class='pin' ><span style='background-color: #000000'></span></i></div>",
+                html: "<div><i class='pin'><span style='background-color:" + getPinColourFromResponses(data) + "'></span></i></div>",
                 popupAnchor: [5, -10]
             });
         };
 
         var marker = L.marker(center, {icon: markerIcon()});
 
+        var assignClickedMarkerData = function () {
+            scope.$apply(function () {
+                scope.clickedMarker = data;
+            });
+        };
+
         marker.on('click', function () {
-            data.show = true;
+            var consigneeResponse = data[0];
+            consigneeResponse && assignClickedMarkerData();
         });
-
         return marker;
-
     }
 
     function Layer(map, layer, layerOptions) {
@@ -130,15 +148,6 @@
             return map;
         }
 
-        var markerIcon = function () {
-            return new L.DivIcon({
-                iconSize: new L.Point([10, 10]),
-                className: "ips-marker-icon marker-icon ",
-                html: "<div><i class='pin' ><span style='background-color: #000000'></span></i></div>",
-                popupAnchor: [5, -10]
-            });
-        };
-
         function addIPMarker(marker) {
             return marker.addTo(map);
         }
@@ -175,7 +184,6 @@
                 displayIconSummary(icon);
             },
             addMarker: function (marker) {
-                markerList = marker;
                 return addIPMarker(marker);
             },
             highlightLayer: function (layerName) {
@@ -228,7 +236,7 @@
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
-                    scope.markers = [];
+                    scope.clickedMarker = "";
 
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
@@ -236,9 +244,10 @@
                                 consigneesResponses.map(function (consigneesResponse) {
                                     var consigneeCoordinates = map.getRandomCoordinates(consigneesResponse.data.location.toLowerCase());
                                     DistributionPlanService.getConsigneeDetails(consigneesResponse.data.id).then(function (response) {
-                                        var consigneeDetailsCollection = JSON.parse(JSON.parse(response.data));
-                                        var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], consigneeDetailsCollection);
-                                        map.addMarker(marker, consigneeDetailsCollection.id);
+                                        var markerData = JSON.parse(JSON.parse(response.data));
+                                        var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
+                                        var consigneeResponse = markerData[0];
+                                        consigneeResponse && map.addMarker(marker);
                                     });
 
                                 });
@@ -289,16 +298,10 @@
             link: function (scope) {
             }
         }
-    }).directive('mapSummary', function (MapService) {
+    }).directive('mapSummary', function () {
         return{
             restrict: 'A',
-            controller: function ($scope) {
-                $scope.markers = 'Hahahaha';
-            },
-            scope: {consigneedetails: '='},
             templateUrl: '/static/app/views/partials/marker-summary.html',
-            link: function (scope, elem, attrs) {
-            }
         }
     });
 
