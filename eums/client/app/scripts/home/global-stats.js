@@ -16,7 +16,7 @@ angular.module('GlobalStats', ['eums.config'])
 
         return {
             getReports: function() {
-                return $http.get(EumsConfig.DISTRIBUTION_REPORT + '/').then(function(response) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_REPORT).then(function(response) {
                     return response.data;
                 });
             },
@@ -41,7 +41,4 @@ angular.module('GlobalStats', ['eums.config'])
                 return computeTotals(reports);
             }
         };
-    })
-    .controller('DistributionReportController', function() {
-
     });

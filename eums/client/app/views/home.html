@@ -8,8 +8,25 @@
             <div map-filter=""></div>
         </div>
 
-        <div map-summary="" consigneeDetails="" class='ng-cloak panel panel-default well well-sm'
-             id="summary-panel">
+        <div id="summary-panel" class="ng-cloak panel panel-default well well-sm">
+
+            <div map-summary consigneeDetails></div>
+            <div>
+                <span>STATS </span>
+                <table>
+                    <tr>
+                        <td>{{ totalStats.received }}</td>
+                        <td>{{ totalStats.distributed }}</td>
+                        <td>{{ totalStats.notDistributed }}</td>
+                    </tr>
+                    <tr>
+                        <td>RECEIVED</td>
+                        <td>DISTRIBUTED</td>
+                        <td>NOT DISTRIBUTED</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
+</div>
 </div>

@@ -44,7 +44,7 @@ describe('Distribution report Service', function() {
             {consignee: 1, programme: 1, otherDetails: {}}
         ];
 
-        mockBackend.whenGET(config.DISTRIBUTION_REPORT + '/').respond(expectedReports);
+        mockBackend.whenGET(config.BACKEND_URLS.DISTRIBUTION_REPORT).respond(expectedReports);
         reportService.getReports().then(function(reports) {
             expect(reports).toEqual(expectedReports);
             done();
