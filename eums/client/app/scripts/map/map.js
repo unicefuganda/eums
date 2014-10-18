@@ -8,7 +8,7 @@
 
     function getPinColourFromResponses(data) {
         var noProductRecieved = getNumberof("yes", data).length;
-        var RED = '#DF0101', GREEN = '#088A29', YELLOW = '#F3F781';
+        var RED = '#DF0101', GREEN = '#088A29', YELLOW = '#FFFF00';
         if (noProductRecieved === data.length) return GREEN;
         if (noProductRecieved > 0 && noProductRecieved < data.length) return YELLOW;
         return RED;
@@ -25,6 +25,8 @@
         };
 
         var marker = L.marker(center, {icon: markerIcon()});
+
+        marker.nodeId = data.id;
 
         var assignClickedMarkerData = function () {
             scope.$apply(function () {
@@ -180,11 +182,11 @@
             getCenter: function () {
                 return map.getCenter();
             },
-            selectIcon: function (icon) {
-                displayIconSummary(icon);
-            },
             addMarker: function (marker) {
                 return addIPMarker(marker);
+            },
+            removeMarker: function (marker) {
+                map.removeLayer(marker);
             },
             highlightLayer: function (layerName) {
                 LayerMap.selectLayer(layerName.toLowerCase());
@@ -237,7 +239,8 @@
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
                     scope.clickedMarker = "";
-
+                    scope.allmarkers = [];
+                    scope.programme = '';
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
                             ip.consignees().then(function (consigneesResponses) {
@@ -247,7 +250,8 @@
                                         var markerData = JSON.parse(JSON.parse(response.data));
                                         var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
                                         var consigneeResponse = markerData[0];
-                                        consigneeResponse && map.addMarker(marker);
+                                        var items = {marker: marker, node: consigneeResponse.id};
+                                        consigneeResponse && map.addMarker(marker) && scope.allmarkers.push(items);
                                     });
 
                                 });
@@ -295,15 +299,69 @@
         return{
             restrict: 'A',
             templateUrl: '/static/app/views/partials/filters.html',
-            link: function (scope) {
+            link: function (scope, elem, attrs) {
+
             }
         }
     }).directive('mapSummary', function () {
         return{
             restrict: 'A',
-            templateUrl: '/static/app/views/partials/marker-summary.html',
+            templateUrl: '/static/app/views/partials/marker-summary.html'
+        }
+    }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService) {
+        return {
+            restrict: 'A',
+            link: function (scope, elem) {
+                ProgrammeService.fetchProgrammes().then(function (response) {
+                    return response.data.map(function (programe) {
+                        return {id: programe.id, text: programe.name}
+                    });
+
+                }).then(function (data) {
+                    $(elem).select2({
+                        data: data
+                    });
+                });
+
+                function notIn(nodeId, filteredNodes) {
+                    return filteredNodes.filter(function (node) {
+                        return node.data.id == nodeId
+                    }).length < 0
+                }
+
+                scope.$watch('programme', function (newProgramme) {
+                    FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
+                        var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
+                            return DistributionPlanService.getNodes(plan)
+                        });
+                        $q.all(selectedPlanNodes).then(function (filteredNodes) {
+                            console.log(filteredNodes);
+                            scope.allmarkers.map(function (markerNodeMap) {
+                                console.log((notIn(markerNodeMap.id, filteredNodes)));
+                                if (notIn(markerNodeMap.id, filteredNodes)) {
+                                    MapService.removeLayer(markerNodeMap.marker)
+                                }
+                            });
+                        });
+                    });
+                });
+            }
+        }
+    }).factory('FilterService', function (DistributionPlanService) {
+        function filterPlanById(distributionPlans, programmeId) {
+            return distributionPlans.data.filter(function (plan) {
+                return plan.programme == programmeId;
+            });
+        }
+
+        return {
+            getDistributionPlansBy: function (programmeId) {
+                return DistributionPlanService.fetchPlans().then(function (allDistributioPlans) {
+                    return filterPlanById(allDistributioPlans, programmeId);
+                });
+            }
         }
     });
 
 })
-(angular.module('eums.map', ['eums.config', 'eums.ip']));
+(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan']));
