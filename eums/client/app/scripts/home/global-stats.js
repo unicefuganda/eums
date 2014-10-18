@@ -40,5 +40,8 @@ angular.module('GlobalStats', ['eums.config'])
                 }
                 return computeTotals(reports);
             }
-        }
+        };
+    })
+    .controller('DistributionReportController', function() {
+
     });
