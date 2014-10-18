@@ -1,6 +1,4 @@
 <div class="container-fluid">
-    <ng-include src="'/static/app/views/partials/navigation-tabs.html'"></ng-include>
-
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()" class="content">
         <div  ng-show="planSaved"><alert type="success">Plan saved.</alert></div>
         <h4 class="page-header">Create A Distribution Plan</h4>
@@ -10,7 +8,7 @@
                 <div class="panel-body">
                     <div class="form-group form-group-sm col-lg-4">
                         <select ng-model="salesOrderItemSelected" required="required"
-                                class="form-control input-sm"
+                                class="form-control input-sm" multiple
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
                             <option value="" selected="selected">Select Item</option>
                         </select>
@@ -45,11 +43,10 @@
                 <div ng-show="hasDistributionPlanItems">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover">
-                        <th class="col-lg-1">Sales Order Qty</th>
+                        <th class="col-lg-1">Available Qty</th>
                         <th class="col-lg-1">Unit</th>
                         <th class="col-lg-1">Targeted Qty</th>
                         <th class="col-lg-1">Planned Distr Date</th>
-                        <th class="col-lg-2">Programme Focal</th>
                         <th class="col-lg-2">Consignee</th>
                         <th class="col-lg-2">Contact Person</th>
                         <th class="col-lg-1">Region/District</th>
@@ -69,10 +66,6 @@
                                        value="{{ distributionPlanItem.plannedDistributionDate }}">
                             </td>
                             <td>
-                                {{ selectedSalesOrder.programme.focalPerson.firstName }}
-                                {{ selectedSalesOrder.programme.focalPerson.lastName }}
-                            </td>
-                            <td>
                                 <input type="hidden" search-from-list list="{{ consignees }}"
                                        ng-model="distributionPlanItem.consignee"
                                        value="{{ distributionPlanItem.consignee }}">
@@ -81,7 +74,6 @@
                             <td>
                                 <input type="hidden" search-contacts value="{{ distributionPlanItem.contactPerson }}"
                                        ng-model="distributionPlanItem.contactPerson" required="required">
-                                <i class="glyphicon glyphicon-plus pull-right"></i>
                             </td>
 
                             <td>

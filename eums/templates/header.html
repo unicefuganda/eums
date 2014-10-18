@@ -2,17 +2,36 @@
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-            <a href="/"><img src="/static/app/media/unicef-logo-white.png" class="navbar-brand"></a>
+        <a href="/"><img src="/static/app/media/unicef-logo-white.png" class="navbar-brand"><span class="navbar-brand white">End User Monitoring System<span></a>
+{#        <a href="/" class="white">End User Monitoring System</a>#}
     </div>
 
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Logged in as {{ user }} <span class="caret"></span></a>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="">Logout</a></li>
-          </ul>
-        </li>
+    <ul class="nav navbar-nav navbar-right">
+     <li><a><span class="glyphicon glyphicon-user white"><span class="pad-left-5">{{ user }}</span></span></a><li>
+     <li><a href="">Logout</a><li>
+    </ul>
+  </div><!-- /.container-fluid -->
+</nav>
+<nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+      <ul class="nav navbar-nav navbar-left">
+        <li id="home-nav" ng-class="{ active: isActive('/')}"><a href="#">Dashboard</a></li>
+        <li id="distribution-plan-nav" ng-class="{ active: isActive('/distribution-planning,/distribution-plan/new/')} ">
+            <a href="#/distribution-planning">Distribution Planning</a></li>
+        <li><a href="">Reports</a></li>
       </ul>
-    </div><!-- /.navbar-collapse -->
+
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Admin</a></li>
+        <li><a href="#">Settings</a></li>
+        <li><a href="#">Help</a></li>
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-globe"></span><span class="pad-left-5">Uganda </span><span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="">Kenya</a></li>
+                <li><a href="">Tanzania</a></li>
+            </ul>
+      </ul>
   </div><!-- /.container-fluid -->
 </nav>

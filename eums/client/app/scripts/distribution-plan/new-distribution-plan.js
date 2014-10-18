@@ -277,7 +277,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 var list = JSON.parse(attrs.list);
 
                 element.select2({
-                    minimumInputLength: 1,
                     width: '150px',
                     query: function(query) {
                         var data = {results: []};
