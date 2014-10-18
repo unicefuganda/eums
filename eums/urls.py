@@ -12,6 +12,7 @@ from eums.api.programme.programme_endpoint import programmeRouter
 from eums.api.release_order.release_order_endpoint import releaseOrderRouter
 from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
 from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter
+from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
 from eums.api.user.user_endpoint import userRouter
 from eums.views import Home
 
@@ -37,5 +38,6 @@ urlpatterns = patterns(
     url(r'^api/', include(salesOrderRouter.urls)),
     url(r'^api/', include(releaseOrderRouter.urls)),
     url(r'^api/', include(salesOrderItemRouter.urls)),
+    url(r'^api/', include(distributionReportRouter.urls)),
     url(r'^api/', include(userRouter.urls))
 )
