@@ -19,7 +19,7 @@ from eums.models.run_queue import RunQueue
 from eums.models.flow import Flow
 from eums.models.release_order import ReleaseOrder
 from eums.models.release_order_item import ReleaseOrderItem
-
+from eums.models.distribution_report import DistributionReport
 
 __all__ = [
     'DistributionPlan',
@@ -43,5 +43,6 @@ __all__ = [
     'NumericQuestion',
     'Flow',
     'ReleaseOrder',
-    'ReleaseOrderItem'
+    'ReleaseOrderItem',
+    'DistributionReport'
 ]
