@@ -3,6 +3,11 @@
 angular.module('Home', ['GlobalStats'])
     .controller('HomeController', function(DistributionReportService, $scope) {
         DistributionReportService.getReports().then(function(returnedReports) {
-            $scope.totalStats = DistributionReportService.getTotals(returnedReports);
+            var reports = returnedReports;
+            $scope.totalStats = DistributionReportService.getTotals(reports);
+
+            $scope.updateTotalStats = function(filterOptions) {
+                $scope.totalStats =DistributionReportService.getTotals(reports, filterOptions);
+            }
         });
     });

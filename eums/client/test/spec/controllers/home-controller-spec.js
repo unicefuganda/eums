@@ -4,7 +4,10 @@ describe('Controller: Home', function() {
     beforeEach(module('Home'));
 
     var scope, mockReportService, getReportsPromise;
-    var stubReports = [{'id': 1, 'program_code': 'STEP'}];
+    var stubReports = [
+        {'id': 1, 'program_code': 'STEP'}
+    ];
+    var expectedStats = {received: 6, notReceived: 5, distributed: 4, notDistributed: 2};
 
     beforeEach(inject(function($controller, $rootScope) {
         mockReportService = jasmine.createSpyObj('mockReportService', ['getReports', 'getTotals']);
@@ -29,9 +32,19 @@ describe('Controller: Home', function() {
     });
 
     it('should get total global stats on load and put them on scope', function() {
-        var expectedStats = {received: 6, notReceived: 5, distributed: 4, notDistributed: 2};
         mockReportService.getTotals.and.returnValue(expectedStats);
         scope.$apply();
+        expect(scope.totalStats).toEqual(expectedStats);
+    });
+
+    it('should update totalStats on scope when update stats is called', function() {
+        var filterOptions = {consignee: 1, programme: 2};
+        mockReportService.getTotals.and.returnValue(expectedStats);
+        scope.$apply();
+
+        scope.updateTotalStats(filterOptions);
+
+        expect(mockReportService.getTotals).toHaveBeenCalledWith(stubReports, filterOptions);
         expect(scope.totalStats).toEqual(expectedStats);
     });
 });
