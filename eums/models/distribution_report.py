@@ -6,14 +6,9 @@ from eums.models import Consignee, Programme
 class DistributionReport(models.Model):
     consignee = models.ForeignKey(Consignee)
     programme = models.ForeignKey(Programme)
-    total_received_with_quality_issues = models.IntegerField()
-    total_received_with_quantity_issues = models.IntegerField()
-    total_received_without_issues = models.IntegerField()
+    total_received = models.IntegerField()
+    total_distributed = models.IntegerField()
     total_not_received = models.IntegerField()
-    total_distributed_with_quality_issues = models.IntegerField()
-    total_distributed_with_quantity_issues = models.IntegerField()
-    total_distributed_without_issues = models.IntegerField()
-    total_not_distributed = models.IntegerField()
 
     class Meta:
         unique_together = ('consignee', 'programme')

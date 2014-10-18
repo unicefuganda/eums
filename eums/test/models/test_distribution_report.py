@@ -10,12 +10,8 @@ class DistributionReportTest(TestCase):
         report = DistributionReport()
         fields_in_report = report._meta._name_map
 
-        self.assertEqual(len(report._meta.fields), 11)
-        for field in ['consignee', 'programme', 'total_received_with_quality_issues',
-                      'id', 'total_received_with_quantity_issues', 'total_received_without_issues',
-                      'total_not_received', 'total_distributed_with_quality_issues',
-                      'total_distributed_with_quantity_issues', 'total_distributed_without_issues',
-                      'total_not_distributed']:
+        self.assertEqual(len(report._meta.fields), 6)
+        for field in ['consignee', 'programme', 'total_received', 'id', 'total_not_received', 'total_distributed']:
             self.assertIn(field, fields_in_report)
 
     def test_string_representation_is_consignee_name_and_programme_name(self):

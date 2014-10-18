@@ -8,11 +8,7 @@ from eums.models import DistributionReport
 class DistributionReportSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionReport
-        fields = ('consignee', 'programme', 'total_received_with_quality_issues',
-                  'id', 'total_received_with_quantity_issues', 'total_received_without_issues',
-                  'total_not_received', 'total_distributed_with_quality_issues',
-                  'total_distributed_with_quantity_issues', 'total_distributed_without_issues',
-                  'total_not_distributed')
+        fields = ('consignee', 'programme', 'total_received', 'id', 'total_distributed', 'total_not_received')
 
 
 class DistributionReportViewSet(ModelViewSet):
