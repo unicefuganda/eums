@@ -24,5 +24,9 @@ class DistributionReportTest(TestCase):
         report = DistributionReport(consignee=consignee, programme=programme)
         self.assertEqual('%s, %s' % (consignee.name, programme.name), str(report))
 
+    def test_consignee_and_programme_should_be_unique_together(self):
+        report = DistributionReport()
+        self.assertEqual(report._meta.unique_together, (('consignee', 'programme'),))
+
     def tearDown(self):
         DistributionReport.objects.all().delete()
