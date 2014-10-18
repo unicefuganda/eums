@@ -1,6 +1,7 @@
 {
     "CONTACT_SERVICE_URL": "http://196.0.26.51/api/contacts/",
     "BACKEND_URLS": {
+        "DISTRIBUTION_REPORT": "/api/distribution-report/",
         "DISTRIBUTION_PLAN": "/api/distribution-plan/",
         "DISTRIBUTION_PLAN_NODE": "/api/distribution-plan-node/",
         "ITEM": "/api/item/",
