@@ -254,6 +254,7 @@ a, #distribution-plan-nav {
     z-index: 1000;
     position: absolute;
     right: 0;
+    background-color: transparent;
 }
 .navbar-second{
     top: 50px;
