@@ -8,6 +8,6 @@ angular.module('Home', ['GlobalStats'])
 
             $scope.updateTotalStats = function(filterOptions) {
                 $scope.totalStats =DistributionReportService.getTotals(reports, filterOptions);
-            }
+            };
         });
     });
