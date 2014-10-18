@@ -74,7 +74,7 @@ CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
 token = 'token' #TODO figure out a way to use environment variable with supervisor
-RAPIDPRO_API_TOKEN = token or os.environ['RAPIDPRO_API_TOKEN']
+RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', token)
 RAPIDPRO_URL = 'https://rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
