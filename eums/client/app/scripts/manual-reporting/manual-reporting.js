@@ -15,12 +15,12 @@ angular.module('ManualReporting', ['ngTable', 'siTable'])
             this.sortBy('date');
             this.sort.descending = false;
             $scope.purchaseOrders = [
-                {order_number: 1, date: '2013-01-01', description: 'Some Description'},
-                {order_number: 2, date: '2013-01-01', description: 'Some Description'},
-                {order_number: 3, date: '2013-01-01', description: 'Some Description'},
-                {order_number: 4, date: '2013-01-01', description: 'Some Description'},
-                {order_number: 5, date: '2013-01-01', description: 'Some Description'},
-                {order_number: 6, date: '2013-01-01', description: 'Some Description'}
+                {order_number: 65025072, date: '12/13/2012', description: 'Printer cartridges HP 21'},
+                {order_number: 65025072, date: '2/14/2013', description: 'Printer Cartridge HP 22'},
+                {order_number: 65025496, date: '2/14/2013', description: 'HP LaserJet Printer - P3015DN'},
+                {order_number: 65025623, date: '3/3/2013', description: 'Repair of HP printer 2024dn'},
+                {order_number: 65026064, date: '3/3/2013', description: 'Servicing of Fax'},
+                {order_number: 65026445, date: '3/25/2013', description: 'HP Toner 11A'}
             ];
         };
 
