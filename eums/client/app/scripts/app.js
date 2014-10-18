@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip'])
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting'])
     .config(function($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -20,6 +20,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
             .when('/distribution-plan/proceed/', {
                 templateUrl: '/static/app/views/distribution-planning/select-items.html',
                 controller: 'NewDistributionPlanController'
+            })
+            .when('/distribution-reporting', {
+                templateUrl: '/static/app/views/distribution-reporting/distribution-reporting.html',
+                controller: 'ManualReportingController'
             })
             .otherwise({
                 redirectTo: '/'

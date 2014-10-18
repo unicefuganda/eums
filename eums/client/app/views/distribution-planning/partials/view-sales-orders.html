@@ -36,9 +36,9 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+            <tr ng-repeat="purchaseOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
                 <td data-header="Document Number">
-                    <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.order_number }}</a>
+                    <a ng-click="selectSalesOrder(purchaseOrder)">{{ salesOrder.order_number }}</a>
                 </td>
                 <td data-header="Date Created">
                     {{ salesOrder.date }}
