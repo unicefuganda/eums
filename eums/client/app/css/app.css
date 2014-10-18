@@ -260,12 +260,15 @@ a, #distribution-plan-nav {
     top: 50px;
     background-color: #848383;
     opacity: 0.9;
+    min-height: 40px;
 }
 .navbar-second .navbar-nav>li>a{
     color: white;
+    padding-bottom: 10px;
+    padding-top: 10px;
 }
 .container-content{
-    padding-top: 20px;
+    padding-top: 10px;
 }
 .white{
     color: white !important;
