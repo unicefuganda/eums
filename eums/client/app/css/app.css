@@ -81,10 +81,6 @@ input[type=date] {
     margin-top: 6px;
 }
 
-#map {
-    height: 600px;
-}
-
 .form-elements {
     margin-bottom: 10px;
 }
@@ -275,4 +271,7 @@ a, #distribution-plan-nav {
 }
 .pad-left-5{
     padding-left: 5px;
+}
+.full-page{
+    height: 100%
 }
