@@ -80,6 +80,10 @@ input[type=date] {
     font-size: 10px;
 }
 
+.standard-font {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+}
+
 .table-select {
     width: 80px;
 }
