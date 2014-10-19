@@ -1,21 +1,13 @@
 <div id='marker-summary' class="table-responsive">
-    <h4 class="page-header"> {{ clickedMarker[0].consignee.name }}</h4>
-    <table class="table table-bordered table-condensed" ng-show="clickedMarker">
-        <thead>
-        <tr>
-            <th>Item</th>
-            <th>Amount Sent</th>
-            <th>Amount Received</th>
-            <th>Quality</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr ng-repeat="answer in clickedMarker">
-            <td>{{ answer.item }}</td>
-            <td>{{ answer.amountSent }}</td>
-            <td>{{ answer.amountReceived }}</td>
-            <td>{{ answer.qualityOfProduct }}</td>
-        </tr>
-        </tbody>
-    </table>
+    <div class="panel-header">{{ clickedMarker[0].consignee.name }}</div>
+    <ul class="list-group">
+      <li href="#" class="list-group-item" ng-repeat="answer in clickedMarker">
+        <h6 class="list-group-item-heading">{{ answer.item }}</h6>
+        <p class="list-group-item-text">
+            <span class="label label-default"> {{ answer.amountSent }} Sent</span>
+            <span class="label label-primary"> {{ answer.amountReceived }} Received</span>
+            <span class="label label-info"> {{ answer.qualityOfProduct }} </span>
+        </p>
+      </li>
+    </ul>
 </div>

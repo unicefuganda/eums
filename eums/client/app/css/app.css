@@ -299,16 +299,21 @@ a, #distribution-plan-nav {
     width: 100% !important;
 }
 
+#marker-summary {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    width: 280px;
+}
+
 #stats-panel {
     position: absolute;
     bottom: 23px;
     right: 15px;
-    z-index: 1000;
-    width: 200px;
+    width: 240px;
 }
 
-#stats-header {
-    padding: 2px 12px;
+.panel-header {
     background-color: rgba(0, 0, 0, 0.79);
     color: white;
     border-radius: 2px 2px 0 0;
