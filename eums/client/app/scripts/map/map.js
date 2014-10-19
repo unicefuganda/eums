@@ -325,10 +325,8 @@
     }).directive('mapFilter', function () {
         return{
             restrict: 'A',
-            templateUrl: '/static/app/views/partials/filters.html',
-            link: function (scope, elem, attrs) {
-
-            }
+            scope: true,
+            templateUrl: '/static/app/views/partials/filters.html'
         }
     }).directive('mapSummary', function () {
         return{
@@ -338,6 +336,7 @@
     }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService) {
             return {
                 restrict: 'A',
+                scope: true,
                 link: function (scope, elem) {
                     scope.shownMarkers = [];
                     ProgrammeService.fetchProgrammes().then(function (response) {
@@ -388,6 +387,7 @@
                                     });
                                 }
                             );
+                            scope.updateTotalStats({programme: newProgramme});
                         }
                     });
                 }
@@ -443,6 +443,7 @@
                                 });
                                 scope.shownMarkers = newShownMarkers;
                             });
+                            scope.updateTotalStats({consignee: selectedIp});
                         }
                     });
 
@@ -471,19 +472,19 @@
                 }
             }
 
-        }).directive('notDelivered', function(MapService){
+        }).directive('notDelivered', function (MapService) {
             return {
                 restrict: 'A',
                 link: function (scope) {
                     scope.$watch('filter.notDelivered', function (received) {
                         var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers,
-                        newShowinMarkers = [];
-                        if(!scope.deliveredChecked){
+                            newShowinMarkers = [];
+                        if (!scope.deliveredChecked) {
                             MapService.clearAllMarkers(scope);
                         }
 
                         if (received) {
-                            showMarkers.forEach(function (markerMap) {
+                            showMarkers && showMarkers.forEach(function (markerMap) {
                                 scope.notDeliveredChecked = true;
                                 var productReceived = markerMap.consigneeResponse.productReceived;
                                 if (productReceived && productReceived.toLowerCase() === 'no') {
