@@ -321,46 +321,58 @@
                         });
 
                     }).then(function (data) {
+                        var ga = [
+                            {id: '', text: 'Select a programme'}
+                        ];
                         $(elem).select2({
-                            data: data
+                            data: ga.concat(data)
                         });
                     });
 
-                    var nodeIdsEqual = function (nodes, nodeId) {
-                        return nodes.filter(function (node) {
-                            return node.data.id == nodeId
-                        })
-                    };
-
-                    var markerNotInFilteredNodes = function (nodeId, filteredNodes) {
-                        var nonEmptyNodes = filteredNodes.filter(function (node) {
-                            return node.length > 0
+                    function clearAllMarkers() {
+                        scope.allmarkers.forEach(function (markerNodeMap) {
+                            MapService.removeMarker(markerNodeMap.marker);
                         });
-                        var nodes = nonEmptyNodes[0];
-                        return (((typeof nodes == 'undefined') || nodeIdsEqual(nodes, nodeId).length <= 0));
-                    };
+                    }
+
+                    function addAllMarkers() {
+                        scope.allmarkers.forEach(function (markerNodeMap) {
+                            MapService.addMarker(markerNodeMap.marker);
+                        });
+                    }
+
+                    function addSelectedMarker(node) {
+                        scope.allmarkers.forEach(function (markerNodeMap) {
+                            if (markerNodeMap.node == node.data.id) {
+                                MapService.addMarker(markerNodeMap.marker);
+                            }
+                        });
+                    }
 
                     scope.$watch('programme', function (newProgramme) {
-                        FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
-                                var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
-                                    return DistributionPlanService.getNodes(plan)
-                                });
-                                $q.all(selectedPlanNodes).then(function (filteredNodes) {
-                                    scope.allmarkers.forEach(function (markerNodeMap) {
-                                        if (markerNotInFilteredNodes(markerNodeMap.node, filteredNodes)) {
-                                            MapService.removeMarker(markerNodeMap.marker);
-                                        }
+                        if (newProgramme == '') {
+                            addAllMarkers();
+                        } else {
+                            FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
+                                    var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
+                                        return DistributionPlanService.getNodes(plan)
                                     });
-                                });
 
-                                if (selectedProgramsPlans.length <= 0) {
-                                    scope.allmarkers.forEach(function (markerNodeMap) {
-                                       MapService.addMarker(markerNodeMap.marker);
-                                    })
+                                    var noneEmptyNodes = function (filteredNodes) {
+                                        return filteredNodes.filter(function (nodes) {
+                                            return nodes.length > 0;
+                                        });
+                                    };
+                                    $q.all(selectedPlanNodes).then(function (filteredNodes) {
+                                        clearAllMarkers();
+                                        var nonempty = noneEmptyNodes(filteredNodes)[0];
+                                        nonempty && nonempty.map(function (node) {
+                                            addSelectedMarker(node);
+                                        });
+                                    });
                                 }
-                            }
-                        )
-                        ;
+                            );
+                        }
                     });
                 }
             }
