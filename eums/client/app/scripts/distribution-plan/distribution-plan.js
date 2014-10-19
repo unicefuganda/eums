@@ -23,7 +23,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.sortArrowClass = function (criteria) {
-            var output = 'glyphicon glyphicon-arrow-down';
+            var output = '';
 
             if (this.sort.criteria === criteria) {
                 output = 'active glyphicon glyphicon-arrow-down';

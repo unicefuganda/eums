@@ -116,7 +116,7 @@ describe('DistributionPlanController', function() {
         it('should have the sort arrow icon on the order number column by default', function() {
             scope.initialize();
             scope.$apply();
-            expect(scope.sortArrowClass('')).toEqual('glyphicon glyphicon-arrow-down');
+            expect(scope.sortArrowClass('')).toEqual('');
         });
 
         it('should set the clicked column as active', function() {
