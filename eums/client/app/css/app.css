@@ -76,6 +76,10 @@ input[type=date] {
     }
 }
 
+.container {
+    width: 100%;
+}
+
 .line-order-panel {
     padding: 8px;
     margin-top: 6px;
@@ -263,6 +267,9 @@ a, #distribution-plan-nav {
     min-height: 40px;
     border-bottom: 3px solid black;
 }
+.navbar-second .container{
+    padding-left: 0px;
+}
 .navbar-second .navbar-nav>li>a{
     color: white;
     padding-bottom: 10px;
@@ -289,7 +296,7 @@ a, #distribution-plan-nav {
     bottom: 23px;
     right: 15px;
     z-index: 1000;
-    width: 280px;
+    width: 200px;
 }
 #stats-header{
     padding: 2px 12px;
