@@ -1,9 +1,9 @@
 <div class="container-fluid">
     <div class="content">
-     <ul class="nav nav-pills" style="margin-top: 30px; margin-bottom: 20px">
-         <li class="active"><a href="#/distribution-reporting">Purchase Orders</a></li>
-         <li><a href="#/distribution-reporting">Waybills</a></li>
-     </ul>
+        <ul class="nav nav-pills" style="margin-top: 30px; margin-bottom: 20px">
+            <li ng-class="{active: currentDocumentType === 'PO'}" ng-click="toggleDocumentType('PO')"><a href="">Purchase Orders</a></li>
+            <li ng-class="{active: currentDocumentType === 'WB'}" ng-click="toggleDocumentType('WB')"><a href="">Waybills</a></li>
+        </ul>
         <div class="panel panel-default line-order-panel">
             <div class="row">
                 <div class="col-xs-4 pull-right">
@@ -14,7 +14,7 @@
                                class="form-control"
                                name="filter"
                                ng-model="query"
-                               placeholder="Search by doc number, date or description"/>
+                               placeholder="Search by doc number, date or programme"/>
                     </div>
                 </div>
             </div>
@@ -25,8 +25,10 @@
                     <thead ng-init="initialize()">
                     <tr>
                         <th style="width: 20%">
-                            <a ng-click="sortBy('order_number')">PO Number <i
-                                    ng-class="sortArrowClass('order_number')"></i></a>
+                            <a ng-if="currentDocumentType === 'PO'" ng-click="sortBy('doc_number')">Purchase Order
+                                <i ng-class="sortArrowClass('doc_number')"></i></a>
+                            <a ng-if="currentDocumentType === 'WB'" ng-click="sortBy('doc_number')">Waybill
+                                <i ng-class="sortArrowClass('doc_number')"></i></a>
                         </th>
                         <th style="width: 30%">
                             <a ng-click="sortBy('date')">Date Created
@@ -34,28 +36,28 @@
                             </a>
                         </th>
                         <th style="width: 50%">
-                            <a ng-click="sortBy('description')">Short Description
-                                <i ng-class="sortArrowClass('description')"></i>
+                            <a ng-click="sortBy('programme')">Programme
+                                <i ng-class="sortArrowClass('programme')"></i>
                             </a>
                         </th>
                     </tr>
                     </thead>
 
                     <tbody>
-                    <tr ng-repeat="purchaseOrder in purchaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+                    <tr ng-repeat="document in documents | documentFilter: query | orderBy: sort.criteria:!sort.descending">
                         <td data-header="Document Number">
-                            <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.order_number }}</a>
+                            <a ng-click="selectDocument(document)">{{ document.doc_number }}</a>
                         </td>
                         <td data-header="Date Created">
-                            {{ purchaseOrder.date }}
+                            {{ document.date }}
                         </td>
-                        <td data-header="Description">
-                            {{ purchaseOrder.description }}
+                        <td data-header="Programme">
+                            {{ document.programme }}
                         </td>
                     </tr>
                     </tbody>
                 <span class="information message alert-info"
-                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | purchaseOrderFilter: query).length == 0">
+                      ng-show="documents.length > 0 && (documents | documentFilter: query).length == 0">
                 There are no matches to your search criteria.
                 </span>
                 </table>

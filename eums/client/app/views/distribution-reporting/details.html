@@ -3,7 +3,8 @@
         <div ng-show="reportSaved">
             <alert type="success">Report saved.</alert>
         </div>
-        <h4 class="page-header">Report By PO Number: {{ document.order_number }} PCR: {{ document.programme }}</h4>
+        <h4 ng-if="currentDocumentType === 'PO'" class="page-header">Report By PO: {{ document.order_number }} PCR: {{ document.programme }}</h4>
+        <h4 ng-if="currentDocumentType === 'WB'" class="page-header">Report By Waybill: {{ document.order_number }} PCR: {{ document.programme }}</h4>
 
         <div class="panel panel-default line-order-panel">
             <div class="panel-title">
@@ -99,7 +100,6 @@
             </div>
         </div>
 
-        {{ documentItemSelected.responses }}
         <div>
             <button ng-show="document.items" type="button" class="btn btn-primary" ng-click="addResponse()">
                 <i class="glyphicon glyphicon-plus"></i>Add End User
