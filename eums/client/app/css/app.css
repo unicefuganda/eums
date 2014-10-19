@@ -27,12 +27,9 @@ html, body {
     width: 100%;
 }
 
-#login-body{
-    background: #0099ff;
-}
 .login-row{
     margin: 150px 0 2px 0;
-    background: #0099ff;
+    background: #1CABE2;
     color: #ffffff;
     border-radius: 3px;
     border: 1px solid #ffffff;
@@ -46,10 +43,10 @@ html, body {
   padding: 5px;
   border: none;
   border-radius: 4px;
+  color: black;
   height: auto;
   margin: 10px 0 0 10px;
   width:230px;
-  background: lightblue;
 }
 .login-form{
     margin-left: 20px;
@@ -66,7 +63,7 @@ html, body {
     margin-top: 5px;
     padding: 12px;
     width: 95px;
-    background: #0099ff;
+    background: #05A0DA;
     border: 1px solid #ffffff;
     color: #ffffff;
 
