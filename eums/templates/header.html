@@ -15,11 +15,12 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
   <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
-      <ul class="nav navbar-nav navbar-left">
+      <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
         <li id="home-nav" ng-class="{ active: isActive('/')}"><a href="#">Dashboard</a></li>
         <li id="distribution-plan-nav" ng-class="{ active: isActive('/distribution-planning,/distribution-plan/new/')} ">
-            <a href="#/distribution-planning">Distribution Planning</a></li>
-          <li><a href="#/distribution-reporting">Distribution Reporting</a></li>
+            <a href="#/distribution-planning">Distribution Plan</a></li>
+          <li ng-class="{ active: isActive('/distribution-reporting')}">
+            <a href="#/distribution-reporting">Distribution Reporting</a></li>
           <li><a href="">Reports</a></li>
       </ul>
 

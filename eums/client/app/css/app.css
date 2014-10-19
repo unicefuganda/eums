@@ -261,6 +261,7 @@ a, #distribution-plan-nav {
     background-color: #848383;
     opacity: 0.9;
     min-height: 40px;
+    border-bottom: 3px solid black;
 }
 .navbar-second .navbar-nav>li>a{
     color: white;
