@@ -138,7 +138,10 @@
 
         function initMap(elementId) {
             var map = L.map(elementId, {
-                zoomControl: true
+                zoomControl: true,
+                scrollWheelZoom: false,
+                touchZoom: false,
+                doubleClickZoom: false,
             }).setView([1.436, 32.884], 7);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -256,6 +259,13 @@
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
+                    scope.filter = {};
+                    scope.clickedMarker = '';
+                    scope.allmarkers = [];
+                    scope.shownMarkers = [];
+                    scope.programme = '';
+                    scope.notDeliveredChecked = false;
+                    scope.deliveredChecked = null;
 
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
@@ -475,8 +485,14 @@
                     scope.$watch('filter.notDelivered', function (received) {
                         var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers,
                             newShowinMarkers = [];
-                        if (!scope.deliveredChecked) {
+                        if(scope.deliveredChecked == null || !received){
                             MapService.clearAllMarkers(scope);
+                            MapService.addMarkers(scope);
+                        }else if (scope.deliveredChecked == false){
+                            var shown = scope.shownMarkers
+                            shown && shown.forEach(function(markerMap){
+                                MapService.removeMarker(markerMap.marker)
+                            });
                         }
 
                         if (received) {
@@ -488,7 +504,8 @@
                                 }
                             });
                         } else {
-                            showMarkers.forEach(function (markerMap) {
+                            MapService.addMarkers(scope);
+                            showMarkers && showMarkers.forEach(function (markerMap) {
                                 scope.notDeliveredChecked = false;
                                 var productReceived = markerMap.consigneeResponse.productReceived;
                                 if (productReceived && productReceived.toLowerCase() === 'no') {

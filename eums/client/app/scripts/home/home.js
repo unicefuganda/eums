@@ -3,7 +3,7 @@
 angular.module('Home', ['GlobalStats'])
     .controller('HomeController', function (DistributionReportService, $scope) {
         $scope.filter = {};
-        $scope.clickedMarker = "";
+        $scope.clickedMarker = '';
         $scope.allmarkers = [];
         $scope.shownMarkers = [];
         $scope.programme = '';
