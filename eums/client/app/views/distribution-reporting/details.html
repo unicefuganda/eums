@@ -47,7 +47,7 @@
                         <th class="col-lg-1">Quantity</th>
                         <th class="col-lg-1">Date of Receipt</th>
                         <th class="col-lg-1">Quality</th>
-                        <th class="col-lg-1">Remark</th>
+                        <th class="col-lg-3">Remark</th>
 
                         <tr ng-repeat="response in documentItemSelected.responses">
                             <td>
@@ -90,7 +90,7 @@
                             </td>
 
                             <td>
-                                <input type="text" class="input" ng-model="response.remark"
+                                <input type="text" class="input" style="width: 100%" ng-model="response.remark"
                                        value="{{ response.remark }}">
                             </td>
                         </tr>
@@ -101,7 +101,7 @@
         </div>
 
         <div>
-            <button ng-show="document.items" type="button" class="btn btn-primary" ng-click="addResponse()">
+            <button ng-show="documentItemSelected" type="button" class="btn btn-primary" ng-click="addResponse()">
                 <i class="glyphicon glyphicon-plus"></i>Add End User
             </button>
             <div ng-show="documentItemSelected.responses" style="float: right">
