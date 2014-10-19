@@ -12,7 +12,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             }
         };
     })
-    .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, Districts) {
+    .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, Districts, $timeout) {
         $scope.sortBy = $sorter;
 
         // Should be in another controller
@@ -47,8 +47,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             return output;
         };
 
-        $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
-            console.log('**************', 'Purchase order selected', selectedPurchaseOrder, '**************');
+        $scope.selectPurchaseOrder = function () {
             var orderDetails = {id: 1, order_number: 6654353, date: '2014-10-03', description: 'Printer cartridges HP 21', programme: 'Safe programme',
                 items: [
                     {id: 1, description: 'Printer cartridges HP 21', material_code: '213442', quantity: 20, unit: 'kgs',
@@ -70,6 +69,23 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             $location.path('/distribution-reporting/details/');
         };
 
+        $scope.addResponse = function () {
+            $scope.documentItemSelected.responses.push({
+                received: '',
+                quantity: '',
+                consignee: '',
+                dateReceived: '',
+                quality: '',
+                location: ''
+            });
+        };
+
+        $scope.saveResponses = function() {
+            $scope.reportSaved = true;
+            $timeout(function() {
+                $scope.reportSaved = false;
+            }, 2000);
+        };
     })
     .filter('purchaseOrderFilter', function ($filter) {
         return  function (purchaseOrders, query) {
