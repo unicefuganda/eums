@@ -284,3 +284,20 @@ a, #distribution-plan-nav {
 .select2-container {
     width: 100% !important;
 }
+#stats-panel{
+    position: absolute;
+    bottom: 23px;
+    right: 15px;
+    z-index: 1000;
+    width: 280px;
+}
+#stats-header{
+    padding: 2px 12px;
+    background-color: rgba(0, 0, 0, 0.79);
+    color: white;
+    border-radius: 2px 2px 0 0;
+    -moz-border-radius: 2px 2px 0 0;
+    -web-kit-border-radius: 2px 2px 0 0;
+    font-weight: bold;
+    text-align: center;
+}
