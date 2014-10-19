@@ -85,7 +85,7 @@ table tbody {
 }
 
 table thead tr {
-    background-color: #036F98;
+    background-color: #6FC9EB;
 }
 
 table thead tr th:hover {
@@ -102,11 +102,11 @@ table thead a:hover {
 }
 
 table tbody tr:nth-child(even) {
-    background-color: #D3F1FD;
+    background-color: #E3F4FB;
 }
 
 table tbody tr:nth-child(odd) {
-    background-color: #D3F1FD;
+    background-color: #E3F4FB;
 }
 
 .table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
@@ -383,6 +383,16 @@ a, #distribution-plan-nav {
     position: absolute;
     right: 0;
     background-color: transparent;
+}
+
+.nav-pills > li > a {
+    background-color: #6FC9EB;
+    color: white;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    color: white;
+    background-color: #1CABE2;
 }
 
 .navbar {
