@@ -1,13 +1,13 @@
 (function (module) {
 
-    function getNumberof(receivedCriteria, data) {
+    function getNumberOf(receivedCriteria, data) {
         return data.filter(function (answer) {
             return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase();
         });
     }
 
     function getPinColourFromResponses(data) {
-        var noProductRecieved = getNumberof("yes", data).length;
+        var noProductRecieved = getNumberOf("yes", data).length;
         var RED = '#DF0101', GREEN = '#088A29', YELLOW = '#FFFF00';
         if (noProductRecieved === data.length) return GREEN;
         if (noProductRecieved > 0 && noProductRecieved < data.length) return YELLOW;
@@ -138,7 +138,7 @@
 
         function initMap(elementId) {
             var map = L.map(elementId, {
-                zoomControl: false
+                zoomControl: true
             }).setView([1.436, 32.884], 7);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -250,8 +250,7 @@
                                         var markerData = JSON.parse(JSON.parse(response.data));
                                         var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
                                         var consigneeResponse = markerData[0];
-                                        var items = {marker: marker, node: consigneeResponse.id};
-                                        consigneeResponse && map.addMarker(marker) && scope.allmarkers.push(items);
+                                        consigneeResponse && map.addMarker(marker) && scope.allmarkers.push({marker: marker, node: consigneeResponse.node});
                                     });
 
                                 });
@@ -275,18 +274,22 @@
                 var panel = $(element);
 
                 var togglePanel = function () {
-                    var $closePannel = $('.close-panel span');
+                    var $closePanel = $('.close-panel span'),
+                        zoomControl = $('.leaflet-control-zoom');
                     if (scope.expanded) {
                         panel.animate(collapseAnimation);
                         scope.expanded = false;
-                        $closePannel.removeClass("glyphicon-chevron-down");
-                        $closePannel.addClass("glyphicon-chevron-up");
+                        $closePanel.removeClass("glyphicon-chevron-down");
+                        $closePanel.addClass("glyphicon-chevron-up");
+                        zoomControl.addClass('leaflet-control-zoom-left');
+                        zoomControl.removeClass('leaflet-control-zoom');
 
                     } else {
                         panel.animate(expandAnimation);
                         scope.expanded = true;
-                        $closePannel.removeClass("glyphicon-chevron-up");
-                        $closePannel.addClass("glyphicon-chevron-down");
+                        $('.leaflet-control-zoom-left').addClass('leaflet-control-zoom');
+                        $closePanel.removeClass("glyphicon-chevron-up");
+                        $closePanel.addClass("glyphicon-chevron-down");
                     }
                     return false;
                 };
@@ -309,59 +312,76 @@
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
     }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService) {
-        return {
-            restrict: 'A',
-            link: function (scope, elem) {
-                ProgrammeService.fetchProgrammes().then(function (response) {
-                    return response.data.map(function (programe) {
-                        return {id: programe.id, text: programe.name}
-                    });
-
-                }).then(function (data) {
-                    $(elem).select2({
-                        data: data
-                    });
-                });
-
-                function notIn(nodeId, filteredNodes) {
-                    return filteredNodes.filter(function (node) {
-                        return node.data.id == nodeId
-                    }).length < 0
-                }
-
-                scope.$watch('programme', function (newProgramme) {
-                    FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
-                        var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
-                            return DistributionPlanService.getNodes(plan)
+            return {
+                restrict: 'A',
+                link: function (scope, elem) {
+                    ProgrammeService.fetchProgrammes().then(function (response) {
+                        return response.data.map(function (programe) {
+                            return {id: programe.id, text: programe.name}
                         });
-                        $q.all(selectedPlanNodes).then(function (filteredNodes) {
-                            console.log(filteredNodes);
-                            scope.allmarkers.map(function (markerNodeMap) {
-                                console.log((notIn(markerNodeMap.id, filteredNodes)));
-                                if (notIn(markerNodeMap.id, filteredNodes)) {
-                                    MapService.removeLayer(markerNodeMap.marker)
+
+                    }).then(function (data) {
+                        $(elem).select2({
+                            data: data
+                        });
+                    });
+
+                    var nodeIdsEqual = function (nodes, nodeId) {
+                        return nodes.filter(function (node) {
+                            return node.data.id == nodeId
+                        })
+                    };
+
+                    var markerNotInFilteredNodes = function (nodeId, filteredNodes) {
+                        var nonEmptyNodes = filteredNodes.filter(function (node) {
+                            return node.length > 0
+                        });
+                        var nodes = nonEmptyNodes[0];
+                        return (((typeof nodes == 'undefined') || nodeIdsEqual(nodes, nodeId).length <= 0));
+                    };
+
+                    scope.$watch('programme', function (newProgramme) {
+                        FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
+                                var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
+                                    return DistributionPlanService.getNodes(plan)
+                                });
+                                $q.all(selectedPlanNodes).then(function (filteredNodes) {
+                                    scope.allmarkers.forEach(function (markerNodeMap) {
+                                        if (markerNotInFilteredNodes(markerNodeMap.node, filteredNodes)) {
+                                            MapService.removeMarker(markerNodeMap.marker);
+                                        }
+                                    });
+                                });
+
+                                if (selectedProgramsPlans.length <= 0) {
+                                    scope.allmarkers.forEach(function (markerNodeMap) {
+                                       MapService.addMarker(markerNodeMap.marker);
+                                    })
                                 }
-                            });
-                        });
+                            }
+                        )
+                        ;
                     });
-                });
+                }
             }
         }
-    }).factory('FilterService', function (DistributionPlanService) {
-        function filterPlanById(distributionPlans, programmeId) {
-            return distributionPlans.data.filter(function (plan) {
-                return plan.programme == programmeId;
-            });
-        }
+    ).
+        factory('FilterService', function (DistributionPlanService) {
 
-        return {
-            getDistributionPlansBy: function (programmeId) {
-                return DistributionPlanService.fetchPlans().then(function (allDistributioPlans) {
-                    return filterPlanById(allDistributioPlans, programmeId);
+            var filterPlanById = function (distributionPlans, programmeId) {
+                return distributionPlans.data.filter(function (plan) {
+                    return plan.programme == programmeId;
                 });
+            };
+
+            return {
+                getDistributionPlansBy: function (programmeId) {
+                    return DistributionPlanService.fetchPlans().then(function (allDistributionPlans) {
+                        return filterPlanById(allDistributionPlans, programmeId);
+                    });
+                }
             }
-        }
-    });
+        });
 
 })
 (angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan']));

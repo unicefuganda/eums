@@ -45,7 +45,7 @@ class DistributionPlanEndPointTest(APITestCase):
         response_data = json.loads(response.data)
         consignee = node.consignee
 
-        expected_data = {u'item': u'10 bags of salt', u'amountSent': 100,
+        expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name},
                          u'%s' % numeric_question.label: u'%s' % numeric_answer_one.format(),
                          u'%s' % multichoice_question.label: u'%s' % multiple_answer_one.format()}

@@ -260,45 +260,54 @@ a, #distribution-plan-nav {
     right: 0;
     background-color: transparent;
 }
-.navbar-second{
+
+.navbar-second {
     top: 50px;
     background-color: #848383;
     opacity: 0.9;
     min-height: 40px;
     border-bottom: 3px solid black;
 }
-.navbar-second .container{
+
+.navbar-second .container {
     padding-left: 0px;
 }
-.navbar-second .navbar-nav>li>a{
+
+.navbar-second .navbar-nav > li > a {
     color: white;
     padding-bottom: 10px;
     padding-top: 10px;
 }
-.container-content{
+
+.container-content {
     padding-top: 10px;
 }
-.white{
+
+.white {
     color: white !important;
 }
-.pad-left-5{
+
+.pad-left-5 {
     padding-left: 5px;
 }
-.full-page{
+
+.full-page {
     height: 100%
 }
 
 .select2-container {
     width: 100% !important;
 }
-#stats-panel{
+
+#stats-panel {
     position: absolute;
     bottom: 23px;
     right: 15px;
     z-index: 1000;
     width: 200px;
 }
-#stats-header{
+
+#stats-header {
     padding: 2px 12px;
     background-color: rgba(0, 0, 0, 0.79);
     color: white;
@@ -307,4 +316,14 @@ a, #distribution-plan-nav {
     -web-kit-border-radius: 2px 2px 0 0;
     font-weight: bold;
     text-align: center;
+}
+
+.leaflet-control-zoom {
+    left: 265px;
+    top: -9px;
+}
+
+.addZoomControl {
+    left: 265px;
+    top: -9px;
 }
