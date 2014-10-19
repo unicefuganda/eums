@@ -1,5 +1,4 @@
 (function (module) {
-
     function getNumberOf(receivedCriteria, data) {
         return data.filter(function (answer) {
             return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase();
@@ -133,6 +132,7 @@
         }
     });
 
+
     module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q) {
         var map;
 
@@ -188,6 +188,20 @@
             removeMarker: function (marker) {
                 map.removeLayer(marker);
             },
+            clearAllMarkers: function (scope) {
+                var self = this;
+                scope.allmarkers.forEach(function (markerNodeMap) {
+                    self.removeMarker(markerNodeMap.marker);
+                });
+            },
+
+            addAllMarkers: function (scope) {
+                var self = this;
+                scope.allmarkers.forEach(function (markerNodeMap) {
+                    self.addMarker(markerNodeMap.marker);
+                });
+            },
+
             highlightLayer: function (layerName) {
                 LayerMap.selectLayer(layerName.toLowerCase());
             },
@@ -240,6 +254,7 @@
                     $window.map = map;
                     scope.clickedMarker = "";
                     scope.allmarkers = [];
+                    scope.shownMarkers = [];
                     scope.programme = '';
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
@@ -250,7 +265,7 @@
                                         var markerData = JSON.parse(JSON.parse(response.data));
                                         var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
                                         var consigneeResponse = markerData[0];
-                                        consigneeResponse && map.addMarker(marker) && scope.allmarkers.push({marker: marker, node: consigneeResponse.node});
+                                        consigneeResponse && map.addMarker(marker) && scope.allmarkers.push({marker: marker, consigneeResponse: consigneeResponse});
                                     });
 
                                 });
@@ -315,35 +330,27 @@
             return {
                 restrict: 'A',
                 link: function (scope, elem) {
+                    scope.shownMarkers = [];
                     ProgrammeService.fetchProgrammes().then(function (response) {
                         return response.data.map(function (programe) {
                             return {id: programe.id, text: programe.name}
                         });
 
                     }).then(function (data) {
-                        var ga = [
+                        var defaultProgramme = [
                             {id: '', text: 'Select a programme'}
                         ];
                         $(elem).select2({
-                            data: ga.concat(data)
+                            data: defaultProgramme.concat(data)
                         });
                     });
 
-                    function clearAllMarkers() {
-                        scope.allmarkers.forEach(function (markerNodeMap) {
-                            MapService.removeMarker(markerNodeMap.marker);
-                        });
-                    }
-
-                    function addAllMarkers() {
-                        scope.allmarkers.forEach(function (markerNodeMap) {
-                            MapService.addMarker(markerNodeMap.marker);
-                        });
-                    }
 
                     function addSelectedMarker(node) {
+                        scope.shownMarkers = [];
                         scope.allmarkers.forEach(function (markerNodeMap) {
-                            if (markerNodeMap.node == node.data.id) {
+                            if (markerNodeMap.consigneeResponse.node == node.data.id) {
+                                scope.shownMarkers.push(markerNodeMap);
                                 MapService.addMarker(markerNodeMap.marker);
                             }
                         });
@@ -351,7 +358,7 @@
 
                     scope.$watch('programme', function (newProgramme) {
                         if (newProgramme == '') {
-                            addAllMarkers();
+                            MapService.addAllMarkers(scope);
                         } else {
                             FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
                                     var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
@@ -364,7 +371,7 @@
                                         });
                                     };
                                     $q.all(selectedPlanNodes).then(function (filteredNodes) {
-                                        clearAllMarkers();
+                                        MapService.clearAllMarkers(scope);
                                         var nonempty = noneEmptyNodes(filteredNodes)[0];
                                         nonempty && nonempty.map(function (node) {
                                             addSelectedMarker(node);
@@ -377,8 +384,62 @@
                 }
             }
         }
-    ).
-        factory('FilterService', function (DistributionPlanService) {
+    ).directive('selectIP', function (ProgrammeService, FilterService, DistributionPlanService, ConsigneeService, $q, MapService) {
+            return {
+                restrict: 'A',
+                link: function (scope, elem) {
+                    DistributionPlanService.getAllPlansNodes().then(function (responses) {
+                        var ips = responses.filter(function (response) {
+                            return !response.data.parent;
+                        });
+                        var dataPromises = ips.map(function (ip) {
+                            return ConsigneeService.getConsigneeById(ip.data.consignee).then(function (consignee) {
+                                return {
+                                    id: ip.data.id,
+                                    text: consignee.name
+                                }
+                            });
+                        });
+
+                        return $q.all(dataPromises);
+                    }).then(function (data) {
+                        var defaultIP = [
+                            {id: '', text: 'Select implementing partner'}
+                        ];
+                        $(elem).select2({
+                            data: defaultIP.concat(data)
+                        });
+                    });
+
+                    scope.$watch('ip', function (selectedIp) {
+                        if (selectedIp === '') {
+                            MapService.addAllMarkers(scope);
+                        } else {
+                            var newShownMarkers = [];
+                            var shownMarkers = scope.shownMarkers;
+
+                            if (shownMarkers.length === 0) {
+                                shownMarkers = scope.allmarkers;
+                            }
+
+                            DistributionPlanService.getNodesBy(selectedIp).then(function (data) {
+                                MapService.clearAllMarkers(scope);
+                                data.map(function (node) {
+                                    shownMarkers && shownMarkers.forEach(function (markerMap) {
+                                        if (markerMap.consigneeResponse.node == node.data.id) {
+                                            MapService.addMarker(markerMap.marker);
+                                            newShownMarkers.push(markerMap);
+                                        }
+                                    });
+                                });
+                                scope.shownMarkers = newShownMarkers;
+                            });
+                        }
+                    });
+
+                }
+            }
+        }).factory('FilterService', function (DistributionPlanService) {
 
             var filterPlanById = function (distributionPlans, programmeId) {
                 return distributionPlans.data.filter(function (plan) {

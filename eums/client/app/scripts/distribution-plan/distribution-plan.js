@@ -148,6 +148,13 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     });
                 });
             },
+            getNodesBy: function (ipId) {
+                return this.getAllPlansNodes().then(function (nodes) {
+                    return nodes.filter(function (node) {
+                        return parseInt(node.data.parent) === parseInt(ipId);
+                    });
+                });
+            },
             getPlanById: function (planId) {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/');
             },
