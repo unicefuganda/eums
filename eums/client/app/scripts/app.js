@@ -25,6 +25,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/distribution-reporting/distribution-reporting.html',
                 controller: 'ManualReportingController'
             })
+            .when('/distribution-reporting/details', {
+                templateUrl: '/static/app/views/distribution-reporting/details.html',
+                controller: 'ManualReportingController'
+            })
             .otherwise({
                 redirectTo: '/'
             });

@@ -1,0 +1,107 @@
+<div class="container-fluid">
+    <div ng-controller="ManualReportingController" class="content">
+        <h4 class="page-header">Report By: PO NUmber: {{ document.order_number }} PCR: {{ document.programme }}</h4>
+
+        <div class="panel panel-default line-order-panel">
+            <div class="panel-title">
+                <div class="panel-body">
+                    <div class="form-group form-group-sm col-lg-4">
+                        <select ng-model="documentItemSelected" required="required"
+                                class="form-control input-sm"
+                                ng-options="documentItem.description for documentItem in document.items">
+                            <option value="" selected="selected">Select Item</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div ng-show="documentItemSelected">
+                    <table class="table table-hover table-striped table-bordered">
+                        <th>Short Description</th>
+                        <th>Material Code</th>
+                        <th>Quantity</th>
+                        <th>Unit</th>
+
+                        <tr>
+                            <td>{{ documentItemSelected.description }}</td>
+                            <td>{{ documentItemSelected.material_code }}</td>
+                            <td>{{ documentItemSelected.quantity }}</td>
+                            <td>{{ documentItemSelected.unit }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div ng-show="document.items" class="panel panel-default">
+            <div class="panel-body">
+                <div ng-show="documentItemSelected.responses">
+                    <table id="distributionPlanTable"
+                           class="table table-bordered table-striped table-hover">
+                        <th class="col-lg-1">Recipient</th>
+                        <th class="col-lg-1">Received</th>
+                        <th class="col-lg-1">Quantity</th>
+                        <th class="col-lg-1">Date of Receipt</th>
+                        <th class="col-lg-1">Quality</th>
+                        <th class="col-lg-1">Region/District</th>
+                        <th class="col-lg-1">Remark</th>
+
+                        <tr ng-repeat="response in documentItemSelected.responses">
+                            <td>
+                                <input type="text" class="input" ng-model="response.consignee"
+                                       value="{{ response.consignee }}">
+                            </td>
+                            <td>
+                                <input type="hidden" search-from-list
+                                       list='[{"id": "YES", "name": "Yes"},
+                                        {"id": "NO", "name": "No"}]'
+                                       ng-model="response.received"
+                                       value="{{ response.received }}">
+                            </td>
+                            <td>
+                                <input type="number" ng-model="response.quantity" value="{{ response.quantity }}">
+                            </td>
+
+                            <td>
+                                <input type="date" ng-model="response.dateReceived"
+                                       value="{{ response.dateReceived }}">
+                            </td>
+
+                            <td>
+                                <input type="hidden" search-from-list
+                                       list='[{"id": "Damaged", "name": "Damaged"},
+                                        {"id": "Expired", "name": "Expired"},
+                                        {"id": "Substandard", "name": "Substandard"},
+                                        {"id": "Unclassified", "name": "Other"},
+                                        {"id": "Good", "name": "Good"}]'
+                                       ng-model="response.quality"
+                                       value="{{ response.quality }}">
+                            </td>
+
+                            <td>
+                                <input type="hidden" search-from-list list="{{ districts }}"
+                                       ng-model="response.location" value="{{ response.location }}">
+                            </td>
+                            <td>
+                                <input type="text" class="input" ng-model="response.remark"
+                                       value="{{ response.remark }}">
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+        <div>
+            <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
+                    ng-click="addDistributionPlanItem()"><i
+                    class="glyphicon glyphicon-plus"> </i>Add IP
+            </button>
+            <div ng-show="hasDistributionPlanItems" style="float: right">
+                <button type="button" class="btn btn-primary"
+                        ng-click="saveDistributionPlanItems(distributionPlanItems)"><i
+                        class="glyphicon glyphicon-save"> </i>Save
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
