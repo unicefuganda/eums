@@ -323,6 +323,19 @@ a, #distribution-plan-nav {
     text-align: center;
 }
 
+.pad-20{
+    padding: 20px;
+}
+
+.no-side-padding{
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.no-side-padding ul{
+    margin-bottom: 0px;
+}
+
 .leaflet-control-zoom {
     left: 265px;
     top: -9px;
@@ -332,7 +345,10 @@ a, #distribution-plan-nav {
     left: 265px;
     top: -9px;
 }
-
+#materialItems{
+    margin-right: 20px;
+    padding: 10px;
+}
 .disabled {
     background-color: dimgray;
 }

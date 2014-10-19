@@ -1,39 +1,51 @@
 <div class="container-fluid">
     <div ng-controller="NewDistributionPlanController" ng-init="initialize()" class="content">
         <div  ng-show="planSaved"><alert type="success">Plan saved.</alert></div>
-        <h4 class="page-header">Create A Distribution Plan</h4>
+        <h4 class="page-header">Create A Distribution Plan for Sales Order:
+            <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
+            <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span></span>
+        </h4>
 
-        <div class="panel panel-default line-order-panel">
-            <div class="panel-title">
-                <div class="panel-body">
-                    <div class="form-group form-group-sm col-lg-4">
-                        <select ng-model="salesOrderItemSelected" required="required"
-                                class="form-control input-sm"
-                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="" selected="selected">Select Item</option>
-                        </select>
-                    </div>
+        <div ng-show="hasSalesOrderItems">
+            <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
+        </div>
+
+        <div class="row">
+            <div class="form-group form-group-sm col-lg-4">
+                <label for="selectSalesOrder" class="col-lg-4 control-label">Item Description:</label>
+                <div class="col-lg-8">
+                    <select id="selectSalesOrder" ng-model="salesOrderItemSelected" required="required"
+                            class="form-control input-sm"
+                            ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                        <option value="" selected="selected">Select Item</option>
+                    </select>
                 </div>
+            </div>
 
-                <div ng-show="hasSalesOrderItems">
-                    <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
-                    <table class="table table-hover table-striped table-bordered">
-                        <th>Sales Order</th>
-                        <th>Material</th>
-                        <th>Item Description</th>
-                        <th>Quantity</th>
-                        <th>Unit</th>
-                        <th>Programme</th>
-
-                        <tr>
-                            <td>{{ selectedSalesOrder.order_number }}</td>
-                            <td>{{ salesOrderItemSelected.material_code }}</td>
-                            <td>{{ salesOrderItemSelected.display }}</td>
-                            <td>{{ salesOrderItemSelected.quantity }}</td>
-                            <td>{{ salesOrderItemSelected.unit }}</td>
-                            <td>{{ selectedSalesOrder.programme.name }}</td>
-                        </tr>
-                    </table>
+            <div ng-show="hasSalesOrderItems" id="materialItems" class="well col-lg-7 pull-right">
+                <div class="col-lg-6 no-side-padding">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ salesOrderItemSelected.material_code }}</span>
+                        Material Code
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ salesOrderItemSelected.display }}</span>
+                        Item Description
+                      </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 no-side-padding">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ salesOrderItemSelected.quantity }}</span>
+                        Quantity
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ salesOrderItemSelected.unit }}</span>
+                        Unit
+                      </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -97,17 +109,17 @@
                 </div>
 
             </div>
-        </div>
-        <div>
-            <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
-                    ng-click="addDistributionPlanItem()"><i
-                    class="glyphicon glyphicon-plus"> </i>Add IP
-            </button>
-            <div ng-show="hasDistributionPlanItems" style="float: right">
-                <button type="button" class="btn btn-primary"
-                        ng-click="saveDistributionPlanItems(distributionPlanItems)"><i
-                        class="glyphicon glyphicon-save"> </i>Save
+            <div class="pad-20">
+                <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
+                        ng-click="addDistributionPlanItem()"><i
+                        class="glyphicon glyphicon-plus"> </i>Add IP
                 </button>
+                <div ng-show="hasDistributionPlanItems" style="float: right">
+                    <button type="button" class="btn btn-primary"
+                            ng-click="saveDistributionPlanItems(distributionPlanItems)"><i
+                            class="glyphicon glyphicon-save"> </i>Save
+                    </button>
+                </div>
             </div>
         </div>
     </div>
