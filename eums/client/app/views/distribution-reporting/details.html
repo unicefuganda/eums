@@ -38,17 +38,21 @@
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover">
                         <th class="col-lg-1">Recipient</th>
+                        <th class="col-lg-1">Region/District</th>
                         <th class="col-lg-1">Received</th>
                         <th class="col-lg-1">Quantity</th>
                         <th class="col-lg-1">Date of Receipt</th>
                         <th class="col-lg-1">Quality</th>
-                        <th class="col-lg-1">Region/District</th>
                         <th class="col-lg-1">Remark</th>
 
                         <tr ng-repeat="response in documentItemSelected.responses">
                             <td>
                                 <input type="text" class="input" ng-model="response.consignee"
                                        value="{{ response.consignee }}">
+                            </td>
+                            <td>
+                                <input type="hidden" search-from-list list="{{ districts }}"
+                                       ng-model="response.location" value="{{ response.location }}">
                             </td>
                             <td>
                                 <input type="hidden" search-from-list
@@ -58,16 +62,20 @@
                                        value="{{ response.received }}">
                             </td>
                             <td>
-                                <input type="number" ng-model="response.quantity" value="{{ response.quantity }}">
+                                <input type="number" ng-disabled="response.received === 'NO'"
+                                       ng-class="{disabled: response.received === 'NO'}"
+                                       ng-model="response.quantity" value="{{ response.quantity }}">
                             </td>
 
                             <td>
                                 <input type="date" ng-model="response.dateReceived"
-                                       value="{{ response.dateReceived }}">
+                                       ng-class="{disabled: response.received === 'NO'}"
+                                       ng-disabled="response.received === 'NO'" value="{{ response.dateReceived }}">
                             </td>
 
                             <td>
-                                <input type="hidden" search-from-list
+                                <input type="hidden" search-from-list ng-disabled="response.received === 'NO'"
+                                       ng-class="{disabled: response.received === 'NO'}"
                                        list='[{"id": "Damaged", "name": "Damaged"},
                                         {"id": "Expired", "name": "Expired"},
                                         {"id": "Substandard", "name": "Substandard"},
@@ -77,10 +85,6 @@
                                        value="{{ response.quality }}">
                             </td>
 
-                            <td>
-                                <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="response.location" value="{{ response.location }}">
-                            </td>
                             <td>
                                 <input type="text" class="input" ng-model="response.remark"
                                        value="{{ response.remark }}">

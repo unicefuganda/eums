@@ -332,3 +332,7 @@ a, #distribution-plan-nav {
     left: 265px;
     top: -9px;
 }
+
+.disabled {
+    background-color: dimgray;
+}
