@@ -261,6 +261,9 @@
                     scope.allmarkers = [];
                     scope.shownMarkers = [];
                     scope.programme = '';
+                    scope.notDeliveredChecked = false;
+                    scope.deliveredChecked = false;
+
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
                             ip.consignees().then(function (consigneesResponses) {
@@ -454,6 +457,7 @@
 
                         MapService.clearAllMarkers(scope);
                         if (received) {
+                            scope.deliveredChecked = true;
                             showMarkers.forEach(function (markerMap) {
                                 var productReceived = markerMap.consigneeResponse.productReceived;
                                 if (productReceived && productReceived.toLowerCase() === 'yes') {
@@ -467,6 +471,38 @@
                 }
             }
 
+        }).directive('notDelivered', function(MapService){
+            return {
+                restrict: 'A',
+                link: function (scope) {
+                    scope.$watch('filter.notDelivered', function (received) {
+                        var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers,
+                        newShowinMarkers = [];
+                        if(!scope.deliveredChecked){
+                            MapService.clearAllMarkers(scope);
+                        }
+
+                        if (received) {
+                            showMarkers.forEach(function (markerMap) {
+                                scope.notDeliveredChecked = true;
+                                var productReceived = markerMap.consigneeResponse.productReceived;
+                                if (productReceived && productReceived.toLowerCase() === 'no') {
+                                    MapService.addMarker(markerMap.marker) && newShowinMarkers.push(markerMap);
+                                }
+                            });
+                        } else {
+                            showMarkers.forEach(function (markerMap) {
+                                scope.notDeliveredChecked = false;
+                                var productReceived = markerMap.consigneeResponse.productReceived;
+                                if (productReceived && productReceived.toLowerCase() === 'no') {
+                                    MapService.removeMarker(markerMap.marker)
+                                }
+                            });
+                        }
+                        scope.shownMarkers = newShowinMarkers;
+                    });
+                }
+            }
         }).factory('FilterService', function (DistributionPlanService) {
 
             var filterPlanById = function (distributionPlans, programmeId) {
