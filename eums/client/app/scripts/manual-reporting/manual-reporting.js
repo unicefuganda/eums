@@ -12,7 +12,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             }
         };
     })
-    .controller('ManualReportingController', function ($sorter, $scope, $location, PurchaseOrderService, DistributionReportingParameters, Districts) {
+    .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, Districts) {
         $scope.sortBy = $sorter;
 
         // Should be in another controller
