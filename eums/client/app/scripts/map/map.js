@@ -189,15 +189,19 @@
                 map.removeLayer(marker);
             },
             clearAllMarkers: function (scope) {
-                var self = this;
-                scope.allmarkers.forEach(function (markerNodeMap) {
+                var self = this,
+                    allMarkers = scope.allmarkers;
+
+                allMarkers && allMarkers.forEach(function (markerNodeMap) {
                     self.removeMarker(markerNodeMap.marker);
                 });
             },
 
-            addAllMarkers: function (scope) {
-                var self = this;
-                scope.allmarkers.forEach(function (markerNodeMap) {
+            addMarkers: function (scope) {
+                var self = this,
+                    allMarkers = scope.allmarkers;
+
+                allMarkers && allMarkers.forEach(function (markerNodeMap) {
                     self.addMarker(markerNodeMap.marker);
                 });
             },
@@ -252,6 +256,7 @@
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
+                    scope.filter = {};
                     scope.clickedMarker = "";
                     scope.allmarkers = [];
                     scope.shownMarkers = [];
@@ -275,6 +280,7 @@
                     scope.$watch('params.location', function (newLocation) {
                         newLocation && MapService.clickLayer(newLocation.district);
                     }, true);
+
                 });
             }
         }
@@ -358,7 +364,7 @@
 
                     scope.$watch('programme', function (newProgramme) {
                         if (newProgramme == '') {
-                            MapService.addAllMarkers(scope);
+                            MapService.addMarkers(scope);
                         } else {
                             FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
                                     var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
@@ -413,7 +419,7 @@
 
                     scope.$watch('ip', function (selectedIp) {
                         if (selectedIp === '') {
-                            MapService.addAllMarkers(scope);
+                            MapService.addMarkers(scope);
                         } else {
                             var newShownMarkers = [];
                             var shownMarkers = scope.shownMarkers;
@@ -439,6 +445,28 @@
 
                 }
             }
+        }).directive('deliveryStatus', function (MapService) {
+            return {
+                restrict: 'A',
+                link: function (scope) {
+                    scope.$watch('filter.received', function (received) {
+                        var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers;
+
+                        MapService.clearAllMarkers(scope);
+                        if (received) {
+                            showMarkers.forEach(function (markerMap) {
+                                var productReceived = markerMap.consigneeResponse.productReceived;
+                                if (productReceived && productReceived.toLowerCase() === 'yes') {
+                                    MapService.addMarker(markerMap.marker);
+                                }
+                            });
+                        } else {
+                            MapService.addMarkers(scope);
+                        }
+                    });
+                }
+            }
+
         }).factory('FilterService', function (DistributionPlanService) {
 
             var filterPlanById = function (distributionPlans, programmeId) {
