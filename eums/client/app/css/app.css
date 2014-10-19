@@ -1,3 +1,26 @@
+@font-face {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Roboto Regular'), local('Roboto-Regular'), url(http://fonts.gstatic.com/s/roboto/v14/CrYjSnGjrRCn0pd9VQsnFOvvDin1pK8aKteLpeZ5c0A.woff) format('woff');
+}
+
+* {
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+#user {
+    font-size: 14px;
+    font-weight: bold;
+    padding-left: 5px;
+    margin-right: 10px;
+    font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+}
+
+#user-icon {
+    margin-top: 15px;
+}
+
 html, body {
     padding-top: 40px;
     height: 100%;
@@ -56,17 +79,38 @@ html, body {
     padding-bottom: 10px;
 }
 
-tbody {
+table tbody {
     height: 50px;
     overflow: auto;
 }
 
-table tr:nth-child(even) {
-    background-color: #eee;
+table thead tr {
+    background-color: #036F98;
 }
 
-table tr:nth-child(odd) {
-    background-color: #fff;
+table thead tr th:hover {
+    background-color: #05A0DB;
+}
+
+table thead a {
+    color: white;
+}
+
+table thead a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+table tbody tr:nth-child(even) {
+    background-color: #D3F1FD;
+}
+
+table tbody tr:nth-child(odd) {
+    background-color: #D3F1FD;
+}
+
+.table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
+    background-color: #9BDCF5;
 }
 
 input[type=date]::-webkit-inner-spin-button {
@@ -80,8 +124,22 @@ input[type=date] {
     font-size: 10px;
 }
 
-.standard-font {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+a {
+    color: #1CABE2;
+}
+
+a:hover {
+    color: #05A0DB;
+}
+
+.btn-primary {
+    background-color: #1CABE2;
+    border-color: #05A0DB;
+}
+
+.btn-primary:hover {
+    background-color: #05A0DB;
+    border-color: #036F98;
 }
 
 .table-select {
@@ -204,11 +262,20 @@ a, #distribution-plan-nav {
     width: .1em;
 }
 
+.filter-panel {
+    z-index: 1000;
+    position: absolute;
+    width: 274px;
+    height: inherit;
+    background: #CCE9F4;
+    opacity: 0.9;
+}
+
 .filter-panel .close-panel {
     font-size: 14px;
-    color: #fff;
+    color: white;
     /*float: right;*/
-    background-color: black;
+    background-color: #43B9E6;
     opacity: 1;
     padding: 5px 8px;
     cursor: pointer;
@@ -230,10 +297,6 @@ a, #distribution-plan-nav {
     box-shadow: 0px 2px 16px #000;
 }
 
-.panel-title {
-    font-size: inherit;
-}
-
 .panel-group .panel {
     border-radius: 0;
 }
@@ -250,8 +313,22 @@ a, #distribution-plan-nav {
     border-bottom: none;
 }
 
+.panel-title {
+    font-size: inherit;
+}
+
 .panel-title a {
     display: block;
+}
+
+.panel-header {
+    background-color: rgba(0, 0, 0, 0.79);
+    color: white;
+    border-radius: 2px 2px 0 0;
+    -moz-border-radius: 2px 2px 0 0;
+    -web-kit-border-radius: 2px 2px 0 0;
+    font-weight: bold;
+    text-align: center;
 }
 
 .detail-panel {
@@ -293,15 +370,6 @@ a, #distribution-plan-nav {
     padding: 12px 0px;
 }
 
-.filter-panel {
-    z-index: 1000;
-    position: absolute;
-    width: 274px;
-    height: inherit;
-    background: #909090;
-    opacity: 0.9;
-}
-
 .content {
     margin-left: auto;
     margin-right: auto;
@@ -317,20 +385,45 @@ a, #distribution-plan-nav {
     background-color: transparent;
 }
 
+.navbar {
+    background-color: #1CABE2;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    background-color: white;
+    color: #05A0DB;
+    margin-left: -1px;
+}
+
+.nav li a {
+    color: white;
+}
+
+.nav li a:hover {
+    color: white;
+    background-color: #05A0DB;
+}
+
 .navbar-second {
     top: 50px;
-    background-color: #848383;
+    background-color: #E3F4FB;
+    min-height: 20px;
+    border-bottom: 1px solid #05A0DB;
     opacity: 0.9;
-    min-height: 40px;
-    border-bottom: 3px solid black;
 }
 
 .navbar-second .container {
-    padding-left: 0px;
+    padding-left: 1px;
 }
 
-.navbar-second .navbar-nav > li > a {
-    color: white;
+.navbar-second .navbar-nav li a {
+    color: #036E97;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.navbar-second .navbar-nav li a:hover {
+    color: #05A0DB;
     padding-bottom: 10px;
     padding-top: 10px;
 }
