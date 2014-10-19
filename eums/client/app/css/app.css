@@ -37,57 +37,42 @@ h4.page-header {
     font-size: 16px;
 }
 
-#login-body{
-    background: #0099ff;
-}
-
 .login-row {
     margin: 150px 0 2px 0;
     background: #1CABE2;
-    color: #ffffff;
+    color: white;
     border-radius: 3px;
-    border: 1px solid #ffffff;
+    border: 1px solid white;
     padding: 20px;
-    font-family: "Helvetica Light", Helvetica, Arial, sans-serif;
 }
 
-.login-form input[type="text"],
-.login-form input[type="password"] {
-  font-size: 16px;
-  padding: 5px;
-  border: none;
-  border-radius: 4px;
-  color: black;
-  height: auto;
-  margin: 10px 0 0 10px;
-  width:230px;
-}
-.login-form{
+.login-form {
     margin-left: 20px;
 }
-.login-form p{
-    margin-top: 8px;
-}
-.login-form p label{
-    width: 80px;
-    font-family: 'Open Sans', sans-serif;
+
+.btn-primary {
+    background-color: #1CABE2;
+    border-color: #05A0DB;
 }
 
-#btn-login{
-    margin-top: 5px;
-    padding: 12px;
-    width: 95px;
-    background: #05A0DA;
-    border: 1px solid #ffffff;
-    color: #ffffff;
+.btn-primary:hover {
+    background-color: #05A0DB;
+    border-color: #036F98;
+}
 
+#btn-login {
+    background-color: #1CABE2;
+    border: 1px solid white;
+    color: white;
 }
-#login-logo img{
-    margin-top: 105px;
+
+#login-logo img {
+    align-content: center;
+    margin: 80px 0 0 130px;
 }
+
 #login-form-container{
-    border-left: 1px solid  #ffffff;
-    padding-bottom: 10px;
+    border-left: 1px solid white;
 }
 
 table tbody {
@@ -141,16 +126,6 @@ a {
 
 a:hover {
     color: #05A0DB;
-}
-
-.btn-primary {
-    background-color: #1CABE2;
-    border-color: #05A0DB;
-}
-
-.btn-primary:hover {
-    background-color: #05A0DB;
-    border-color: #036F98;
 }
 
 .table-select {

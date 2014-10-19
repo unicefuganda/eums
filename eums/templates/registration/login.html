@@ -5,7 +5,6 @@
         {% block title %}{% endblock %} | EUMS
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' media="all">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.css">
 
@@ -13,31 +12,50 @@
 <body id="login-body">
 <div class="container">
     <div class="row login-row">
-        <div class="col-md-4" id="login-logo">
+        <div class="col-md-5" id="login-logo">
             <img src="/static/app/media/unicef-logo-white.png">
         </div>
-        <div class="col-md-8" id="login-form-container">
-            <form class="login-form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
-            <h3>Welcome to the End User Monitoring System(EUMS)</h3>
-            {% if form.errors %}
-                <div class="alert alert-danger alert-dismissable">
-                    {{ form.non_field_errors }}
-                </div>
-            {% endif %}
+        <div class="col-md-7" id="login-form-container">
+            <form role="form" class="form-horizontal login-form" method="post"
+                  action="{% url 'django.contrib.auth.views.login' %}">
 
-            {% if not form.errors %}
-            {% endif %}
-                <h4>Enter your credentials to login</h4>
+                <div class="form-group">
+                    <div class="col-sm-offset-1">
+                        <h3>Welcome to the End User Monitoring System (EUMS)</h3>
+                    </div>
+                </div>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissable">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% if not form.errors %}
+                {% endif %}
+
                 {% csrf_token %}
-                <p>
-                <label class="control-label" for="username">Username</label>
-                <input type="text" name="username">
-                </p>
-                <p>
-                <label class="control-label" for="inputPassword">Password</label>
-                <input type="password" name="password">
-                </p>
-                <button id="btn-login" type="submit">Sign in</button>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="username">Username</label>
+
+                    <div class="col-sm-5">
+                        <input class="form-control" type="text" id="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="password">Password</label>
+
+                    <div class="col-sm-5">
+                        <input class="form-control" type="password" id="password">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-5">
+                        <button id="btn-login" type="submit" class="btn btn-default">Sign in</button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
