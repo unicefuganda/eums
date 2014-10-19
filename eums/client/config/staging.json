@@ -16,14 +16,15 @@
     "DISTRICTGEOJSONURL": "http://196.0.26.51/static/app/data/districts.json",
     "DISTRICTJSONURL": "http://196.0.26.51/static/app/data/district_name.json",
     "districtLayerStyle": {
-        "weight": 2,
-        "color": "#3E9CB8",
-        "fillColor": "#eee",
+        "weight": 1,
+        "color": "#036E97",
+        "fillColor": "#CCE9F4",
         "fillOpacity": 0.2,
         "opacity": 0.7
     },
     "selectedLayerStyle": {
-        "weight": 4,
+        "weight": 2,
+        "color": "#1CABE2",
         "fillOpacity": 0.8
     },
     "IPJSONURL": "http://196.0.26.51/static/app/data/ip.json"
