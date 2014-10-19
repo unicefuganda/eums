@@ -4,6 +4,58 @@ html, body {
     width: 100%;
 }
 
+#login-body{
+    background: #0099ff;
+}
+.login-row{
+    margin: 150px 0 2px 0;
+    background: #0099ff;
+    color: #ffffff;
+    border-radius: 3px;
+    border: 1px solid #ffffff;
+    padding: 20px;
+    font-family: "Helvetica Light", Helvetica, Arial, sans-serif;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  font-size: 16px;
+  padding: 5px;
+  border: none;
+  border-radius: 4px;
+  height: auto;
+  margin: 10px 0 0 10px;
+  width:230px;
+  background: lightblue;
+}
+.login-form{
+    margin-left: 20px;
+}
+.login-form p{
+    margin-top: 8px;
+}
+.login-form p label{
+    width: 80px;
+    font-family: 'Open Sans', sans-serif;
+}
+
+#btn-login{
+    margin-top: 5px;
+    padding: 12px;
+    width: 95px;
+    background: #0099ff;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+
+}
+#login-logo img{
+    margin-top: 105px;
+}
+#login-form-container{
+    border-left: 1px solid  #ffffff;
+    padding-bottom: 10px;
+}
+
 tbody {
     height: 50px;
     overflow: auto;

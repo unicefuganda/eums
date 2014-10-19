@@ -1,33 +1,46 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>EUMS</title>
+    <title>
+        {% block title %}{% endblock %} | EUMS
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' media="all">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.css">
+
 </head>
-
-<body>
-
-{% include "header.html" %}
-
-<div class="col-md-offset-5 col-md-2" style="padding-top: 150px">
-    <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-        {% csrf_token %}
-
-        <input class="form-control" placeholder="Username" required autofocus name="username" type="text">
-        <input class="form-control" placeholder="Password" type="password" required name="password">
-
-        {% if form.errors %}
-            <div class="alert-danger">Invalid Credentials.</div>
-        {% endif %}
-
-        <div>
-            <input type="submit" value="Sign In" class="btn btn-primary btn-block"/>
+<body id="login-body">
+<div class="container">
+    <div class="row login-row">
+        <div class="col-md-4" id="login-logo">
+            <img src="/static/app/media/unicef-logo-white.png">
         </div>
-        <input type="hidden" name="next" value="{{ next }}"/>
-    </form>
-</div>
+        <div class="col-md-8" id="login-form-container">
+            <form class="login-form" method="post" action="{% url 'django.contrib.auth.views.login' %}">
+            <h3>Welcome to the End User Monitoring System EUMS</h3>
+            {% if form.errors %}
+                <div class="alert alert-danger alert-dismissable">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
 
+            {% if not form.errors %}
+            {% endif %}
+                <h4>Enter your credentials to login</h4>
+                {% csrf_token %}
+                <p>
+                <label class="control-label" for="username">Username</label>
+                <input type="text" name="username">
+                </p>
+                <p>
+                <label class="control-label" for="inputPassword">Password</label>
+                <input type="password" name="password">
+                </p>
+                <button id="btn-login" type="submit">Sign in</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>
