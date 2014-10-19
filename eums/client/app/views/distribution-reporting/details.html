@@ -3,40 +3,58 @@
         <div ng-show="reportSaved">
             <alert type="success">Report saved.</alert>
         </div>
-        <h4 ng-if="currentDocumentType === 'PO'" class="page-header">Report By PO: {{ document.order_number }} PCR: {{ document.programme }}</h4>
-        <h4 ng-if="currentDocumentType === 'WB'" class="page-header">Report By Waybill: {{ document.order_number }} PCR: {{ document.programme }}</h4>
 
-        <div class="panel panel-default line-order-panel">
-            <div class="panel-title">
-                <div class="panel-body">
-                    <div class="form-group form-group-sm col-lg-4">
-                        <select ng-model="documentItemSelected" required="required"
-                                class="form-control input-sm"
-                                ng-options="documentItem.description for documentItem in document.items">
-                            <option value="" selected="selected">Select Item</option>
-                        </select>
-                    </div>
+        <h4 class="page-header" ng-if="currentDocumentType === 'PO'">Report By PO:
+            <span class="text-primary">{{ document.order_number  }}</span>
+            <span class="pull-right">PCR: <span class="text-primary">{{ document.programme }}</span></span>
+        </h4>
+
+        <h4 class="page-header" ng-if="currentDocumentType === 'WB'">Report By Waybill:
+            <span class="text-primary">{{ document.order_number  }}</span>
+            <span class="pull-right">PCR: <span class="text-primary">{{ document.programme }}</span></span>
+        </h4>
+
+        <div class="row">
+            <div class="form-group form-group-sm col-lg-4">
+                <label for="selectSalesOrder" class="col-lg-4 control-label">Short Description:</label>
+                <div class="col-lg-8">
+                    <select ng-model="documentItemSelected" required="required"
+                            class="form-control input-sm"
+                            ng-options="documentItem.description for documentItem in document.items">
+                        <option value="" selected="selected">Select Item</option>
+                    </select>
                 </div>
+            </div>
 
-                <div ng-show="documentItemSelected">
-                    <table class="table table-hover table-striped table-bordered">
-                        <th>Short Description</th>
-                        <th>Material Code</th>
-                        <th>Quantity</th>
-                        <th>Unit</th>
-
-                        <tr>
-                            <td>{{ documentItemSelected.description }}</td>
-                            <td>{{ documentItemSelected.material_code }}</td>
-                            <td>{{ documentItemSelected.quantity }}</td>
-                            <td>{{ documentItemSelected.unit }}</td>
-                        </tr>
-                    </table>
+            <div ng-show="documentItemSelected" id="materialItems" class="well col-lg-7 pull-right">
+                <div class="col-lg-6 no-side-padding">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ documentItemSelected.material_code }}</span>
+                        Material Code
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ documentItemSelected.description }}</span>
+                        Short Description
+                      </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 no-side-padding">
+                    <ul class="list-group">
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ documentItemSelected.quantity }}</span>
+                        Quantity
+                      </li>
+                      <li class="list-group-item">
+                        <span class="badge alert-info">{{ documentItemSelected.unit }}</span>
+                        Unit
+                      </li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <div ng-show="document.items" class="panel panel-default">
+        <div ng-show="documentItemSelected && document.items" class="panel panel-default">
             <div class="panel-body">
                 <div ng-show="documentItemSelected.responses">
                     <table id="distributionPlanTable"
@@ -66,20 +84,17 @@
                                        value="{{ response.received }}">
                             </td>
                             <td>
-                                <input type="number" ng-disabled="response.received === 'NO'"
-                                       ng-class="{disabled: response.received === 'NO'}"
+                                <input type="number" ng-disabled="response.received === 'NO'" class="form-control"
                                        ng-model="response.quantity" value="{{ response.quantity }}">
                             </td>
 
                             <td>
-                                <input type="date" ng-model="response.dateReceived"
-                                       ng-class="{disabled: response.received === 'NO'}"
+                                <input type="date" ng-model="response.dateReceived" class="form-control"
                                        ng-disabled="response.received === 'NO'" value="{{ response.dateReceived }}">
                             </td>
 
                             <td>
                                 <input type="hidden" search-from-list ng-disabled="response.received === 'NO'"
-                                       ng-class="{disabled: response.received === 'NO'}"
                                        list='[{"id": "Damaged", "name": "Damaged"},
                                         {"id": "Expired", "name": "Expired"},
                                         {"id": "Substandard", "name": "Substandard"},
@@ -98,16 +113,15 @@
                 </div>
 
             </div>
-        </div>
-
-        <div>
-            <button ng-show="documentItemSelected" type="button" class="btn btn-primary" ng-click="addResponse()">
-                <i class="glyphicon glyphicon-plus"></i>Add End User
-            </button>
-            <div ng-show="documentItemSelected.responses" style="float: right">
-                <button type="button" class="btn btn-primary" ng-click="saveResponses()">
-                    <i class="glyphicon glyphicon-save"> </i>Save
+            <div class="pad-20">
+                <button ng-show="documentItemSelected" type="button" class="btn btn-primary" ng-click="addResponse()">
+                    <i class="glyphicon glyphicon-plus"></i>Add End User
                 </button>
+                <div ng-show="documentItemSelected.responses" style="float: right">
+                    <button type="button" class="btn btn-primary" ng-click="saveResponses()">
+                        <i class="glyphicon glyphicon-floppy-save"> </i>Save
+                    </button>
+                </div>
             </div>
         </div>
     </div>
