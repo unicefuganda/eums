@@ -1,23 +1,23 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User'])
-    .controller('NewDistributionPlanController', function($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService, $q, $timeout) {
+    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService, $q, $timeout) {
 
-        $scope.districts = Districts.getAllDistricts().map(function(district) {
+        $scope.districts = Districts.getAllDistricts().map(function (district) {
             return {id: district, name: district};
         });
-        ConsigneeService.fetchConsignees().then(function(consignees) {
+        ConsigneeService.fetchConsignees().then(function (consignees) {
             $scope.consignees = consignees;
         });
 
         $scope.salesOrderItems = [];
         $scope.distributionPlanItems = [];
 
-        $scope.changeSelectedSalesOrderItem = function(selectedSalesOrderItem) {
+        $scope.changeSelectedSalesOrderItem = function (selectedSalesOrderItem) {
             $scope.salesOrderItemSelected = selectedSalesOrderItem;
         };
 
-        $scope.initialize = function() {
+        $scope.initialize = function () {
             $scope.salesOrderItemSelected = undefined;
             $scope.hasSalesOrderItems = false;
             $scope.hasDistributionPlanItems = false;
@@ -25,8 +25,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             $scope.selectedSalesOrder = DistributionPlanParameters.retrieveVariable('selectedSalesOrder');
             $scope.programmeSelected = DistributionPlanParameters.retrieveVariable('programmeSelected');
 
-            $scope.selectedSalesOrder.salesorderitem_set.forEach(function(salesOrderItem) {
-                SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function(result) {
+            $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
+                SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
                     var formattedSalesOrderItem = {display: result.item.description,
                         material_code: result.item.material_code,
                         quantity: result.quantity,
@@ -39,12 +39,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             });
         };
 
-        $scope.hasTargetedQuantity = function(distributionPlanLineItem) {
+        $scope.hasTargetedQuantity = function (distributionPlanLineItem) {
             var showInputBox = ['', undefined, '0', 0];
             return (showInputBox.indexOf(distributionPlanLineItem.targeted_quantity) === -1);
         };
 
-        $scope.addDistributionPlanItem = function() {
+        $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {item: $scope.salesOrderItemSelected.information.item,
                 quantity: $scope.salesOrderItemSelected.quantityLeft, planned_distribution_date: '2014-10-10',
                 targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
@@ -53,7 +53,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             var currentDistributionPlanItems = $scope.distributionPlanItems;
             currentDistributionPlanItems.push(distributionPlanLineItem);
 
-            if(currentDistributionPlanItems && currentDistributionPlanItems.length > 0) {
+            if (currentDistributionPlanItems && currentDistributionPlanItems.length > 0) {
                 $scope.hasDistributionPlanItems = true;
             }
 
@@ -70,16 +70,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         }
 
         function createNewNodeAndLineItem(nodeDetails, lineItem) {
-            DistributionPlanNodeService.createNode(nodeDetails).then(function(createdNode) {
+            DistributionPlanNodeService.createNode(nodeDetails).then(function (createdNode) {
                 var lineItemDetails = {
                     item: lineItem.item.id, targeted_quantity: lineItem.targetQuantity,
                     distribution_plan_node: createdNode.id,
                     planned_distribution_date: lineItem.plannedDistributionDate,
                     remark: lineItem.remark
                 };
-                DistributionPlanLineItemService.createLineItem(lineItemDetails).then(function() {
+                DistributionPlanLineItemService.createLineItem(lineItemDetails).then(function () {
                     $scope.planSaved = true;
-                    $timeout(function() {
+                    $timeout(function () {
                         $scope.planSaved = false;
                     }, 2000);
                 });
@@ -89,9 +89,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         function updateNodeAndLineItem(nodeDetails, lineItem) {
             var nodeSavePromise = DistributionPlanNodeService.updateNode(nodeDetails);
             var lineItemSavePromise = DistributionPlanLineItemService.updateLineItem(lineItem);
-            $q.all([nodeSavePromise, lineItemSavePromise]).then(function() {
+            $q.all([nodeSavePromise, lineItemSavePromise]).then(function () {
                 $scope.planSaved = true;
-                $timeout(function() {
+                $timeout(function () {
                     $scope.planSaved = false;
                 }, 2000);
             });
@@ -99,8 +99,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         function saveNodeAndLineItem(nodeDetails, uiLineItem, uiItem) {
             var d = new Date(uiLineItem.plannedDistributionDate);
-            uiLineItem.plannedDistributionDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' +  d.getDate();
-            if(uiLineItem.alreadySaved) {
+            uiLineItem.plannedDistributionDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+            if (uiLineItem.alreadySaved) {
                 var lineItemDetails = getLineItemForUpdateFromUILineItem(uiLineItem, nodeDetails);
                 lineItemDetails.id = uiItem.lineItemIdInBackend;
                 lineItemDetails.item = uiItem.item;
@@ -119,42 +119,43 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         function saveDistributionPlanItems(distributionPlanItems) {
             saveScopeVariables(distributionPlanItems);
-            $scope.distributionPlanItems.forEach(function(item) {
+            $scope.distributionPlanItems.forEach(function (item) {
                 var nodeDetails = {
                     consignee: item.consignee, location: item.destinationLocation, contact_person_id: item.contactPerson,
                     distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', mode_of_delivery: item.modeOfDelivery
                 };
-                $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.target_quantity)).toString();
+
+                $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.targeted_quantity)).toString();
                 saveNodeAndLineItem(nodeDetails, item, item);
             });
         }
 
-        $scope.saveDistributionPlanItems = function(distributionPlanItems) {
-            if($scope.planId) {
+        $scope.saveDistributionPlanItems = function (distributionPlanItems) {
+            if ($scope.planId) {
                 saveDistributionPlanItems(distributionPlanItems);
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id}).then(function(result) {
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id}).then(function (result) {
                     $scope.planId = result.id;
                     saveDistributionPlanItems(distributionPlanItems);
                 });
             }
         };
 
-        $scope.hasItemsLeft = function() {
+        $scope.hasItemsLeft = function () {
             var emptySalesOrders = ['', undefined];
-            if(emptySalesOrders.indexOf($scope.salesOrderItemSelected) === -1) {
+            if (emptySalesOrders.indexOf($scope.salesOrderItemSelected) === -1) {
                 return parseInt($scope.salesOrderItemSelected.quantityLeft) !== 0;
             }
 
             return true;
         };
 
-        $scope.$watch('salesOrderItemSelected', function() {
+        $scope.$watch('salesOrderItemSelected', function () {
             var emptySalesOrders = ['', undefined];
             $scope.distributionPlanItems = [];
 
-            if(emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1) {
+            if (emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1) {
                 $scope.hasSalesOrderItems = false;
             }
             else {
@@ -163,13 +164,13 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
                 var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
 
-                if(distributionPlanLineItems && distributionPlanLineItems.length) {
+                if (distributionPlanLineItems && distributionPlanLineItems.length) {
                     $scope.hasDistributionPlanItems = true;
                     var itemCounter = 0;
                     var quantityLeft = parseInt($scope.salesOrderItemSelected.quantity);
 
-                    distributionPlanLineItems.forEach(function(lineItemId) {
-                        DistributionPlanLineItemService.getLineItem(lineItemId).then(function(lineItem) {
+                    distributionPlanLineItems.forEach(function (lineItemId) {
+                        DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
                             lineItem.quantity = quantityLeft.toString();
                             lineItem.targetQuantity = lineItem.targeted_quantity;
                             lineItem.lineItemIdInBackend = lineItem.id;
@@ -177,7 +178,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             var d = new Date(lineItem.planned_distribution_date);
                             lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
 
-                            DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
+                            DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function (node) {
                                 $scope.planId = node.distribution_plan;
                                 lineItem.consignee = node.consignee.id;
                                 lineItem.nodeId = node.id;
@@ -202,9 +203,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         });
 
     })
-    .factory('Districts', function() {
+    .factory('Districts', function () {
         return {
-            getAllDistricts: function() {
+            getAllDistricts: function () {
                 return  ['Buikwe', 'Bukomansimbi', 'Butambala', 'Buvuma', 'Gomba', 'Kalangala', 'Kalungu', 'Oyam',
                     'Kampala', 'Kayunga', 'Kiboga', 'Kyankwanzi', 'Luweero', 'Lwengo', 'Lyantonde', 'Masaka', 'Otuke',
                     'Mityana', 'Mpigi', 'Mubende', 'Mukono', 'Nakaseke', 'Nakasongola', 'Rakai', 'Soroti', 'Tororo',
@@ -222,9 +223,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
         };
     })
-    .directive('searchContacts', function($http, EumsConfig, ContactService, $timeout) {
+    .directive('searchContacts', function ($http, EumsConfig, ContactService, $timeout) {
         function formatResponse(data) {
-            return data.map(function(contact) {
+            return data.map(function (contact) {
                 return {
                     id: contact._id,
                     text: contact.firstName + ' ' + contact.lastName
@@ -236,24 +237,24 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             restrict: 'A',
             scope: true,
             require: 'ngModel',
-            link: function(scope, element, _, ngModel) {
+            link: function (scope, element, _, ngModel) {
 
                 element.select2({
                     minimumInputLength: 1,
                     width: '150px',
-                    query: function(query) {
+                    query: function (query) {
                         var data = {results: []};
-                        ContactService.getContactsBySearchQuery(query.term).then(function(foundContacts) {
+                        ContactService.getContactsBySearchQuery(query.term).then(function (foundContacts) {
                             data.results = formatResponse(foundContacts);
                             query.callback(data);
                         });
                     },
-                    initSelection: function(element, callback) {
-                        $timeout(function() {
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
                             var modelValue = ngModel.$modelValue;
-                            if(modelValue) {
-                                ContactService.getContactById(modelValue).then(function(contact) {
-                                    if(contact._id) {
+                            if (modelValue) {
+                                ContactService.getContactById(modelValue).then(function (contact) {
+                                    if (contact._id) {
                                         callback({
                                             id: contact._id,
                                             text: contact.firstName + ' ' + contact.lastName
@@ -265,29 +266,29 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     }
                 });
 
-                element.change(function() {
+                element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
                 });
             }
         };
     })
-    .directive('searchFromList', function($timeout) {
+    .directive('searchFromList', function ($timeout) {
         return {
             restrict: 'A',
             scope: false,
             require: 'ngModel',
-            link: function(scope, element, attrs, ngModel) {
+            link: function (scope, element, attrs, ngModel) {
                 var list = JSON.parse(attrs.list);
 
                 element.select2({
                     width: '100%',
                     query: function(query) {
                         var data = {results: []};
-                        var matches = list.filter(function(item) {
+                        var matches = list.filter(function (item) {
                             return item.name.toLowerCase().indexOf(query.term.toLowerCase()) >= 0;
                         });
-                        data.results = matches.map(function(match) {
+                        data.results = matches.map(function (match) {
                             return {
                                 id: match.id,
                                 text: match.name
@@ -295,19 +296,19 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                         });
                         query.callback(data);
                     },
-                    initSelection: function(element, callback) {
-                        $timeout(function() {
-                            var matchingItem = list.filter(function(item) {
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
+                            var matchingItem = list.filter(function (item) {
                                 return item.id === ngModel.$modelValue;
                             })[0];
-                            if(matchingItem) {
+                            if (matchingItem) {
                                 callback({id: matchingItem.id, text: matchingItem.name});
                             }
                         });
                     }
                 });
 
-                element.change(function() {
+                element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
                 });
