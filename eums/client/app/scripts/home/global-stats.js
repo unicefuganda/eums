@@ -22,8 +22,8 @@ angular.module('GlobalStats', ['eums.config'])
             },
             getTotals: function(reports, options) {
                 if(options) {
-                    var consignee = options.consignee;
-                    var programme = options.programme;
+                    var consignee = parseInt(options.consignee);
+                    var programme = parseInt(options.programme);
                     var filteredReports = reports.filter(function(report) {
                         if(consignee && programme) {
                             return report.consignee === consignee && report.programme === programme;

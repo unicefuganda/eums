@@ -71,4 +71,9 @@ describe('Distribution report Service', function() {
         var totals = reportService.getTotals(reports, {programme: programmeOneId, consignee: consigneeOneId});
         expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
     });
+
+    it('should parse consignee and programme option params to int before getting totals', function() {
+        var totals = reportService.getTotals(reports, {programme: String(programmeOneId), consignee: String(consigneeOneId)});
+        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
+    });
 });

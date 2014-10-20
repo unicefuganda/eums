@@ -9,15 +9,23 @@
         <input select-i-p name="" type="text" id="select-ip" ng-model="ip"
                placeholder="Select an implementing partner"/>
     </div>
-    <div class="checkbox">
-        <label>
-            <input delivery-status type="checkbox" ng-model="filter.received"/> Received
-        </label>
-    </div>
-    <div class="checkbox">
-        <label>
-            <input not-delivered type="checkbox" ng-model="filter.notDelivered"/> Not Delivered
-        </label>
+
+    <div delivery-status>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filter.received"/> Received
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filter.receivedWithIssues"/> Received With Issues
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" ng-model="filter.notDelivered"/> Not Received
+            </label>
+        </div>
     </div>
 </form>
 

@@ -2,9 +2,9 @@
 
 angular.module('Home', ['GlobalStats'])
     .controller('HomeController', function (DistributionReportService, $scope) {
-        $scope.filter = {};
+        $scope.filter = {received: '', notDelivered: '', receivedWithIssues: ''};
         $scope.clickedMarker = '';
-        $scope.allmarkers = [];
+        $scope.allMarkers = [];
         $scope.shownMarkers = [];
         $scope.programme = '';
         $scope.notDeliveredChecked = false;

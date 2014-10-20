@@ -193,7 +193,7 @@
             },
             clearAllMarkers: function (scope) {
                 var self = this,
-                    allMarkers = scope.allmarkers;
+                    allMarkers = scope.allMarkers;
 
                 allMarkers && allMarkers.forEach(function (markerNodeMap) {
                     self.removeMarker(markerNodeMap.marker);
@@ -202,7 +202,7 @@
 
             addMarkers: function (scope) {
                 var self = this,
-                    allMarkers = scope.allmarkers;
+                    allMarkers = scope.allMarkers;
 
                 allMarkers && allMarkers.forEach(function (markerNodeMap) {
                     self.addMarker(markerNodeMap.marker);
@@ -261,7 +261,7 @@
                     $window.map = map;
                     scope.filter = {};
                     scope.clickedMarker = '';
-                    scope.allmarkers = [];
+                    scope.allMarkers = [];
                     scope.shownMarkers = [];
                     scope.programme = '';
                     scope.notDeliveredChecked = false;
@@ -276,7 +276,7 @@
                                         var markerData = JSON.parse(JSON.parse(response.data));
                                         var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
                                         var consigneeResponse = markerData[0];
-                                        consigneeResponse && map.addMarker(marker) && scope.allmarkers.push({marker: marker, consigneeResponse: consigneeResponse});
+                                        consigneeResponse && map.addMarker(marker) && scope.allMarkers.push({marker: marker, consigneeResponse: markerData});
                                     });
 
                                 });
@@ -360,8 +360,8 @@
 
                     function addSelectedMarker(node) {
                         scope.shownMarkers = [];
-                        scope.allmarkers.forEach(function (markerNodeMap) {
-                            if (markerNodeMap.consigneeResponse.node == node.data.id) {
+                        scope.allMarkers.forEach(function (markerNodeMap) {
+                            if (markerNodeMap.consigneeResponse[0].node == node.data.id) {
                                 scope.shownMarkers.push(markerNodeMap);
                                 MapService.addMarker(markerNodeMap.marker);
                             }
@@ -432,14 +432,14 @@
                             var shownMarkers = scope.shownMarkers;
 
                             if (shownMarkers.length === 0) {
-                                shownMarkers = scope.allmarkers;
+                                shownMarkers = scope.allMarkers;
                             }
 
                             DistributionPlanService.getNodesBy(selectedIp).then(function (data) {
                                 MapService.clearAllMarkers(scope);
                                 data.map(function (node) {
                                     shownMarkers && shownMarkers.forEach(function (markerMap) {
-                                        if (markerMap.consigneeResponse.node == node.data.id) {
+                                        if (markerMap.consigneeResponse[0].node == node.data.id) {
                                             MapService.addMarker(markerMap.marker);
                                             newShownMarkers.push(markerMap);
                                         }
@@ -456,67 +456,41 @@
         }).directive('deliveryStatus', function (MapService) {
             return {
                 restrict: 'A',
-                scope: true,
+                scope: false,
                 link: function (scope) {
-                    scope.$watch('filter.received', function (received) {
-                        var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers;
+                    function addShownMarkers(condition, showMarkers) {
+                        showMarkers.forEach(function (markerMap) {
+                            if (getNumberOf(condition, markerMap.consigneeResponse).length == markerMap.consigneeResponse.length) {
+                                MapService.addMarker(markerMap.marker);
+                            }
+                        });
+                    }
+
+                    scope.$watchCollection('[filter.received,filter.notDelivered, filter.receivedWithIssues]', function (newFilterValues) {
+                        var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allMarkers;
 
                         MapService.clearAllMarkers(scope);
-                        if (received) {
-                            scope.deliveredChecked = true;
+                        if (!newFilterValues[0] && !newFilterValues[1] && !newFilterValues[2]) {
+                            MapService.addMarkers(scope);
+                        }
+                        if (newFilterValues[0]) {
+                           addShownMarkers('yes', showMarkers);
+                        }
+                        if (newFilterValues[1]) {
+                            addShownMarkers('no', showMarkers);
+                        }
+                        if (newFilterValues[2]) {
                             showMarkers.forEach(function (markerMap) {
-                                var productReceived = markerMap.consigneeResponse.productReceived;
-                                if (productReceived && productReceived.toLowerCase() === 'yes') {
+                                var numberOfNos = getNumberOf('no', markerMap.consigneeResponse).length;
+                                if (numberOfNos > 0 && numberOfNos < markerMap.consigneeResponse.length) {
                                     MapService.addMarker(markerMap.marker);
                                 }
                             });
-                        } else {
-                            MapService.addMarkers(scope);
                         }
                     });
                 }
             }
 
-        }).directive('notDelivered', function (MapService) {
-            return {
-                restrict: 'A',
-                scope: true,
-                link: function (scope) {
-                    scope.$watch('filter.notDelivered', function (received) {
-                        var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers,
-                            newShowinMarkers = [];
-                        if(scope.deliveredChecked == null || !received){
-                            MapService.clearAllMarkers(scope);
-                            MapService.addMarkers(scope);
-                        }else if (scope.deliveredChecked == false){
-                            var shown = scope.shownMarkers
-                            shown && shown.forEach(function(markerMap){
-                                MapService.removeMarker(markerMap.marker)
-                            });
-                        }
-
-                        if (received) {
-                            showMarkers && showMarkers.forEach(function (markerMap) {
-                                scope.notDeliveredChecked = true;
-                                var productReceived = markerMap.consigneeResponse.productReceived;
-                                if (productReceived && productReceived.toLowerCase() === 'no') {
-                                    MapService.addMarker(markerMap.marker) && newShowinMarkers.push(markerMap);
-                                }
-                            });
-                        } else {
-                            MapService.addMarkers(scope);
-                            showMarkers && showMarkers.forEach(function (markerMap) {
-                                scope.notDeliveredChecked = false;
-                                var productReceived = markerMap.consigneeResponse.productReceived;
-                                if (productReceived && productReceived.toLowerCase() === 'no') {
-                                    MapService.removeMarker(markerMap.marker)
-                                }
-                            });
-                        }
-                        scope.shownMarkers = newShowinMarkers;
-                    });
-                }
-            }
         }).factory('FilterService', function (DistributionPlanService) {
 
             var filterPlanById = function (distributionPlans, programmeId) {
