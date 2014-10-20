@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from eums.api.answer.answers_endpoint import ConsigneeResponses
+from eums.api.answer.date_answers_endpoint import textAnswerRouter
 
 from eums.api.consignee.consignee import consigneeRouter
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
@@ -39,5 +40,6 @@ urlpatterns = patterns(
     url(r'^api/', include(releaseOrderRouter.urls)),
     url(r'^api/', include(salesOrderItemRouter.urls)),
     url(r'^api/', include(distributionReportRouter.urls)),
-    url(r'^api/', include(userRouter.urls))
+    url(r'^api/', include(userRouter.urls)),
+    url(r'^api/', include(textAnswerRouter.urls))
 )
