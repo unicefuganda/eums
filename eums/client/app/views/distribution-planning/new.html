@@ -58,7 +58,7 @@
                         <th class="col-lg-1">Available Qty</th>
                         <th class="col-lg-1">Unit</th>
                         <th class="col-lg-1">Targeted Qty</th>
-                        <th class="col-lg-1">Planned Distr Date</th>
+                        <th class="col-lg-2">Planned Distr Date</th>
                         <th class="col-lg-2">Consignee</th>
                         <th class="col-lg-2">Contact Person</th>
                         <th class="col-lg-1">Region/District</th>
@@ -73,9 +73,12 @@
                                        ng-model="distributionPlanItem.targetQuantity">
                             </td>
                             <td>
-                                <input type="date" required="required"
-                                       ng-model="distributionPlanItem.plannedDistributionDate"
-                                       value="{{ distributionPlanItem.plannedDistributionDate }}">
+                                <p class="input-group" ng-controller="DatePickerController">
+                                  <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"  ng-model="distributionPlanItem.plannedDistributionDate" is-open="opened" datepicker-options="dateOptions" show-button-bar="false" ng-required="true" value="{{ distributionPlanItem.plannedDistributionDate | date : 'dd/MM/yyyy' }}" required="required"/>
+                                  <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                  </span>
+                                </p>
                             </td>
                             <td>
                                 <input type="hidden" search-from-list list="{{ consignees }}"

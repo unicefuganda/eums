@@ -98,6 +98,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         }
 
         function saveNodeAndLineItem(nodeDetails, uiLineItem, uiItem) {
+            var d = new Date(uiLineItem.plannedDistributionDate);
+            uiLineItem.plannedDistributionDate = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' +  d.getDate();
             if(uiLineItem.alreadySaved) {
                 var lineItemDetails = getLineItemForUpdateFromUILineItem(uiLineItem, nodeDetails);
                 lineItemDetails.id = uiItem.lineItemIdInBackend;
@@ -171,7 +173,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                             lineItem.quantity = quantityLeft.toString();
                             lineItem.targetQuantity = lineItem.targeted_quantity;
                             lineItem.lineItemIdInBackend = lineItem.id;
-                            lineItem.plannedDistributionDate = lineItem.planned_distribution_date;
+
+                            var d = new Date(lineItem.planned_distribution_date);
+                            lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
 
                             DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
                                 $scope.planId = node.distribution_plan;
