@@ -445,6 +445,10 @@ a, #distribution-plan-nav {
     margin-left: -1px;
 }
 
+.navbar-default .navbar-nav .open .dropdown-menu>li>a:hover,.navbar-default .navbar-nav .open .dropdown-menu {
+    color:white;
+  }
+
 .nav li a {
     color: white;
 }
