@@ -12,16 +12,19 @@
 
     <div delivery-status>
         <div class="checkbox">
+            <span class="badge success legend">•</span>
             <label>
                 <input type="checkbox" ng-model="filter.received"/> Received
             </label>
         </div>
         <div class="checkbox">
+            <span class="badge danger legend">•</span>
             <label>
                 <input type="checkbox" ng-model="filter.receivedWithIssues"/> Received With Issues
             </label>
         </div>
         <div class="checkbox">
+            <span class="badge warning legend">•</span>
             <label>
                 <input type="checkbox" ng-model="filter.notDelivered"/> Not Received
             </label>

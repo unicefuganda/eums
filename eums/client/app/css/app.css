@@ -159,7 +159,7 @@ a:hover {
 }
 
 #input-planned-distribution-date-header {
-width: 160px;
+    width: 160px;
 }
 
 #input-mode-of-delivery {
@@ -531,9 +531,32 @@ a, #distribution-plan-nav {
     text-align: center;
 }
 
+.info,
 .alert-info {
     color: white;
     background-color: #43B9E6;
+}
+
+.success,
+.alert-success {
+    color: white;
+    background-color: #3EED7F;
+}
+
+.danger,
+.alert-danger {
+    color: white;
+    background-color: #FF6342;
+}
+
+.warning,
+.alert-warning {
+    color: white;
+    background-color: #FFC942;
+}
+
+.legend {
+    margin-right: 5px;
 }
 
 .pad-20 {
