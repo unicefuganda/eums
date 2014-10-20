@@ -123,11 +123,11 @@ table tbody tr:nth-child(odd) {
     background-color: #9BDCF5;
 }
 
-.table-select-header-width{
+.table-select-header-width {
     width: 200px;
 }
 
-.table-select-max-width{
+.table-select-max-width {
     max-width: 120px;
 }
 
@@ -154,20 +154,25 @@ a:hover {
     width: 80px;
 }
 
-#input-planned-distribution-date-header {
-    width: 160px;
-}
-
-#input-planned-distribution-date {
-    max-width: 150px;
-}
-
 .input-phone-number {
     width: 100px;
 }
 
+#input-planned-distribution-date-header {
+width: 160px;
+}
+
 #input-mode-of-delivery {
     width: 160px;
+}
+
+.table-date {
+    width: 160px;
+}
+
+#input-delivery-reporting-received,
+#input-delivery-reporting-quantity {
+    width: 100px;
 }
 
 #input-quantity {

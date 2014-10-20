@@ -64,7 +64,7 @@
                         <th class="" id="input-available-quantity-header">Available Qty</th>
                         <th class="" id="input-header">Unit</th>
                         <th class="">Targeted Qty</th>
-                        <th class="" id="input-planned-distribution-date-header">Planned Distr Date</th>
+                        <th class="" id="input-planned-distribution-date-header">Distribution Date</th>
                         <th class="table-select-header-width">Consignee</th>
                         <th class="table-select-header-width">Contact Person</th>
                         <th class="table-select-header-width">Region/District</th>
@@ -79,7 +79,7 @@
                                        ng-model="distributionPlanItem.targetQuantity">
                             </td>
                             <td>
-                                <p id="input-planned-distribution-date" class="input-group"
+                                <p class="table-date input-group"
                                    ng-controller="DatePickerController">
                                     <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
                                            ng-model="distributionPlanItem.plannedDistributionDate" is-open="opened"

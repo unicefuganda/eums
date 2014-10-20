@@ -46,7 +46,7 @@
                     <ul class="list-group">
                         <li class="list-group-item">
                             <span class="badge alert-info">{{ documentItemSelected.quantity }}</span>
-                            Quantity
+                            Total Quantity
                         </li>
                         <li class="list-group-item">
                             <span class="badge alert-info">{{ documentItemSelected.unit }}</span>
@@ -62,13 +62,13 @@
                 <div ng-show="documentItemSelected.responses">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover">
-                        <th class="col-lg-1">End User</th>
-                        <th class="col-lg-1">Region/District</th>
-                        <th class="col-lg-1">Received</th>
-                        <th class="col-lg-1">Quantity</th>
-                        <th class="col-lg-1">Date Received</th>
-                        <th class="col-lg-1">Quality</th>
-                        <th class="col-lg-3">Remark</th>
+                        <th class="table-select-header-width">End User</th>
+                        <th class="table-select-header-width">Region/District</th>
+                        <th class="">Received</th>
+                        <th class="">Quantity</th>
+                        <th class="">Date Received</th>
+                        <th class="table-select-header-width">Quality</th>
+                        <th class="">Remark</th>
 
                         <tr ng-repeat="response in documentItemSelected.responses">
                             <td>
@@ -79,19 +79,19 @@
                                 <input type="hidden" search-from-list list="{{ districts }}"
                                        ng-model="response.location" value="{{ response.location }}">
                             </td>
-                            <td>
+                            <td id="input-delivery-reporting-received">
                                 <input type="hidden" search-from-list
                                        list='[{"id": "YES", "name": "Yes"},
                                         {"id": "NO", "name": "No"}]'
                                        ng-model="response.received"
                                        value="{{ response.received }}">
                             </td>
-                            <td>
-                                <input type="number" ng-disabled="response.received === 'NO'" class="form-control"
+                            <td id="input-delivery-reporting-quantity">
+                                <input type="number" min="0" ng-disabled="response.received === 'NO'" class="form-control"
                                        ng-model="response.quantity" value="{{ response.quantity }}">
                             </td>
 
-                            <td>
+                            <td class="table-date">
                                 <p class="input-group" ng-controller="DatePickerController">
                                     <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
                                            ng-disabled="response.received === 'NO'" ng-model="response.dateReceived"

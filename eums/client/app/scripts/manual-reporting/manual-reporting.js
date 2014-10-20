@@ -159,7 +159,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
                 var list = JSON.parse(attrs.list);
 
                 element.select2({
-                    width: '150px',
+                    width: '100%',
                     query: function (query) {
                         var data = {results: []};
                         var matches = list.filter(function (item) {
