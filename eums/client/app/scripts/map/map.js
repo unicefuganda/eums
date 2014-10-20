@@ -458,6 +458,7 @@
                 restrict: 'A',
                 scope: false,
                 link: function (scope) {
+                    scope.filter = {received: true, notDelivered: true, receivedWithIssues: true};
                     function addShownMarkers(condition, showMarkers) {
                         showMarkers.forEach(function (markerMap) {
                             if (getNumberOf(condition, markerMap.consigneeResponse).length == markerMap.consigneeResponse.length) {
@@ -471,10 +472,10 @@
 
                         MapService.clearAllMarkers(scope);
                         if (!newFilterValues[0] && !newFilterValues[1] && !newFilterValues[2]) {
-                            MapService.addMarkers(scope);
+                            MapService.clearAllMarkers(scope);
                         }
                         if (newFilterValues[0]) {
-                           addShownMarkers('yes', showMarkers);
+                            addShownMarkers('yes', showMarkers);
                         }
                         if (newFilterValues[1]) {
                             addShownMarkers('no', showMarkers);
