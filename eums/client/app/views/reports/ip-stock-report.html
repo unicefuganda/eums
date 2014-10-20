@@ -3,9 +3,14 @@
         <h4 class="page-header">IP Stock Report</h4>
 
         <div class="panel-body">
-            <span>Search IP</span>
-            <input type="hidden" search-from-list list="{{ ips }}" ng-model="selectedIPId">
-            <div class="panel-body">
+            <div class="form-group form-group-sm col-lg-4">
+                <label class="col-lg-3 control-label">Select IP</label>
+                <div class="col-lg-9">
+                    <input class="form-control input-sm" type="hidden" search-from-list list="{{ ips }}" ng-model="selectedIPId">
+                </div>
+            </div>
+
+            <div class="panel-body" ng-show="selectedIP">
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
                     <tr>
@@ -22,10 +27,18 @@
                         <td>{{ document.value_received - document.value_dispensed }}</td>
                     </tr>
                     <tr>
-                        <td>TOTALS</td>
+                        <td>
+                            <span class="badge" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
+                                TOTALS
+                            </span>
+                        </td>
                         <td>{{ selectedIP.totalReceived }}</td>
                         <td>{{ selectedIP.totalDispensed }}</td>
-                        <td>{{ selectedIP.totalReceived - selectedIP.totalDispensed }}</td>
+                        <td>
+                            <span class="badge" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
+                                {{ selectedIP.balance }}
+                            </span>
+                        </td>
                     </tr>
                 </table>
 

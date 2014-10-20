@@ -119,6 +119,7 @@ angular.module('IPStockReport', ['ngTable', 'siTable', 'eums.ip'])
 
             ip.totalReceived = totalReceived.value_received;
             ip.totalDispensed = totalDispensed.value_dispensed;
+            ip.balance = ip.totalReceived - ip.totalDispensed;
 
             return ip;
         });
