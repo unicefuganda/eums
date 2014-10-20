@@ -3,8 +3,10 @@
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User'])
     .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService, $q, $timeout) {
 
-        $scope.districts = Districts.getAllDistricts().map(function (district) {
-            return {id: district, name: district};
+        $scope.datepicker = {from: false, to: false};
+
+        $scope.districts = Districts.getAllDistricts().map(function(district) {
+           return {id: district, name: district};
         });
         ConsigneeService.fetchConsignees().then(function (consignees) {
             $scope.consignees = consignees;

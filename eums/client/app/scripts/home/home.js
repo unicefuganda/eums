@@ -2,7 +2,8 @@
 
 angular.module('Home', ['GlobalStats'])
     .controller('HomeController', function (DistributionReportService, $scope) {
-        $scope.filter = {received: '', notDelivered: '', receivedWithIssues: ''};
+        $scope.filter = {received: '', notDelivered: '', receivedWithIssues: '', year: ''};
+        $scope.datepicker = {from: false, to: false};
         $scope.clickedMarker = '';
         $scope.allMarkers = [];
         $scope.shownMarkers = [];
@@ -18,4 +19,5 @@ angular.module('Home', ['GlobalStats'])
                 $scope.totalStats = DistributionReportService.getTotals(reports, filterOptions);
             };
         });
+
     });

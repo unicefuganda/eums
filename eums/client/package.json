@@ -31,5 +31,8 @@
   },
   "scripts": {
     "test": "grunt test"
+  },
+  "dependencies": {
+    "moment-range": "~1.0.5"
   }
 }

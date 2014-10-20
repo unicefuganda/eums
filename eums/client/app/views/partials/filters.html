@@ -1,4 +1,7 @@
 <form role='form' id='filters-form' map-filter="">
+    <div>
+        <button class="btn btn-sm btn-primary" ng-click="clearFilters()">Clear Filters</button>
+    </div>
     <div class="form-group">
         <label for="select-program">Filter by Outcome</label>
         <input select-program name="" type="text" id="select-program" ng-model="programme"
@@ -29,6 +32,37 @@
                 <input type="checkbox" checked ng-model="filter.notDelivered"/> Not Received
             </label>
         </div>
+    </div>
+    <p>
+        <label for="select-year">Period Filter</label>
+    </p>
+
+    <div date-range-filter>
+        <p class="input-group">
+            <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
+                   ng-model="filter.from" is-open="datepicker.from"
+                   datepicker-options="dateOptions" show-button-bar="false"
+                   value="{{ filter.to | date : 'dd/MM/yyyy' }}" eums-date-picker/>
+
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-default" ng-click="open($event, 'from')">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                </button>
+          </span>
+        <p>
+
+        <p class="input-group">
+            <input type="text" min="{{ filter.from }}" class="form-control" datepicker-popup="dd/MM/yyyy"
+                   ng-model="filter.to" is-open="datepicker.to"
+                   datepicker-options="dateOptions" show-button-bar="false" eums-date-picker/>
+
+          <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="open($event, 'to')">
+                <i class="glyphicon glyphicon-calendar"></i>
+            </button>
+          </span>
+
+        </p>
     </div>
 </form>
 

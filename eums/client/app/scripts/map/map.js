@@ -253,7 +253,7 @@
         };
     });
 
-    module.directive('map', function (MapService, $window, IPService, DistributionPlanService) {
+    module.directive('map', function (MapService, $window, IPService, DistributionPlanService, $q, $timeout) {
         return {
             scope: true,
             link: function (scope, element, attrs) {
@@ -278,7 +278,6 @@
                                         var consigneeResponse = markerData[0];
                                         consigneeResponse && map.addMarker(marker) && scope.allMarkers.push({marker: marker, consigneeResponse: markerData});
                                     });
-
                                 });
                             });
                         });
@@ -286,7 +285,6 @@
                     scope.$watch('params.location', function (newLocation) {
                         newLocation && MapService.clickLayer(newLocation.district);
                     }, true);
-
                 });
             }
         }
@@ -492,7 +490,88 @@
                 }
             }
 
-        }).factory('FilterService', function (DistributionPlanService) {
+        }).directive('selectYear', function (FilterService, MapService) {
+            return {
+                restrict: 'A',
+                scope: false,
+                link: function (scope, elem) {
+                    FilterService.getDateAnswers().then(function (response) {
+                        var dateAnswers = response.data.map(function (answer) {
+                            var dateString = answer.value;
+                            return dateString && dateString.substring(dateString.length - 4);
+                        });
+
+                        return _.unique(dateAnswers);
+
+                    }).then(function (uniqueYear) {
+                        var yearsData = uniqueYear.map(function (year) {
+                            return { id: year, text: year}
+                        });
+                        var defaultYear = [
+                            {id: '', text: 'Select year'}
+                        ];
+                        $(elem).select2({
+                            data: defaultYear.concat(yearsData)
+                        });
+                    });
+                    scope.$watch('filter.year', function (selectedYear) {
+
+                        var wasAnsweredInYear = function (response) {
+                            var dateOfReceipt = response[0].dateOfReceipt;
+                            return dateOfReceipt && dateOfReceipt.substring(dateOfReceipt.length - 4) == selectedYear;
+                        };
+
+                        var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allMarkers;
+                        MapService.clearAllMarkers(scope);
+                        if (!selectedYear) {
+                            MapService.addMarkers(scope);
+                        }
+                        showMarkers.forEach(function (markerMap) {
+                            if (wasAnsweredInYear(markerMap.consigneeResponse)) {
+                                MapService.addMarker(markerMap.marker);
+                            }
+                        });
+                    }, true);
+                }
+            }
+        }).directive('dateRangeFilter', function (MapService) {
+            return {
+                restrict: 'A',
+                scope: false,
+                link: function (scope) {
+                    scope.$watchCollection('[filter.from, filter.to]', function (newDates) {
+                        var fromDate = moment(newDates[0]),
+                            toDate = moment(newDates[1]),
+                            showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allMarkers;
+
+                        function isWithinDateRange(consigneeResponse) {
+                            var response = consigneeResponse[0],
+                                dateOfReceipt = response && response.dateOfReceipt,
+                                dateRange = moment().range(fromDate, toDate);
+                            console.log(dateRange.contains(moment(dateOfReceipt)));
+                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt));
+                        }
+
+                        if (newDates[0] && newDates[1]) {
+                            MapService.clearAllMarkers(scope);
+                            showMarkers.forEach(function (markerMap) {
+                                if (isWithinDateRange(markerMap.consigneeResponse)) {
+                                    MapService.addMarker(markerMap.marker);
+                                }
+                            });
+                        }
+                    });
+
+                    scope.clearFilters = function () {
+                        scope.filter = {received: true, notDelivered: true, receivedWithIssues: true, year: '', to: '', from: ''};
+                        scope.shownMarkers = [];
+                        scope.ip = '';
+                        scope.programme = '';
+                    }
+                }
+            }
+
+        }).factory('FilterService', function (DistributionPlanService, $http, EumsConfig) {
 
             var filterPlanById = function (distributionPlans, programmeId) {
                 return distributionPlans.data.filter(function (plan) {
@@ -505,9 +584,12 @@
                     return DistributionPlanService.fetchPlans().then(function (allDistributionPlans) {
                         return filterPlanById(allDistributionPlans, programmeId);
                     });
+                },
+                getDateAnswers: function () {
+                    return $http.get(EumsConfig.BACKEND_URLS.DATE_ANSWERS);
                 }
             }
         });
 
 })
-(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan']));
+(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan', 'DatePicker']));

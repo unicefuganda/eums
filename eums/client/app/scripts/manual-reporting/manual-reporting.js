@@ -14,7 +14,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
     })
     .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, Districts, $timeout) {
         $scope.sortBy = $sorter;
-
+        $scope.datepicker = {from: false, to: false};
         // Should be in another controller
         $scope.document = DistributionReportingParameters.retrieveVariable('selectedPurchaseOrder');
         $scope.currentDocumentType = DistributionReportingParameters.retrieveVariable('currentDocumentType');
