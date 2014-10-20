@@ -1,0 +1,36 @@
+<div class="container-fluid">
+    <div ng-controller="IPStockReportController" class="content">
+        <h4 class="page-header">IP Stock Report</h4>
+
+        <div class="panel-body">
+            <span>Search IP</span>
+            <input type="hidden" search-from-list list="{{ ips }}" ng-model="selectedIPId">
+            <div class="panel-body">
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <td class="col-lg-3">Document Number</td>
+                        <td class="col-lg-3">Value Received $</td>
+                        <td class="col-lg-3">Value Dispensed $</td>
+                        <td class="col-lg-3">Balance $</td>
+                    </tr>
+                    </thead>
+                    <tr ng-repeat="document in selectedIP.documents">
+                        <td>{{ document.doc_number }}</td>
+                        <td>{{ document.value_received }}</td>
+                        <td>{{ document.value_dispensed }}</td>
+                        <td>{{ document.value_received - document.value_dispensed }}</td>
+                    </tr>
+                    <tr>
+                        <td>TOTALS</td>
+                        <td>{{ selectedIP.totalReceived }}</td>
+                        <td>{{ selectedIP.totalDispensed }}</td>
+                        <td>{{ selectedIP.totalReceived - selectedIP.totalDispensed }}</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+</div>
