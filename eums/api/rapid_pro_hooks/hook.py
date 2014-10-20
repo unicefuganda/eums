@@ -1,9 +1,10 @@
 from django.http.response import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from eums.models import NodeLineItemRun, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
 
-
+@csrf_exempt
 def hook(request):
     params = request.GET
     flow = Flow.objects.get(rapid_pro_id=params['flow'])
