@@ -3,11 +3,17 @@
         <h4 class="page-header">IP Stock Report</h4>
 
         <div class="panel-body">
-            <div class="form-group form-group-sm col-lg-4">
-                <label class="col-lg-3 control-label">Select IP</label>
-                <div class="col-lg-9">
-                    <input class="form-control input-sm" type="hidden" search-from-list list="{{ ips }}" ng-model="selectedIPId">
+            <div class="form-horizontal">
+                <div class="form-group col-lg-4">
+                    <label class="col-lg-2 control-label description-label" for="select-ip">Select IP</label>
+
+                    <div class="col-lg-10">
+                        <input id="select-ip" class="form-control" type="hidden" search-from-list list="{{ ips }}" ng-model="selectedIPId">
+                    </div>
                 </div>
+            </div>
+
+            <div class="form-group col-lg-4">
             </div>
 
             <div class="panel-body" ng-show="selectedIP">
