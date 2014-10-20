@@ -227,7 +227,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             return data.map(function(contact) {
                 return {
                     id: contact._id,
-                    text: contact.firstName + ' ' + contact.lastName + ', ' + contact.phone
+                    text: contact.firstName + ' ' + contact.lastName
                 };
             });
         }
@@ -256,7 +256,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                                     if(contact._id) {
                                         callback({
                                             id: contact._id,
-                                            text: contact.firstName + ' ' + contact.lastName + ', ' + contact.phone
+                                            text: contact.firstName + ' ' + contact.lastName
                                         });
                                     }
                                 });

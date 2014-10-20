@@ -37,6 +37,10 @@ h4.page-header {
     font-size: 16px;
 }
 
+#login-body {
+    background-color: white;
+}
+
 .login-row {
     margin: 150px 0 2px 0;
     background: #1CABE2;
@@ -67,8 +71,7 @@ h4.page-header {
 }
 
 #login-logo img {
-    align-content: center;
-    margin: 80px 0 0 130px;
+    margin: 75px 0 0 60px;
 }
 
 #login-form-container{
@@ -339,6 +342,10 @@ a, #distribution-plan-nav {
     top: 0px;
     z-index: 0;
     text-align: center;
+}
+
+#filters-form {
+    padding: 12px;
 }
 
 .filters-section {
