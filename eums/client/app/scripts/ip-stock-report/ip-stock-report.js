@@ -2,7 +2,7 @@
 
 
 angular.module('IPStockReport', ['ngTable', 'siTable', 'eums.ip'])
-    .controller('IPStockReportController', function(IPService, $scope) {
+    .controller('IPStockReportController', function (IPService, $scope) {
         var ips = [
             {
                 name: 'Naguru Teenage Information',
@@ -107,13 +107,13 @@ angular.module('IPStockReport', ['ngTable', 'siTable', 'eums.ip'])
             }
         ];
 
-        $scope.ips = ips.map(function(ip) {
+        $scope.ips = ips.map(function (ip) {
 
-            var totalReceived = ip.documents.reduce(function(lastDoc, currentDoc) {
+            var totalReceived = ip.documents.reduce(function (lastDoc, currentDoc) {
                 return {value_received: lastDoc.value_received + currentDoc.value_received};
             }, {value_received: 0});
 
-            var totalDispensed = ip.documents.reduce(function(lastDoc, currentDoc) {
+            var totalDispensed = ip.documents.reduce(function (lastDoc, currentDoc) {
                 return {value_dispensed: lastDoc.value_dispensed + currentDoc.value_dispensed};
             }, {value_dispensed: 0});
 
@@ -126,49 +126,11 @@ angular.module('IPStockReport', ['ngTable', 'siTable', 'eums.ip'])
 
         $scope.selectedIPId = undefined;
 
-        $scope.$watch('selectedIPId', function(id) {
-            $scope.selectedIP = $scope.ips.filter(function(ip) {
+        $scope.$watch('selectedIPId', function (id) {
+            $scope.selectedIP = $scope.ips.filter(function (ip) {
                 return ip.id === id;
             })[0];
-
         });
-    })
-    .directive('searchFromList', function($timeout) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function(scope, element, attrs, ngModel) {
-                var list = JSON.parse(attrs.list);
-
-                element.select2({
-                    width: '150px',
-                    query: function(query) {
-                        var data = {results: []};
-                        var matches = list.filter(function(item) {
-                            return item.name.toLowerCase().indexOf(query.term.toLowerCase()) >= 0;
-                        });
-                        data.results = matches.map(function(match) {
-                            return {
-                                id: match.id,
-                                text: match.name
-                            };
-                        });
-                        query.callback(data);
-                    },
-                    initSelection: function(element, callback) {
-                        $timeout(function() {
-                            var matchingItem = list.filter(function(item) {
-                                return item.id === ngModel.$modelValue;
-                            })[0];
-                            if(matchingItem) {
-                                callback({id: matchingItem.id, text: matchingItem.name});
-                            }
-                        });
-                    }
-                });
-            }
-        };
     });
 
 

@@ -73,8 +73,15 @@ h4.page-header {
     color: white;
 }
 
+#login-welcome {
+    text-align: center;
+}
+
 #login-logo img {
-    margin: 75px 0 0 60px;
+    display: block;
+    margin: auto;
+    margin-top: 90px;
+    vertical-align: middle;
 }
 
 #login-form-container {

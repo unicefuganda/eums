@@ -285,7 +285,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
                 element.select2({
                     width: '100%',
-                    query: function(query) {
+                    query: function (query) {
                         var data = {results: []};
                         var matches = list.filter(function (item) {
                             return item.name.toLowerCase().indexOf(query.term.toLowerCase()) >= 0;

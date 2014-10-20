@@ -17,7 +17,8 @@
         <div class="row">
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="col-lg-4 control-label description-label">Short Description:</label>
+                    <label for="select-sales-order" class="col-lg-4 control-label description-label">Short
+                        Description:</label>
 
                     <div class="col-lg-8">
                         <select id="select-sales-order" ng-model="documentItemSelected" required="required"
@@ -26,6 +27,11 @@
                             <option value="" selected="selected">Select Item</option>
                         </select>
                     </div>
+
+                    <!--<div class="col-lg-8">-->
+                        <!--<input id="select-sales-order" class="form-control" type="hidden" search-from-list-->
+                               <!--list="{{ documents }}" ng-model="documentItemSelected">-->
+                    <!--</div>-->
                 </div>
             </div>
 
@@ -87,13 +93,12 @@
                                        value="{{ response.received }}">
                             </td>
                             <td id="input-delivery-reporting-quantity">
-                                <input type="number" min="0" ng-disabled="response.received === 'NO'" class="form-control"
+                                <input type="number" min="0" ng-disabled="response.received === 'NO'"
+                                       class="form-control"
                                        ng-model="response.quantity" value="{{ response.quantity }}">
                             </td>
 
                             <td class="table-date">
-
-                            <td>
                                 <p class="input-group" eums-date-picker>
                                   <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"  ng-disabled="response.received === 'NO'" ng-model="response.dateReceived" is-open="datepicker.from" datepicker-options="dateOptions" show-button-bar="false" value="{{ response.dateReceived | date : 'dd/MM/yyyy' }}"/>
                                   <span class="input-group-btn">

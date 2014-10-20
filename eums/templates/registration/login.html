@@ -10,8 +10,8 @@
 </head>
 
 <body id="login-body">
-<div class="container col-md-offset-2">
-    <div class="row login-row col-md-8">
+<div class="container col-md-offset-1">
+    <div class="row login-row col-md-10">
         <div class="col-md-5" id="login-logo">
             <img src="/static/app/media/unicef-logo-white.png">
         </div>
@@ -20,7 +20,7 @@
                   action="{% url 'django.contrib.auth.views.login' %}">
 
                 <div class="form-group">
-                    <div class="col-sm-offset-1">
+                    <div id="login-welcome" class="col-md-10 col-sm-offset-1 center">
                         <h3>Welcome to the End User Monitoring System (EUMS)</h3>
                     </div>
                 </div>
