@@ -252,17 +252,10 @@
 
     module.directive('map', function (MapService, $window, IPService, DistributionPlanService) {
         return {
-            scope: false,
+            scope: true,
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null).then(function (map) {
                     $window.map = map;
-                    scope.filter = {};
-                    scope.clickedMarker = "";
-                    scope.allmarkers = [];
-                    scope.shownMarkers = [];
-                    scope.programme = '';
-                    scope.notDeliveredChecked = false;
-                    scope.deliveredChecked = false;
 
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
@@ -331,6 +324,7 @@
     }).directive('mapSummary', function () {
         return{
             restrict: 'A',
+            scope: true,
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
     }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService) {
@@ -443,7 +437,7 @@
                                 });
                                 scope.shownMarkers = newShownMarkers;
                             });
-                            scope.updateTotalStats({consignee: selectedIp});
+                            scope.updateTotalStats && scope.updateTotalStats({consignee: selectedIp});
                         }
                     });
 
@@ -452,6 +446,7 @@
         }).directive('deliveryStatus', function (MapService) {
             return {
                 restrict: 'A',
+                scope: true,
                 link: function (scope) {
                     scope.$watch('filter.received', function (received) {
                         var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers;
@@ -475,6 +470,7 @@
         }).directive('notDelivered', function (MapService) {
             return {
                 restrict: 'A',
+                scope: true,
                 link: function (scope) {
                     scope.$watch('filter.notDelivered', function (received) {
                         var showMarkers = scope.shownMarkers.length > 0 ? scope.shownMarkers : scope.allmarkers,
