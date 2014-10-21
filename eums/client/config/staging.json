@@ -13,8 +13,8 @@
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/"
     },
-    "DISTRICTGEOJSONURL": "http://196.0.26.51/static/app/data/districts.json",
-    "DISTRICTJSONURL": "http://196.0.26.51/static/app/data/district_name.json",
+    "DISTRICTGEOJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/districts.json",
+    "DISTRICTJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/district_name.json",
     "districtLayerStyle": {
         "weight": 1,
         "color": "#036E97",
@@ -27,5 +27,5 @@
         "color": "#1CABE2",
         "fillOpacity": 0.8
     },
-    "IPJSONURL": "http://196.0.26.51/static/app/data/ip.json"
+    "IPJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/ip.json"
 }
