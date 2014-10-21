@@ -64,8 +64,30 @@ module.exports = function (grunt) {
         },
 
         watch: {
-            files: ['app/scripts/**/*.js'],
-            tasks: ['jshint', 'build']
+            javascript: {
+                files: ['app/scripts/**/*.js'],
+                tasks: ['jshint', 'build']
+            },
+            less: {
+                files: ['app/less/*.less'],
+                tasks: ['less']
+            }
+        },
+
+        less: {
+            compile: {
+                options: {
+                    compress: true,
+                    paths: [
+                        'less',
+                        'bower_components/bootstrap/less',
+                        'bower_components/bootstrap/less/mixins'
+                    ]
+                },
+                files: {
+                    'app/css/app.css': 'less/app.less'
+                }
+            }
         },
 
         uglify: {
@@ -190,6 +212,7 @@ module.exports = function (grunt) {
 
     });
 
+    grunt.loadNpmTasks('grunt-contrib-less');
 
     grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
         if (target === 'dist') {
@@ -219,13 +242,15 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'ngconstant:dev',
-        'newer:uglify:all'
+        'newer:uglify:all',
+        'less'
     ]);
 
     grunt.registerTask('build-staging', [
         'clean:dist',
         'ngconstant:staging',
-        'newer:uglify:all'
+        'newer:uglify:all',
+        'less'
     ]);
 
 
