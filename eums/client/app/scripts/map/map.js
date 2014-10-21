@@ -567,6 +567,7 @@
                         scope.shownMarkers = [];
                         scope.ip = '';
                         scope.programme = '';
+                        scope.updateTotalStats();
                     }
                 }
             }
