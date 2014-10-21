@@ -14,8 +14,12 @@ angular.module('DatePicker', []).directive('eumsDatePicker', function () {
             scope.open = function ($event, type) {
                 $event.preventDefault();
                 $event.stopPropagation();
+                angular.forEach(scope.datepicker, function (item, index) {
+                    scope.datepicker[index] = false;
+                });
                 scope.datepicker[type] = true;
             };
+
             scope.dateOptions = {
                 formatYear: 'yy',
                 startingDay: 1

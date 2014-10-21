@@ -3,7 +3,7 @@
 angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User'])
     .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService, $q, $timeout) {
 
-        $scope.datepicker = {from: false, to: false};
+        $scope.datepicker = {};
 
         $scope.districts = Districts.getAllDistricts().map(function(district) {
            return {id: district, name: district};
@@ -60,7 +60,15 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
 
             $scope.distributionPlanItems = currentDistributionPlanItems;
+            setDatePickers();
         };
+
+        function setDatePickers(){
+            $scope.datepicker = {};
+            $scope.distributionPlanItems.forEach(function (item, index) {
+                $scope.datepicker[index] = false;
+            });
+        }
 
         function getLineItemForUpdateFromUILineItem(uiLineItem) {
             return {
@@ -202,6 +210,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     $scope.distributionPlanItems = [];
                 }
             }
+            setDatePickers();
         });
 
     })

@@ -14,7 +14,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
     })
     .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, Districts, $timeout) {
         $scope.sortBy = $sorter;
-        $scope.datepicker = {from: false, to: false};
+        $scope.datepicker = {};
         // Should be in another controller
         $scope.document = DistributionReportingParameters.retrieveVariable('selectedPurchaseOrder');
         $scope.currentDocumentType = DistributionReportingParameters.retrieveVariable('currentDocumentType');
@@ -124,6 +124,13 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             $location.path('/distribution-reporting/details/');
         };
 
+        function setDatePickers(){
+            $scope.datepicker = {};
+            $scope.documentItemSelected.responses.forEach(function (item, index) {
+                $scope.datepicker[index] = false;
+            });
+        }
+
         $scope.addResponse = function () {
             $scope.documentItemSelected.responses.push({
                 received: '',
@@ -133,6 +140,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
                 quality: '',
                 location: ''
             });
+            setDatePickers();
         };
 
         $scope.saveResponses = function () {
