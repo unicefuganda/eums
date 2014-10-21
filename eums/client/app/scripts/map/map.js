@@ -348,7 +348,7 @@
 
                     }).then(function (data) {
                         var defaultProgramme = [
-                            {id: '', text: 'Select Outcome'}
+                            {id: '', text: 'All Outcomes'}
                         ];
                         $(elem).select2({
                             data: defaultProgramme.concat(data)
@@ -415,7 +415,7 @@
                         return $q.all(dataPromises);
                     }).then(function (data) {
                         var defaultIP = [
-                            {id: '', text: 'Select Implementing Partner'}
+                            {id: '', text: 'All Implementing Partners'}
                         ];
                         $(elem).select2({
                             data: defaultIP.concat(data)
