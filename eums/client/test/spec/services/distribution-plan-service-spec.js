@@ -72,10 +72,12 @@ describe('Distribution Plan Service', function () {
         nodeTree: expectedNodeTree
     };
 
-    var sales_order_details = {'sales_document': '00001',
-        'material_code': '1234', 'order_quantity': '100',
+    var sales_order_details = {
+        'sales_document': '00001',
+        'materialCode': '1234', 'order_quantity': '100',
         'date_created': '2014-09-10',
-        'net_value': '1000', 'net_price': '10', 'description': 'Test'};
+        'net_value': '1000', 'net_price': '10', 'description': 'Test'
+    };
 
 
     beforeEach(function () {
@@ -191,7 +193,7 @@ describe('UNICEF IP', function () {
             'children': [
             ],
             'location': 'Mbarara',
-            'mode_of_delivery': 'DIRECT_DELIVERY',
+            'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
                 5,
                 6
@@ -207,7 +209,7 @@ describe('UNICEF IP', function () {
             'children': [
             ],
             'location': 'Gulu',
-            'mode_of_delivery': 'DIRECT_DELIVERY',
+            'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
                 7,
                 8
@@ -224,7 +226,7 @@ describe('UNICEF IP', function () {
                 3, 4
             ],
             'location': 'Lira',
-            'mode_of_delivery': 'DIRECT_DELIVERY',
+            'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
                 3,
                 4

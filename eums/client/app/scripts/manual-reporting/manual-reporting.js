@@ -74,7 +74,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             var orderDetails = {
                 id: document.id, order_number: document.doc_number, date: document.date, programme: document.programme,
                 items: [
-                    {id: 1, description: 'Printer cartridges HP 21', material_code: '213442', quantity: 20, unit: 'each',
+                    {id: 1, description: 'Printer cartridges HP 21', materialCode: '213442', quantity: 20, unit: 'each',
                         responses: [
                             {
                                 received: 'YES',
@@ -86,7 +86,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
                                 remark: ''
                             }
                         ]},
-                    {id: 2, description: 'School Books', material_code: '2123342', quantity: 100, unit: 'cartons', responses: [
+                    {id: 2, description: 'School Books', materialCode: '2123342', quantity: 100, unit: 'cartons', responses: [
                         {
                             received: 'NO',
                             quantity: '',
@@ -97,7 +97,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
                             remark: '2 weeks delay'
                         }
                     ]},
-                    {id: 1, description: 'Dell Computers', material_code: '21346256', quantity: 500, unit: 'each', responses: [
+                    {id: 1, description: 'Dell Computers', materialCode: '21346256', quantity: 500, unit: 'each', responses: [
                         {
                             received: 'YES',
                             quantity: 23,
@@ -108,7 +108,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
                             remark: ''
                         }
                     ]},
-                    {id: 1, description: 'School text books', material_code: '56787562', quantity: 600, unit: 'each', responses: [
+                    {id: 1, description: 'School text books', materialCode: '56787562', quantity: 600, unit: 'each', responses: [
                         {
                             received: 'NO',
                             quantity: '',

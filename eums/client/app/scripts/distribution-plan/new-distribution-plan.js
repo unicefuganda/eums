@@ -5,8 +5,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         $scope.datepicker = {};
 
-        $scope.districts = Districts.getAllDistricts().map(function(district) {
-           return {id: district, name: district};
+        $scope.districts = Districts.getAllDistricts().map(function (district) {
+            return {id: district, name: district};
         });
         ConsigneeService.fetchConsignees().then(function (consignees) {
             $scope.consignees = consignees;
@@ -14,10 +14,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         $scope.salesOrderItems = [];
         $scope.distributionPlanItems = [];
-
-        $scope.changeSelectedSalesOrderItem = function (selectedSalesOrderItem) {
-            $scope.salesOrderItemSelected = selectedSalesOrderItem;
-        };
 
         $scope.initialize = function () {
             $scope.salesOrderItemSelected = undefined;
@@ -29,8 +25,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
             $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
-                    var formattedSalesOrderItem = {display: result.item.description,
-                        material_code: result.item.material_code,
+                    var formattedSalesOrderItem = {
+                        display: result.item.description,
+                        materialCode: result.item.material_code,
                         quantity: result.quantity,
                         quantityLeft: result.quantity,
                         unit: result.item.unit.name,
@@ -43,14 +40,20 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         $scope.hasTargetedQuantity = function (distributionPlanLineItem) {
             var showInputBox = ['', undefined, '0', 0];
-            return (showInputBox.indexOf(distributionPlanLineItem.targeted_quantity) === -1);
+            return (showInputBox.indexOf(distributionPlanLineItem.targetQuantity) === -1);
         };
 
         $scope.addDistributionPlanItem = function () {
-            var distributionPlanLineItem = {item: $scope.salesOrderItemSelected.information.item,
-                quantity: $scope.salesOrderItemSelected.quantityLeft, planned_distribution_date: '2014-10-10',
-                targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
-                contact_phone_number: '', programme_focal: '', contact_person: '', tracked: false};
+            var distributionPlanLineItem = {
+                item: $scope.salesOrderItemSelected.information.item,
+                quantity: $scope.salesOrderItemSelected.quantityLeft,
+                plannedDistributionDate: '2014-10-10',
+                targetQuantity: 0,
+                destinationLocation: '',
+                modeOfDelivery: '',
+                contactPerson: '',
+                tracked: false
+            };
 
             var currentDistributionPlanItems = $scope.distributionPlanItems;
             currentDistributionPlanItems.push(distributionPlanLineItem);
@@ -63,7 +66,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             setDatePickers();
         };
 
-        function setDatePickers(){
+        function setDatePickers() {
             $scope.datepicker = {};
             $scope.distributionPlanItems.forEach(function (item, index) {
                 $scope.datepicker[index] = false;
@@ -72,9 +75,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
         function getLineItemForUpdateFromUILineItem(uiLineItem) {
             return {
-                item: uiLineItem.item.id, targeted_quantity: uiLineItem.targetQuantity,
+                item: uiLineItem.item.id, targetQuantity: uiLineItem.targetQuantity,
                 distribution_plan_node: uiLineItem.distribution_plan_node,
-                planned_distribution_date: uiLineItem.plannedDistributionDate,
+                plannedDistributionDate: uiLineItem.plannedDistributionDate,
                 remark: uiLineItem.remark
             };
         }
@@ -82,9 +85,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         function createNewNodeAndLineItem(nodeDetails, lineItem) {
             DistributionPlanNodeService.createNode(nodeDetails).then(function (createdNode) {
                 var lineItemDetails = {
-                    item: lineItem.item.id, targeted_quantity: lineItem.targetQuantity,
+                    item: lineItem.item.id, targetQuantity: lineItem.targetQuantity,
                     distribution_plan_node: createdNode.id,
-                    planned_distribution_date: lineItem.plannedDistributionDate,
+                    plannedDistributionDate: lineItem.plannedDistributionDate,
                     remark: lineItem.remark
                 };
                 DistributionPlanLineItemService.createLineItem(lineItemDetails).then(function () {
@@ -132,10 +135,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             $scope.distributionPlanItems.forEach(function (item) {
                 var nodeDetails = {
                     consignee: item.consignee, location: item.destinationLocation, contact_person_id: item.contactPerson,
-                    distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', mode_of_delivery: item.modeOfDelivery
+                    distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', modeOfDelivery: item.modeOfDelivery
                 };
 
-                $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.targeted_quantity)).toString();
+                $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.targetQuantity)).toString();
                 saveNodeAndLineItem(nodeDetails, item, item);
             });
         }
@@ -192,15 +195,18 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                                 $scope.planId = node.distribution_plan;
                                 lineItem.consignee = node.consignee.id;
                                 lineItem.nodeId = node.id;
-                                lineItem.contactPerson = node.contactPerson._id;
-                                lineItem.modeOfDelivery = node.mode_of_delivery;
+                                lineItem.contactPerson = node.contact_person._id;
+                                lineItem.modeOfDelivery = node.mode_of_Delivery;
                                 lineItem.destinationLocation = node.location;
                                 lineItem.alreadySaved = true;
+                                lineItem.subConsignees = [
+                                    {}
+                                ];
 
                                 $scope.distributionPlanItems.push(lineItem);
                             });
 
-                            quantityLeft = quantityLeft - parseInt(lineItem.targeted_quantity);
+                            quantityLeft = quantityLeft - parseInt(lineItem.targetQuantity);
                             itemCounter++;
                             $scope.salesOrderItemSelected.quantityLeft = quantityLeft.toString();
                         });

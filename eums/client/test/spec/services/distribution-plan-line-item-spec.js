@@ -5,9 +5,9 @@ describe('Distribution Plan Line Item Service', function () {
     var lineItemId, itemId = 1;
     var stubLineItem = {
         item: itemId,
-        targeted_quantity: 10,
-        planned_distribution_date: '2014-02-23',
-        programme_focal: 1,
+        targetQuantity: 10,
+        plannedDistributionDate: '2014-02-23',
+        programmeFocal: 1,
         remark: 'In good condition',
         distribution_plan_node: 1
     };
@@ -15,8 +15,8 @@ describe('Distribution Plan Line Item Service', function () {
     var expectedLineItem = {
         id: 1,
         item: itemId,
-        targeted_quantity: 10,
-        planned_distribution_date: '2014-02-23',
+        targetQuantity: 10,
+        plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
         distribution_plan_node: 1
     };

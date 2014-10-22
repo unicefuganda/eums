@@ -10,7 +10,7 @@ describe('Distribution Plan Node Service', function() {
         parent: null,
         distribution_plan: 1,
         location: 'Kampala',
-        mode_of_delivery: 'Warehouse',
+        modeOfDelivery: 'Warehouse',
         contact_person_id: contactId,
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
@@ -22,7 +22,7 @@ describe('Distribution Plan Node Service', function() {
         item: 1,
         quantity: 10,
         under_current_supply_plan: false,
-        planned_distribution_date: '2014-02-23',
+        plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
         distribution_plan_node: planNodeId
     };
@@ -32,7 +32,7 @@ describe('Distribution Plan Node Service', function() {
         item: 2,
         quantity: 10,
         under_current_supply_plan: false,
-        planned_distribution_date: '2014-02-23',
+        plannedDistributionDate: '2014-02-23',
         remark: 'In bad condition',
         distribution_plan_node: planNodeId
     };
@@ -52,7 +52,7 @@ describe('Distribution Plan Node Service', function() {
         parent: null,
         distribution_plan: 1,
         location: 'Kampala',
-        mode_of_delivery: 'Warehouse',
+        modeOfDelivery: 'Warehouse',
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: fullConsignee,
