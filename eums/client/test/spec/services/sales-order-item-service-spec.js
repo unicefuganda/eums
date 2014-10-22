@@ -36,13 +36,13 @@ describe('Sales Order Item Service', function () {
             itemUnitEndpointUrl = EumsConfig.BACKEND_URLS.ITEM_UNIT;
             salesOrderItemService = SalesOrderItemService;
         });
-    });
 
-    it('should get item details', function (done) {
         mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(stubItemUnit);
         mockBackend.whenGET(itemEndpointUrl + itemId + '/').respond(stubItem);
         mockBackend.whenGET(salesOrderItemEndpointUrl + salesOrderItemId + '/').respond(stubSalesOrderItem);
+    });
 
+    it('should get item details', function (done) {
         var expectedSalesOrderItem = { id: 1, sales_order: '1',
             item: { id: 1, description: 'item description', unit: { id: 1, name: 'Unit name' } },
             quantity: 100, net_price: 10, net_value: 1000, issue_date: '2014-10-02', delivery_date: '2014-10-02',

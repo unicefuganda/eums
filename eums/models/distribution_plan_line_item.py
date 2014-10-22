@@ -1,8 +1,7 @@
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 
-from eums.models import SalesOrderItem, Consignee, DistributionPlanNode
+from eums.models import SalesOrderItem, DistributionPlanNode
 
 
 class DistributionPlanLineItem(models.Model):
