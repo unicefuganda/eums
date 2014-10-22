@@ -4,9 +4,10 @@ from eums.models import NodeLineItemRun, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
 
+
 @csrf_exempt
 def hook(request):
-    params = request.GET
+    params = request.POST
     flow = Flow.objects.get(rapid_pro_id=params['flow'])
     node_line_item_run = NodeLineItemRun.objects.filter(phone=params['phone']).first()
 
@@ -37,7 +38,7 @@ def _mark_as_complete(node_line_item_run):
 
 
 def _get_matching_question(uuid):
-    numeric_question = NumericQuestion.objects.filter(uuids=uuid)
-    text_question = TextQuestion.objects.filter(uuids=uuid)
+    numeric_question = NumericQuestion.objects.filter(uuids__contains=uuid)
+    text_question = TextQuestion.objects.filter(uuids__contains=uuid)
     multi_question = MultipleChoiceQuestion.objects.filter(uuids__contains=uuid)
     return (numeric_question or text_question or multi_question).first()

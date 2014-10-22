@@ -31,8 +31,12 @@ class MultipleChoiceQuestion(Question):
         super(MultipleChoiceQuestion, self).save(*args, **kwargs)
         self.option_set.create(text=self.UNCATEGORISED)
 
-    def create_answer(self, params, line_item_run):
-        values = ast.literal_eval(params['values'])
+    def create_answer(self, raw_params, line_item_run):
+        params = dict(raw_params)
+        values = []
+        for val in params['values']:
+            values.extend(ast.literal_eval(val))
+
         params = filter(lambda v: self.label == v['label'], values)[0]
         matching_option = self.option_set.get(text=params['category'])
         return self.multiplechoiceanswer_set.create(question=self, value=matching_option, line_item_run=line_item_run)

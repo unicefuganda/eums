@@ -11,7 +11,8 @@ class ConsigneeResponses(APIView):
         result = []
         for node in all_nodes:
             node_responses = node.responses()
-            formatted_run_responses = {'node': node.id,  'consignee': {'id': node.consignee.id, 'name': node.consignee.name}}
+            formatted_run_responses = {'node': node.id,
+                                       'consignee': {'id': node.consignee.id, 'name': node.consignee.name}}
             for item_run, responses in node_responses.iteritems():
                 formatted_run_responses.update({'item': item_run.node_line_item.item.description,
                                                 'amountSent': item_run.node_line_item.targeted_quantity})

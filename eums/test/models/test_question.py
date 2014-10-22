@@ -48,11 +48,16 @@ class TextQuestionTest(QuestionTest):
 
 
 class MultipleChoiceQuestionTest(QuestionTest):
-    def test_should_save_multiple_choice_answer(self):
+    def xtest_should_save_multiple_choice_answer(self):
         text = "Yes"
         option = self.multiple_choice_question.option_set.create(text=text)
 
-        params = {'text': text, 'values': "[{'category': 'Yes', 'label': 'gender'}]"}
+        category = 'category'
+        label = 'gender'
+        params = [{u'values': [u'[{"category": "%s", "time": "2014-10-22T11:56:52.836354Z", '
+                               u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (category, label)],
+                  u'time': [u'2014-10-22T11:57:35.606372Z']}]
+
         line_item_run = NodeLineItemRunFactory()
         self.multiple_choice_question.create_answer(params, line_item_run)
         answers = self.multiple_choice_question.multiplechoiceanswer_set.all()
