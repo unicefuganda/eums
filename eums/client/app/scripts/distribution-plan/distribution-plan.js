@@ -36,8 +36,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
             SalesOrderService.getOrderDetails(selectedSalesOrder).then(function (detailedOrder) {
-                DistributionPlanParameters.saveVariable('selectedSalesOrder', detailedOrder);
-                $location.path('/distribution-plan/new/');
+                $location.path('/distribution-plan/new/'+ detailedOrder.id);
             });
         };
 

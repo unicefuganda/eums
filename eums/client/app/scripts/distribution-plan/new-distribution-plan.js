@@ -1,44 +1,49 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User'])
-    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, Districts, ConsigneeService, $q) {
+angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User', 'SalesOrder', 'eums.ip'])
+    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, $q, SalesOrderService, $routeParams, IPService) {
 
         $scope.datepicker = {};
+        $scope.districts = [];
 
-        $scope.districts = Districts.getAllDistricts().map(function (district) {
-            return {id: district, name: district};
+        IPService.loadAllDistricts().then(function (ipsresponse) {
+            $scope.districts = ipsresponse.data.map(function (district) {
+                return {id: district, name: district};
+            });
         });
+
         ConsigneeService.fetchConsignees().then(function (consignees) {
             $scope.consignees = consignees;
         });
 
-        $scope.salesOrderItems = [];
         $scope.distributionPlanItems = [];
+        $scope.salesOrderItems = [];
 
-        $scope.initialize = function () {
-            $scope.salesOrderItemSelected = undefined;
-            $scope.hasSalesOrderItems = false;
-            $scope.hasDistributionPlanItems = false;
+        $scope.salesOrderItemSelected = undefined;
+        $scope.hasSalesOrderItems = false;
+        $scope.hasDistributionPlanItems = false;
 
-            $scope.selectedSalesOrder = DistributionPlanParameters.retrieveVariable('selectedSalesOrder');
-            $scope.programmeSelected = DistributionPlanParameters.retrieveVariable('programmeSelected');
+        SalesOrderService.getSalesOrderBy($routeParams.salesOrderId).then(function (response) {
+            $scope.selectedSalesOrder = response.data;
 
-            $scope.selectedSalesOrder && $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
+            $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
                     var formattedSalesOrderItem = {
                         display: result.item.description,
 
                         material_code: result.item.material_code,
                         quantity: result.quantity,
-                        quantityLeft: result.quantity,
                         unit: result.item.unit.name,
                         information: result
                     };
 
+                    formattedSalesOrderItem.computeQuantityLeft = computeQuantityLeft;
+
                     $scope.salesOrderItems.push(formattedSalesOrderItem);
                 });
             });
-        };
+        });
+
 
         $scope.hasTargetedQuantity = function (distributionPlanLineItem) {
             var showInputBox = ['', undefined, '0', 0];
@@ -46,17 +51,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         };
 
         function computeQuantityLeft() {
-            var reduced = $scope.distributionPlanItems.reduce(function(prev, current){
+            var reduced = $scope.distributionPlanItems.reduce(function (prev, current) {
                 return {quantity: prev.quantity + current.quantity};
             }, {quantity: 0});
 
-            return $scope.salesOrderItemSelected.quantity - reduced.quantity;
+            return this.quantity - reduced.quantity;
         }
 
         $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {
                 item: $scope.salesOrderItemSelected.information.item,
-                quantity: computeQuantityLeft(),
                 planned_distribution_date: '2014-10-10',
                 targeted_quantity: 0,
                 destination_location: '',
@@ -208,28 +212,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             setDatePickers();
         });
 
-    })
-    .factory('Districts', function () {
-        return {
-            getAllDistricts: function () {
-                return  ['Buikwe', 'Bukomansimbi', 'Butambala', 'Buvuma', 'Gomba', 'Kalangala', 'Kalungu', 'Oyam',
-                    'Kampala', 'Kayunga', 'Kiboga', 'Kyankwanzi', 'Luweero', 'Lwengo', 'Lyantonde', 'Masaka', 'Otuke',
-                    'Mityana', 'Mpigi', 'Mubende', 'Mukono', 'Nakaseke', 'Nakasongola', 'Rakai', 'Soroti', 'Tororo',
-                    'Sembabule', 'Wakiso', 'Amuria', 'Budaka', 'Bududa', 'Bugiri', 'Bukedea', 'Sironko', 'Zombo',
-                    'Bukwa', 'Bulambuli', 'Busia', 'Butaleja', 'Buyende', 'Iganga', 'Jinja', 'Serere', 'Yumbe',
-                    'Kaberamaido', 'Kaliro', 'Kamuli', 'Kapchorwa', 'Katakwi', 'Kibuku', 'Kumi', 'Pallisa', 'Pader',
-                    'Kween', 'Luuka', 'Manafwa', 'Mayuge', 'Mbale', 'Namayingo', 'Namutumba', 'Ngora', 'Nwoya', 'Nebbi',
-                    'Napak', 'Nakapiripirit', 'Moyo', 'Moroto', 'Maracha', 'Lira', 'Lamwo', 'Kotido', 'Kole', 'Koboko',
-                    'Kitgum', 'Kaabong', 'Gulu', 'Dokolo', 'Arua', 'Apac', 'Amuru', 'Amudat', 'Amolatar', 'Alebtong',
-                    'Agago', 'Adjumani', 'Abim', 'Buhweju', 'Buliisa', 'Bundibugyo', 'Bushenyi', 'Hoima', 'Ibanda',
-                    'Isingiro', 'Kabale', 'Kabarole', 'Kamwenge', 'Kanungu', 'Kasese', 'Kibaale', 'Kiruhura', 'Kisoro',
-                    'Kiryandongo', 'Kyegegwa', 'Kyenjojo', 'Masindi', 'Mbarara', 'Mitooma', 'Ntoroko', 'Ntungamo',
-                    'Rubirizi', 'Rukungiri', 'Sheema', 'Central Region', 'Eastern Region', 'Northern Region',
-                    'Western Region'];
-            }
-        };
-    })
-    .directive('searchContacts', function ($http, EumsConfig, ContactService, $timeout) {
+    }).directive('searchContacts', function ($http, EumsConfig, ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function (contact) {
                 return {

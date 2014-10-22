@@ -23,9 +23,9 @@ describe('Route Provider', function () {
     });
 
     it('should know new distribution plan route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/distribution-plan/new/');
-        expect(routes.routes['/distribution-plan/new/'].controller).toBe('NewDistributionPlanController');
-        expect(routes.routes['/distribution-plan/new/'].templateUrl).toBe('/static/app/views/distribution-planning/new.html');
+        expect((Object.keys(routes.routes))).toContain('/distribution-plan/new/:salesOrderId');
+        expect(routes.routes['/distribution-plan/new/:salesOrderId'].controller).toBe('NewDistributionPlanController');
+        expect(routes.routes['/distribution-plan/new/:salesOrderId'].templateUrl).toBe('/static/app/views/distribution-planning/new.html');
     });
 
     it('should know proceed distribution plan route exists', function () {

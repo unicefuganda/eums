@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div ng-controller="NewDistributionPlanController" ng-init="initialize()" class="content">
+    <div ng-controller="NewDistributionPlanController" class="content">
         <div ng-show="planSaved">
             <alert type="success">Plan saved.</alert>
         </div>
@@ -135,7 +135,7 @@
 
             </div>
             <div class="pad-20">
-                <button ng-show="hasItemsLeft()" type="button" class="btn btn-primary"
+                <button ng-show="distributionPlanItems[distributionPlanItems -1].quantity !== 0" type="button" class="btn btn-primary"
                         ng-click="addDistributionPlanItem()"><i
                         class="glyphicon glyphicon-plus"> </i>Add Consignee
                 </button>
