@@ -26,7 +26,7 @@
     },
     "selectedLayerStyle": {
         "weight": 2,
-        "color": "#1CABE2",
+        "color": "@brand-primary",
         "fillOpacity": 0.8
     },
     "IPJSONURL": "http://localhost:8000/static/app/data/ip.json"

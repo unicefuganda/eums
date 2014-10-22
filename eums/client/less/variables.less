@@ -6,17 +6,26 @@
 //
 //## Gray and brand colors for use across Bootstrap.
 
+
+// UNICEF Colors as the appear on http://www.unicef.org/
+@unicef-brand: #1CABE2;
+@unicef-orange: #F6911D;
+@unicef-green: #8AC43E;
+@unicef-red: #DE2F2F;
+@unicef-light-red: #DF5E32;
+@unicef-blue: #0093EF;
+
 @gray-darker:            lighten(#000, 13.5%); // #222
 @gray-dark:              lighten(#000, 20%);   // #333
 @gray:                   lighten(#000, 33.5%); // #555
 @gray-light:             lighten(#000, 46.7%); // #777
 @gray-lighter:           lighten(#000, 93.5%); // #eee
 
-@brand-primary:         #428bca;
-@brand-success:         #5cb85c;
-@brand-info:            #5bc0de;
-@brand-warning:         #f0ad4e;
-@brand-danger:          #d9534f;
+@brand-primary:         @unicef-brand;
+@brand-success:         @unicef-green;
+@brand-info:            @unicef-blue;
+@brand-warning:         @unicef-orange;
+@brand-danger:          @unicef-red;
 
 
 //== Scaffolding

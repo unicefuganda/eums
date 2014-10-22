@@ -1,3 +1,23 @@
+.info {
+  color: white;
+  background-color: @brand-info;
+}
+
+.success {
+  color: white;
+  background-color: @brand-success;
+}
+
+.danger {
+  color: white;
+  background-color: @brand-danger;
+}
+
+.warning {
+  color: white;
+  background-color: @brand-warning;
+}
+
 input[type=date]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   display: none;
@@ -7,14 +27,6 @@ input[type=date] {
   width: 100px;
   height: 80%;
   font-size: 10px;
-}
-
-a {
-  color: #1CABE2;
-}
-
-a:hover {
-  color: #05A0DB;
 }
 
 a, #distribution-plan-nav {
@@ -28,7 +40,7 @@ html, body {
 }
 
 h4.page-header {
-  color: #1CABE2;
+  color: @brand-primary;
   margin: 20px 0px 20px;
 }
 
@@ -44,7 +56,7 @@ h4.page-header {
 }
 
 .text-primary {
-  color: #036E97;
+  color: darken(@brand-primary, 13.5%);
   font-size: 16px;
 }
 
@@ -87,7 +99,7 @@ h4.page-header {
 }
 
 .description-label {
-  color: #036F98;
+  color: darken(@brand-primary, 13.5%);
 }
 
 .table-select {
@@ -131,12 +143,6 @@ h4.page-header {
   max-width: 30px;
 }
 
-.sales-order-information {
-  color: blue;
-  font-style: italic;
-  font-weight: bold;
-}
-
 .inner-addon {
   position: relative;
 }
@@ -152,38 +158,6 @@ h4.page-header {
 
 .glyphicon-plus.pull-right {
   padding-left: 5px;
-}
-.btn-primary {
-  background-color: #1CABE2;
-  border-color: #05A0DB;
-}
-
-.btn-primary:hover {
-  background-color: #05A0DB;
-  border-color: #036F98;
-}
-.info,
-.alert-info {
-  color: white;
-  background-color: #43B9E6;
-}
-
-.success,
-.alert-success {
-  color: white;
-  background-color: #3EED7F;
-}
-
-.danger,
-.alert-danger {
-  color: white;
-  background-color: #FF6342;
-}
-
-.warning,
-.alert-warning {
-  color: white;
-  background-color: #FFC942;
 }
 
 .select2-container {

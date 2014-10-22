@@ -7,7 +7,7 @@
 
     function getPinColourFromResponses(data) {
         var noProductRecieved = getNumberOf("yes", data).length;
-        var RED = '#FF7558', GREEN = '#54F590', YELLOW = '#FFCF58';
+        var RED = '#DE2F2F', GREEN = '#8AC43E', YELLOW = '#F6911D';
         if (noProductRecieved === data.length) return GREEN;
         if (noProductRecieved > 0 && noProductRecieved < data.length) return YELLOW;
         return RED;
