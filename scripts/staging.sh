@@ -21,6 +21,12 @@ echo 'cookbook_path "/home/eums-staging/provisioning/chef/cookbooks"' >> /etc/ch
 echo 'role_path "/home/eums-staging/provisioning/chef/roles"' >> /etc/chef/solo.rb
 echo "provision eums to staging"
 chef-solo -o role[staging]
+echo 'replacing settings file'
+
+if test -f "/home/eums/staging-files/settings.py";
+    then cp "/home/eums/staging-files/settings.py" /home/eums/app/eums/local_settings.py
+fi
+
 echo "restart uwsgi"
 killall -9 uwsgi
 service uwsgi restart
