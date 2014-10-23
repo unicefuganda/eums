@@ -19,7 +19,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.distributionPlanItems = [];
         $scope.salesOrderItems = [];
 
-        $scope.salesOrderItemSelected = undefined;
         $scope.hasSalesOrderItems = false;
         $scope.hasDistributionPlanItems = false;
 
@@ -30,7 +29,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
                     var formattedSalesOrderItem = {
                         display: result.item.description,
-
                         material_code: result.item.material_code,
                         quantity: result.quantity,
                         unit: result.item.unit.name,
@@ -150,7 +148,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 saveDistributionPlanItems();
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id}).then(function (result) {
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme}).then(function (result) {
                     $scope.planId = result.id;
                     saveDistributionPlanItems();
                 });
