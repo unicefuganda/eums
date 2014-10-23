@@ -76,8 +76,8 @@ class Facade():
 
 class SalesOrderFacade(Facade):
     RELEVANT_DATA = {
-        1: 'order_number', 7: 'material_code', 8: 'quantity', 10: 'date', 11: 'issue_date', 12: 'delivery_date',
-        15: 'net_price', 16: 'net_value', 19: 'programme_name'
+        0: 'order_number', 1: 'material_code', 3: 'quantity', 6: 'date', 7: 'issue_date', 8: 'delivery_date',
+        4: 'net_price', 5: 'net_value', 9: 'programme_name'
     }
 
     def _create_new_item(self, item, order):
@@ -85,8 +85,8 @@ class SalesOrderFacade(Facade):
         order_item.sales_order = order
         order_item.item = Item.objects.get(material_code=item['material_code'])
         order_item.quantity = float(item['quantity'].replace(',', ''))
-        order_item.issue_date = datetime.strptime(item['issue_date'], "%m/%d/%Y")
-        order_item.delivery_date = datetime.strptime(item['delivery_date'], "%m/%d/%Y")
+        order_item.issue_date = item['issue_date']
+        order_item.delivery_date = item['delivery_date']
         order_item.net_price = float(item['net_price'].replace(',', ''))
         order_item.net_value = float(item['net_value'].replace(',', ''))
         order_item.save()
@@ -99,8 +99,8 @@ class SalesOrderFacade(Facade):
     def _create_new_order(self, order):
         new_order = SalesOrder()
         new_order.order_number = order['order_number']
-        new_order.date = datetime.strptime(order['items'][0]['issue_date'], "%m/%d/%Y")
-        new_order.programme = Programme.objects.get(name=order['programme_name'])
+        new_order.date = order['items'][0]['issue_date']
+        new_order.programme = Programme.objects.get_or_create(name=order['programme_name'])
         new_order.save()
         return new_order
 
@@ -114,7 +114,7 @@ class ReleaseOrderFacade(Facade):
         new_order.order_number = order['order_number']
         new_order.sales_order = SalesOrder.objects.get(order_number=order['sales_order'])
         new_order.waybill = order['waybill']
-        new_order.delivery_date = datetime.strptime(order['recommended_delivery_date'], "%m/%d/%Y")
+        new_order.delivery_date = datetime.strptime(order['recommended_delivery_date'], "%d/%m/%Y")
         new_order.consignee = Consignee.objects.get(customer_id=order['consignee'])
         new_order.save()
         return new_order

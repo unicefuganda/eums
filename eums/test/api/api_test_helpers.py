@@ -30,10 +30,7 @@ def create_distribution_plan(test_case, plan_details=None):
 
 
 def create_programme():
-    focal_person, _ = User.objects.get_or_create(
-        username="Test", first_name="Test", last_name="User", email="me@you.com"
-    )
-    programme, _ = Programme.objects.get_or_create(focal_person=focal_person, name="Alive")
+    programme, _ = Programme.objects.get_or_create(name="Alive")
     return programme
 
 
