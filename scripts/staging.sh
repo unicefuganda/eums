@@ -24,7 +24,7 @@ chef-solo -o role[staging]
 echo 'replacing settings file'
 
 if test -f "/home/eums/staging-files/settings.py";
-    then cp "/home/eums/staging-files/settings.py" /home/eums/app/eums/local_settings.py
+    then cp /home/staging-files/settings.py  /home/eums/app/eums/local_settings.py
 fi
 
 echo "restart uwsgi"
