@@ -75,71 +75,65 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             });
         }
 
-        function getLineItemForUpdateFromUILineItem(uiLineItem) {
-            return {
-                item: uiLineItem.item.id, targetQuantity: uiLineItem.targetQuantity,
-                distribution_plan_node: uiLineItem.distribution_plan_node,
-                plannedDistributionDate: uiLineItem.plannedDistributionDate,
-                remark: uiLineItem.remark
+        function saveNode(uiPlanItem) {
+            var nodeId = uiPlanItem.nodeId;
+            var node = {
+                consignee: uiPlanItem.consignee,
+                location: uiPlanItem.destinationLocation,
+                contact_person_id: uiPlanItem.contactPerson,
+                distribution_plan: $scope.distributionPlan.id,
+                tree_position: 'MIDDLE_MAN',
+                mode_of_delivery: uiPlanItem.modeOfDelivery
             };
-        }
 
-        function createNewNodeAndLineItem(nodeDetails, lineItem) {
-            DistributionPlanNodeService.createNode(nodeDetails).then(function(createdNode) {
-                var lineItemDetails = {
-                    item: lineItem.item.id,
-                    targeted_quantity: lineItem.targetQuantity,
-                    distribution_plan_node: createdNode.id,
-                    planned_distribution_date: lineItem.plannedDistributionDate,
-                    remark: lineItem.remark
-                };
-                DistributionPlanLineItemService.createLineItem(lineItemDetails);
-            });
-        }
-
-        function updateNodeAndLineItem(nodeDetails, lineItem) {
-            var nodeSavePromise = DistributionPlanNodeService.updateNode(nodeDetails);
-            var lineItemSavePromise = DistributionPlanLineItemService.updateLineItem(lineItem);
-            $q.all([nodeSavePromise, lineItemSavePromise]);
-        }
-
-        function saveNodeAndLineItem(nodeDetails, uiPlanItem) {
-            var plannedDate = new Date(uiPlanItem.plannedDistributionDate);
-            uiPlanItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
-            if(uiPlanItem.alreadySaved) {
-                var lineItemDetails = getLineItemForUpdateFromUILineItem(uiPlanItem, nodeDetails);
-                lineItemDetails.id = uiPlanItem.lineItemIdInBackend;
-                lineItemDetails.item = uiPlanItem.item;
-                nodeDetails.id = uiPlanItem.nodeId;
-                updateNodeAndLineItem(nodeDetails, lineItemDetails);
+            if(nodeId) {
+                node.id = nodeId;
+                return  DistributionPlanNodeService.updateNode(node);
             }
             else {
-                createNewNodeAndLineItem(nodeDetails, uiPlanItem);
+                return DistributionPlanNodeService.createNode(node);
+            }
+        }
+
+        function saveLineItem(uiPlanItem, nodeId) {
+            var lineItemId = uiPlanItem.lineItemId;
+            var plannedDate = new Date(uiPlanItem.plannedDistributionDate);
+            uiPlanItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
+            var lineItem = {
+                item: uiPlanItem.item.id,
+                targeted_quantity: uiPlanItem.targetQuantity,
+                distribution_plan_node: nodeId,
+                planned_distribution_date: uiPlanItem.plannedDistributionDate,
+                remark: uiPlanItem.remark
+            };
+
+            if(lineItemId) {
+                lineItem.id = lineItemId;
+                DistributionPlanLineItemService.updateLineItem(lineItem);
+            }
+            else {
+                DistributionPlanLineItemService.createLineItem(lineItem).then(function(createdLineItem) {
+                    uiPlanItem.lineItemId = createdLineItem.id;
+                });
             }
         }
 
         function saveDistributionPlanItems() {
             $scope.distributionPlanItems.forEach(function(item) {
-                var nodeDetails = {
-                    consignee: item.consignee,
-                    location: item.destinationLocation,
-                    contact_person_id: item.contactPerson,
-                    distribution_plan: $scope.planId,
-                    tree_position: 'MIDDLE_MAN',
-                    mode_of_delivery: item.modeOfDelivery
-                };
-
-                saveNodeAndLineItem(nodeDetails, item);
+                saveNode(item).then(function(createdNode) {
+                    item.nodeId = createdNode.id;
+                    saveLineItem(item, createdNode.id);
+                });
             });
         }
 
         $scope.saveDistributionPlanItems = function() {
-            if($scope.planId) {
+            if($scope.distributionPlan) {
                 saveDistributionPlanItems();
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme}).then(function(result) {
-                    $scope.planId = result.id;
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme}).then(function(createdPlan) {
+                    $scope.distributionPlan = createdPlan;
                     saveDistributionPlanItems();
                 });
             }
@@ -166,7 +160,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                         lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
 
                         DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
-                            $scope.planId = node.distribution_plan;
                             lineItem.consignee = node.consignee.id;
                             lineItem.nodeId = node.id;
                             lineItem.contactPerson = node.contact_person._id;

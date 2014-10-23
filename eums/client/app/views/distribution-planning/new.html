@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div ng-show="selectedSalesOrderItem" class="panel panel-default">
+        <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default">
             <div class="panel-body">
                 <div ng-show="distributionPlanItems.length">
                     <table id="distributionPlanTable"
@@ -136,8 +136,8 @@
 
             </div>
             <div class="pad-20">
-                <button ng-show="distributionPlanItems[distributionPlanItems -1].quantity !== 0" type="button" class="btn btn-primary"
-                        ng-click="addDistributionPlanItem()"><i
+                <button ng-show="distributionPlanItems[distributionPlanItems -1].quantity !== 0"
+                        type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
                         class="glyphicon glyphicon-plus"> </i>Add Consignee
                 </button>
                 <div ng-show="distributionPlanItems.length" style="float: right">
