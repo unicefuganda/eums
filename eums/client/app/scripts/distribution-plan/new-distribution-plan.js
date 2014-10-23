@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTable', 'siTable', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'User', 'SalesOrder', 'eums.ip'])
+angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip'])
     .controller('NewDistributionPlanController', function($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, $q, SalesOrderService, $routeParams, IPService) {
 
         $scope.datepicker = {};
@@ -186,7 +186,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             setDatePickers();
         });
 
-    }).directive('searchContacts', function($http, EumsConfig, ContactService, $timeout) {
+    }).directive('searchContacts', function(ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function(contact) {
                 return {

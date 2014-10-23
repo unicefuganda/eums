@@ -1,9 +1,9 @@
 describe('NewDistributionPlanController', function() {
 
     beforeEach(module('NewDistributionPlan'));
-    var scope, mockProgrammeService, mockNodeService, mockIPService, mockPlanService,
-        deferred, deferredPlan, deferredDistrictPromise, mockSalesOrderService, deferredSalesOrder, distPlanEndpointUrl, mockSalesOrderItemService, mockLineItemService, deferredPlanNode, mockConsigneeService,
-        mockUserService, q;
+    var scope, mockNodeService, mockIPService, mockPlanService, deferred, deferredPlan, deferredDistrictPromise,
+        mockSalesOrderService, getSalesOrderPromise, mockSalesOrderItemService, mockLineItemService, deferredPlanNode,
+        mockConsigneeService, q;
 
     var orderNumber = '00001';
     var plainDistricts = ['Abim', 'Gulu'];
@@ -67,7 +67,6 @@ describe('NewDistributionPlanController', function() {
         distributionplanlineitem_set: []
     };
 
-
     var expectedFormattedSalesOrderItem = {
         display: stubSalesOrderItem.item.description,
         materialCode: stubSalesOrderItem.item.material_code,
@@ -77,27 +76,23 @@ describe('NewDistributionPlanController', function() {
         quantityLeft: jasmine.any(Number)
     };
 
-
     beforeEach(function() {
-        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem']);
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'createLineItem', 'updateLineItem']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById', 'fetchConsignees']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['getUserById']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['createPlan']);
 
-        inject(function($controller, $rootScope, $q, $httpBackend, EumsConfig) {
+        inject(function($controller, $rootScope, $q) {
             q = $q;
             deferred = $q.defer();
             deferredPlan = $q.defer();
             deferredDistrictPromise = $q.defer();
             deferredPlanNode = $q.defer();
-            deferredSalesOrder = $q.defer();
-            mockProgrammeService.fetchProgrammes.and.returnValue(deferred.promise);
+            getSalesOrderPromise = $q.defer();
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockLineItemService.getLineItem.and.returnValue(deferred.promise);
             mockLineItemService.createLineItem.and.returnValue(deferred.promise);
@@ -105,25 +100,19 @@ describe('NewDistributionPlanController', function() {
             mockNodeService.createNode.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.getConsigneeById.and.returnValue(deferred.promise);
             mockConsigneeService.fetchConsignees.and.returnValue(deferred.promise);
-            mockUserService.getUserById.and.returnValue(deferred.promise);
-            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
+            mockSalesOrderService.getSalesOrder.and.returnValue(getSalesOrderPromise.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
 
             scope = $rootScope.$new();
 
-            distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
-
-
             $controller('NewDistributionPlanController',
                 {
                     $scope: scope,
-                    ProgrammeService: mockProgrammeService,
                     SalesOrderItemService: mockSalesOrderItemService,
                     DistributionPlanService: mockPlanService,
                     DistributionPlanNodeService: mockNodeService,
                     DistributionPlanLineItemService: mockLineItemService,
                     ConsigneeService: mockConsigneeService,
-                    UserService: mockUserService,
                     SalesOrderService: mockSalesOrderService,
                     $routeParams: {salesOrderId: 1},
                     IPService: mockIPService
@@ -163,8 +152,8 @@ describe('NewDistributionPlanController', function() {
             expect(scope.districts).toEqual(expectedDistricts);
         });
 
-        it('should have the selected sales orders in the scope', function () {
-            deferredSalesOrder.resolve(salesOrders[0]);
+        it('should have the selected sales orders in the scope', function() {
+            getSalesOrderPromise.resolve(salesOrders[0]);
             scope.$apply();
 
             expect(scope.selectedSalesOrder).toEqual(salesOrders[0]);
@@ -178,7 +167,7 @@ describe('NewDistributionPlanController', function() {
 
         it('should format the selected sales order appropriately for the view', function() {
             deferred.resolve(stubSalesOrderItem);
-            deferredSalesOrder.resolve(salesOrders[0]);
+            getSalesOrderPromise.resolve(salesOrders[0]);
             scope.$apply();
 
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);
