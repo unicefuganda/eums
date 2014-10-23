@@ -9,18 +9,19 @@
                     class="text-primary">{{ selectedSalesOrder.programme.name }}</span></span>
         </h4>
 
-        <div ng-show="hasSalesOrderItems">
-            <alert ng-show="!hasItemsLeft()" type="danger">All quantities have been assigned for this item.</alert>
+        <div ng-show="selectedSalesOrderItem">
+            <alert ng-show="!selectedSalesOrderItem.quantityLeft > 0" type="danger">All quantities have been assigned for this item.</alert>
         </div>
 
         <div class="row">
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="col-lg-4 control-label description-label">Item
-                        Description:</label>
+                    <label for="select-sales-order" class="col-lg-4 control-label description-label">
+                        Item Description:
+                    </label>
 
                     <div class="col-lg-8">
-                        <select id="select-sales-order" ng-model="salesOrderItemSelected" required="required"
+                        <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
                                 class="form-control"
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
                             <option value="" selected="selected">Select Item</option>
@@ -29,15 +30,15 @@
                 </div>
             </div>
 
-            <div ng-show="hasSalesOrderItems" class="material-items well col-lg-7 pull-right">
+            <div ng-show="salesOrderItems.length" class="material-items well col-lg-7 pull-right">
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ salesOrderItemSelected.materialCode }}</span>
+                            <span class="badge alert-info">{{ selectedSalesOrderItem.materialCode }}</span>
                             Material Code
                         </li>
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ salesOrderItemSelected.display }}</span>
+                            <span class="badge alert-info">{{ selectedSalesOrderItem.display }}</span>
                             Item Description
                         </li>
                     </ul>
@@ -45,11 +46,11 @@
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ salesOrderItemSelected.quantity | number }}</span>
+                            <span class="badge alert-info">{{ selectedSalesOrderItem.quantity | number }}</span>
                             Total Quantity
                         </li>
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ salesOrderItemSelected.unit }}</span>
+                            <span class="badge alert-info">{{ selectedSalesOrderItem.unit }}</span>
                             Unit
                         </li>
                     </ul>
@@ -57,9 +58,9 @@
             </div>
         </div>
 
-        <div ng-show="hasSalesOrderItems" class="panel panel-default">
+        <div ng-show="salesOrderItems.length" class="panel panel-default">
             <div class="panel-body">
-                <div ng-show="hasDistributionPlanItems">
+                <div ng-show="distributionPlanItems.length">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover table-condensed">
                         <th id="input-available-quantity-header">Available Qty</th>
@@ -75,7 +76,7 @@
 
                         <tr ng-repeat="item in distributionPlanItems">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
-                            <td id="input-unit">{{ salesOrderItemSelected.unit }}</td>
+                            <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
                                 <input type="text" id="input-quantity" class="form-control"
                                        ng-model="item.targetQuantity">
