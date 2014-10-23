@@ -120,17 +120,19 @@ describe('NewDistributionPlanController', function() {
         });
     });
 
-    describe('when a new distribution plan item list on scope changes, ', function() {
+    describe('when  distributionPlanItems list on scope changes, ', function() {
         it('the selected sales order item quantityLeft attribute should be updated', function() {
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
             scope.$apply();
 
             scope.distributionPlanItems.push({targetQuantity: 50});
             scope.$apply();
-
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(50);
-        });
 
+            scope.distributionPlanItems[0].targetQuantity = 25;
+            scope.$apply();
+            expect(scope.selectedSalesOrderItem.quantityLeft).toBe(75);
+        });
     });
 
     describe('when the controller is initialized', function() {

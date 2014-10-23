@@ -62,11 +62,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             return salesOrderItem.quantity - reduced.targetQuantity;
         }
 
-        $scope.$watchCollection('distributionPlanItems', function(newPlanItems) {
+        $scope.$watch('distributionPlanItems', function(newPlanItems) {
             if(newPlanItems.length) {
                 $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
             }
-        });
+        }, true);
 
         function setDatePickers() {
             $scope.datepicker = {};
