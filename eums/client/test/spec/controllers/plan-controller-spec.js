@@ -180,12 +180,6 @@ describe('NewDistributionPlanController', function() {
             expect(scope.selectedSalesOrderItem).toBeUndefined();
         });
 
-        it('should have the sales orders item flag as false by default', function() {
-            scope.$apply();
-
-            expect(scope.hasSalesOrderItems).toBeFalsy();
-        });
-
         it('should format the selected sales order appropriately for the view', function() {
             deferred.resolve(stubSalesOrderItem);
             deferredSalesOrder.resolve(salesOrders[0]);

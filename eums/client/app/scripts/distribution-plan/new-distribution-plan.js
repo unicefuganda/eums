@@ -6,7 +6,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.datepicker = {};
         $scope.districts = [];
 
-        //TODO: write test for this
         IPService.loadAllDistricts().then(function(response) {
             $scope.districts = response.data.map(function(district) {
                 return {id: district, name: district};
@@ -38,11 +37,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 });
             });
         });
-
-        $scope.hasTargetedQuantity = function(distributionPlanLineItem) {
-            var showInputBox = ['', undefined, '0', 0];
-            return (showInputBox.indexOf(distributionPlanLineItem.targetQuantity) === -1);
-        };
 
         $scope.addDistributionPlanItem = function() {
             var distributionPlanLineItem = {
@@ -99,32 +93,28 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     planned_distribution_date: lineItem.plannedDistributionDate,
                     remark: lineItem.remark
                 };
-                DistributionPlanLineItemService.createLineItem(lineItemDetails).then(function() {
-                    $scope.planSaved = true;
-                });
+                DistributionPlanLineItemService.createLineItem(lineItemDetails);
             });
         }
 
         function updateNodeAndLineItem(nodeDetails, lineItem) {
             var nodeSavePromise = DistributionPlanNodeService.updateNode(nodeDetails);
             var lineItemSavePromise = DistributionPlanLineItemService.updateLineItem(lineItem);
-            $q.all([nodeSavePromise, lineItemSavePromise]).then(function() {
-                $scope.planSaved = true;
-            });
+            $q.all([nodeSavePromise, lineItemSavePromise]);
         }
 
-        function saveNodeAndLineItem(nodeDetails, uiLineItem, uiItem) {
-            var plannedDate = new Date(uiLineItem.plannedDistributionDate);
-            uiLineItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
-            if(uiLineItem.alreadySaved) {
-                var lineItemDetails = getLineItemForUpdateFromUILineItem(uiLineItem, nodeDetails);
-                lineItemDetails.id = uiItem.lineItemIdInBackend;
-                lineItemDetails.item = uiItem.item;
-                nodeDetails.id = uiItem.nodeId;
+        function saveNodeAndLineItem(nodeDetails, uiPlanItem) {
+            var plannedDate = new Date(uiPlanItem.plannedDistributionDate);
+            uiPlanItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
+            if(uiPlanItem.alreadySaved) {
+                var lineItemDetails = getLineItemForUpdateFromUILineItem(uiPlanItem, nodeDetails);
+                lineItemDetails.id = uiPlanItem.lineItemIdInBackend;
+                lineItemDetails.item = uiPlanItem.item;
+                nodeDetails.id = uiPlanItem.nodeId;
                 updateNodeAndLineItem(nodeDetails, lineItemDetails);
             }
             else {
-                createNewNodeAndLineItem(nodeDetails, uiLineItem);
+                createNewNodeAndLineItem(nodeDetails, uiPlanItem);
             }
         }
 
@@ -139,8 +129,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     mode_of_delivery: item.modeOfDelivery
                 };
 
-                $scope.selectedSalesOrderItem.quantityLeft = (parseInt($scope.selectedSalesOrderItem.quantityLeft) - parseInt(item.targetQuantity)).toString();
-                saveNodeAndLineItem(nodeDetails, item, item);
+                saveNodeAndLineItem(nodeDetails, item);
             });
         }
 
@@ -166,6 +155,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 var itemCounter = 0;
                 var quantityLeft = parseInt($scope.selectedSalesOrderItem.quantity);
 
+                //TODO Clean this up. Get fully populated objects from endpoint
                 distributionPlanLineItems.forEach(function(lineItemId) {
                     DistributionPlanLineItemService.getLineItem(lineItemId).then(function(lineItem) {
                         lineItem.quantity = quantityLeft.toString();
