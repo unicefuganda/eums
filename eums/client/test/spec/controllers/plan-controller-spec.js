@@ -88,7 +88,7 @@ describe('NewDistributionPlanController', function() {
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById', 'fetchConsignees']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getUserById']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
-        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrderBy']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
 
         inject(function($controller, $rootScope, $q, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -109,7 +109,7 @@ describe('NewDistributionPlanController', function() {
             mockConsigneeService.getConsigneeById.and.returnValue(deferred.promise);
             mockConsigneeService.fetchConsignees.and.returnValue(deferred.promise);
             mockUserService.getUserById.and.returnValue(deferred.promise);
-            mockSalesOrderService.getSalesOrderBy.and.returnValue(deferredSalesOrder.promise);
+            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
 
             scope = $rootScope.$new();
@@ -167,8 +167,8 @@ describe('NewDistributionPlanController', function() {
             expect(scope.districts).toEqual(expectedDistricts);
         });
 
-        it('should have the selected sales orders in the scope', function() {
-            deferredSalesOrder.resolve({data: salesOrders[0]});
+        it('should have the selected sales orders in the scope', function () {
+            deferredSalesOrder.resolve(salesOrders[0]);
             scope.$apply();
 
             expect(scope.selectedSalesOrder).toEqual(salesOrders[0]);
@@ -188,7 +188,7 @@ describe('NewDistributionPlanController', function() {
 
         it('should format the selected sales order appropriately for the view', function() {
             deferred.resolve(stubSalesOrderItem);
-            deferredSalesOrder.resolve({data: salesOrders[0]});
+            deferredSalesOrder.resolve(salesOrders[0]);
             scope.$apply();
 
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);

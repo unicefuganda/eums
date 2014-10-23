@@ -35,7 +35,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
-            SalesOrderService.getOrderDetails(selectedSalesOrder).then(function (detailedOrder) {
+            SalesOrderService.populateSalesOrderDetails(selectedSalesOrder).then(function (detailedOrder) {
                 $location.path('/distribution-plan/new/'+ detailedOrder.id);
             });
         };
@@ -43,9 +43,9 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.showDistributionPlan = function (planId) {
             $scope.planId = planId;
 
-            DistributionPlanService.getPlanDetails(planId).then(function (response) {
-                console.log(response);
-            });
+            //DistributionPlanService.getPlanDetails(planId).then(function (response) {
+            //    console.log(response);
+            //});
         };
 
         $scope.addContact = function () {

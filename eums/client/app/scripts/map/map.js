@@ -548,7 +548,6 @@
                             var response = consigneeResponse[0],
                                 dateOfReceipt = response && response.dateOfReceipt,
                                 dateRange = moment().range(fromDate, toDate);
-                            console.log(dateRange.contains(moment(dateOfReceipt)));
                             return dateOfReceipt && dateRange.contains(moment(dateOfReceipt));
                         }
 

@@ -10,14 +10,18 @@ angular.module('SalesOrder', ['eums.config', 'Programme'])
                 });
             },
 
-            getOrderDetails: function (order) {
+            populateSalesOrderDetails: function (order) {
                 return ProgrammeService.getProgrammeDetails(order.programme).then(function (programmeDetails) {
                     order.programme = programmeDetails;
                     return order;
                 });
             },
-            getSalesOrderBy: function (id) {
-                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER + id);
+            getSalesOrder: function (id) {
+                var service = this;
+                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER + id)
+                    .then(function (response) {
+                        return service.populateSalesOrderDetails(response.data);
+                    });
             }
 
         };

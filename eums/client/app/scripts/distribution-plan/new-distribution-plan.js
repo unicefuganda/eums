@@ -20,9 +20,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.distributionPlanItems = [];
         $scope.salesOrderItems = [];
 
-        SalesOrderService.getSalesOrderBy($routeParams.salesOrderId).then(function(response) {
-            $scope.selectedSalesOrder = response.data;
-
+        SalesOrderService.getSalesOrder($routeParams.salesOrderId).then(function (response) {
+            $scope.selectedSalesOrder = response;
             $scope.selectedSalesOrder.salesorderitem_set.forEach(function(salesOrderItem) {
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function(result) {
                     var formattedSalesOrderItem = {
