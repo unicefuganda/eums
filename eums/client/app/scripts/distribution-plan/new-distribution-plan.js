@@ -6,6 +6,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.datepicker = {};
         $scope.districts = [];
 
+        //TODO: write test for this
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
@@ -29,7 +30,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
                     var formattedSalesOrderItem = {
                         display: result.item.description,
-                        material_code: result.item.material_code,
+                        materialCode: result.item.material_code,
                         quantity: result.quantity,
                         unit: result.item.unit.name,
                         information: result
@@ -59,13 +60,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {
                 item: $scope.salesOrderItemSelected.information.item,
-                planned_distribution_date: '2014-10-10',
-                targeted_quantity: 0,
-                destination_location: '',
-                mode_of_delivery: '',
-                contact_phone_number: '',
-                programme_focal: '',
-                contact_person: '',
+                plannedDistributionDate: '2014-10-10',
+                targetQuantity: 0,
+                destinationLocation: '',
+                modeOfDelivery: '',
+                contactPerson: '',
                 tracked: false
             };
 
@@ -97,7 +96,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         function createNewNodeAndLineItem(nodeDetails, lineItem) {
             DistributionPlanNodeService.createNode(nodeDetails).then(function (createdNode) {
                 var lineItemDetails = {
-                    item: lineItem.item.id, targeted_quantity: lineItem.targetQuantity,
+                    item: lineItem.item.id,
+                    targeted_quantity: lineItem.targetQuantity,
                     distribution_plan_node: createdNode.id,
                     planned_distribution_date: lineItem.plannedDistributionDate,
                     remark: lineItem.remark
@@ -191,7 +191,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                                 lineItem.consignee = node.consignee.id;
                                 lineItem.nodeId = node.id;
                                 lineItem.contactPerson = node.contact_person._id;
-                                lineItem.modeOfDelivery = node.mode_of_Delivery;
+                                lineItem.modeOfDelivery = node.mode_of_delivery;
                                 lineItem.destinationLocation = node.location;
                                 lineItem.alreadySaved = true;
                                 lineItem.subConsignees = [

@@ -70,7 +70,7 @@ describe('NewDistributionPlanController', function () {
 
     var expectedFormattedSalesOrderItem = {
         display: stubSalesOrderItem.item.description,
-        material_code: stubSalesOrderItem.item.material_code,
+        materialCode: stubSalesOrderItem.item.material_code,
         quantity: stubSalesOrderItem.quantity,
         unit: stubSalesOrderItem.item.unit.name,
         information: stubSalesOrderItem,
@@ -345,7 +345,7 @@ describe('NewDistributionPlanController', function () {
         it('should add a default distribution plan line item to the salesOrderItemSelected', function () {
             scope.salesOrderItemSelected = {
                 display: stubSalesOrderItem.item.description,
-                material_code: stubSalesOrderItem.item.material_code,
+                materialCode: stubSalesOrderItem.item.material_code,
                 quantity: 100,
                 quantityLeft: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
@@ -355,9 +355,12 @@ describe('NewDistributionPlanController', function () {
 
             var expectedPlanItem = {
                 item: stubSalesOrderItem.item,
-                planned_distribution_date: '2014-10-10',
-                targeted_quantity: 0, destination_location: '', mode_of_delivery: '',
-                contact_phone_number: '', programme_focal: '', contact_person: '', tracked: false
+                plannedDistributionDate: '2014-10-10',
+                targetQuantity: 0,
+                destinationLocation: '',
+                modeOfDelivery: '',
+                contactPerson: '',
+                tracked: false
             };
 
             scope.addDistributionPlanItem();
