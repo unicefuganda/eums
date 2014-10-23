@@ -9,19 +9,15 @@ angular.module('SalesOrder', ['eums.config', 'Programme'])
                     return response.data;
                 });
             },
-
-            populateSalesOrderDetails: function (order) {
-                return ProgrammeService.getProgrammeDetails(order.programme).then(function (programmeDetails) {
-                    order.programme = programmeDetails;
-                    return order;
-                });
-            },
             getSalesOrder: function (id) {
-                var service = this;
-                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER + id)
-                    .then(function (response) {
-                        return service.populateSalesOrderDetails(response.data);
+
+                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER + id).then(function (response) {
+                    var order = response.data;
+                    return ProgrammeService.getProgrammeDetails(order.programme).then(function (programme) {
+                        order.programme = programme;
+                        return order;
                     });
+                });
             }
 
         };

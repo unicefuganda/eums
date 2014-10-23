@@ -35,17 +35,11 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
-            SalesOrderService.populateSalesOrderDetails(selectedSalesOrder).then(function (detailedOrder) {
-                $location.path('/distribution-plan/new/'+ detailedOrder.id);
-            });
+            $location.path('/distribution-plan/new/'+ selectedSalesOrder.id);
         };
 
         $scope.showDistributionPlan = function (planId) {
             $scope.planId = planId;
-
-            //DistributionPlanService.getPlanDetails(planId).then(function (response) {
-            //    console.log(response);
-            //});
         };
 
         $scope.addContact = function () {

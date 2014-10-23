@@ -1,5 +1,4 @@
 describe('Programme Service', function() {
-
     var programmeService, mockBackend, endpointUrl, userEndpointUrl, mockUserService, scope;
     var programmeId = 1, focalPersonId = 1;
 
@@ -15,11 +14,6 @@ describe('Programme Service', function() {
 
     };
 
-    var fullProgramme = {
-        id: stubProgramme.id,
-        name: stubProgramme.name,
-        focalPerson: user
-    };
 
     beforeEach(function() {
         module('Programme');
@@ -42,16 +36,6 @@ describe('Programme Service', function() {
             userEndpointUrl = EumsConfig.BACKEND_URLS.USER;
             programmeService = ProgrammeService;
         });
-    });
-
-    it('should get programme details', function(done) {
-        mockBackend.whenGET(endpointUrl + programmeId + '/').respond(stubProgramme);
-        programmeService.getProgrammeDetails(stubProgramme.id).then(function(programme) {
-            expect(programme).toEqual(fullProgramme);
-            done();
-        });
-        mockBackend.flush();
-        scope.$apply();
     });
 
     it('should know how to fetch all programmes', function(done) {
