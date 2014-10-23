@@ -4,7 +4,6 @@ angular.module('Programme', ['eums.config', 'User'])
     .factory('ProgrammeService', function ($http, EumsConfig) {
         return {
             getProgrammeDetails: function(programmeId) {
-                console.log(programmeId);
                 return $http.get(EumsConfig.BACKEND_URLS.PROGRAMME + programmeId + '/').then(function(response) {
                     return response.data;
                 });

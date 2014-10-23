@@ -4,7 +4,9 @@ angular.module('Consignee', ['eums.config', 'Contact'])
     .factory('ConsigneeService', function ($http, EumsConfig) {
                  return {
                      fetchConsignees: function() {
+                         console.log('FETCHING');
                           return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE).then(function (response) {
+                              console.log(response);
                               return response.data;
                           });
                      },

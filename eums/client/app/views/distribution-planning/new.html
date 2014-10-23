@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div ng-show="salesOrderItems.length" class="material-items well col-lg-7 pull-right">
+            <div ng-show="selectedSalesOrderItem" class="material-items well col-lg-7 pull-right">
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        <div ng-show="salesOrderItems.length" class="panel panel-default">
+        <div ng-show="selectedSalesOrderItem" class="panel panel-default">
             <div class="panel-body">
                 <div ng-show="distributionPlanItems.length">
                     <table id="distributionPlanTable"
