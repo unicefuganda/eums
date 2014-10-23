@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
+angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 'eums.ip'])
     .factory('DistributionReportingParameters', function () {
         var distributionReportingParameters = {};
         return{
@@ -12,15 +12,17 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             }
         };
     })
-    .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, Districts, $timeout) {
+    .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, IPService, $timeout) {
         $scope.sortBy = $sorter;
         $scope.datepicker = {};
         // Should be in another controller
         $scope.document = DistributionReportingParameters.retrieveVariable('selectedPurchaseOrder');
         $scope.currentDocumentType = DistributionReportingParameters.retrieveVariable('currentDocumentType');
         $scope.documentItemSelected = undefined;
-        $scope.districts = Districts.getAllDistricts().map(function (district) {
-            return {id: district, name: district};
+        IPService.loadAllDistricts().then(function (response) {
+            $scope.districts = response.data.map(function (district) {
+                return {id: district, name: district};
+            });
         });
         var purchaseOrders = [];
         var waybills = [];
@@ -150,6 +152,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan'])
             }, 2000);
         };
     })
+
     .filter('documentFilter', function ($filter) {
         return  function (documents, query) {
             var results = $filter('filter')(documents, {order_number: query});

@@ -6,8 +6,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         $scope.datepicker = {};
         $scope.districts = [];
 
-        IPService.loadAllDistricts().then(function (ipsresponse) {
-            $scope.districts = ipsresponse.data.map(function (district) {
+        IPService.loadAllDistricts().then(function (response) {
+            $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
             });
         });
