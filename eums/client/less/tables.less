@@ -3,16 +3,16 @@ table tbody {
   overflow: auto;
 }
 
-table thead tr {
-  background-color: #6FC9EB;
-}
-
 th {
   text-align: center;
 }
 
+table thead tr {
+  background-color: @brand-primary;
+}
+
 table thead tr th:hover {
-  background-color: #05A0DB;
+  background-color: darken(@brand-primary, 10%);
 }
 
 table thead a {
@@ -24,16 +24,12 @@ table thead a:hover {
   text-decoration: underline;
 }
 
-table tbody tr:nth-child(even) {
-  background-color: #E3F4FB;
-}
-
-table tbody tr:nth-child(odd) {
-  background-color: #E3F4FB;
+.table-striped > tbody > tr:nth-child(odd) > td, .table-striped > tbody > tr:nth-child(odd) > th {
+  background-color: lighten(@brand-primary, 46.7%);
 }
 
 .table-hover > tbody > tr:hover > td, .table-hover > tbody > tr:hover > th {
-  background-color: #9BDCF5;
+  background-color: lighten(@brand-primary, 33.5%);
 }
 
 .table-select-header-width {

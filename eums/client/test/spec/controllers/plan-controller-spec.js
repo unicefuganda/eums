@@ -53,10 +53,12 @@ describe('NewDistributionPlanController', function () {
     var stubSalesOrderItemNoDistributionPlanItems = {
         id: 1,
         sales_order: '1',
-        item: {id: 1,
+        item: {
+            id: 1,
             description: 'Test Item',
             material_code: '12345AS',
-            unit: {name: 'EA'}},
+            unit: {name: 'EA'}
+        },
         quantity: '100',
         net_price: 10.00,
         net_value: 1000.00,
@@ -116,9 +118,13 @@ describe('NewDistributionPlanController', function () {
 
 
             $controller('NewDistributionPlanController',
-                {$scope: scope, DistributionPlanParameters: mockDistributionPlanParametersService,
-                    ProgrammeService: mockProgrammeService, SalesOrderItemService: mockSalesOrderItemService,
-                    DistributionPlanService: mockPlanService, DistributionPlanNodeService: mockDistributionPlanNodeService,
+                {
+                    $scope: scope,
+                    DistributionPlanParameters: mockDistributionPlanParametersService,
+                    ProgrammeService: mockProgrammeService,
+                    SalesOrderItemService: mockSalesOrderItemService,
+                    DistributionPlanService: mockPlanService,
+                    DistributionPlanNodeService: mockDistributionPlanNodeService,
                     DistributionPlanLineItemService: mockDistributionPlanLineItemService,
                     ConsigneeService: mockConsigneeService,
                     UserService: mockUserService,
@@ -141,7 +147,7 @@ describe('NewDistributionPlanController', function () {
 
             var expectedDistricts = [
                 {id: 'Abim', name: 'Abim'},
-                { id: 'Gulu', name: 'Gulu'}
+                {id: 'Gulu', name: 'Gulu'}
             ];
             scope.$apply();
 
@@ -206,7 +212,7 @@ describe('NewDistributionPlanController', function () {
                     id: 1,
                     name: 'Save the Children'
                 },
-                contact_person: { _id: 1 }
+                contact_person: {_id: 1}
             });
             scope.salesOrderItemSelected = {information: {distributionplanlineitem_set: ['1']}};
             scope.$apply();
@@ -216,11 +222,13 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to true if there are distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = ['1', '2'];
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+                information: stubSalesOrderItem
+            };
             scope.$apply();
             expect(scope.hasDistributionPlanItems).toBeTruthy();
         });
@@ -228,11 +236,13 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to false if there are no distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = [];
-            scope.salesOrderItemSelected = {display: stubSalesOrderItemNoDistributionPlanItems.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItemNoDistributionPlanItems.item.description,
                 materialCode: stubSalesOrderItemNoDistributionPlanItems.item.materialCode,
                 quantity: stubSalesOrderItemNoDistributionPlanItems.quantity,
                 unit: stubSalesOrderItemNoDistributionPlanItems.item.unit.name,
-                information: stubSalesOrderItemNoDistributionPlanItems};
+                information: stubSalesOrderItemNoDistributionPlanItems
+            };
             scope.$apply();
             expect(scope.hasDistributionPlanItems).toBeFalsy();
         });
@@ -287,7 +297,8 @@ describe('NewDistributionPlanController', function () {
 
         it('should not get distribution plan items service linked to the particular sales order item with no line item set', function () {
 
-            scope.salesOrderItemSelected = {display: stubSalesOrderItemNoDistributionPlanItems.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItemNoDistributionPlanItems.item.description,
                 material_code: stubSalesOrderItemNoDistributionPlanItems.item.material_code,
                 quantity: stubSalesOrderItemNoDistributionPlanItems.quantity,
                 unit: stubSalesOrderItemNoDistributionPlanItems.item.unit.name,
@@ -300,7 +311,8 @@ describe('NewDistributionPlanController', function () {
 
         it('should not get distribution plan items service linked to the particular sales order item with undefined line item set', function () {
 
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
@@ -374,32 +386,64 @@ describe('NewDistributionPlanController', function () {
 
     describe('when save is clicked', function () {
         it('should call the create line item service for all the line items added', function () {
-            deferredPlanNode.resolve({id: 1, parent: null, distribution_plan: 1, consignee: 1, tree_position: 'MIDDLE_MAN'});
+            deferredPlanNode.resolve({
+                id: 1,
+                parent: null,
+                distribution_plan: 1,
+                consignee: 1,
+                tree_position: 'MIDDLE_MAN'
+            });
             scope.planId = 1;
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+                information: stubSalesOrderItem
+            };
 
             scope.distributionPlanItems = [
-                {item: stubSalesOrderItem.item,
-                    quantity: stubSalesOrderItem.quantity, plannedDistributionDate: '2014-10-10',
-                    destinationLocation: '', modeOfDelivery: '', consignee: {id: 1},
-                    contactPerson: '', remark: 'Good', targetQuantity: ''},
-                {item: {id: 2},
-                    quantity: stubSalesOrderItem.quantity, plannedDistributionDate: '2014-10-10',
-                    destinationLocation: '', modeOfDelivery: '', consignee: {id: 1},
-                    contactPerson: '', remark: 'Bad', targetQuantity: 20}
+                {
+                    item: stubSalesOrderItem.item,
+                    quantity: stubSalesOrderItem.quantity,
+                    plannedDistributionDate: '2014-10-10',
+                    destinationLocation: '',
+                    modeOfDelivery: '',
+                    consignee: {id: 1},
+                    contactPerson: '',
+                    remark: 'Good',
+                    targetQuantity: ''
+                },
+                {
+                    item: {id: 2},
+                    quantity: stubSalesOrderItem.quantity,
+                    plannedDistributionDate: '2014-10-10',
+                    destinationLocation: '',
+                    modeOfDelivery: '',
+                    consignee: {id: 1},
+                    contactPerson: '',
+                    remark: 'Bad',
+                    targetQuantity: 20
+                }
             ];
             scope.saveDistributionPlanItems();
             scope.$apply();
 
-            var lineItemDetails = {item: stubSalesOrderItem.item.id, targetQuantity: '', distribution_plan_node: 1,
-                plannedDistributionDate: '2014-10-10', remark: 'Good'};
+            var lineItemDetails = {
+                item: stubSalesOrderItem.item.id,
+                targeted_quantity: '',
+                distribution_plan_node: 1,
+                planned_distribution_date: '2014-10-10',
+                remark: 'Good'
+            };
 
-            var anotherLineItemDetails = {item: 2, targetQuantity: 20, distribution_plan_node: 1,
-                plannedDistributionDate: '2014-10-10', remark: 'Bad'};
+            var anotherLineItemDetails = {
+                item: 2,
+                targeted_quantity: 20,
+                distribution_plan_node: 1,
+                planned_distribution_date: '2014-10-10',
+                remark: 'Bad'
+            };
 
             expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(lineItemDetails);
             expect(mockDistributionPlanLineItemService.createLineItem).toHaveBeenCalledWith(anotherLineItemDetails);
@@ -426,12 +470,14 @@ describe('NewDistributionPlanController', function () {
 
         it('should not call the create distribution plan service if plan has already been created for sales order item', function () {
             var distributionPlanItems = [];
-            scope.salesOrderItemSelected = {display: stubSalesOrderItem.item.description,
+            scope.salesOrderItemSelected = {
+                display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: '100',
                 quantityLeft: '100',
                 unit: stubSalesOrderItem.item.unit.name,
-                information: stubSalesOrderItem};
+                information: stubSalesOrderItem
+            };
             scope.planId = 1;
             scope.saveDistributionPlanItems(distributionPlanItems);
             scope.$apply();

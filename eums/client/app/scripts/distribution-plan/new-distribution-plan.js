@@ -97,9 +97,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         function createNewNodeAndLineItem(nodeDetails, lineItem) {
             DistributionPlanNodeService.createNode(nodeDetails).then(function (createdNode) {
                 var lineItemDetails = {
-                    item: lineItem.item.id, targetQuantity: lineItem.targetQuantity,
+                    item: lineItem.item.id, targeted_quantity: lineItem.targetQuantity,
                     distribution_plan_node: createdNode.id,
-                    plannedDistributionDate: lineItem.plannedDistributionDate,
+                    planned_distribution_date: lineItem.plannedDistributionDate,
                     remark: lineItem.remark
                 };
                 DistributionPlanLineItemService.createLineItem(lineItemDetails).then(function () {
@@ -134,8 +134,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         function saveDistributionPlanItems() {
             $scope.distributionPlanItems.forEach(function (item) {
                 var nodeDetails = {
-                    consignee: item.consignee, location: item.destinationLocation, contact_person_id: item.contactPerson,
-                    distribution_plan: $scope.planId, tree_position: 'MIDDLE_MAN', modeOfDelivery: item.modeOfDelivery
+                    consignee: item.consignee,
+                    location: item.destinationLocation,
+                    contact_person_id: item.contactPerson,
+                    distribution_plan: $scope.planId,
+                    tree_position: 'MIDDLE_MAN',
+                    mode_of_delivery: item.modeOfDelivery
                 };
 
                 $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.targetQuantity)).toString();

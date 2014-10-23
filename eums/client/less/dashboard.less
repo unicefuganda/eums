@@ -130,13 +130,14 @@
 .filter-panel .close-panel {
   font-size: 14px;
   color: white;
-  background-color: #43B9E6;
+  background-color: @brand-primary;
   opacity: 1;
   padding: 5px 8px;
   cursor: pointer;
   text-align: center;
 }
 
-.close-panel:hover {
-  background-color: rgba(0, 0, 0, 0.32);
+.filter-panel .close-panel:hover {
+  background-color: darken(@brand-primary, 10%);
+  border-color: darken(@brand-primary, 12%);
 }
