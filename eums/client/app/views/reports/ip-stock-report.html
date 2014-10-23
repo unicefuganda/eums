@@ -22,16 +22,16 @@
                     <thead>
                     <tr>
                         <td class="col-lg-3">Document Number</td>
-                        <td class="col-lg-3">Value Received $</td>
-                        <td class="col-lg-3">Value Dispensed $</td>
-                        <td class="col-lg-3">Balance $</td>
+                        <td class="col-lg-3">Value Received ($)</td>
+                        <td class="col-lg-3">Value Dispensed ($)</td>
+                        <td class="col-lg-3">Balance ($)</td>
                     </tr>
                     </thead>
                     <tr ng-repeat="document in selectedIP.documents">
                         <td>{{ document.doc_number }}</td>
-                        <td>{{ document.value_received }}</td>
-                        <td>{{ document.value_dispensed }}</td>
-                        <td>{{ document.value_received - document.value_dispensed }}</td>
+                        <td>{{ document.value_received | number }}</td>
+                        <td>{{ document.value_dispensed | number }}</td>
+                        <td>{{ document.value_received - document.value_dispensed | number }}</td>
                     </tr>
                     <tr>
                         <td>
@@ -39,11 +39,11 @@
                                 TOTALS
                             </span>
                         </td>
-                        <td>{{ selectedIP.totalReceived }}</td>
-                        <td>{{ selectedIP.totalDispensed }}</td>
+                        <td>{{ selectedIP.totalReceived | number }}</td>
+                        <td>{{ selectedIP.totalDispensed | number }}</td>
                         <td>
                             <span class="badge" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
-                                {{ selectedIP.balance }}
+                                {{ selectedIP.balance | number }}
                             </span>
                         </td>
                     </tr>
