@@ -35,31 +35,21 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                         unit: result.item.unit.name,
                         information: result
                     };
-
-                    formattedSalesOrderItem.computeQuantityLeft = computeQuantityLeft;
+                    formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
                     $scope.salesOrderItems.push(formattedSalesOrderItem);
                 });
             });
         });
 
-
         $scope.hasTargetedQuantity = function (distributionPlanLineItem) {
             var showInputBox = ['', undefined, '0', 0];
             return (showInputBox.indexOf(distributionPlanLineItem.targetQuantity) === -1);
         };
 
-        function computeQuantityLeft() {
-            var reduced = $scope.distributionPlanItems.reduce(function (prev, current) {
-                return {quantity: prev.quantity + current.quantity};
-            }, {quantity: 0});
-
-            return this.quantity - reduced.quantity;
-        }
-
         $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {
-                item: $scope.salesOrderItemSelected.information.item,
+                item: $scope.selectedSalesOrderItem.information.item,
                 plannedDistributionDate: '2014-10-10',
                 targetQuantity: 0,
                 destinationLocation: '',
@@ -76,6 +66,20 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
             setDatePickers();
         };
+
+        function computeQuantityLeft(salesOrderItem) {
+            var reduced = $scope.distributionPlanItems.reduce(function (previous, current) {
+                return {targetQuantity: previous.targetQuantity + current.targetQuantity};
+            }, {targetQuantity: 0});
+
+            return salesOrderItem.quantity - reduced.targetQuantity;
+        }
+
+        $scope.$watchCollection('distributionPlanItems', function(newPlanItems) {
+            if(newPlanItems.length) {
+                $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
+            }
+        });
 
         function setDatePickers() {
             $scope.datepicker = {};
@@ -142,7 +146,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                     mode_of_delivery: item.modeOfDelivery
                 };
 
-                $scope.salesOrderItemSelected.quantityLeft = (parseInt($scope.salesOrderItemSelected.quantityLeft) - parseInt(item.targetQuantity)).toString();
+                $scope.selectedSalesOrderItem.quantityLeft = (parseInt($scope.selectedSalesOrderItem.quantityLeft) - parseInt(item.targetQuantity)).toString();
                 saveNodeAndLineItem(nodeDetails, item, item);
             });
         }
@@ -159,23 +163,23 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
             }
         };
 
-        $scope.$watch('salesOrderItemSelected', function () {
+        $scope.$watch('selectedSalesOrderItem', function () {
             var emptySalesOrders = ['', undefined];
             $scope.distributionPlanItems = [];
 
-            if (emptySalesOrders.indexOf($scope.salesOrderItemSelected) !== -1) {
+            if (emptySalesOrders.indexOf($scope.selectedSalesOrderItem) !== -1) {
                 $scope.hasSalesOrderItems = false;
             }
             else {
                 $scope.hasSalesOrderItems = true;
-                $scope.salesOrderItemSelected.quantityLeft = $scope.salesOrderItemSelected.quantity;
+                $scope.selectedSalesOrderItem.quantityLeft = $scope.selectedSalesOrderItem.quantity;
 
-                var distributionPlanLineItems = $scope.salesOrderItemSelected.information.distributionplanlineitem_set;
+                var distributionPlanLineItems = $scope.selectedSalesOrderItem.information.distributionplanlineitem_set;
 
                 if (distributionPlanLineItems && distributionPlanLineItems.length) {
                     $scope.hasDistributionPlanItems = true;
                     var itemCounter = 0;
-                    var quantityLeft = parseInt($scope.salesOrderItemSelected.quantity);
+                    var quantityLeft = parseInt($scope.selectedSalesOrderItem.quantity);
 
                     distributionPlanLineItems.forEach(function (lineItemId) {
                         DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
@@ -203,7 +207,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
 
                             quantityLeft = quantityLeft - parseInt(lineItem.targetQuantity);
                             itemCounter++;
-                            $scope.salesOrderItemSelected.quantityLeft = quantityLeft.toString();
+                            $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
                         });
                     });
                 }

@@ -74,7 +74,7 @@
                         <th></th>
 
                         <tr ng-repeat="item in distributionPlanItems">
-                            <td id="input-available-quantity">{{ item.quantity }}</td>
+                            <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ salesOrderItemSelected.unit }}</td>
                             <td>
                                 <input type="text" id="input-quantity" class="form-control"

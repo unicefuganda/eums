@@ -74,7 +74,7 @@ describe('NewDistributionPlanController', function () {
         quantity: stubSalesOrderItem.quantity,
         unit: stubSalesOrderItem.item.unit.name,
         information: stubSalesOrderItem,
-        computeQuantityLeft: jasmine.any(Function)
+        quantityLeft: jasmine.any(Number)
     };
 
 
@@ -135,16 +135,28 @@ describe('NewDistributionPlanController', function () {
         });
     });
 
+    describe('when a new distribution plan item is added to scope, ', function() {
+        it('the selected sales order item quantityLeft attribute should be updated', function() {
+            scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
+            scope.$apply();
+
+            scope.distributionPlanItems.push({targetQuantity: 50});
+            scope.$apply();
+
+            expect(scope.selectedSalesOrderItem.quantityLeft).toBe(50);
+        });
+    });
+
     describe('when the controller is initialized', function () {
         beforeEach(function () {
             deferredDistrictPromise.resolve({data: plainDistricts});
         });
+
         it('should have the distributionPlanItems defaulted to an empty list', function () {
             expect(scope.distributionPlanItems).toEqual([]);
         });
 
         it('should set districts in the scope variable', function () {
-
             var expectedDistricts = [
                 {id: 'Abim', name: 'Abim'},
                 {id: 'Gulu', name: 'Gulu'}
@@ -164,7 +176,7 @@ describe('NewDistributionPlanController', function () {
         it('should have the default selected sales orders item undefined in the scope', function () {
             scope.$apply();
 
-            expect(scope.salesOrderItemSelected).toBeUndefined();
+            expect(scope.selectedSalesOrderItem).toBeUndefined();
         });
 
         it('should have the sales orders item flag as false by default', function () {
@@ -192,15 +204,15 @@ describe('NewDistributionPlanController', function () {
     describe('when sales order item selected changes', function () {
 
         it('should set the selected sales order to the scope when sales order item is selected', function () {
-            scope.salesOrderItemSelected = expectedFormattedSalesOrderItem;
+            scope.selectedSalesOrderItem = expectedFormattedSalesOrderItem;
             scope.$apply();
-            expect(scope.salesOrderItemSelected).toEqual(expectedFormattedSalesOrderItem);
+            expect(scope.selectedSalesOrderItem).toEqual(expectedFormattedSalesOrderItem);
         });
 
 
         it('should know distribution plan node service is called if line items exists', function () {
             deferred.resolve({distribution_plan_node: 1});
-            scope.salesOrderItemSelected = {information: {distributionplanlineitem_set: ['1']}};
+            scope.selectedSalesOrderItem = {information: {distributionplanlineitem_set: ['1']}};
             scope.$apply();
             expect(mockDistributionPlanNodeService.getPlanNodeDetails).toHaveBeenCalledWith(1);
         });
@@ -214,7 +226,7 @@ describe('NewDistributionPlanController', function () {
                 },
                 contact_person: {_id: 1}
             });
-            scope.salesOrderItemSelected = {information: {distributionplanlineitem_set: ['1']}};
+            scope.selectedSalesOrderItem = {information: {distributionplanlineitem_set: ['1']}};
             scope.$apply();
             expect(scope.planId).toEqual(2);
         });
@@ -222,7 +234,7 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to true if there are distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = ['1', '2'];
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: stubSalesOrderItem.quantity,
@@ -236,7 +248,7 @@ describe('NewDistributionPlanController', function () {
         it('should set the distribution plan items flag to false if there are no distribution plan items for sales order item selected', function () {
             scope.hasDistributionPlanItems = false;
             scope.distributionPlanItems = [];
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItemNoDistributionPlanItems.item.description,
                 materialCode: stubSalesOrderItemNoDistributionPlanItems.item.materialCode,
                 quantity: stubSalesOrderItemNoDistributionPlanItems.quantity,
@@ -249,7 +261,7 @@ describe('NewDistributionPlanController', function () {
 
         it('should know the has sales order items flag is set to false if sales item is null', function () {
             scope.hasSalesOrderItems = true;
-            scope.salesOrderItemSelected = undefined;
+            scope.selectedSalesOrderItem = undefined;
             scope.$apply();
             expect(scope.hasSalesOrderItems).toBeFalsy();
         });
@@ -257,13 +269,13 @@ describe('NewDistributionPlanController', function () {
         it('should know the has sales order items flag is set to false if sales item is empty', function () {
             scope.hasSalesOrderItems = true;
             scope.$apply();
-            scope.salesOrderItemSelected = '';
+            scope.selectedSalesOrderItem = '';
             scope.$apply();
             expect(scope.hasSalesOrderItems).toBeFalsy();
         });
 
         it('should call the get distribution plan items service linked to the particular sales order item', function () {
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode, quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name, information: stubSalesOrderItem
@@ -283,7 +295,7 @@ describe('NewDistributionPlanController', function () {
                 contact_person: {_id: 1}
             });
             deferred.resolve(stubSalesOrderItem);
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
@@ -297,7 +309,7 @@ describe('NewDistributionPlanController', function () {
 
         it('should not get distribution plan items service linked to the particular sales order item with no line item set', function () {
 
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItemNoDistributionPlanItems.item.description,
                 material_code: stubSalesOrderItemNoDistributionPlanItems.item.material_code,
                 quantity: stubSalesOrderItemNoDistributionPlanItems.quantity,
@@ -311,7 +323,7 @@ describe('NewDistributionPlanController', function () {
 
         it('should not get distribution plan items service linked to the particular sales order item with undefined line item set', function () {
 
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 material_code: stubSalesOrderItem.item.material_code,
                 quantity: stubSalesOrderItem.quantity,
@@ -326,7 +338,7 @@ describe('NewDistributionPlanController', function () {
         it('should subtract the targeted quantity from the quantity left for the sales order item', function () {
             deferred.resolve({targeted_quantity: 20});
             var quantity = '100';
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.material_code,
                 quantity: quantity,
@@ -337,13 +349,13 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
 
             var expectedQuantityRemaining = '60';
-            expect(scope.salesOrderItemSelected.quantityLeft).toEqual(expectedQuantityRemaining);
+            expect(scope.selectedSalesOrderItem.quantityLeft).toEqual(expectedQuantityRemaining);
         });
     });
 
     describe('when add IP button is clicked', function () {
-        it('should add a default distribution plan line item to the salesOrderItemSelected', function () {
-            scope.salesOrderItemSelected = {
+        it('should add a default distribution plan line item to the selectedSalesOrderItem', function () {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.material_code,
                 quantity: 100,
@@ -371,7 +383,7 @@ describe('NewDistributionPlanController', function () {
 
         it('should modify the distribution plan items flag to true if it is currently false', function () {
             scope.hasDistributionPlanItems = false;
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: stubSalesOrderItem.quantity,
@@ -386,7 +398,6 @@ describe('NewDistributionPlanController', function () {
         });
     });
 
-
     describe('when save is clicked', function () {
         it('should call the create line item service for all the line items added', function () {
             deferredPlanNode.resolve({
@@ -397,7 +408,7 @@ describe('NewDistributionPlanController', function () {
                 tree_position: 'MIDDLE_MAN'
             });
             scope.planId = 1;
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: stubSalesOrderItem.quantity,
@@ -455,7 +466,7 @@ describe('NewDistributionPlanController', function () {
         it('should save the distribution plan ID in the scope variable', function () {
             scope.selectedSalesOrder = {programme: 1};
 
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: '100',
@@ -473,7 +484,7 @@ describe('NewDistributionPlanController', function () {
 
         it('should not call the create distribution plan service if plan has already been created for sales order item', function () {
             var distributionPlanItems = [];
-            scope.salesOrderItemSelected = {
+            scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.item.description,
                 materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: '100',
