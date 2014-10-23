@@ -273,7 +273,7 @@
                                 consigneesResponses.map(function (consigneesResponse) {
                                     var consigneeCoordinates = map.getRandomCoordinates(consigneesResponse.data.location.toLowerCase());
                                     DistributionPlanService.getConsigneeDetails(consigneesResponse.data.id).then(function (response) {
-                                        var markerData = JSON.parse(JSON.parse(response.data));
+                                        var markerData = response.data;
                                         var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
                                         var consigneeResponse = markerData[0];
                                         consigneeResponse && map.addMarker(marker) && scope.allMarkers.push({marker: marker, consigneeResponse: markerData});

@@ -19,4 +19,4 @@ class ConsigneeResponses(APIView):
                 for response in responses:
                     formatted_run_responses.update({response.question.label: response.format()})
                 result.append(formatted_run_responses)
-        return Response(json.dumps(result), status=status.HTTP_200_OK)
+        return Response(result, status=status.HTTP_200_OK)

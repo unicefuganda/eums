@@ -9,3 +9,4 @@ class ConsigneeFactory(factory.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: "Consignee {0}".format(n))
     customer_id = factory.Sequence(lambda n: "{0}".format(n))
+    type = Consignee.TYPES.implementing_partner

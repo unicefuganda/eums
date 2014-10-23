@@ -36,7 +36,7 @@ def create_programme():
 
 def create_consignee(test_case, consignee_details=None):
     if not consignee_details:
-        consignee_details = {'name': "Save the Children"}
+        consignee_details = {'name': "Save the Children", 'type': 'implementing_partner'}
     response = test_case.client.post(CONSIGNEE_ENDPOINT_URL, consignee_details, format='json')
     test_case.assertEqual(response.status_code, 201)
     return response.data
