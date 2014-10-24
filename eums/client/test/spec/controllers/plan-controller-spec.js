@@ -455,10 +455,10 @@ describe('NewDistributionPlanController', function () {
 
                     uiPlanItem.lineItemId = lineItemId;
 
-                    deferred.resolve({id: lineItemId});
-                    mockLineItemService.createLineItem.and.returnValue(deferred.promise);
                     scope.saveDistributionPlanItems();
                     scope.$apply();
+
+                    expect(mockLineItemService.createLineItem).not.toHaveBeenCalled();
 
                     expect(mockLineItemService.updateLineItem).toHaveBeenCalledWith({
                         id: lineItemId,
@@ -468,6 +468,8 @@ describe('NewDistributionPlanController', function () {
                         planned_distribution_date: uiPlanItem.plannedDistributionDate,
                         remark: uiPlanItem.remark
                     });
+
+
                 });
             });
         });

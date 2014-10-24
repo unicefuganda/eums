@@ -155,7 +155,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
                         lineItem.quantity = quantityLeft.toString();
                         lineItem.targetQuantity = lineItem.targeted_quantity;
-                        lineItem.lineItemIdInBackend = lineItem.id;
+                        lineItem.lineItemId = lineItem.id;
                         lineItem.item = $scope.selectedSalesOrderItem.information.id;
 
                         var d = new Date(lineItem.planned_distribution_date);
