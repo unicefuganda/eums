@@ -10,7 +10,9 @@
         </h4>
 
         <div ng-show="selectedSalesOrderItem">
-            <alert ng-show="!selectedSalesOrderItem.quantityLeft > 0" type="danger">All quantities have been assigned for this item.</alert>
+            <alert ng-show="!selectedSalesOrderItem.quantityLeft > 0" type="danger">All quantities have been assigned
+                for this item.
+            </alert>
         </div>
 
         <div class="row">
@@ -88,7 +90,7 @@
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            ng-required="true"
-                                           value="{{ item.plannedDistributionDate | date : 'dd/MM/yyyy' }}"
+                                           value="{{ item.plannedDistributionDate }}"
                                            required="required"/>
                                   <span class="input-group-btn">
 
