@@ -140,7 +140,7 @@
                         ng-click="addDistributionPlanItem()"><i
                         class="glyphicon glyphicon-plus"> </i>Add Consignee
                 </button>
-                <div ng-show="hasDistributionPlanItems" style="float: right">
+                <div ng-show="distributionPlanItems.length > 0" style="float: right">
                     <button type="button" class="btn btn-primary"
                             ng-click="saveDistributionPlanItems()"><i
                             class="glyphicon glyphicon-floppy-save"> </i>Save
