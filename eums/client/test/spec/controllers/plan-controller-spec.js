@@ -293,7 +293,7 @@ describe('NewDistributionPlanController', function() {
             mockPlanService.createPlan.and.returnValue(createPlanPromise.promise);
 
             programmeId = 1;
-            scope.selectedSalesOrder = {programme: programmeId};
+            scope.selectedSalesOrder = {programme: {id: programmeId}};
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
             scope.$apply();
         });
