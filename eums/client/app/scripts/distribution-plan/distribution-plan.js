@@ -14,7 +14,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.programmeSelected = null;
 
         $scope.initialize = function () {
-            this.sortBy('date');
+            this.sortBy('order_number');
             this.sort.descending = false;
 
             SalesOrderService.getSalesOrders().then(function (salesOrders) {

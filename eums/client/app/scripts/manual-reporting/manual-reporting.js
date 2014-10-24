@@ -28,7 +28,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         var waybills = [];
 
         $scope.initialize = function () {
-            this.sortBy('date');
+            this.sortBy('doc_number');
             this.sort.descending = false;
             purchaseOrders = [
                 {id: 1, doc_number: 65025072, date: '11/11/2014', programme: 'YI107 - PCR 3 KEEP CHILDREN SAFE'},
@@ -61,7 +61,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         };
 
         $scope.sortArrowClass = function (criteria) {
-            var output = 'glyphicon glyphicon-arrow-down';
+            var output = '';
 
             if (this.sort.criteria === criteria) {
                 output = 'active glyphicon glyphicon-arrow-down';
