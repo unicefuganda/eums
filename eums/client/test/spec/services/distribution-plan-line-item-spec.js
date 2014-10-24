@@ -7,7 +7,6 @@ describe('Distribution Plan Line Item Service', function () {
         item: itemId,
         targetQuantity: 10,
         plannedDistributionDate: '2014-02-23',
-        programmeFocal: 1,
         remark: 'In good condition',
         distribution_plan_node: 1
     };

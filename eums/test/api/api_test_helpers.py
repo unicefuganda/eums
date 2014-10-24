@@ -66,9 +66,6 @@ def make_line_item_details(test_case, node_id=None):
 
     sales_item_id = create_sales_order_item(test_case, sales_order_details)['id']
 
-    focal_person, _ = User.objects.get_or_create(
-        username="Test", first_name="Test", last_name="User", email="me@you.com"
-    )
 
     consignee_id = create_consignee(test_case)['id']
 
@@ -76,7 +73,7 @@ def make_line_item_details(test_case, node_id=None):
         node_id = create_distribution_plan_node(test_case)['id']
 
     line_item = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
-                 'destination_location': 'GULU', 'programme_focal': focal_person.id, 'consignee': consignee_id,
+                 'destination_location': 'GULU', 'consignee': consignee_id,
                  'contact_person': 'Test', 'contact_phone_number': '0110110111', 'mode_of_delivery': 'Road',
                  'tracked': True, 'remark': "Dispatched", 'distribution_plan_node': node_id}
 

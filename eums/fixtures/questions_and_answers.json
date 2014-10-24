@@ -3225,7 +3225,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "sample programme"
         },
         "model": "eums.programme",
@@ -3233,7 +3232,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YI107 - PCR 3 KEEP CHILDREN SAFE"
         },
         "model": "eums.programme",
@@ -3241,7 +3239,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YI105 - PCR 1 KEEP CHILDREN AND MOTHERS"
         },
         "model": "eums.programme",
@@ -3249,7 +3246,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "Y108 - PCR 4 CROSS SECTORAL"
         },
         "model": "eums.programme",
@@ -3257,7 +3253,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YP109 - PCR 5 SUPPORT"
         },
         "model": "eums.programme",
@@ -3265,7 +3260,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YI106 - PCR 2 KEEP CHILDREN LEARNING"
         },
         "model": "eums.programme",
@@ -3273,7 +3267,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YI101 KEEP CHILDREN AND MOTHERS ALIVE"
         },
         "model": "eums.programme",
@@ -3281,7 +3274,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YP104 MANAGEMENT RESULTS"
         },
         "model": "eums.programme",
@@ -3289,7 +3281,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YI102 KEEP CHILDREN LEARNING"
         },
         "model": "eums.programme",
@@ -3297,7 +3288,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "YI103 KEEP CHILDREN SAFE"
         },
         "model": "eums.programme",
@@ -3305,7 +3295,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "* YP109 - PCR 5 Support - Effective & efficient programme ma"
         },
         "model": "eums.programme",
@@ -3313,7 +3302,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "* 040623/YW402-YW402 Water, Sanitation and"
         },
         "model": "eums.programme",
@@ -3321,7 +3309,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "* 040623/YP602-YP602 Cross-Sectoral Costs"
         },
         "model": "eums.programme",

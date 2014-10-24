@@ -6,11 +6,7 @@ describe('DistributionPlanController', function () {
     var deferred, deferredPlan, deferredSalesOrder;
 
     var programmeOne = {
-        id: 1, name: 'Test Programme', focal_person: {
-            id: 1,
-            firstName: 'Musoke',
-            lastName: 'Stephen'
-        }
+        id: 1, name: 'Test Programme'
     };
 
     var stubResponse = {

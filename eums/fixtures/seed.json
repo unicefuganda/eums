@@ -1217,7 +1217,6 @@
     },
     {
         "fields": {
-            "focal_person": 2,
             "name": "sample programme"
         },
         "model": "eums.programme",

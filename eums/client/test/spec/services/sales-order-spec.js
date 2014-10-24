@@ -37,11 +37,6 @@ describe('Sales Order Service', function () {
             programme: {
                 id: programmeOneId,
                 name: 'Test Programme',
-                focalPerson: {
-                    id: 1,
-                    firstName: 'Musoke',
-                    lastName: 'Stephen'
-                }
             }
         };
         stubSalesOrders = [

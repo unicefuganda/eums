@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Programme', ['eums.config', 'User'])
+angular.module('Programme', ['eums.config'])
     .factory('ProgrammeService', function ($http, EumsConfig) {
         return {
             getProgrammeDetails: function(programmeId) {
