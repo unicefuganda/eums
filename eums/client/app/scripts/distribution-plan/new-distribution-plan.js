@@ -14,7 +14,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
         });
 
         ConsigneeService.fetchConsignees().then(function(consignees) {
-            console.log("FETCHED:" + consignees);
             $scope.consignees = consignees;
         });
 
@@ -51,7 +50,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'eums.config', 'ngTab
                 plannedDistributionDate: '2014-10-10',
                 targetQuantity: 0,
                 destinationLocation: '',
-                consignee: '',
                 contactPerson: '',
                 modeOfDelivery: '',
                 tracked: false
