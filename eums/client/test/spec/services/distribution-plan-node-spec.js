@@ -56,7 +56,8 @@ describe('Distribution Plan Node Service', function() {
         children: [2],
         distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: fullConsignee,
-        contactPerson: fullContact,
+        contact_person_id: fullContact.id,
+        contact_person: fullContact,
         lineItems: [fullLineItemOne, fullLineItemTwo]
     };
 

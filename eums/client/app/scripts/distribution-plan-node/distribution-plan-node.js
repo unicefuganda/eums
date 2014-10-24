@@ -4,8 +4,10 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
     .factory('DistributionPlanNodeService', function($http, $q, EumsConfig, DistributionPlanLineItemService, ContactService, ConsigneeService) {
         var fillOutContactPerson = function(planNode) {
             return ContactService.getContactById(planNode.contact_person_id).then(function(contact) {
-                delete planNode.contact_person_id;
-                planNode.contactPerson = contact;
+                planNode.contact_person = contact;
+                return planNode;
+            }, function () {
+                planNode.contact_person = { firstName: 'No Contact Found' };
                 return planNode;
             });
         };

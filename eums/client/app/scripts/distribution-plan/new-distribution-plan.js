@@ -1,18 +1,18 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip'])
-    .controller('NewDistributionPlanController', function($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, $q, SalesOrderService, $routeParams, IPService) {
+    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, $q, SalesOrderService, $routeParams, IPService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
 
-        IPService.loadAllDistricts().then(function(response) {
-            $scope.districts = response.data.map(function(district) {
+        IPService.loadAllDistricts().then(function (response) {
+            $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
             });
         });
 
-        ConsigneeService.fetchConsignees().then(function(consignees) {
+        ConsigneeService.fetchConsignees().then(function (consignees) {
             $scope.consignees = consignees;
         });
 
@@ -22,8 +22,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         SalesOrderService.getSalesOrder($routeParams.salesOrderId).then(function (response) {
             $scope.selectedSalesOrder = response;
 
-            $scope.selectedSalesOrder.salesorderitem_set.forEach(function(salesOrderItem) {
-                SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function(result) {
+            $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
+                SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
                     var formattedSalesOrderItem = {
                         display: result.item.description,
                         materialCode: result.item.material_code,
@@ -38,9 +38,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         });
 
-        $scope.addDistributionPlanItem = function() {
+        $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {
-                item: $scope.selectedSalesOrderItem.information.item,
+                item: $scope.selectedSalesOrderItem.information.id,
                 plannedDistributionDate: '2014-10-10',
                 targetQuantity: 0,
                 destinationLocation: '',
@@ -55,22 +55,22 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         function computeQuantityLeft(salesOrderItem) {
-            var reduced = $scope.distributionPlanItems.reduce(function(previous, current) {
+            var reduced = $scope.distributionPlanItems.reduce(function (previous, current) {
                 return {targetQuantity: previous.targetQuantity + current.targetQuantity};
             }, {targetQuantity: 0});
 
             return salesOrderItem.quantity - reduced.targetQuantity;
         }
 
-        $scope.$watch('distributionPlanItems', function(newPlanItems) {
-            if(newPlanItems.length) {
+        $scope.$watch('distributionPlanItems', function (newPlanItems) {
+            if (newPlanItems.length) {
                 $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
             }
         }, true);
 
         function setDatePickers() {
             $scope.datepicker = {};
-            $scope.distributionPlanItems.forEach(function(item, index) {
+            $scope.distributionPlanItems.forEach(function (item, index) {
                 $scope.datepicker[index] = false;
             });
         }
@@ -86,83 +86,85 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 mode_of_delivery: uiPlanItem.modeOfDelivery
             };
 
-            if(nodeId) {
+            if (nodeId) {
                 node.id = nodeId;
-                return  DistributionPlanNodeService.updateNode(node);
+                return DistributionPlanNodeService.updateNode(node);
             }
             else {
                 return DistributionPlanNodeService.createNode(node);
             }
         }
 
-        function saveLineItem(uiPlanItem, nodeId) {
-            var lineItemId = uiPlanItem.lineItemId;
-            var plannedDate = new Date(uiPlanItem.plannedDistributionDate);
-            uiPlanItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
+        function saveLineItem(nodeLineItem, nodeId) {
+            var lineItemId = nodeLineItem.lineItemId;
+            var plannedDate = new Date(nodeLineItem.plannedDistributionDate);
+            nodeLineItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
             var lineItem = {
-                item: uiPlanItem.item.id,
-                targeted_quantity: uiPlanItem.targetQuantity,
+                item: nodeLineItem.item,
+                targeted_quantity: nodeLineItem.targetQuantity,
                 distribution_plan_node: nodeId,
-                planned_distribution_date: uiPlanItem.plannedDistributionDate,
-                remark: uiPlanItem.remark
+                planned_distribution_date: nodeLineItem.plannedDistributionDate,
+                remark: nodeLineItem.remark
             };
 
-            if(lineItemId) {
+            if (lineItemId) {
                 lineItem.id = lineItemId;
                 DistributionPlanLineItemService.updateLineItem(lineItem);
             }
             else {
-                DistributionPlanLineItemService.createLineItem(lineItem).then(function(createdLineItem) {
-                    uiPlanItem.lineItemId = createdLineItem.id;
+                DistributionPlanLineItemService.createLineItem(lineItem).then(function (createdLineItem) {
+                    nodeLineItem.lineItemId = createdLineItem.id;
                 });
             }
         }
 
         function saveDistributionPlanItems() {
-            $scope.distributionPlanItems.forEach(function(item) {
-                saveNode(item).then(function(createdNode) {
+            $scope.distributionPlanItems.forEach(function (item) {
+                saveNode(item).then(function (createdNode) {
                     item.nodeId = createdNode.id;
                     saveLineItem(item, createdNode.id);
                 });
             });
         }
 
-        $scope.saveDistributionPlanItems = function() {
-            if($scope.distributionPlan) {
+        $scope.saveDistributionPlanItems = function () {
+            if ($scope.distributionPlan) {
                 saveDistributionPlanItems();
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id}).then(function(createdPlan) {
-                    $scope.distributionPlan = createdPlan;
-                    saveDistributionPlanItems();
-                });
+                DistributionPlanService
+                    .createPlan({programme: $scope.selectedSalesOrder.programme.id})
+                    .then(function (createdPlan) {
+                        $scope.distributionPlan = createdPlan;
+                        saveDistributionPlanItems();
+                    });
             }
         };
 
-        $scope.$watch('selectedSalesOrderItem', function(newItem) {
+        $scope.$watch('selectedSalesOrderItem', function (newItem) {
             $scope.distributionPlanItems = [];
             $scope.selectedSalesOrderItem = newItem;
 
             var distributionPlanLineItems = $scope.selectedSalesOrderItem && $scope.selectedSalesOrderItem.information.distributionplanlineitem_set;
-
-            if(distributionPlanLineItems && distributionPlanLineItems.length) {
+            if (distributionPlanLineItems && distributionPlanLineItems.length) {
                 var itemCounter = 0;
                 var quantityLeft = parseInt($scope.selectedSalesOrderItem.quantity);
 
                 //TODO Clean this up. Get fully populated objects from endpoint
-                distributionPlanLineItems.forEach(function(lineItemId) {
-                    DistributionPlanLineItemService.getLineItem(lineItemId).then(function(lineItem) {
+                distributionPlanLineItems.forEach(function (lineItemId) {
+                    DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
                         lineItem.quantity = quantityLeft.toString();
                         lineItem.targetQuantity = lineItem.targeted_quantity;
                         lineItem.lineItemIdInBackend = lineItem.id;
+                        lineItem.item = $scope.selectedSalesOrderItem.information.id;
 
                         var d = new Date(lineItem.planned_distribution_date);
                         lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
 
-                        DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
+                        DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function (node) {
                             lineItem.consignee = node.consignee.id;
                             lineItem.nodeId = node.id;
-                            lineItem.contactPerson = node.contact_person._id;
+                            lineItem.contactPerson = node.contact_person_id;
                             lineItem.modeOfDelivery = node.mode_of_delivery;
                             lineItem.destinationLocation = node.location;
                             lineItem.alreadySaved = true;
@@ -172,7 +174,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
                             $scope.distributionPlanItems.push(lineItem);
                         });
-
                         quantityLeft = quantityLeft - parseInt(lineItem.targetQuantity);
                         itemCounter++;
                         $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
@@ -186,9 +187,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             setDatePickers();
         });
 
-    }).directive('searchContacts', function(ContactService, $timeout) {
+    }).directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
-            return data.map(function(contact) {
+            return data.map(function (contact) {
                 return {
                     id: contact._id,
                     text: contact.firstName + ' ' + contact.lastName
@@ -200,24 +201,24 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             restrict: 'A',
             scope: true,
             require: 'ngModel',
-            link: function(scope, element, _, ngModel) {
+            link: function (scope, element, _, ngModel) {
 
                 element.select2({
                     minimumInputLength: 1,
                     width: '150px',
-                    query: function(query) {
+                    query: function (query) {
                         var data = {results: []};
-                        ContactService.getContactsBySearchQuery(query.term).then(function(foundContacts) {
+                        ContactService.getContactsBySearchQuery(query.term).then(function (foundContacts) {
                             data.results = formatResponse(foundContacts);
                             query.callback(data);
                         });
                     },
-                    initSelection: function(element, callback) {
-                        $timeout(function() {
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
                             var modelValue = ngModel.$modelValue;
-                            if(modelValue) {
-                                ContactService.getContactById(modelValue).then(function(contact) {
-                                    if(contact._id) {
+                            if (modelValue) {
+                                ContactService.getContactById(modelValue).then(function (contact) {
+                                    if (contact._id) {
                                         callback({
                                             id: contact._id,
                                             text: contact.firstName + ' ' + contact.lastName
@@ -229,29 +230,29 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     }
                 });
 
-                element.change(function() {
+                element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
                 });
             }
         };
     })
-    .directive('searchFromList', function($timeout) {
+    .directive('searchFromList', function ($timeout) {
         return {
             restrict: 'A',
             scope: false,
             require: 'ngModel',
-            link: function(scope, element, attrs, ngModel) {
+            link: function (scope, element, attrs, ngModel) {
                 var list = JSON.parse(attrs.list);
 
                 element.select2({
                     width: '100%',
-                    query: function(query) {
+                    query: function (query) {
                         var data = {results: []};
-                        var matches = list.filter(function(item) {
+                        var matches = list.filter(function (item) {
                             return item.name.toLowerCase().indexOf(query.term.toLowerCase()) >= 0;
                         });
-                        data.results = matches.map(function(match) {
+                        data.results = matches.map(function (match) {
                             return {
                                 id: match.id,
                                 text: match.name
@@ -259,19 +260,19 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         });
                         query.callback(data);
                     },
-                    initSelection: function(element, callback) {
-                        $timeout(function() {
-                            var matchingItem = list.filter(function(item) {
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
+                            var matchingItem = list.filter(function (item) {
                                 return item.id === ngModel.$modelValue;
                             })[0];
-                            if(matchingItem) {
+                            if (matchingItem) {
                                 callback({id: matchingItem.id, text: matchingItem.name});
                             }
                         });
                     }
                 });
 
-                element.change(function() {
+                element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
                 });
