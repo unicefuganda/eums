@@ -74,6 +74,16 @@ module.exports = function (grunt) {
             }
         },
 
+        watchify: {
+            options: {
+                keepalive: true
+            },
+            example: {
+                src: ['./app/scripts/**/*.js'],
+                dest: 'dist/app.min.js'
+            }
+        },
+
         less: {
             compile: {
                 options: {
@@ -237,6 +247,10 @@ module.exports = function (grunt) {
         'connect:test',
         'ngconstant:dev',
         'karma'
+    ]);
+
+    grunt.registerTask('watch', [
+        'watchify:example'
     ]);
 
     grunt.registerTask('build', [

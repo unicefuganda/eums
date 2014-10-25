@@ -25,7 +25,8 @@
     "lodash": "^2.4.1",
     "ng-sanitize": "0.0.2",
     "selenium-standalone": "~2.43.1-2.9.0",
-    "time-grunt": "^0.3.1"
+    "time-grunt": "^0.3.1",
+    "grunt-watchify": "~0.1.0"
   },
   "engines": {
     "node": ">=0.10.0"
