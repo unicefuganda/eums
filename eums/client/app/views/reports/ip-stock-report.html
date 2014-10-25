@@ -39,10 +39,10 @@
                                 TOTALS
                             </span>
                         </td>
-                        <td>{{ selectedIP.totalReceived | number }}</td>
-                        <td>{{ selectedIP.totalDispensed | number }}</td>
+                        <td style="font-weight: bold;">{{ selectedIP.totalReceived | number }}</td>
+                        <td style="font-weight: bold;">{{ selectedIP.totalDispensed | number }}</td>
                         <td>
-                            <span class="badge" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
+                            <span class="badge" style="font-weight: bold;" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
                                 {{ selectedIP.balance | number }}
                             </span>
                         </td>
