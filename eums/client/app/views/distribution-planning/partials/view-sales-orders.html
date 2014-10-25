@@ -15,7 +15,7 @@
     <span class="well-sm"></span>
 
     <div class="table-wrapper">
-        <table class="table table-bordered table-hover table-striped table-condensed">
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 20%">
@@ -48,6 +48,13 @@
                 </td>
             </tr>
             </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <si-table-pagination limit="15" indices="3"/>
+                </td>
+            </tr>
+            </tfoot>
                 <span class="information message"
                       ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
                 There are no matches to your search criteria.

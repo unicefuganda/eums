@@ -1,8 +1,10 @@
 <div class="container-fluid">
     <div class="content">
         <ul class="nav nav-pills" style="margin-top: 30px; margin-bottom: 20px">
-            <li ng-class="{active: currentDocumentType === 'PO'}" ng-click="toggleDocumentType('PO')"><a href="">Purchase Orders</a></li>
-            <li ng-class="{active: currentDocumentType === 'WB'}" ng-click="toggleDocumentType('WB')"><a href="">Waybills</a></li>
+            <li ng-class="{active: currentDocumentType === 'PO'}" ng-click="toggleDocumentType('PO')"><a href="">Purchase
+                Orders</a></li>
+            <li ng-class="{active: currentDocumentType === 'WB'}" ng-click="toggleDocumentType('WB')"><a href="">Waybills</a>
+            </li>
         </ul>
         <div class="panel panel-default line-order-panel">
             <div class="row">
@@ -21,7 +23,7 @@
             <span class="well-sm"></span>
 
             <div class="table-wrapper">
-                <table class="table table-bordered table-hover table-striped table-condensed">
+                <table si-table class="table table-bordered table-hover table-striped table-condensed">
                     <thead ng-init="initialize()">
                     <tr>
                         <th style="width: 20%">
@@ -56,6 +58,13 @@
                         </td>
                     </tr>
                     </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="15" indices="3"/>
+                        </td>
+                    </tr>
+                    </tfoot>
                 <span class="information message alert-info"
                       ng-show="documents.length > 0 && (documents | documentFilter: query).length == 0">
                 There are no matches to your search criteria.
