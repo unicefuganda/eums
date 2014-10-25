@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip'])
-    .controller('NewDistributionPlanController', function ($scope, DistributionPlanParameters, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, $q, SalesOrderService, $routeParams, IPService) {
+    .controller('NewDistributionPlanController', function ($scope, SalesOrderItemService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, $q, SalesOrderService, $routeParams, IPService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
@@ -149,7 +149,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 var itemCounter = 0;
                 var quantityLeft = parseInt($scope.selectedSalesOrderItem.quantity);
 
-                //TODO Clean this up. Get fully populated objects from endpoint
                 distributionPlanLineItems.forEach(function (lineItemId) {
                     DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
                         lineItem.quantity = quantityLeft.toString();

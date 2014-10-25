@@ -2,7 +2,7 @@
 
 
 angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, DistributionPlanParameters, ProgrammeService, SalesOrderService, $sorter) {
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, ProgrammeService, SalesOrderService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.contact = {};
@@ -179,18 +179,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             }
         };
-    }).
-    factory('DistributionPlanParameters', function () {
-        var distributionPlanParameters = {};
-        return{
-            saveVariable: function (key, value) {
-                distributionPlanParameters[key] = value;
-            },
-            retrieveVariable: function (key) {
-                return distributionPlanParameters[key];
-            }
-        };
-    }).directive('ordersTable', [function () {
+    })
+    .directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',
             restrict: 'E',

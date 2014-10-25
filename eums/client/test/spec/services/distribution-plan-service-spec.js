@@ -164,25 +164,6 @@ describe('Distribution Plan Service', function () {
 });
 
 
-describe('Distribution Plan Parameters Service', function () {
-    var distributionPlanParameterService;
-
-    beforeEach(function () {
-        module('DistributionPlan');
-
-        inject(function (DistributionPlanParameters) {
-            distributionPlanParameterService = DistributionPlanParameters;
-        });
-    });
-
-    it('should save and retrieve parameters based on key-value', function () {
-        var key = 'salesOrders';
-        var value = ['1', '2'];
-        distributionPlanParameterService.saveVariable(key, value);
-        expect(value).toEqual(distributionPlanParameterService.retrieveVariable(key));
-    });
-});
-
 describe('UNICEF IP', function () {
     var planId = 1, planNodeOne = 3, planNodeTwo = 4, planNodeThree = 2;
     var stubDistributionPlanNodes = [

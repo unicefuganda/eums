@@ -1,6 +1,6 @@
 describe('DistributionPlanController', function () {
 
-    var scope, sorter, filter, mockDistributionPlanParametersService;
+    var scope, sorter, filter;
     var location, distPlanEndpointUrl;
     var mockContactService, mockPlanService, mockProgrammeService, mockSalesOrderService;
     var deferred, deferredPlan, deferredSalesOrder;
@@ -33,7 +33,6 @@ describe('DistributionPlanController', function () {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails', 'getSalesOrders']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme', 'fetchProgrammes']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrders']);
-        mockDistributionPlanParametersService = jasmine.createSpyObj('mockDistributionPlanParametersService', ['retrieveVariable', 'saveVariable']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -59,7 +58,6 @@ describe('DistributionPlanController', function () {
                     DistributionPlanService: mockPlanService,
                     ProgrammeService: mockProgrammeService,
                     SalesOrderService: mockSalesOrderService,
-                    DistributionPlanParameters: mockDistributionPlanParametersService,
                     $sorter: sorter,
                     $filter: filter,
                     $location: location});
