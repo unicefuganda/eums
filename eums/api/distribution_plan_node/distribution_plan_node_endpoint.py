@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
@@ -15,7 +16,8 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
 class DistributionPlanNodeViewSet(ModelViewSet):
     queryset = DistributionPlanNode.objects.all()
     serializer_class = DistributionPlanNodeSerialiser
-
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('consignee__type',)
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)

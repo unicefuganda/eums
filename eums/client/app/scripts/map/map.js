@@ -269,11 +269,11 @@
 
                     DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
                         ips.map(function (ip) {
-                            ip.consignees().then(function (consigneesResponses) {
-                                consigneesResponses.map(function (consigneesResponse) {
-                                    var consigneeCoordinates = map.getRandomCoordinates(consigneesResponse.data.location.toLowerCase());
-                                    DistributionPlanService.getConsigneeDetails(consigneesResponse.data.id).then(function (response) {
-                                        var markerData = response.data;
+                            ip.consignees.then(function (consignees) {
+                                consignees.map(function (consignee) {
+                                    consignee.answers.then(function (answers) {
+                                        var consigneeCoordinates = map.getRandomCoordinates(consignee.consignee.location.toLowerCase());
+                                        var markerData = answers;
                                         var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
                                         var consigneeResponse = markerData[0];
                                         consigneeResponse && map.addMarker(marker) && scope.allMarkers.push({marker: marker, consigneeResponse: markerData});
@@ -282,9 +282,6 @@
                             });
                         });
                     });
-                    scope.$watch('params.location', function (newLocation) {
-                        newLocation && MapService.clickLayer(newLocation.district);
-                    }, true);
                 });
             }
         }

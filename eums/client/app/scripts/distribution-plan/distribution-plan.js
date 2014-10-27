@@ -35,7 +35,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
-            $location.path('/distribution-plan/new/'+ selectedSalesOrder.id);
+            $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
         };
 
         $scope.showDistributionPlan = function (planId) {
@@ -118,27 +118,43 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             getConsigneeDetails: function (consigneeId) {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/');
             },
-            mapUnicefIpsWithConsignees: function () {
-                var allNodePromises = this.getAllPlansNodes();
-                var parentNodePromises = allNodePromises.then(function (planNodes) {
-                    return planNodes.filter(function (node) {
-                        return !node.parent;
-                    });
+            getAllConsigneeResponses: function () {
+                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
+            },
+            getImplementingPartners: function () {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=implementing_partner');
+            },
+            getMiddleMen: function () {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=middle_man').then(function(response){
+                    return response.data;
                 });
-
-                return parentNodePromises.then(function (parentNodes) {
-                    return parentNodes.map(function (parentNode) {
+            },
+            mapUnicefIpsWithConsignees: function () {
+                var self = this;
+                return self.getImplementingPartners().then(function (response) {
+                    var ipsPromises = response.data.map(function (ipNode) {
                         return {
-                            ip: parentNode,
-                            consignees: function () {
-                                return  allNodePromises.then(function (planNodes) {
-                                    return planNodes.filter(function (node) {
-                                        return node.parent === parentNode.id;
+                            ip: ipNode,
+                            consignees: self.getMiddleMen().then(function (response) {
+                                var consigneePromises = response.filter(function (childNode) {
+                                    return childNode.parent === ipNode.id;
+                                });
+                                return $q.all(consigneePromises).then(function (consignees) {
+                                    return consignees.map(function (consignee) {
+                                        return {
+                                            consignee: consignee,
+                                            answers: $q.all(self.getAllConsigneeResponses().then(function (response) {
+                                                return response.data.filter(function (answer) {
+                                                    return answer.node === consignee.id;
+                                                });
+                                            }))
+                                        };
                                     });
                                 });
-                            }
+                            })
                         };
                     });
+                    return $q.all(ipsPromises);
                 });
             },
             getNodesBy: function (ipId) {
