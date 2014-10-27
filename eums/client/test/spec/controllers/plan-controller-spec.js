@@ -3,7 +3,7 @@ describe('NewDistributionPlanController', function () {
     beforeEach(module('NewDistributionPlan'));
     var scope, mockNodeService, mockIPService, mockPlanService, deferred, deferredPlan, deferredDistrictPromise,
         mockSalesOrderService, getSalesOrderPromise, mockSalesOrderItemService, mockLineItemService, deferredPlanNode,
-        mockConsigneeService, q;
+        mockConsigneeService, q, mockToastProvider;
 
     var orderNumber = '00001';
     var plainDistricts = ['Abim', 'Gulu'];
@@ -93,6 +93,7 @@ describe('NewDistributionPlanController', function () {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['createPlan']);
+        mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $q) {
             q = $q;
@@ -123,7 +124,8 @@ describe('NewDistributionPlanController', function () {
                     ConsigneeService: mockConsigneeService,
                     SalesOrderService: mockSalesOrderService,
                     $routeParams: {salesOrderId: 1},
-                    IPService: mockIPService
+                    IPService: mockIPService,
+                    ngToast: mockToastProvider
                 });
         });
     });
@@ -318,6 +320,15 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
         });
 
+        describe('and the plan is successfully saved, ', function() {
+            it('a toast confirming the save action should be created', function() {
+                scope.saveDistributionPlanItems();
+                scope.$apply();
+
+                expect(mockToastProvider.create).toHaveBeenCalledWith('Plan Saved!');
+            });
+        });
+
         describe('and a plan for the sales order item has not been saved, ', function () {
             it('a distribution plan should be created', function () {
                 scope.saveDistributionPlanItems();
@@ -468,8 +479,6 @@ describe('NewDistributionPlanController', function () {
                         planned_distribution_date: uiPlanItem.plannedDistributionDate,
                         remark: uiPlanItem.remark
                     });
-
-
                 });
             });
         });
