@@ -4,6 +4,15 @@ from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrde
 from datetime import datetime
 
 
+def _clean_input(value):
+    if type(value) == int:
+        return value
+    elif type(value) == str:
+        return value.encode("'utf8'")
+    else:
+        return value
+
+
 class Facade():
     RELEVANT_DATA = {}
 
@@ -18,19 +27,19 @@ class Facade():
 
     def load_order_data(self):
         view = View(self.location)
-
         return self._convert_view_to_list_of_dicts(view[0][1:, :], self.RELEVANT_DATA)
 
     def save_order_data(self, orders):
         for order in orders:
             self._create_order_from_dict(order)
 
+
     @classmethod
     def _filter_relevant_data(cls, relevant_data, row):
         item_dict = {}
         for col_index, value in enumerate(row):
             if relevant_data.get(col_index):
-                item_dict[relevant_data.get(col_index)] = str(value)
+                item_dict[relevant_data.get(col_index)] = _clean_input(value)
 
         return item_dict
 
@@ -40,6 +49,7 @@ class Facade():
             if order.get(label) == number:
                 return index
         return -1
+
 
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         order_list = []
@@ -76,19 +86,22 @@ class Facade():
 
 class SalesOrderFacade(Facade):
     RELEVANT_DATA = {
-        0: 'order_number', 1: 'material_code', 3: 'quantity', 6: 'date', 7: 'issue_date', 8: 'delivery_date',
-        4: 'net_price', 5: 'net_value', 9: 'programme_name'
+        0: 'order_number', 1: 'material_code', 2: 'item_description', 3: 'quantity', 6: 'date', 7: 'issue_date',
+        8: 'delivery_date', 4: 'net_price', 5: 'net_value', 9: 'programme_name'
     }
 
     def _create_new_item(self, item, order):
         order_item = SalesOrderItem()
         order_item.sales_order = order
-        order_item.item = Item.objects.get(material_code=item['material_code'])
-        order_item.quantity = float(item['quantity'].replace(',', ''))
-        order_item.issue_date = item['issue_date']
-        order_item.delivery_date = item['delivery_date']
-        order_item.net_price = float(item['net_price'].replace(',', ''))
-        order_item.net_value = float(item['net_value'].replace(',', ''))
+        sales_order_item, created = Item.objects.get_or_create(material_code=item['material_code'],
+                                                               description=item['item_description'])
+        order_item.item = sales_order_item
+        order_item.description = item['item_description']
+        order_item.quantity = item['quantity']
+        order_item.issue_date = item['issue_date'].date()
+        order_item.delivery_date = item['delivery_date'].date()
+        order_item.net_price = item['net_price']
+        order_item.net_value = item['net_value']
         order_item.save()
 
     def _append_new_order(self, item_dict, order_list, order_number):
@@ -99,8 +112,9 @@ class SalesOrderFacade(Facade):
     def _create_new_order(self, order):
         new_order = SalesOrder()
         new_order.order_number = order['order_number']
-        new_order.date = order['items'][0]['issue_date']
-        new_order.programme = Programme.objects.get_or_create(name=order['programme_name'])
+        new_order.date = order['items'][0]['issue_date'].date()
+        programme, created = Programme.objects.get_or_create(name=order['programme_name'])
+        new_order.programme = programme
         new_order.save()
         return new_order
 
@@ -136,3 +150,5 @@ class ReleaseOrderFacade(Facade):
         order_list.append({'sales_order': sales_order, 'order_number': order_number, 'consignee': consignee,
                            'recommended_delivery_date': recommended_delivery_date, 'waybill': waybill,
                            'items': [item_dict]})
+
+

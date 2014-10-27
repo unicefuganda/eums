@@ -1,5 +1,6 @@
 from unittest import TestCase
 import os
+import datetime
 
 from django.contrib.auth.models import User
 from mock import patch, MagicMock
@@ -21,22 +22,21 @@ class TestSalesOrdersVisionFacade(TestCase):
         work_book = Workbook()
         sheet = work_book.add_sheet('Sheet 1')
 
-        self.header = ['Sales Document Type', 'Sales Document', 'Sold-to party', 'Shipping Point/Receiving Pt',
-                       'Status', 'Created by', 'Item (SD)', 'Material', 'Order Quantity', 'Confirmed Quantity',
-                       'Created on', 'Goods Issue Date', 'Delivery Date', 'Purchase order no.', 'Pricing date',
-                       'Net price', 'Net Value', 'Schedule Line Number', 'Description', 'Programme']
+        self.header = ['order_number', 'material_code', 'material_description', 'quantity',
+                       'net_value', 'net_price', 'date', 'issue_date', 'delivery_date', 'programme_name']
 
-        self.first_row = ['ZCOM', '20155548', 'Z43801', '1500', 'Open', 'RNAULA', '10', 'SL004594', '224,000',
-                          '224,000', '2014/09/02', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
-                          '42,560.00', '2', 'Tally sheets printed on A4 Paper', 'ALIVE']
+        self.first_row = ['20150432', 'SL001894', 'Helmet', '4.00', '12.123', '2.0', datetime.datetime(2014, 2, 18),
+                          datetime.datetime(2014, 2, 18), datetime.datetime(2014, 2, 18), 'ALIVE']
 
-        self.second_row = ['ZCOM', '20155981', 'Z43801', '1500', 'Open', 'RNAULA', '10', 'SL006645', '224,000',
-                           '224,000', '2014/09/02', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
-                           '42,560.00', '2', 'Round Neck T-Shirts', 'ALIVE']
+        self.second_row = ['20152484', 'X0001', 'This is a desc', '4.00', '12.123', '2.0',
+                           datetime.datetime(2014, 2, 18),
+                           datetime.datetime(2014, 2, 18), datetime.datetime(2014, 2, 18),
+                           'Y108 - PCR 4 CROSS SECTORAL']
 
-        self.third_row = ['ZCOM', '20155981', 'Z43801', '1500', 'Open', 'RNAULA', '10', 'SL004594', '224,000',
-                          '224,000', '2014/09/02', '9/23/2014', '9/23/2014', 'Tally sheets', '9/2/2014', '0.19',
-                          '42,560.00', '2', 'Round Neck T-Shirts', 'ALIVE']
+        self.third_row = ['20150432', 'SL753725', 'TVs for Comms unit office', '4.00', '12.123', '2.0',
+                          datetime.datetime(2014, 2, 18), datetime.datetime(2014, 2, 18),
+                          datetime.datetime(2014, 2, 18),
+                          'YI107 - PCR 3 KEEP CHILDREN SAFE']
 
         for row_index, row in enumerate([self.header, self.first_row, self.second_row, self.third_row]):
             for col_index, item in enumerate(row):
@@ -55,25 +55,34 @@ class TestSalesOrdersVisionFacade(TestCase):
         User.objects.all().delete()
 
     def xtest_should_load_sales_order_data(self):
-        expected_data = [{'order_number': '20155548',
+
+        expected_data = [{'order_number': '20150432',
                           'programme_name': 'ALIVE',
-                          'items': [{'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014/09/02',
-                                     'issue_date': '9/23/2014', 'programme_name': 'ALIVE',
-                                     'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
-                                     'order_number': '20155548'}]},
-                         {'order_number': '20155981',
-                          'programme_name': 'ALIVE',
-                          'items': [{'material_code': 'SL006645', 'quantity': '224,000', 'date': '2014/09/02',
-                                     'issue_date': '9/23/2014',
-                                     'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
-                                     'programme_name': 'ALIVE', 'order_number': '20155981'},
-                                    {'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014/09/02',
-                                     'issue_date': '9/23/2014', 'programme_name': 'ALIVE',
-                                     'delivery_date': '9/23/2014', 'net_price': '0.19', 'net_value': '42,560.00',
-                                     'order_number': '20155981'}]}]
+                          'items': [
+                              {'issue_date': '2014-09-22 00:00:00', 'material_code': 'SL001894', 'net_price': '12.123',
+                               'programme_name': 'ALIVE',
+                               'item_description': 'Helmet',
+                               'delivery_date': '2014-09-22 00:00:00', 'date': '2014-09-22 00:00:00',
+                               'order_number': '20150432',
+                               'net_value': '2.0',
+                               'quantity': '4.00'},
+                              {'issue_date': '2014-09-22 00:00:00', 'material_code': 'SL753725', 'net_price': '12.123',
+                               'programme_name': 'YI107 - PCR 3 KEEP CHILDREN SAFE',
+                               'item_description': 'TVs for Comms unit office', 'delivery_date': '2014-09-22 00:00:00',
+                               'date': '2014-09-22 00:00:00', 'order_number': '20150432', 'net_value': '2.0',
+                               'quantity': '4.00'}], },
+
+                         {'order_number': '20152484',
+                          'programme_name': 'Y108 - PCR 4 CROSS SECTORAL',
+                          'items': [
+                              {'issue_date': '2014-09-22 00:00:00', 'material_code': 'X0001', 'net_price': '12.123',
+                               'programme_name': 'Y108 - PCR 4 CROSS SECTORAL',
+                               'item_description': 'This is a desc', 'delivery_date': '2014-09-22 00:00:00',
+                               'date': '2014-09-22 00:00:00', 'order_number': '20152484', 'net_value': '2.0',
+                               'quantity': '4.00'}],
+                         }]
 
         sales_order_data = self.facade.load_order_data()
-
         self.assertEqual(sales_order_data, expected_data)
 
     def xtest_should_save_sales_order_data(self):
@@ -85,20 +94,31 @@ class TestSalesOrdersVisionFacade(TestCase):
 
         sales_order_data = [{'order_number': '20155548',
                              'programme_name': 'ALIVE',
-                             'items': [{'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014-09-02',
-                                        'issue_date': '9/23/2014',
-                                        'delivery_date': '9/23/2014', 'net_price': '0.19', 'programme_name': 'ALIVE',
-                                        'net_value': '42,560.00', 'order_number': '20155548'}]},
+                             'items': [
+                                 {'material_code': 'SL004594', 'quantity': '224,000',
+                                  'date': datetime.datetime(2014, 2, 18),
+                                  'issue_date': datetime.datetime(2014, 2, 18),
+                                  'delivery_date': datetime.datetime(2014, 2, 18), 'net_price': '0.19',
+                                  'programme_name': 'ALIVE',
+                                  'item_description': 'Helmet',
+                                  'net_value': '42,560.00', 'order_number': '20155548'}]},
                             {'order_number': '20155981',
                              'programme_name': 'ALIVE',
-                             'items': [{'material_code': 'SL006645', 'quantity': '224,000', 'date': '2014-09-02',
-                                        'issue_date': '9/23/2014',
-                                        'delivery_date': '9/23/2014', 'net_price': '0.19', 'programme_name': 'ALIVE',
-                                        'net_value': '42,560.00', 'order_number': '20155981'},
-                                       {'material_code': 'SL004594', 'quantity': '224,000', 'date': '2014-09-02',
-                                        'issue_date': '9/23/2014',
-                                        'delivery_date': '9/23/2014', 'net_price': '0.19', 'programme_name': 'ALIVE',
-                                        'net_value': '42,560.00', 'order_number': '20155981'}]}]
+                             'items': [
+                                 {'material_code': 'SL006645', 'quantity': '224,000',
+                                  'date': datetime.datetime(2014, 2, 18),
+                                  'issue_date': datetime.datetime(2014, 2, 18),
+                                  'delivery_date': datetime.datetime(2014, 2, 18), 'net_price': '0.19',
+                                  'programme_name': 'ALIVE',
+                                  'item_description': 'This is a desc',
+                                  'net_value': '42,560.00', 'order_number': '20155981'},
+                                 {'material_code': 'SL004594', 'quantity': '224,000',
+                                  'date': datetime.datetime(2014, 2, 18),
+                                  'delivery_date': datetime.datetime(2014, 2, 18), 'net_price': '0.19',
+                                  'programme_name': 'ALIVE',
+                                  'issue_date': datetime.datetime(2014, 2, 18),
+                                  'item_description': 'TVs for Comms unit office',
+                                  'net_value': '42,560.00', 'order_number': '20155981'}]}]
 
         self.facade.save_order_data(sales_order_data)
 
@@ -108,8 +128,9 @@ class TestSalesOrdersVisionFacade(TestCase):
     def xtest_should_load_sales_orders_from_excel_and_save(self):
         self.assertEqual(SalesOrder.objects.count(), 0)
 
-        ItemFactory(material_code='SL004594')
-        ItemFactory(material_code='SL006645')
+        ItemFactory(material_code='SL001894')
+        ItemFactory(material_code='X0001')
+        ItemFactory(material_code='SL753725')
 
         self.facade.import_orders()
 
