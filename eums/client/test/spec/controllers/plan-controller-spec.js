@@ -207,7 +207,15 @@ describe('NewDistributionPlanController', function () {
             expect(scope.selectedSalesOrderItem).toEqual(expectedFormattedSalesOrderItem);
         });
 
-        it('should know distribution plan node service is called if line items exists', function () {
+        xit('should put a distribution plan on the scope if sales order item has associated distribution plan line items', function() {
+            deferred.resolve({distribution_plan_node: 1});
+            scope.selectedSalesOrderItem = {information: {distributionplanlineitem_set: ['1']}};
+            scope.$apply();
+
+            expect(scope.distributionPlan).toEqual({id: 1, programme: 1});
+        });
+
+        it('should get distribution plan nodes for line items if line items exist', function () {
             deferred.resolve({distribution_plan_node: 1});
             scope.selectedSalesOrderItem = {information: {distributionplanlineitem_set: ['1']}};
             scope.$apply();
@@ -226,7 +234,7 @@ describe('NewDistributionPlanController', function () {
             expect(mockLineItemService.getLineItem).toHaveBeenCalledWith(2);
         });
 
-        it('should get distribution plan items linked to the particular sales order item and put in the scope', function () {
+        it('should put the distribution plan items linked to the particular sales order item on the scope', function () {
             deferredPlanNode.resolve({
                 consignee: {
                     name: 'Save the Children'
@@ -247,7 +255,7 @@ describe('NewDistributionPlanController', function () {
             expect(scope.distributionPlanItems).toEqual([stubSalesOrderItem, stubSalesOrderItem]);
         });
 
-        it('should not get distribution plan items service linked to the particular sales order item with no line item set', function () {
+        it('should not get distribution plan line items if there are no ui line items', function () {
 
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItemNoDistributionPlanItems.information.item.description,
