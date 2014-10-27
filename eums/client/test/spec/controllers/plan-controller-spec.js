@@ -359,7 +359,7 @@ describe('NewDistributionPlanController', function () {
                 scope.saveDistributionPlanLineItems();
                 scope.$apply();
 
-                expect(scope.distributionPlan).toEqual(distributionPlan);
+                expect(scope.distributionPlan).toEqual(distributionPlan.id);
             });
         });
 
@@ -383,7 +383,7 @@ describe('NewDistributionPlanController', function () {
                     consignee: 1,
                     destinationLocation: 'Kampala',
                     contactPerson: '0489284',
-                    distributionPlan: {id: 1},
+                    distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
                     item: 1,

@@ -152,7 +152,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 consignee: uiPlanItem.consignee,
                 location: uiPlanItem.destinationLocation,
                 contact_person_id: uiPlanItem.contactPerson,
-                distribution_plan: $scope.distributionPlan.id,
+                distribution_plan: $scope.distributionPlan,
                 tree_position: 'MIDDLE_MAN',
                 mode_of_delivery: uiPlanItem.modeOfDelivery
             };
@@ -211,7 +211,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 DistributionPlanService
                     .createPlan({programme: $scope.selectedSalesOrder.programme.id})
                     .then(function (createdPlan) {
-                        $scope.distributionPlan = createdPlan;
+                        $scope.distributionPlan = createdPlan.id;
                         saveDistributionPlanLineItems().then(function () {
                             ngToast.create('Plan Saved!');
                         });
