@@ -46,8 +46,6 @@ describe('DistributionPlanController', function () {
             mockSalesOrderService.getSalesOrders.and.returnValue(deferredSalesOrder.promise);
 
             location = $location;
-
-
             scope = $rootScope.$new();
             sorter = $sorter;
             filter = $filter;

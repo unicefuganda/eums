@@ -37,7 +37,6 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                     var fillOutPromises = [];
                     fillOutPromises.push(fillOutContactPerson(planNode));
                     fillOutPromises.push(fillOutConsignee(planNode));
-
                     planNode.lineItems = [];
                     planNode.distributionplanlineitem_set.forEach(function(lineItemId) {
                         fillOutPromises.push(fillOutLineItem(lineItemId, planNode));

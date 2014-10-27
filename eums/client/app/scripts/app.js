@@ -13,6 +13,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
                 controller: 'DistributionPlanController'
             })
+            .when('/distribution-plan/new/:salesOrderId-:distributionPlanNodeId-:salesOrderItemId', {
+                templateUrl: '/static/app/views/distribution-planning/new.html',
+                controller: 'NewDistributionPlanController'
+            })
             .when('/distribution-plan/new/:salesOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController'
@@ -36,5 +40,4 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
             .otherwise({
                 redirectTo: '/'
             });
-
     });

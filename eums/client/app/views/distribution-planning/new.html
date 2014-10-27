@@ -16,7 +16,7 @@
         </div>
 
         <div class="row">
-            <div class="form-horizontal">
+            <div class="form-horizontal" ng-show="!planNode">
                 <div class="form-group col-lg-4">
                     <label for="select-sales-order" class="col-lg-4 control-label description-label">
                         Item Description:
@@ -63,7 +63,7 @@
         <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default"
              cg-busy="{promise: savePlanPromise, message: 'Saving Plan'}">
             <div class="panel-body">
-                <div ng-show="distributionPlanItems.length">
+                <div ng-show="distributionPlanLineItems.length">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover table-condensed">
                         <th id="input-available-quantity-header">Available Qty</th>
@@ -77,7 +77,7 @@
                         <th>Remark</th>
                         <th></th>
 
-                        <tr ng-repeat="item in distributionPlanItems">
+                        <tr ng-repeat="item in distributionPlanLineItems">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
@@ -129,7 +129,16 @@
                                        value="{{ item.remark }}">
                             </td>
                             <td>
-                                <button class="btn btn-primary" ng-show="item.alreadySaved">
+                                <div id="end-user-checkbox" class="checkbox-inline" ng-show="planNode">
+                                    <label>
+                                        <input type="checkbox"
+                                               ng-model="item.forEndUser">
+                                        End User
+                                    </label>
+                                </div>
+                                <button class="btn btn-primary"
+                                        ng-show="showSubConsigneeButton(item)"
+                                        ng-click="addSubConsignee(item)">
                                     Sub-Consignee
                                 </button>
                             </td>
@@ -141,12 +150,14 @@
             <div class="pad-20 row">
                 <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
                         type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()">
-                    <i class="glyphicon glyphicon-plus"> </i>Add Consignee
+                    <i class="glyphicon glyphicon-plus"> </i>
+                    Add Consignee
                 </button>
-                <div ng-show="distributionPlanItems.length" class="pull-right center-block">
+                <div ng-show="distributionPlanLineItems.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
-                            ng-click="saveDistributionPlanItems()">
-                        <i class="glyphicon glyphicon-floppy-save"> </i>Save
+                            ng-click="saveDistributionPlanLineItems()">
+                        <i class="glyphicon glyphicon-floppy-save"> </i>
+                        Save
                     </button>
                 </div>
             </div>
