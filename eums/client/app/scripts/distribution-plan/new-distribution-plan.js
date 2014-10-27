@@ -97,6 +97,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         function saveLineItem(nodeLineItem, nodeId) {
             var lineItemId = nodeLineItem.lineItemId;
+            var plannedDate = new Date(nodeLineItem.plannedDistributionDate);
+            nodeLineItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
 
             var lineItem = {
                 item: nodeLineItem.item,
@@ -160,7 +162,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         lineItem.targetQuantity = lineItem.targeted_quantity;
                         lineItem.lineItemId = lineItem.id;
                         lineItem.item = $scope.selectedSalesOrderItem.information.id;
-                        lineItem.plannedDistributionDate = lineItem.planned_distribution_date;
+
+                        var d = new Date(lineItem.planned_distribution_date);
+                        lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
 
                         DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function(node) {
                             lineItem.consignee = node.consignee.id;

@@ -90,7 +90,7 @@
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            ng-required="true"
-                                           value="{{ item.plannedDistributionDate }}"
+                                           value="{{ item.plannedDistributionDate | date : 'dd/MM/yyyy' }}"
                                            required="required"/>
                                   <span class="input-group-btn">
 
