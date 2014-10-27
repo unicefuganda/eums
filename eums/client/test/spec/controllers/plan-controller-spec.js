@@ -327,6 +327,13 @@ describe('NewDistributionPlanController', function () {
 
                 expect(mockToastProvider.create).toHaveBeenCalledWith('Plan Saved!');
             });
+
+            it('puts a promise on the scope to notify the ui that saving is done', function() {
+                scope.saveDistributionPlanItems();
+                scope.$apply();
+
+                expect(scope.savePlanPromise.then).toBeTruthy();
+            });
         });
 
         describe('and a plan for the sales order item has not been saved, ', function () {

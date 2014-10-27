@@ -127,7 +127,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     savePlanItemPromises.push(saveLineItem(item, createdNode.id));
                 });
             });
-            return $q.all(savePlanItemPromises);
+            var squashedSavePlanItemPromises = $q.all(savePlanItemPromises);
+            $scope.savePlanPromise = squashedSavePlanItemPromises;
+            return  squashedSavePlanItemPromises;
         }
 
         $scope.saveDistributionPlanItems = function() {

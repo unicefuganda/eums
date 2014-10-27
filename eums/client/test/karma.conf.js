@@ -18,6 +18,7 @@ module.exports = function (config) {
             'bower_components/angular-animate/angular-animate.min.js',
             'bower_components/angular-sanitize/angular-sanitize.min.js',
             'bower_components/ngtoast/dist/ngToast.min.js',
+            'bower_components/angular-busy/dist/angular-busy.min.js',
             'app/media/lodash.js',
             'app/scripts/**/*.js',
             'test/spec/**/*.js'
