@@ -10,7 +10,7 @@
         </h4>
 
         <div ng-show="selectedSalesOrderItem">
-            <alert ng-show="!selectedSalesOrderItem.quantityLeft > 0" type="danger">All quantities have been assigned
+            <alert ng-show="selectedSalesOrderItem.quantityLeft <= 0" type="danger">All quantities have been assigned
                 for this item.
             </alert>
         </div>
@@ -138,7 +138,7 @@
 
             </div>
             <div class="pad-20">
-                <button ng-show="distributionPlanItems[distributionPlanItems -1].quantity !== 0"
+                <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
                         type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()"><i
                         class="glyphicon glyphicon-plus"> </i>Add Consignee
                 </button>
