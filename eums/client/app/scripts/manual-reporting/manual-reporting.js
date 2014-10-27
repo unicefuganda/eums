@@ -126,6 +126,14 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
             $location.path('/distribution-reporting/details/');
         };
 
+        $scope.$watch('currentDocumentType', function(){
+             $scope.placeHolderText = 'Search by purchase order number, date or programme';
+           if($scope.currentDocumentType === 'WB'){
+               $scope.placeHolderText = 'Search by waybill number, date or programme';
+           }
+
+        });
+
         function setDatePickers(){
             $scope.datepicker = {};
             $scope.documentItemSelected.responses.forEach(function (item, index) {
