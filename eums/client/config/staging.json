@@ -1,5 +1,5 @@
 {
-    "CONTACT_SERVICE_URL": "http://stg.eums.unicefuganda.org/contacts/",
+    "CONTACT_SERVICE_URL": "http://stg.eum.unicefuganda.org/contacts/",
     "BACKEND_URLS": {
         "DISTRIBUTION_REPORT": "/api/distribution-report/",
         "DISTRIBUTION_PLAN": "/api/distribution-plan/",
