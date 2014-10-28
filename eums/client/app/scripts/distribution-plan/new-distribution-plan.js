@@ -220,7 +220,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.addSubConsignee = function (lineItem) {
-            $location.path('/distribution-plan/new/' + $scope.selectedSalesOrder.id + '-' + lineItem.nodeId + '-' + $scope.selectedSalesOrderItem.information.id);
+            $location.path('/delivery-report/new/' + $scope.selectedSalesOrder.id + '-' + lineItem.nodeId + '-' + $scope.selectedSalesOrderItem.information.id);
         };
 
         $scope.showSubConsigneeButton = function (item) {

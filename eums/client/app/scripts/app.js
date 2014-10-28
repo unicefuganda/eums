@@ -9,27 +9,27 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/home.html',
                 controller: 'HomeController'
             })
-            .when('/distribution-planning', {
+            .when('/delivery-reports', {
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
                 controller: 'DistributionPlanController'
             })
-            .when('/distribution-plan/new/:salesOrderId-:distributionPlanNodeId-:salesOrderItemId', {
+            .when('/delivery-report/new/:salesOrderId-:distributionPlanNodeId-:salesOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController'
             })
-            .when('/distribution-plan/new/:salesOrderId', {
+            .when('/delivery-report/new/:salesOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController'
             })
-            .when('/distribution-plan/proceed/', {
+            .when('/delivery-report/proceed/', {
                 templateUrl: '/static/app/views/distribution-planning/select-items.html',
                 controller: 'NewDistributionPlanController'
             })
-            .when('/distribution-reporting', {
+            .when('/spot-check-reports', {
                 templateUrl: '/static/app/views/distribution-reporting/distribution-reporting.html',
                 controller: 'ManualReportingController'
             })
-            .when('/distribution-reporting/details', {
+            .when('/spot-check-report/details', {
                 templateUrl: '/static/app/views/distribution-reporting/details.html',
                 controller: 'ManualReportingController'
             })

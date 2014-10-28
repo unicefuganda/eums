@@ -123,7 +123,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
                     ]}
                 ]};
             DistributionReportingParameters.saveVariable('selectedPurchaseOrder', orderDetails);
-            $location.path('/distribution-reporting/details/');
+            $location.path('/spot-check-report/details/');
         };
 
         $scope.$watch('currentDocumentType', function(){

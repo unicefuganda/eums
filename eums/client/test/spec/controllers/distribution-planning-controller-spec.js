@@ -130,7 +130,7 @@ describe('DistributionPlanController', function () {
             deferredSalesOrder.resolve(salesOrderOne);
             scope.selectSalesOrder(salesOrderOne);
             scope.$apply();
-            expect(location.path()).toEqual('/distribution-plan/new/1');
+            expect(location.path()).toEqual('/delivery-report/new/1');
         });
     });
 

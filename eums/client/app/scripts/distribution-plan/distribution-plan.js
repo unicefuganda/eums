@@ -35,7 +35,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         };
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
-            $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
+            $location.path('/delivery-report/new/' + selectedSalesOrder.id);
         };
 
         $scope.showDistributionPlan = function (planId) {
