@@ -6,6 +6,7 @@ angular.module('Home', ['GlobalStats'])
         $scope.datepicker = {from: false, to: false};
         $scope.clickedMarker = '';
         $scope.allMarkers = [];
+        $scope.ip = '';
         $scope.shownMarkers = [];
         $scope.programme = '';
         $scope.notDeliveredChecked = false;

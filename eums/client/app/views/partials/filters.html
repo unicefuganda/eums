@@ -9,6 +9,9 @@
         <input select-i-p name="" type="text" id="select-ip" ng-model="ip"
                placeholder="All Implementing Partners"/>
     </div>
+    <p>
+        <label>Filter by delivery status</label>
+    </p>
 
     <div delivery-status>
         <div class="checkbox">
@@ -34,6 +37,7 @@
     <p>
         <label>Period Filter</label>
     </p>
+
     <div date-range-filter>
         <p class="input-group">
             <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
@@ -63,7 +67,8 @@
     </div>
 
     <div class="form-group">
-        <button id="filter-clear" class="btn btn-sm btn-primary btn-block" ng-click="clearFilters()">Clear Filters</button>
+        <button id="filter-clear" class="btn btn-sm btn-primary btn-block" ng-click="clearFilters()">Clear Filters
+        </button>
     </div>
 </form>
 

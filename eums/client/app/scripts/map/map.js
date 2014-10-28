@@ -25,7 +25,7 @@
 
         var marker = L.marker(center, {icon: markerIcon()});
 
-        marker.nodeId = data.id;
+        marker.nodeId = data[0].consignee.id;
 
         var assignClickedMarkerData = function () {
             scope.$apply(function () {
@@ -133,7 +133,7 @@
     });
 
 
-    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q) {
+    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q, MapFilterService) {
         var map;
 
         function initMap(elementId) {
@@ -185,18 +185,25 @@
             getCenter: function () {
                 return map.getCenter();
             },
+            addAllMarkers: function () {
+                var markers = [];
+                MapFilterService.getAllMarkerMaps().forEach(function (markerMap) {
+                    markers.push(markerMap.marker);
+                });
+                console.log(L.LayerGroup(markers));
+                return L.LayerGroup(markers)
+                    .addTo(map);
+            },
             addMarker: function (marker) {
                 return addIPMarker(marker);
             },
             removeMarker: function (marker) {
                 map.removeLayer(marker);
             },
-            clearAllMarkers: function (scope) {
-                var self = this,
-                    allMarkers = scope.allMarkers;
-
-                allMarkers && allMarkers.forEach(function (markerNodeMap) {
-                    self.removeMarker(markerNodeMap.marker);
+            clearAllMarkers: function () {
+                var self = this;
+                MapFilterService.getAllMarkerMaps().forEach(function (markerMap) {
+                    self.removeMarker(markerMap.marker);
                 });
             },
 
@@ -253,7 +260,7 @@
         };
     });
 
-    module.directive('map', function (MapService, $window, IPService, DistributionPlanService, $q, $timeout) {
+    module.directive('map', function (MapService, $window, IPService, DistributionPlanService, MapFilterService) {
         return {
             scope: true,
             link: function (scope, element, attrs) {
@@ -274,14 +281,18 @@
                                     consignee.answers.then(function (answers) {
                                         var consigneeCoordinates = map.getRandomCoordinates(consignee.consignee.location.toLowerCase());
                                         var markerData = answers;
-                                        var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
-                                        var consigneeResponse = markerData[0];
-                                        consigneeResponse && map.addMarker(marker) && scope.allMarkers.push({marker: marker, consigneeResponse: markerData});
+                                        if (answers.length) {
+                                            var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
+                                            map.addMarker(marker) && scope.allMarkers.push({marker: marker, consigneeResponse: markerData});
+                                            MapFilterService.setMapMarker({marker: marker, consigneeResponse: markerData});
+                                        }
                                     });
                                 });
                             });
                         });
                     });
+
+
                 });
             }
         }
@@ -332,11 +343,12 @@
             scope: true,
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
-    }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService) {
+    }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService, MapFilterService) {
             return {
                 restrict: 'A',
                 scope: true,
                 link: function (scope, elem) {
+
                     scope.shownMarkers = [];
                     ProgrammeService.fetchProgrammes().then(function (response) {
                         return response.data.map(function (programe) {
@@ -352,41 +364,18 @@
                         });
                     });
 
+                    scope.$watchCollection('[programme, ip]', function (filters) {
+                        if (filters[0]) {
+                            MapService.clearAllMarkers();
+                            MapFilterService.filterMarkersByProgramme(filters[0]).then(function (markerMaps) {
+                                markerMaps.forEach(function (markerNodeMap) {
+                                    markerNodeMap && MapService.addMarker(markerNodeMap.marker);
+                                });
+                            });
+                            scope.updateTotalStats({programme: filters});
+                        }
+                        if(filters[1]){
 
-                    function addSelectedMarker(node) {
-                        scope.shownMarkers = [];
-                        scope.allMarkers.forEach(function (markerNodeMap) {
-                            if (markerNodeMap.consigneeResponse[0].node == node.data.id) {
-                                scope.shownMarkers.push(markerNodeMap);
-                                MapService.addMarker(markerNodeMap.marker);
-                            }
-                        });
-                    }
-
-                    scope.$watch('programme', function (newProgramme) {
-                        if (newProgramme == '') {
-                            MapService.addMarkers(scope);
-                        } else {
-                            FilterService.getDistributionPlansBy(newProgramme).then(function (selectedProgramsPlans) {
-                                    var selectedPlanNodes = selectedProgramsPlans.map(function (plan) {
-                                        return DistributionPlanService.getNodes(plan)
-                                    });
-
-                                    var noneEmptyNodes = function (filteredNodes) {
-                                        return filteredNodes.filter(function (nodes) {
-                                            return nodes.length > 0;
-                                        });
-                                    };
-                                    $q.all(selectedPlanNodes).then(function (filteredNodes) {
-                                        MapService.clearAllMarkers(scope);
-                                        var nonempty = noneEmptyNodes(filteredNodes)[0];
-                                        nonempty && nonempty.map(function (node) {
-                                            addSelectedMarker(node);
-                                        });
-                                    });
-                                }
-                            );
-                            scope.updateTotalStats({programme: newProgramme});
                         }
                     });
                 }
@@ -589,4 +578,4 @@
         });
 
 })
-(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan', 'DatePicker']));
+(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan', 'DatePicker', 'eums.mapFilter']));
