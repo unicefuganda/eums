@@ -10,7 +10,7 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
         function filterMarker(node, allMarkers) {
             var filteredMarkers = [];
             allMarkers.forEach(function (markerNodeMap) {
-                if (markerNodeMap.consigneeResponse[0].node == node.data.id) {
+                if (markerNodeMap.consigneeResponse[0].node === node.data.id) {
                     filteredMarkers.push(markerNodeMap);
                 }
             });
@@ -27,7 +27,7 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
 
                     var filteredMarkers = $q.all(nodesSelected).then(function (nodes) {
                         return noneEmptyNodes(nodes).map(function (node) {
-                            return filterMarker(node[0], self.getAllMarkerMaps())
+                            return filterMarker(node[0], self.getAllMarkerMaps());
                         });
                     });
 
@@ -39,15 +39,21 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
             filterMarkersByIp: function (ip) {
                 var self = this;
                 return DistributionPlanService.getNodesBy(ip).then(function (data) {
-                    return data.map(function (node) {
+                    var markers = data.map(function (node) {
                         return self.getAllMarkerMaps().map(function (markerMap) {
-                            return markerMap.consigneeResponse[0].node == node.data.id
+                            if(markerMap.consigneeResponse[0].node === node.data.id){
+                                return markerMap;
+                            }
                         });
+                    });
+
+                    return _.remove(_.flatten(markers), function(marker){
+                        return marker;
                     });
                 });
             },
             setMapMarker: function (marker) {
-                allMarkers.push(marker)
+                allMarkers.push(marker);
             },
             getAllMarkerMaps: function () {
                 return allMarkers;

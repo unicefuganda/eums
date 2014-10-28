@@ -346,7 +346,7 @@
     }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService, MapFilterService) {
             return {
                 restrict: 'A',
-                scope: true,
+                scope: false,
                 link: function (scope, elem) {
 
                     scope.shownMarkers = [];
@@ -365,18 +365,22 @@
                     });
 
                     scope.$watchCollection('[programme, ip]', function (filters) {
+                         MapService.clearAllMarkers();
                         if (filters[0]) {
-                            MapService.clearAllMarkers();
                             MapFilterService.filterMarkersByProgramme(filters[0]).then(function (markerMaps) {
                                 markerMaps.forEach(function (markerNodeMap) {
                                     markerNodeMap && MapService.addMarker(markerNodeMap.marker);
                                 });
                             });
-                            scope.updateTotalStats({programme: filters});
                         }
-                        if(filters[1]){
-
+                        if (filters[1]) {
+                            MapFilterService.filterMarkersByIp(filters[1]).then(function (markerMaps) {
+                                markerMaps.forEach(function (markerNodeMap) {
+                                    markerNodeMap && MapService.addMarker(markerNodeMap.marker);
+                                });
+                            });
                         }
+                        scope.updateTotalStats && scope.updateTotalStats({programme: filters, consignee: filters[1]});
                     });
                 }
             }
@@ -407,34 +411,6 @@
                             data: defaultIP.concat(data)
                         });
                     });
-
-                    scope.$watch('ip', function (selectedIp) {
-                        if (selectedIp === '') {
-                            MapService.addMarkers(scope);
-                        } else {
-                            var newShownMarkers = [];
-                            var shownMarkers = scope.shownMarkers;
-
-                            if (shownMarkers.length === 0) {
-                                shownMarkers = scope.allMarkers;
-                            }
-
-                            DistributionPlanService.getNodesBy(selectedIp).then(function (data) {
-                                MapService.clearAllMarkers(scope);
-                                data.map(function (node) {
-                                    shownMarkers && shownMarkers.forEach(function (markerMap) {
-                                        if (markerMap.consigneeResponse[0].node == node.data.id) {
-                                            MapService.addMarker(markerMap.marker);
-                                            newShownMarkers.push(markerMap);
-                                        }
-                                    });
-                                });
-                                scope.shownMarkers = newShownMarkers;
-                            });
-                            scope.updateTotalStats && scope.updateTotalStats({consignee: selectedIp});
-                        }
-                    });
-
                 }
             }
         }).directive('deliveryStatus', function (MapService) {
