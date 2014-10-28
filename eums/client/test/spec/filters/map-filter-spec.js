@@ -147,11 +147,8 @@ describe('Map Filter Service', function () {
             mapFilterService.setMapMarker(markerMapOne);
             mapFilterService.setMapMarker(markerMapTwo);
             var ip = 1;
-            deferredNodes.resolve([
-                {data: distributionPlanNodeOne},
-                {data: distributionPlanTwo},
-                {data: distributionPlanThree}
-            ]);
+
+            deferredNodes.resolve([{data: distributionPlanNodeOne}]);
             mapFilterService.filterMarkersByIp(ip).then(function (markers) {
                 expect(markers).toEqual([markerMapOne]);
                 done();
