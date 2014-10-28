@@ -236,4 +236,38 @@ describe('NewDistributionPlanController', function () {
             expect(scope.placeHolderText).toEqual(expectedPlaceHolderMessage);
         });
     });
+
+    describe('when save responses', function () {
+        it('should set the scope variable to true', function () {
+            scope.saveResponses();
+            scope.$apply();
+            expect(scope.reportSaved).toBeTruthy();
+        });
+    });
+
+    describe('when add responses', function () {
+        it('should have document selected with default values', function () {
+            var expectedResponse = {responses: [
+                {
+                    received: '',
+                    quantity: '',
+                    consignee: '',
+                    dateReceived: '',
+                    quality: '',
+                    location: ''
+                }
+            ]};
+            scope.documentItemSelected = {responses: []};
+            scope.addResponse();
+            scope.$apply();
+            expect(scope.documentItemSelected).toEqual(expectedResponse);
+        });
+
+        it('should set the date picker', function () {
+            scope.documentItemSelected = {responses: []};
+            scope.addResponse();
+            scope.$apply();
+            expect(scope.datepicker).toEqual({0: false});
+        });
+    });
 });
