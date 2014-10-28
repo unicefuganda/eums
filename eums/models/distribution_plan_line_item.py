@@ -8,7 +8,7 @@ class DistributionPlanLineItem(models.Model):
     item = models.ForeignKey(SalesOrderItem)
     targeted_quantity = models.IntegerField()
     planned_distribution_date = models.DateField()
-    remark = models.TextField()
+    remark = models.TextField(blank=True, null=True)
     distribution_plan_node = models.ForeignKey(DistributionPlanNode)
 
     class Meta:
