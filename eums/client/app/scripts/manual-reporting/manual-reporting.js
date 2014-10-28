@@ -160,7 +160,6 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
             }, 2000);
         };
     })
-
     .filter('documentFilter', function ($filter) {
         return  function (documents, query) {
             var results = $filter('filter')(documents, {doc_number: query});
