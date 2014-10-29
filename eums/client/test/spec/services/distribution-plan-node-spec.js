@@ -1,7 +1,8 @@
 describe('Distribution Plan Node Service', function() {
 
-    var planNodeService, mockBackend, planNodeEndpointUrl, mockLineItemService, mockConsigneeService, q,
-        mockContactService;
+    var planNodeService, mockLineItemService, mockConsigneeService, mockContactService;
+    var mockBackend, q;
+    var planNodeEndpointUrl;
 
     var planNodeId = 1, lineItemOneId = 1, lineItemTwoId = 2, consigneeId = 1, contactId = 1;
 
@@ -61,6 +62,24 @@ describe('Distribution Plan Node Service', function() {
         lineItems: [fullLineItemOne, fullLineItemTwo]
     };
 
+    var fakeGetLineItem = function() {
+        var lineItemId = arguments[0];
+
+        var deferredLineItemOneRequest = q.defer();
+        deferredLineItemOneRequest.resolve(fullLineItemOne);
+
+        var deferredLineItemTwoRequest = q.defer();
+        deferredLineItemTwoRequest.resolve(fullLineItemTwo);
+
+        if(lineItemId === lineItemOneId) {
+            return deferredLineItemOneRequest.promise;
+        }
+        else if(lineItemId === lineItemTwoId) {
+            return deferredLineItemTwoRequest.promise;
+        }
+        return null;
+    };
+
     beforeEach(function() {
         module('DistributionPlanNode');
 
@@ -76,7 +95,7 @@ describe('Distribution Plan Node Service', function() {
 
         inject(function(DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
             q = $q;
-            mockLineItemService.getLineItem.and.callFake(fakeGetLineItemDetails);
+            mockLineItemService.getLineItem.and.callFake(fakeGetLineItem);
 
             var deferredConsigneeRequest = q.defer();
             deferredConsigneeRequest.resolve(fullConsignee);
@@ -126,22 +145,20 @@ describe('Distribution Plan Node Service', function() {
         mockBackend.flush();
     });
 
-    var fakeGetLineItemDetails = function() {
-        var lineItemId = arguments[0];
+    it('should get all child node line items', function (done) {
+        var stubNode = {id: 42, children: [23, 76]};
+        var stubChildOne = {id: 23, parent: stubNode.id, distributionplanlineitem_set: [55, 57]};
+        var stubChildTwo = {id: 76, parent: stubNode.id, distributionplanlineitem_set: [98, 99]};
+        var expectedChildNodeLineItems = [55, 57, 98, 99];
 
-        var deferredLineItemOneRequest = q.defer();
-        deferredLineItemOneRequest.resolve(fullLineItemOne);
+        mockBackend.whenGET(planNodeEndpointUrl + stubChildOne.id + '/').respond(stubChildOne);
+        mockBackend.whenGET(planNodeEndpointUrl + stubChildTwo.id + '/').respond(stubChildTwo);
 
-        var deferredLineItemTwoRequest = q.defer();
-        deferredLineItemTwoRequest.resolve(fullLineItemTwo);
-
-        if(lineItemId === lineItemOneId) {
-            return deferredLineItemOneRequest.promise;
-        }
-        else if(lineItemId === lineItemTwoId) {
-            return deferredLineItemTwoRequest.promise;
-        }
-        return null;
-    };
+        planNodeService.getPlanNodeChildLineItems(stubNode).then(function (children) {
+            expect(children).toEqual(expectedChildNodeLineItems);
+            done();
+        });
+        mockBackend.flush();
+    });
 });
 

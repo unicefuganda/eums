@@ -171,8 +171,7 @@ describe('UNICEF IP', function () {
             'id': planNodeOne,
             'parent': 2,
             'distribution_plan': planId,
-            'children': [
-            ],
+            'children': [],
             'location': 'Mbarara',
             'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
@@ -187,8 +186,7 @@ describe('UNICEF IP', function () {
             'id': planNodeTwo,
             'parent': 2,
             'distribution_plan': planId,
-            'children': [
-            ],
+            'children': [],
             'location': 'Gulu',
             'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
@@ -225,13 +223,11 @@ describe('UNICEF IP', function () {
         module('DistributionPlan');
         distributionPlanNodeService = jasmine.createSpyObj('distributionPlanNodeService', ['getPlanNodeDetails', 'getPlanNodeById']);
 
-
         module(function ($provide) {
             $provide.value('DistributionPlanNodeService', distributionPlanNodeService);
         });
 
-
-        inject(function (DistributionPlanService, $q, $httpBackend, EumsConfig, $rootScope) {
+        inject(function (DistributionPlanService, DistributionPlanNodeService, $q, $httpBackend, EumsConfig, $rootScope) {
             scope = $rootScope.$new();
             eumsConfig = EumsConfig;
             httpBackend = $httpBackend;
@@ -285,7 +281,8 @@ describe('UNICEF IP', function () {
                     {answer: 'Its ish ish', questionLabel: 'feedbackAboutDissatisfaction'},
                     {answer: '20', questionLabel: 'amountReceived'}
 
-                ]},
+                ]
+            },
             {
                 item: 'IEHK2006,Laptops',
                 amountSent: 1,
@@ -293,7 +290,8 @@ describe('UNICEF IP', function () {
                 details: [
                     {answer: 'Its ish ish', questionLabel: 'feedbackAboutDissatisfaction'},
                     {answer: '20', questionLabel: 'amountReceived'}
-                ]}
+                ]
+            }
         ];
 
         httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(expectedResponse);

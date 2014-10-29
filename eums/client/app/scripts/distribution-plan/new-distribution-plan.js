@@ -41,9 +41,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         if ($routeParams.distributionPlanNodeId) {
             DistributionPlanNodeService.getPlanNodeDetails($routeParams.distributionPlanNodeId).then(function (planNode) {
                 $scope.planNode = planNode;
-                var distributionPlanLineItems = $scope.planNode.distributionplanlineitem_set;
-
-                DistributionPlanLineItemService.getLineItem(distributionPlanLineItems[0]).then(function (lineItem) {
+                $scope.distributionPlan = planNode.distribution_plan;
+                var nodeLineItemId = $scope.planNode.distributionplanlineitem_set[0];
+                DistributionPlanLineItemService.getLineItem(nodeLineItemId).then(function (lineItem) {
                     SalesOrderItemService.getSalesOrderItem($routeParams.salesOrderItemId).then(function (result) {
                         $scope.selectedSalesOrderItem = {
                             display: result.item.description,
@@ -53,23 +53,37 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             information: result
                         };
                         $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
-                        //setDistributionPlanLineItems($scope.selectedSalesOrderItem, distributionPlanLineItems);
+                        DistributionPlanNodeService.getPlanNodeChildLineItems($scope.planNode).then(function (childLineItems) {
+                            setDistributionPlanLineItems($scope.selectedSalesOrderItem, childLineItems);
+                        });
                     });
                 });
             });
         }
 
         $scope.$watch('selectedSalesOrderItem', function (newItem) {
-            if (!$scope.planNode) {
-                $scope.distributionPlanLineItems = [];
-                $scope.selectedSalesOrderItem = newItem;
-
-                var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
-                var distributionPlanLineItems = selectedSalesOrderItem && selectedSalesOrderItem.information.distributionplanlineitem_set;
-                setDistributionPlanLineItems(selectedSalesOrderItem, distributionPlanLineItems);
+            if (!newItem || $routeParams.distributionPlanNodeId) {
+                return;
             }
+
+            $scope.distributionPlanLineItems = [];
+            $scope.selectedSalesOrderItem = newItem;
+
+            var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
+            SalesOrderItemService.getTopLevelDistributionPlanLineItems(selectedSalesOrderItem).then(function (topLevelLineItems) {
+                setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
+            });
         });
 
+        var addNodeDetailsToLineItem = function (lineItem, node) {
+            lineItem.consignee = node.consignee.id;
+            lineItem.nodeId = node.id;
+            lineItem.contactPerson = node.contact_person_id;
+            lineItem.modeOfDelivery = node.mode_of_delivery;
+            lineItem.destinationLocation = node.location;
+            lineItem.alreadySaved = true;
+            lineItem.forEndUser = node.tree_position === 'END_USER';
+        };
         var setDistributionPlanLineItems = function (selectedSalesOrderItem, distributionPlanLineItems) {
             if (distributionPlanLineItems && distributionPlanLineItems.length) {
                 var itemCounter = 0;
@@ -86,16 +100,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
 
                         DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function (node) {
-                            lineItem.consignee = node.consignee.id;
-                            lineItem.nodeId = node.id;
-                            lineItem.contactPerson = node.contact_person_id;
-                            lineItem.modeOfDelivery = node.mode_of_delivery;
-                            lineItem.destinationLocation = node.location;
-                            lineItem.alreadySaved = true;
-                            lineItem.subConsignees = [
-                                {}
-                            ];
-                            lineItem.forEndUser = node.tree_position === 'END_USER';
+                            addNodeDetailsToLineItem(lineItem, node);
                             $scope.distributionPlanLineItems.push(lineItem);
                             $scope.distributionPlan = node.distribution_plan;
                         });
@@ -149,6 +154,13 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
 
+        function parentNodeId() {
+            if (!!$scope.planNode) {
+                return $scope.planNode.id;
+            }
+            return null;
+        }
+
         function saveNode(uiPlanItem) {
             var nodeId = uiPlanItem.nodeId;
             var node = {
@@ -157,7 +169,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 contact_person_id: uiPlanItem.contactPerson,
                 distribution_plan: $scope.distributionPlan,
                 tree_position: 'MIDDLE_MAN',
-                mode_of_delivery: uiPlanItem.modeOfDelivery
+                mode_of_delivery: uiPlanItem.modeOfDelivery,
+                parent: parentNodeId()
             };
 
             if (nodeId) {
@@ -203,7 +216,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
             var squashedSavePlanItemPromises = $q.all(savePlanItemPromises);
             $scope.savePlanPromise = squashedSavePlanItemPromises;
-            return  squashedSavePlanItemPromises;
+            return squashedSavePlanItemPromises;
         }
 
         $scope.saveDistributionPlanLineItems = function () {

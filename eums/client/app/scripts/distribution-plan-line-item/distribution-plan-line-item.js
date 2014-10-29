@@ -1,24 +1,19 @@
 'use strict';
 
 angular.module('DistributionPlanLineItem', ['eums.config', 'Item'])
-    .factory('DistributionPlanLineItemService', function($http, EumsConfig) {
-
-        var getLineItem = function(lineItemId) {
-            return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItemId + '/').then(function(response) {
-                return response.data;
-            });
-        };
-
+    .factory('DistributionPlanLineItemService', function ($http, EumsConfig) {
         return {
-            getLineItem: function(lineItemId) {
-                return getLineItem(lineItemId);
+            getLineItem: function (lineItemId) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItemId + '/').then(function (response) {
+                    return response.data;
+                });
             },
-            createLineItem: function(lineItemDetails) {
+            createLineItem: function (lineItemDetails) {
                 return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM, lineItemDetails);
             },
-            updateLineItem: function(lineItem) {
+            updateLineItem: function (lineItem) {
                 return $http.put(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItem.id + '/', lineItem)
-                    .then(function(response) {
+                    .then(function (response) {
                         return response.data;
                     });
             }

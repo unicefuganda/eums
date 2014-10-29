@@ -190,7 +190,6 @@
                 MapFilterService.getAllMarkerMaps().forEach(function (markerMap) {
                     markers.push(markerMap.marker);
                 });
-                console.log(L.LayerGroup(markers));
                 return L.LayerGroup(markers)
                     .addTo(map);
             },
