@@ -5,6 +5,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.datepicker = {};
         $scope.districts = [];
+        $scope.consignee_button_text = 'Add Consignee';
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
@@ -39,6 +40,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         });
 
         if ($routeParams.distributionPlanNodeId) {
+            $scope.consignee_button_text = 'Add Sub-Consignee';
+
             DistributionPlanNodeService.getPlanNodeDetails($routeParams.distributionPlanNodeId).then(function (planNode) {
                 $scope.planNode = planNode;
                 $scope.distributionPlan = planNode.distribution_plan;
