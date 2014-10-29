@@ -1,0 +1,101 @@
+<div ng-controller="responseController" class="row-fluid span12">
+        <table class="table table-hover table-condensed table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Date Received</th>
+                <th>Quantity Received</th>
+                <th>Satisfied</th>
+                <th>Comments</th>
+            </tr>
+            </thead>
+            <tbody ng-repeat="data in responsesModel.data">
+            <tr id="data.store.storeId" class="clickableRow"
+                title="Click to toggle collapse/expand day summaries for this store."
+                ng-click="selectTableRow($index, data.store.storeId)">
+                <td>{{ data.store.storeId }}</td>
+                <td>{{ data.store.storeName }}</td>
+                <td>{{ data.store.storeAddress }}</td>
+                <td>{{ data.store.storeCity }}</td>
+                <td>{{ data.data.costTotal }}</td>
+                <td>{{ data.data.salesTotal }}</td>
+                <td>{{ data.data.revenueTotal }}</td>
+                <td>{{ data.data.averageEmployees }}</td>
+                <td>{{ data.data.averageEmployeesHours }}</td>
+            </tr>
+            <tr ng-show="!dayDataCollapse[$index]">
+                <td colspan="2">&nbsp;</td>
+                <td colspan="7">
+                    <div>
+                        <div class="pull-right">
+                            <table class="table table-hover table-condensed table-striped">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Date [YYYY-MM-dd]</th>
+                                    <th>Cost</th>
+                                    <th>Sales</th>
+                                    <th>Revenue</th>
+                                    <th>Employees</th>
+                                    <th>Employees H-sum</th>
+                                </tr>
+                                </thead>
+                                <tbody ng-repeat="dayData in data.data.dayData">
+                                <tr>
+                                    <td class="pullright">
+                                        <button type="btn btn-small"
+                                                title="Click to show transactions for this specific day..."
+                                                ng-click="dayData.showTransactions=!dayData.showTransactions"><i
+                                                class="icon-list"></i>
+
+                                        </button>
+                                    </td>
+                                    <td>{{ dayData.date }}</td>
+                                    <td>{{ dayData.cost }}</td>
+                                    <td>{{ dayData.sales }}</td>
+                                    <td>{{ dayData.revenue }}</td>
+                                    <td>{{ dayData.employees }}</td>
+                                    <td>{{ dayData.employeesHoursSum }}</td>
+                                </tr>
+                                <tr ng-show="dayData.showTransactions">
+                                    <td>&nbsp;</td>
+                                    <td colspan="6">
+                                        <div>
+                                            <div>
+                                                <table class="table table-hover table-condensed table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th></th>
+                                                        <th>Transaction</th>
+                                                        <th>Sale</th>
+                                                        <th>Cost</th>
+                                                        <th>Revenue</th>
+                                                        <th>Employee</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr ng-repeat="transaction in dayData.transactions">
+                                                        <td>&nbsp;</td>
+                                                        <td>{{ transaction.transaction }}</td>
+                                                        <td>{{ transaction.sale }}</td>
+                                                        <td>{{ transaction.cost }}</td>
+                                                        <td>{{ transaction.revenue }}</td>
+                                                        <td>{{ transaction.employee }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- END TABLE -->
+</div>
