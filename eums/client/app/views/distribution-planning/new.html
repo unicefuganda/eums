@@ -82,7 +82,7 @@
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
                                 <input type="number" id="input-quantity" class="form-control"
-                                       ng-model="item.targetQuantity">
+                                       ng-model="item.targetQuantity" min=0>
                             </td>
                             <td>
                                 <p class="input-group" eums-date-picker>
