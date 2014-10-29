@@ -20,5 +20,4 @@ angular.module('Home', ['GlobalStats'])
                 $scope.totalStats = DistributionReportService.getTotals(reports, filterOptions);
             };
         });
-
     });

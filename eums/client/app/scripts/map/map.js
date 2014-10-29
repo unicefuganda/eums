@@ -291,7 +291,9 @@
                         });
                     });
 
-
+                    scope.hideMapMarkerDetails = function () {
+                        scope.clickedMarker = null;
+                    }
                 });
             }
         }
