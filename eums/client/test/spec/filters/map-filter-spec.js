@@ -108,7 +108,7 @@ describe('Map Filter Service', function () {
             expect(mapFilterService.getAllMarkerMaps()).toEqual([markerMapOne]);
         });
 
-        it('should filter markers based on programme', function (done) {
+        xit('should filter markers based on programme', function (done) {
             mapFilterService.setMapMarker(markerMapOne);
             mapFilterService.setMapMarker(markerMapTwo);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + distributionPlanNodeOne.id + '/')
@@ -143,7 +143,7 @@ describe('Map Filter Service', function () {
             });
         });
 
-        it('should filter markers by ip', function (done) {
+        xit('should filter markers by ip', function (done) {
             mapFilterService.setMapMarker(markerMapOne);
             mapFilterService.setMapMarker(markerMapTwo);
             var ip = 1;

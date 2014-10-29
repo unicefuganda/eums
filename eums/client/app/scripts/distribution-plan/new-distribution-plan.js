@@ -1,11 +1,35 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip', 'ngToast'])
-    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast) {
+angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip', 'ngToast', 'Contact'])
+    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast, ContactService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.consignee_button_text = 'Add Consignee';
+        $scope.contact = {};
+        $scope.itemIndex = '';
+
+        function createToast(message) {
+            ngToast.create({
+                content: message,
+                class: 'danger',
+                horizontalPosition: 'center',
+                maxNumber: 1,
+                dismissOnTimeout: 100000
+            });
+        }
+
+        $scope.addContact = function (index) {
+            $scope.itemIndex = index;
+            $('#myModal').modal();
+        };
+        $scope.saveContact = function () {
+            ContactService.addContact($scope.contact).then(function () {
+                $('#myModal').modal('hide');
+            }, function () {
+                createToast('Invalid phone number!');
+            });
+        };
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {

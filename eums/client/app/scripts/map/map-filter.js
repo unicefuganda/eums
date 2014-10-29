@@ -18,8 +18,7 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
         }
 
         return {
-            filterMarkersByProgramme: function (programmeId) {
-                var self = this;
+            filterMarkersByProgramme: function (programmeId, markerMaps) {
                 return FilterService.getDistributionPlansBy(programmeId).then(function (plans) {
                     var nodesSelected = plans.map(function (plan) {
                         return DistributionPlanService.getNodes(plan);
@@ -27,7 +26,7 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
 
                     var filteredMarkers = $q.all(nodesSelected).then(function (nodes) {
                         return noneEmptyNodes(nodes).map(function (node) {
-                            return filterMarker(node[0], self.getAllMarkerMaps());
+                            return filterMarker(node[0], markerMaps);
                         });
                     });
 
@@ -36,18 +35,17 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
                     });
                 });
             },
-            filterMarkersByIp: function (ip) {
-                var self = this;
+            filterMarkersByIp: function (ip, markerMaps) {
                 return DistributionPlanService.getNodesBy(ip).then(function (data) {
                     var markers = data.map(function (node) {
-                        return self.getAllMarkerMaps().map(function (markerMap) {
-                            if(markerMap.consigneeResponse[0].node === node.data.id){
+                        return markerMaps.map(function (markerMap) {
+                            if (markerMap.consigneeResponse[0].node === node.data.id) {
                                 return markerMap;
                             }
                         });
                     });
 
-                    return _.remove(_.flatten(markers), function(marker){
+                    return _.remove(_.flatten(markers), function (marker) {
                         return marker;
                     });
                 });

@@ -110,6 +110,9 @@
                                 <input type="hidden" search-contacts
                                        value="{{ item.contactPerson }}"
                                        ng-model="item.contactPerson" required="required">
+                                <button type="button" class="glyphicon glyphicon-plus pull-right"
+                                        ng-click="addContact($index)">
+                                </button>
                             </td>
 
                             <td class="table-select-max-width">
@@ -163,4 +166,5 @@
             </div>
         </div>
     </div>
+    <ng-include src="'/static/app/views/distribution-planning/partials/contact-modal.html'"></ng-include>
 </div>

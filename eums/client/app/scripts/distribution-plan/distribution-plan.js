@@ -41,14 +41,6 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.showDistributionPlan = function (planId) {
             $scope.planId = planId;
         };
-
-        $scope.addContact = function () {
-            ContactService.addContact($scope.contact).then(function () {
-                $location.path('/');
-            }, function (error) {
-                $scope.errorMessage = error.data.error;
-            });
-        };
     }).factory('DistributionPlanService', function ($http, $q, EumsConfig, DistributionPlanNodeService) {
         var fillOutNode = function (nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
@@ -125,7 +117,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=implementing_partner');
             },
             getMiddleMen: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=middle_man').then(function(response){
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=middle_man').then(function (response) {
                     return response.data;
                 });
             },
@@ -204,7 +196,19 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 onSelect: '&',
                 actionable: '@'
             },
-            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
+            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html',
+            link: function (scope) {
+                console.log(scope);
+                scope.addContact = function () {
+
+                    console.log('hihi');
+//            ContactService.addContact($scope.contact).then(function () {
+//                $location.path('/');
+//            }, function (error) {
+//                $scope.errorMessage = error.data.error;
+//            });
+                };
+            }
         };
     }]).filter('salesOrderFilter', function ($filter) {
         return  function (salesOrders, query) {
