@@ -24,14 +24,12 @@ class RapidProSmoke(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_flows_specified_in_settings_exist(self):
-        response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=self.headers)
-        self.assertEqual(response.status_code, 200)
-        flows = Flow.objects.all()
-        for flow in flows:
-            self.assertTrue(self.flow_exists(flow.rapid_pro_id, response.json()['results']))
+        for flow in Flow.objects.all():
+            flow_url = '%s?flow=%d' % (settings.RAPIDPRO_URLS['FLOWS'], flow.rapid_pro_id)
 
-    def flow_exists(self, flow_id, flows):
-        matching_flows = filter(lambda flow: flow['flow'] == flow_id, flows)
-        return len(matching_flows) == 1
+            response = requests.get(flow_url, headers=self.headers)
 
-        # TODO Test that flow takes the parameters we provide when RapidPro API makes the @extra.* fields available
+            self.assertEqual(response.status_code, 200)
+            self.assertDictContainsSubset({'flow': flow.rapid_pro_id}, response.json()['results'][0])
+
+    # TODO Test that flow takes the parameters we provide when RapidPro API makes the @extra.* fields available
