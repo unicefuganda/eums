@@ -1,4 +1,3 @@
-import datetime
 import json
 
 from rest_framework.test import APITestCase
@@ -20,9 +19,9 @@ ENDPOINT_URL = BACKEND_URL + 'responses/'
 class DistributionPlanEndPointTest(APITestCase):
     def xtest_should_provide_summary_data_from_node_response(self):
         ip_node = DistributionPlanNodeFactory()
-        multichoice_question = MultipleChoiceQuestionFactory(label='productReceived')
-        yes_option = OptionFactory(text='Yes', question=multichoice_question)
-        no_option = OptionFactory(text='No', question=multichoice_question)
+        multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
+        yes_option = OptionFactory(text='Yes', question=multiple_choice_question)
+        OptionFactory(text='No', question=multiple_choice_question)
 
         salt = ItemFactory(description='Salt')
 
@@ -34,21 +33,22 @@ class DistributionPlanEndPointTest(APITestCase):
                                                              item=item)
         line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item_one, status='completed')
 
-        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=line_item_run, question=multichoice_question,
+        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=line_item_run, question=multiple_choice_question,
                                                           value=yes_option)
         numeric_answer_one = NumericAnswerFactory(line_item_run=line_item_run, value=80, question=numeric_question)
 
         url = "%s%d/" % (ENDPOINT_URL, node.consignee.id)
 
         response = self.client.get(url, format='json')
+        print "*"*20, response
 
-        response_data = json.loads(response.data)
+        response_data = json.loads(response)
         consignee = node.consignee
 
         expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name},
                          u'%s' % numeric_question.label: u'%s' % numeric_answer_one.format(),
-                         u'%s' % multichoice_question.label: u'%s' % multiple_answer_one.format()}
+                         u'%s' % multiple_choice_question.label: u'%s' % multiple_answer_one.format()}
 
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(expected_data, response_data[0])
