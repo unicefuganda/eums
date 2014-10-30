@@ -267,7 +267,7 @@ describe('NewDistributionPlanController', function () {
                 location: 'Kampala',
                 contact_person: {_id: 1}
             });
-            var stubLineItem = { id: 1};
+            var stubLineItem = {id: 1};
             deferredLineItem.resolve(stubLineItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
@@ -362,7 +362,13 @@ describe('NewDistributionPlanController', function () {
                 scope.saveDistributionPlanLineItems();
                 scope.$apply();
 
-                expect(mockToastProvider.create).toHaveBeenCalledWith('Plan Saved!');
+                var expectedToastArguments = {
+                    content: 'Plan Saved!',
+                    class: 'success',
+                    maxNumber: 1,
+                    dismissOnTimeout: true
+                };
+                expect(mockToastProvider.create).toHaveBeenCalledWith(expectedToastArguments);
             });
 
             it('puts a promise on the scope to notify the ui that saving is done', function () {

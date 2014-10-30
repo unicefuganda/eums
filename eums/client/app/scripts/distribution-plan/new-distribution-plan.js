@@ -9,25 +9,24 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.contact = {};
         $scope.itemIndex = '';
 
-        function createToast(message) {
+        function createToast(message, klass) {
             ngToast.create({
                 content: message,
-                class: 'danger',
-                horizontalPosition: 'center',
+                class: klass,
                 maxNumber: 1,
-                dismissOnTimeout: 100000
+                dismissOnTimeout: true
             });
         }
 
         $scope.addContact = function (index) {
             $scope.itemIndex = index;
-            $('#myModal').modal();
+            $('#add-contact-modal').modal();
         };
         $scope.saveContact = function () {
             ContactService.addContact($scope.contact).then(function () {
-                $('#myModal').modal('hide');
+                $('#add-contact-modal').modal('hide');
             }, function () {
-                createToast('Invalid phone number!');
+                createToast('Invalid phone number!', 'danger');
             });
         };
 
@@ -247,19 +246,20 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.saveDistributionPlanLineItems = function () {
-            if ($scope.distributionPlan) {
+            var saveWithToast = function () {
                 saveDistributionPlanLineItems().then(function () {
-                    ngToast.create('Plan Saved!');
+                    createToast('Plan Saved!', 'success');
                 });
+            };
+            if ($scope.distributionPlan) {
+                saveWithToast();
             }
             else {
                 DistributionPlanService
                     .createPlan({programme: $scope.selectedSalesOrder.programme.id})
                     .then(function (createdPlan) {
                         $scope.distributionPlan = createdPlan.id;
-                        saveDistributionPlanLineItems().then(function () {
-                            ngToast.create('Plan Saved!');
-                        });
+                        saveWithToast();
                     });
             }
         };

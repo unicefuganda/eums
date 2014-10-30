@@ -307,7 +307,7 @@
 
                     scope.hideMapMarkerDetails = function () {
                         scope.clickedMarker = null;
-                    }
+                    };
                     
                     getAllMarkersWithResponses(map, scope).then(function (markersMap) {
                         MapService.addMarkers(markersMap);
