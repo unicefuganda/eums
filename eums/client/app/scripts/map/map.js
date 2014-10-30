@@ -305,7 +305,10 @@
                     scope.deliveredChecked = null;
                     scope.allMarkers = [];
 
-
+                    scope.hideMapMarkerDetails = function () {
+                        scope.clickedMarker = null;
+                    }
+                    
                     getAllMarkersWithResponses(map, scope).then(function (markersMap) {
                         MapService.addMarkers(markersMap);
                     });
@@ -558,13 +561,13 @@
                         }
                     });
 
-//                    scope.clearFilters = function () {
-//                        scope.filter = {received: true, notDelivered: true, receivedWithIssues: true, year: '', to: '', from: ''};
-//                        scope.shownMarkers = [];
-//                        scope.ip = '';
-//                        scope.programme = '';
-//                        scope.updateTotalStats();
-//                    }
+                    scope.clearFilters = function () {
+                        scope.filter = {received: true, notDelivered: true, receivedWithIssues: true, year: '', to: '', from: ''};
+                        scope.shownMarkers = [];
+                        scope.ip = '';
+                        scope.programme = '';
+                        scope.updateTotalStats();
+                    }
                 }
             }
 
