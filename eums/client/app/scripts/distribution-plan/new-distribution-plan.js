@@ -180,7 +180,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.$watch('distributionPlanLineItems', function (newPlanItems) {
             function anyInvalidFields(lineItems) {
                 var itemsWithInvalidFields = lineItems.filter(function (item) {
-                    return item.targetQuantity <= 0 ||
+                    return $scope.selectedSalesOrderItem.quantityLeft < 0 ||
+                        item.targetQuantity <= 0 ||
                         !item.consignee ||
                         !item.destinationLocation ||
                         !item.contactPerson ||

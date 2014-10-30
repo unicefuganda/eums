@@ -238,6 +238,15 @@ describe('NewDistributionPlanController', function () {
 
                 expect(scope.invalidLineItems).toBeTruthy();
             });
+
+            it('sets the invalidLineItems field to true when the quantity left of salesitems is less than 0', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                invalidLineItem.targetQuantity = 101;
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
         });
     });
 
