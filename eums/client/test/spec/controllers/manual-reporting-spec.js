@@ -242,6 +242,14 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
             expect(scope.reportSaved).toBeTruthy();
         });
+
+        it('should set the scope variable to false when time out happens', function(){
+            scope.saveResponses();
+            timeout.flush();
+            scope.$apply();
+
+            expect(scope.reportSaved).toBeFalsy();
+        });
     });
 
     describe('when add responses', function () {
@@ -269,4 +277,16 @@ describe('NewDistributionPlanController', function () {
             expect(scope.datepicker).toEqual({0: false});
         });
     });
+});
+
+describe('DistributionReportingParameters', function(){
+    beforeEach(module('ManualReporting'));
+
+
+    it('should know how to save and retrieve variables', inject(function(DistributionReportingParameters){
+        var expectedValue = 'Test Variable';
+        var expectedKey = 'test_variable';
+        DistributionReportingParameters.saveVariable(expectedKey, expectedValue);
+        expect(DistributionReportingParameters.retrieveVariable(expectedKey)).toEqual(expectedValue);
+    }));
 });
