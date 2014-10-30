@@ -141,7 +141,7 @@ describe('NewDistributionPlanController', function () {
         setUp({salesOrderId: 1});
     });
 
-    describe('when  distributionPlanLineItems list on scope changes, ', function () {
+    describe('when distributionPlanLineItems list on scope changes, ', function () {
         it('the selected sales order item quantityLeft attribute should be updated', function () {
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
             scope.$apply();
@@ -153,6 +153,91 @@ describe('NewDistributionPlanController', function () {
             scope.distributionPlanLineItems[0].targetQuantity = 25;
             scope.$apply();
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(75);
+        });
+
+        describe('disabling save with invalidLineItems field', function () {
+            var invalidLineItem;
+            var validLineItem = {
+                item: 1,
+                plannedDistributionDate: '2014-11-31',
+                targetQuantity: 42,
+                consignee: 4,
+                destinationLocation: 'Adjumani',
+                contactPerson: '5444d433ec8e8257ae48dc73',
+                modeOfDelivery: 'Warehouse',
+                remark: '',
+                tracked: true,
+                forEndUser: false
+            };
+
+            beforeEach(function () {
+                scope.selectedSalesOrderItem = {
+                    quantity: 100
+                };
+                scope.distributionPlanLineItems = [];
+                scope.$apply();
+            });
+
+            it('sets the invalidLineItems field to false when there are no invalid line items', function () {
+                scope.distributionPlanLineItems.push(validLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeFalsy();
+            });
+
+            it('sets the invalidLineItems field to true when there are line items with invalid target Quanitities', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                invalidLineItem.targetQuantity = -1;
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are line items with no consignee', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                delete invalidLineItem.consignee;
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are line items with no destinationLocation', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                invalidLineItem.destinationLocation = '';
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are line items with no contactPerson', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                invalidLineItem.contactPerson = '';
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are line items with no modeOfDelivery', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                invalidLineItem.modeOfDelivery = '';
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are line items with no plannedDistributionDate', function () {
+                invalidLineItem = angular.copy(validLineItem);
+                invalidLineItem.plannedDistributionDate = '';
+                scope.distributionPlanLineItems.push(invalidLineItem);
+                scope.$apply();
+
+                expect(scope.invalidLineItems).toBeTruthy();
+            });
         });
     });
 

@@ -196,19 +196,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 onSelect: '&',
                 actionable: '@'
             },
-            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html',
-            link: function (scope) {
-                console.log(scope);
-                scope.addContact = function () {
-
-                    console.log('hihi');
-//            ContactService.addContact($scope.contact).then(function () {
-//                $location.path('/');
-//            }, function (error) {
-//                $scope.errorMessage = error.data.error;
-//            });
-                };
-            }
+            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
         };
     }]).filter('salesOrderFilter', function ($filter) {
         return  function (salesOrders, query) {

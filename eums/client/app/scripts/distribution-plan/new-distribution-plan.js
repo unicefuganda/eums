@@ -110,30 +110,39 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             lineItem.alreadySaved = true;
             lineItem.forEndUser = node.tree_position === 'END_USER';
         };
+
+        var formatDate = function (date) {
+            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        };
+
         var setDistributionPlanLineItems = function (selectedSalesOrderItem, distributionPlanLineItems) {
             if (distributionPlanLineItems && distributionPlanLineItems.length) {
                 var itemCounter = 0;
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
                 //TODO Clean this up. Get fully populated objects from endpoint
                 distributionPlanLineItems.forEach(function (lineItemId) {
-                    DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
-                        lineItem.quantity = quantityLeft.toString();
-                        lineItem.targetQuantity = lineItem.targeted_quantity;
-                        lineItem.lineItemId = lineItem.id;
-                        lineItem.item = $scope.selectedSalesOrderItem.information.id;
+                    DistributionPlanLineItemService
+                        .getLineItem(lineItemId)
+                        .then(function (lineItem) {
+                            lineItem.quantity = quantityLeft.toString();
+                            lineItem.targetQuantity = lineItem.targeted_quantity;
+                            lineItem.lineItemId = lineItem.id;
+                            lineItem.item = $scope.selectedSalesOrderItem.information.id;
 
-                        var d = new Date(lineItem.planned_distribution_date);
-                        lineItem.plannedDistributionDate = d.getDate() + '-' + (d.getMonth() + 1) + '-' + d.getFullYear();
+                            var date = new Date(lineItem.planned_distribution_date);
+                            lineItem.plannedDistributionDate = formatDate(date);
 
-                        DistributionPlanNodeService.getPlanNodeDetails(lineItem.distribution_plan_node).then(function (node) {
-                            addNodeDetailsToLineItem(lineItem, node);
-                            $scope.distributionPlanLineItems.push(lineItem);
-                            $scope.distributionPlan = node.distribution_plan;
+                            DistributionPlanNodeService
+                                .getPlanNodeDetails(lineItem.distribution_plan_node)
+                                .then(function (node) {
+                                    addNodeDetailsToLineItem(lineItem, node);
+                                    $scope.distributionPlanLineItems.push(lineItem);
+                                    $scope.distributionPlan = node.distribution_plan;
+                                });
+                            quantityLeft = quantityLeft - parseInt(lineItem.targetQuantity);
+                            itemCounter++;
+                            $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
                         });
-                        quantityLeft = quantityLeft - parseInt(lineItem.targetQuantity);
-                        itemCounter++;
-                        $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
-                    });
                 });
             }
             else {
@@ -167,9 +176,23 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             return salesOrderItem.quantity - reduced.targetQuantity;
         }
 
+        $scope.invalidLineItems = true;
         $scope.$watch('distributionPlanLineItems', function (newPlanItems) {
+            function anyInvalidFields(lineItems) {
+                var itemsWithInvalidFields = lineItems.filter(function (item) {
+                    return item.targetQuantity <= 0 ||
+                        !item.consignee ||
+                        !item.destinationLocation ||
+                        !item.contactPerson ||
+                        !item.modeOfDelivery ||
+                        !item.plannedDistributionDate;
+                });
+                return itemsWithInvalidFields.length > 0;
+            }
+
             if (newPlanItems.length) {
                 $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
+                $scope.invalidLineItems = anyInvalidFields(newPlanItems);
             }
         }, true);
 
@@ -211,7 +234,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         function saveLineItem(nodeLineItem, nodeId) {
             var lineItemId = nodeLineItem.lineItemId;
             var plannedDate = new Date(nodeLineItem.plannedDistributionDate);
-            nodeLineItem.plannedDistributionDate = plannedDate.getFullYear() + '-' + (plannedDate.getMonth() + 1) + '-' + plannedDate.getDate();
+            nodeLineItem.plannedDistributionDate = formatDate(plannedDate);
 
             var lineItem = {
                 item: nodeLineItem.item,
@@ -265,13 +288,17 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.addSubConsignee = function (lineItem) {
-            $location.path('/delivery-report/new/' + $scope.selectedSalesOrder.id + '-' + lineItem.nodeId + '-' + $scope.selectedSalesOrderItem.information.id);
+            $location.path(
+                '/delivery-report/new/' +
+                $scope.selectedSalesOrder.id + '-' +
+                lineItem.nodeId + '-' +
+                $scope.selectedSalesOrderItem.information.id
+            );
         };
 
         $scope.showSubConsigneeButton = function (item) {
             return item.alreadySaved && !item.forEndUser;
         };
-
     }).directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function (contact) {

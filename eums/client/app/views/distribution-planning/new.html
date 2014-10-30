@@ -167,7 +167,8 @@
                 </button>
                 <div ng-show="distributionPlanLineItems.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
-                            ng-click="saveDistributionPlanLineItems()">
+                            ng-click="saveDistributionPlanLineItems()"
+                            ng-disabled="invalidLineItems">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save
                     </button>
