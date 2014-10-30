@@ -142,7 +142,7 @@
                 scrollWheelZoom: false,
                 touchZoom: false,
                 doubleClickZoom: false
-            }).setView([1.436, 32.884], 7);
+            }).setView([0.836, 31.000], 7);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
