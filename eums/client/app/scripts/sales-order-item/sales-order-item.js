@@ -20,7 +20,7 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                 });
             },
             getTopLevelDistributionPlanLineItems: function (salesOrderItem) {
-                var allDistributionLineItems = salesOrderItem.information.distributionplanlineitem_set;
+                var allDistributionLineItems = salesOrderItem.distributionplanlineitem_set;
 
                 var lineItemPromises = [],
                     lineItems = [];

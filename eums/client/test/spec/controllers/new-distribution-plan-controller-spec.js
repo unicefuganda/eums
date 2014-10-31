@@ -37,6 +37,7 @@ describe('NewDistributionPlanController', function () {
         id: 1,
         sales_order: '1',
         information: {
+            id : 1,
             item: {
                 id: 1,
                 description: 'Test Item',
@@ -172,7 +173,8 @@ describe('NewDistributionPlanController', function () {
 
             beforeEach(function () {
                 scope.selectedSalesOrderItem = {
-                    quantity: 100
+                    quantity: 100,
+                    information: {id: 1}
                 };
                 scope.distributionPlanLineItems = [];
                 scope.$apply();
@@ -284,6 +286,7 @@ describe('NewDistributionPlanController', function () {
 
         it('should format the selected sales order appropriately for the view', function () {
             var stubItem = {
+                id: 1,
                 item: {
                     id: 1,
                     description: 'Test Item',
@@ -340,6 +343,7 @@ describe('NewDistributionPlanController', function () {
         });
 
         it('should call the get distribution plan items service linked to the particular sales order item', function () {
+            deferred.resolve(stubSalesOrderItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
             scope.selectedSalesOrderItem = {
@@ -362,6 +366,7 @@ describe('NewDistributionPlanController', function () {
                 contact_person: {_id: 1}
             });
             var stubLineItem = {id: 1};
+            deferred.resolve(stubSalesOrderItem);
             deferredLineItem.resolve(stubLineItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
@@ -414,7 +419,8 @@ describe('NewDistributionPlanController', function () {
                 quantity: 100,
                 quantityLeft: stubSalesOrderItem.quantity,
                 item: stubSalesOrderItem.information.item,
-                information: stubSalesOrderItem
+                information: stubSalesOrderItem,
+                distributionplanlineitem_set: stubSalesOrderItem.information.distributionplanlineitem_set
             };
             scope.$apply();
 

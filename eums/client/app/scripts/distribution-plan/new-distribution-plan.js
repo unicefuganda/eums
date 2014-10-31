@@ -96,8 +96,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             $scope.selectedSalesOrderItem = newItem;
 
             var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
-            SalesOrderItemService.getTopLevelDistributionPlanLineItems(selectedSalesOrderItem).then(function (topLevelLineItems) {
-                setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
+            SalesOrderItemService.getSalesOrderItem(selectedSalesOrderItem.information.id).then(function (salesOrderItem){
+                SalesOrderItemService.getTopLevelDistributionPlanLineItems(salesOrderItem).then(function (topLevelLineItems) {
+                    setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
+                });
             });
         });
 

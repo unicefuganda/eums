@@ -20,7 +20,8 @@ describe('Sales Order Item Service', function () {
         delivery_date: '2014-10-02',
         information: {
             distributionplanlineitem_set: []
-        }
+        },
+        distributionplanlineitem_set: []
     };
 
     var stubItem = {
@@ -55,7 +56,8 @@ describe('Sales Order Item Service', function () {
             quantity: 100, net_price: 10, net_value: 1000, issue_date: '2014-10-02', delivery_date: '2014-10-02',
             information: {
                 distributionplanlineitem_set: []
-            }
+            },
+            distributionplanlineitem_set: []
         };
 
         salesOrderItemService.getSalesOrderItem(salesOrderItemId).then(function (salesOrderItem) {
@@ -71,7 +73,7 @@ describe('Sales Order Item Service', function () {
         var stubPlanNodeWithParent = {id: 42, parent: 42};
         var stubLineItemWithoutParent = {id: 56, distribution_plan_node: 56};
         var stubPlanNodeWithoutParent = {id: 56, parent: null};
-        stubSalesOrderItem.information.distributionplanlineitem_set = [42, 56];
+        stubSalesOrderItem.distributionplanlineitem_set = [42, 56];
 
         var expectedLineItemSet = [56];
 
