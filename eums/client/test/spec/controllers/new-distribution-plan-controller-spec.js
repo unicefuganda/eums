@@ -189,7 +189,7 @@ describe('NewDistributionPlanController', function () {
 
                 expect(scope.invalidContact(scope.contact)).toBeFalsy();
             });
-        })
+        });
     });
 
     describe('when distributionPlanLineItems list on scope changes, ', function () {
