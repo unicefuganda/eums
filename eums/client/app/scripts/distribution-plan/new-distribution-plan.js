@@ -26,6 +26,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.saveContact = function () {
             ContactService.addContact($scope.contact).then(function () {
                 $('#add-contact-modal').modal('hide');
+
                 $scope.contact = {};
             }, function (response) {
                 createToast(response.data.error, 'danger');

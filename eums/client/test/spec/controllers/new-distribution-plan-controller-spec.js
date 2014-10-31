@@ -146,9 +146,9 @@ describe('NewDistributionPlanController', function () {
         describe('with invalid fields', function () {
            it('should be invalid when no number is supplied', function () {
                scope.contact = {
-                   firstName: "Dude",
-                   lastName: "Awesome",
-                   phone: ""
+                   firstName: 'Dude',
+                   lastName: 'Awesome',
+                   phone: ''
                };
                scope.$apply();
 
@@ -157,9 +157,9 @@ describe('NewDistributionPlanController', function () {
 
            it('should be invalid when no first name is supplied', function () {
                scope.contact = {
-                   firstName: "",
-                   lastName: "Awesome",
-                   phone: "+256782555444"
+                   firstName: '',
+                   lastName: 'Awesome',
+                   phone: '+256782555444'
                };
                scope.$apply();
 
@@ -168,9 +168,9 @@ describe('NewDistributionPlanController', function () {
 
            it('should be invalid when no last name is supplied', function () {
                scope.contact = {
-                   firstName: "Dudette",
-                   lastName: "",
-                   phone: "+256782555444"
+                   firstName: 'Dudette',
+                   lastName: '',
+                   phone: '+256782555444'
                };
                scope.$apply();
 
@@ -181,9 +181,9 @@ describe('NewDistributionPlanController', function () {
         describe('with valid fields', function () {
             it('should be valid when full name and phone number are supplied', function () {
                 scope.contact = {
-                    firstName: "Dudette",
-                    lastName: "Awesome",
-                    phone: "+256782555444"
+                    firstName: 'Dudette',
+                    lastName: 'Awesome',
+                    phone: '+256782555444'
                 };
                 scope.$apply();
 
