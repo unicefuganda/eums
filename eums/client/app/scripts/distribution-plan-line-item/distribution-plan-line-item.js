@@ -9,7 +9,9 @@ angular.module('DistributionPlanLineItem', ['eums.config', 'Item'])
                 });
             },
             createLineItem: function (lineItemDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM, lineItemDetails);
+                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM, lineItemDetails).then(function (response) {
+                    return response.data;
+                });
             },
             updateLineItem: function (lineItem) {
                 return $http.put(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItem.id + '/', lineItem)

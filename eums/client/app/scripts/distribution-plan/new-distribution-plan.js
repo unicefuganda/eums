@@ -159,6 +159,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 destinationLocation: '',
                 contactPerson: '',
                 modeOfDelivery: '',
+                remark: '',
                 tracked: false,
                 forEndUser: false
             };
@@ -275,6 +276,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     createToast('Plan Saved!', 'success');
                 });
             };
+
             if ($scope.distributionPlan) {
                 saveWithToast();
             }

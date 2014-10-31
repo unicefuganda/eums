@@ -43,8 +43,8 @@ describe('Distribution Plan Line Item Service', function () {
     });
 
     it('should add line item', function (done) {
-        lineItemService.createLineItem(stubLineItem).then(function (response) {
-            expect(response.data).toEqual(expectedLineItem);
+        lineItemService.createLineItem(stubLineItem).then(function (returnedLineItem) {
+            expect(returnedLineItem).toEqual(expectedLineItem);
             done();
         });
         mockBackend.flush();

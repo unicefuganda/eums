@@ -424,6 +424,7 @@ describe('NewDistributionPlanController', function () {
                 targetQuantity: 0,
                 destinationLocation: '',
                 modeOfDelivery: '',
+                remark: '',
                 contactPerson: '',
                 tracked: false,
                 forEndUser: false
