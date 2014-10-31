@@ -25,8 +25,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.saveContact = function () {
             ContactService.addContact($scope.contact).then(function () {
                 $('#add-contact-modal').modal('hide');
-            }, function () {
-                createToast('Invalid phone number!', 'danger');
+                $scope.contact = {};
+            }, function (response) {
+                createToast(response.data.error, 'danger');
             });
         };
 
