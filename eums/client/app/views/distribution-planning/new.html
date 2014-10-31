@@ -78,7 +78,7 @@
                         <th>Remark</th>
                         <th></th>
 
-                        <tr ng-repeat="item in distributionPlanLineItems">
+                        <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
@@ -115,11 +115,13 @@
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts
                                                value="{{ item.contactPerson }}"
-                                               ng-model="item.contactPerson" required="required">
+                                               required="required"
+                                               ng-model="item.contactPerson"
+                                               ng-attr-id="{{'contact-select-' + $index}}">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button"
-                                                ng-click="addContact($index)"
+                                                ng-click="addContact($index, item)"
                                                 class="btn btn-default ">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>

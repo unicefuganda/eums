@@ -7,6 +7,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.districts = [];
         $scope.consignee_button_text = 'Add Consignee';
         $scope.contact = {};
+        $scope.lineItem = {};
         $scope.itemIndex = '';
 
         function createToast(message, klass) {
@@ -18,23 +19,34 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
 
-        $scope.addContact = function (index) {
-            $scope.itemIndex = index;
+        $scope.addContact = function (itemIndex, lineItem) {
+            $scope.$parent.itemIndex = itemIndex;
+            $scope.$parent.lineItem = lineItem;
             $('#add-contact-modal').modal();
         };
 
         $scope.saveContact = function () {
-            ContactService.addContact($scope.contact).then(function () {
-                $('#add-contact-modal').modal('hide');
+            ContactService
+                .addContact($scope.contact)
+                .then(function (response) {
+                    $('#add-contact-modal').modal('hide');
 
-                $scope.contact = {};
-            }, function (response) {
-                createToast(response.data.error, 'danger');
-            });
+                    var contact = response.data;
+                    var contactInput = $('#contact-select-0');
+                    var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+                    contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+                    contactInput.val(contact._id);
+                    $scope.lineItem.contactPerson = contact._id;
+
+                    $scope.contact = {};
+                }, function (response) {
+                    createToast(response.data.error, 'danger');
+                });
         };
 
         $scope.invalidContact = function (contact) {
-            return !(contact.firstName && contact.lastName && contact.phone) ;
+            return !(contact.firstName && contact.lastName && contact.phone);
         };
 
         IPService.loadAllDistricts().then(function (response) {
