@@ -35,15 +35,15 @@ describe('Route Provider', function () {
     });
 
     it('should know distribution reporting route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/spot-check-reports');
-        expect(routes.routes['/spot-check-reports'].controller).toBe('ManualReportingController');
-        expect(routes.routes['/spot-check-reports'].templateUrl).toBe('/static/app/views/distribution-reporting/distribution-reporting.html');
+        expect((Object.keys(routes.routes))).toContain('/field-verification-reports');
+        expect(routes.routes['/field-verification-reports'].controller).toBe('ManualReportingController');
+        expect(routes.routes['/field-verification-reports'].templateUrl).toBe('/static/app/views/distribution-reporting/distribution-reporting.html');
     });
 
     it('should know distribution reporting details route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/spot-check-report/details');
-        expect(routes.routes['/spot-check-report/details'].controller).toBe('ManualReportingController');
-        expect(routes.routes['/spot-check-report/details'].templateUrl).toBe('/static/app/views/distribution-reporting/details.html');
+        expect((Object.keys(routes.routes))).toContain('/field-verification-report/details');
+        expect(routes.routes['/field-verification-report/details'].controller).toBe('ManualReportingController');
+        expect(routes.routes['/field-verification-report/details'].templateUrl).toBe('/static/app/views/distribution-reporting/details.html');
     });
 
 });

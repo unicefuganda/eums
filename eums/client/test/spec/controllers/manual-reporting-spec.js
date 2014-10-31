@@ -159,7 +159,7 @@ describe('NewDistributionPlanController', function () {
             var document = {id: 1, doc_number: 1234, date: '2014-10-09', programme: 'Safe Water'};
             scope.selectDocument(document);
             scope.$apply();
-            expect(location.path()).toEqual('/spot-check-report/details/');
+            expect(location.path()).toEqual('/field-verification-report/details/');
         });
 
         it('should save the order details', function () {

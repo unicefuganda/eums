@@ -25,11 +25,11 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/distribution-planning/select-items.html',
                 controller: 'NewDistributionPlanController'
             })
-            .when('/spot-check-reports', {
+            .when('/field-verification-reports', {
                 templateUrl: '/static/app/views/distribution-reporting/distribution-reporting.html',
                 controller: 'ManualReportingController'
             })
-            .when('/spot-check-report/details', {
+            .when('/field-verification-report/details', {
                 templateUrl: '/static/app/views/distribution-reporting/details.html',
                 controller: 'ManualReportingController'
             })

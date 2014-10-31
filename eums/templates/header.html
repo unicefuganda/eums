@@ -23,8 +23,13 @@
                 ng-class="{ active: isActive('/delivery-reports,/delivery-report/new/')} ">
                 <a href="#/delivery-reports">Distribution Plans</a>
             </li>
-            <li ng-class="{ active: isActive('/spot-check-reports,/spot-check-report/details')}">
-                <a href="#/spot-check-reports">Spot Check Reports</a>
+            <li class="dropdown" ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
+                <a href="" class="dropdown-toggle">Delivery Reports <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#/field-verification-reports">Field Verification</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#/delivery-reports">Reported By IP</a></li>
+                </ul>
             </li>
             <li class="dropdown" ng-class="{ active: isActive('/reports')}">
                 <a href="" class="dropdown-toggle">Reports <span class="caret"></span></a>
@@ -32,7 +37,7 @@
                     <li><a href="#/distribution-plan-responses">Feedback Reports</a></li>
                     <li class="divider"></li>
                     <li><a href="#/reports">IP Stock Report</a></li>
-                            <li class="divider"></li>
+                    <li class="divider"></li>
                     <li><a href="#/distribution-plan-responses">All Reports</a></li>
                 </ul>
             </li>
