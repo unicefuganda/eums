@@ -22,6 +22,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             $scope.itemIndex = index;
             $('#add-contact-modal').modal();
         };
+
         $scope.saveContact = function () {
             ContactService.addContact($scope.contact).then(function () {
                 $('#add-contact-modal').modal('hide');
@@ -29,6 +30,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }, function (response) {
                 createToast(response.data.error, 'danger');
             });
+        };
+
+        $scope.invalidContact = function (contact) {
+            return !(contact.firstName && contact.lastName && contact.phone) ;
         };
 
         IPService.loadAllDistricts().then(function (response) {
@@ -186,12 +191,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.invalidLineItems = true;
         $scope.$watch('distributionPlanLineItems', function (newPlanItems) {
             function invalidFields(item) {
-                return item.targetQuantity <= 0 ||
-                    !item.consignee ||
-                    !item.destinationLocation ||
-                    !item.contactPerson ||
-                    !item.modeOfDelivery ||
-                    !item.plannedDistributionDate;
+                return item.targetQuantity <= 0 || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.modeOfDelivery || !item.plannedDistributionDate;
             }
 
             function anyInvalidFields(lineItems) {

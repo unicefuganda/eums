@@ -142,6 +142,56 @@ describe('NewDistributionPlanController', function () {
         setUp({salesOrderId: 1});
     });
 
+    describe('adding a contact', function () {
+        describe('with invalid fields', function () {
+           it('should be invalid when no number is supplied', function () {
+               scope.contact = {
+                   firstName: "Dude",
+                   lastName: "Awesome",
+                   phone: ""
+               };
+               scope.$apply();
+
+               expect(scope.invalidContact(scope.contact)).toBeTruthy();
+           });
+
+           it('should be invalid when no first name is supplied', function () {
+               scope.contact = {
+                   firstName: "",
+                   lastName: "Awesome",
+                   phone: "+256782555444"
+               };
+               scope.$apply();
+
+               expect(scope.invalidContact(scope.contact)).toBeTruthy();
+           });
+
+           it('should be invalid when no last name is supplied', function () {
+               scope.contact = {
+                   firstName: "Dudette",
+                   lastName: "",
+                   phone: "+256782555444"
+               };
+               scope.$apply();
+
+               expect(scope.invalidContact(scope.contact)).toBeTruthy();
+           });
+        });
+
+        describe('with valid fields', function () {
+            it('should be valid when full name and phone number are supplied', function () {
+                scope.contact = {
+                    firstName: "Dudette",
+                    lastName: "Awesome",
+                    phone: "+256782555444"
+                };
+                scope.$apply();
+
+                expect(scope.invalidContact(scope.contact)).toBeFalsy();
+            });
+        })
+    });
+
     describe('when distributionPlanLineItems list on scope changes, ', function () {
         it('the selected sales order item quantityLeft attribute should be updated', function () {
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
