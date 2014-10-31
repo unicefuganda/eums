@@ -1,7 +1,6 @@
 import json
 
-from rest_framework.test import APITestCase
-
+from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
@@ -16,7 +15,7 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 ENDPOINT_URL = BACKEND_URL + 'responses/'
 
 
-class DistributionPlanEndPointTest(APITestCase):
+class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
     def xtest_should_provide_summary_data_from_node_response(self):
         ip_node = DistributionPlanNodeFactory()
         multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
@@ -33,14 +32,15 @@ class DistributionPlanEndPointTest(APITestCase):
                                                              item=item)
         line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item_one, status='completed')
 
-        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=line_item_run, question=multiple_choice_question,
+        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=line_item_run,
+                                                          question=multiple_choice_question,
                                                           value=yes_option)
         numeric_answer_one = NumericAnswerFactory(line_item_run=line_item_run, value=80, question=numeric_question)
 
         url = "%s%d/" % (ENDPOINT_URL, node.consignee.id)
 
         response = self.client.get(url, format='json')
-        print "*"*20, response
+        print "*" * 20, response
 
         response_data = json.loads(response)
         consignee = node.consignee

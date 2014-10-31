@@ -1,4 +1,4 @@
-from rest_framework.test import APITestCase
+from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
@@ -11,7 +11,7 @@ from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
-class DistributionPlanResponsesEndpointTest(APITestCase):
+class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
     def test_gets_all_response_for_node_consignee(self):
         multichoice_question = MultipleChoiceQuestionFactory(label='productReceived')
         yes = multichoice_question.option_set.first()

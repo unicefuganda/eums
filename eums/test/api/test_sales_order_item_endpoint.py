@@ -1,13 +1,12 @@
-from rest_framework.test import APITestCase
-
 from eums.test.api.api_test_helpers import create_item, create_sales_order, create_sales_order_item
+from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 
 
 ENDPOINT_URL = BACKEND_URL + 'sales-order-item/'
 
 
-class SalesOrderEndPointTest(APITestCase):
+class SalesOrderEndPointTest(AuthenticatedAPITestCase):
     def test_should_create_sales_order(self):
         item = create_item(self)
         sales_order = create_sales_order(self)

@@ -1,7 +1,5 @@
 import datetime
 
-from django.contrib.auth.models import User
-
 from eums.models import Programme, ItemUnit, Item
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -65,7 +63,6 @@ def make_line_item_details(test_case, node_id=None):
                            'delivery_date': '2014-01-21'}
 
     sales_item_id = create_sales_order_item(test_case, sales_order_details)['id']
-
 
     consignee_id = create_consignee(test_case)['id']
 

@@ -1,7 +1,6 @@
-from rest_framework.test import APITestCase
-
 from eums.test.api.api_test_helpers import create_distribution_plan_node, create_distribution_plan_line_item, \
     make_line_item_details, create_consignee
+from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
 
@@ -9,8 +8,9 @@ from eums.test.config import BACKEND_URL
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
 
-class DistributionPlanNodeEndpoint(APITestCase):
+class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
+        super(DistributionPlanNodeEndpointTest, self).setUp()
         self.MIDDLEMAN_POSITION = 'MIDDLE_MAN'
         self.END_USER_POSITION = 'END_USER'
 

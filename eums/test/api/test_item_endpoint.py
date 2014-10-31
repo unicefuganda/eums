@@ -1,13 +1,12 @@
-from rest_framework.test import APITestCase
-
 from eums.test.api.api_test_helpers import create_item_unit
+from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 
 
 ENDPOINT_URL = BACKEND_URL + 'item/'
 
 
-class ItemEndPointTest(APITestCase):
+class ItemEndPointTest(AuthenticatedAPITestCase):
     def test_should_create_item(self):
         unit = create_item_unit(self)
         item_details = {'description': "Item 1", 'unit': unit['id'], 'material_code': "Item Code 1"}

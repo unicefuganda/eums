@@ -1,15 +1,14 @@
 import datetime
 
-from rest_framework.test import APITestCase
-
 from eums.test.api.api_test_helpers import create_sales_order, create_programme
+from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 
 
 ENDPOINT_URL = BACKEND_URL + 'sales-order/'
 
 
-class SalesOrderEndPointTest(APITestCase):
+class SalesOrderEndPointTest(AuthenticatedAPITestCase):
     def test_should_create_sales_order(self):
         programme = create_programme()
         sales_order_details = {'order_number': "25432SW", 'date': datetime.date(2014, 10, 5),
