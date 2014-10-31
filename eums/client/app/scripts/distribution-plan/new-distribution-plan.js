@@ -32,7 +32,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     $('#add-contact-modal').modal('hide');
 
                     var contact = response.data;
-                    var contactInput = $('#contact-select-0');
+                    var contactInput = $('#contact-select-'+$scope.itemIndex);
                     var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
                     contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
 
