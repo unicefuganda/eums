@@ -135,8 +135,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             lineItem.forEndUser = node.tree_position === 'END_USER';
         };
 
-        var formatDate = function (date) {
+        var formatDateForSave = function (date) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        };
+
+        var formatDateForDisplay = function (date) {
+            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
         };
 
         var setDistributionPlanLineItems = function (selectedSalesOrderItem, distributionPlanLineItems) {
@@ -154,7 +158,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             lineItem.item = $scope.selectedSalesOrderItem.information.id;
 
                             var date = new Date(lineItem.planned_distribution_date);
-                            lineItem.plannedDistributionDate = formatDate(date);
+                            lineItem.plannedDistributionDate = formatDateForDisplay(date);
 
                             DistributionPlanNodeService
                                 .getPlanNodeDetails(lineItem.distribution_plan_node)
@@ -178,7 +182,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.addDistributionPlanItem = function () {
             var distributionPlanLineItem = {
                 item: $scope.selectedSalesOrderItem.information.id,
-                plannedDistributionDate: '2014-10-10',
+                plannedDistributionDate: '',
                 targetQuantity: 0,
                 destinationLocation: '',
                 contactPerson: '',
@@ -258,13 +262,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         function saveLineItem(nodeLineItem, nodeId) {
             var lineItemId = nodeLineItem.lineItemId;
             var plannedDate = new Date(nodeLineItem.plannedDistributionDate);
-            nodeLineItem.plannedDistributionDate = formatDate(plannedDate);
 
             var lineItem = {
                 item: nodeLineItem.item,
                 targeted_quantity: nodeLineItem.targetQuantity,
                 distribution_plan_node: nodeId,
-                planned_distribution_date: nodeLineItem.plannedDistributionDate,
+                planned_distribution_date: formatDateForSave(plannedDate),
                 remark: nodeLineItem.remark
             };
 

@@ -476,7 +476,7 @@ describe('NewDistributionPlanController', function () {
 
             var expectedPlanItem = {
                 item: stubSalesOrderItem.information.item.id,
-                plannedDistributionDate: '2014-10-10',
+                plannedDistributionDate: '',
                 targetQuantity: 0,
                 destinationLocation: '',
                 modeOfDelivery: '',
@@ -559,6 +559,7 @@ describe('NewDistributionPlanController', function () {
 
         describe('when saving a node and plan item, ', function () {
             var uiPlanItem;
+            var distributionDateFormatedForSave = '2014-2-3';
 
             beforeEach(function () {
                 uiPlanItem = {
@@ -570,7 +571,7 @@ describe('NewDistributionPlanController', function () {
                     modeOfDelivery: 'WAREHOUSE',
                     item: 1,
                     targetQuantity: 10,
-                    plannedDistributionDate: '2014-02-03',
+                    plannedDistributionDate: '02/03/2014',
                     remark: 'Remark'
                 };
 
@@ -632,7 +633,7 @@ describe('NewDistributionPlanController', function () {
                         item: uiPlanItem.item,
                         targeted_quantity: uiPlanItem.targetQuantity,
                         distribution_plan_node: nodeId,
-                        planned_distribution_date: uiPlanItem.plannedDistributionDate,
+                        planned_distribution_date: distributionDateFormatedForSave,
                         remark: uiPlanItem.remark
                     });
                 });
@@ -698,7 +699,7 @@ describe('NewDistributionPlanController', function () {
                         item: uiPlanItem.item,
                         targeted_quantity: uiPlanItem.targetQuantity,
                         distribution_plan_node: nodeId,
-                        planned_distribution_date: uiPlanItem.plannedDistributionDate,
+                        planned_distribution_date: distributionDateFormatedForSave,
                         remark: uiPlanItem.remark
                     });
                 });
