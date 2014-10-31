@@ -13,6 +13,7 @@
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
         "RESPONSES": "/api/responses/",
+        "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "DATE_ANSWERS": "/api/date-answers/"
     },
     "DISTRICTGEOJSONURL": "http://localhost:8000/static/app/data/districts.json",

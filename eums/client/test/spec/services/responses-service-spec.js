@@ -1,79 +1,49 @@
-describe('Responses Service', function() {
+describe('Responses Service', function () {
     var mockBackend, responsesService, config;
-    var consigneeOneId = 1;
-    var consigneeTwoId = 2;
-    var programmeOneId = 1;
-    var programmeTwoId = 2;
+    var consigneeOneName = 'Name 1';
+    var consigneeTwoName = 'Name 2';
+    var consigneeThreeName = 'Name 3';
+    var consigneeFourName = 'Name 3';
 
-    var reports = [
-        {
-            consignee: consigneeOneId,
-            programme: programmeOneId,
-            total_received: 2,
-            total_not_received: 1,
-            total_distributed: 1
-        },
-        {
-            consignee: consigneeTwoId,
-            programme: programmeOneId,
-            total_received: 2,
-            total_not_received: 1,
-            total_distributed: 2
-        },
-        {
-            consignee: consigneeTwoId,
-            programme: programmeTwoId,
-            total_received: 2,
-            total_not_received: 3,
-            total_distributed: 1
-        }
-    ];
+    var expectedResponses = {'node': consigneeOneName,
+        'children': [
+            {'node': consigneeThreeName,
+                'children': [],
+                'answers': {
+                    'productReceived': 'UNCATEGORISED'}},
+            {'node': consigneeTwoName,
+                'children': [
+                    {
+                        'node': consigneeFourName,
+                        'children': [],
+                        'answers': {
+                            'AmountReceived': '80'}}
+                ],
+                'answers': {'productReceived': 'UNCATEGORISED'}}
+        ],
+        'answers': {'AmountReceived': '80'}};
 
-    beforeEach(function() {
-        module('GlobalStats');
+    beforeEach(function () {
+        module('Responses');
 
-        inject(function(DistributionReportService, $httpBackend, EumsConfig) {
+        inject(function (ResponsesService, $httpBackend, EumsConfig) {
             mockBackend = $httpBackend;
-            responsesService = DistributionReportService;
+            responsesService = ResponsesService;
             config = EumsConfig;
         });
     });
 
-    it('should get report from backend', function(done) {
-        var expectedReports = [
-            {consignee: 1, programme: 1, otherDetails: {}}
-        ];
+    it('should get responses from backend', function (done) {
+        var consigneeId = 1;
+        var salesOrderItemId = 1;
 
-        mockBackend.whenGET(config.BACKEND_URLS.DISTRIBUTION_REPORT).respond(expectedReports);
-        responsesService.getReports().then(function(reports) {
-            expect(reports).toEqual(expectedReports);
+        mockBackend.whenGET(config.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item_id/' + salesOrderItemId)
+            .respond(expectedResponses);
+
+        responsesService.fetchResponses(consigneeId, salesOrderItemId).then(function (responses) {
+            expect(responses).toEqual(expectedResponses);
             done();
         });
         mockBackend.flush();
-    });
-
-    it('should get total stats from report', function() {
-        var totals = responsesService.getTotals(reports);
-        expect(totals).toEqual({ received : 6, notReceived : 5, distributed : 4, notDistributed : 2});
-    });
-
-    it('should get total stats by consignee', function() {
-        var totals = responsesService.getTotals(reports, {consignee: consigneeOneId});
-        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
-    });
-
-    it('should get total stats by programme', function() {
-        var totals = responsesService.getTotals(reports, {programme: programmeOneId});
-        expect(totals).toEqual({ received : 4, notReceived : 2, distributed : 3, notDistributed : 1});
-    });
-
-    it('should get total stats by programme and consignee', function() {
-        var totals = responsesService.getTotals(reports, {programme: programmeOneId, consignee: consigneeOneId});
-        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
-    });
-
-    it('should parse consignee and programme option params to int before getting totals', function() {
-        var totals = responsesService.getTotals(reports, {programme: String(programmeOneId), consignee: String(consigneeOneId)});
-        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
     });
 });

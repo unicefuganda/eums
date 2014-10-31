@@ -1,15 +1,24 @@
 'use strict';
 
 angular.module('Responses', ['eums.config'])
-    .controller('responseController', function ($scope) {
+    .controller('responsesController', function ($scope, $location, ResponsesService) {
         $scope.tableRowExpanded = false;
         $scope.tableRowIndexCurrExpanded = '';
         $scope.tableRowIndexPrevExpanded = '';
         $scope.storeIdExpanded = '';
         $scope.dayDataCollapse = [true, true, true, true, true, true];
-
-
         $scope.transactionShow = 0;
+
+        $scope.consigneeId = 0;
+        $scope.salesOrderItemId = 0;
+
+        console.log($scope.consigneeId);
+        $scope.initialize = function () {
+            ResponsesService.fetchResponses($scope.consigneeId, $scope.salesOrderItemId).then(function (responses) {
+                console.log('IN the initialization code');
+                $scope.responses = responses;
+            });
+        };
 
         $scope.dayDataCollapseFn = function () {
             for (var i = 0; $scope.responsesDataModel.responsesData.length - 1; i += 1) {
@@ -46,10 +55,7 @@ angular.module('Responses', ['eums.config'])
             }
         };
 
-        $scope.responsesDataModel = {
-            'metadata': {
-                'totalResponses': '25'
-            },
+        $scope.responsesData = {
             'responsesData': [
                 {
                     'ip': {
@@ -147,8 +153,8 @@ angular.module('Responses', ['eums.config'])
 
     }).factory('ResponsesService', function ($http, EumsConfig) {
         return {
-            fetchResponses: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE).then(function (response) {
+            fetchResponses: function (consigneeId, salesOrderItemId) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item_id/' + salesOrderItemId).then(function (response) {
                     return response.data;
                 });
             }
