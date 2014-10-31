@@ -107,7 +107,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             lineItem.contactPerson = node.contact_person_id;
             lineItem.modeOfDelivery = node.mode_of_delivery;
             lineItem.destinationLocation = node.location;
-            lineItem.alreadySaved = true;
             lineItem.forEndUser = node.tree_position === 'END_USER';
         };
 
@@ -300,7 +299,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.showSubConsigneeButton = function (item) {
-            return item.alreadySaved && !item.forEndUser;
+            return item.lineItemId && !item.forEndUser;
         };
     }).directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
