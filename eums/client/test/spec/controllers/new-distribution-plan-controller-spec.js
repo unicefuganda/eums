@@ -37,7 +37,7 @@ describe('NewDistributionPlanController', function () {
         id: 1,
         sales_order: '1',
         information: {
-            id : 1,
+            id: 1,
             item: {
                 id: 1,
                 description: 'Test Item',
@@ -550,6 +550,23 @@ describe('NewDistributionPlanController', function () {
                     });
                 });
 
+                it('should save node with end user tree position', function () {
+                    uiPlanItem.forEndUser = true;
+
+                    scope.saveDistributionPlanLineItems();
+                    scope.$apply();
+
+                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                        consignee: 1,
+                        location: 'Kampala',
+                        contact_person_id: '0489284',
+                        distribution_plan: 1,
+                        tree_position: 'END_USER',
+                        mode_of_delivery: 'WAREHOUSE',
+                        parent: null
+                    });
+                });
+
                 it(' the saved node id should be put on the ui plan item', function () {
                     scope.saveDistributionPlanLineItems();
                     scope.$apply();
@@ -581,6 +598,8 @@ describe('NewDistributionPlanController', function () {
 
                     expect(uiPlanItem.lineItemId).toBe(lineItemId);
                 });
+
+
             });
 
             describe(' and a distribution plan item has already been saved, ', function () {

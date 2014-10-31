@@ -96,11 +96,15 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             $scope.selectedSalesOrderItem = newItem;
 
             var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
-            SalesOrderItemService.getSalesOrderItem(selectedSalesOrderItem.information.id).then(function (salesOrderItem){
-                SalesOrderItemService.getTopLevelDistributionPlanLineItems(salesOrderItem).then(function (topLevelLineItems) {
-                    setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
+            SalesOrderItemService
+                .getSalesOrderItem(selectedSalesOrderItem.information.id)
+                .then(function (salesOrderItem) {
+                    SalesOrderItemService
+                        .getTopLevelDistributionPlanLineItems(salesOrderItem)
+                        .then(function (topLevelLineItems) {
+                            setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
+                        });
                 });
-            });
         });
 
         var addNodeDetailsToLineItem = function (lineItem, node) {
@@ -180,15 +184,18 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.invalidLineItems = true;
         $scope.$watch('distributionPlanLineItems', function (newPlanItems) {
+            function invalidFields(item) {
+                return item.targetQuantity <= 0 ||
+                    !item.consignee ||
+                    !item.destinationLocation ||
+                    !item.contactPerson ||
+                    !item.modeOfDelivery ||
+                    !item.plannedDistributionDate;
+            }
+
             function anyInvalidFields(lineItems) {
                 var itemsWithInvalidFields = lineItems.filter(function (item) {
-                    return $scope.selectedSalesOrderItem.quantityLeft < 0 ||
-                        item.targetQuantity <= 0 ||
-                        !item.consignee ||
-                        !item.destinationLocation ||
-                        !item.contactPerson ||
-                        !item.modeOfDelivery ||
-                        !item.plannedDistributionDate;
+                    return $scope.selectedSalesOrderItem.quantityLeft < 0 || invalidFields(item);
                 });
                 return itemsWithInvalidFields.length > 0;
             }
@@ -220,7 +227,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 location: uiPlanItem.destinationLocation,
                 contact_person_id: uiPlanItem.contactPerson,
                 distribution_plan: $scope.distributionPlan,
-                tree_position: 'MIDDLE_MAN',
+                tree_position: uiPlanItem.forEndUser ? 'END_USER' : 'MIDDLE_MAN',
                 mode_of_delivery: uiPlanItem.modeOfDelivery,
                 parent: parentNodeId()
             };
