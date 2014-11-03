@@ -7,5 +7,9 @@ from eums.services.flow_scheduler import schedule_run_for
 
 @receiver(post_save, sender=DistributionPlanLineItem)
 def on_post_save_line_item(sender, **kwargs):
-    line_item = kwargs['instance']
-    schedule_run_for(line_item)
+    created = kwargs['created']
+    update_fields = kwargs['update_fields']
+    if True == created or update_fields is not None:
+        print 'saving'
+        line_item = kwargs['instance']
+        schedule_run_for(line_item)

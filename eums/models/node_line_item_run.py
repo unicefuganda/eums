@@ -26,9 +26,9 @@ class NodeLineItemRun(models.Model):
         return list(numeric_answers) + list(text_answers) + list(multiple_choice_answers)
 
     def __str__(self):
-        return "Item: %s - Node - %s - Phone: %s" % (self.node_line_item.item.description,
-                                                     self.node_line_item.distribution_plan_node.tree_position,
-                                                     self.phone)
+        return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node_line_item.item.description,
+                                                               self.node_line_item.distribution_plan_node.tree_position,
+                                                               self.phone, self.status)
 
     @classmethod
     def current_run_for_node(cls, node):
@@ -45,4 +45,4 @@ class NodeLineItemRun(models.Model):
         latest_allowed_date = today - delivery_status_check_delay - max_allowed_reply_period
 
         return NodeLineItemRun.objects.filter(Q(status=NodeLineItemRun.STATUS.scheduled) &
-                                       Q(node_line_item__planned_distribution_date__lt=latest_allowed_date))
+                                              Q(node_line_item__planned_distribution_date__lt=latest_allowed_date))
