@@ -16,7 +16,7 @@ ENDPOINT_URL = BACKEND_URL + 'responses/'
 
 
 class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
-    def xtest_should_provide_summary_data_from_node_response(self):
+    def test_should_provide_summary_data_from_node_response(self):
         ip_node = DistributionPlanNodeFactory()
         multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
         yes_option = OptionFactory(text='Yes', question=multiple_choice_question)
@@ -40,9 +40,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         url = "%s%d/" % (ENDPOINT_URL, node.consignee.id)
 
         response = self.client.get(url, format='json')
-        print "*" * 20, response
 
-        response_data = json.loads(response)
         consignee = node.consignee
 
         expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'node': node.id,
@@ -51,4 +49,4 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
                          u'%s' % multiple_choice_question.label: u'%s' % multiple_answer_one.format()}
 
         self.assertEqual(response.status_code, 200)
-        self.assertDictContainsSubset(expected_data, response_data[0])
+        self.assertDictContainsSubset(expected_data, response.data[0])

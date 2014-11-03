@@ -249,7 +249,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 location: uiPlanItem.destinationLocation,
                 contact_person_id: uiPlanItem.contactPerson,
                 distribution_plan: $scope.distributionPlan,
-                tree_position: uiPlanItem.forEndUser ? 'END_USER' : 'MIDDLE_MAN',
+                tree_position: uiPlanItem.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
                 mode_of_delivery: uiPlanItem.modeOfDelivery,
                 parent: parentNodeId()
             };

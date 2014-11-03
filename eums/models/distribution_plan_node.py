@@ -6,6 +6,7 @@ from eums.models import DistributionPlan, Consignee
 
 
 class DistributionPlanNode(models.Model):
+    IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     MIDDLE_MAN = 'MIDDLE_MAN'
     END_USER = 'END_USER'
     DIRECT_DELIVERY = 'DIRECT_DELIVERY'
@@ -18,7 +19,8 @@ class DistributionPlanNode(models.Model):
         (DIRECT_DELIVERY, "Direct Delivery"), (THROUGH_WAREHOUSE, 'Warehouse')))
     consignee = models.ForeignKey(Consignee)
     contact_person_id = models.CharField(max_length=255)
-    tree_position = models.CharField(max_length=255, choices=((MIDDLE_MAN, 'Middleman'), (END_USER, 'End User')))
+    tree_position = models.CharField(max_length=255, choices=((MIDDLE_MAN, 'Middleman'), (END_USER, 'End User'),
+                                                              (IMPLEMENTING_PARTNER, 'Implementing Partner')))
 
     def build_contact(self):
         response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))

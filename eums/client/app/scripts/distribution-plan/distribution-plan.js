@@ -114,10 +114,10 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
             },
             getImplementingPartners: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=implementing_partner');
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER');
             },
             getMiddleMen: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=middle_man').then(function (response) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=MIDDLE_MAN').then(function (response) {
                     return response.data;
                 });
             },

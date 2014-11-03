@@ -211,7 +211,7 @@ describe('UNICEF IP', function () {
                 4
             ],
             'consignee': 1,
-            'tree_position': 'MIDDLE_MAN',
+            'tree_position': 'IMPLEMENTING_PARTNER',
             'contact_person_id': '542bfa6308453c32ffd4cadf'
         }
 

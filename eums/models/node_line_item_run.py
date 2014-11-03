@@ -26,7 +26,9 @@ class NodeLineItemRun(models.Model):
         return list(numeric_answers) + list(text_answers) + list(multiple_choice_answers)
 
     def __str__(self):
-        return "Item: %s - Phone: %s" % (self.node_line_item.item.description, self.phone)
+        return "Item: %s - Node - %s - Phone: %s" % (self.node_line_item.item.description,
+                                                     self.node_line_item.distribution_plan_node.tree_position,
+                                                     self.phone)
 
     @classmethod
     def current_run_for_node(cls, node):

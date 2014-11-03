@@ -586,7 +586,24 @@ describe('NewDistributionPlanController', function () {
                     deferredPlanNode.resolve({id: nodeId});
                 });
 
-                it('a node for the plan item should be saved', function () {
+                it('a node for the plan item should be saved with no parent id as implementing partner', function () {
+                    scope.saveDistributionPlanLineItems();
+                    scope.$apply();
+
+                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                        consignee: 1,
+                        location: 'Kampala',
+                        contact_person_id: '0489284',
+                        distribution_plan: 1,
+                        tree_position: 'IMPLEMENTING_PARTNER',
+                        mode_of_delivery: 'WAREHOUSE',
+                        parent: null
+                    });
+                });
+
+                it('should save node with middle man user tree position', function () {
+                    uiPlanItem.forEndUser = false;
+                    scope.planNode = {id: 1};
                     scope.saveDistributionPlanLineItems();
                     scope.$apply();
 
@@ -597,7 +614,7 @@ describe('NewDistributionPlanController', function () {
                         distribution_plan: 1,
                         tree_position: 'MIDDLE_MAN',
                         mode_of_delivery: 'WAREHOUSE',
-                        parent: null
+                        parent: 1
                     });
                 });
 
@@ -677,7 +694,7 @@ describe('NewDistributionPlanController', function () {
                         location: 'Kampala',
                         contact_person_id: '0489284',
                         distribution_plan: 1,
-                        tree_position: 'MIDDLE_MAN',
+                        tree_position: 'IMPLEMENTING_PARTNER',
                         mode_of_delivery: 'WAREHOUSE',
                         parent: null
                     });
