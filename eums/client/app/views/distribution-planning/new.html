@@ -103,8 +103,7 @@
                         <th class="table-select-header-width">District</th>
                         <th>Mode of Delivery</th>
                         <th>Remark</th>
-                        <th></th>
-
+                        <th><span ng-show="planNode">End User</span></th>
                         <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
@@ -183,7 +182,7 @@
                                         off-color="warning"
                                         wrapper-class='enduser'
                                         switchSize="normal"
-                                        label-text="End User">
+                                        label-text="">
                                 </div>
                                 <button class="btn btn-primary"
                                         ng-show="showSubConsigneeButton(item)"
