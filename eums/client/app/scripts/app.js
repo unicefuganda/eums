@@ -42,7 +42,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 controller: 'IPStockReportController'
             }).when('/distribution-plan-responses', {
                 templateUrl: '/static/app/views/reports/responses.html',
-                controller: 'responseController'
+                controller: 'responsesController'
             })
             .otherwise({
                 redirectTo: '/'

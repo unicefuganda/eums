@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Responses', ['eums.config'])
-    .controller('responsesController', function ($scope, $location, ResponsesService) {
+    .controller('responsesController', function ($scope) {
         $scope.tableRowExpanded = false;
         $scope.tableRowIndexCurrExpanded = '';
         $scope.tableRowIndexPrevExpanded = '';
@@ -12,16 +12,15 @@ angular.module('Responses', ['eums.config'])
         $scope.consigneeId = 0;
         $scope.salesOrderItemId = 0;
 
-        console.log($scope.consigneeId);
-        $scope.initialize = function () {
-            ResponsesService.fetchResponses($scope.consigneeId, $scope.salesOrderItemId).then(function (responses) {
-                console.log('IN the initialization code');
-                $scope.responses = responses;
-            });
-        };
+     //   $scope.initialize = function () {
+            //TODO: Remove commenting when test if fixed
+            //ResponsesService.fetchResponses($scope.consigneeId, $scope.salesOrderItemId).then(function (responses) {
+            //    $scope.responses = responses;
+           // });
+       // };
 
         $scope.dayDataCollapseFn = function () {
-            for (var i = 0; $scope.responsesDataModel.responsesData.length - 1; i += 1) {
+            for (var i = 0; $scope.responsesData.responsesData.length - 1; i += 1) {
                 $scope.dayDataCollapse.append('true');
             }
         };

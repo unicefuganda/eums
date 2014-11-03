@@ -75,7 +75,7 @@
                         <th>Comments</th>
                     </tr>
                     </thead>
-                    <tbody ng-repeat="data in responsesDataModel.responsesData">
+                    <tbody ng-repeat="data in responsesData.responsesData">
                     <tr id="data.ip.consignee" class="clickableRow"
                         title="Click to toggle collapse/expand day summaries for this store."
                         ng-click="selectTableRow($index, data.ip.consignee)">
@@ -108,7 +108,7 @@
                                         <tbody ng-repeat="dayData in data.data.dayData">
                                         <tr>
                                             <td class="pullright">
-                                                <button type="btn btn-small"
+                                                <button type="btn btn-small btn-primary"
                                                         title="Click to show transactions for this specific day..."
                                                         ng-click="dayData.showTransactions=!dayData.showTransactions"><i
                                                         class="icon-list"></i>
