@@ -10,6 +10,5 @@ def on_post_save_line_item(sender, **kwargs):
     created = kwargs['created']
     update_fields = kwargs['update_fields']
     if True == created or update_fields is not None:
-        print 'saving'
         line_item = kwargs['instance']
         schedule_run_for(line_item)
