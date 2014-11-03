@@ -1,215 +1,227 @@
 <div class="container-fluid">
-    <div ng-controller="NewDistributionPlanController" class="content">
-        <ng-toast></ng-toast>
+<div ng-controller="NewDistributionPlanController" class="content">
+<ng-toast></ng-toast>
 
-        <div ng-show="planSaved">
-            <alert type="success">Plan saved.</alert>
-        </div>
-        <h4 class="page-header">Create A Distribution Plan for Sales Order:
-            <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
+<div ng-show="planSaved">
+    <alert type="success">Plan saved.</alert>
+</div>
+<h4 class="page-header" ng-show="showExtraColumn">Create A Distribution Plan for Sales Order:
+    <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
             <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
             </span>
-        </h4>
+</h4>
+<h4 class="page-header" ng-show="!showExtraColumn">Create an IP report for Sales Order:
+    <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
+            <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
+            </span>
+</h4>
 
-        <div ng-show="selectedSalesOrderItem">
-            <alert ng-show="selectedSalesOrderItem.quantityLeft <= 0" type="danger">All quantities have been assigned
-                for this item.
-            </alert>
-        </div>
+<div ng-show="selectedSalesOrderItem">
+    <alert ng-show="selectedSalesOrderItem.quantityLeft <= 0" type="danger">All quantities have been assigned
+        for this item.
+    </alert>
+</div>
 
-        <div class="row">
-            <div class="form-horizontal">
-                <div class="form-group col-lg-4" ng-show="!planNode">
-                    <div class="col-lg-12">
-                        <label for="select-sales-order" class="col-lg-4 control-label description-label">
-                            Item Description:
-                        </label>
+<div class="row">
+    <div class="form-horizontal">
+        <div class="form-group col-lg-4" ng-show="!planNode">
+            <div class="col-lg-12">
+                <label for="select-sales-order" class="col-lg-4 control-label description-label">
+                    Item Description:
+                </label>
 
-                        <div class="col-lg-8">
-                            <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
-                                    class="form-control" ng-change="selectSalesOrderItem()"
-                                    ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                                <option value="">Select Item</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem">
-                        <label for="select-sales-order" class="col-lg-4 control-label description-label">
-                            Track Item:
-                        </label>
-
-                        <div class="col-lg-8">
-                            <input bs-switch type="checkbox"
-                                state="{{ item.forEndUser }}"
-                                ng-model="item.forEndUser"
-                                on-text="Yes"
-                                off-text="No"
-                                on-color="success"
-                                off-color="danger"
-                                wrapper-class='enduser'
-                                switchSize="large"
-                                label-text="">
-                         </div>
-                    </div>
-                </div>
-
-                <div class="form-group col-lg-4" ng-show="planNode">
-                    <button type="button btn-primary"
-                            ng-click="previousConsignee(planNode)"
-                            class="btn btn-primary col-lg-offset-1">Back to Previous Consignee
-                    </button>
+                <div class="col-lg-8">
+                    <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
+                            class="form-control" ng-change="selectSalesOrderItem()"
+                            ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                        <option value="">Select Item</option>
+                    </select>
                 </div>
             </div>
+            <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem">
+                <label for="select-sales-order" class="col-lg-4 control-label description-label">
+                    Track Item:
+                </label>
 
-            <div ng-show="selectedSalesOrderItem" class="material-items well col-lg-7 pull-right">
-                <div class="col-lg-6 no-side-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedSalesOrderItem.materialCode }}</span>
-                            Material Code
-                        </li>
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedSalesOrderItem.display }}</span>
-                            Item Description
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-6 no-side-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedSalesOrderItem.quantity | number }}</span>
-                            Total Quantity
-                        </li>
-                        <li class="list-group-item">
-                            <span class="badge alert-info">{{ selectedSalesOrderItem.unit }}</span>
-                            Unit
-                        </li>
-                    </ul>
+                <div class="col-lg-8">
+                    <input bs-switch type="checkbox"
+                           state="{{ item.forEndUser }}"
+                           ng-model="item.forEndUser"
+                           on-text="Yes"
+                           off-text="No"
+                           on-color="success"
+                           off-color="danger"
+                           wrapper-class='enduser'
+                           switchSize="large"
+                           label-text="">
                 </div>
             </div>
         </div>
-        <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default"
-             cg-busy="{promise: savePlanPromise, message: 'Saving Plan'}">
-            <div class="panel-body">
-                <div ng-show="distributionPlanLineItems.length">
-                    <table id="distributionPlanTable"
-                           class="table table-bordered table-striped table-hover table-condensed">
-                        <th id="input-available-quantity-header">Avail. Qty</th>
-                        <th id="input-header">Unit</th>
-                        <th>Targeted Qty</th>
-                        <th id="input-planned-distribution-date-header">Distribution Date</th>
-                        <th class="table-select-header-width">Consignee</th>
-                        <th class="table-contact-select-header-width">Contact Person</th>
-                        <th class="table-select-header-width">District</th>
-                        <th>Mode of Delivery</th>
-                        <th>Remark</th>
-                        <th><span ng-show="planNode">End User</span></th>
-                        <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
-                            <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
-                            <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
-                            <td>
-                                <input type="number" id="input-quantity" class="form-control"
-                                       ng-model="item.targetQuantity" min=0>
-                            </td>
-                            <td>
-                                <p class="input-group" eums-date-picker>
-                                    <input type="text"
-                                           class="form-control"
-                                           readonly="true"
-                                           datepicker-popup="dd/MM/yyyy"
-                                           ng-model="item.plannedDistributionDate"
-                                           is-open="datepicker[$index]"
-                                           datepicker-options="dateOptions" show-button-bar="false"
-                                           ng-required="true"
-                                           value="{{ item.plannedDistributionDate | date : 'dd/MM/yyyy' }}"
-                                           required="required"/>
+
+        <div class="form-group col-lg-4" ng-show="planNode">
+            <button type="button btn-primary"
+                    ng-click="previousConsignee(planNode)"
+                    class="btn btn-primary col-lg-offset-1">Back to Previous Consignee
+            </button>
+        </div>
+    </div>
+
+    <div ng-show="selectedSalesOrderItem" class="material-items well col-lg-7 pull-right">
+        <div class="col-lg-6 no-side-padding">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge alert-info">{{ selectedSalesOrderItem.materialCode }}</span>
+                    Material Code
+                </li>
+                <li class="list-group-item">
+                    <span class="badge alert-info">{{ selectedSalesOrderItem.display }}</span>
+                    Item Description
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6 no-side-padding">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge alert-info">{{ selectedSalesOrderItem.quantity | number }}</span>
+                    Total Quantity
+                </li>
+                <li class="list-group-item">
+                    <span class="badge alert-info">{{ selectedSalesOrderItem.unit }}</span>
+                    Unit
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default"
+     cg-busy="{promise: savePlanPromise, message: 'Saving Plan'}">
+    <div class="panel-body">
+        <div ng-show="distributionPlanLineItems.length">
+            <table id="distributionPlanTable"
+                   class="table table-bordered table-striped table-hover table-condensed">
+                <th id="input-available-quantity-header">Avail. Qty</th>
+                <th id="input-header">Unit</th>
+                <th id="input-quantity-header">Delivered Qty</th>
+                <th id="input-planned-distribution-date-header">Date Delivered</th>
+                <th class="table-select-header-width">Consignee</th>
+                <th class="table-contact-select-header-width">Contact Person</th>
+                <th class="table-select-header-width">District</th>
+                <<<<<<< HEAD
+                <th>Mode of Delivery</th>
+                <th>Remark</th>
+                <th><span ng-show="planNode">End User</span></th>
+                =======
+                <th ng-show="showExtraColumn">Mode of Delivery</th>
+                <th ng-show="showExtraColumn">Remark</th>
+                <th></th>
+
+                >>>>>>> [Tunji] X made changes to delivery report page to diffrentiate it from distribution plan page
+                <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
+                    <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
+                    <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
+                    <td>
+                        <input type="number" id="input-quantity" class="form-control"
+                               ng-model="item.targetQuantity" min=0>
+                    </td>
+                    <td>
+                        <p class="input-group" eums-date-picker>
+                            <input type="text"
+                                   class="form-control"
+                                   readonly="true"
+                                   datepicker-popup="dd/MM/yyyy"
+                                   ng-model="item.plannedDistributionDate"
+                                   is-open="datepicker[$index]"
+                                   datepicker-options="dateOptions" show-button-bar="false"
+                                   ng-required="true"
+                                   value="{{ item.plannedDistributionDate | date : 'dd/MM/yyyy' }}"
+                                   required="required"/>
                                   <span class="input-group-btn">
 
                                     <button type="button" class="btn btn-default" ng-click="open($event, $index )">
                                         <i class="glyphicon glyphicon-calendar"></i></button>
                                   </span>
-                                </p>
-                            </td>
-                            <td class="table-select-max-width">
-                                <input type="hidden" search-from-list list="{{ consignees }}"
-                                       ng-model="item.consignee"
-                                       value="{{ item.consignee }}">
-                            </td>
+                        </p>
+                    </td>
+                    <td class="table-select-max-width">
+                        <input type="hidden" search-from-list list="{{ consignees }}"
+                               ng-model="item.consignee"
+                               value="{{ item.consignee }}">
+                    </td>
 
-                            <td class="table-select-max-width">
-                                <div class="form-inline">
-                                    <div class="form-group table-contact-form-group col-md-10">
-                                        <input type="hidden" search-contacts
-                                               value="{{ item.contactPerson }}"
-                                               required="required"
-                                               ng-model="item.contactPerson"
-                                               ng-attr-id="{{'contact-select-' + $index}}">
-                                    </div>
-                                    <div class="form-group table-contact-form-group col-md-2">
-                                        <button type="button"
-                                                ng-click="addContact($index, item)"
-                                                class="btn btn-default ">
-                                            <i class="glyphicon glyphicon-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td class="table-select-max-width">
-                                <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="item.destinationLocation"
-                                       value="{{ item.destinationLocation }}">
-                            </td>
-                            <td id="input-mode-of-delivery">
-                                <input type="hidden" search-from-list
-                                       list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"},
-                                        {"id": "WAREHOUSE", "name": "Warehouse"}]'
-                                       ng-model="item.modeOfDelivery"
-                                       value="{{ item.modeOfDelivery }}">
-                            </td>
-                            <td>
-                                <input type="text" class="input form-control" ng-model="item.remark"
-                                       value="{{ item.remark }}">
-                            </td>
-                            <td>
-                                <div id="end-user-checkbox" ng-show="planNode">
-                                    <input bs-switch type="checkbox"
-                                        state="{{ item.forEndUser }}"
-                                        ng-model="item.forEndUser"
-                                        on-text="Yes"
-                                        off-text="No"
-                                        on-color="success"
-                                        off-color="warning"
-                                        wrapper-class='enduser'
-                                        switchSize="normal">
-                                </div>
-                                <button class="btn btn-primary"
-                                        ng-show="showSubConsigneeButton(item)"
-                                        ng-click="addSubConsignee(item)">
-                                    Sub-Consignees
+                    <td class="table-select-max-width">
+                        <div class="form-inline">
+                            <div class="form-group table-contact-form-group col-md-10">
+                                <input type="hidden" search-contacts
+                                       value="{{ item.contactPerson }}"
+                                       required="required"
+                                       ng-model="item.contactPerson"
+                                       ng-attr-id="{{ 'contact-select-' + $index}}">
+                            </div>
+                            <div class="form-group table-contact-form-group col-md-2">
+                                <button type="button"
+                                        ng-click="addContact($index, item)"
+                                        class="btn btn-default ">
+                                    <i class="glyphicon glyphicon-plus"></i>
                                 </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                            </div>
+                        </div>
+                    </td>
 
-            </div>
-            <div class="pad-20 row">
-                <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
-                        type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()">
-                    <i class="glyphicon glyphicon-plus"> </i>
-                    {{ consignee_button_text }}
-                </button>
-                <div ng-show="distributionPlanLineItems.length" class="pull-right">
-                    <button type="button" class="btn btn-primary"
-                            ng-click="saveDistributionPlanLineItems()"
-                            ng-disabled="invalidLineItems">
-                        <i class="glyphicon glyphicon-floppy-save"> </i>
-                        Save
-                    </button>
-                </div>
-            </div>
+                    <td class="table-select-max-width">
+                        <input type="hidden" search-from-list list="{{ districts }}"
+                               ng-model="item.destinationLocation"
+                               value="{{ item.destinationLocation }}">
+                    </td>
+                    <td id="input-mode-of-delivery" ng-show="showExtraColumn">
+                        <input type="hidden" search-from-list
+                               list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"},
+                                        {"id": "WAREHOUSE", "name": "Warehouse"}]'
+                               ng-model="item.modeOfDelivery"
+                               value="{{ item.modeOfDelivery }}">
+                    </td>
+                    <td ng-show="showExtraColumn">
+                        <input type="text" class="input form-control" ng-model="item.remark"
+                               value="{{ item.remark }}">
+                    </td>
+                    <td>
+                        <div id="end-user-checkbox" ng-show="planNode || !showExtraColumn">
+                            <input bs-switch type="checkbox"
+                                   state="{{ item.forEndUser }}"
+                                   ng-model="item.forEndUser"
+                                   on-text="Yes"
+                                   off-text="No"
+                                   on-color="success"
+                                   off-color="warning"
+                                   wrapper-class='enduser'
+                                   switchSize="normal">
+                        </div>
+                        <button class="btn btn-primary"
+                                ng-show="showSubConsigneeButton(item) && showExtraColumn"
+                                ng-click="addSubConsignee(item)">
+                            Sub-Consignees
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <div class="pad-20 row">
+        <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
+                type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()">
+            <i class="glyphicon glyphicon-plus"> </i>
+            {{ consignee_button_text }}
+        </button>
+        <div ng-show="distributionPlanLineItems.length" class="pull-right">
+            <button type="button" class="btn btn-primary"
+                    ng-click="saveDistributionPlanLineItems()"
+                    ng-disabled="invalidLineItems">
+                <i class="glyphicon glyphicon-floppy-save"> </i>
+                Save
+            </button>
         </div>
     </div>
-    <ng-include src="'/static/app/views/distribution-planning/partials/contact-modal.html'"></ng-include>
+</div>
+</div>
+<ng-include src="'/static/app/views/distribution-planning/partials/contact-modal.html'"></ng-include>
 </div>

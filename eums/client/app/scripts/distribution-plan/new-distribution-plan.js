@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip', 'ngToast', 'Contact'])
-    .controller('NewDistributionPlanController',function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast, ContactService) {
+    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast, ContactService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
@@ -9,6 +9,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.contact = {};
         $scope.lineItem = {};
         $scope.itemIndex = '';
+
+        $scope.showExtraColumn = $location.path().substr(1, 15) !== 'delivery-report';
 
         function createToast(message, klass) {
             ngToast.create({
@@ -76,7 +78,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     };
                     formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
-                    if(formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId){
+                    if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
                         $scope.selectedSalesOrderItem = formattedSalesOrderItem;
                         $scope.selectSalesOrderItem();
                     }
@@ -317,7 +319,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.addSubConsignee = function (lineItem) {
             $location.path(
-                '/delivery-report/new/' +
+                    '/delivery-report/new/' +
                     $scope.selectedSalesOrder.id + '-' +
                     $scope.selectedSalesOrderItem.information.id + '-' +
                     lineItem.nodeId
@@ -331,7 +333,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.previousConsignee = function (planNode) {
             if (planNode.parent) {
                 $location.path(
-                    '/delivery-report/new/' +
+                        '/delivery-report/new/' +
                         $scope.selectedSalesOrder.id + '-' +
                         $scope.selectedSalesOrderItem.information.id + '-' +
                         planNode.parent
@@ -339,7 +341,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
             else {
                 $location.path(
-                    '/delivery-report/new/' +
+                        '/delivery-report/new/' +
                         $scope.selectedSalesOrder.id + '-' +
                         $scope.selectedSalesOrderItem.information.id
                 );
