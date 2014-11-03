@@ -401,6 +401,7 @@ describe('NewDistributionPlanController', function () {
                 materialCode: stubSalesOrderItem.information.item.materialCode, quantity: stubSalesOrderItem.quantity,
                 unit: stubSalesOrderItem.information.item.unit.name, information: stubSalesOrderItem
             };
+            scope.selectSalesOrderItem();
             scope.$apply();
 
             expect(mockLineItemService.getLineItem).toHaveBeenCalledWith(1);
@@ -427,6 +428,7 @@ describe('NewDistributionPlanController', function () {
                 unit: stubSalesOrderItem.information.item.unit.name,
                 information: stubSalesOrderItem
             };
+            scope.selectSalesOrderItem();
             scope.$apply();
 
             expect(scope.distributionPlanLineItems).toEqual([stubLineItem, stubLineItem]);

@@ -26,7 +26,7 @@
 
                     <div class="col-lg-8">
                         <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
-                                class="form-control"
+                                class="form-control" ng-change="selectSalesOrderItem"
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
                             <option value="" selected="selected">Select Item</option>
                         </select>

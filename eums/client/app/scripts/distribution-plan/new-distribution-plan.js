@@ -76,8 +76,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     };
                     formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
-                    if(formattedSalesOrderItem.information.id === $routeParams.salesOrderItemId){
+                    if(formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId){
                         $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                        $scope.selectSalesOrderItem();
                     }
 
                     $scope.salesOrderItems.push(formattedSalesOrderItem);
@@ -110,13 +111,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
 
-        $scope.$watch('selectedSalesOrderItem', function (newItem) {
-            if (!newItem || $routeParams.distributionPlanNodeId) {
-                return;
-            }
-
+        $scope.selectSalesOrderItem = function () {
             $scope.distributionPlanLineItems = [];
-            $scope.selectedSalesOrderItem = newItem;
 
             var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
             SalesOrderItemService
@@ -128,7 +124,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
                         });
                 });
-        });
+        };
 
         var addNodeDetailsToLineItem = function (lineItem, node) {
             lineItem.consignee = node.consignee.id;
