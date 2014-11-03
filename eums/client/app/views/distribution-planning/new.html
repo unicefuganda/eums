@@ -18,8 +18,8 @@
         </div>
 
         <div class="row">
-            <div class="form-horizontal" ng-show="!planNode">
-                <div class="form-group col-lg-4">
+            <div class="form-horizontal">
+                <div class="form-group col-lg-4" ng-show="!planNode">
                     <label for="select-sales-order" class="col-lg-4 control-label description-label">
                         Item Description:
                     </label>
@@ -31,6 +31,12 @@
                             <option value="" selected="selected">Select Item</option>
                         </select>
                     </div>
+                </div>
+                 <div class="form-group col-lg-4" ng-show="planNode">
+                    <button type="button btn-primary"
+                            ng-click="previousConsignee(planNode)"
+                            class="btn btn-primary col-lg-offset-1">Back to Previous Consignee
+                    </button>
                 </div>
             </div>
 

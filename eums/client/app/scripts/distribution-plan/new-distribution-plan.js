@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip', 'ngToast', 'Contact'])
-    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast, ContactService) {
+    .controller('NewDistributionPlanController',function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast, ContactService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
@@ -32,7 +32,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     $('#add-contact-modal').modal('hide');
 
                     var contact = response.data;
-                    var contactInput = $('#contact-select-'+$scope.itemIndex);
+                    var contactInput = $('#contact-select-' + $scope.itemIndex);
                     var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
                     contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
 
@@ -75,6 +75,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         information: result
                     };
                     formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+
+                    if(formattedSalesOrderItem.information.id === $routeParams.salesOrderItemId){
+                        $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                    }
 
                     $scope.salesOrderItems.push(formattedSalesOrderItem);
                 });
@@ -318,14 +322,32 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.addSubConsignee = function (lineItem) {
             $location.path(
                 '/delivery-report/new/' +
-                $scope.selectedSalesOrder.id + '-' +
-                lineItem.nodeId + '-' +
-                $scope.selectedSalesOrderItem.information.id
+                    $scope.selectedSalesOrder.id + '-' +
+                    $scope.selectedSalesOrderItem.information.id + '-' +
+                    lineItem.nodeId
             );
         };
 
         $scope.showSubConsigneeButton = function (item) {
             return item.lineItemId && !item.forEndUser;
+        };
+
+        $scope.previousConsignee = function (planNode) {
+            if (planNode.parent) {
+                $location.path(
+                    '/delivery-report/new/' +
+                        $scope.selectedSalesOrder.id + '-' +
+                        $scope.selectedSalesOrderItem.information.id + '-' +
+                        planNode.parent
+                );
+            }
+            else {
+                $location.path(
+                    '/delivery-report/new/' +
+                        $scope.selectedSalesOrder.id + '-' +
+                        $scope.selectedSalesOrderItem.information.id
+                );
+            }
         };
     }).directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
