@@ -28,7 +28,7 @@
                         <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
                                 class="form-control" ng-change="selectSalesOrderItem"
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="" selected="selected">Select Item</option>
+                            <option value="">Select Item</option>
                         </select>
                     </div>
                 </div>
@@ -152,12 +152,11 @@
                                        value="{{ item.remark }}">
                             </td>
                             <td>
-                                <div id="end-user-checkbox" class="checkbox-inline" ng-show="planNode">
-                                    <label>
-                                        <input type="checkbox"
-                                               ng-model="item.forEndUser">
-                                        End User
-                                    </label>
+                                <div id="end-user-checkbox" ng-show="planNode">
+                                    <input bs-switch type="checkbox" state="{{ item.forEndUser }}"
+                                        ng-model="item.forEndUser" on-text="Yes"
+                                        off-text="No" on-color="success" off-color="warning"
+                                        wrapper-class='enduser' switchSize="normal" label-text="End User">
                                 </div>
                                 <button class="btn btn-primary"
                                         ng-show="showSubConsigneeButton(item)"
