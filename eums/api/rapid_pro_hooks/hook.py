@@ -7,17 +7,21 @@ from eums.services.flow_scheduler import schedule_run_for
 
 @csrf_exempt
 def hook(request):
-    params = request.POST
-    flow = Flow.objects.get(rapid_pro_id=params['flow'])
-    node_line_item_run = NodeLineItemRun.objects.filter(phone=params['phone'],
-                                                        status=NodeLineItemRun.STATUS.scheduled).first()
+    # TODO: Remove the try catch. This supresses the errors and was added due to rapidPro flakyness
+    try:
+        params = request.POST
+        flow = Flow.objects.get(rapid_pro_id=params['flow'])
+        node_line_item_run = NodeLineItemRun.objects.filter(phone=params['phone'],
+                                                            status=NodeLineItemRun.STATUS.scheduled).first()
 
-    question = _get_matching_question([params['step']])
-    answer = question.create_answer(params, node_line_item_run)
+        question = _get_matching_question([params['step']])
+        answer = question.create_answer(params, node_line_item_run)
 
-    if flow.is_end(answer):
-        _mark_as_complete(node_line_item_run)
-        _dequeue_next_run(node_line_item_run)
+        if flow.is_end(answer):
+            _mark_as_complete(node_line_item_run)
+            _dequeue_next_run(node_line_item_run)
+    except StandardError:
+        pass
 
     return HttpResponse(status=200)
 
