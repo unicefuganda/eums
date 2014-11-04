@@ -31,7 +31,7 @@ if test -f "/home/staging-files/staging.json";
     then cp /home/staging-files/staging.json  /home/eums/app/eums/client/config/staging.json
 fi
 
-cwd "/home/eums/app/eums/client"
+cd /home/eums/app/eums/client
 grunt build-staging
 
 echo "restart uwsgi"
