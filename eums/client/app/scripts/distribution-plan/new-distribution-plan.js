@@ -318,8 +318,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.addSubConsignee = function (lineItem) {
+            var locPath =  $location.path().split('/')[1];
             $location.path(
-                    '/delivery-report/new/' +
+                    '/'+ locPath +'/new/' +
                     $scope.selectedSalesOrder.id + '-' +
                     $scope.selectedSalesOrderItem.information.id + '-' +
                     lineItem.nodeId
@@ -331,9 +332,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.previousConsignee = function (planNode) {
+            var locPath =  $location.path().split('/')[1];
             if (planNode.parent) {
                 $location.path(
-                        '/delivery-report/new/' +
+                        '/'+ locPath +'/new/' +
                         $scope.selectedSalesOrder.id + '-' +
                         $scope.selectedSalesOrderItem.information.id + '-' +
                         planNode.parent
@@ -341,7 +343,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
             else {
                 $location.path(
-                        '/delivery-report/new/' +
+                        '/'+ locPath +'/new/' +
                         $scope.selectedSalesOrder.id + '-' +
                         $scope.selectedSalesOrderItem.information.id
                 );
