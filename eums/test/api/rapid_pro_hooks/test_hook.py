@@ -104,7 +104,7 @@ class HookTest(APITestCase):
 
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
-    def test_should_dequeue_current_line_item_when_question_is_final(self, mock_run_queue_dequeue,
+    def test_should_dequeue_next_line_item_when_question_is_final(self, mock_run_queue_dequeue,
                                                                      mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'

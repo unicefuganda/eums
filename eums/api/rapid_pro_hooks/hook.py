@@ -24,9 +24,10 @@ def hook(request):
 
 def _dequeue_next_run(line_item_run):
     next_run = RunQueue.dequeue(contact_person_id=line_item_run.node_line_item.distribution_plan_node.contact_person_id)
-    _schedule_next_run(line_item_run.node_line_item)
-    next_run.status = RunQueue.STATUS.started
-    next_run.save()
+    if next_run:
+        _schedule_next_run(next_run.node_line_item)
+        next_run.status = RunQueue.STATUS.started
+        next_run.save()
 
 
 def _schedule_next_run(line_item):

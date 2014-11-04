@@ -9,7 +9,8 @@ class Flow(models.Model):
     rapid_pro_id = models.IntegerField()
     end_nodes = IntegerArrayField(dimension=2)
     for_node_type = models.CharField(
-        max_length=255, choices=((Node.END_USER, 'End user'), (Node.MIDDLE_MAN, 'Middleman')), unique=True)
+        max_length=255, choices=((Node.END_USER, 'End user'), (Node.MIDDLE_MAN, 'Middleman'),
+                                 (Node.IMPLEMENTING_PARTNER, 'Implementing Partner')), unique=True)
 
     def is_end(self, answer):
         question_id = answer.question.id
