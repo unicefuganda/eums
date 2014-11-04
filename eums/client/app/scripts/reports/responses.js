@@ -1,58 +1,18 @@
 'use strict';
 
 angular.module('Responses', ['eums.config'])
-    .controller('responsesController', function ($scope) {
-        $scope.tableRowExpanded = false;
-        $scope.tableRowIndexCurrExpanded = '';
-        $scope.tableRowIndexPrevExpanded = '';
-        $scope.storeIdExpanded = '';
-        $scope.dayDataCollapse = [true, true, true, true, true, true];
+    .controller('responsesController',function ($scope) {
         $scope.transactionShow = 0;
 
         $scope.consigneeId = 0;
         $scope.salesOrderItemId = 0;
 
-     //   $scope.initialize = function () {
-            //TODO: Remove commenting when test if fixed
-            //ResponsesService.fetchResponses($scope.consigneeId, $scope.salesOrderItemId).then(function (responses) {
-            //    $scope.responses = responses;
-           // });
-       // };
-
-        $scope.dayDataCollapseFn = function () {
-            for (var i = 0; $scope.responsesData.responsesData.length - 1; i += 1) {
-                $scope.dayDataCollapse.append('true');
-            }
-        };
-
-
-        $scope.selectTableRow = function (index, storeId) {
-            if ($scope.dayDataCollapse === 'undefined') {
-                $scope.dayDataCollapse = $scope.dayDataCollapseFn();
-            } else {
-
-                if ($scope.tableRowExpanded === false && $scope.tableRowIndexCurrExpanded === '' && $scope.storeIdExpanded === '') {
-                    $scope.tableRowIndexPrevExpanded = '';
-                    $scope.tableRowExpanded = true;
-                    $scope.tableRowIndexCurrExpanded = index;
-                    $scope.storeIdExpanded = storeId;
-                    $scope.dayDataCollapse[index] = false;
-                } else if ($scope.tableRowExpanded === true) {
-                    if ($scope.tableRowIndexCurrExpanded === index && $scope.storeIdExpanded === storeId) {
-                        $scope.tableRowExpanded = false;
-                        $scope.tableRowIndexCurrExpanded = '';
-                        $scope.storeIdExpanded = '';
-                        $scope.dayDataCollapse[index] = true;
-                    } else {
-                        $scope.tableRowIndexPrevExpanded = $scope.tableRowIndexCurrExpanded;
-                        $scope.tableRowIndexCurrExpanded = index;
-                        $scope.storeIdExpanded = storeId;
-                        $scope.dayDataCollapse[$scope.tableRowIndexPrevExpanded] = true;
-                        $scope.dayDataCollapse[$scope.tableRowIndexCurrExpanded] = false;
-                    }
-                }
-            }
-        };
+        //   $scope.initialize = function () {
+        //TODO: Remove commenting when test if fixed
+        //ResponsesService.fetchResponses($scope.consigneeId, $scope.salesOrderItemId).then(function (responses) {
+        //    $scope.responses = responses;
+        // });
+        // };
 
         $scope.responsesData = {
             'responsesData': [
@@ -150,11 +110,21 @@ angular.module('Responses', ['eums.config'])
             }
         };
 
-    }).factory('ResponsesService', function ($http, EumsConfig) {
+    }).factory('ResponsesService',function ($http, EumsConfig) {
         return {
             fetchResponses: function (consigneeId, salesOrderItemId) {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item_id/' + salesOrderItemId).then(function (response) {
                     return response.data;
+                });
+            }
+        };
+    }).directive('feedbackResponsesTable', function ($timeout) {
+        return {
+            link: function (scope, element) {
+                $timeout(function () {
+                    $(element).treegrid({
+                        initialState: 'collapsed'
+                    });
                 });
             }
         };

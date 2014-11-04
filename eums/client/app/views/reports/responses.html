@@ -63,7 +63,7 @@
 
         <div ng-controller="responsesController">
             <div class="table-wrapper">
-                <table class="table table-hover table-condensed table-striped">
+                <table class="table table-bordered table-hover table-condensed table-striped" feedback-responses-table>
                     <thead>
                     <tr>
                         <th>Consignee</th>
@@ -76,94 +76,38 @@
                     </tr>
                     </thead>
                     <tbody ng-repeat="data in responsesData.responsesData">
-                    <tr id="data.ip.consignee" class="clickableRow"
-                        title="Click to toggle collapse/expand day summaries for this store."
-                        ng-click="selectTableRow($index, data.ip.consignee)">
-                        <td>{{ data.ip.consignee }}</td>
-                        <td>{{ data.ip.received }}</td>
-                        <td>{{ data.ip.dateReceived }}</td>
-                        <td>{{ data.ip.quantityReceived }}</td>
-                        <td>{{ data.ip.quality }}</td>
-                        <td>{{ data.ip.satisfied }}</td>
-                        <td>{{ data.ip.comments }}</td>
-                    </tr>
-                    <tr ng-show="dayDataCollapse[$index]">
-                        <td colspan="1">&nbsp;</td>
-                        <td colspan="12">
-                            <div>
-                                <div class="table-wrapper">
-                                    <table class="table table-hover table-condensed table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Consignee</th>
-                                            <th>Received</th>
-                                            <th>Date Received</th>
-                                            <th>Quantity Received</th>
-                                            <th>Quality</th>
-                                            <th>Satisfied</th>
-                                            <th>Comments</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody ng-repeat="dayData in data.data.dayData">
-                                        <tr>
-                                            <td class="pullright">
-                                                <button type="btn btn-small btn-primary"
-                                                        title="Click to show transactions for this specific day..."
-                                                        ng-click="dayData.showTransactions=!dayData.showTransactions"><i
-                                                        class="icon-list"></i>
+                        <tr id="data.ip.consignee" class="{{'treegrid-' + ($index + 1)}}">
+                            <td class="text-left">{{ data.ip.consignee }}</td>
+                            <td>{{ data.ip.received }}</td>
+                            <td>{{ data.ip.dateReceived }}</td>
+                            <td>{{ data.ip.quantityReceived }}</td>
+                            <td>{{ data.ip.quality }}</td>
+                            <td>{{ data.ip.satisfied }}</td>
+                            <td>{{ data.ip.comments }}</td>
+                        </tr>
 
-                                                </button>
-                                            </td>
-                                            <td>{{ dayData.consignee }}</td>
-                                            <td>{{ dayData.received }}</td>
-                                            <td>{{ dayData.dateReceived }}</td>
-                                            <td>{{ dayData.quantityReceived }}</td>
-                                            <td>{{ dayData.quality }}</td>
-                                            <td>{{ dayData.satisfied }}</td>
-                                            <td>{{ dayData.comments }}</td>
-                                        </tr>
-                                        <tr ng-show="true">
-                                            <td>&nbsp;</td>
-                                            <td colspan="8">
-                                                <div>
-                                                    <div class="table-wrapper">
-                                                        <table class="table table-hover table-condensed table-striped">
-                                                            <thead>
-                                                            <tr>
-                                                                <th></th>
-                                                                <th>Consignee</th>
-                                                                <th>Received</th>
-                                                                <th>Date Received</th>
-                                                                <th>Quantity Received</th>
-                                                                <th>Quality</th>
-                                                                <th>Satisfied</th>
-                                                                <th>Comments</th>
-                                                            </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                            <tr ng-repeat="data in dayData.transactions">
-                                                                <td>&nbsp;</td>
-                                                                <td>{{ data.consignee }}</td>
-                                                                <td>{{ data.received }}</td>
-                                                                <td>{{ data.dateReceived }}</td>
-                                                                <td>{{ data.quantityReceived }}</td>
-                                                                <td>{{ data.quality }}</td>
-                                                                <td>{{ data.satisfied }}</td>
-                                                                <td>{{ data.comments }}</td>
-                                                            </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr ng-repeat-start="dayData in data.data.dayData" class="table-consignee-row {{'treegrid-' + ($index + 100) }} {{'treegrid-parent-' + ($parent.$index + 1) }}">
+                            <td class="text-left">{{ dayData.consignee }}</td>
+                            <td>{{ dayData.received }}</td>
+                            <td>{{ dayData.dateReceived }}</td>
+                            <td>{{ dayData.quantityReceived }}</td>
+                            <td>{{ dayData.quality }}</td>
+                            <td>{{ dayData.satisfied }}</td>
+                            <td>{{ dayData.comments }}</td>
+                        </tr>
+
+
+                        <tr ng-repeat="data in dayData.transactions" class="{{'treegrid-' + ($index + 1000) }} {{'treegrid-parent-' + ($parent.$index + 100) }}">
+                            <td class="text-left">{{ data.consignee }}</td>
+                            <td>{{ data.received }}</td>
+                            <td>{{ data.dateReceived }}</td>
+                            <td>{{ data.quantityReceived }}</td>
+                            <td>{{ data.quality }}</td>
+                            <td>{{ data.satisfied }}</td>
+                            <td>{{ data.comments }}</td>
+                        </tr>
+                        <tr class="{{'treegrid-' + ($index + 10000) }} {{'treegrid-parent-' + ($parent.$index + 100) }}">
+                        <tr ng-repeat-end/>
                     </tbody>
                 </table>
             </div>
