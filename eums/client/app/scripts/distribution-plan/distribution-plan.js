@@ -13,12 +13,19 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
+        function reduceSalesOrder(salesOrders) {
+            return _.remove(salesOrders, function (salesOrder, index) {
+                return index > 80;
+            });
+        }
+
         $scope.initialize = function () {
             this.sortBy('order_number');
             this.sort.descending = false;
 
             SalesOrderService.getSalesOrders().then(function (salesOrders) {
-                $scope.salesOrders = salesOrders;
+                var sortedSalesOrder = salesOrders.sort();
+                $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
             });
         };
 

@@ -106,16 +106,10 @@
                 <th class="table-select-header-width">Consignee</th>
                 <th class="table-contact-select-header-width">Contact Person</th>
                 <th class="table-select-header-width">District</th>
-                <<<<<<< HEAD
-                <th>Mode of Delivery</th>
-                <th>Remark</th>
-                <th><span ng-show="planNode">End User</span></th>
-                =======
                 <th ng-show="showExtraColumn">Mode of Delivery</th>
                 <th ng-show="showExtraColumn">Remark</th>
+                <th><span ng-show="planNode || !showExtraColumn">End User</span></th>
                 <th></th>
-
-                >>>>>>> [Tunji] X made changes to delivery report page to diffrentiate it from distribution plan page
                 <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
                     <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                     <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>

@@ -51,4 +51,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
             .otherwise({
                 redirectTo: '/'
             });
+    }).run(function ($rootScope, $templateCache) {
+        $rootScope.$on('$routeChangeStart', function (event, next, current) {
+            if (typeof(current) !== 'undefined') {
+                $templateCache.remove(current.templateUrl);
+            }
+        });
     });
