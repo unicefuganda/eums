@@ -20,10 +20,10 @@ def hook(request):
         if flow.is_end(answer):
             _mark_as_complete(node_line_item_run)
             _dequeue_next_run(node_line_item_run)
-    except StandardError:
-        pass
+        return HttpResponse(status=200)
 
-    return HttpResponse(status=200)
+    except StandardError:
+        return HttpResponse(status=200)
 
 
 def _dequeue_next_run(line_item_run):

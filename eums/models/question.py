@@ -38,5 +38,5 @@ class MultipleChoiceQuestion(Question):
             values.extend(ast.literal_eval(val))
 
         params = filter(lambda v: self.label == v['label'], values)[0]
-        matching_option = self.option_set.get(text=params['category'])
+        matching_option = self.option_set.get(text=params['category']['eng'])
         return self.multiplechoiceanswer_set.create(question=self, value=matching_option, line_item_run=line_item_run)

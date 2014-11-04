@@ -209,6 +209,6 @@ class HookTest(APITestCase):
     def __create_rapid_pro_url_params(self, phone, uuid, text="Yes", category=None, label=""):
         return {u'run': [u'4621789'], u'relayer': [u'138'], u'text': [u'%s' % text], u'flow': [u'%s' % self.flow_id],
                 u'phone': [u'%s' % phone], u'step': [u'%s' % uuid],
-                u'values': [u'[{"category": "%s", "time": "2014-10-22T11:56:52.836354Z", '
+                u'values': [u'[{"category": {"eng": "%s"}, "time": "2014-10-22T11:56:52.836354Z", '
                             u'"text": "Yes", "rule_value": "Yes", "value": "Yes", "label": "%s"}]' % (category, label)],
                 u'time': [u'2014-10-22T11:57:35.606372Z']}
