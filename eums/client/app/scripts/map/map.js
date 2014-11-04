@@ -308,7 +308,7 @@
                     scope.hideMapMarkerDetails = function () {
                         scope.clickedMarker = null;
                     };
-                    
+
                     getAllMarkersWithResponses(map, scope).then(function (markersMap) {
                         MapService.addMarkers(markersMap);
                     });
@@ -562,7 +562,14 @@
                     });
 
                     scope.clearFilters = function () {
-                        scope.filter = {received: true, notDelivered: true, receivedWithIssues: true, year: '', to: '', from: ''};
+                        scope.filter = {
+                            received: true,
+                            notDelivered: true,
+                            receivedWithIssues: true,
+                            year: '',
+                            to: '',
+                            from: ''
+                        };
                         scope.shownMarkers = [];
                         scope.ip = '';
                         scope.programme = '';

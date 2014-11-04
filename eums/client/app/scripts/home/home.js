@@ -13,10 +13,12 @@ angular.module('Home', ['GlobalStats'])
         $scope.deliveredChecked = false;
 
         DistributionReportService.getReports().then(function (returnedReports) {
+            console.log(returnedReports);
             var reports = returnedReports;
             $scope.totalStats = DistributionReportService.getTotals(reports);
 
             $scope.updateTotalStats = function (filterOptions) {
+                alert('hello');
                 $scope.totalStats = DistributionReportService.getTotals(reports, filterOptions);
             };
         });
