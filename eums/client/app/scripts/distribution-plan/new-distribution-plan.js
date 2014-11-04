@@ -146,6 +146,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         var setDistributionPlanLineItems = function (selectedSalesOrderItem, distributionPlanLineItems) {
+            $scope.distributionPlanLineItems = [];
+
             if (distributionPlanLineItems && distributionPlanLineItems.length) {
                 var itemCounter = 0;
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
@@ -210,7 +212,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.invalidLineItems = true;
         $scope.$watch('distributionPlanLineItems', function (newPlanItems) {
             function invalidFields(item) {
-                return item.targetQuantity <= 0 || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.modeOfDelivery || !item.plannedDistributionDate;
+                return item.targetQuantity <= 0 || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.plannedDistributionDate;
             }
 
             function anyInvalidFields(lineItems) {
@@ -248,7 +250,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 contact_person_id: uiPlanItem.contactPerson,
                 distribution_plan: $scope.distributionPlan,
                 tree_position: uiPlanItem.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
-                mode_of_delivery: uiPlanItem.modeOfDelivery,
+                mode_of_delivery: uiPlanItem.modeOfDelivery ? uiPlanItem.modeOfDelivery : 'WAREHOUSE',
                 parent: parentNodeId()
             };
 

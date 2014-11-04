@@ -273,15 +273,6 @@ describe('NewDistributionPlanController', function () {
                 expect(scope.invalidLineItems).toBeTruthy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with no modeOfDelivery', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                invalidLineItem.modeOfDelivery = '';
-                scope.distributionPlanLineItems.push(invalidLineItem);
-                scope.$apply();
-
-                expect(scope.invalidLineItems).toBeTruthy();
-            });
-
             it('sets the invalidLineItems field to true when there are line items with no plannedDistributionDate', function () {
                 invalidLineItem = angular.copy(validLineItem);
                 invalidLineItem.plannedDistributionDate = '';
