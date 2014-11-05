@@ -20,7 +20,9 @@ class ResponseSerializer(object):
         result = []
         for node in all_nodes:
             node_responses = node.responses()
+            programme = node.distribution_plan.programme
             formatted_run_responses = {'node': node.id,
+                                       'programme': {'id': programme.id, 'name': programme.name},
                                        'consignee': {'id': node.consignee.id, 'name': node.consignee.name}}
             for item_run, responses in node_responses.iteritems():
                 formatted_run_responses.update({'item': item_run.node_line_item.item.description,

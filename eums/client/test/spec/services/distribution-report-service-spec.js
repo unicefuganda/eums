@@ -1,79 +1,89 @@
-describe('Distribution report Service', function() {
-    var mockBackend, reportService, config;
-    var consigneeOneId = 1;
-    var consigneeTwoId = 2;
-    var programmeOneId = 1;
-    var programmeTwoId = 2;
+describe('Distribution report Service', function () {
+    var reportService, config;
 
-    var reports = [
+    var stubConsigneeResponses = [
         {
-            consignee: consigneeOneId,
-            programme: programmeOneId,
-            total_received: 2,
-            total_not_received: 1,
-            total_distributed: 1
+            'node': 13,
+            'item': 'IEHK2006,kit,suppl.1-drugs',
+            'productReceived': 'Yes',
+            'consignee': {
+                'id': 21,
+                'name': 'BUNDIBUGYO DHO'
+            },
+            'amountReceived': '20',
+            'amountSent': 1,
+            'satisfiedWithProduct': 'No',
+            'programme': {
+                'id': 4,
+                'name': 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'
+            }
         },
         {
-            consignee: consigneeTwoId,
-            programme: programmeOneId,
-            total_received: 2,
-            total_not_received: 1,
-            total_distributed: 2
+            'node': 16,
+            'item': 'IEHK2006,kit,suppl.1-drugs',
+            'productReceived': 'No',
+            'informedOfDelay': 'Yes',
+            'consignee': {
+                'id': 5,
+                'name': 'WAKISO DHO'
+            },
+            'amountReceived': '30',
+            'amountSent': 1,
+            'programme': {
+                'id': 4,
+                'name': 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'
+            }
         },
         {
-            consignee: consigneeTwoId,
-            programme: programmeTwoId,
-            total_received: 2,
-            total_not_received: 3,
-            total_distributed: 1
+            'node': 17,
+            'item': 'IEHK2006,kit,suppl.1-drugs',
+            'qualityOfProduct': 'Good',
+            'consignee': {
+                'id': 19,
+                'name': 'MUBENDE DHO'
+            },
+            'productReceived': 'Yes',
+            'amountSent': 1,
+            'satisfiedWithProduct': 'Yes',
+            'programme': {
+                'id': 4,
+                'name': 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'
+            }
         }
     ];
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('GlobalStats');
 
-        inject(function(DistributionReportService, $httpBackend, EumsConfig) {
-            mockBackend = $httpBackend;
+        inject(function (DistributionReportService, EumsConfig) {
             reportService = DistributionReportService;
             config = EumsConfig;
         });
     });
 
-    it('should get report from backend', function(done) {
-        var expectedReports = [
-            {consignee: 1, programme: 1, otherDetails: {}}
-        ];
 
-        mockBackend.whenGET(config.BACKEND_URLS.DISTRIBUTION_REPORT).respond(expectedReports);
-        reportService.getReports().then(function(reports) {
-            expect(reports).toEqual(expectedReports);
-            done();
-        });
-        mockBackend.flush();
+    it('should get total stats from report', function () {
+        var totals = reportService.getTotals(stubConsigneeResponses);
+        expect(totals).toEqual({ received: 50, notReceived: 0, distributed: 3, notDistributed: 47 });
     });
 
-    it('should get total stats from report', function() {
-        var totals = reportService.getTotals(reports);
-        expect(totals).toEqual({ received : 6, notReceived : 5, distributed : 4, notDistributed : 2});
+    it('should get total stats by consignee', function () {
+        var totals = reportService.getTotals(stubConsigneeResponses, {consignee: 21});
+        expect(totals).toEqual({ received: 20, notReceived: 0, distributed: 1, notDistributed: 19 });
     });
 
-    it('should get total stats by consignee', function() {
-        var totals = reportService.getTotals(reports, {consignee: consigneeOneId});
-        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
+    it('should get total stats by programme', function () {
+        var totals = reportService.getTotals(stubConsigneeResponses, {programme: 4});
+        expect(totals).toEqual({ received: 50, notReceived: 0, distributed: 3, notDistributed: 47 });
     });
 
-    it('should get total stats by programme', function() {
-        var totals = reportService.getTotals(reports, {programme: programmeOneId});
-        expect(totals).toEqual({ received : 4, notReceived : 2, distributed : 3, notDistributed : 1});
+    it('should get total stats by programme and consignee', function () {
+        var totals = reportService.getTotals(stubConsigneeResponses, {programme: 4, consignee: 21});
+        expect(totals).toEqual({ received: 20, notReceived: 0, distributed: 1, notDistributed: 19 });
     });
 
-    it('should get total stats by programme and consignee', function() {
-        var totals = reportService.getTotals(reports, {programme: programmeOneId, consignee: consigneeOneId});
-        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
-    });
-
-    it('should parse consignee and programme option params to int before getting totals', function() {
-        var totals = reportService.getTotals(reports, {programme: String(programmeOneId), consignee: String(consigneeOneId)});
-        expect(totals).toEqual({ received : 2, notReceived : 1, distributed : 1, notDistributed : 1});
+    it('should parse consignee and programme option params to int before getting totals', function () {
+        var totals = reportService.getTotals(stubConsigneeResponses, {programme: String(4), consignee: String(21)});
+        expect(totals).toEqual({ received: 20, notReceived: 0, distributed: 1, notDistributed: 19 });
     });
 });

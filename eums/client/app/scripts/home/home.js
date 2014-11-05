@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('Home', ['GlobalStats'])
-    .controller('HomeController', function (DistributionReportService, $scope) {
+angular.module('Home', ['GlobalStats', 'DistributionPlan'])
+    .controller('HomeController', function (DistributionReportService, $scope, DistributionPlanService) {
         $scope.filter = {received: '', notDelivered: '', receivedWithIssues: '', year: ''};
         $scope.datepicker = {from: false, to: false};
         $scope.clickedMarker = '';
@@ -12,13 +12,11 @@ angular.module('Home', ['GlobalStats'])
         $scope.notDeliveredChecked = false;
         $scope.deliveredChecked = false;
 
-        DistributionReportService.getReports().then(function (returnedReports) {
-            console.log(returnedReports);
-            var reports = returnedReports;
+        DistributionPlanService.getAllConsigneeResponses().then(function (response) {
+            var reports = response.data;
             $scope.totalStats = DistributionReportService.getTotals(reports);
 
             $scope.updateTotalStats = function (filterOptions) {
-                alert('hello');
                 $scope.totalStats = DistributionReportService.getTotals(reports, filterOptions);
             };
         });
