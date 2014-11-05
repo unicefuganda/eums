@@ -40,11 +40,9 @@ def _schedule_run(node_line_item_id):
 
 
 def _select_flow_for(node):
-    # TODO Un comment these. THe single flow was selected strictly for demo purposes
-    # if node.tree_position == DistributionPlanNode.END_USER:
-    #     return Flow.objects.get(for_node_type=DistributionPlanNode.END_USER)
-    # return Flow.objects.get(for_node_type=DistributionPlanNode.MIDDLE_MAN)
-    return Flow.objects.get(for_node_type=DistributionPlanNode.END_USER)
+    if node.tree_position == DistributionPlanNode.END_USER:
+        return Flow.objects.get(for_node_type=DistributionPlanNode.END_USER)
+    return Flow.objects.get(for_node_type=DistributionPlanNode.MIDDLE_MAN)
 
 
 def _get_sender_name(node):
