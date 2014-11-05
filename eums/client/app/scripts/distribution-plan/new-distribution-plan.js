@@ -11,6 +11,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.itemIndex = '';
 
         $scope.showExtraColumn = $location.path().substr(1, 15) !== 'delivery-report';
+        $scope.quantityHeaderText = $scope.showExtraColumn ? 'Targeted Qty' : 'Delivered Qty';
+        $scope.deliveryDateHeaderText = $scope.showExtraColumn ? 'Delivery Date' : 'Date Delivered';
 
         function createToast(message, klass) {
             ngToast.create({
