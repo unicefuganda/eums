@@ -13,5 +13,5 @@ class DistributionReport(models.Model):
     class Meta:
         unique_together = ('consignee', 'programme')
 
-    def __str__(self):
+    def __unicode__(self):
         return '%s, %s' % (self.consignee.name, self.programme.name)

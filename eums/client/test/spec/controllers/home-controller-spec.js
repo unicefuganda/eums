@@ -79,12 +79,12 @@ describe('Controller: Home', function () {
 
     it('should get total global stats on load and put them on scope', function () {
         scope.$apply();
-        var totalStats = { received: 50, notReceived: 0, distributed: 3, notDistributed: 47 };
+        var totalStats = { received: 50, notReceived: 0, distributed: 3, notDistributed: -47 };
         expect(scope.totalStats).toEqual(totalStats);
     });
 
     it('should update totalStats on scope when update stats is called', function () {
-        var totalFilteredStats = { received: 20, notReceived: 0, distributed: 1, notDistributed: 19 };
+        var totalFilteredStats = { received: 20, notReceived: 0, distributed: 1, notDistributed: -19 };
         var filterOptions = {consignee: 21, programme: 4};
         scope.$apply();
 

@@ -8,8 +8,8 @@ class Question(models.Model):
     label = models.CharField(max_length=255, unique=True)
     uuids = TextArrayField(dimension=1)
 
-    def __str__(self):
-        return self.text
+    def __unicode__(self):
+        return '%s' % self.text
 
 
 class NumericQuestion(Question):

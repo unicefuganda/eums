@@ -9,5 +9,5 @@ class Consignee(models.Model):
     customer_id = models.CharField(max_length=255)
     type = StatusField(choices_name='TYPES')
 
-    def __str__(self):
-        return self.name
+    def __unicode__(self):
+        return '%s' % self.name

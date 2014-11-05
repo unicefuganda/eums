@@ -25,7 +25,7 @@ class NodeLineItemRun(models.Model):
         multiple_choice_answers = self.multiplechoiceanswer_set.all()
         return list(numeric_answers) + list(text_answers) + list(multiple_choice_answers)
 
-    def __str__(self):
+    def __unicode__(self):
         return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node_line_item.item.description,
                                                                self.node_line_item.distribution_plan_node.tree_position,
                                                                self.phone, self.status)

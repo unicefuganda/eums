@@ -11,5 +11,5 @@ class Option(models.Model):
     class Meta:
         unique_together = ('text', 'question')
 
-    def __str__(self):
+    def __unicode__(self):
         return self.text

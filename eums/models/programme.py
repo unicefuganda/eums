@@ -8,5 +8,5 @@ class Programme(models.Model):
     class Meta:
         app_label = 'eums'
 
-    def __str__(self):
-        return self.name
+    def __unicode__(self):
+        return '%s' % self.name

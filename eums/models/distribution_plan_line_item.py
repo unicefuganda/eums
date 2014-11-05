@@ -19,5 +19,5 @@ class DistributionPlanLineItem(models.Model):
     def completed_run(self):
         return self.nodelineitemrun_set.filter(status='completed').first()
 
-    def __str__(self):
+    def __unicode__(self):
         return "%s %s %s" % (self.item, str(self.planned_distribution_date), self.distribution_plan_node)

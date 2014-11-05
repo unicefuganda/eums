@@ -9,7 +9,7 @@ angular.module('GlobalStats', ['eums.config'])
                 totals.received += report.amountReceived ? parseInt(report.amountReceived) : 0;
                 totals.distributed += report.amountSent ? parseInt(report.amountSent) : 0;
             });
-            totals.notDistributed = totals.received - totals.distributed;
+            totals.notDistributed = totals.distributed - totals.received;
             return totals;
         };
 

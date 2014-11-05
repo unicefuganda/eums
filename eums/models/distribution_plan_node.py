@@ -27,7 +27,7 @@ class DistributionPlanNode(models.Model):
         result = response.json() if response.status_code is 200 else None
         return result
 
-    def __str__(self):
+    def __unicode__(self):
         return "%s %s %s " % (self.consignee.name, self.tree_position, str(self.distribution_plan))
 
     def responses(self):
