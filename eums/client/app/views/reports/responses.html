@@ -7,25 +7,6 @@
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
                     <label for="select-sales-order" class="col-lg-4 control-label description-label">
-                        Implementing Partner:
-                    </label>
-
-                    <div class="col-lg-8">
-                        <select required="required"
-                                class="form-control"
-                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="">Select IP</option>
-                            <option value="" selected="selected">Gulu DHO</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="form-horizontal">
-                <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="col-lg-4 control-label description-label">
                         Sales Order:
                     </label>
 
@@ -33,7 +14,7 @@
                         <select required="required"
                                 class="form-control"
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="">Select Sales Order</option>
+                            <option value="" >Select Sales Order</option>
                             <option value="" selected="selected">20154551</option>
                         </select>
                     </div>
@@ -52,18 +33,47 @@
                         <select required="required"
                                 class="form-control"
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="">Select Item</option>
+                            <option value="" >Select Item</option>
                             <option value="" selected="selected">IEHK2006, kit supply 1-drugs</option>
                         </select>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group col-lg-4">
+                    <label for="select-sales-order" class="col-lg-4 control-label description-label">
+                        Implementing Partner:
+                    </label>
+
+                    <div class="col-lg-8">
+                        <select required="required"
+                                class="form-control"
+                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                            <option value="" selected="selected">Select IP</option>
+                            <option value="">Adjumani DHO</option>
+                            <option value="">Gulu DHO</option>
+                            <option value="">Kabalore DHO</option>
+                            <option value="">Malaria Consortium</option>
+                            <option value="">Mubende DHO</option>
+                            <option value="">Mukono DHO</option>
+                            <option value="">Napak DHO</option>
+                            <option value="">Ntungamo DHO</option>
+                            <option value="">Pader DHO</option>
+                            <option value="">Wakiso DHO</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <hr/>
 
         <div ng-controller="responsesController">
             <div class="table-wrapper">
-                <table class="table table-bordered table-hover table-condensed table-striped" feedback-responses-table>
+                <table class="table table-bordered table-hover table-condensed" feedback-responses-table>
                     <thead>
                     <tr>
                         <th>Consignee</th>
@@ -76,7 +86,7 @@
                     </tr>
                     </thead>
                     <tbody ng-repeat="data in responsesData.responsesData">
-                        <tr id="data.ip.consignee" class="{{'treegrid-' + ($index + 1)}}">
+                        <tr id="data.ip.consignee" class="{{'treegrid-' + data.ip.id }}">
                             <td class="text-left">{{ data.ip.consignee }}</td>
                             <td>{{ data.ip.received }}</td>
                             <td>{{ data.ip.dateReceived }}</td>
@@ -86,7 +96,7 @@
                             <td>{{ data.ip.comments }}</td>
                         </tr>
 
-                        <tr ng-repeat-start="dayData in data.data.dayData" class="table-consignee-row {{'treegrid-' + ($index + 100) }} {{'treegrid-parent-' + ($parent.$index + 1) }}">
+                        <tr ng-repeat-start="dayData in data.data.dayData" class="table-consignee-row {{'treegrid-' + dayData.id }} {{'treegrid-parent-' + $parent.data.ip.id }}">
                             <td class="text-left">{{ dayData.consignee }}</td>
                             <td>{{ dayData.received }}</td>
                             <td>{{ dayData.dateReceived }}</td>
@@ -97,7 +107,7 @@
                         </tr>
 
 
-                        <tr ng-repeat="data in dayData.transactions" class="{{'treegrid-' + ($index + 1000) }} {{'treegrid-parent-' + ($parent.$index + 100) }}">
+                        <tr ng-repeat="data in dayData.transactions" class="{{'treegrid-' + data.id }} {{'treegrid-parent-' + $parent.dayData.id }} ">
                             <td class="text-left">{{ data.consignee }}</td>
                             <td>{{ data.received }}</td>
                             <td>{{ data.dateReceived }}</td>
@@ -106,7 +116,6 @@
                             <td>{{ data.satisfied }}</td>
                             <td>{{ data.comments }}</td>
                         </tr>
-                        <tr class="{{'treegrid-' + ($index + 10000) }} {{'treegrid-parent-' + ($parent.$index + 100) }}">
                         <tr ng-repeat-end/>
                     </tbody>
                 </table>
