@@ -384,7 +384,6 @@
                         });
                     });
 
-
                     scope.$watchCollection('[programme, ip]', function (filters) {
                         var showMarkers = scope.shownMarkers.length === 0 ? MapFilterService.getAllMarkerMaps() : scope.shownMarkers;
 
@@ -392,6 +391,7 @@
                         var selectedIp = filters[1];
 
                         if (!selectedProgramme && !selectedIp) {
+                            scope.updateTotalStats && scope.updateTotalStats();
                             MapService.addAllMarkers();
                             return;
                         }
@@ -408,7 +408,8 @@
                                 MapService.addMarkers(markerMaps);
                             });
                         }
-                        scope.updateTotalStats && scope.updateTotalStats({programme: filters, consignee: filters[1]});
+
+                        scope.updateTotalStats && scope.updateTotalStats({programme: filters[0], consignee: filters[1]});
                     });
                 }
             }
