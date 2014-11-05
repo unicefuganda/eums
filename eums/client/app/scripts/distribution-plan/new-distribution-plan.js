@@ -269,6 +269,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             var lineItemId = nodeLineItem.lineItemId;
             var plannedDate = new Date(nodeLineItem.plannedDistributionDate);
 
+            if(plannedDate.toString() === 'Invalid Date'){
+                var planDate = nodeLineItem.plannedDistributionDate.split('/');
+                plannedDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
+            }
+
             var lineItem = {
                 item: nodeLineItem.item,
                 targeted_quantity: nodeLineItem.targetQuantity,
