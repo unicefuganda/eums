@@ -1,5 +1,6 @@
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+
 from eums.models import NodeLineItemRun, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
@@ -7,12 +8,13 @@ from eums.services.flow_scheduler import schedule_run_for
 
 @csrf_exempt
 def hook(request):
-    # TODO: Remove the try catch. This supresses the errors and was added due to rapidPro flakyness
+    # TODO: Remove the try catch. This suppresses the errors and was added due to rapidPro flakyness
     try:
         params = request.POST
         flow = Flow.objects.get(rapid_pro_id=params['flow'])
         node_line_item_run = NodeLineItemRun.objects.filter(phone=params['phone'],
-                                                            status=NodeLineItemRun.STATUS.scheduled).first()
+                                                            status=NodeLineItemRun.STATUS.scheduled).order_by(
+            'id').first()
 
         question = _get_matching_question([params['step']])
         answer = question.create_answer(params, node_line_item_run)

@@ -40,7 +40,7 @@ def _schedule_run(node_line_item_id):
 
 
 def _select_flow_for(node):
-    if node.tree_position is DistributionPlanNode.END_USER:
+    if node.tree_position == DistributionPlanNode.END_USER:
         return Flow.objects.get(for_node_type=DistributionPlanNode.END_USER)
     return Flow.objects.get(for_node_type=DistributionPlanNode.MIDDLE_MAN)
 
