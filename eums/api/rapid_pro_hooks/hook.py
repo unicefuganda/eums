@@ -14,7 +14,7 @@ def hook(request):
         flow = Flow.objects.get(rapid_pro_id=params['flow'])
         node_line_item_run = NodeLineItemRun.objects.filter(phone=params['phone'],
                                                             status=NodeLineItemRun.STATUS.scheduled).order_by(
-            'id').first()
+            '-id').first()
 
         question = _get_matching_question([params['step']])
         answer = question.create_answer(params, node_line_item_run)
