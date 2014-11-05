@@ -689,7 +689,8 @@ describe('NewDistributionPlanController', function () {
                         distribution_plan: 1,
                         tree_position: 'IMPLEMENTING_PARTNER',
                         mode_of_delivery: 'WAREHOUSE',
-                        parent: null
+                        parent: null,
+                        children: null
                     });
                     expect(mockNodeService.createNode).not.toHaveBeenCalled();
                 });

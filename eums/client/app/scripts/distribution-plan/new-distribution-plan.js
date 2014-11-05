@@ -131,6 +131,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         var addNodeDetailsToLineItem = function (lineItem, node) {
             lineItem.consignee = node.consignee.id;
             lineItem.nodeId = node.id;
+            lineItem.nodeChildren = node.children;
             lineItem.contactPerson = node.contact_person_id;
             lineItem.modeOfDelivery = node.mode_of_delivery;
             lineItem.destinationLocation = node.location;
@@ -146,8 +147,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         var setDistributionPlanLineItems = function (selectedSalesOrderItem, distributionPlanLineItems) {
-            $scope.distributionPlanLineItems = [];
-
             if (distributionPlanLineItems && distributionPlanLineItems.length) {
                 var itemCounter = 0;
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
@@ -250,12 +249,13 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 contact_person_id: uiPlanItem.contactPerson,
                 distribution_plan: $scope.distributionPlan,
                 tree_position: uiPlanItem.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
-                mode_of_delivery: uiPlanItem.modeOfDelivery ? uiPlanItem.modeOfDelivery : 'WAREHOUSE',
+                mode_of_delivery: uiPlanItem.modeOfDelivery ? uiPlanItem.modeOfDelivery: 'WAREHOUSE',
                 parent: parentNodeId()
             };
 
             if (nodeId) {
                 node.id = nodeId;
+                node.children = uiPlanItem.nodeChildren ? uiPlanItem.nodeChildren : null;
                 return DistributionPlanNodeService.updateNode(node);
             }
             else {
