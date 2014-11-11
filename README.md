@@ -45,7 +45,18 @@ Installation
 
 ==
 
-* run python manage.py test
+
+To install one of the fixtures (e.g. new_data.json), you will need to comment out the 'schedule_run_for(line_item)' line in the handlers.py file before running
+
+##
+  python manage.py loaddata new_data.json
+==
+
+
+To test:
+##
+ run python manage.py test
+==
 
 Done!! you're good to go :)
 
