@@ -20,6 +20,7 @@ from eums.models.flow import Flow
 from eums.models.release_order import ReleaseOrder
 from eums.models.release_order_item import ReleaseOrderItem
 from eums.models.distribution_report import DistributionReport
+from eums.models.users import UserProfile
 
 __all__ = [
     'DistributionPlan',
@@ -44,5 +45,6 @@ __all__ = [
     'Flow',
     'ReleaseOrder',
     'ReleaseOrderItem',
-    'DistributionReport'
+    'DistributionReport',
+    'UserProfile'
 ]

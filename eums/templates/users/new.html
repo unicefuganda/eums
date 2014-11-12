@@ -1,0 +1,49 @@
+{% extends 'base/form.html' %}
+{% block display_form_fields %}
+    <h2>{{ title }}</h2>
+    <br/>
+    {% include 'base/naked_form.html' with a_form=form %}
+<script type="text/template" id="organization-template">
+    <p>
+        <label for="organization">Organization</label>
+            <select id="organization" name="organization">
+                {%   for org in organizations %}
+                <option value={{ org.id }}>{{ org.name }}</option>
+                {% endfor %}
+            </select>
+         <label class="error"></label>
+    </p>
+</script>
+
+<script type="text/template" id="region-template">
+    <p>
+        <label for="organization">Organization</label>
+            <select id="organization" name="organization">
+            <option value="">Choose an Organization</option>
+                {%   for org in organizations %}
+                <option value={{ org.id }}>{{ org.name }}</option>
+                {% endfor %}
+            </select>
+         <label class="error"></label>
+    </p>
+
+    <p>
+        <label for="region">Region</label>
+            <select id="region" name="region">
+                <option value="">First choose an organization</option>
+            </select>
+         <label class="error"></label>
+    </p>
+</script>
+<script type="text/template" id="country-template">
+    <p>
+        <label for="country">Country</label>
+            <select id="country" name="country">
+                {%   for country in countries %}
+                <option value={{ country.id }}>{{ country.name }}</option>
+                {% endfor %}
+            </select>
+        <label class="error"></label>
+    </p>
+</script>
+{% endblock %}

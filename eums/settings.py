@@ -19,6 +19,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrap_pagination',
     'eums',
     'rest_framework'
 )
@@ -56,6 +57,11 @@ USE_I18N = True
 USE_L10N = True
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'eums/templates'),)
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
 
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
 
