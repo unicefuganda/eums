@@ -6,6 +6,7 @@ from eums.models import SalesOrderItem, DistributionPlanNode
 class DistributionPlanLineItem(models.Model):
     item = models.ForeignKey(SalesOrderItem)
     targeted_quantity = models.IntegerField()
+    track = models.BooleanField(default=False)
     planned_distribution_date = models.DateField()
     remark = models.TextField(blank=True, null=True)
     distribution_plan_node = models.ForeignKey(DistributionPlanNode)

@@ -18,7 +18,6 @@ class NumericAnswer(models.Model):
     value = models.BigIntegerField()
 
     def format(self):
-        print self.value
         return u'%s' % self.value
 
 

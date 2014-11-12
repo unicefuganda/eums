@@ -10,9 +10,10 @@ class DistributionPlanLineItemTest(TestCase):
         line_item = DistributionPlanLineItem()
         fields_in_item = line_item._meta._name_map
 
-        self.assertEqual(len(line_item._meta.fields), 6)
+        self.assertEqual(len(line_item._meta.fields), 7)
         expected_fields = [
-            'item_id', 'targeted_quantity', 'planned_distribution_date', 'remark', 'distribution_plan_node_id', 'id']
+            'item_id', 'targeted_quantity', 'planned_distribution_date', 'remark', 'distribution_plan_node_id', 'id',
+            'track']
 
         for field in expected_fields:
             self.assertIn(field, fields_in_item)
