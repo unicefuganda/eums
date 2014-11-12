@@ -217,6 +217,47 @@ describe('UNICEF IP', function () {
 
     ];
 
+
+    var stubConsigneeResponses = [
+        {
+            'node': planNodeOne,
+            'amountSent': 100,
+            'amountReceived': '50',
+            'consignee': {
+                'id': 10,
+                'name': 'PADER DHO'
+            },
+            'satisfiedWithProduct': 'Yes',
+            'productReceived': 'Yes',
+            'item': 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+            'revisedDeliveryDate': 'didnt not specify',
+            'qualityOfProduct': 'Good',
+            'feedbackAboutDissatisfaction': 'they were damaged',
+            'informedOfDelay': 'No',
+            'dateOfReceipt': '6/10/2014',
+            'programme': {
+                'id': 3,
+                'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+            }
+        },
+        {
+            'node': planNodeTwo,
+            'item': 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+            'productReceived': 'No',
+            'informedOfDelay': 'No',
+            'consignee': {
+                'id': 4,
+                'name': 'ARUA DHO DR. ANGUZU PATRICK'
+            },
+            'amountReceived': '30',
+            'amountSent': 30,
+            'programme': {
+                'id': 3,
+                'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+            }
+        }
+    ];
+
     var scope, distributionPlanNodeService, distributionPlanService, deferredPlanNodePromise, httpBackend, eumsConfig, deferredNodePromise;
 
     beforeEach(function () {
@@ -237,9 +278,10 @@ describe('UNICEF IP', function () {
             distributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNodePromise.promise);
             distributionPlanNodeService.getPlanNodeById.and.returnValue(deferredNodePromise.promise);
         });
+
     });
 
-    xit('should get the nodes for a plan', function (done) {
+    it('should get the nodes for a plan', function (done) {
         var stubPlan = {id: 1, distributionplannode_set: [2]};
         var expectedPlanNode = stubDistributionPlanNodes[0];
         deferredNodePromise.resolve(expectedPlanNode);
@@ -252,7 +294,7 @@ describe('UNICEF IP', function () {
     });
 
 
-    xit('should get all plan nodes', function (done) {
+    it('should get all plan nodes', function (done) {
 
         var stubPlans = [
             {id: 1, distributionplannode_set: [2]}
@@ -271,34 +313,46 @@ describe('UNICEF IP', function () {
         httpBackend.flush();
     });
 
-    xit('should get all responses from backend', function (done) {
-        var expectedResponse = [
-            {
-                item: 'IEHK2006,kit,suppl.1-drugs',
-                amountSent: 1,
-                consignee: 'L438000484',
-                details: [
-                    {answer: 'Its ish ish', questionLabel: 'feedbackAboutDissatisfaction'},
-                    {answer: '20', questionLabel: 'amountReceived'}
-
-                ]
-            },
-            {
-                item: 'IEHK2006,Laptops',
-                amountSent: 1,
-                consignee: 'L438000484',
-                details: [
-                    {answer: 'Its ish ish', questionLabel: 'feedbackAboutDissatisfaction'},
-                    {answer: '20', questionLabel: 'amountReceived'}
-                ]
-            }
-        ];
-
-        httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(expectedResponse);
-        distributionPlanService.getResponsesFromBackend().then(function (response) {
-            expect(response.data).toEqual(expectedResponse);
-            done();
+    describe('consignee responses', function () {
+        beforeEach(function(){
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(stubDistributionPlanNodes[0]);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeTwo + '/').respond(stubDistributionPlanNodes[1]);
         });
-        httpBackend.flush();
+
+        it('should get all consignee responses', function () {
+            distributionPlanService.getAllConsigneeResponses().then(function (responses) {
+                expect(responses.data).toEqual(stubConsigneeResponses);
+            });
+            httpBackend.flush();
+        });
+
+        it('should get distribution plan node by id', function () {
+            distributionPlanService.getDistributionPlanNodeById(planNodeOne).then(function (responses) {
+                expect(responses.data).toEqual(stubDistributionPlanNodes[0]);
+            });
+            httpBackend.flush();
+        });
+
+        it('should map all consignee responses to node location', function (done) {
+            distributionPlanService.mapConsigneesResponsesToNodeLocation().then(function (consigneesWithLocation) {
+                expect(consigneesWithLocation[0].location).toBe(stubDistributionPlanNodes[0].location);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should group responses by location', function (done) {
+             distributionPlanService.groupResponsesByLocation().then(function (responsesByLocation) {
+                expect(responsesByLocation).toEqual([
+                    {location: 'mbarara', consigneeResponses: jasmine.any(Function)},
+                    {location: 'gulu', consigneeResponses: jasmine.any(Function)}
+                ]);
+                expect(responsesByLocation[0].consigneeResponses()[0].node).toEqual(planNodeOne);
+                done();
+            });
+            httpBackend.flush();
+        });
     });
+
 });

@@ -91,6 +91,12 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             })[0];
         };
 
+        var getUniqueLocations = function (consigneesResponsesWithNodeLocation) {
+            return _.uniq(consigneesResponsesWithNodeLocation, function (responseWithNodeLocation) {
+                return responseWithNodeLocation.location.toLowerCase();
+            });
+        };
+
         return {
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
@@ -123,6 +129,35 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             },
             getAllConsigneeResponses: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
+            },
+            mapConsigneesResponsesToNodeLocation: function () {
+                var self = this;
+                return self.getAllConsigneeResponses().then(function (responses) {
+                    var consigneeResponseWithLocationPromises = responses.data.map(function (response) {
+                        return self.getDistributionPlanNodeById(response.node).then(function (planNodeResponse) {
+                            response.location = planNodeResponse.data.location;
+                            return response;
+                        });
+                    });
+                    return $q.all(consigneeResponseWithLocationPromises);
+                });
+            },
+            groupResponsesByLocation: function () {
+                return this.mapConsigneesResponsesToNodeLocation().then(function (allResponses) {
+                    return getUniqueLocations(allResponses).map(function (response) {
+                        return {
+                            location: response.location.toLowerCase(),
+                            consigneeResponses: function () {
+                                return allResponses.filter(function (responseWithLocation) {
+                                    return responseWithLocation.location.toLowerCase() === response.location.toLowerCase();
+                                });
+                            }
+                        };
+                    });
+                });
+            },
+            getDistributionPlanNodeById: function (id) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + id + '/');
             },
             getImplementingPartners: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER');
