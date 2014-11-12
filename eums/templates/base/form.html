@@ -1,0 +1,26 @@
+{% extends "base/layout.html" %}
+
+{% block content %}
+<h3>
+  {% block title %} {% endblock %}
+</h3>
+
+{%  block non_form_errors %}
+{% endblock %}
+
+{% block pre_form_content %}
+{% endblock %}
+
+<form action="{{ action }}" method="post" accept-charset="utf-8" id="{{ id }}" class="form-horizontal {{ class }}">
+  {% csrf_token %}
+
+  {% block display_form_fields %}{% endblock %}
+
+  <div class="form-actions">
+      <a  href="{{ cancel_url }}" type="cancel" class="btn btn-default"> <span class="red bold"><i class="glyphicon glyphicon-remove"></i> CANCEL</span></a>
+      <button type="submit" class="btn btn-default submit"><span class="green bold"><i class="glyphicon glyphicon-floppy-disk"></i> {{ btn_label }}</span></button>
+  </div>
+</form>
+
+{% block non_form_content %}{% endblock %}
+{% endblock %}

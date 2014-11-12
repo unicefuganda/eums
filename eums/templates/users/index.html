@@ -1,3 +1,4 @@
+{% extends 'base/layout.html' %}
 
 {% block content %}
     <div class="col-md-12">
@@ -9,7 +10,7 @@
     {% load generic_tags %}
 
     <div class="table-responsive">
-    {% include 'users/filter_form.html' with a_form=filter_form btn_label='Get list' form_method='post' %}
+
     <a href="{% url 'create_user_page' %}" class="btn btn-default btn-lg  pull-right" id="add-new-user">
         <span class="cyan"><i class="glyphicon glyphicon-plus-sign"></i> Add user</span></a>
     <br/>
@@ -29,6 +30,7 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.groups.all | display_list}}</td>
+                    <td>
                         {% if user.is_active %}
                             Active
                             {% else %}
