@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('eums', '0019_auto_20141111_1824'),
+        ('eums', '0002_distributionplanlineitem_track'),
     ]
 
     operations = [
@@ -29,5 +29,10 @@ class Migration(migrations.Migration):
                 'get_latest_by': 'modified',
             },
             bases=(models.Model,),
+        ),
+        migrations.AlterField(
+            model_name='distributionplanlineitem',
+            name='track',
+            field=models.BooleanField(default=False),
         ),
     ]

@@ -1,4 +1,5 @@
 *.iml
+.coverage
 *.sqlite3
 *.pyc
 .idea/
