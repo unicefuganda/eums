@@ -16,6 +16,8 @@ Installation
         cd eums
 
         virtualenv eums
+        
+        source eums/bin/activate
 
         pip install -r requirements.txt
 
@@ -45,18 +47,24 @@ Installation
 
 ==
 
+#Note:
+
+Before you start up the server make sure you have redis-server installed and running 
+##
+        brew install redis
+        
+        redis-server
+==
 
 To install one of the fixtures (e.g. new_data.json), you will need to comment out the 'schedule_run_for(line_item)' line in the handlers.py file before running
-
 ##
-  python manage.py loaddata new_data.json
-==
+        python manage.py loaddata new_data.json
 
 
 To test:
 ##
- run python manage.py test
-==
+        run python manage.py test
+
 
 Done!! you're good to go :)
 
