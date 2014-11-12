@@ -5,6 +5,37 @@
         });
     }
 
+    function getHeatMapStyle(allDistricts, location) {
+        var style = {
+            fillColor: '#FAEBD7',
+            fillOpacity: 0.6,
+            weight: 2
+        };
+        allDistricts.forEach(function (district) {
+            if (district.district === location) {
+                style.fillColor = district.color;
+            }
+        });
+        return style;
+    }
+
+    function getHeatMapColor(consigneeResponses) {
+        var noProductReceived = getNumberOf("yes", consigneeResponses).length;
+        var RED = '#DE2F2F', GREEN = '#8AC43E', YELLOW = '#F6911D';
+        if (noProductReceived === consigneeResponses.length) return GREEN;
+        if (noProductReceived > 0 && noProductReceived < consigneeResponses.length) return YELLOW;
+        return RED;
+    }
+
+    function getHeatMapLayerColourForLocation(responsesWithLocation) {
+        return responsesWithLocation.map(function (responseWithLocation) {
+            return{
+                district: responseWithLocation.location,
+                color: getHeatMapColor(responseWithLocation.consigneeResponses)
+            }
+        });
+    }
+
     function getPinColourFromResponses(data) {
         var noProductRecieved = getNumberOf("yes", data).length;
         var RED = '#DE2F2F', GREEN = '#8AC43E', YELLOW = '#F6911D';
@@ -41,7 +72,7 @@
     }
 
     function Layer(map, layer, layerOptions) {
-        var selected = false;
+        var selected = false, layerStyle;
 
         function init(self) {
             layer
@@ -53,7 +84,10 @@
         this.click = function () {
             map.fitBounds(layer.getBounds());
         };
-
+        this.setStyle = function (style) {
+            layerStyle = style;
+            layer.setStyle(style);
+        };
         this.getLayerBounds = function () {
             return layer.getBounds();
         };
@@ -63,12 +97,12 @@
         };
 
         this.highlight = function () {
-            layer.setStyle(layerOptions.selectedLayerStyle);
+            layer.setStyle(layerOptions.districtLayerStyle);
             selected = true;
         };
 
         this.unhighlight = function () {
-            layer.setStyle(layerOptions.districtLayerStyle);
+            layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
             selected = false;
         };
 
@@ -106,6 +140,9 @@
             getLayerCenter: function (layerName) {
                 return layerList[layerName].getCenter();
             },
+            getLayers: function () {
+                return layerList;
+            },
             getSelectedLayer: function () {
                 var highlightedLayer = {};
                 angular.forEach(layerList, function (layer, layerName) {
@@ -133,7 +170,7 @@
     });
 
 
-    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q, MapFilterService) {
+    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q, MapFilterService, DistributionPlanService) {
         var map;
 
         function initMap(elementId) {
@@ -157,6 +194,15 @@
             return marker.addTo(map);
         }
 
+        function addHeatMapLayer() {
+            DistributionPlanService.groupResponsesByLocation().then(function (responsesWithLocation) {
+                var allLocations = getHeatMapLayerColourForLocation(responsesWithLocation);
+                angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
+                    layer.setStyle(getHeatMapStyle(allLocations, layerName));
+                });
+            });
+        }
+
         function addDistrictsLayer(map) {
             return GeoJsonService.districts().then(function (response) {
                 L.geoJson(response.data, {
@@ -176,6 +222,10 @@
 
                 return addDistrictsLayer(map).then(function () {
                     layerName && this.clickLayer(layerName);
+                    return this;
+                }.bind(this)).then(function () {
+                    addHeatMapLayer();
+                }).then(function () {
                     return this;
                 }.bind(this));
             },
@@ -265,24 +315,27 @@
     });
 
     module.directive('map', function (MapService, $window, IPService, DistributionPlanService, MapFilterService, $q, $timeout) {
+
         function getAllMarkersWithResponses(map, scope) {
+
+
             var deferredMarkers = $q.defer();
-            DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
-                ips.map(function (ip) {
-                    ip.consignees.then(function (consignees) {
-                        consignees.map(function (consignee) {
-                            consignee.answers.then(function (answers) {
-                                var consigneeCoordinates = map.getRandomCoordinates(consignee.consignee.location.toLowerCase());
-                                var markerData = answers;
-                                if (answers.length) {
-                                    var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
-                                    MapFilterService.setMapMarker({marker: marker, consigneeResponse: markerData});
-                                }
-                            });
-                        });
-                    });
-                });
-            });
+//            DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
+//                ips.map(function (ip) {
+//                    ip.consignees.then(function (consignees) {
+//                        consignees.map(function (consignee) {
+//                            consignee.answers.then(function (answers) {
+//                                var consigneeCoordinates = map.getRandomCoordinates(consignee.consignee.location.toLowerCase());
+//                                var markerData = answers;
+//                                if (answers.length) {
+//                                    var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
+//                                    MapFilterService.setMapMarker({marker: marker, consigneeResponse: markerData});
+//                                }
+//                            });
+//                        });
+//                    });
+//                });
+//            });
 
             $timeout(function () {
                 deferredMarkers.resolve(MapFilterService.getAllMarkerMaps());

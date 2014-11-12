@@ -147,11 +147,11 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     return getUniqueLocations(allResponses).map(function (response) {
                         return {
                             location: response.location.toLowerCase(),
-                            consigneeResponses: function () {
+                            consigneeResponses: (function () {
                                 return allResponses.filter(function (responseWithLocation) {
                                     return responseWithLocation.location.toLowerCase() === response.location.toLowerCase();
                                 });
-                            }
+                            })()
                         };
                     });
                 });

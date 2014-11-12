@@ -314,7 +314,7 @@ describe('UNICEF IP', function () {
     });
 
     describe('consignee responses', function () {
-        beforeEach(function(){
+        beforeEach(function () {
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(stubDistributionPlanNodes[0]);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeTwo + '/').respond(stubDistributionPlanNodes[1]);
@@ -343,12 +343,19 @@ describe('UNICEF IP', function () {
         });
 
         it('should group responses by location', function (done) {
-             distributionPlanService.groupResponsesByLocation().then(function (responsesByLocation) {
+            stubConsigneeResponses[0].location = stubDistributionPlanNodes[0].location;
+            stubConsigneeResponses[1].location = stubDistributionPlanNodes[1].location;
+            distributionPlanService.groupResponsesByLocation().then(function (responsesByLocation) {
                 expect(responsesByLocation).toEqual([
-                    {location: 'mbarara', consigneeResponses: jasmine.any(Function)},
-                    {location: 'gulu', consigneeResponses: jasmine.any(Function)}
+                    {
+                        location: stubDistributionPlanNodes[0].location.toLowerCase(),
+                        consigneeResponses: [stubConsigneeResponses[0]]
+                    },
+                    {
+                        location: stubDistributionPlanNodes[1].location.toLowerCase(),
+                        consigneeResponses: [stubConsigneeResponses[1]]
+                    }
                 ]);
-                expect(responsesByLocation[0].consigneeResponses()[0].node).toEqual(planNodeOne);
                 done();
             });
             httpBackend.flush();
