@@ -23,7 +23,7 @@ class DistributionPlanLineItemTest(AuthenticatedAPITestCase):
         node = create_distribution_plan_node(self)
 
         item_details = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
-                        'remark': "Dispatched", 'distribution_plan_node': node['id']}
+                        'remark': "Dispatched", 'distribution_plan_node': node['id'], 'track': False}
 
         returned_item = create_distribution_plan_line_item(self, item_details)
 

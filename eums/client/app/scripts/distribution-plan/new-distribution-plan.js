@@ -9,6 +9,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.contact = {};
         $scope.lineItem = {};
         $scope.itemIndex = '';
+        $scope.track = false;
 
         $scope.showExtraColumn = $location.path().substr(1, 15) !== 'delivery-report';
         $scope.quantityHeaderText = $scope.showExtraColumn ? 'Targeted Qty' : 'Delivered Qty';
@@ -137,6 +138,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             lineItem.contactPerson = node.contact_person_id;
             lineItem.modeOfDelivery = node.mode_of_delivery;
             lineItem.destinationLocation = node.location;
+            lineItem.track = $scope.track;
             lineItem.forEndUser = node.tree_position === 'END_USER';
         };
 
@@ -161,6 +163,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             lineItem.targetQuantity = lineItem.targeted_quantity;
                             lineItem.lineItemId = lineItem.id;
                             lineItem.item = $scope.selectedSalesOrderItem.information.id;
+
+                            if(lineItem.track) {
+                                $scope.track = true;
+                            }
 
                             var date = new Date(lineItem.planned_distribution_date);
                             lineItem.plannedDistributionDate = formatDateForDisplay(date);

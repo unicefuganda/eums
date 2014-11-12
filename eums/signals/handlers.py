@@ -8,6 +8,6 @@ from eums.services.flow_scheduler import schedule_run_for
 @receiver(post_save, sender=DistributionPlanLineItem)
 def on_post_save_line_item(sender, **kwargs):
     created = kwargs['created']
-    if created:
-        line_item = kwargs['instance']
+    line_item = kwargs['instance']
+    if created and line_item.track:
         schedule_run_for(line_item)

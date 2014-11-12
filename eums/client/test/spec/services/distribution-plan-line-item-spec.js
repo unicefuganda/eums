@@ -8,6 +8,7 @@ describe('Distribution Plan Line Item Service', function () {
         targetQuantity: 10,
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
+        track: true,
         distribution_plan_node: 1
     };
 
@@ -17,6 +18,7 @@ describe('Distribution Plan Line Item Service', function () {
         targetQuantity: 10,
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
+        track: true,
         distribution_plan_node: 1
     };
 

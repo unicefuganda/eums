@@ -42,7 +42,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get(url, format='json')
 
         consignee = node.consignee
-        programme = node.distribution_plan.programme;
+        programme = node.distribution_plan.programme
 
         expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name},
