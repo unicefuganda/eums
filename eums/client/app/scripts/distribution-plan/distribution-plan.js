@@ -97,6 +97,33 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             });
         };
 
+        function aggregateAllResponse(data, location) {
+            var totalYes = 0;
+            var totalSent = data.length;
+            data.forEach(function (response) {
+                if (response.productReceived.toLowerCase() === 'yes') {
+                    totalYes += 1;
+                }
+            });
+
+            return {
+                location: location ? location : 'Uganda',
+                totalSent: totalSent,
+                totalReceived: totalYes,
+                totalNotReceived: totalSent - totalYes
+            };
+        }
+
+        function aggregateAllResponseFor(responsesWithLocation, district) {
+            var aggregates = {};
+            responsesWithLocation.forEach(function (responseWithLocation) {
+                if (district.toLowerCase() === responseWithLocation.location.toLowerCase()) {
+                    aggregates = aggregateAllResponse(responseWithLocation.consigneeResponses, district);
+                }
+            });
+            return aggregates;
+        }
+
         return {
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
@@ -126,6 +153,16 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
             getConsigneeDetails: function (consigneeId) {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/');
+            },
+            aggregateResponses: function () {
+                return this.getAllConsigneeResponses().then(function (responseFromServer) {
+                    return aggregateAllResponse(responseFromServer.data);
+                });
+            },
+            aggregateResponsesForDistrict: function (district) {
+                return this.groupResponsesByLocation().then(function (responsesWithLocation) {
+                    return aggregateAllResponseFor(responsesWithLocation, district);
+                });
             },
             getAllConsigneeResponses: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);

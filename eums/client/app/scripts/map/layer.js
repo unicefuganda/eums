@@ -1,4 +1,4 @@
-angular.module('map.layers', [])
+angular.module('map.layers', ['DistributionPlan'])
     .factory('LayerMap', function () {
         var layerList = {};
 
@@ -45,4 +45,58 @@ angular.module('map.layers', [])
                 layerList[layerName].click();
             }
         };
+    }).factory('Layer', function (DistributionPlanService) {
+        function Layer(map, layer, layerOptions, scope, layerName) {
+            var selected = false, layerStyle;
+
+            function init(self) {
+                layer
+                    .on('mouseover', self.highlight)
+                    .on('mouseout', self.unhighlight)
+                    .on('click', self.click);
+            }
+
+            this.click = function () {
+                DistributionPlanService.aggregateResponsesForDistrict(layerName).then(function (aggregates) {
+                    scope.totalStats = aggregates;
+                });
+                map.fitBounds(layer.getBounds());
+            };
+            this.setStyle = function (style) {
+                layerStyle = style;
+                layer.setStyle(style);
+            };
+            this.getLayerBounds = function () {
+                return layer.getBounds();
+            };
+
+            this.getCenter = function () {
+                return layer.getBounds().getCenter();
+            };
+
+            this.highlight = function () {
+                layerOptions.districtLayerStyle.weight = 3.5;
+                layerOptions.districtLayerStyle.fillColor = layerStyle && layerStyle.fillColor;
+                layer.setStyle(layerOptions.districtLayerStyle);
+                selected = true;
+            };
+
+            this.unhighlight = function () {
+                layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
+                selected = false;
+            };
+
+            this.isHighlighted = function () {
+                return selected;
+            };
+
+            init(this);
+        }
+
+        return {
+            build: function (map, layer, layerOptions, scope, layerName) {
+                return new Layer(map, layer, layerOptions, scope, layerName);
+            }
+        };
+
     });

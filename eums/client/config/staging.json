@@ -24,7 +24,7 @@
         "opacity": 0.7
     },
     "selectedLayerStyle": {
-        "weight": 2,
+        "weight": 1,
         "color": "@brand-primary",
         "fillOpacity": 0.8
     },

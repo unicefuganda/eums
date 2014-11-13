@@ -13,5 +13,17 @@
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/"
+    },
+     "districtLayerStyle": {
+        "weight": 1,
+        "color": "#036E97",
+        "fillColor": "#CCE9F4",
+        "fillOpacity": 0.2,
+        "opacity": 0.7
+    },
+    "selectedLayerStyle": {
+        "weight": 1,
+        "color": "@brand-primary",
+        "fillOpacity": 0.8
     }
 }

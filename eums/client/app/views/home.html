@@ -12,18 +12,18 @@
 
             <div map-summary consigneeDetails></div>
             <div id="stats-panel">
-                <div class="panel-header">UNICEF SUPPLIES</div>
+                <div class="panel-header">UNICEF Delivery Status for {{ totalStats.location }}</div>
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ totalStats.received }}</span>
+                        <span class="badge alert-info">{{ totalStats.totalSent }}</span>
                         Received
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ totalStats.distributed }}</span>
+                        <span class="badge alert-info">{{ totalStats.totalReceived }}</span>
                         Distributed
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ totalStats.notDistributed }}</span>
+                        <span class="badge alert-info">{{ totalStats.totalNotReceived }}</span>
                         Not Distributed
                     </li>
                 </ul>

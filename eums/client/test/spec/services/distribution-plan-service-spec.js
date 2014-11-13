@@ -327,6 +327,23 @@ describe('UNICEF IP', function () {
             httpBackend.flush();
         });
 
+        it('should aggregate all consignee responses', function (done) {
+            distributionPlanService.aggregateResponses().then(function (aggregates) {
+                expect(aggregates).toEqual({location: 'Uganda', totalSent: 2, totalReceived: 1, totalNotReceived: 1});
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should aggregate consignee responses for a district', function (done) {
+            var district = 'Gulu';
+            distributionPlanService.aggregateResponsesForDistrict(district).then(function (aggregates) {
+                expect(aggregates).toEqual({location: 'Gulu', totalSent: 1, totalReceived: 0, totalNotReceived: 1});
+                done();
+            });
+            httpBackend.flush();
+        });
+
         it('should get distribution plan node by id', function () {
             distributionPlanService.getDistributionPlanNodeById(planNodeOne).then(function (responses) {
                 expect(responses.data).toEqual(stubDistributionPlanNodes[0]);

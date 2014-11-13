@@ -17,9 +17,9 @@
 
     function getHeatMapStyle(allDistricts, location) {
         var style = {
-            fillColor: '#FAEBD7',
+            fillColor: '#F1EEE8',
             fillOpacity: 0.6,
-            weight: 2
+            weight: 1
         };
         allDistricts.forEach(function (district) {
             if (district.district === location) {
@@ -31,9 +31,9 @@
 
     function getHeatMapColor(consigneeResponses) {
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
-        var RED = '#DE2F2F', GREEN = '#8AC43E', YELLOW = '#F6911D';
+        var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
         if (noProductReceived === consigneeResponses.length) return GREEN;
-        if (noProductReceived > 0 && noProductReceived < consigneeResponses.length) return YELLOW;
+        if (noProductReceived > 0 && noProductReceived < consigneeResponses.length) return ORANGE;
         return RED;
     }
 
@@ -106,47 +106,6 @@
         }
     }
 
-    function Layer(map, layer, layerOptions) {
-        var selected = false, layerStyle;
-
-        function init(self) {
-            layer
-                .on('mouseover', self.highlight)
-                .on('mouseout', self.unhighlight)
-                .on('click', self.click);
-        }
-
-        this.click = function () {
-            map.fitBounds(layer.getBounds());
-        };
-        this.setStyle = function (style) {
-            layerStyle = style;
-            layer.setStyle(style);
-        };
-        this.getLayerBounds = function () {
-            return layer.getBounds();
-        };
-
-        this.getCenter = function () {
-            return layer.getBounds().getCenter();
-        };
-
-        this.highlight = function () {
-            layer.setStyle(layerOptions.districtLayerStyle);
-            selected = true;
-        };
-
-        this.unhighlight = function () {
-            layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
-            selected = false;
-        };
-
-        this.isHighlighted = function () {
-            return selected;
-        };
-
-        init(this);
-    }
 
     module.factory('GeoJsonService', function ($http, EumsConfig) {
         return {
@@ -157,7 +116,7 @@
     });
 
 
-    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, IPService, $q, MapFilterService, DistributionPlanService) {
+    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService, $q, MapFilterService, DistributionPlanService) {
         var map;
 
         function initMap(elementId) {
@@ -166,7 +125,7 @@
                 scrollWheelZoom: false,
                 touchZoom: false,
                 doubleClickZoom: false
-            }).setView([1.436, 31.000], 7);
+            }).setView([1.406, 32.000], 7);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
@@ -191,13 +150,13 @@
             });
         }
 
-        function addDistrictsLayer(map) {
+        function addDistrictsLayer(map, scope) {
             return GeoJsonService.districts().then(function (response) {
                 L.geoJson(response.data, {
                     style: EumsConfig.districtLayerStyle,
                     onEachFeature: function (feature, layer) {
-                        var districtLayer = new Layer(map, layer, EumsConfig);
                         var districtName = feature.properties.DNAME_2010 || 'unknown';
+                        var districtLayer = Layer.build(map, layer, EumsConfig, scope, districtName);
                         LayerMap.addLayer(districtLayer, districtName.toLowerCase())
                     }
                 }).addTo(map);
@@ -205,10 +164,10 @@
         }
 
         return {
-            render: function (elementId, layerName) {
+            render: function (elementId, layerName, scope) {
                 map = initMap(elementId);
 
-                return addDistrictsLayer(map).then(function () {
+                return addDistrictsLayer(map, scope).then(function () {
                     layerName && this.clickLayer(layerName);
                     return this;
                 }.bind(this)).then(function () {
@@ -290,9 +249,9 @@
             getLayerBounds: function (layerName) {
                 return LayerMap.getLayerBoundsBy(layerName);
             },
-            clickLayer: function (layerName) {
+            clickLayer: function (layerName, scope) {
                 if (layerName) {
-                    LayerMap.clickLayer(layerName.toLowerCase());
+                    LayerMap.clickLayer(layerName.toLowerCase(), scope);
                     this.highlightLayer(layerName);
                 }
             },
@@ -305,8 +264,6 @@
     module.directive('map', function (MapService, $window, IPService, DistributionPlanService, MapFilterService, $q, $timeout) {
 
         function getAllMarkersWithResponses(map, scope) {
-
-
             var deferredMarkers = $q.defer();
 //            DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
 //                ips.map(function (ip) {
@@ -332,10 +289,10 @@
         }
 
         return {
-            scope: true,
+            scope: false,
             link: function (scope, element, attrs) {
 
-                MapService.render(attrs.id, null).then(function (map) {
+                MapService.render(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
                     scope.filter = {};
                     scope.clickedMarker = '';
@@ -345,6 +302,10 @@
                     scope.notDeliveredChecked = false;
                     scope.deliveredChecked = null;
                     scope.allMarkers = [];
+
+                    DistributionPlanService.aggregateResponses().then(function (aggregates) {
+                        scope.totalStats = aggregates;
+                    });
 
                     scope.hideMapMarkerDetails = function () {
                         scope.clickedMarker = null;
