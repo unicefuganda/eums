@@ -43,6 +43,7 @@
   right: 15px;
   width: 280px;
 }
+
 #marker-summary button.close {
   padding: 2px;
   line-height: 0.5;
@@ -162,4 +163,35 @@
 .filter-panel .close-panel:hover {
   background-color: darken(@brand-primary, 10%);
   border-color: darken(@brand-primary, 12%);
+}
+
+.messages-aggregate-marker-icon {
+  left: -21px !important;
+  margin-left: 10.5px !important;
+}
+
+.messages-aggregate-marker-icon div {
+  background-color: rgba(28, 177, 105, 0.25) !important;
+}
+
+.disasters-aggregate-marker-icon div {
+  background-color: rgba(232, 84, 91, 0.52) !important;
+}
+
+div[class*="-aggregate-marker-icon"] div {
+  background-color: rgba(28, 177, 105, 0.3);
+  border-radius: 50%;
+  padding-top: 21%;
+  text-align: center;
+  position: absolute;
+  font-size: 10px;
+  color: white;
+  width: 100%;
+  font-weight: bold;
+  height: 100%;
+  text-shadow: 0 0 1px rgba(0, 0, 0, 0.58);
+  box-shadow: 0px 1px 2px #636262;
+  -o-box-shadow: 0px 1px 2px #636262;
+  -moz-box-shadow: 0px 1px 2px #636262;
+  -webkit-box-shadow: 0px 1px 2px #636262;
 }
