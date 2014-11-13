@@ -1,59 +1,26 @@
-<nav class="navbar navbar-fixed-top" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <a href="/"><img src="/static/app/media/unicef-logo-white.png" class="navbar-brand"><span
-                    class="navbar-brand white">Supply End User Monitoring System</span></a>
-        </div>
+{% extends 'base/header.html' %}
 
-        <ul class="nav navbar-nav navbar-right">
-            <li><span id="user-icon" class="glyphicon glyphicon-user white"><span id="user">{{ user }}</span></span>
-            <li>
-            <li><a href="{% url "logout" %}">Logout</a>
-            <li>
-        </ul>
-    </div>
-</nav>
-<nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
-    <div class="container">
-        <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
-            <li id="home-nav" ng-class="{ active: isActive('/')}">
-                <a href="#">Dashboard</a>
-            </li>
-            <li id="distribution-plan-nav"
-                ng-class="{ active: isActive('/delivery-reports,/delivery-report/new/')} ">
-                <a href="#/distribution-plans">Distribution Plans</a>
-            </li>
-            <li class="dropdown" ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
-                <a href="" class="dropdown-toggle">Delivery Reports <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#/field-verification-reports">Field Verification</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#/delivery-reports">Reported By IP</a></li>
-                </ul>
-            </li>
-            <li class="dropdown" ng-class="{ active: isActive('/reports')}">
-                <a href="" class="dropdown-toggle">Reports <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                    <li><a href="#/distribution-plan-responses">Feedback Reports</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#/reports">IP Stock Report</a></li>
-                    <li class="divider"></li>
-                    <li><a href="#/distribution-plan-responses">All Reports</a></li>
-                </ul>
-            </li>
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="/users">Users</a></li>
-            <li><a href="">Settings</a></li>
-            <li><a href="">Help</a></li>
-            <li>
-                <a href="">
-                    <span class="glyphicon glyphicon-globe"></span>
-                    <span class="pad-left-5">Uganda</span>
-                    <span class="caret"></span>
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
+{% block nav %}
+<li id="distribution-plan-nav"
+    ng-class="{ active: isActive('/delivery-reports,/delivery-report/new/')} ">
+    <a href="#/distribution-plans">Distribution Plans</a>
+</li>
+<li class="dropdown" ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
+    <a href="" class="dropdown-toggle">Delivery Reports <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href="#/field-verification-reports">Field Verification</a></li>
+        <li class="divider"></li>
+        <li><a href="#/delivery-reports">Reported By IP</a></li>
+    </ul>
+</li>
+<li class="dropdown" ng-class="{ active: isActive('/reports')}">
+    <a href="" class="dropdown-toggle">Reports <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href="#/distribution-plan-responses">Feedback Reports</a></li>
+        <li class="divider"></li>
+        <li><a href="#/reports">IP Stock Report</a></li>
+        <li class="divider"></li>
+        <li><a href="#/distribution-plan-responses">All Reports</a></li>
+    </ul>
+</li>
+{% endblock %}

@@ -18,6 +18,8 @@
         <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
             <li id="home-nav">
                 <a href="/">Dashboard</a>
+                {% block nav %}
+                {% endblock %}
             </li>
         </ul>
 
