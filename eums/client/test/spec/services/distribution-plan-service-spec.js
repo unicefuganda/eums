@@ -329,7 +329,7 @@ describe('UNICEF IP', function () {
 
         it('should aggregate all consignee responses', function (done) {
             distributionPlanService.aggregateResponses().then(function (aggregates) {
-                expect(aggregates).toEqual({location: 'Uganda', totalSent: 2, totalReceived: 1, totalNotReceived: 1});
+                expect(aggregates).toEqual({location: 'UGANDA', totalSent: 2, totalReceived: 1, totalNotReceived: 1});
                 done();
             });
             httpBackend.flush();
