@@ -16,11 +16,24 @@
 </head>
 
 <body>
+{% load generic_tags %}
 {% include "base/header.html" %}
 
 <div class="um-panel">
-    {% block content %}
-    {% endblock %}
+    <div class="row">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags | bootstrap_message }}">
+            <ul>
+                {{ message }}
+            </ul>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </div>
 </div>
 </body>
 
