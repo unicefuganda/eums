@@ -8,14 +8,21 @@
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/leaflet/dist/leaflet.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/ngtoast/dist/ngToast.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/angular-busy/dist/angular-busy.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+    <link rel="stylesheet"
+          href="{{ STATIC_URL }}bower_components/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/tree-grid/css/jquery.treegrid.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.css">
     <link rel="icon" href="{{ STATIC_URL }}app/media/favicon.ico">
 </head>
 
-{% block content %}
-{% endblock %}
+<body>
+{% include "base/header.html" %}
+
+<div class="um-panel">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
 
 
 <script src="{{ STATIC_URL }}app/media/lodash.js"></script>
