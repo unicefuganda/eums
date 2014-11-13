@@ -36,7 +36,7 @@ describe('Sales Order Service', function () {
             salesorderitem_set: stubSalesOrder.salesorderitem_set,
             programme: {
                 id: programmeOneId,
-                name: 'Test Programme',
+                name: 'Test Programme'
             }
         };
         stubSalesOrders = [
@@ -63,7 +63,7 @@ describe('Sales Order Service', function () {
         });
     });
 
-    xit('should get all sales orders', function (done) {
+    it('should get all sales orders', function (done) {
         mockBackend.whenGET(endpointUrl).respond(stubSalesOrders);
 
         salesOrderService.getSalesOrders().then(function (orders) {
