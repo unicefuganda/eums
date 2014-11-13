@@ -107,7 +107,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             });
 
             return {
-                location: location ? location : 'Uganda',
+                location: location ? location : 'UGANDA',
                 totalSent: totalSent,
                 totalReceived: totalYes,
                 totalNotReceived: totalSent - totalYes
