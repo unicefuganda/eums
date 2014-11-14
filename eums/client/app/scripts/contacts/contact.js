@@ -27,9 +27,18 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
             return output;
         };
 
+        $scope.invalidContact = function (contact) {
+            return !(contact.firstName && contact.lastName && contact.phone);
+        };
+
         $scope.showDeleteContact = function (contact) {
             $scope.currentContact = contact;
-            $('#confirm-delete-modal').modal();
+            $('#delete-contact-modal').modal();
+        };
+
+        $scope.showEditContact = function (contact) {
+            $scope.currentContact = contact;
+            $('#edit-contact-modal').modal();
         };
 
         $scope.deleteSelectedContact = function () {
@@ -37,7 +46,13 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = null;
-                $('#confirm-delete-modal').modal('hide');
+                $('#delete-contact-modal').modal('hide');
+            });
+        };
+
+        $scope.editContact = function (contact) {
+            ContactService.editContact(contact).then(function () {
+                $('#edit-contact-modal').modal('hide');
             });
         };
     })
@@ -65,6 +80,12 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
                 return $http.delete(EumsConfig.CONTACT_SERVICE_URL + contact._id + '/').then(function (response) {
                     return response.data;
                 });
+            },
+            editContact: function (contact) {
+                return $http.put(EumsConfig.CONTACT_SERVICE_URL, contact).then(function (response) {
+                    return response.data;
+                });
+
             }
         };
     })
