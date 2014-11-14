@@ -1,18 +1,22 @@
 'use strict';
 
-angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
-    .controller('ContactController', function (ContactService, $scope, $sorter) {
+angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
+    .controller('ContactController', function (ContactService, $scope, $sorter, ngToast) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
-        $scope.currentContact = null;
+        $scope.currentContact = {};
+        $scope.contact = {};
+
+        function loadContacts() {
+            ContactService.getAllContacts().then(function (allContacts) {
+                $scope.contacts = allContacts.sort();
+            });
+        }
 
         $scope.initialize = function () {
             this.sortBy('firstName');
             this.sort.descending = false;
-
-            ContactService.getAllContacts().then(function (allContacts) {
-                $scope.contacts = allContacts.sort();
-            });
+            loadContacts.call(this);
         };
 
         $scope.sortArrowClass = function (criteria) {
@@ -27,8 +31,21 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
             return output;
         };
 
+        function createToast(message, klass) {
+            ngToast.create({
+                content: message,
+                class: klass,
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        }
+
         $scope.invalidContact = function (contact) {
             return !(contact.firstName && contact.lastName && contact.phone);
+        };
+
+        $scope.showAddContact = function () {
+            $('#add-contact-modal').modal();
         };
 
         $scope.showDeleteContact = function (contact) {
@@ -41,11 +58,22 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
             $('#edit-contact-modal').modal();
         };
 
+        $scope.saveContact = function () {
+            ContactService.addContact($scope.contact).then(function () {
+                $('#add-contact-modal').modal('hide');
+                loadContacts();
+                $scope.contact = {};
+
+            }, function (response) {
+                createToast(response.data.error, 'danger');
+            });
+        };
+
         $scope.deleteSelectedContact = function () {
             ContactService.deleteContact($scope.currentContact).then(function () {
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
-                $scope.currentContact = null;
+                $scope.currentContact = {};
                 $('#delete-contact-modal').modal('hide');
             });
         };
