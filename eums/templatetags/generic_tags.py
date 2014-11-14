@@ -20,3 +20,8 @@ def bootstrap_message(django_message):
 @register.filter
 def add_string(int_1, int_2):
     return "%s, %s" % (str(int_1), str(int_2))
+
+
+@register.filter(name='add_css')
+def add_css(field, css):
+   return field.as_widget(attrs={"class":css})

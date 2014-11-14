@@ -16,9 +16,9 @@
 
   {% block display_form_fields %}{% endblock %}
 
-  <div class="form-actions">
-      <a  href="{{ cancel_url }}" type="cancel" class="btn btn-default"> <span class="red bold"><i class="glyphicon glyphicon-remove"></i> CANCEL</span></a>
-      <button type="submit" class="btn btn-default submit"><span class="green bold"><i class="glyphicon glyphicon-floppy-disk"></i> {{ btn_label }}</span></button>
+  <div class="form-actions col-sm-offset-2">
+      <a  href="{{ cancel_url }}" type="cancel" class="btn btn-default"> <span class="text-danger"><i class="glyphicon glyphicon-remove"></i> CANCEL</span></a>
+      <button type="submit" class="btn btn-default submit"><span class="text-success"><i class="glyphicon glyphicon-floppy-disk"></i> {{ btn_label }}</span></button>
   </div>
 </form>
 

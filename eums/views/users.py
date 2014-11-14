@@ -45,7 +45,7 @@ class CreateUser(PermissionRequiredMixin, CreateView):
         self.success_url = reverse('list_users_page')
 
     def form_valid(self, form):
-        messages.success(self.request, "%s created successfully.")
+        messages.success(self.request, "%s created successfully." % form.cleaned_data['username'])
         return super(CreateUser, self).form_valid(form)
 
     def form_invalid(self, form):

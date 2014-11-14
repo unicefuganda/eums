@@ -1,14 +1,20 @@
+{% load generic_tags %}
 {% for field in a_form.visible_fields %}
-    <p id="{{ field.auto_id }}_span" {% if field.field.widget.attrs.class %}class="{{ field.field.widget.attrs.class }}"{% endif %} {% if field.field.attrs %} {{ field.field.attrs | safe }} {% endif %} >
-        <label for="{{ field.auto_id }}">{{ field.label }}</label>
-        {{ field }} <label class="error">
-                        {% if field.errors %}
-                            {% for error in field.errors %}
-                                {{ error }}
-                            {% endfor %}
-                        {% endif %}
-                    </label>
-    </p>
+    <div id="{{ field.auto_id }}_span" class="form-group" {% if field.field.attrs %}
+        {{ field.field.attrs | safe }} {% endif %} >
+        <label for="{{ field.auto_id }}" class="col-sm-2 control-label">{{ field.label }}</label>
+
+        <div class="col-sm-3">
+            {{ field | add_css:"form-control reset-width" }}
+        </div>
+        <label class="col-sm-5 text-danger">
+            {% if field.errors %}
+                {% for error in field.errors %}
+                    {{ error }}
+                {% endfor %}
+            {% endif %}
+        </label>
+    </div>
 {% endfor %}
 
 {% for hidden in a_form.hidden_fields %}
