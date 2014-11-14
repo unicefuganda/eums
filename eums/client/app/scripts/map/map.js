@@ -53,41 +53,6 @@
         });
     }
 
-    function getPinColourFromResponses(data) {
-        var noProductRecieved = getNumberOf("yes", data).length;
-        var RED = '#DE2F2F', GREEN = '#8AC43E', YELLOW = '#F6911D';
-        if (noProductRecieved === data.length) return GREEN;
-        if (noProductRecieved > 0 && noProductRecieved < data.length) return YELLOW;
-        return RED;
-    }
-
-    function Marker(center, data, scope) {
-        var markerIcon = function () {
-            return new L.DivIcon({
-                iconSize: new L.Point([10, 10]),
-                className: "ips-marker-icon marker-icon ",
-                html: "<div><i class='pin'><span style='background-color:" + getPinColourFromResponses(data) + "'></span></i></div>",
-                popupAnchor: [5, -10]
-            });
-        };
-
-        var marker = L.marker(center, {icon: markerIcon()});
-
-        marker.nodeId = data[0].consignee.id;
-
-        var assignClickedMarkerData = function () {
-            scope.$apply(function () {
-                scope.clickedMarker = data;
-            });
-        };
-
-        marker.on('click', function () {
-            var consigneeResponse = data[0];
-            consigneeResponse && assignClickedMarkerData();
-        });
-        return marker;
-    }
-
     function circleMarkerIcon(content) {
         return L.divIcon({
             iconSize: new L.Point(25, 25),
@@ -263,31 +228,6 @@
 
     module.directive('map', function (MapService, $window, IPService, DistributionPlanService, MapFilterService, $q, $timeout) {
 
-        function getAllMarkersWithResponses(map, scope) {
-            var deferredMarkers = $q.defer();
-//            DistributionPlanService.mapUnicefIpsWithConsignees().then(function (ips) {
-//                ips.map(function (ip) {
-//                    ip.consignees.then(function (consignees) {
-//                        consignees.map(function (consignee) {
-//                            consignee.answers.then(function (answers) {
-//                                var consigneeCoordinates = map.getRandomCoordinates(consignee.consignee.location.toLowerCase());
-//                                var markerData = answers;
-//                                if (answers.length) {
-//                                    var marker = new Marker([consigneeCoordinates.lat, consigneeCoordinates.lng], markerData, scope);
-//                                    MapFilterService.setMapMarker({marker: marker, consigneeResponse: markerData});
-//                                }
-//                            });
-//                        });
-//                    });
-//                });
-//            });
-
-            $timeout(function () {
-                deferredMarkers.resolve(MapFilterService.getAllMarkerMaps());
-            }, 5000);
-            return deferredMarkers.promise;
-        }
-
         return {
             scope: false,
             link: function (scope, element, attrs) {
@@ -310,10 +250,6 @@
                     scope.hideMapMarkerDetails = function () {
                         scope.clickedMarker = null;
                     };
-
-                    getAllMarkersWithResponses(map, scope).then(function (markersMap) {
-                        MapService.addMarkers(markersMap);
-                    });
                 });
             }
         }
