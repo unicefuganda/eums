@@ -13,6 +13,21 @@ describe('Contacts Service', function () {
         phone: '+234778945674'
     };
 
+    var expectedContacts = [
+        {
+            _id: 1,
+            firstName: 'Andrew',
+            lastName: 'Mukiza',
+            phone: '+234778945674'
+        },
+        {
+            _id: 2,
+            firstName: 'James',
+            lastName: 'Oloo',
+            phone: '+234778945675'
+        }
+    ];
+
     beforeEach(function () {
         module('Contact');
 
@@ -34,8 +49,8 @@ describe('Contacts Service', function () {
     });
 
     it('should get contact from contacts backend by id', function (done) {
-        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact.id + '/').respond(expectedContact);
-        contactService.getContactById(expectedContact.id).then(function (contact) {
+        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact._id + '/').respond(expectedContact);
+        contactService.getContactById(expectedContact._id).then(function (contact) {
             expect(contact).toEqual(expectedContact);
             done();
         });
@@ -53,23 +68,18 @@ describe('Contacts Service', function () {
     });
 
     it('should load all contacts', function (done) {
-
-        var expectedContacts = [{
-            _id: 1,
-            firstName: 'Andrew',
-            lastName: 'Mukiza',
-            phone: '+234778945674'
-        },
-            {
-            _id: 2,
-            firstName: 'James',
-            lastName: 'Oloo',
-            phone: '+234778945675'
-        }];
-
         mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL).respond(expectedContacts);
         contactService.getAllContacts().then(function (contacts) {
             expect(contacts).toEqual(expectedContacts);
+            done();
+        });
+        mockContactsBackend.flush();
+    });
+
+    it('should delete a contact', function (done) {
+        mockContactsBackend.whenDELETE(config.CONTACT_SERVICE_URL + expectedContact._id + '/').respond(null);
+        contactService.deleteContact(expectedContact).then(function (response) {
+            expect(response).toBe(null);
             done();
         });
         mockContactsBackend.flush();

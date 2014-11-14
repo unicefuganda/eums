@@ -4,6 +4,7 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
     .controller('ContactController', function (ContactService, $scope, $sorter) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
+        $scope.currentContact = null;
 
         $scope.initialize = function () {
             this.sortBy('firstName');
@@ -25,6 +26,20 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
             }
             return output;
         };
+
+        $scope.showDeleteContact = function (contact) {
+            $scope.currentContact = contact;
+            $('#confirm-delete-modal').modal();
+        };
+
+        $scope.deleteSelectedContact = function () {
+            ContactService.deleteContact($scope.currentContact).then(function () {
+                var index = $scope.contacts.indexOf($scope.currentContact);
+                $scope.contacts.splice(index, 1);
+                $scope.currentContact = null;
+                $('#confirm-delete-modal').modal('hide');
+            });
+        };
     })
     .factory('ContactService', function ($http, EumsConfig) {
         return {
@@ -43,6 +58,11 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable'])
             },
             getAllContacts: function () {
                 return $http.get(EumsConfig.CONTACT_SERVICE_URL).then(function (response) {
+                    return response.data;
+                });
+            },
+            deleteContact: function (contact) {
+                return $http.delete(EumsConfig.CONTACT_SERVICE_URL + contact._id + '/').then(function (response) {
                     return response.data;
                 });
             }
