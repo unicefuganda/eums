@@ -1,45 +1,7 @@
-describe('eums.map', function () {
+describe('eums.layers', function () {
 
     beforeEach(function () {
-        module('eums.map');
-    });
-
-    describe('GeoJsonService', function () {
-
-        var httpMock,
-            districtsGeoJsonUrl,
-            geoJsonService,
-            districtsGeoJsonStub = {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [125.6, 10.1]
-                },
-                properties: {
-                    name: 'Dinagat Islands'
-                }
-            };
-
-        beforeEach(function () {
-
-            inject(function (GeoJsonService, EumsConfig, $httpBackend) {
-                httpMock = $httpBackend;
-                geoJsonService = GeoJsonService;
-                districtsGeoJsonUrl = EumsConfig.DISTRICTGEOJSONURL;
-                httpMock.when('GET', districtsGeoJsonUrl).respond(districtsGeoJsonStub);
-            });
-        });
-
-        describe('GeoJsonService.district', function () {
-            it('should fetch districts GeoJSON', function () {
-                var obtainedGeoJson = geoJsonService.districts();
-                httpMock.expectGET(districtsGeoJsonUrl);
-                httpMock.flush();
-                expect(obtainedGeoJson).toBeDefined();
-            });
-        });
-
-
+        module('map.layers');
     });
 
     describe('LayerMap', function () {
@@ -90,13 +52,92 @@ describe('eums.map', function () {
         });
 
         it('should get center of a given layer', function () {
-           var layer = jasmine.createSpyObj('layer', ['getLayerCenter']);
+            var layer = jasmine.createSpyObj('layer', ['getLayerCenter']);
             layer.name = 'Bukoto';
 
             layerMap.addLayer(layer, layer.name);
             layer.getLayerCenter(layer.name);
             expect(layer.getLayerCenter).toHaveBeenCalled();
         });
+
+    });
+
+    describe('Layer', function () {
+        var layer, mockDistributionPlanService, deferredAggregates;
+        var mockMap, mockMapLayer;
+
+        beforeEach(function () {
+
+            mockMap = jasmine.createSpyObj('mockMap', ['fitBounds', 'removeLayer']);
+            mockMapLayer = jasmine.createSpyObj('mockMapLayer', ['on', 'setStyle', 'getBounds']);
+            mockMapLayer.on.and.returnValue(mockMapLayer);
+            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['aggregateResponsesForDistrict']);
+
+            module(function ($provide) {
+                $provide.value('DistributionPlanService', mockDistributionPlanService);
+            });
+
+            inject(function (Layer, $q) {
+                layer = Layer;
+                deferredAggregates = $q.defer();
+                mockDistributionPlanService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
+            });
+        });
+
+        describe('METHOD: setStyle', function () {
+            it('should set a layer style', function () {
+                var style = {color: 'red'};
+                var districtLayer = layer.build(mockMap, mockMapLayer, {}, 'Gulu');
+                districtLayer.setStyle(style);
+                expect(mockMapLayer.setStyle).toHaveBeenCalledWith(style);
+            });
+        });
+
+        describe('METHOD: click', function () {
+            it('should call the on click handler of a layer', function () {
+                var optionsMock = jasmine.createSpyObj('optionsMock', ['districtLayerStyle', 'selectedLayerStyle']),
+                    districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, {}, 'Gulu');
+
+                districtLayer.click();
+                expect(mockDistributionPlanService.aggregateResponsesForDistrict).toHaveBeenCalledWith('Gulu');
+            });
+        });
+
+        describe('METHOD: highlight', function () {
+            it('should highlight layer', function () {
+                var optionsMock = jasmine.createSpyObj('optionsMock', ['onClickHandler']);
+                optionsMock = { selectedLayerStyle: { fillColor: 'red', weight: 2.0}, districtLayerStyle: {fillColor: 'Blue', weight: 3.0}};
+                var districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, {}, 'Gulu');
+
+                districtLayer.highlight();
+                expect(mockMapLayer.setStyle).toHaveBeenCalledWith({ fillColor: 'Blue', weight: 3.5 });
+                expect(districtLayer.isHighlighted()).toBeTruthy();
+            });
+        });
+
+        describe('METHOD: getCenter', function () {
+            it('should get the center of a layer', function () {
+                var mockBounds = jasmine.createSpyObj('mockBounds', ['getCenter']);
+                mockMapLayer.getBounds.and.returnValue(mockBounds);
+                var districtLayer = layer.build(mockMap, mockMapLayer, {}, {}, 'Gulu');
+
+                districtLayer.getCenter();
+                expect(mockMapLayer.getBounds).toHaveBeenCalled();
+                expect(mockBounds.getCenter).toHaveBeenCalled();
+            });
+        });
+
+        describe('METHOD: getLayerBounds', function () {
+            it('should get the center of a layer', function () {
+                var mockBounds = jasmine.createSpyObj('mockBounds', ['getCenter']);
+                mockMapLayer.getBounds.and.returnValue(mockBounds);
+                var districtLayer = layer.build(mockMap, mockMapLayer, {}, {}, 'Gulu');
+
+                districtLayer.getLayerBounds();
+                expect(mockMapLayer.getBounds).toHaveBeenCalled();
+            });
+        });
+
 
     });
 

@@ -219,9 +219,6 @@
                     LayerMap.clickLayer(layerName.toLowerCase(), scope);
                     this.highlightLayer(layerName);
                 }
-            },
-            getRandomCoordinates: function (layerName) {
-                return LayerMap.getRandomCoordinates(layerName)
             }
         };
     });

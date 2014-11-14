@@ -65,7 +65,8 @@ angular.module('map.layers', ['DistributionPlan'])
 
             this.highlight = function () {
                 layerOptions.districtLayerStyle.weight = 3.5;
-                layerOptions.districtLayerStyle.fillColor = layerStyle && layerStyle.fillColor;
+
+                layerOptions.districtLayerStyle.fillColor = layerOptions.districtLayerStyle.fillColor || layerStyle.fillColor;
                 layer.setStyle(layerOptions.districtLayerStyle);
                 selected = true;
             };
