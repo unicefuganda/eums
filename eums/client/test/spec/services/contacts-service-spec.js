@@ -84,4 +84,13 @@ describe('Contacts Service', function () {
         });
         mockContactsBackend.flush();
     });
+
+    it('should edit an existing contact', function(done) {
+        mockContactsBackend.whenPUT(config.CONTACT_SERVICE_URL, expectedContact).respond(expectedContact);
+        contactService.editContact(expectedContact).then(function(response) {
+            expect(response).toEqual(expectedContact);
+            done();
+        });
+        mockContactsBackend.flush();
+    });
 });
