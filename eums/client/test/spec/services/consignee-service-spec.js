@@ -1,4 +1,4 @@
-describe('Consignee Service', function() {
+describe('Consignee Service', function () {
 
     var consigneeService, mockBackend, consigneeEndpointUrl, mockContactService;
 
@@ -25,16 +25,16 @@ describe('Consignee Service', function() {
         name: 'Save the Children'
     };
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('Consignee');
 
         mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
-        module(function($provide) {
+        module(function ($provide) {
             $provide.value('ContactService', mockContactService);
         });
 
-        inject(function(ConsigneeService, $httpBackend, EumsConfig, $q) {
+        inject(function (ConsigneeService, $httpBackend, EumsConfig, $q) {
             var deferred = $q.defer();
             deferred.resolve(fullContactResponse);
             mockContactService.getContactById.and.returnValue(deferred.promise);
@@ -45,29 +45,40 @@ describe('Consignee Service', function() {
         });
     });
 
-    it('should create consignee', function(done) {
+    it('should create consignee', function (done) {
         var contactId = 1;
         var stubCreatedConsignee = {id: 1, contact_person_id: contactId};
         mockBackend.whenPOST(consigneeEndpointUrl).respond(201, stubCreatedConsignee);
-        consigneeService.createConsignee({contact_person_id: contactId}).then(function(createdConsignee) {
+        consigneeService.createConsignee({contact_person_id: contactId}).then(function (createdConsignee) {
             expect(createdConsignee).toEqual(stubCreatedConsignee);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should get consignee name', function(done) {
+    it('should not create consignee when status is not 201', function (done) {
+        var contactId = 1;
+        var stubCreatedConsignee = {id: 1, contact_person_id: contactId};
+        mockBackend.whenPOST(consigneeEndpointUrl).respond(202, stubCreatedConsignee);
+        consigneeService.createConsignee({contact_person_id: contactId}).then(function (createdConsignee) {
+            expect(createdConsignee.status).not.toEqual(201);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should get consignee name', function (done) {
         mockBackend.whenGET(consigneeEndpointUrl + consigneeId + '/').respond(stubConsignee);
-        consigneeService.getConsigneeById(consigneeId).then(function(returnedConsignee) {
+        consigneeService.getConsigneeById(consigneeId).then(function (returnedConsignee) {
             expect(returnedConsignee).toEqual(expectedConsignee);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should get all consignees', function(done) {
+    it('should get all consignees', function (done) {
         mockBackend.whenGET(consigneeEndpointUrl).respond(consigneeList);
-        consigneeService.fetchConsignees().then(function(consignees) {
+        consigneeService.fetchConsignees().then(function (consignees) {
             expect(consignees).toEqual(consigneeList);
             done();
         });
