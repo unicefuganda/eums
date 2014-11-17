@@ -17,6 +17,10 @@ var LoginPage = function () {
         this.loginButton.click();
         return require('./home-page');
     };
+
+    this.logout = function() {
+        browser.get('/logout');
+    };
 };
 
 module.exports = new LoginPage;
