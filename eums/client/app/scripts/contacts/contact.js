@@ -45,22 +45,22 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
         };
 
         $scope.showAddContact = function () {
-            $('#add-contact-modal').modal();
+            angular.element('#add-contact-modal').modal();
         };
 
         $scope.showDeleteContact = function (contact) {
             $scope.currentContact = contact;
-            $('#delete-contact-modal').modal();
+            angular.element('#delete-contact-modal').modal();
         };
 
         $scope.showEditContact = function (contact) {
             angular.copy(contact, $scope.currentContact);
-            $('#edit-contact-modal').modal();
+            angular.element('#edit-contact-modal').modal();
         };
 
         $scope.saveContact = function () {
             ContactService.addContact($scope.contact).then(function () {
-                $('#add-contact-modal').modal('hide');
+                angular.element('#add-contact-modal').modal('hide');
                 loadContacts();
                 $scope.contact = {};
 
@@ -74,13 +74,13 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
-                $('#delete-contact-modal').modal('hide');
+                angular.element('#delete-contact-modal').modal('hide');
             });
         };
 
         $scope.editContact = function (contact) {
             ContactService.editContact(contact).then(function () {
-                $('#edit-contact-modal').modal('hide');
+                angular.element('#edit-contact-modal').modal('hide');
                 loadContacts();
                 $scope.currentContact = {};
             });
