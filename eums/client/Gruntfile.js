@@ -188,11 +188,14 @@ module.exports = function (grunt) {
             },
             djangoServer: {
                 cmd: './start-server.sh',
-                args: ['eums.settings']
+                args: ['eums.test_settings', 'eums_test']
             },
             djangoServerStaging: {
                 cmd: './start-server.sh',
-                args: ['eums.snap_settings']
+                args: ['eums.snap_settings', 'app_test']
+            },
+            stopServer: {
+                cmd: './stop-server.sh'
             }
         },
         ngconstant: {
@@ -272,7 +275,8 @@ module.exports = function (grunt) {
         'build',
         'clean:server',
         'run:djangoServer',
-        'protractor:headless'
+        'protractor:headless',
+        'run:stopServer'
     ]);
 
     grunt.registerTask('functional-staging', [
