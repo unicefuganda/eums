@@ -54,7 +54,7 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
         };
 
         $scope.showEditContact = function (contact) {
-            $scope.currentContact = contact;
+            angular.copy(contact, $scope.currentContact);
             $('#edit-contact-modal').modal();
         };
 
@@ -81,6 +81,8 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
         $scope.editContact = function (contact) {
             ContactService.editContact(contact).then(function () {
                 $('#edit-contact-modal').modal('hide');
+                loadContacts();
+                $scope.currentContact = {};
             });
         };
     })
