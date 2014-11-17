@@ -191,7 +191,7 @@ module.exports = function (grunt) {
                 args: ['eums.test_settings', 'eums_test']
             },
             djangoServerStaging: {
-                cmd: './start-server.sh',
+                cmd: './start-ci-server.sh',
                 args: ['eums.snap_settings', 'app_test']
             },
             stopServer: {
