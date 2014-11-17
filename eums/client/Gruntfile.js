@@ -347,8 +347,7 @@ module.exports = function (grunt) {
         'shell:seedStagingData',
         'run:djangoServerStaging',
         'protractor:headless',
-        'shell:stopServer',
-        'shell:dropStagingDb'
+        'shell:stopServer'
     ]);
 
     grunt.registerTask('default', [
