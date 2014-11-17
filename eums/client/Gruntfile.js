@@ -191,11 +191,65 @@ module.exports = function (grunt) {
                 args: ['eums.test_settings', 'eums_test']
             },
             djangoServerStaging: {
-                cmd: './start-ci-server.sh',
+                cmd: './start-server.sh',
                 args: ['eums.snap_settings', 'app_test']
+            }
+        },
+
+        shell: {
+            sourceEnv: {
+                command: 'source ~/virtualenvs/eums/bin/activate'
+            },
+            createDb: {
+                command: 'createdb eums_test'
+            },
+            createStagingDb: {
+                command: 'createdb app_test'
+            },
+            runMigrations: {
+                command: 'python manage.py migrate --settings=eums.test_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
+            },
+            runStagingMigrations: {
+                command: 'python manage.py migrate --settings=eums.snap_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
+            },
+            seedData: {
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
+            },
+            seedStagingData: {
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.snap_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
             },
             stopServer: {
-                cmd: './stop-server.sh'
+                command: 'kill -9 $(lsof -t -i:8000)'
+            },
+            dropDb: {
+                command: 'dropdb eums_test --if-exists'
+            },
+            dropStagingDb: {
+                command: 'dropdb app_test --if-exists'
             }
         },
         ngconstant: {
@@ -270,20 +324,31 @@ module.exports = function (grunt) {
         'less'
     ]);
 
-
     grunt.registerTask('functional', [
         'build',
         'clean:server',
+        'shell:sourceEnv',
+        'shell:dropDb',
+        'shell:createDb',
+        'shell:runMigrations',
+        'shell:seedData',
         'run:djangoServer',
         'protractor:headless',
-        'run:stopServer'
+        'shell:stopServer',
+        'shell:dropDb'
     ]);
 
     grunt.registerTask('functional-staging', [
-        'build-staging',
+        'build',
         'clean:server',
+        'shell:dropStagingDb',
+        'shell:createStagingDb',
+        'shell:runStagingMigrations',
+        'shell:seedStagingData',
         'run:djangoServerStaging',
-        'protractor:headless'
+        'protractor:headless',
+        'shell:stopServer',
+        'shell:dropStagingDb'
     ]);
 
     grunt.registerTask('default', [
