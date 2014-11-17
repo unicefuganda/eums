@@ -1,0 +1,20 @@
+[
+    {
+        "fields": {
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2014-11-12T18:01:17.689",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$Qm6uxNGdbAJk$bia6J/PwzJ67iK9gC1fbY0nlKgNNK0F1x8fcST48BAY=",
+            "email": "admin@tw.org",
+            "date_joined": "2014-10-13T11:21:57.796"
+        },
+        "model": "auth.user",
+        "pk": 1
+    }
+]
