@@ -20,5 +20,5 @@ describe('contacts page', function () {
 
         expect(element(by.css('.page-header')).getText()).toEqual('Contacts');
         expect(element(by.id('add-contact')).getText()).toEqual('Add Contact');
-    }); 
+    });
 });

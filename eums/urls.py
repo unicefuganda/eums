@@ -15,6 +15,7 @@ from eums.api.release_order.release_order_endpoint import releaseOrderRouter
 from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
 from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter
 from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
+from eums.api.stock_report.stock_report_endpoint import StockReport
 from eums.api.user.user_endpoint import userRouter
 from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
@@ -29,6 +30,7 @@ urlpatterns = patterns(
         {'template_name': 'registration/login.html'}, name="logout"),
     url(r'^api/hook', 'eums.api.rapid_pro_hooks.hook.hook', name='hook'),
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
+    url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
