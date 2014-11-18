@@ -65,7 +65,12 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
                 $scope.contact = {};
 
             }, function (response) {
-                createToast(response.data.error, 'danger');
+                if(response.status === 0){
+                    createToast('Contact service down', 'danger');
+                }
+                else {
+                    createToast(response.data.error, 'danger');
+                }
             });
         };
 

@@ -1,5 +1,5 @@
 describe('ContactController', function () {
-    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, mockContactService, mockToastProvider;
+    var scope, deferred, sorter, stubContactPromise, stubContactsPromise, toastPromise, mockContactService, mockToastProvider;
 
     var stubNewContact = {
         firstName: 'John',
@@ -50,10 +50,12 @@ describe('ContactController', function () {
             stubContactsPromise = $q.defer();
             deferred = $q.defer();
             stubContactPromise = $q.defer();
+            toastPromise = $q.defer();
             mockContactService.getAllContacts.and.returnValue(stubContactsPromise.promise);
             mockContactService.addContact.and.returnValue(stubContactPromise.promise);
             mockContactService.editContact.and.returnValue(deferred.promise);
             mockContactService.deleteContact.and.returnValue(deferred.promise);
+            mockToastProvider.create.and.returnValue(toastPromise.promise);
 
             spyOn(angular, 'element').and.callFake(function () {
                 return {
@@ -67,10 +69,31 @@ describe('ContactController', function () {
                     $scope: scope,
                     ContactService: mockContactService,
                     $sorter: sorter,
-                    $ngToast: mockToastProvider
+                    ngToast: mockToastProvider
                 });
 
         });
+    });
+
+     describe('change sort arrow direction on sorting column in contacts',function(){
+         var criteria = 'some_criteria';
+
+         it('should return an down arrow class if a criteria is used to sort contacts)', function () {
+             scope.initialize();
+             scope.$apply();
+             scope.sort.criteria = criteria;
+
+             expect(scope.sortArrowClass(criteria)).toEqual('active glyphicon glyphicon-arrow-down');
+         });
+
+         it('should return an up arrow class if same criteria is used to sort contacts again)', function () {
+             scope.initialize();
+             scope.$apply();
+             scope.sort.criteria = criteria;
+             scope.sort.descending = true;
+
+             expect(scope.sortArrowClass(criteria)).toEqual('active glyphicon glyphicon-arrow-up');
+         });
     });
 
     it('should fetch all contacts', function () {
@@ -163,6 +186,38 @@ describe('ContactController', function () {
             expect(angular.element).toHaveBeenCalledWith('#add-contact-modal');
             expect(mockContactService.addContact).toHaveBeenCalledWith(stubNewContact);
         });
+
+        it('should show an error if contact service is down', function() {
+            stubContactPromise.reject({status: 0});
+            toastPromise.resolve();
+
+            scope.contact = stubNewContact;
+            scope.saveContact();
+            scope.$apply();
+
+            expect(mockToastProvider.create).toHaveBeenCalledWith({
+                content: 'Contact service down',
+                class: 'danger',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        });
+
+        it('should show an error if contact data is invalid', function() {
+            stubContactPromise.reject({status: 400, data: {error: 'Phone number format invalid'}});
+            toastPromise.resolve();
+
+            scope.contact = stubNewContact;
+            scope.saveContact();
+            scope.$apply();
+
+            expect(mockToastProvider.create).toHaveBeenCalledWith({
+                content: 'Phone number format invalid',
+                class: 'danger',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        });
     });
 
     describe('editing a contact', function () {
@@ -191,4 +246,5 @@ describe('ContactController', function () {
             expect(mockContactService.deleteContact).toHaveBeenCalledWith(stubContact);
         });
     });
+
 });
