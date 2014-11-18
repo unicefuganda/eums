@@ -124,6 +124,26 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             return aggregates;
         }
 
+
+        function compareReceiptDate(firstResponse, secondResponse) {
+            return moment(firstResponse.dateOfReceipt, 'DD/MM/YYY') - moment(secondResponse.dateOfReceipt, 'DD/MM/YYY');
+        }
+
+        function orderResponsesByDateReceived(consigneeResponses) {
+            return consigneeResponses.sort(compareReceiptDate);
+        }
+
+        function getResponseFor(responsesWithLocation, district) {
+            var responses = [];
+            responsesWithLocation.forEach(function (responseWithLocation) {
+
+                if (district.toLowerCase() === responseWithLocation.location.toLowerCase()) {
+                    responses = responseWithLocation.consigneeResponses;
+                }
+            });
+            return responses;
+        }
+
         return {
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
@@ -166,6 +186,16 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             },
             getAllConsigneeResponses: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
+            },
+            getResponsesByLocation: function (district) {
+                return this.groupResponsesByLocation().then(function (responsesWithLocation) {
+                    return getResponseFor(responsesWithLocation, district);
+                });
+            },
+            orderResponsesByDate: function (district) {
+                return this.getResponsesByLocation(district).then(function (responses) {
+                    return orderResponsesByDateReceived(responses);
+                });
             },
             mapConsigneesResponsesToNodeLocation: function () {
                 var self = this;

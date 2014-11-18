@@ -1,24 +1,24 @@
 <div id='marker-summary' class="table-responsive">
     <div class="panel-header">
-        <span>{{ clickedMarker[0].consignee.name }}</span>
+        <span ng-show="responses">Responses for {{ district }} district</span>
         <button type="button"
                 class="close"
-                ng-show="clickedMarker"
+                ng-show="responses"
                 ng-click="hideMapMarkerDetails()">
-            <span aria-hidden="true">&times;</span>
+            <span ng-show="responses" aria-hidden="true">&times;</span>
         </button>
         <!--<span ng-click="hideMapMarkerDetails()"-->
         <!--ng-show="clickedMarker"-->
               <!--class="panel-close glyphicon glyphicon-remove white pull-right"></span>-->
     </div>
     <ul class="list-group">
-        <li href="#" class="list-group-item" ng-repeat="answer in clickedMarker">
-            <h6 class="list-group-item-heading">{{ answer.item }}</h6>
+        <li href="#" class="list-group-item" ng-repeat="response in responses">
+            <h6 class="list-group-item-heading">{{ response.item }}</h6>
 
             <p class="list-group-item-text">
-                <span class="label label-default"> {{ answer.amountSent }} Sent</span>
-                <span class="label label-primary"> {{ answer.amountReceived }} Received</span>
-                <span class="label label-info"> {{ answer.qualityOfProduct }} </span>
+                <span class="label label-default"> {{ response.amountSent }} Sent</span>
+                <span class="label label-primary"> {{ response.amountReceived }} Received</span>
+                <span class="label label-info"> {{ response.qualityOfProduct }} </span>
             </p>
         </li>
     </ul>

@@ -245,7 +245,7 @@
                     });
 
                     scope.hideMapMarkerDetails = function () {
-                        scope.clickedMarker = null;
+                        scope.responses = null;
                     };
                 });
             }

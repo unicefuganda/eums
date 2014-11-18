@@ -207,7 +207,7 @@ module.exports = function (grunt) {
                 command: 'createdb app_test'
             },
             runMigrations: {
-                command: 'python manage.py migrate --settings=eums.test_settings',
+                command: ['ls', 'python manage.py migrate --settings=eums.test_settings'].join('&&'),
                 options: {
                     stderr: false,
                     execOptions: {
@@ -226,6 +226,15 @@ module.exports = function (grunt) {
             },
             seedData: {
                 command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
+            },
+            mapData: {
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -332,10 +341,10 @@ module.exports = function (grunt) {
         'shell:createDb',
         'shell:runMigrations',
         'shell:seedData',
+        'shell:mapData',
         'run:djangoServer',
         'protractor:headless',
-        'shell:stopServer',
-        'shell:dropDb'
+        'shell:stopServer'
     ]);
 
     grunt.registerTask('functional-staging', [

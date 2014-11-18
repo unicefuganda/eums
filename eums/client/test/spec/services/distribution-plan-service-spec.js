@@ -234,10 +234,28 @@ describe('UNICEF IP', function () {
             'qualityOfProduct': 'Good',
             'feedbackAboutDissatisfaction': 'they were damaged',
             'informedOfDelay': 'No',
-            'dateOfReceipt': '6/10/2014',
+            'dateOfReceipt': '7/10/2014',
             'programme': {
                 'id': 3,
                 'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+            }
+        },
+        {
+            'node': planNodeOne,
+            'amountSent': 100,
+            'amountReceived': '50',
+            'consignee': {
+                'id': 10,
+                'name': 'PADER DHO'
+            },
+            'productReceived': 'No',
+            'item': 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+            'qualityOfProduct': 'Good',
+            'informedOfDelay': 'No',
+            'dateOfReceipt': '6/10/2014',
+            'programme': {
+                'id': 3,
+                'name': 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
             }
         },
         {
@@ -329,7 +347,7 @@ describe('UNICEF IP', function () {
 
         it('should aggregate all consignee responses', function (done) {
             distributionPlanService.aggregateResponses().then(function (aggregates) {
-                expect(aggregates).toEqual({location: 'UGANDA', totalSent: 2, totalReceived: 1, totalNotReceived: 1});
+                expect(aggregates).toEqual({ location: 'UGANDA', totalSent: 3, totalReceived: 1, totalNotReceived: 2 });
                 done();
             });
             httpBackend.flush();
@@ -361,22 +379,152 @@ describe('UNICEF IP', function () {
 
         it('should group responses by location', function (done) {
             stubConsigneeResponses[0].location = stubDistributionPlanNodes[0].location;
-            stubConsigneeResponses[1].location = stubDistributionPlanNodes[1].location;
+            stubConsigneeResponses[1].location = stubDistributionPlanNodes[0].location;
+            stubConsigneeResponses[2].location = stubDistributionPlanNodes[1].location;
             distributionPlanService.groupResponsesByLocation().then(function (responsesByLocation) {
                 expect(responsesByLocation).toEqual([
                     {
                         location: stubDistributionPlanNodes[0].location.toLowerCase(),
-                        consigneeResponses: [stubConsigneeResponses[0]]
+                        consigneeResponses: [stubConsigneeResponses[0], stubConsigneeResponses[1]]
                     },
                     {
                         location: stubDistributionPlanNodes[1].location.toLowerCase(),
-                        consigneeResponses: [stubConsigneeResponses[1]]
+                        consigneeResponses: [stubConsigneeResponses[2]]
                     }
                 ]);
                 done();
             });
             httpBackend.flush();
         });
+
+        it('should group responses for a given location', function (done) {
+            var district = 'Gulu';
+            distributionPlanService.getResponsesByLocation(district).then(function (responses) {
+                expect(responses).toEqual([
+                    {
+                        node: 4,
+                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+                        productReceived: 'No',
+                        informedOfDelay: 'No',
+                        consignee: {
+                            id: 4,
+                            name: 'ARUA DHO DR. ANGUZU PATRICK'
+                        },
+                        amountReceived: '30',
+                        amountSent: 30,
+                        programme: {
+                            id: 3,
+                            name: 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+                        },
+                        location: 'Gulu'
+                    }
+                ]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should group responses for a given location', function (done) {
+            var district = 'Mbarara';
+            distributionPlanService.getResponsesByLocation(district).then(function (responses) {
+                expect(responses).toEqual([
+                    {
+                        node: 3,
+                        amountSent: 100,
+                        amountReceived: '50',
+                        consignee: {
+                            id: 10,
+                            name: 'PADER DHO'
+                        },
+                        satisfiedWithProduct: 'Yes',
+                        productReceived: 'Yes',
+                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+                        revisedDeliveryDate: 'didnt not specify',
+                        qualityOfProduct: 'Good',
+                        feedbackAboutDissatisfaction: 'they were damaged',
+                        informedOfDelay: 'No',
+                        dateOfReceipt: '7/10/2014',
+                        programme: {
+                            id: 3,
+                            name: 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+                        },
+                        location: 'Mbarara'
+                    },
+                    {
+                        node: 3,
+                        amountSent: 100,
+                        amountReceived: '50',
+                        consignee: {
+                            id: 10,
+                            name: 'PADER DHO'
+                        }, productReceived: 'No',
+                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+                        qualityOfProduct: 'Good',
+                        informedOfDelay: 'No',
+                        dateOfReceipt: '6/10/2014',
+                        programme: {
+                            id: 3,
+                            name: 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
+                        },
+                        location: 'Mbarara'
+                    }
+                ]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should order responses for a given location by receipt date', function (done) {
+            var district = 'Mbarara';
+            distributionPlanService.orderResponsesByDate(district).then(function (responses) {
+                expect(responses).toEqual([
+                    {
+                        node: 3,
+                        amountSent: 100,
+                        amountReceived: '50',
+                        consignee: {
+                            id: 10,
+                            name: 'PADER DHO'
+                        }, productReceived: 'No',
+                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+                        qualityOfProduct: 'Good',
+                        informedOfDelay: 'No',
+                        dateOfReceipt: '6/10/2014',
+                        programme: {
+                            id: 3,
+                            name: 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
+                        },
+                        location: 'Mbarara'
+                    },
+                    {
+                        node: 3,
+                        amountSent: 100,
+                        amountReceived: '50',
+                        consignee: {
+                            id: 10,
+                            name: 'PADER DHO'
+                        },
+                        satisfiedWithProduct: 'Yes',
+                        productReceived: 'Yes',
+                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+                        revisedDeliveryDate: 'didnt not specify',
+                        qualityOfProduct: 'Good',
+                        feedbackAboutDissatisfaction: 'they were damaged',
+                        informedOfDelay: 'No',
+                        dateOfReceipt: '7/10/2014',
+                        programme: {
+                            id: 3,
+                            name: 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+                        },
+                        location: 'Mbarara'
+                    }
+
+                ]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
     });
 
 });

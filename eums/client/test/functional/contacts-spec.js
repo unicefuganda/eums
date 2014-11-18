@@ -17,7 +17,7 @@ describe('contacts page', function () {
 
     it('should go to the contacts page', function () {
         element(by.id('contact-nav')).click();
-
+         browser.sleep(2000);
         expect(element(by.css('.page-header')).getText()).toEqual('Contacts');
         expect(element(by.id('add-contact')).getText()).toEqual('Add Contact');
     });
