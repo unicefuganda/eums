@@ -1,3 +1,4 @@
+from rest_framework import filters
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
@@ -14,6 +15,8 @@ class ConsigneeSerialiser(serializers.ModelSerializer):
 class ConsigneeViewSet(ModelViewSet):
     queryset = Consignee.objects.all()
     serializer_class = ConsigneeSerialiser
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('type',)
 
 
 consigneeRouter = DefaultRouter()
