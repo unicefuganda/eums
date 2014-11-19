@@ -242,6 +242,15 @@ module.exports = function (grunt) {
                     }
                 }
             },
+            mapDataStaging: {
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json --settings=eums.snap_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
+            },
             seedStagingData: {
                 command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.snap_settings',
                 options: {
@@ -354,7 +363,7 @@ module.exports = function (grunt) {
         'shell:createStagingDb',
         'shell:runStagingMigrations',
         'shell:seedStagingData',
-        'shell:mapData',
+        'shell:mapDataStaging',
         'run:djangoServerStaging',
         'protractor:headless',
         'shell:stopServer'
