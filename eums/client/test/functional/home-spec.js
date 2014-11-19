@@ -49,15 +49,15 @@ describe('Home Page', function () {
 
     it('responses panel should have a link to more details', function () {
         homePage.clickMapLayer('wakiso');
-        browser.sleep(3000);
+        browser.sleep(5000);
         expect(homePage.responsesPageLink.getText()).toEqual('View All Responses');
     });
 
     it('should navigate to detail reponses page when page link is clicked', function () {
         homePage.clickMapLayer('wakiso');
-        browser.sleep(3000);
+        browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
-        browser.sleep(3000);
+        browser.sleep(5000);
         expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
         responsePage.numberOfResponses.then(function (rows) {
             expect(rows.length).toEqual(2);
@@ -67,9 +67,9 @@ describe('Home Page', function () {
 
     it('should search for "no" product received in Wakiso district', function () {
         homePage.clickMapLayer('wakiso');
-        browser.sleep(3000);
+        browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
-        browser.sleep(3000);
+        browser.sleep(5000);
         responsePage.searchResponsesFor('no');
         responsePage.numberOfResponses.then(function (rows) {
             expect(rows.length).toEqual(1);
@@ -79,9 +79,9 @@ describe('Home Page', function () {
 
     it('should search for "no" product received in Wakiso district', function () {
         homePage.clickMapLayer('wakiso');
-        browser.sleep(3000);
+        browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
-        browser.sleep(3000);
+        browser.sleep(5000);
         responsePage.searchResponsesFor('yes');
         responsePage.numberOfResponses.then(function (rows) {
             expect(rows.length).toEqual(1);
