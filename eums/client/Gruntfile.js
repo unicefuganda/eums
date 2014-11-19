@@ -207,7 +207,7 @@ module.exports = function (grunt) {
                 command: 'createdb app_test'
             },
             runMigrations: {
-                command: ['ls', 'python manage.py migrate --settings=eums.test_settings'].join('&&'),
+                command: 'python manage.py migrate --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -354,6 +354,7 @@ module.exports = function (grunt) {
         'shell:createStagingDb',
         'shell:runStagingMigrations',
         'shell:seedStagingData',
+        'shell:mapData',
         'run:djangoServerStaging',
         'protractor:headless',
         'shell:stopServer'
