@@ -1,4 +1,4 @@
-describe('Distribution Plan Node Service', function() {
+describe('Distribution Plan Node Service', function () {
 
     var planNodeService, mockLineItemService, mockConsigneeService, mockContactService;
     var mockBackend, q;
@@ -62,7 +62,7 @@ describe('Distribution Plan Node Service', function() {
         lineItems: [fullLineItemOne, fullLineItemTwo]
     };
 
-    var fakeGetLineItem = function() {
+    var fakeGetLineItem = function () {
         var lineItemId = arguments[0];
 
         var deferredLineItemOneRequest = q.defer();
@@ -71,29 +71,29 @@ describe('Distribution Plan Node Service', function() {
         var deferredLineItemTwoRequest = q.defer();
         deferredLineItemTwoRequest.resolve(fullLineItemTwo);
 
-        if(lineItemId === lineItemOneId) {
+        if (lineItemId === lineItemOneId) {
             return deferredLineItemOneRequest.promise;
         }
-        else if(lineItemId === lineItemTwoId) {
+        else if (lineItemId === lineItemTwoId) {
             return deferredLineItemTwoRequest.promise;
         }
         return null;
     };
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('DistributionPlanNode');
 
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
-        module(function($provide) {
+        module(function ($provide) {
             $provide.value('DistributionPlanLineItemService', mockLineItemService);
             $provide.value('ConsigneeService', mockConsigneeService);
             $provide.value('ContactService', mockContactService);
         });
 
-        inject(function(DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
+        inject(function (DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
             q = $q;
             mockLineItemService.getLineItem.and.callFake(fakeGetLineItem);
 
@@ -111,7 +111,7 @@ describe('Distribution Plan Node Service', function() {
         });
     });
 
-    it('should create node with neither parent nor children', function(done) {
+    it('should create node with neither parent nor children', function (done) {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
             id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
@@ -119,26 +119,39 @@ describe('Distribution Plan Node Service', function() {
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
         planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER'})
-            .then(function(createdNode) {
+            .then(function (createdNode) {
                 expect(createdNode).toEqual(stubCreatedNode);
                 done();
             });
         mockBackend.flush();
     });
 
-    it('should get node with full details', function(done) {
+    it('should only return a response when the status is not 201', function () {
+        var planId = 1, consigneeId = 1;
+        var stubCreatedNode = {id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
+            distributionplanlineitem_set: [], children: [], tree_position: 'END_USER'
+        };
+         mockBackend.whenPOST(planNodeEndpointUrl).respond(202, stubCreatedNode);
+        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER'})
+            .then(function (createdNode) {
+                expect(createdNode.status).toEqual(202);
+            });
+        mockBackend.flush();
+    });
+
+    it('should get node with full details', function (done) {
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
-        planNodeService.getPlanNodeDetails(planNodeId).then(function(returnedPlanNode) {
+        planNodeService.getPlanNodeDetails(planNodeId).then(function (returnedPlanNode) {
             expect(returnedPlanNode).toEqual(expectedPlanNode);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should update node', function(done) {
+    it('should update node', function (done) {
         var updatedNode = {id: 1};
         mockBackend.whenPUT(planNodeEndpointUrl + planNodeId + '/').respond(updatedNode);
-        planNodeService.updateNode(updatedNode).then(function(returnedNode) {
+        planNodeService.updateNode(updatedNode).then(function (returnedNode) {
             expect(returnedNode).toEqual(updatedNode);
             done();
         });
