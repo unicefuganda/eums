@@ -7,19 +7,20 @@
                 ng-click="hideMapMarkerDetails()">
             <span ng-show="responses" aria-hidden="true">&times;</span>
         </button>
-        <!--<span ng-click="hideMapMarkerDetails()"-->
-        <!--ng-show="clickedMarker"-->
-              <!--class="panel-close glyphicon glyphicon-remove white pull-right"></span>-->
     </div>
     <ul class="list-group">
         <li href="#" class="list-group-item" ng-repeat="response in responses">
-            <h6 class="list-group-item-heading">{{ response.item }}</h6>
+            <h6 class="list-group-item-heading response-item-font-weight">{{ response.item }}</h6>
 
             <p class="list-group-item-text">
                 <span class="label label-default"> {{ response.amountSent }} Sent</span>
-                <span class="label label-primary"> {{ response.amountReceived }} Received</span>
-                <span class="label label-info"> {{ response.qualityOfProduct }} </span>
+                <span ng-show="response.amountReceived" class="label label-primary"> {{ response.amountReceived }} Received</span>
+                <span ng-show="response.qualityOfProduct"
+                      class="label label-info"> {{ response.qualityOfProduct }} </span>
             </p>
         </li>
+        <button ng-show="responses" ng-click="showDetailedResponses()" id="response-page-btn" type="button"
+                class="btn btn-primary">View All Responses
+        </button>
     </ul>
 </div>

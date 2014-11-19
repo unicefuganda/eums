@@ -185,6 +185,12 @@
             highlightLayer: function (layerName) {
                 LayerMap.selectLayer(layerName.toLowerCase());
             },
+            getLayerName: function () {
+                return LayerMap.getLayerName();
+            },
+            getStyle: function (layerName) {
+                return LayerMap.getStyle(layerName);
+            },
             getHighlightedLayer: function () {
                 return LayerMap.getSelectedLayer();
             },

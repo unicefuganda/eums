@@ -22,6 +22,12 @@ describe('Route Provider', function () {
         expect(routes.routes['/delivery-reports'].templateUrl).toBe('/static/app/views/distribution-planning/distribution-planning.html');
     });
 
+    it('should know responses page route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/response-details/:district');
+        expect(routes.routes['/response-details/:district'].controller).toBe('ResponseController');
+        expect(routes.routes['/response-details/:district'].templateUrl).toBe('/static/app/views/responses/index.html');
+    });
+
     it('should know new distribution plan route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/delivery-report/new/:salesOrderId');
         expect(routes.routes['/delivery-report/new/:salesOrderId'].controller).toBe('NewDistributionPlanController');

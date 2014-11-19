@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Home', ['GlobalStats', 'DistributionPlan'])
-    .controller('HomeController', function ($scope) {
+    .controller('HomeController', function ($scope, $location) {
         $scope.filter = {received: '', notDelivered: '', receivedWithIssues: '', year: ''};
         $scope.datepicker = {from: false, to: false};
         $scope.clickedMarker = '';
@@ -12,5 +12,14 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan'])
         $scope.notDeliveredChecked = false;
         $scope.deliveredChecked = false;
         $scope.totalStats = {};
+        $scope.allResponses = {};
 
+        $scope.showDetailedResponses = function () {
+            $location.path('/response-details/' + $scope.district);
+        };
+
+    }).controller('ResponseController', function ($scope, $routeParams, DistributionPlanService) {
+        DistributionPlanService.orderResponsesByDate($routeParams.district).then(function (allResponses) {
+            $scope.allResponses = allResponses;
+        });
     });

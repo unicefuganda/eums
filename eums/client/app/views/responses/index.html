@@ -1,0 +1,55 @@
+<div class="panel panel-default line-order-panel">
+    <div class="row">
+        <div class="col-xs-4 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon glyphicon-search"></i>
+                <input type="text"
+                       id="filter"
+                       class="form-control"
+                       name="filter"
+                       ng-model="query.productReceived"
+                       placeholder="Search for responses"/>
+            </div>
+        </div>
+    </div>
+    <h4 class="page-header">All responses for {{ allResponses[0].location }} district</h4>
+
+    <div class="table-wrapper">
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <thead>
+            <tr>
+                <th class="table-header">Item Description</th>
+                <th class="table-header">Outcome</th>
+                <th class="table-header">Consignee</th>
+                <th class="table-header">Product Received</th>
+                <th class="table-header">Date Received</th>
+                <th class="table-header">Amount Sent</th>
+                <th class="table-header">Amount Received</th>
+                <th class="table-header">Quality of Product</th>
+                <th class="table-header">Satisfied?</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="response in allResponses | filter:query:strict">
+                <td class="table-body" data-header="Description">{{ response.item }}</td>
+                <td class="table-body" data-header="Date Created">{{ response.programme.name }}</td>
+                <td class="table-body" data-header="Description">{{ response.consignee.name }}</td>
+                <td class="table-body" data-header="Description">{{ response.productReceived }}</td>
+                <td class="table-body" data-header="Document Number">{{ response.dateOfReceipt }}</td>
+                <td class="table-body" data-header="Description">{{ response.amountSent }}</td>
+                <td class="table-body" data-header="Description">{{ response.amountReceived || 'Not Recieved' }}</td>
+                <td class="table-body" data-header="Description">{{ response.qualityOfProduct }}</td>
+                <td class="table-body" data-header="Description">{{ response.satisfiedWithProduct }}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="9">
+                    <si-table-pagination limit="10" indices="3"></si-table-pagination>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

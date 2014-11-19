@@ -1,6 +1,7 @@
 angular.module('map.layers', ['DistributionPlan'])
     .factory('LayerMap', function () {
         var layerList = {};
+        var highlightedLayerName = '';
 
         return {
             addLayer: function (layer, layerName) {
@@ -9,11 +10,17 @@ angular.module('map.layers', ['DistributionPlan'])
             getLayer: function (layerName) {
                 return layerList[layerName.toLowerCase()];
             },
+            getLayerName: function () {
+                return highlightedLayerName;
+            },
             getLayerBoundsBy: function (layerName) {
                 return this.getLayer(layerName).getLayerBounds();
             },
             getLayerCenter: function (layerName) {
                 return layerList[layerName].getCenter();
+            },
+            getStyle: function (layerName) {
+                return layerList[layerName].getStyle();
             },
             getLayers: function () {
                 return layerList;
@@ -25,12 +32,15 @@ angular.module('map.layers', ['DistributionPlan'])
                         highlightedLayer[layerName] = layer;
                     }
                 });
+
                 return highlightedLayer;
             },
             selectLayer: function (layerName) {
+                highlightedLayerName = layerName;
                 layerList[layerName].highlight();
             },
             clickLayer: function (layerName) {
+                highlightedLayerName = layerName;
                 layerList[layerName].click();
             }
         };
@@ -43,7 +53,7 @@ angular.module('map.layers', ['DistributionPlan'])
 
         function showResponsesForDistrict(layerName, scope) {
             DistributionPlanService.orderResponsesByDate(layerName).then(function (allResponses) {
-                scope.responses = allResponses.slice(0,10);
+                scope.responses = allResponses.slice(0, 5);
                 scope.district = layerName.toUpperCase();
             });
         }
@@ -71,6 +81,9 @@ angular.module('map.layers', ['DistributionPlan'])
                 return layer.getBounds();
             };
 
+            this.getStyle = function () {
+                return layerStyle;
+            };
             this.getCenter = function () {
                 return layer.getBounds().getCenter();
             };
@@ -78,7 +91,7 @@ angular.module('map.layers', ['DistributionPlan'])
             this.highlight = function () {
                 layerOptions.districtLayerStyle.weight = 3.5;
 
-                layerOptions.districtLayerStyle.fillColor = layerOptions.districtLayerStyle.fillColor || layerStyle.fillColor;
+                layerOptions.districtLayerStyle.fillColor = layerStyle ? layerStyle.fillColor : layerOptions.districtLayerStyle.fillColor;
                 layer.setStyle(layerOptions.districtLayerStyle);
                 selected = true;
             };

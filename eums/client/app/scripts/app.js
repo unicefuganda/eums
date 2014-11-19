@@ -65,6 +65,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/contacts/contacts.html',
                 controller: 'ContactController'
             })
+            .when('/response-details/:district', {
+                templateUrl: '/static/app/views/responses/index.html',
+                controller: 'ResponseController'
+            })
             .otherwise({
                 redirectTo: '/'
             });
