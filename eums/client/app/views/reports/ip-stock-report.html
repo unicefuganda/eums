@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div ng-controller="IPStockReportController" class="content">
+    <div ng-controller="StockReportController" class="content">
         <h4 class="page-header">IP Stock Report</h4>
 
         <div class="panel-body">
@@ -8,47 +8,50 @@
                     <label class="col-lg-3 control-label description-label" for="select-ip">Select IP</label>
 
                     <div class="col-lg-9">
-                        <input id="select-ip" class="form-control" type="hidden" search-from-list list="{{ ips }}"
-                               ng-model="selectedIPId">
+                        <input id="select-ip" class="form-control" type="hidden" search-consignees
+                               ng-model="selectedIPId" placeholder="Select IP">
                     </div>
                 </div>
             </div>
 
-            <div class="form-group col-lg-4">
-            </div>
 
-            <div class="panel-body" ng-show="selectedIP">
-                <table class="table table-bordered table-striped table-hover table-condensed">
-                    <thead>
-                    <tr>
-                        <td class="col-lg-3">Document Number</td>
-                        <td class="col-lg-3">Value Received ($)</td>
-                        <td class="col-lg-3">Value Dispensed ($)</td>
-                        <td class="col-lg-3">Balance ($)</td>
-                    </tr>
-                    </thead>
-                    <tr ng-repeat="document in selectedIP.documents">
-                        <td>{{ document.doc_number }}</td>
-                        <td>{{ document.value_received | number }}</td>
-                        <td>{{ document.value_dispensed | number }}</td>
-                        <td>{{ document.value_received - document.value_dispensed | number }}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="badge" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
+            <br/><br/><br/>
+
+            <div class="table-wrapper">
+                <div class="panel-body" ng-show="selectedIPId">
+                    <table class="table table-bordered table-striped table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <td class="col-lg-3">Document Number</td>
+                            <td class="col-lg-3">Value Received ($)</td>
+                            <td class="col-lg-3">Value Dispensed ($)</td>
+                            <td class="col-lg-3">Balance ($)</td>
+                        </tr>
+                        </thead>
+                        <tr ng-repeat="reportItem in reportData">
+                            <td>{{ reportItem.document_number }}</td>
+                            <td>{{ reportItem.total_value_received | number }}</td>
+                            <td>{{ reportItem.total_value_dispensed | number }}</td>
+                            <td>{{ reportItem.balance | number }}</td>
+                        </tr>
+                        <tr>
+                            <td>
+                            <span class="badge" ng-class="totals.totalBalance > 0 ? 'alert-danger' : 'alert-success'">
                                 TOTALS
                             </span>
-                        </td>
-                        <td style="font-weight: bold;">{{ selectedIP.totalReceived | number }}</td>
-                        <td style="font-weight: bold;">{{ selectedIP.totalDispensed | number }}</td>
-                        <td>
-                            <span class="badge" style="font-weight: bold;" ng-class="selectedIP.balance > 0 ? 'alert-danger' : 'alert-success'">
-                                {{ selectedIP.balance | number }}
+                            </td>
+                            <td style="font-weight: bold;">{{ totals.totalReceived | number }}</td>
+                            <td style="font-weight: bold;">{{ totals.totalDispensed | number }}</td>
+                            <td>
+                            <span class="badge" style="font-weight: bold;"
+                                  ng-class="totals.totalBalance > 0 ? 'alert-danger' : 'alert-success'">
+                                {{ totals.totalBalance | number }}
                             </span>
-                        </td>
-                    </tr>
-                </table>
+                            </td>
+                        </tr>
+                    </table>
 
+                </div>
             </div>
         </div>
     </div>

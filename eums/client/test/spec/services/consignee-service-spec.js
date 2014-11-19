@@ -8,7 +8,7 @@ describe('Consignee Service', function () {
 
     var stubConsignee = {
         id: consigneeId,
-        name: 'Save the Children',
+        name: 'Save the Children'
     };
 
     var consigneeList = [stubConsignee];
@@ -79,6 +79,17 @@ describe('Consignee Service', function () {
     it('should get all consignees', function (done) {
         mockBackend.whenGET(consigneeEndpointUrl).respond(consigneeList);
         consigneeService.fetchConsignees().then(function (consignees) {
+            expect(consignees).toEqual(consigneeList);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should get consignees by type', function (done) {
+        mockBackend.whenGET(consigneeEndpointUrl + '?search=implementing_partner').respond(consigneeList);
+        var type = 'implementing_partner';
+
+        consigneeService.getConsigneesByType(type).then(function (consignees) {
             expect(consignees).toEqual(consigneeList);
             done();
         });

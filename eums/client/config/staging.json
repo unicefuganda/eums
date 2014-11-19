@@ -10,6 +10,7 @@
         "DISTRIBUTION_PLAN_LINE_ITEM": "/api/distribution-plan-line-item/",
         "SALES_ORDER": "/api/sales-order/",
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
+        "STOCK_REPORT": "/api/stock-report/",
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/"
