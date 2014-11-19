@@ -48,6 +48,7 @@ describe('Home Page', function () {
     });
 
     it('responses panel should have a link to more details', function () {
+        browser.sleep(5000);
         homePage.clickMapLayer('wakiso');
         browser.sleep(5000);
         expect(homePage.responsesPageLink.getText()).toEqual('View All Responses');
