@@ -178,7 +178,7 @@ describe('UNICEF IP', function () {
                 5,
                 6
             ],
-            'consignee': 2,
+            'consignee': 10,
             'tree_position': 'MIDDLE_MAN',
             'contact_person_id': '542bfa6308453c32ffd4cadf'
         },
@@ -214,7 +214,6 @@ describe('UNICEF IP', function () {
             'tree_position': 'IMPLEMENTING_PARTNER',
             'contact_person_id': '542bfa6308453c32ffd4cadf'
         }
-
     ];
 
 
@@ -336,6 +335,7 @@ describe('UNICEF IP', function () {
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(stubDistributionPlanNodes[0]);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeTwo + '/').respond(stubDistributionPlanNodes[1]);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER').respond([stubDistributionPlanNodes[2]]);
         });
 
         it('should get all consignee responses', function () {
@@ -520,6 +520,44 @@ describe('UNICEF IP', function () {
                     }
 
                 ]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should get all implementing partners', function (done) {
+            distributionPlanService.getImplementingPartners().then(function (ips) {
+                expect(ips.data).toEqual([stubDistributionPlanNodes[2]]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should distribution plan node children for ip', function (done) {
+            distributionPlanService.getChildrenForIp(stubDistributionPlanNodes[2]).then(function (childNodes) {
+                expect(childNodes[0].data).toEqual(stubDistributionPlanNodes[0]);
+                expect(childNodes[1].data).toEqual(stubDistributionPlanNodes[1]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+        it('should map responses to a distribution plan node', function (done) {
+            distributionPlanService.getResponseForNode(stubDistributionPlanNodes[0]).then(function (responses) {
+                expect(responses).toEqual([
+                    { node: 3, amountSent: 100, amountReceived: '50', consignee: { id: 10, name: 'PADER DHO' }, satisfiedWithProduct: 'Yes', productReceived: 'Yes', item: 'Safety box f.used syrgs/ndls 5lt/BOX-25', revisedDeliveryDate: 'didnt not specify', qualityOfProduct: 'Good', feedbackAboutDissatisfaction: 'they were damaged', informedOfDelay: 'No', dateOfReceipt: '7/10/2014', programme: { id: 3, name: 'YI107 - PCR 3 KEEP CHILDREN SAFE' }, location: 'Mbarara' },
+                    { node: 3, amountSent: 100, amountReceived: '50', consignee: { id: 10, name: 'PADER DHO' }, productReceived: 'No', item: 'Safety box f.used syrgs/ndls 5lt/BOX-25', qualityOfProduct: 'Good', informedOfDelay: 'No', dateOfReceipt: '6/10/2014', programme: { id: 3, name: 'YI107 - PCR 3 KEEP MY CHILDREN SAFE' }, location: 'Mbarara' }
+                ]);
+                done();
+            });
+            httpBackend.flush();
+        });
+
+
+        it('should map responses to a distribution plan node', function (done) {
+            distributionPlanService.mapConsigneesResponsesToParent().then(function (responsesWithParent) {
+                expect(responsesWithParent[0].ip.id).toEqual(stubDistributionPlanNodes[2].id);
+                expect(responsesWithParent).toBeDefined();
                 done();
             });
             httpBackend.flush();

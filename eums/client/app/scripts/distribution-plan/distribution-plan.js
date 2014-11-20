@@ -52,7 +52,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.showDistributionPlan = function (planId) {
             $scope.planId = planId;
         };
-    }).factory('DistributionPlanService', function ($http, $q, EumsConfig, DistributionPlanNodeService) {
+    }).factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService) {
         var fillOutNode = function (nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
                 .then(function (nodeDetails) {
@@ -144,6 +144,17 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             return responses;
         }
 
+        function getResponseForIp(ip, allResponses) {
+            var responses = [];
+            allResponses.forEach(function (response) {
+                if (response.consignee.id === ip.consignee) {
+                    responses.push(response);
+                }
+            });
+            return responses;
+        }
+
+
         return {
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
@@ -192,6 +203,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     return getResponseFor(responsesWithLocation, district);
                 });
             },
+
             orderResponsesByDate: function (district) {
                 return this.getResponsesByLocation(district).then(function (responses) {
                     return orderResponsesByDateReceived(responses);
@@ -234,32 +246,51 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     return response.data;
                 });
             },
-            mapUnicefIpsWithConsignees: function () {
+            mapConsigneesResponsesToParent: function () {
                 var self = this;
-                return self.getImplementingPartners().then(function (response) {
-                    var ipsPromises = response.data.map(function (ipNode) {
+                return self.getImplementingPartners().then(function (ips) {
+                    return ips.data.map(function (ip) {
                         return {
-                            ip: ipNode,
-                            consignees: self.getMiddleMen().then(function (response) {
-                                var consigneePromises = response.filter(function (childNode) {
-                                    return childNode.parent === ipNode.id;
+                            ip: ip,
+                            responses: self.getChildrenForIp(ip).then(function (childrenNodes) {
+                                var childResponsesPromises = childrenNodes.map(function (node) {
+                                    return self.getResponseForNode(node);
                                 });
-                                return $q.all(consigneePromises).then(function (consignees) {
-                                    return consignees.map(function (consignee) {
-                                        return {
-                                            consignee: consignee,
-                                            answers: $q.all(self.getAllConsigneeResponses().then(function (response) {
-                                                return response.data.filter(function (answer) {
-                                                    return answer.node === consignee.id;
-                                                });
-                                            }))
-                                        };
-                                    });
+                                return $q.all(childResponsesPromises).then(function (responses) {
+                                    return responses;
                                 });
                             })
-                        };
+                        }
                     });
-                    return $q.all(ipsPromises);
+                });
+            },
+            getChildrenForIp: function (ip) {
+                var self = this;
+                var nodePromises = [];
+
+                function getChildrenNodePromises(ip) {
+                    return ip.children.map(function (child) {
+                        nodePromises.push(self.getDistributionPlanNodeById(child));
+                        return self.getDistributionPlanNodeById(child);
+                    });
+                }
+
+                return $q.all(getChildrenNodePromises(ip, self)).then(function (childrenPlanNodes) {
+                    childrenPlanNodes.map(function (childPlanNode) {
+                        if (childPlanNode.data.children.length > 0) {
+                            $q.all(getChildrenNodePromises(childPlanNode.data));
+                        }
+                    });
+                }).then(function () {
+                    return $q.all(nodePromises);
+                });
+            },
+            getResponseForNode: function (node) {
+                return this.getAllConsigneeResponses().then(function (allResponses) {
+                    return allResponses.data.filter(function (response) {
+                        var newNode = node.data || node;
+                        return response.node === newNode.id && response.consignee.id === newNode.consignee;
+                    });
                 });
             },
             getNodesBy: function (ipId) {
@@ -323,6 +354,5 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             this.sort = this.sort || {};
             angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
         };
-    })
-;
+    });
 

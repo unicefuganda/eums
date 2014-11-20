@@ -372,11 +372,14 @@
 
                         return $q.all(dataPromises);
                     }).then(function (data) {
+                        var displayedData = _.uniq(data, function (ip) {
+                            return ip.text.toLowerCase();
+                        });
                         var defaultIP = [
                             {id: '', text: 'All Implementing Partners'}
                         ];
                         $(elem).select2({
-                            data: defaultIP.concat(data)
+                            data: defaultIP.concat(displayedData)
                         });
                     });
                 }
