@@ -101,7 +101,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             var totalYes = 0;
             var totalSent = data.length;
             data.forEach(function (response) {
-                if (response.productReceived.toLowerCase() === 'yes') {
+                if (response.productReceived && response.productReceived.toLowerCase() === 'yes') {
                     totalYes += 1;
                 }
             });
