@@ -39,8 +39,8 @@
 
     function getHeatMapResponsePercentage(consigneeResponses) {
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
-        return (noProductReceived / consigneeResponses.length) * 100;
-
+        var percentageReceived = (noProductReceived / consigneeResponses.length) * 100;
+        return Math.round(percentageReceived);
     }
 
     function getHeatMapLayerColourForLocation(responsesWithLocation) {
@@ -332,7 +332,6 @@
                         var selectedIp = filters[1];
 
                         if (!selectedProgramme && !selectedIp) {
-                            scope.updateTotalStats && scope.updateTotalStats();
                             MapService.addAllMarkers();
                             return;
                         }
@@ -350,7 +349,6 @@
                             });
                         }
 
-                        scope.updateTotalStats && scope.updateTotalStats({programme: filters[0], consignee: filters[1]});
                     });
                 }
             }
