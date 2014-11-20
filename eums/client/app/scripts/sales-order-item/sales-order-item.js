@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode', 'DistributionPlanLineItem'])
-    .factory('SalesOrderItemService', function ($http, $q, EumsConfig, ItemService, DistributionPlanNodeService, DistributionPlanLineItemService) {
+angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode', 'DistributionPlanLineItem', 'Consignee'])
+    .factory('SalesOrderItemService', function ($http, $q, EumsConfig, ItemService, DistributionPlanNodeService, DistributionPlanLineItemService, ConsigneeService) {
         var sales_order_item;
 
         var fillOutItem = function (lineItem) {
@@ -52,6 +52,40 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                 return $q.all(lineItemPromises).then(function () {
                     return lineItems.filter(hasNoParent).map(id);
                 });
+            },
+            getTopLevelDistributionPlanNodes: function (salesOrderItem) {
+                var allDistributionLineItems = salesOrderItem.distributionplanlineitem_set;
+
+                var planNodePromises = [],
+                    planNodes = [];
+
+                allDistributionLineItems.forEach(function (lineItemId) {
+                    var planNodePromise = DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
+                        return DistributionPlanNodeService.getPlanNodeById(lineItem.distribution_plan_node).then(function (planNodeResponse) {
+                            var planNode = planNodeResponse.data;
+                            return ConsigneeService.getConsigneeById(planNode.consignee).then(function (consigneeResponse) {
+                                planNode.consignee_name = consigneeResponse.name;
+                                return planNode;
+                            });
+                        });
+                    });
+                    planNodePromises.push(planNodePromise);
+                });
+
+                planNodePromises.forEach(function (promise) {
+                    promise.then(function (plaNode) {
+                        planNodes.push(plaNode);
+                    });
+                });
+
+                function hasNoParent(planNode) {
+                    return !planNode.parent;
+                }
+
+                return $q.all(planNodePromises).then(function () {
+                    return planNodes.filter(hasNoParent);
+                });
+
             }
         };
     });

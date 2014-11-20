@@ -1,7 +1,8 @@
 describe('Sales Order Item Service', function () {
 
     var salesOrderItemEndpointUrl, itemEndpointUrl, itemUnitEndpointUrl,
-        distributionPlanLineItemEndpointUrl, distributionPlanNodeEndpointUrl;
+        distributionPlanLineItemEndpointUrl, distributionPlanNodeEndpointUrl,
+        consigneeEndpointUrl;
     var mockBackend;
     var salesOrderItemService;
 
@@ -43,6 +44,7 @@ describe('Sales Order Item Service', function () {
             salesOrderItemEndpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER_ITEM;
             distributionPlanLineItemEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM;
             distributionPlanNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
+            consigneeEndpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;
         });
 
         mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(stubItemUnit);
@@ -95,6 +97,44 @@ describe('Sales Order Item Service', function () {
             .getTopLevelDistributionPlanLineItems(stubSalesOrderItem)
             .then(function (distributionPlanLineItemSet) {
                 expect(distributionPlanLineItemSet).toEqual(expectedLineItemSet);
+                done();
+            });
+        mockBackend.flush();
+    });
+
+    it('should return top level distribution ' +
+        'plan node items', function (done) {
+        var stubLineItemWithParent = {id: 42, distribution_plan_node: 41};
+        var stubPlanNodeWithParent = {id: 41, parent: 40, consignee: 3 };
+        var stubLineItemWithoutParent = {id: 56, distribution_plan_node: 55};
+        var stubPlanNodeWithoutParent = {id: 55, parent: null, consignee: 3 };
+        var stubPlanNodeWithoutParentConsignee = {id: 3, name: 'Stub Consignee' };
+        stubSalesOrderItem.distributionplanlineitem_set = [42, 56];
+
+        var expectedPlanNodeSet = [{id: 55, parent: null, consignee: 3, consignee_name: 'Stub Consignee' }];
+
+        mockBackend
+            .whenGET(distributionPlanLineItemEndpointUrl + stubLineItemWithParent.id + '/')
+            .respond(stubLineItemWithParent);
+        mockBackend
+            .whenGET(distributionPlanNodeEndpointUrl + stubPlanNodeWithParent.id + '/')
+            .respond(stubPlanNodeWithParent);
+
+        mockBackend
+            .whenGET(distributionPlanLineItemEndpointUrl + stubLineItemWithoutParent.id + '/')
+            .respond(stubLineItemWithoutParent);
+        mockBackend
+            .whenGET(distributionPlanNodeEndpointUrl + stubPlanNodeWithoutParent.id + '/')
+            .respond(stubPlanNodeWithoutParent);
+
+        mockBackend
+            .whenGET(consigneeEndpointUrl + stubPlanNodeWithoutParent.consignee + '/')
+            .respond(stubPlanNodeWithoutParentConsignee);
+
+        salesOrderItemService
+            .getTopLevelDistributionPlanNodes(stubSalesOrderItem)
+            .then(function (distributionPlanNodeSet) {
+                expect(distributionPlanNodeSet).toEqual(expectedPlanNodeSet);
                 done();
             });
         mockBackend.flush();

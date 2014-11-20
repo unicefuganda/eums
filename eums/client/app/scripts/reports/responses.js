@@ -1,328 +1,100 @@
 'use strict';
 
-angular.module('Responses', ['eums.config'])
-    .controller('responsesController',function ($scope) {
-        $scope.consigneeId = 0;
-        $scope.salesOrderItemId = 0;
+angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'treeGrid'])
+    .controller('ResponsesController',function ($scope, ResponsesService, SalesOrderService, SalesOrderItemService) {
+        $scope.responses = [];
+        $scope.salesOrders = [];
+        $scope.salesOrderItems = [];
+        $scope.salesOrderItemConsignees = [];
 
-        //   $scope.initialize = function () {
-        //TODO: Remove commenting when test if fixed
-        //ResponsesService.fetchResponses($scope.consigneeId, $scope.salesOrderItemId).then(function (responses) {
-        //    $scope.responses = responses;
-        // });
-        // };
+        $scope.initialize = function () {
+            SalesOrderService.getSalesOrders().then(function (salesOrders) {
+                var sortedSalesOrder = salesOrders.sort();
+                $scope.salesOrders = sortedSalesOrder;
+            });
+        };
 
-        $scope.responsesData = {
-            'responsesData': [
-                {
-                    'ip': {
-                        'id': 16,
-                        'consignee': 'Adjumani DHO', 'received': 'Yes',
-                        'dateReceived': '14/10/2014',
-                        'quantityReceived': '800',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'Received timely'
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 1,
-                        'consignee': 'GULU DHO', 'received': 'Yes',
-                        'dateReceived': '10/10/2014',
-                        'quantityReceived': '1000',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'They were delivered on time and in good condition'
-                    },
-                    'data': {
-                        'id': 2,
-                        'consignee': 'Gulu General Hospital', 'received': 'Yes',
-                        'dateReceived': '13/10/2014',
-                        'quantityReceived': '700',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'They were not perfect but they helped a bit',
-                        'dayData': [
-                            {
-                                'id': 3,
-                                'consignee': 'Nyandi HC III', 'received': 'Yes',
-                                'dateReceived': '20/10/2014',
-                                'quantityReceived': '250',
-                                'quality': 'Expired',
-                                'satisfied': 'No',
-                                'comments': 'IT was of no help since the drugs were expired',
-                                transactions: [
-                                    {
-                                        'id': 4,
-                                        'consignee': 'Ntolo VHT', 'received': 'Yes',
-                                        'dateReceived': '22/10/2014',
-                                        'quantityReceived': '35',
-                                        'quality': 'Expired',
-                                        'satisfied': 'No',
-                                        'comments': 'They were of no use'
-                                    },
-                                    {
-                                        'id': 5,
-                                        'consignee': 'Ntindi VHT', 'received': 'Yes',
-                                        'dateReceived': '22/10/2014',
-                                        'quantityReceived': '50',
-                                        'quality': 'Expired',
-                                        'satisfied': 'No',
-                                        'comments': 'I had to throw them away'
-                                    },
-                                    {
-                                        'id': 6,
-                                        'consignee': 'Komponi VHT', 'received': 'Yes',
-                                        'dateReceived': '22/10/2014',
-                                        'quantityReceived': '100',
-                                        'quality': 'expired',
-                                        'satisfied': 'No',
-                                        'comments': 'I could not risk giving out expired drugs'
-                                    }
-                                ]
-                            },
-                            {
-                                 'id': 7,
-                                'consignee': 'Nyango General Hospital', 'received': 'Yes',
-                                'dateReceived': '15/10/2014',
-                                'quantityReceived': '372',
-                                'quality': 'Good',
-                                'satisfied': 'Yes',
-                                'comments': 'Timely delivery',
-                                transactions: [
-                                    {
-                                        'id': 8,
-                                        'consignee': 'Thambo VHT', 'received': 'Yes',
-                                        'dateReceived': '16/10/2014',
-                                        'quantityReceived': '35',
-                                        'quality': 'Good',
-                                        'satisfied': 'Yes',
-                                        'comments': 'You are helping us save lives'
-                                    },
-                                    {
-                                        'id': 8,
-                                        'consignee': 'Ntinka VHT', 'received': 'Yes',
-                                        'dateReceived': '16/10/2014',
-                                        'quantityReceived': '21',
-                                        'quality': 'Good',
-                                        'satisfied': 'Yes',
-                                        'comments': 'Thank you very much'
-                                    },
-                                    {
-                                        'id': 9,
-                                        'consignee': 'Nkaka Baracks', 'received': 'Yes',
-                                        'dateReceived': '16/10/2014',
-                                        'quantityReceived': '73',
-                                        'quality': 'Fair',
-                                        'satisfied': 'Yes',
-                                        'comments': 'Some boxes reached when they were damaged'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 19,
-                        'consignee': 'Kabalore DHO', 'received': 'Yes',
-                        'dateReceived': '28/10/2014',
-                        'quantityReceived': '670',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'Thank you'
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 10,
-                        'consignee': 'Malaria Consortium', 'received': 'Yes',
-                        'dateReceived': '12/10/2014',
-                        'quantityReceived': '1500',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'Delivered'
-                    },
-                    'data': {
-                        'id': 11,
-                        'consignee': 'Mpigi', 'received': 'Yes',
-                        'dateReceived': '13/10/2014',
-                        'quantityReceived': '700',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': '',
-                        'dayData': [
-                            {
-                                'id': 12,
-                                'consignee': 'Mpigi VHT', 'received': 'Yes',
-                                'dateReceived': '13/10/2014',
-                                'quantityReceived': '250',
-                                'quality': 'Good',
-                                'satisfied': 'Yes',
-                                'comments': 'Great!',
-                                transactions: [
-                                    {
-                                        'id': 13,
-                                        'consignee': 'Kammengo', 'received': 'Yes',
-                                        'dateReceived': '14/10/2014',
-                                        'quantityReceived': '40',
-                                        'quality': 'Good',
-                                        'satisfied': 'No',
-                                        'comments': 'Some were missing'
-                                    },
-                                    {
-                                        'id': 14,
-                                        'consignee': 'Buwama', 'received': 'Yes',
-                                        'dateReceived': '14/10/2014',
-                                        'quantityReceived': '60',
-                                        'quality': 'Good',
-                                        'satisfied': 'Yes',
-                                        'comments': 'Appreciate'
-                                    },
-                                    {
-                                        'id': 15,
-                                        'consignee': 'Nkozi', 'received': 'Yes',
-                                        'dateReceived': '14/10/2014',
-                                        'quantityReceived': '75',
-                                        'quality': 'Good',
-                                        'satisfied': 'No',
-                                        'comments': 'Only got half what I asked for'
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 18,
-                        'consignee': 'Mubende DHO', 'received': 'Yes',
-                        'dateReceived': '16/10/2014',
-                        'quantityReceived': '1000',
-                        'quality': 'Fair',
-                        'satisfied': 'No',
-                        'comments': 'Boxes were badly damaged'
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 17,
-                        'consignee': 'Mukono DHO', 'received': 'Yes',
-                        'dateReceived': '11/10/2014',
-                        'quantityReceived': '820',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'Received'
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 20,
-                        'consignee': 'Napak DHO', 'received': 'Yes',
-                        'dateReceived': '18/10/2014',
-                        'quantityReceived': '570',
-                        'quality': 'Poor',
-                        'satisfied': 'No',
-                        'comments': 'All expired'
-                    },
-                    'data': {
-                        'id': 201,
-                        'consignee': 'Napak VHT', 'received': 'Yes',
-                        'dateReceived': '28/10/2014',
-                        'quantityReceived': '220',
-                        'quality': 'Poor',
-                        'satisfied': 'No',
-                        'comments': 'All expired!!!',
-                        'dayData': [
-                            {
-                                'id': 202,
-                                'consignee': 'Kira', 'received': 'Yes',
-                                'dateReceived': '28/10/2014',
-                                'quantityReceived': '220',
-                                'quality': 'Poor',
-                                'satisfied': 'No',
-                                'comments': 'All expired!!!'
-                            }
-                        ]
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 21,
-                        'consignee': 'Ntungamo DHO', 'received': 'Yes',
-                        'dateReceived': '14/10/2014',
-                        'quantityReceived': '180',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'Received'
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 22,
-                        'consignee': 'Pader DHO', 'received': 'Yes',
-                        'dateReceived': '21/10/2014',
-                        'quantityReceived': '630',
-                        'quality': 'Fair',
-                        'satisfied': 'Yes',
-                        'comments': 'Ok'
-                    }
-                },
-                {
-                    'ip': {
-                        'id': 23,
-                        'consignee': 'Wakiso DHO', 'received': 'Yes',
-                        'dateReceived': '11/10/2014',
-                        'quantityReceived': '1350',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': 'Good condition'
-                    },
-                    'data': {
-                        'id': 24,
-                        'consignee': 'Kira', 'received': 'Yes',
-                        'dateReceived': '13/10/2014',
-                        'quantityReceived': '400',
-                        'quality': 'Good',
-                        'satisfied': 'Yes',
-                        'comments': '',
-                        'dayData': [
-                            {
-                                'id': 25,
-                                'consignee': 'Kira', 'received': 'Yes',
-                                'dateReceived': '13/10/2014',
-                                'quantityReceived': '400',
-                                'quality': 'Good',
-                                'satisfied': 'Yes',
-                                'comments': 'OK'
-                            }
-                        ]
-                    }
+        $scope.response_cols = [
+            { field: 'productReceived', displayName: 'Received'},
+            { field: 'dateOfReceipt', displayName: 'Date Received'},
+            { field: 'amountReceived', displayName: 'Quantity Received'},
+            { field: 'qualityOfProduct', displayName: 'Quality'},
+            { field: 'satisfiedWithProduct', displayName: 'Satisfied'},
+            { field: 'feedbackAboutDissatisfaction', displayName: 'Comments'}
+        ];
+
+        $scope.expanding_property = 'Consignee';
+
+        $scope.selectSalesOrder = function () {
+            $scope.responses = [];
+            $scope.salesOrderItems = [];
+            $scope.salesOrderItemConsignees = [];
+
+            if ($scope.selectedSalesOrder) {
+                $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
+                    SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
+                        var formattedSalesOrderItem = {
+                            id: result.item.id,
+                            display: result.item.description,
+                            materialCode: result.item.material_code,
+                            quantity: result.quantity,
+                            unit: result.item.unit.name,
+                            information: result
+                        };
+                        $scope.salesOrderItems.push(formattedSalesOrderItem);
+                    });
+                });
+            }
+        };
+
+        $scope.selectSalesOrderItem = function () {
+            $scope.responses = [];
+            $scope.salesOrderItemConsignees = [];
+
+            if ($scope.selectedSalesOrderItem) {
+                SalesOrderItemService.getSalesOrderItem($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {
+                    SalesOrderItemService.getTopLevelDistributionPlanNodes(salesOrderItem).then(function (topLevelNodes) {
+                        $scope.salesOrderItemConsignees = topLevelNodes;
+                    });
+                });
+            }
+        };
+
+        var formatResponses = function (responses) {
+            var formattedResponses = [];
+
+            responses.forEach(function (response) {
+                if (response.node) {
+                    var formattedResponse = {};
+                    formattedResponse.Consignee = response.node;
+
+                    angular.forEach(response.answers, function (response_answer, response_answer_key) {
+                        formattedResponse[response_answer_key] = response_answer;
+                    });
+
+                    formattedResponse.children = formatResponses(response.children);
+                    formattedResponses.push(formattedResponse);
                 }
-            ],
-            '_links': {
-                'self': {
-                    'href': '#'
-                }
+            });
+
+            return formattedResponses;
+        };
+
+        $scope.selectSalesOrderItemConsignee = function () {
+            $scope.responses = [];
+
+            if ($scope.selectedSalesOrderItemConsignee) {
+                ResponsesService.fetchResponses($scope.selectedSalesOrderItemConsignee.consignee, $scope.selectedSalesOrderItem.information.id).then(function (responses) {
+                    $scope.responses = formatResponses([responses]);
+                });
             }
         };
 
     }).factory('ResponsesService',function ($http, EumsConfig) {
         return {
             fetchResponses: function (consigneeId, salesOrderItemId) {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item_id/' + salesOrderItemId).then(function (response) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item/' + salesOrderItemId).then(function (response) {
                     return response.data;
-                });
-            }
-        };
-    }).directive('feedbackResponsesTable', function ($timeout) {
-        return {
-            link: function (scope, element) {
-                $timeout(function () {
-                    $(element).treegrid({
-                        initialState: 'collapsed'
-                    });
                 });
             }
         };

@@ -59,7 +59,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
             })
             .when('/distribution-plan-responses', {
                 templateUrl: '/static/app/views/reports/responses.html',
-                controller: 'responsesController'
+                controller: 'ResponsesController'
             })
             .when('/contacts', {
                 templateUrl: '/static/app/views/contacts/contacts.html',

@@ -1,5 +1,5 @@
 <div class="container-fluid">
-    <div class="content">
+    <div ng-controller="ResponsesController" class="content" ng-init="initialize()">
         <h4 class="page-header">Consignee Feedback Report
         </h4>
 
@@ -13,9 +13,10 @@
                     <div class="col-lg-8">
                         <select required="required"
                                 class="form-control"
-                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="" >Select Sales Order</option>
-                            <option value="" selected="selected">20154551</option>
+                                ng-model="selectedSalesOrder"
+                                ng-change="selectSalesOrder()"
+                                ng-options="salesOrder.order_number for salesOrder in salesOrders track by salesOrder.id">
+                            <option value="" selected="selected">Select Sales Order</option>
                         </select>
                     </div>
                 </div>
@@ -32,9 +33,10 @@
                     <div class="col-lg-8">
                         <select required="required"
                                 class="form-control"
-                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
-                            <option value="" >Select Item</option>
-                            <option value="" selected="selected">IEHK2006, kit supply 1-drugs</option>
+                                ng-model="selectedSalesOrderItem"
+                                ng-change="selectSalesOrderItem()"
+                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems track by salesOrderItem.id">
+                            <option value="" selected="selected">Select Item</option>
                         </select>
                     </div>
                 </div>
@@ -51,18 +53,10 @@
                     <div class="col-lg-8">
                         <select required="required"
                                 class="form-control"
-                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                                ng-model="selectedSalesOrderItemConsignee"
+                                ng-change="selectSalesOrderItemConsignee()"
+                                ng-options="salesOrderItemConsignee.consignee_name for salesOrderItemConsignee in salesOrderItemConsignees track by salesOrderItemConsignee.consignee">
                             <option value="" selected="selected">Select IP</option>
-                            <option value="">Adjumani DHO</option>
-                            <option value="">Gulu DHO</option>
-                            <option value="">Kabalore DHO</option>
-                            <option value="">Malaria Consortium</option>
-                            <option value="">Mubende DHO</option>
-                            <option value="">Mukono DHO</option>
-                            <option value="">Napak DHO</option>
-                            <option value="">Ntungamo DHO</option>
-                            <option value="">Pader DHO</option>
-                            <option value="">Wakiso DHO</option>
                         </select>
                     </div>
                 </div>
@@ -71,57 +65,18 @@
 
         <hr/>
 
-        <div ng-controller="responsesController">
-            <div class="table-wrapper">
-                <table class="table table-bordered table-hover table-condensed" feedback-responses-table>
-                    <thead>
-                    <tr>
-                        <th>Consignee</th>
-                        <th>Received</th>
-                        <th>Date Received</th>
-                        <th>Quantity Received</th>
-                        <th>Quality</th>
-                        <th>Satisfied</th>
-                        <th>Comments</th>
-                    </tr>
-                    </thead>
-                    <tbody ng-repeat="data in responsesData.responsesData">
-                        <tr id="data.ip.consignee" class="{{'treegrid-' + data.ip.id }}">
-                            <td class="text-left">{{ data.ip.consignee }}</td>
-                            <td>{{ data.ip.received }}</td>
-                            <td>{{ data.ip.dateReceived }}</td>
-                            <td>{{ data.ip.quantityReceived }}</td>
-                            <td>{{ data.ip.quality }}</td>
-                            <td>{{ data.ip.satisfied }}</td>
-                            <td>{{ data.ip.comments }}</td>
-                        </tr>
-
-                        <tr ng-repeat-start="dayData in data.data.dayData" class="table-consignee-row {{'treegrid-' + dayData.id }} {{'treegrid-parent-' + $parent.data.ip.id }}">
-                            <td class="text-left">{{ dayData.consignee }}</td>
-                            <td>{{ dayData.received }}</td>
-                            <td>{{ dayData.dateReceived }}</td>
-                            <td>{{ dayData.quantityReceived }}</td>
-                            <td>{{ dayData.quality }}</td>
-                            <td>{{ dayData.satisfied }}</td>
-                            <td>{{ dayData.comments }}</td>
-                        </tr>
-
-
-                        <tr ng-repeat="data in dayData.transactions" class="{{'treegrid-' + data.id }} {{'treegrid-parent-' + $parent.dayData.id }} ">
-                            <td class="text-left">{{ data.consignee }}</td>
-                            <td>{{ data.received }}</td>
-                            <td>{{ data.dateReceived }}</td>
-                            <td>{{ data.quantityReceived }}</td>
-                            <td>{{ data.quality }}</td>
-                            <td>{{ data.satisfied }}</td>
-                            <td>{{ data.comments }}</td>
-                        </tr>
-                        <tr ng-repeat-end/>
-                    </tbody>
-                </table>
-            </div>
-            <!-- END TABLE -->
+        <div class="table-wrapper" ng-show="responses.length > 0">
+            <tree-grid tree-data="responses"
+                       col-Defs="response_cols"
+                       expand-on="expanding_property"
+                       tree-control="my_tree"
+                       icon-leaf="glyphicon glyphicon-user"
+                       icon-expand="glyphicon glyphicon-plus"
+                       icon-collapse="glyphicon glyphicon-minus"
+                       on-select="my_tree_handler(branch)"
+                       expand-level="0"></tree-grid>
         </div>
+        <!-- END TABLE -->
     </div>
 </div>
 </div>

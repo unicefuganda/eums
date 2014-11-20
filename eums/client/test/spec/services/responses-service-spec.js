@@ -37,7 +37,7 @@ describe('Responses Service', function () {
         var consigneeId = 1;
         var salesOrderItemId = 1;
 
-        mockBackend.whenGET(config.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item_id/' + salesOrderItemId)
+        mockBackend.whenGET(config.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item/' + salesOrderItemId)
             .respond(expectedResponses);
 
         responsesService.fetchResponses(consigneeId, salesOrderItemId).then(function (responses) {
