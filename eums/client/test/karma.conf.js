@@ -23,6 +23,8 @@ module.exports = function (config) {
             'bower_components/moment/min/moment.min.js',
             'bower_components/select2/select2.min.js',
             'bower_components/tree-grid-directive/src/tree-grid-directive.js',
+            'bower_components/chosen/chosen.jquery.min.js',
+            'bower_components/angular-chosen-localytics/chosen.js',
             'bower_components/es5-shim/es5-shim.min.js',
             'bower_components/es5-shim/es5-sham.min.js',
             'bower_components/angular-file-upload/angular-file-upload.min.js',

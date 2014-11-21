@@ -13,10 +13,12 @@
                     <div class="col-lg-8">
                         <select required="required"
                                 class="form-control"
+                                data-placeholder="Choose Sales Order"
+                                chosen
                                 ng-model="selectedSalesOrder"
                                 ng-change="selectSalesOrder()"
                                 ng-options="salesOrder.order_number for salesOrder in salesOrders track by salesOrder.id">
-                            <option value="" selected="selected">Select Sales Order</option>
+                            <option value=""></option>
                         </select>
                     </div>
                 </div>
@@ -33,10 +35,12 @@
                     <div class="col-lg-8">
                         <select required="required"
                                 class="form-control"
+                                data-placeholder="Choose Sales Order Item"
+                                chosen
                                 ng-model="selectedSalesOrderItem"
                                 ng-change="selectSalesOrderItem()"
                                 ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems track by salesOrderItem.id">
-                            <option value="" selected="selected">Select Item</option>
+                            <option value=""></option>
                         </select>
                     </div>
                 </div>
@@ -53,10 +57,12 @@
                     <div class="col-lg-8">
                         <select required="required"
                                 class="form-control"
+                                data-placeholder="Choose IP"
+                                chosen
                                 ng-model="selectedSalesOrderItemConsignee"
                                 ng-change="selectSalesOrderItemConsignee()"
                                 ng-options="salesOrderItemConsignee.consignee_name for salesOrderItemConsignee in salesOrderItemConsignees track by salesOrderItemConsignee.consignee">
-                            <option value="" selected="selected">Select IP</option>
+                            <option value=""></option>
                         </select>
                     </div>
                 </div>

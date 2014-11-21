@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'treeGrid'])
+angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'treeGrid', 'localytics.directives'])
     .controller('ResponsesController',function ($scope, ResponsesService, SalesOrderService, SalesOrderItemService) {
         $scope.responses = [];
         $scope.salesOrders = [];
