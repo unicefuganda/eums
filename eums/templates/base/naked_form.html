@@ -1,10 +1,10 @@
 {% load generic_tags %}
 {% for field in a_form.visible_fields %}
-    <div id="{{ field.auto_id }}_span" class="form-group" {% if field.field.attrs %}
+    <div id="{{ field.auto_id }}_div" class="form-group" {% if field.field.attrs %}
         {{ field.field.attrs | safe }} {% endif %} >
         <label for="{{ field.auto_id }}" class="col-sm-2 control-label">{{ field.label }}</label>
 
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             {{ field | add_css:"form-control reset-width" }}
         </div>
         <label class="col-sm-5 text-danger">

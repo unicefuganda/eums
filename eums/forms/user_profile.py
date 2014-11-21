@@ -1,11 +1,15 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django import forms
 from django.forms import ModelForm
 
 from eums.models import UserProfile
 
 
 class UserProfileForm(UserCreationForm):
+    groups = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label=None, required=True,
+                                    widget=forms.RadioSelect(attrs={'class': 'radio-roles'}), label="Role")
+
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['password2'].label = 'Confirm Password'
@@ -18,6 +22,7 @@ class UserProfileForm(UserCreationForm):
     def save(self, commit=True, *args, **kwargs):
         user = super(UserProfileForm, self).save(commit=commit, *args, **kwargs)
         if commit:
+            user.groups.add(self.cleaned_data['groups'])
             user.save()
             self.save_m2m()
             user_profile, b = UserProfile.objects.get_or_create(user=user)
@@ -43,6 +48,10 @@ class UserProfileForm(UserCreationForm):
             self._errors['country'] = self.error_class([message])
 
     def clean(self):
+        group = self.cleaned_data.get('groups', None)
+        message = "This field is required."
+        if not group:
+            self._errors['groups'] = self.error_class([message])
         return super(UserProfileForm, self).clean()
 
     def clean_email(self):
