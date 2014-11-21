@@ -1,32 +1,4 @@
 {
-<<<<<<< HEAD
-  "appPath": "app",
-  "name": "eums-client",
-  "version": "0.0.0",
-  "dependencies": {
-    "angular": "~1.2.0",
-    "bootstrap": "~3.2.0",
-    "angular-route": "~1.2.0",
-    "angular-sanitize": "~1.2.25",
-    "angular-bootstrap": "~0.11.2",
-    "angular-bootstrap-switch": "~0.3.0",
-    "ng-table": "~0.3.3",
-    "si-table": "~0.0.1-beta.6",
-    "leaflet": "~0.7.3",
-    "select2": "~3.5.1",
-    "tree-grid-directive": "https://github.com/khan4019/tree-grid-directive.git",
-    "moment": "~2.8.3",
-    "ngtoast": "~1.2.0",
-    "angular-busy": "~4.1.1"
-  },
-  "devDependencies": {
-    "angular-mocks": "~1.2.0"
-  },
-  "resolutions": {
-    "angular": "1.2.27",
-    "angular-animate": "~1.2.17"
-  }
-=======
     "appPath": "app",
     "name": "eums-client",
     "version": "0.0.0",
@@ -41,18 +13,18 @@
         "si-table": "~0.0.1-beta.6",
         "leaflet": "~0.7.3",
         "select2": "~3.5.1",
-        "tree-grid": "https://github.com/maxazan/jquery-treegrid.git",
+        "tree-grid-directive": "https://github.com/khan4019/tree-grid-directive.git",
         "moment": "~2.8.3",
         "ngtoast": "~1.2.0",
         "angular-busy": "~4.1.1",
         "angular-file-upload": "~1.1.5"
+
     },
     "devDependencies": {
         "angular-mocks": "~1.2.0"
     },
     "resolutions": {
-        "angular": "1.2.26",
+        "angular": "1.2.27",
         "angular-animate": "~1.2.17"
     }
->>>>>>> [james] #X started work on data import
 }
