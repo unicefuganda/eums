@@ -22,7 +22,7 @@
     "angular-mocks": "~1.2.0"
   },
   "resolutions": {
-    "angular": "1.2.26",
+    "angular": "1.2.27",
     "angular-animate": "~1.2.17"
   }
 }
