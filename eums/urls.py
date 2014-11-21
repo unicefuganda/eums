@@ -1,9 +1,9 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses
 from eums.api.answer.date_answers_endpoint import textAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
-
 from eums.api.consignee.consignee import consigneeRouter
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
 from eums.api.distribution_plan_line_item.distribution_plan_line_item import distributionPlanLineItemRouter
@@ -29,6 +29,8 @@ urlpatterns = patterns(
     url(r'^logout/$', 'django.contrib.auth.views.logout',
         {'template_name': 'registration/login.html'}, name="logout"),
     url(r'^api/hook', 'eums.api.rapid_pro_hooks.hook.hook', name='hook'),
+    url(r'^api/import-sales-orders/', 'eums.api.import_data.import_sales_orders_endpoint.import_sales_orders',
+        name='import_sales_orders'),
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),

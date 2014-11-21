@@ -1,6 +1,8 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'Contact'])
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs',
+    'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'DatePicker',
+    'StockReport', 'ngToast', 'cgBusy', 'Responses', 'Contact', 'ImportData'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -56,6 +58,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
             .when('/reports', {
                 templateUrl: '/static/app/views/reports/ip-stock-report.html',
                 controller: 'StockReportController'
+            })
+            .when('/import-data', {
+                templateUrl: '/static/app/views/import-data/import-data.html',
+                controller: 'ImportDataController'
             })
             .when('/distribution-plan-responses', {
                 templateUrl: '/static/app/views/reports/responses.html',

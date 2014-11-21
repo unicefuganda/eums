@@ -1,0 +1,33 @@
+<div ng-controller="ImportDataController" class="container-fluid">
+    <div class="content">
+        <h4 class="page-header">Import Data</h4>
+        <ng-toast></ng-toast>
+
+        <div class="panel panel-default" uploader="uploader" filters="queueLimit, customFilter">
+            <div class="row pad-20">
+                <label class="col-lg-2" for="import-sales-orders">Import Sales Orders:</label>
+                <input class="col-lg-3" type="file" nv-file-select="" uploader="uploader"/>
+                <span class="col-lg-1" ng-show="uploader.isHTML5"
+                      nowrap>{{ uploader.queue[0].file.size/1024/1024|number:2 }} MB</span>
+
+
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="uploader.queue[0].upload()"
+                        ng-disabled="uploader.queue[0].isReady || uploader.queue[0].isUploading">
+                    <span class="glyphicon glyphicon-upload"></span> Upload
+                </button>
+                <div class="progress col-lg-2">
+                    <div ng-show="uploader.isHTML5" class="progress-bar" role="progressbar"
+                         ng-style="{ 'width': uploader.queue[0].progress + '%' }"></div>
+                </div>
+                <div class="col-lg-2">
+                    <span ng-show=" uploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" uploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show=" uploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i></span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>

@@ -13,7 +13,8 @@
         "STOCK_REPORT": "/api/stock-report/",
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "PROGRAMME": "/api/programme/",
-        "USER": "/api/user/"
+        "USER": "/api/user/",
+        "IMPORT_SALES_ORDERS": "/api/import-sales-orders/"
     },
      "districtLayerStyle": {
         "weight": 1,
