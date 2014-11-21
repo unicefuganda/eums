@@ -1,35 +1,41 @@
 {% extends 'base/header.html' %}
 
 {% block nav %}
-    <li id="distribution-plan-nav"
-        ng-class="{ active: isActive('/delivery-reports,/delivery-report/new/')} ">
-        <a href="#/distribution-plans">Distribution Plans</a>
-    </li>
-    <li class="dropdown"
-        ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
-        <a href="" class="dropdown-toggle">Delivery Reports <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="#/field-verification-reports">Field Verification</a></li>
-            <li class="divider"></li>
-            <li><a href="#/delivery-reports">Reported By IP</a></li>
-        </ul>
-    </li>
-    <li class="dropdown" ng-class="{ active: isActive('/reports')}">
-        <a href="" class="dropdown-toggle">Reports <span class="caret"></span></a>
-        <ul class="dropdown-menu" role="menu">
-            <li><a href="#/distribution-plan-responses">Feedback Reports</a></li>
-            <li class="divider"></li>
-            <li><a href="#/reports">IP Stock Report</a></li>
-            <li class="divider"></li>
-            <li><a href="#/distribution-plan-responses">All Reports</a></li>
-        </ul>
-    </li>
-    <li id="import-data-nav"
-        ng-class="{ active: isActive('/import-data')} ">
-        <a href="#/import-data">Import Data</a>
-    </li>
-    <li id="contact-nav"
-        ng-class="{ active: isActive('/contacts')} ">
+    {% if perms.auth.can_view_distribution_plans %}
+        <li id="distribution-plan-nav"
+            ng-class="{ active: isActive('/delivery-reports,/delivery-report/new/')} ">
+            <a href="#/distribution-plans">Distribution Plans</a>
+        </li>
+        <li class="dropdown"
+            ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
+            <a href="" class="dropdown-toggle">Delivery Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#/field-verification-reports">Field Verification</a></li>
+                <li class="divider"></li>
+                <li><a href="#/delivery-reports">Reported By IP</a></li>
+            </ul>
+        </li>
+        <li class="dropdown" ng-class="{ active: isActive('/reports')}">
+            <a href="" class="dropdown-toggle">Reports <span class="caret"></span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="#/distribution-plan-responses">Feedback Reports</a></li>
+                <li class="divider"></li>
+                <li><a href="#/reports">IP Stock Report</a></li>
+                <li class="divider"></li>
+                <li><a href="#/distribution-plan-responses">All Reports</a></li>
+            </ul>
+        </li>
+        <li id="import-data-nav"
+            ng-class="{ active: isActive('/import-data')} ">
+            <a href="#/import-data">Import Data</a>
+        </li>
+        <li id="contact-nav"
+                ng-class="{ active: isActive('/contacts')} ">
         <a href="#/contacts">Contacts</a>
-    </li>
+        </li>
+    {% else %}
+        <li ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
+            <a href="#/field-verification-reports">Delivery Reports</a>
+        </li>
+    {% endif %}
 {% endblock %}

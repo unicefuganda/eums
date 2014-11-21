@@ -17,25 +17,27 @@
     <div class="container">
         <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
             <li id="home-nav">
-                <a href="/">Dashboard</a>
+                {% if perms.auth.can_view_dashboard %}
+                    <a href="/">Dashboard</a>
+                {% endif %}
                 {% block nav %}
                 {% endblock %}
             </li>
         </ul>
 
-        <ul class="nav navbar-nav navbar-right">
-            {% if perms.auth.can_view_users %}
+        {% if perms.auth.can_view_users %}
+            <ul class="nav navbar-nav navbar-right">
                 <li><a href="/users">Users</a></li>
-            {% endif %}
-            <li><a href="">Settings</a></li>
-            <li><a href="">Help</a></li>
-            <li>
+                <li><a href="">Settings</a></li>
+                <li><a href="">Help</a></li>
+                <li>
                 <a href="">
-                    <span class="glyphicon glyphicon-globe"></span>
-                    <span class="pad-left-5">Uganda</span>
-                    <span class="caret"></span>
+                <span class="glyphicon glyphicon-globe"></span>
+                <span class="pad-left-5">Uganda</span>
+                <span class="caret"></span>
                 </a>
-            </li>
-        </ul>
+                </li>
+            </ul>
+        {% endif %}
     </div>
 </nav>
