@@ -144,23 +144,15 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             return responses;
         }
 
-        function getResponseForIp(ip, allResponses) {
-            var responses = [];
-            allResponses.forEach(function (response) {
-                if (response.consignee.id === ip.consignee) {
-                    responses.push(response);
-                }
-            });
-            return responses;
-        }
-
-
         return {
+            aggregateStats: function (data, location) {
+                return aggregateAllResponse(getResponseFor(data, location), location);
+            },
             fetchPlans: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN);
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, {cache: true});
             },
             getSalesOrders: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER);
+                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER, {cache: true});
 
             },
             getNodes: function (plan) {
@@ -183,7 +175,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             },
 
             getConsigneeDetails: function (consigneeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/');
+                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/', {cache: true});
             },
             aggregateResponses: function () {
                 return this.getAllConsigneeResponses().then(function (responseFromServer) {
@@ -191,23 +183,26 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             },
             aggregateResponsesForDistrict: function (district) {
-                return this.groupResponsesByLocation().then(function (responsesWithLocation) {
+                return this.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                     return aggregateAllResponseFor(responsesWithLocation, district);
                 });
             },
             getAllConsigneeResponses: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES);
+                return $http.get(EumsConfig.BACKEND_URLS.RESPONSES, {cache: true});
             },
             getResponsesByLocation: function (district) {
-                return this.groupResponsesByLocation().then(function (responsesWithLocation) {
+                return this.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                     return getResponseFor(responsesWithLocation, district);
                 });
             },
 
-            orderResponsesByDate: function (district) {
+            orderAllResponsesByDate: function (district) {
                 return this.getResponsesByLocation(district).then(function (responses) {
                     return orderResponsesByDateReceived(responses);
                 });
+            },
+            orderResponsesByDate: function (responsesLocationMap, location) {
+                return orderResponsesByDateReceived(getResponseFor(responsesLocationMap, location));
             },
             mapConsigneesResponsesToNodeLocation: function () {
                 var self = this;
@@ -221,7 +216,19 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     return $q.all(consigneeResponseWithLocationPromises);
                 });
             },
-            groupResponsesByLocation: function () {
+            groupResponsesByLocation: function (responses) {
+                return getUniqueLocations(responses).map(function (response) {
+                    return {
+                        location: response.location.toLowerCase(),
+                        consigneeResponses: (function () {
+                            return responses.filter(function (responseWithLocation) {
+                                return responseWithLocation.location.toLowerCase() === response.location.toLowerCase();
+                            });
+                        })()
+                    };
+                });
+            },
+            groupAllResponsesByLocation: function () {
                 return this.mapConsigneesResponsesToNodeLocation().then(function (allResponses) {
                     return getUniqueLocations(allResponses).map(function (response) {
                         return {
@@ -236,13 +243,13 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             },
             getDistributionPlanNodeById: function (id) {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + id + '/');
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + id + '/', {cache: true});
             },
             getImplementingPartners: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER');
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER', {cache: true});
             },
             getMiddleMen: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=MIDDLE_MAN').then(function (response) {
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=MIDDLE_MAN', {cache: true}).then(function (response) {
                     return response.data;
                 });
             },
@@ -262,6 +269,22 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                             })
                         }
                     });
+                });
+            },
+            flattenConsigneesResponsesToParentMap: function () {
+                return this.mapConsigneesResponsesToParent().then(function (consigneesResponsesParentMap) {
+                    var allPromises = consigneesResponsesParentMap.map(function (consigneesResponsesWithIp) {
+                        var ip = consigneesResponsesWithIp.ip;
+                        return consigneesResponsesWithIp.responses.then(function (responses) {
+                            return responses.map(function (response) {
+                                return {
+                                    ip: ip.id,
+                                    response: response
+                                }
+                            })
+                        })
+                    });
+                    return $q.all(allPromises);
                 });
             },
             getChildrenForIp: function (ip) {
@@ -286,8 +309,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             },
             getResponseForNode: function (node) {
-                return this.getAllConsigneeResponses().then(function (allResponses) {
-                    return allResponses.data.filter(function (response) {
+                return this.mapConsigneesResponsesToNodeLocation().then(function (allResponses) {
+                    return allResponses.filter(function (response) {
                         var newNode = node.data || node;
                         return response.node === newNode.id && response.consignee.id === newNode.consignee;
                     });
@@ -301,8 +324,9 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 });
             },
             getPlanById: function (planId) {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/');
+                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/', {cache: true});
             },
+
             getPlanDetails: function (planId) {
                 var getPlanPromise = this.getPlanById(planId);
                 return getPlanPromise.then(function (response) {

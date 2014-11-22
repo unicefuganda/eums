@@ -71,7 +71,7 @@ describe('eums.layers', function () {
             mockMap = jasmine.createSpyObj('mockMap', ['fitBounds', 'removeLayer']);
             mockMapLayer = jasmine.createSpyObj('mockMapLayer', ['on', 'setStyle', 'getBounds']);
             mockMapLayer.on.and.returnValue(mockMapLayer);
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['aggregateResponsesForDistrict', 'orderResponsesByDate']);
+            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate']);
 
             module(function ($provide) {
                 $provide.value('DistributionPlanService', mockDistributionPlanService);
@@ -81,7 +81,7 @@ describe('eums.layers', function () {
                 layer = Layer;
                 deferredAggregates = $q.defer();
                 mockDistributionPlanService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
-                mockDistributionPlanService.orderResponsesByDate.and.returnValue(deferredAggregates.promise);
+                mockDistributionPlanService.orderAllResponsesByDate.and.returnValue(deferredAggregates.promise);
             });
         });
 
@@ -101,7 +101,7 @@ describe('eums.layers', function () {
 
                 districtLayer.click();
                 expect(mockDistributionPlanService.aggregateResponsesForDistrict).toHaveBeenCalledWith('Gulu');
-                expect(mockDistributionPlanService.orderResponsesByDate).toHaveBeenCalledWith('Gulu');
+                expect(mockDistributionPlanService.orderAllResponsesByDate).toHaveBeenCalledWith('Gulu');
             });
         });
 

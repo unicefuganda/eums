@@ -48,11 +48,11 @@ describe('Module: Home', function () {
 
 
         beforeEach(inject(function ($controller, $rootScope, $q) {
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['orderResponsesByDate']);
+            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['orderAllResponsesByDate']);
             params = {district: 'Gulu'};
             deferred = $q.defer();
             scope = $rootScope.$new();
-            mockDistributionPlanService.orderResponsesByDate.and.returnValue(deferred.promise);
+            mockDistributionPlanService.orderAllResponsesByDate.and.returnValue(deferred.promise);
             $controller('ResponseController', {
                 $scope: scope, $routeParams: params, DistributionPlanService:mockDistributionPlanService});
         }));

@@ -46,15 +46,17 @@ angular.module('map.layers', ['DistributionPlan'])
         };
     }).factory('Layer', function (DistributionPlanService) {
         function changeGlobalStats(layerName, scope) {
-            DistributionPlanService.aggregateResponsesForDistrict(layerName).then(function (aggregates) {
-                scope.totalStats = aggregates;
+            scope.$apply(function () {
+                scope.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, layerName);
             });
+
         }
 
         function showResponsesForDistrict(layerName, scope) {
-            DistributionPlanService.orderResponsesByDate(layerName).then(function (allResponses) {
+            var allResponses = DistributionPlanService.orderResponsesByDate(scope.allResponsesMap, layerName);
+            scope.$apply(function () {
                 scope.responses = allResponses.slice(0, 5);
-                scope.district = layerName.toUpperCase();
+                scope.district = layerName;
             });
         }
 

@@ -381,7 +381,7 @@ describe('UNICEF IP', function () {
             stubConsigneeResponses[0].location = stubDistributionPlanNodes[0].location;
             stubConsigneeResponses[1].location = stubDistributionPlanNodes[0].location;
             stubConsigneeResponses[2].location = stubDistributionPlanNodes[1].location;
-            distributionPlanService.groupResponsesByLocation().then(function (responsesByLocation) {
+            distributionPlanService.groupAllResponsesByLocation().then(function (responsesByLocation) {
                 expect(responsesByLocation).toEqual([
                     {
                         location: stubDistributionPlanNodes[0].location.toLowerCase(),
@@ -476,7 +476,7 @@ describe('UNICEF IP', function () {
 
         it('should order responses for a given location by receipt date', function (done) {
             var district = 'Mbarara';
-            distributionPlanService.orderResponsesByDate(district).then(function (responses) {
+            distributionPlanService.orderAllResponsesByDate(district).then(function (responses) {
                 expect(responses).toEqual([
                     {
                         node: 3,
@@ -558,6 +558,16 @@ describe('UNICEF IP', function () {
             distributionPlanService.mapConsigneesResponsesToParent().then(function (responsesWithParent) {
                 expect(responsesWithParent[0].ip.id).toEqual(stubDistributionPlanNodes[2].id);
                 expect(responsesWithParent).toBeDefined();
+                done();
+            });
+            httpBackend.flush();
+        });
+
+
+        it('should flatten reponses and Ip map array', function (done) {
+            distributionPlanService.flattenConsigneesResponsesToParentMap().then(function (responses) {
+                expect(responses[0].ip).toEqual(stubDistributionPlanNodes[2].id);
+                expect(responses[0].consigneeResponses[0]).toEqual(stubConsigneeResponses[0]);
                 done();
             });
             httpBackend.flush();

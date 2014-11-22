@@ -1,5 +1,6 @@
 var HomePage = function () {
     this.homePageTitle = element(by.css('.white'));
+    this.ipElement = element(by.model('filter.programme'));
     this.map = element(by.id('map'));
     this.mapLocation = element(by.binding('totalStats.location'));
     this.numberSent = element(by.binding('totalStats.totalSent'));
@@ -47,6 +48,10 @@ var HomePage = function () {
         });
     };
 
+    this.enterImplementingPartnerToFilterBy = function (selectedIp) {
+        this.ipElement.sendKeys(selectedIp);
+    };
+
     this.getMapZoomLevel = function () {
         return browser.executeScript(function () {
             return window.map.getZoom();
@@ -55,7 +60,7 @@ var HomePage = function () {
         });
     };
 
-    this.goToResponseDetailsPage = function(){
+    this.goToResponseDetailsPage = function () {
         this.responsesPageLink.click();
         return require('./response-page');
     }

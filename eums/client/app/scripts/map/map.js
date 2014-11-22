@@ -61,13 +61,13 @@
         });
     }
 
-    function messagesAggregateMarker(map, layer, aggregateValue) {
+    function messagesAggregateMarker(layer, aggregateValue) {
         var marker = new L.Marker(layer.getCenter(), {
             icon: circleMarkerIcon(aggregateValue)
         });
 
         if (typeof(aggregateValue) === 'number') {
-            return marker.addTo(map);
+            return marker;
         }
     }
 
@@ -101,17 +101,26 @@
             return map;
         }
 
-        function addIPMarker(marker) {
-            return marker.addTo(map);
-        }
+        var markersGroup = [];
 
-        function addHeatMapLayer(map) {
-            DistributionPlanService.groupResponsesByLocation().then(function (responsesWithLocation) {
-                var allLocations = getHeatMapLayerColourForLocation(responsesWithLocation);
+        function addHeatMapLayer(map, scope) {
+            var allMarkers = [];
+            DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
+                if (scope.isFiltered) {
+                    markersGroup.clearLayers();
+                    scope.allResponsesMap = scope.data.allResponsesLocationMap;
+                } else {
+                    scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : responsesWithLocation;
+                }
+                var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
                 angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                     layer.setStyle(getHeatMapStyle(allLocations, layerName));
-                    messagesAggregateMarker(map, layer, getMarkerContent(allLocations, layerName))
+                    var marker = messagesAggregateMarker(layer, getMarkerContent(allLocations, layerName))
+
+                    marker && allMarkers.push(marker);
                 });
+                markersGroup = L.layerGroup(allMarkers);
+                markersGroup.addTo(map);
             });
         }
 
@@ -136,13 +145,16 @@
                     layerName && this.clickLayer(layerName);
                     return this;
                 }.bind(this)).then(function () {
-                    addHeatMapLayer(map);
+                    addHeatMapLayer(map, scope);
                 }).then(function () {
                     return this;
                 }.bind(this));
             },
             getZoom: function () {
                 return map.getZoom();
+            },
+            addHeatMap: function (scope) {
+                addHeatMapLayer(map, scope);
             },
             getCenter: function () {
                 return map.getCenter();
@@ -205,15 +217,6 @@
                     });
                 });
             },
-            mapAllIPsToRandomLayerCoordinates: function () {
-                var self = this;
-                return IPService.loadAllDistricts().then(function (districtNames) {
-                    var ipWithCoordinatesPromises = districtNames.data.map(function (districtName) {
-                        return self.mapIPsToRandomLayerCoordinates(districtName);
-                    });
-                    return $q.all(ipWithCoordinatesPromises);
-                });
-            },
             getLayerCenter: function (layerName) {
                 return LayerMap.getLayerCenter(layerName.toLowerCase());
             },
@@ -229,12 +232,11 @@
         };
     });
 
-    module.directive('map', function (MapService, $window, IPService, DistributionPlanService, MapFilterService, $q, $timeout) {
 
+    module.directive('map', function (MapService, $window, IPService, DistributionPlanService) {
         return {
             scope: false,
             link: function (scope, element, attrs) {
-
                 MapService.render(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
                     scope.filter = {};
@@ -249,7 +251,6 @@
                     DistributionPlanService.aggregateResponses().then(function (aggregates) {
                         scope.totalStats = aggregates;
                     });
-
                     scope.hideMapMarkerDetails = function () {
                         scope.responses = null;
                     };
@@ -293,24 +294,58 @@
         }
     }).directive('mapFilter', function () {
         return{
-            restrict: 'A',
-            scope: true,
+            restrict: 'E',
+            scope: false,
             templateUrl: '/static/app/views/partials/filters.html'
         }
     }).directive('mapSummary', function () {
         return{
             restrict: 'A',
-            scope: true,
+            scope: false,
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
-    }).directive('selectProgram', function (ProgrammeService, FilterService, DistributionPlanService, $q, MapService, MapFilterService) {
+    }).directive('filters', function (DistributionPlanService) {
+        function getAllResponses(responsesForIp) {
+            var allResponses = responsesForIp.map(function (responseForIp) {
+                return responseForIp.response;
+            });
+            return _.flatten(allResponses);
+        }
+
+        return {
+            restrict: 'A',
+            scope: false,
+            link: function (scope) {
+                scope.$watchCollection('filter', function (newValue) {
+                    scope.isFiltered = true;
+                    if (newValue.ip) {
+                        DistributionPlanService.flattenConsigneesResponsesToParentMap().then(function (responses) {
+                            var nonEmptyResponses = _.flatten(responses);
+                            var responsesForIp = nonEmptyResponses.filter(function (responseMap) {
+                                return parseInt(newValue.ip) === parseInt(responseMap.ip);
+                            });
+                            scope.data.allResponsesLocationMap = (DistributionPlanService.groupResponsesByLocation(getAllResponses(responsesForIp)));
+                        });
+                    }
+
+                    if(newValue.programme){
+
+                    }
+                });
+
+                scope.$watch('data.allResponsesLocationMap', function () {
+                    if (window.map.render) {
+                        window.map.addHeatMap(scope);
+                    }
+                });
+            }
+        }
+
+    }).directive('selectProgram', function (ProgrammeService) {
             return {
                 restrict: 'A',
                 scope: false,
                 link: function (scope, elem) {
-
-                    scope.allMarkers = MapFilterService.getAllMarkerMaps();
-                    scope.shownmarkers = [];
                     ProgrammeService.fetchProgrammes().then(function (response) {
                         return response.data.map(function (programe) {
                             return {id: programe.id, text: programe.name}
@@ -325,31 +360,6 @@
                         });
                     });
 
-                    scope.$watchCollection('[programme, ip]', function (filters) {
-                        var showMarkers = scope.shownMarkers.length === 0 ? MapFilterService.getAllMarkerMaps() : scope.shownMarkers;
-
-                        var selectedProgramme = filters[0];
-                        var selectedIp = filters[1];
-
-                        if (!selectedProgramme && !selectedIp) {
-                            MapService.addAllMarkers();
-                            return;
-                        }
-                        MapService.clearAllMarkers();
-                        if (selectedProgramme) {
-                            MapFilterService.filterMarkersByProgramme(selectedProgramme, showMarkers).then(function (markerMaps) {
-                                scope.shownMarkers = markerMaps;
-                                MapService.addMarkers(markerMaps);
-                            });
-                        }
-                        if (selectedIp) {
-                            MapFilterService.filterMarkersByIp(selectedIp, showMarkers).then(function (markerMaps) {
-                                scope.shownMarkers = markerMaps;
-                                MapService.addMarkers(markerMaps);
-                            });
-                        }
-
-                    });
                 }
             }
         }
@@ -384,49 +394,6 @@
                     });
                 }
             }
-        }).directive('deliveryStatus', function (MapService, MapFilterService) {
-            return {
-                restrict: 'A',
-                scope: false,
-                link: function (scope) {
-                    scope.filter = {received: true, notDelivered: true, receivedWithIssues: true};
-                    function addShownMarkers(condition, showMarkers) {
-                        scope.shownMarkers = [];
-                        showMarkers.forEach(function (markerMap) {
-                            if (getNumberOf(condition, markerMap.consigneeResponse).length == markerMap.consigneeResponse.length) {
-                                scope.shownMarkers.push(markerMap);
-                                MapService.addMarker(markerMap.marker);
-                            }
-                        });
-                    }
-
-                    scope.$watchCollection('[filter.received,filter.notDelivered, filter.receivedWithIssues]', function (newFilterValues) {
-                        var showMarkers = scope.shownMarkers.length === 0 ? MapFilterService.getAllMarkerMaps() : scope.shownMarkers;
-
-                        MapService.clearAllMarkers();
-                        if (!newFilterValues[0] && !newFilterValues[1] && !newFilterValues[2]) {
-                            MapService.clearAllMarkers(scope.shownMarkers);
-                        }
-                        if (newFilterValues[0]) {
-                            addShownMarkers('yes', showMarkers);
-                        }
-                        if (newFilterValues[1]) {
-                            addShownMarkers('no', showMarkers);
-                        }
-                        if (newFilterValues[2]) {
-                            scope.shownMarkers = [];
-                            showMarkers.forEach(function (markerMap) {
-                                var numberOfNos = getNumberOf('no', markerMap.consigneeResponse).length;
-                                if (numberOfNos > 0 && numberOfNos < markerMap.consigneeResponse.length) {
-                                    MapService.addMarker(markerMap.marker);
-                                    scope.shownMarkers.push(markerMap);
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-
         }).directive('selectYear', function (FilterService, MapService, MapFilterService) {
             return {
                 restrict: 'A',
@@ -503,21 +470,6 @@
                             });
                         }
                     });
-
-                    scope.clearFilters = function () {
-                        scope.filter = {
-                            received: true,
-                            notDelivered: true,
-                            receivedWithIssues: true,
-                            year: '',
-                            to: '',
-                            from: ''
-                        };
-                        scope.shownMarkers = [];
-                        scope.ip = '';
-                        scope.programme = '';
-                        scope.updateTotalStats();
-                    }
                 }
             }
 
