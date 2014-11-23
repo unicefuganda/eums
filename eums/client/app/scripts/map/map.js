@@ -249,7 +249,7 @@
                     scope.allMarkers = [];
 
                     DistributionPlanService.aggregateResponses().then(function (aggregates) {
-                        scope.totalStats = aggregates;
+                        scope.data.totalStats = aggregates;
                     });
                     scope.hideMapMarkerDetails = function () {
                         scope.responses = null;
@@ -328,7 +328,7 @@
                         });
                     }
 
-                    if(newValue.programme){
+                    if (newValue.programme) {
 
                     }
                 });
@@ -337,6 +337,17 @@
                     if (window.map.render) {
                         window.map.addHeatMap(scope);
                     }
+                    scope.data.totalStats = DistributionPlanService.aggregateStats(scope.data.allResponsesLocationMap, scope.data.district);
+                    if (scope.data.district) {
+                        var layerName = scope.data.district;
+                        (function showResponsesForDistrict() {
+                            var allResponses = DistributionPlanService.orderResponsesByDate(scope.data.allResponsesLocationMap, scope.data.district);
+                            scope.data.responses = allResponses.slice(0, 5);
+                            scope.data.district = layerName;
+                        })();
+
+                    }
+
                 });
             }
         }

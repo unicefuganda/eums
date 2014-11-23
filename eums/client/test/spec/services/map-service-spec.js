@@ -63,7 +63,7 @@ describe('eums.layers', function () {
     });
 
     describe('Layer', function () {
-        var layer, mockDistributionPlanService, deferredAggregates;
+        var layer, mockDistributionPlanService, scope, deferredAggregates;
         var mockMap, mockMapLayer;
 
         beforeEach(function () {
@@ -71,17 +71,20 @@ describe('eums.layers', function () {
             mockMap = jasmine.createSpyObj('mockMap', ['fitBounds', 'removeLayer']);
             mockMapLayer = jasmine.createSpyObj('mockMapLayer', ['on', 'setStyle', 'getBounds']);
             mockMapLayer.on.and.returnValue(mockMapLayer);
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate']);
+            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate', 'orderResponsesByDate', 'aggregateStats']);
 
             module(function ($provide) {
                 $provide.value('DistributionPlanService', mockDistributionPlanService);
             });
 
-            inject(function (Layer, $q) {
+            inject(function (Layer, $q, $rootScope) {
+                scope = $rootScope.$new();
                 layer = Layer;
                 deferredAggregates = $q.defer();
                 mockDistributionPlanService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
                 mockDistributionPlanService.orderAllResponsesByDate.and.returnValue(deferredAggregates.promise);
+                mockDistributionPlanService.aggregateStats.and.returnValue({});
+                mockDistributionPlanService.orderResponsesByDate.and.returnValue([{}, {}]);
             });
         });
 
@@ -96,12 +99,15 @@ describe('eums.layers', function () {
 
         describe('METHOD: click', function () {
             it('should call the on click handler of a layer', function () {
+                scope.allResponsesMap = {};
+                scope.data = {totalStats: {}};
+
                 var optionsMock = jasmine.createSpyObj('optionsMock', ['districtLayerStyle', 'selectedLayerStyle']),
-                    districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, {}, 'Gulu');
+                    districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
 
                 districtLayer.click();
-                expect(mockDistributionPlanService.aggregateResponsesForDistrict).toHaveBeenCalledWith('Gulu');
-                expect(mockDistributionPlanService.orderAllResponsesByDate).toHaveBeenCalledWith('Gulu');
+//                expect(mockDistributionPlanService.aggregateResponsesForDistrict).toHaveBeenCalledWith('Gulu');
+                expect(mockDistributionPlanService.orderResponsesByDate).toHaveBeenCalledWith({},'Gulu');
             });
         });
 

@@ -47,7 +47,7 @@ angular.module('map.layers', ['DistributionPlan'])
     }).factory('Layer', function (DistributionPlanService) {
         function changeGlobalStats(layerName, scope) {
             scope.$apply(function () {
-                scope.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, layerName);
+                scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, layerName);
             });
 
         }
@@ -55,8 +55,8 @@ angular.module('map.layers', ['DistributionPlan'])
         function showResponsesForDistrict(layerName, scope) {
             var allResponses = DistributionPlanService.orderResponsesByDate(scope.allResponsesMap, layerName);
             scope.$apply(function () {
-                scope.responses = allResponses.slice(0, 5);
-                scope.district = layerName;
+                scope.data.responses = allResponses.slice(0, 5);
+                scope.data.district = layerName;
             });
         }
 

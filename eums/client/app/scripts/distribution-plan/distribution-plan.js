@@ -135,13 +135,19 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         function getResponseFor(responsesWithLocation, district) {
             var responses = [];
-            responsesWithLocation.forEach(function (responseWithLocation) {
+            if (district) {
+                responsesWithLocation.forEach(function (responseWithLocation) {
 
-                if (district.toLowerCase() === responseWithLocation.location.toLowerCase()) {
-                    responses = responseWithLocation.consigneeResponses;
-                }
-            });
-            return responses;
+                    if (district.toLowerCase() === responseWithLocation.location.toLowerCase()) {
+                        responses = responseWithLocation.consigneeResponses;
+                    }
+                });
+            } else {
+                responsesWithLocation.forEach(function (responseWithLocation) {
+                    responses.push(responseWithLocation.consigneeResponses);
+                });
+            }
+            return _.flatten(responses);
         }
 
         return {
@@ -267,7 +273,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                                     return responses;
                                 });
                             })
-                        }
+                        };
                     });
                 });
             },
@@ -280,9 +286,9 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                                 return {
                                     ip: ip.id,
                                     response: response
-                                }
-                            })
-                        })
+                                };
+                            });
+                        });
                     });
                     return $q.all(allPromises);
                 });

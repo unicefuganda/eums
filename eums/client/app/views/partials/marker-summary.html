@@ -1,15 +1,15 @@
 <div id='marker-summary' class="table-responsive">
     <div class="panel-header">
-        <span ng-show="responses">Responses for {{ district }} district</span>
+        <span ng-show="data.responses">Responses for {{ data.district }} district</span>
         <button type="button"
                 class="close"
-                ng-show="responses"
+                ng-show="data.responses"
                 ng-click="hideMapMarkerDetails()">
-            <span ng-show="responses" aria-hidden="true">&times;</span>
+            <span ng-show="data.responses" aria-hidden="true">&times;</span>
         </button>
     </div>
     <ul class="list-group">
-        <li href="#" class="list-group-item" ng-repeat="response in responses">
+        <li href="#" class="list-group-item" ng-repeat="response in data.responses">
             <h6 class="list-group-item-heading response-item-font-weight">{{ response.item }}</h6>
 
             <p class="list-group-item-text">
@@ -19,7 +19,7 @@
                       class="label label-info"> {{ response.qualityOfProduct }} </span>
             </p>
         </li>
-        <button ng-show="responses" ng-click="showDetailedResponses()" id="response-page-btn" type="button"
+        <button ng-show="data.responses" ng-click="showDetailedResponses()" id="response-page-btn" type="button"
                 class="btn btn-primary">View All Responses
         </button>
     </ul>

@@ -23,13 +23,13 @@ describe('Home Page', function () {
         expect(homePage.numberNotDelivered.getText()).toEqual('3');
     });
 
-    it('should filter responses by ip', function () {
-        browser.sleep(5000);
-        homePage.enterImplementingPartnerToFilterBy('dffdfd');
-        expect(homePage.numberSent.getText()).toEqual('11');
-        expect(homePage.numberDelivered.getText()).toEqual('8');
-        expect(homePage.numberNotDelivered.getText()).toEqual('3');
-    });
+//    it('should filter responses by ip', function () {
+//        browser.sleep(5000);
+//        homePage.enterImplementingPartnerToFilterBy('dffdfd');
+//        expect(homePage.numberSent.getText()).toEqual('11');
+//        expect(homePage.numberDelivered.getText()).toEqual('8');
+//        expect(homePage.numberNotDelivered.getText()).toEqual('3');
+//    });
 
 
     it('should click on wakiso district', function () {

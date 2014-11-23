@@ -565,9 +565,10 @@ describe('UNICEF IP', function () {
 
 
         it('should flatten reponses and Ip map array', function (done) {
+            stubConsigneeResponses[0].location = 'Mbarara';
             distributionPlanService.flattenConsigneesResponsesToParentMap().then(function (responses) {
-                expect(responses[0].ip).toEqual(stubDistributionPlanNodes[2].id);
-                expect(responses[0].consigneeResponses[0]).toEqual(stubConsigneeResponses[0]);
+                expect(responses[0][0].ip).toEqual(stubDistributionPlanNodes[2].id);
+                expect(responses[0][0].response[0]).toEqual(stubConsigneeResponses[0]);
                 done();
             });
             httpBackend.flush();

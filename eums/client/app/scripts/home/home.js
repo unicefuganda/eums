@@ -10,11 +10,12 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan'])
         $scope.totalStats = {};
         $scope.allResponses = {};
         $scope.allResponsesMap = [];
-        $scope.data = {allResponsesLocationMap: []};
+        $scope.data = {allResponsesLocationMap: [], totalStats: {}, responses: [], district: ''};
         $scope.isFiltered = false;
 
+
         $scope.showDetailedResponses = function () {
-            $location.path('/response-details/' + $scope.district);
+            $location.path('/response-details/' + $scope.data.district);
         };
 
     }).controller('ResponseController', function ($scope, $routeParams, DistributionPlanService) {

@@ -13,10 +13,10 @@ describe('Module: Home', function () {
         }));
 
         it('should redirect to detailed responses page', function () {
-            scope.disctrict = 'Gulu';
+            scope.data = {disctrict: 'Gulu'};
             scope.showDetailedResponses(scope.allResponses);
             scope.$apply();
-            expect(location.path()).toEqual('/response-details/' + scope.district);
+            expect(location.path()).toEqual('/response-details/' + scope.data.district);
         });
     });
 
@@ -54,7 +54,7 @@ describe('Module: Home', function () {
             scope = $rootScope.$new();
             mockDistributionPlanService.orderAllResponsesByDate.and.returnValue(deferred.promise);
             $controller('ResponseController', {
-                $scope: scope, $routeParams: params, DistributionPlanService:mockDistributionPlanService});
+                $scope: scope, $routeParams: params, DistributionPlanService: mockDistributionPlanService});
         }));
 
         it('should have params object with district', function () {
