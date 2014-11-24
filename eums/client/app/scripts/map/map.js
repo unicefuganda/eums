@@ -108,7 +108,13 @@
             DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                 scope.reponsesFromDb = responsesWithLocation;
                 markersGroup.clearLayers && markersGroup.clearLayers();
-                scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+
+                if (scope.isFiltered) {
+                    scope.allResponsesMap = scope.data.allResponsesLocationMap
+                } else {
+                    scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                }
+
                 var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
                 angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                     layer.setStyle(getHeatMapStyle(allLocations, layerName));
@@ -142,8 +148,8 @@
                     layerName && this.clickLayer(layerName);
                     return this;
                 }.bind(this)).then(function () {
-                    addHeatMapLayer(map, scope);
-                }).then(function () {
+                    this.addHeatMap(scope);
+                }.bind(this)).then(function () {
                     return this;
                 }.bind(this));
             },
@@ -301,24 +307,37 @@
             restrict: 'A',
             scope: false,
             link: function (scope) {
-                scope.$watch('filter.programme', function (newValue) {
-                    var responsesToPlot = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
-                    if (newValue) {
-                        var filteredResponses = responsesToPlot.map(function (responseLocationMap) {
+                scope.$watchCollection('filter', function (newValue) {
+
+                    var responsesToPlot = [];
+                    if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
+                        scope.data.allResponsesLocationMap = scope.reponsesFromDb
+                    }
+
+                    if (newValue.programme) {
+                        scope.isFiltered = true;
+                        scope.programmeFilter = true;
+                        var filteredResponses = scope.reponsesFromDb.map(function (responseLocationMap) {
                             return responseLocationMap.consigneeResponses.filter(function (response) {
-                                return parseInt(response.programme.id) === parseInt(newValue);
+                                return parseInt(response.programme.id) === parseInt(newValue.programme);
                             });
                         });
                         scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
                     }
-                });
 
-                scope.$watch('filter.ip', function (newValue) {
-                    var responsesToPlot = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
-                    if (newValue) {
+                    if (newValue.ip) {
+                        scope.isFiltered = true;
+                        scope.ipFilter = true;
+                        if (scope.programmeFilter) {
+                            responsesToPlot = scope.data.allResponsesLocationMap
+                        }
+                        if (!scope.programmeFilter || !newValue.programme) {
+                            responsesToPlot = scope.reponsesFromDb
+                        }
+
                         var filteredResponses = responsesToPlot.map(function (responseLocationMap) {
                             return responseLocationMap.consigneeResponses.filter(function (response) {
-                                return parseInt(response.ip.id) === parseInt(newValue);
+                                return parseInt(response.ip.id) === parseInt(newValue.ip);
                             });
                         });
                         scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
@@ -331,7 +350,14 @@
                         window.map.addHeatMap(scope);
                     }
 
-                    scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, scope.data.district);
+                    if (scope.isFiltered) {
+                        scope.allResponsesMap = scope.data.allResponsesLocationMap
+                    } else {
+                        scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                    }
+
+                    if (scope.allResponsesMap)  scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, scope.data.district);
+
                     if (scope.data.district) {
                         var layerName = scope.data.district;
                         //TODO: refactor this, to use same function with district on click
