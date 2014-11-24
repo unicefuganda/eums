@@ -6,12 +6,14 @@ describe('Stock Report Service', function () {
         data: [
             {
                 'document_number': '1',
+                'document_id': 1,
                 'total_value_received': 20.0,
                 'total_value_dispensed': 10.0,
                 'balance': 10.0
             },
             {
                 'document_number': '2',
+                'document_id': 2,
                 'total_value_received': 30.0,
                 'total_value_dispensed': 15.0,
                 'balance': 15.0
@@ -50,12 +52,14 @@ describe('Stock Report Service', function () {
             data: [
                 {
                     'document_number': '1',
+                    'document_id': 1,
                     'total_value_received': '20.0',
                     'total_value_dispensed': '10.0',
                     'balance': '10.0'
                 },
                 {
                     'document_number': '2',
+                    'document_id': 1,
                     'total_value_received': '30.0',
                     'total_value_dispensed': '15.0',
                     'balance': '15.0'

@@ -21,6 +21,7 @@ class StockReport(APIView):
 
     def _get_report_details_for_line_item(self, line_item):
         sales_order_number = line_item.item.sales_order.order_number
+        sales_order_id = line_item.item.sales_order.id
         item_net_price = line_item.item.net_price
         total_value_received = item_net_price * line_item.targeted_quantity
         value_dispensed = self._compute_value_dispensed(item_net_price, line_item)
@@ -28,6 +29,7 @@ class StockReport(APIView):
 
         return {
             'document_number': sales_order_number,
+            'document_id': sales_order_id,
             'total_value_received': total_value_received,
             'total_value_dispensed': value_dispensed,
             'balance': balance}

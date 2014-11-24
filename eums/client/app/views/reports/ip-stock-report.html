@@ -30,6 +30,7 @@
                         </tr>
                         </thead>
                         <tr ng-repeat="reportItem in reportData">
+                            <td><a href="#/distribution-plan/new/{{ reportItem.document_id }}">{{ reportItem.document_number }}</a></td>
                             <td>{{ reportItem.document_number }}</td>
                             <td>{{ reportItem.total_value_received | number }}</td>
                             <td>{{ reportItem.total_value_dispensed | number }}</td>

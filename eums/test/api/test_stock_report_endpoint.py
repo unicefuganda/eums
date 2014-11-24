@@ -76,10 +76,12 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                         targeted_quantity=2)
 
         expected_data = [{'document_number': u'' + sales_order_one.order_number,
+                          'document_id': sales_order_one.id,
                           'total_value_received': Decimal('80.0000'),
                           'total_value_dispensed': Decimal('40.0000'),
                           'balance': Decimal('40.0000')},
                          {'document_number': u'' + sales_order_two.order_number,
+                          'document_id': sales_order_two.id,
                           'total_value_received': Decimal('20.0000'),
                           'total_value_dispensed': Decimal('20.0000'),
                           'balance': Decimal('0.0000')}]
