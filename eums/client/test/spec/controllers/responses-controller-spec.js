@@ -15,7 +15,7 @@ describe('ResponsesController', function () {
                 'salesorder_set': ['1']
             }
         ]
-    }
+    };
 
     var stubSalesOrders = [
         {
@@ -202,7 +202,7 @@ describe('ResponsesController', function () {
         scope.selectSalesOrderItem();
         scope.$apply();
 
-        expect(scope.noResponses).toEqual("No responses found");
+        expect(scope.noResponses).toEqual('No responses found');
     });
 
     it('should fetch responses for a plan that matches for a sales order line item and consignee', function () {
@@ -224,6 +224,6 @@ describe('ResponsesController', function () {
         scope.selectSalesOrderItemConsignee();
         scope.$apply();
 
-        expect(scope.noResponses).toEqual("No responses found");
+        expect(scope.noResponses).toEqual('No responses found');
     });
 });
