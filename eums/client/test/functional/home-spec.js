@@ -72,11 +72,10 @@ describe('Home Page', function () {
         browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
         browser.sleep(5000);
+
         expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
         responsePage.numberOfResponses.then(function (rows) {
             expect(rows.length).toEqual(2);
-            expect(rows[0].getText()).toEqual('Safety box f.used syrgs/ndls 5lt/BOX-25');
-            expect(rows[1].getText()).toEqual('IEHK2006,kit,suppl.1-drugs');
         })
     });
 
