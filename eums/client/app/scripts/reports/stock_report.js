@@ -1,16 +1,31 @@
 'use strict';
 
-angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee'])
-    .controller('StockReportController', function (StockReportService, $scope) {
+angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee'])
+    .controller('StockReportController', function (StockReportService, $scope, ngToast) {
         $scope.selectedIPId = undefined;
         $scope.reportData = [];
         $scope.totals = {};
 
+        function createToast(message, klass) {
+            ngToast.create({
+                content: message,
+                class: klass,
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        }
+
         $scope.$watch('selectedIPId', function (id) {
             if (id) {
                 StockReportService.getStockReport(id).then(function (stockReport) {
-                    $scope.reportData = stockReport.data;
-                    $scope.totals = StockReportService.computeStockTotals($scope.reportData);
+                    if (stockReport.data.length > 0) {
+                        $scope.reportData = stockReport.data;
+                        $scope.totals = StockReportService.computeStockTotals($scope.reportData);
+                    }
+                    else {
+                        $scope.reportData = [];
+                        createToast('There is no data for this IP', 'danger');
+                    }
                 });
             }
         });

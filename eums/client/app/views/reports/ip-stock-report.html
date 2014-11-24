@@ -1,6 +1,7 @@
 <div class="container-fluid">
     <div ng-controller="StockReportController" class="content">
         <h4 class="page-header">IP Stock Report</h4>
+        <ng-toast></ng-toast>
 
         <div class="panel-body">
             <div class="form-horizontal">
@@ -18,7 +19,7 @@
             <br/><br/><br/>
 
             <div class="table-wrapper">
-                <div class="panel-body" ng-show="selectedIPId">
+                <div class="panel-body" ng-show="reportData">
                     <table class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
                         <tr>

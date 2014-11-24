@@ -1,6 +1,6 @@
 describe('StockReportController', function () {
     var scope, mockStockReportService, mockConsigneeService, stubStockReport, deferredStubReport,
-        stubStockTotals, deferredStubIPs;
+        toastPromise, mockToastProvider, stubStockTotals, deferredStubIPs;
 
     stubStockReport = {
         data: [
@@ -22,13 +22,17 @@ describe('StockReportController', function () {
 
     beforeEach(function () {
         module('StockReport');
+
         mockStockReportService = jasmine.createSpyObj('mockStockReportService', ['getStockReport', 'computeStockTotals']);
+        mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $q) {
             deferredStubIPs = $q.defer();
             deferredStubReport = $q.defer();
+            toastPromise = $q.defer();
             mockStockReportService.getStockReport.and.returnValue(deferredStubReport.promise);
             mockStockReportService.computeStockTotals.and.returnValue(stubStockTotals);
+            mockToastProvider.create.and.returnValue(toastPromise.promise);
 
             scope = $rootScope.$new();
             scope.selectedIpId = undefined;
@@ -37,7 +41,8 @@ describe('StockReportController', function () {
                 {
                     $scope: scope,
                     StockReportService: mockStockReportService,
-                    ConsigneeService: mockConsigneeService
+                    ConsigneeService: mockConsigneeService,
+                    ngToast: mockToastProvider
                 });
         });
     });
@@ -56,5 +61,21 @@ describe('StockReportController', function () {
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith(1);
         expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data);
+    });
+
+    it('should show an error toast if there is no data for that IP', function () {
+        deferredStubReport.resolve({data: []});
+        scope.selectedIPId = 1;
+        scope.$apply();
+
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith(1);
+        expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
+        expect(mockToastProvider.create).toHaveBeenCalledWith({
+            content: 'There is no data for this IP',
+            class: 'danger',
+            maxNumber: 1,
+            dismissOnTimeout: true
+        });
+
     });
 });
