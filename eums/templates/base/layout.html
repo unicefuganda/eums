@@ -25,13 +25,13 @@
     <div class="container-fluid">
         <div class="content">
             {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags | bootstrap_message }}">
-                <ul>
-                    {{ message }}
-                </ul>
-            </div>
-            {% endfor %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags | bootstrap_message }}">
+                        <ul>
+                            {{ message }}
+                        </ul>
+                    </div>
+                {% endfor %}
             {% endif %}
 
             {% block content %}
@@ -39,8 +39,6 @@
         </div>
     </div>
 </div>
-</body>
-
 
 <script src="{{ STATIC_URL }}app/media/lodash.js"></script>
 <script src="{{ STATIC_URL }}bower_components/jquery/dist/jquery.min.js"></script>

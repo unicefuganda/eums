@@ -16,25 +16,31 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
     <div class="container">
         <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
-            <li id="home-nav">
+            <li id="home-nav" {% if request.path == '/' %} class="active" {% endif %} ng-class="{ active: isActive('/')}">
                 {% if perms.auth.can_view_dashboard %}
                     <a href="/">Dashboard</a>
                 {% endif %}
-                {% block nav %}
-                {% endblock %}
             </li>
+            {% block nav %}
+            {% endblock %}
         </ul>
 
         {% if perms.auth.can_view_users %}
-            <ul class="nav navbar-nav navbar-right">
-                <li><a href="/users">Users</a></li>
-                <li><a href="">Settings</a></li>
+            <ul class="nav navbar-nav navbar-right"  >
+                <li class="dropdown {% if request.path == '/users/' %} active {% endif %}" ng-class="{ active: isActive('/users,/contacts')}">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/users">Users</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/#/contacts">Contacts</a></li>
+                    </ul>
+                </li>
                 <li><a href="">Help</a></li>
                 <li>
                 <a href="">
-                <span class="glyphicon glyphicon-globe"></span>
-                <span class="pad-left-5">Uganda</span>
-                <span class="caret"></span>
+                    <span class="glyphicon glyphicon-globe"></span>
+                    <span class="pad-left-5">Uganda</span>
+                    <span class="caret"></span>
                 </a>
                 </li>
             </ul>
