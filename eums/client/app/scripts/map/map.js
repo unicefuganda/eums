@@ -106,12 +106,9 @@
         function addHeatMapLayer(map, scope) {
             var allMarkers = [];
             DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
-                if (scope.isFiltered) {
-                    markersGroup.clearLayers();
-                    scope.allResponsesMap = scope.data.allResponsesLocationMap;
-                } else {
-                    scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : responsesWithLocation;
-                }
+                scope.reponsesFromDb = responsesWithLocation;
+                markersGroup.clearLayers && markersGroup.clearLayers();
+                scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
                 var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
                 angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                     layer.setStyle(getHeatMapStyle(allLocations, layerName));
@@ -206,17 +203,6 @@
             getHighlightedLayer: function () {
                 return LayerMap.getSelectedLayer();
             },
-            mapIPsToRandomLayerCoordinates: function (layerName) {
-                var self = this;
-                return IPService.groupIPsByDistrict(layerName).then(function (ips) {
-                    return ips.map(function (ip) {
-                        return {
-                            ip: ip,
-                            coordinates: self.getRandomCoordinates(layerName)
-                        }
-                    });
-                });
-            },
             getLayerCenter: function (layerName) {
                 return LayerMap.getLayerCenter(layerName.toLowerCase());
             },
@@ -305,49 +291,56 @@
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
     }).directive('filters', function (DistributionPlanService) {
-        function getAllResponses(responsesForIp) {
-            var allResponses = responsesForIp.map(function (responseForIp) {
-                return responseForIp.response;
+        function removeEmptyArray(filteredResponses) {
+            return filteredResponses.filter(function (response) {
+                return response.length > 0;
             });
-            return _.flatten(allResponses);
         }
 
         return {
             restrict: 'A',
             scope: false,
             link: function (scope) {
-                scope.$watchCollection('filter', function (newValue) {
-                    scope.isFiltered = true;
-                    if (newValue.ip) {
-                        DistributionPlanService.flattenConsigneesResponsesToParentMap().then(function (responses) {
-                            var nonEmptyResponses = _.flatten(responses);
-                            var responsesForIp = nonEmptyResponses.filter(function (responseMap) {
-                                return parseInt(newValue.ip) === parseInt(responseMap.ip);
+                scope.$watch('filter.programme', function (newValue) {
+                    var responsesToPlot = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                    if (newValue) {
+                        var filteredResponses = responsesToPlot.map(function (responseLocationMap) {
+                            return responseLocationMap.consigneeResponses.filter(function (response) {
+                                return parseInt(response.programme.id) === parseInt(newValue);
                             });
-                            scope.data.allResponsesLocationMap = (DistributionPlanService.groupResponsesByLocation(getAllResponses(responsesForIp)));
                         });
-                    }
-
-                    if (newValue.programme) {
-
+                        scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
                     }
                 });
+
+                scope.$watch('filter.ip', function (newValue) {
+                    var responsesToPlot = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                    if (newValue) {
+                        var filteredResponses = responsesToPlot.map(function (responseLocationMap) {
+                            return responseLocationMap.consigneeResponses.filter(function (response) {
+                                return parseInt(response.ip.id) === parseInt(newValue);
+                            });
+                        });
+                        scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
+                    }
+                });
+
 
                 scope.$watch('data.allResponsesLocationMap', function () {
                     if (window.map.render) {
                         window.map.addHeatMap(scope);
                     }
-                    scope.data.totalStats = DistributionPlanService.aggregateStats(scope.data.allResponsesLocationMap, scope.data.district);
+
+                    scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, scope.data.district);
                     if (scope.data.district) {
                         var layerName = scope.data.district;
+                        //TODO: refactor this, to use same function with district on click
                         (function showResponsesForDistrict() {
-                            var allResponses = DistributionPlanService.orderResponsesByDate(scope.data.allResponsesLocationMap, scope.data.district);
+                            var allResponses = DistributionPlanService.orderResponsesByDate(scope.allResponsesMap, scope.data.district);
                             scope.data.responses = allResponses.slice(0, 5);
                             scope.data.district = layerName;
                         })();
-
                     }
-
                 });
             }
         }

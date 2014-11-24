@@ -22,6 +22,7 @@ class ResponseSerializer(object):
             node_responses = node.responses()
             programme = node.distribution_plan.programme
             formatted_run_responses = {'node': node.id,
+                                       'ip': node.get_ip(),
                                        'programme': {'id': programme.id, 'name': programme.name},
                                        'consignee': {'id': node.consignee.id, 'name': node.consignee.name}}
             for item_run, responses in node_responses.iteritems():

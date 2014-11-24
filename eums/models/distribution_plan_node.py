@@ -34,3 +34,9 @@ class DistributionPlanNode(models.Model):
         all_line_items = self.distributionplanlineitem_set.all()
         completed_line_item_runs = filter(None, map(lambda line_item: line_item.completed_run(), all_line_items))
         return dict(map(lambda run: (run, run.answers()), completed_line_item_runs))
+
+    def get_ip(self):
+        if not self.parent:
+            return {'id': self.id, 'location': self.location}
+        else:
+            return self.parent.get_ip()

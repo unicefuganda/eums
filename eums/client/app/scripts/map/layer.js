@@ -45,15 +45,15 @@ angular.module('map.layers', ['DistributionPlan'])
             }
         };
     }).factory('Layer', function (DistributionPlanService) {
-        function changeGlobalStats(layerName, scope) {
+        function changeGlobalStats(layerName, responses, scope) {
             scope.$apply(function () {
-                scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap, layerName);
+                scope.data.totalStats = DistributionPlanService.aggregateStats(responses, layerName);
             });
 
         }
 
-        function showResponsesForDistrict(layerName, scope) {
-            var allResponses = DistributionPlanService.orderResponsesByDate(scope.allResponsesMap, layerName);
+        function showResponsesForDistrict(layerName, responses,scope) {
+            var allResponses = DistributionPlanService.orderResponsesByDate(responses, layerName);
             scope.$apply(function () {
                 scope.data.responses = allResponses.slice(0, 5);
                 scope.data.district = layerName;
@@ -71,8 +71,9 @@ angular.module('map.layers', ['DistributionPlan'])
             }
 
             this.click = function () {
-                changeGlobalStats(layerName, scope);
-                showResponsesForDistrict(layerName, scope);
+                var responses = scope.allResponsesMap;
+                changeGlobalStats(layerName, responses, scope);
+                showResponsesForDistrict(layerName, responses, scope);
                 map.fitBounds(layer.getBounds());
             };
             this.setStyle = function (style) {
