@@ -7,6 +7,28 @@
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
                     <label for="select-sales-order" class="col-lg-4 control-label description-label">
+                        Outcome:
+                    </label>
+
+                    <div class="col-lg-8">
+                        <select required="required"
+                                class="form-control"
+                                data-placeholder="Choose PCR"
+                                chosen
+                                ng-model="selectedProgramme"
+                                ng-change="selectProgramme()"
+                                ng-options="programmes.name for programmes in programmes track by programmes.id">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group col-lg-4">
+                    <label for="select-sales-order" class="col-lg-4 control-label description-label">
                         Sales Order:
                     </label>
 
@@ -70,6 +92,8 @@
         </div>
 
         <hr/>
+
+        <div class="alert alert-info col-lg-3" role="alert" ng-show="noResponses"><strong>{{ noResponses }}</strong></div>
 
         <div class="table-wrapper" ng-show="responses.length > 0">
             <tree-grid tree-data="responses"

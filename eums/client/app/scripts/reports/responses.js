@@ -1,16 +1,18 @@
 'use strict';
 
-angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'treeGrid', 'localytics.directives'])
-    .controller('ResponsesController',function ($scope, ResponsesService, SalesOrderService, SalesOrderItemService) {
+angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrderItem', 'treeGrid', 'localytics.directives'])
+    .controller('ResponsesController',function ($scope, ResponsesService, ProgrammeService, SalesOrderService, SalesOrderItemService) {
         $scope.responses = [];
+        $scope.noResponses = "";
+        $scope.programmes = [];
         $scope.salesOrders = [];
         $scope.salesOrderItems = [];
         $scope.salesOrderItemConsignees = [];
 
         $scope.initialize = function () {
-            SalesOrderService.getSalesOrders().then(function (salesOrders) {
-                var sortedSalesOrder = salesOrders.sort();
-                $scope.salesOrders = sortedSalesOrder;
+            ProgrammeService.fetchProgrammes().then(function (result) {
+                var programmes = result.data;
+                $scope.programmes = programmes;
             });
         };
 
@@ -25,8 +27,25 @@ angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'tre
 
         $scope.expanding_property = 'Consignee';
 
+        $scope.selectProgramme = function () {
+            $scope.responses = [];
+            $scope.noResponses = "";
+            $scope.salesOrders = [];
+            $scope.salesOrderItems = [];
+            $scope.salesOrderItemConsignees = [];
+
+            if ($scope.selectedProgramme) {
+                $scope.selectedProgramme.salesorder_set.forEach(function (salesOrderId) {
+                    SalesOrderService.getSalesOrder(salesOrderId).then(function (salesOrder) {
+                        $scope.salesOrders.push(salesOrder);
+                    });
+                });
+            }
+        };
+
         $scope.selectSalesOrder = function () {
             $scope.responses = [];
+            $scope.noResponses = "";
             $scope.salesOrderItems = [];
             $scope.salesOrderItemConsignees = [];
 
@@ -42,19 +61,6 @@ angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'tre
                             information: result
                         };
                         $scope.salesOrderItems.push(formattedSalesOrderItem);
-                    });
-                });
-            }
-        };
-
-        $scope.selectSalesOrderItem = function () {
-            $scope.responses = [];
-            $scope.salesOrderItemConsignees = [];
-
-            if ($scope.selectedSalesOrderItem) {
-                SalesOrderItemService.getSalesOrderItem($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {
-                    SalesOrderItemService.getTopLevelDistributionPlanNodes(salesOrderItem).then(function (topLevelNodes) {
-                        $scope.salesOrderItemConsignees = topLevelNodes;
                     });
                 });
             }
@@ -80,12 +86,46 @@ angular.module('Responses', ['eums.config', 'SalesOrder', 'SalesOrderItem', 'tre
             return formattedResponses;
         };
 
+        $scope.selectSalesOrderItem = function () {
+            $scope.responses = [];
+            $scope.noResponses = "";
+            $scope.salesOrderItemConsignees = [];
+
+            if ($scope.selectedSalesOrderItem) {
+                SalesOrderItemService.getSalesOrderItem($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {
+                    SalesOrderItemService.getTopLevelDistributionPlanNodes(salesOrderItem).then(function (topLevelNodes) {
+                        $scope.salesOrderItemConsignees = topLevelNodes
+
+                        if(topLevelNodes.length > 0){
+                            topLevelNodes.forEach(function (consignee) {
+                                ResponsesService.fetchResponses(consignee.consignee, $scope.selectedSalesOrderItem.information.id).then(function (responses) {
+                                    if(!$.isEmptyObject(responses.answers)){
+                                        $scope.responses.push(formatResponses([responses])[0]);
+                                    }
+                                    $scope.noResponses = $scope.responses ? "" : "No responses found";
+                                });
+                            });
+                        }
+                        else{
+                            $scope.noResponses = "No responses found";
+                        }
+                    });
+                });
+            }
+        };
+
         $scope.selectSalesOrderItemConsignee = function () {
             $scope.responses = [];
+            $scope.noResponses = "";
 
             if ($scope.selectedSalesOrderItemConsignee) {
                 ResponsesService.fetchResponses($scope.selectedSalesOrderItemConsignee.consignee, $scope.selectedSalesOrderItem.information.id).then(function (responses) {
-                    $scope.responses = formatResponses([responses]);
+                    if(!$.isEmptyObject(responses.answers)){
+                        $scope.responses = formatResponses([responses]);
+                    }
+                    else{
+                        $scope.noResponses = "No responses found";
+                    }
                 });
             }
         };

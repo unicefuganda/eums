@@ -1,8 +1,21 @@
 describe('ResponsesController', function () {
-    var mockResponsesService, mockSalesOrderService, mockSalesOrderItemService;
+    var mockProgrammeService, mockResponsesService, mockSalesOrderService, mockSalesOrderItemService;
 
-    var deferredResponsesPromise, deferredSalesOrderPromise, deferredSalesOrderItemPromise, deferredSalesOrderItemConsigneePromise;
+    var deferredResponsesPromise, deferredProgrammePromise, deferredSalesOrderPromise,
+        deferredSalesOrderItemPromise, deferredSalesOrderItemConsigneePromise;
+
     var scope, q;
+
+    var stubProgrammes = { data: [
+            {
+                'programme': {
+                    id: 3,
+                    name: 'Alive'
+                },
+                'salesorder_set': ['1']
+            }
+        ]
+    }
 
     var stubSalesOrders = [
         {
@@ -109,17 +122,20 @@ describe('ResponsesController', function () {
         module('Responses');
 
         mockResponsesService = jasmine.createSpyObj('mockResponsesService', ['fetchResponses']);
-        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrders']);
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanNodes']);
 
         inject(function ($controller, $q, $rootScope) {
             q = $q;
             deferredResponsesPromise = $q.defer();
+            deferredProgrammePromise = $q.defer();
             deferredSalesOrderPromise = $q.defer();
             deferredSalesOrderItemPromise = $q.defer();
             deferredSalesOrderItemConsigneePromise = $q.defer();
             mockResponsesService.fetchResponses.and.returnValue(deferredResponsesPromise.promise);
-            mockSalesOrderService.getSalesOrders.and.returnValue(deferredSalesOrderPromise.promise);
+            mockProgrammeService.fetchProgrammes.and.returnValue(deferredProgrammePromise.promise);
+            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferredSalesOrderItemPromise.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredSalesOrderItemConsigneePromise.promise);
 
@@ -128,18 +144,29 @@ describe('ResponsesController', function () {
             $controller('ResponsesController', {
                 $scope: scope,
                 ResponsesService: mockResponsesService,
+                ProgrammeService: mockProgrammeService,
                 SalesOrderService: mockSalesOrderService,
                 SalesOrderItemService: mockSalesOrderItemService
             });
         });
     });
 
-    it('should fetch sales order when controller is initialized', function () {
-        deferredSalesOrderPromise.resolve(stubSalesOrders);
+    it('should fetch programmes when controller is initialized', function () {
+        deferredProgrammePromise.resolve(stubProgrammes);
         scope.initialize();
         scope.$apply();
 
-        expect(scope.salesOrders).toEqual(stubSalesOrders);
+        expect(scope.programmes).toEqual(stubProgrammes.data);
+    });
+
+    it('should fetch sales order when programme is selected', function () {
+        deferredSalesOrderPromise.resolve(stubSalesOrders[0]);
+        scope.selectedProgramme = stubProgrammes.data[0];
+
+        scope.selectProgramme();
+        scope.$apply();
+
+        expect(scope.salesOrders).toEqual([stubSalesOrders[0]]);
     });
 
     it('should fetch sales order item when sales order is selected', function () {
@@ -152,9 +179,10 @@ describe('ResponsesController', function () {
         expect(scope.salesOrderItems).toEqual(formattedSalesOrderItem);
     });
 
-    it('should fetch sales order item consignees when sales order item is selected', function () {
+    it('should fetch sales order item consignees and responses when sales order item is selected', function () {
         deferredSalesOrderItemPromise.resolve(stubSalesOrderItem);
         deferredSalesOrderItemConsigneePromise.resolve(stubConsignees);
+        deferredResponsesPromise.resolve(stubResponses);
 
         scope.selectedSalesOrderItem = formattedSalesOrderItem[0];
 
@@ -162,6 +190,19 @@ describe('ResponsesController', function () {
         scope.$apply();
 
         expect(scope.salesOrderItemConsignees).toEqual(stubConsignees);
+        expect(scope.responses).toEqual(formattedStubResponses);
+    });
+
+    it('should set no responses if no distribution plan for a sales order line item', function () {
+        deferredSalesOrderItemPromise.resolve(stubSalesOrderItem);
+        deferredSalesOrderItemConsigneePromise.resolve([]);
+
+        scope.selectedSalesOrderItem = formattedSalesOrderItem[0];
+
+        scope.selectSalesOrderItem();
+        scope.$apply();
+
+        expect(scope.noResponses).toEqual("No responses found");
     });
 
     it('should fetch responses for a plan that matches for a sales order line item and consignee', function () {
@@ -173,5 +214,16 @@ describe('ResponsesController', function () {
         scope.$apply();
 
         expect(scope.responses).toEqual(formattedStubResponses);
+    });
+
+     it('should set no responses if a plan has no reponses for a sales order line item and consignee', function () {
+        deferredResponsesPromise.resolve({answers: {}});
+        scope.selectedSalesOrderItem = formattedSalesOrderItem[0];
+        scope.selectedSalesOrderItemConsignee = stubConsignees[0];
+
+        scope.selectSalesOrderItemConsignee();
+        scope.$apply();
+
+        expect(scope.noResponses).toEqual("No responses found");
     });
 });
