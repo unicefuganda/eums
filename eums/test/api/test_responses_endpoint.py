@@ -46,7 +46,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
 
         expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name},
-                         u'ip': {u'id': 26, u'location': u'Kampala'},
+                         u'ip': node.get_ip(),
                          u'%s' % numeric_question.label: u'%s' % numeric_answer_one.format(),
                          u'%s' % multiple_choice_question.label: u'%s' % multiple_answer_one.format(),
                          u'programme': {u'id': programme.id, u'name': programme.name}}
