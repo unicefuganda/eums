@@ -33,6 +33,7 @@ describe('Home Page', function () {
 
 
     it('should click on wakiso district', function () {
+        browser.sleep(5000);
         homePage.clickMapLayer('wakiso');
         browser.sleep(5000);
         expect(homePage.mapLocation.getText()).toEqual('UNICEF Delivery Status for WAKISO');
@@ -43,6 +44,7 @@ describe('Home Page', function () {
     });
 
     it('when I click on district number of responses should be 10 or less', function () {
+        browser.sleep(5000);
         homePage.clickMapLayer('wakiso');
         browser.sleep(5000);
         homePage.numberOfResponses.then(function (rows) {
@@ -64,7 +66,8 @@ describe('Home Page', function () {
         expect(homePage.responsesPageLink.getText()).toEqual('View All Responses');
     });
 
-    it('should navigate to detail reponses page when page link is clicked', function () {
+    it('should navigate to detail responses page when page link is clicked', function () {
+         browser.sleep(5000);
         homePage.clickMapLayer('wakiso');
         browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
@@ -72,11 +75,13 @@ describe('Home Page', function () {
         expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
         responsePage.numberOfResponses.then(function (rows) {
             expect(rows.length).toEqual(2);
-            expect(rows[1].getText()).toEqual('Safety box f.used syrgs/ndls 5lt/BOX-25');
+            expect(rows[0].getText()).toEqual('Safety box f.used syrgs/ndls 5lt/BOX-25');
+            expect(rows[1].getText()).toEqual('IEHK2006,kit,suppl.1-drugs');
         })
     });
 
     it('should search for "no" product received in Wakiso district', function () {
+        browser.sleep(5000);
         homePage.clickMapLayer('wakiso');
         browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
@@ -89,6 +94,7 @@ describe('Home Page', function () {
     });
 
     it('should search for "no" product received in Wakiso district', function () {
+        browser.sleep(5000);
         homePage.clickMapLayer('wakiso');
         browser.sleep(5000);
         responsePage = homePage.goToResponseDetailsPage();
