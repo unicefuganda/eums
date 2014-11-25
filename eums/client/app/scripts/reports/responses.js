@@ -14,6 +14,11 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
                 var programmes = result.data;
                 $scope.programmes = programmes;
             });
+
+            SalesOrderService.getSalesOrders().then(function (salesOrders) {
+                var sortedSalesOrder = salesOrders.sort();
+                $scope.salesOrders = sortedSalesOrder;
+            });
         };
 
         $scope.response_cols = [
@@ -33,6 +38,9 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             $scope.salesOrders = [];
             $scope.salesOrderItems = [];
             $scope.salesOrderItemConsignees = [];
+            $scope.selectedSalesOrder = {};
+            $scope.selectedSalesOrderItem = {};
+            $scope.selectedSalesOrderItemConsignee = {};
 
             if ($scope.selectedProgramme) {
                 $scope.selectedProgramme.salesorder_set.forEach(function (salesOrderId) {
@@ -48,6 +56,8 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             $scope.noResponses = '';
             $scope.salesOrderItems = [];
             $scope.salesOrderItemConsignees = [];
+            $scope.selectedSalesOrderItem = {};
+            $scope.selectedSalesOrderItemConsignee = {};
 
             if ($scope.selectedSalesOrder) {
                 $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
@@ -90,6 +100,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             $scope.responses = [];
             $scope.noResponses = '';
             $scope.salesOrderItemConsignees = [];
+            $scope.selectedSalesOrderItemConsignee = {};
 
             if ($scope.selectedSalesOrderItem) {
                 SalesOrderItemService.getSalesOrderItem($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {

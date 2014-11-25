@@ -123,7 +123,7 @@ describe('ResponsesController', function () {
 
         mockResponsesService = jasmine.createSpyObj('mockResponsesService', ['fetchResponses']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
-        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrders', 'getSalesOrder']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanNodes']);
 
         inject(function ($controller, $q, $rootScope) {
@@ -135,6 +135,7 @@ describe('ResponsesController', function () {
             deferredSalesOrderItemConsigneePromise = $q.defer();
             mockResponsesService.fetchResponses.and.returnValue(deferredResponsesPromise.promise);
             mockProgrammeService.fetchProgrammes.and.returnValue(deferredProgrammePromise.promise);
+            mockSalesOrderService.getSalesOrders.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferredSalesOrderItemPromise.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredSalesOrderItemConsigneePromise.promise);
@@ -157,6 +158,14 @@ describe('ResponsesController', function () {
         scope.$apply();
 
         expect(scope.programmes).toEqual(stubProgrammes.data);
+    });
+
+    it('should fetch all sales orders when controller is initialized', function () {
+        deferredSalesOrderPromise.resolve(stubSalesOrders);
+        scope.initialize();
+        scope.$apply();
+
+        expect(scope.salesOrders).toEqual(stubSalesOrders);
     });
 
     it('should fetch sales order when programme is selected', function () {
