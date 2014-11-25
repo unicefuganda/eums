@@ -244,7 +244,7 @@
                         scope.data.totalStats = aggregates;
                     });
                     scope.hideMapMarkerDetails = function () {
-                        scope.responses = null;
+                        scope.data.responses = null;
                     };
                 });
             }
@@ -308,7 +308,6 @@
             scope: false,
             link: function (scope) {
                 scope.$watchCollection('filter', function (newValue) {
-
                     var responsesToPlot = [];
                     if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
                         scope.data.allResponsesLocationMap = scope.reponsesFromDb
@@ -342,6 +341,8 @@
                         });
                         scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
                     }
+
+                    scope.data.topLevelResponses = scope.data.allResponsesLocationMap;
                 });
 
 
@@ -424,52 +425,78 @@
                     });
                 }
             }
-        }).directive('selectYear', function (FilterService, MapService, MapFilterService) {
+        }).directive('deliveryStatus', function (DistributionPlanService) {
+            function removeEmptyArray(filteredResponses) {
+                return filteredResponses.filter(function (response) {
+                    return response.length > 0;
+                });
+            }
+
             return {
                 restrict: 'A',
                 scope: false,
-                link: function (scope, elem) {
-                    FilterService.getDateAnswers().then(function (response) {
-                        var dateAnswers = response.data.map(function (answer) {
-                            var dateString = answer.value;
-                            return dateString && dateString.substring(dateString.length - 4);
-                        });
+                link: function (scope) {
+                    scope.$watchCollection('deliveryStatus', function (newValue) {
+                        var responsesToPlot = scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.allResponsesMap;
 
-                        return _.unique(dateAnswers);
+                        var receivedResponses = [];
+                        var notReceivedResponses = [];
+                        var receivedResponsesWithIssues = [];
 
-                    }).then(function (uniqueYear) {
-                        var yearsData = uniqueYear.map(function (year) {
-                            return { id: year, text: year}
-                        });
-                        var defaultYear = [
-                            {id: '', text: 'Select year'}
-                        ];
-                        $(elem).select2({
-                            data: defaultYear.concat(yearsData)
-                        });
-                    });
-                    scope.$watch('filter.year', function (selectedYear) {
+                        DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
+                            scope.reponsesFromDb = responsesWithLocation;
 
-                        var wasAnsweredInYear = function (response) {
-                            var dateOfReceipt = response[0].dateOfReceipt;
-                            return dateOfReceipt && dateOfReceipt.substring(dateOfReceipt.length - 4) == selectedYear;
-                        };
-
-                        var showMarkers = scope.shownMarkers.length === 0 ? MapFilterService.getAllMarkerMaps() : scope.shownMarkers;
-
-                        MapService.clearAllMarkers();
-                        if (!selectedYear) {
-                            MapService.addMarkers(showMarkers);
-                            return;
-                        }
-                        scope.shownMarkers = [];
-                        showMarkers.forEach(function (markerMap) {
-                            if (wasAnsweredInYear(markerMap.consigneeResponse)) {
-                                MapService.addMarker(markerMap.marker);
-                                scope.shownMarkers.push(markerMap);
+                            if (newValue.received && newValue.notDelivered && newValue.receivedWithIssues) {
+                                if (scope.isFiltered) {
+                                    scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
+                                } else {
+                                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
+                                }
+                                return;
                             }
+
+                            if (!newValue.received && !newValue.notDelivered && !newValue.receivedWithIssues) {
+                                if (scope.isFiltered) {
+                                    scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
+                                } else {
+                                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
+                                }
+                                return;
+                            }
+
+                            if (newValue.received) {
+                                receivedResponses = responsesToPlot.map(function (responseLocationMap) {
+                                    return responseLocationMap.consigneeResponses.filter(function (response) {
+                                        return response.productReceived.toLowerCase() === 'yes' && response.satisfiedWithProduct.toLowerCase() === 'yes';
+                                    });
+                                });
+                            }
+
+                            if (newValue.notDelivered) {
+                                notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
+                                    return responseLocationMap.consigneeResponses.filter(function (response) {
+                                        return response.productReceived.toLowerCase() === 'no';
+                                    });
+                                });
+                            }
+
+                            if (newValue.receivedWithIssues) {
+                                receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
+                                    return responseLocationMap.consigneeResponses.filter(function (response) {
+                                        return response.productReceived.toLowerCase() === 'yes' && response.satisfiedWithProduct.toLowerCase() !== 'yes';
+                                    });
+                                });
+                            }
+
+
+                            var deliveryStatusResponses = receivedResponses.concat(notReceivedResponses, receivedResponsesWithIssues);
+
+                            scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(deliveryStatusResponses)));
+
                         });
-                    }, true);
+
+
+                    });
                 }
             }
         }).directive('dateRangeFilter', function (MapService, MapFilterService) {
@@ -477,29 +504,29 @@
                 restrict: 'A',
                 scope: false,
                 link: function (scope) {
-                    scope.$watchCollection('[filter.from, filter.to]', function (newDates) {
-                        var fromDate = moment(newDates[0]),
-                            toDate = moment(newDates[1]),
-                            showMarkers = scope.shownMarkers.length === 0 ? MapFilterService.getAllMarkerMaps() : scope.shownMarkers;
-
-                        function isWithinDateRange(consigneeResponse) {
-                            var response = consigneeResponse[0],
-                                dateOfReceipt = response && response.dateOfReceipt,
-                                dateRange = moment().range(fromDate, toDate);
-                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt));
-                        }
-
-                        if (newDates[0] && newDates[1]) {
-                            MapService.clearAllMarkers();
-                            scope.shownMarkers = [];
-                            showMarkers.forEach(function (markerMap) {
-                                if (isWithinDateRange(markerMap.consigneeResponse)) {
-                                    MapService.addMarker(markerMap.marker);
-                                    scope.shownMarkers.push(markerMap);
-                                }
-                            });
-                        }
-                    });
+//                    scope.$watchCollection('[filter.from, filter.to]', function (newDates) {
+//                        var fromDate = moment(newDates[0]),
+//                            toDate = moment(newDates[1]),
+//                            showMarkers = scope.shownMarkers.length === 0 ? MapFilterService.getAllMarkerMaps() : scope.shownMarkers;
+//
+//                        function isWithinDateRange(consigneeResponse) {
+//                            var response = consigneeResponse[0],
+//                                dateOfReceipt = response && response.dateOfReceipt,
+//                                dateRange = moment().range(fromDate, toDate);
+//                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt));
+//                        }
+//
+//                        if (newDates[0] && newDates[1]) {
+//                            MapService.clearAllMarkers();
+//                            scope.shownMarkers = [];
+//                            showMarkers.forEach(function (markerMap) {
+//                                if (isWithinDateRange(markerMap.consigneeResponse)) {
+//                                    MapService.addMarker(markerMap.marker);
+//                                    scope.shownMarkers.push(markerMap);
+//                                }
+//                            });
+//                        }
+//                    });
                 }
             }
 
