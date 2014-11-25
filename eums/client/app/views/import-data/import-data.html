@@ -15,9 +15,12 @@
                         ng-disabled="uploader.queue[0].isReady || uploader.queue[0].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
-                <div class="progress col-lg-2">
-                    <div ng-show="uploader.isHTML5" class="progress-bar" role="progressbar"
-                         ng-style="{ 'width': uploader.queue[0].progress + '%' }"></div>
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <div class="progress">
+                        <div ng-show="uploader.isHTML5" class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': uploader.queue[0].progress + '%' }"></div>
+                    </div>
                 </div>
                 <div class="col-lg-2">
                     <span ng-show=" uploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
