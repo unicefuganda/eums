@@ -71,7 +71,6 @@
         }
     }
 
-
     module.factory('GeoJsonService', function ($http, EumsConfig) {
         return {
             districts: function () {
@@ -80,13 +79,13 @@
         }
     });
 
-
     module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService, $q, MapFilterService, DistributionPlanService) {
-        var map;
+        var map, mapElementId, mapLayerName, mapScope;
+
 
         function initMap(elementId) {
             var map = L.map(elementId, {
-                zoomControl: true,
+                zoomControl: false,
                 scrollWheelZoom: false,
                 touchZoom: false,
                 doubleClickZoom: false
@@ -97,6 +96,11 @@
                 maxZoom: 13,
                 minZoom: 7
             }).addTo(map);
+
+
+            map.on('zoomend', function () {
+
+            });
 
             return map;
         }
@@ -142,6 +146,7 @@
 
         return {
             render: function (elementId, layerName, scope) {
+                mapElementId = elementId, mapLayerName = layerName, mapScope = scope;
                 map = initMap(elementId);
 
                 return addDistrictsLayer(map, scope).then(function () {
@@ -171,6 +176,9 @@
             },
             addMarker: function (marker) {
                 return addIPMarker(marker);
+            },
+            setView: function () {
+                map.setView([1.406, 32.000], 7);
             },
             removeMarker: function (marker) {
                 map.removeLayer(marker);
@@ -247,6 +255,7 @@
                         scope.data.responses = null;
                     };
                 });
+
             }
         }
     }).directive('panel', function () {

@@ -52,7 +52,19 @@ angular.module('map.layers', ['DistributionPlan'])
 
         }
 
-        function showResponsesForDistrict(layerName, responses,scope) {
+        var zoomControl = L.control.zoom({
+            position: 'topleft',
+            zoomOutText: '-'
+        });
+
+
+        function addZoomControlButton(map) {
+            if (!zoomControl._zoomInButton) {
+                map.addControl(zoomControl);
+            }
+        }
+
+        function showResponsesForDistrict(layerName, responses, scope) {
             var allResponses = DistributionPlanService.orderResponsesByDate(responses, layerName);
             scope.$apply(function () {
                 scope.data.responses = allResponses.slice(0, 5);
@@ -75,6 +87,8 @@ angular.module('map.layers', ['DistributionPlan'])
                 changeGlobalStats(layerName, responses, scope);
                 showResponsesForDistrict(layerName, responses, scope);
                 map.fitBounds(layer.getBounds());
+                addZoomControlButton(map);
+
             };
             this.setStyle = function (style) {
                 layerStyle = style;
