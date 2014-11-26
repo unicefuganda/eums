@@ -52,17 +52,6 @@ angular.module('map.layers', ['DistributionPlan'])
 
         }
 
-        var zoomControl = L.control.zoom({
-            position: 'topleft',
-            zoomOutText: '-'
-        });
-
-
-        function addZoomControlButton(map) {
-            if (!zoomControl._zoomInButton) {
-                map.addControl(zoomControl);
-            }
-        }
 
         function showResponsesForDistrict(layerName, responses, scope) {
             var allResponses = DistributionPlanService.orderResponsesByDate(responses, layerName);
@@ -87,8 +76,7 @@ angular.module('map.layers', ['DistributionPlan'])
                 changeGlobalStats(layerName, responses, scope);
                 showResponsesForDistrict(layerName, responses, scope);
                 map.fitBounds(layer.getBounds());
-                addZoomControlButton(map);
-
+                window.map.addCustomZoomControl();
             };
             this.setStyle = function (style) {
                 layerStyle = style;

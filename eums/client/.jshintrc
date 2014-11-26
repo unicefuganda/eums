@@ -23,6 +23,7 @@
         "angular": false,
         "$": false,
         "_": false,
+        "L": false,
         "moment": false,
         "ngTableParams": false
     }

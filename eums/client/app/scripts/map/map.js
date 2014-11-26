@@ -29,6 +29,7 @@
         return style;
     }
 
+
     function getHeatMapColor(consigneeResponses) {
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
         var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
@@ -80,8 +81,12 @@
     });
 
     module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService, $q, MapFilterService, DistributionPlanService) {
-        var map, mapElementId, mapLayerName, mapScope;
+        var map, mapScope;
 
+        var zoomControl = L.control.zoom({
+            position: 'topleft',
+            zoomOutText: '-'
+        });
 
         function initMap(elementId) {
             var map = L.map(elementId, {
@@ -99,7 +104,18 @@
 
 
             map.on('zoomend', function () {
-
+                if (window.map.getZoom() < 8) {
+                    mapScope.data.responses = [];
+                    mapScope.data.district = '';
+                    mapScope.filter = {programme: '', ip: '', year: '', received: true, notDelivered: true, receivedWithIssues: true};
+                    mapScope.isFiltered = false;
+                    mapScope.data.allResponsesLocationMap = [];
+                    DistributionPlanService.aggregateResponses().then(function (aggregates) {
+                        mapScope.data.totalStats = aggregates;
+                    });
+                    addHeatMapLayer(map, mapScope);
+                    window.map.setView([1.406, 32.000])
+                }
             });
 
             return map;
@@ -146,7 +162,7 @@
 
         return {
             render: function (elementId, layerName, scope) {
-                mapElementId = elementId, mapLayerName = layerName, mapScope = scope;
+                mapScope = scope;
                 map = initMap(elementId);
 
                 return addDistrictsLayer(map, scope).then(function () {
@@ -161,6 +177,11 @@
             getZoom: function () {
                 return map.getZoom();
             },
+            addCustomZoomControl: function () {
+                if (!zoomControl._zoomInButton) {
+                    zoomControl.addTo(map);
+                }
+            },
             addHeatMap: function (scope) {
                 addHeatMapLayer(map, scope);
             },
@@ -174,11 +195,8 @@
                 });
                 return L.layerGroup(markers).addTo(map);
             },
-            addMarker: function (marker) {
-                return addIPMarker(marker);
-            },
             setView: function () {
-                map.setView([1.406, 32.000], 7);
+                map.setView([1.406, 32.000]);
             },
             removeMarker: function (marker) {
                 map.removeLayer(marker);
@@ -255,6 +273,10 @@
                         scope.data.responses = null;
                     };
                 });
+
+                scope.clearFilters = function () {
+                    scope.filter = {programme: '', ip: '', year: '', received: true, notDelivered: true, receivedWithIssues: true};
+                };
 
             }
         }
@@ -518,7 +540,6 @@
                 scope: false,
                 link: function (scope) {
                     scope.$watchCollection('[dateFilter.from, dateFilter.to]', function (newDates) {
-                        console.log(newDates);
                         var receivedResponses = [];
                         var fromDate = moment(newDates[0]),
                             toDate = moment(newDates[1]);
