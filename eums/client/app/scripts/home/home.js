@@ -6,6 +6,7 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan'])
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
 
         $scope.datepicker = {from: false, to: false};
+        $scope.dateFilter = {from: '', to: ''};
         $scope.totalStats = {};
         $scope.allResponses = {};
         $scope.allResponsesFromDb = {};

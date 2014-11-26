@@ -308,6 +308,7 @@
             scope: false,
             link: function (scope) {
                 scope.$watchCollection('filter', function (newValue) {
+                    scope.dateFilter = {from: '', to: ''};
                     var responsesToPlot = [];
                     if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
                         scope.data.allResponsesLocationMap = scope.reponsesFromDb
@@ -442,6 +443,7 @@
                         var receivedResponses = [];
                         var notReceivedResponses = [];
                         var receivedResponsesWithIssues = [];
+                        scope.dateFilter = {from: '', to: ''};
 
                         DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                             scope.reponsesFromDb = responsesWithLocation;
@@ -506,7 +508,7 @@
                 restrict: 'A',
                 scope: false,
                 link: function (scope) {
-                    scope.$watchCollection('[filter.from, filter.to]', function (newDates) {
+                    scope.$watchCollection('[dateFilter.from, dateFilter.to]', function (newDates) {
                         console.log(newDates);
                         var receivedResponses = [];
                         var fromDate = moment(newDates[0]),

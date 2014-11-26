@@ -498,5 +498,5 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
             ngModelCtrl.$parsers.push(inputValue);
           }
-        }
+        };
     });
