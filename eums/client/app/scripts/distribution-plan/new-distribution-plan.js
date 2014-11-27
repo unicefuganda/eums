@@ -462,29 +462,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
         };
     })
-    .directive('bsSwitch', function() {
-      return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function(scope, element, attrs, ngModelCtrl) {
-          $(element).bootstrapSwitch({
-            onColor: attrs.onColor,
-            offColor: attrs.offColor,
-            onText: attrs.onText,
-            offText: attrs.offText,
-            labelText: attrs.labelText,
-            size: attrs.switchSize,
-            state: attrs.state === 'true',
-            wrapperClass: attrs.wrapperClass,
-            onSwitchChange: function(event, state) {
-              scope.$apply(function() {
-                ngModelCtrl.$setViewValue(state);
-              });
-            }
-          });
-        }
-      };
-    })
     .directive('onlyDigits', function () {
         return {
           require: 'ngModel',
