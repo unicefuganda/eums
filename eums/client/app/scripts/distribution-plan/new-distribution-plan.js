@@ -30,6 +30,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             $('#add-contact-modal').modal();
         };
 
+        $scope.addRemark = function (itemIndex, lineItem) {
+            $scope.$parent.itemIndex = itemIndex;
+            $scope.$parent.lineItem = lineItem;
+            $('#add-remark-modal').modal();
+        };
+
         $scope.saveContact = function () {
             ContactService
                 .addContact($scope.contact)

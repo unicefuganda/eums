@@ -99,16 +99,16 @@
                 <div ng-show="distributionPlanLineItems.length">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover table-condensed">
-                        <th id="input-available-quantity-header">Avail. Qty</th>
-                        <th id="input-header">Unit</th>
+                        <th class="table-header-width" id="input-available-quantity-header">Avail. Qty</th>
+                        <th class="table-header-width" id="input-header">Unit</th>
                         <th id="input-quantity-header">{{ quantityHeaderText }}</th>
                         <th id="input-planned-distribution-date-header">{{ deliveryDateHeaderText }}</th>
                         <th class="table-select-header-width">Consignee</th>
                         <th class="table-contact-select-header-width">Contact Person</th>
                         <th class="table-select-header-width">District</th>
                         <th ng-show="showExtraColumn">Mode of Delivery</th>
-                        <th ng-show="showExtraColumn">Remark</th>
-                        <th><span ng-show="planNode || !showExtraColumn">End User</span></th>
+                        <th class="table-action-header-width" ng-show="showExtraColumn">Actions</th>
+                        <th class="table-end-user-header-width" ng-show="planNode || !showExtraColumn">End User</th>
 
                         <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
@@ -118,7 +118,7 @@
                                        ng-model="item.targetQuantity" only-digits>
                             </td>
                             <td>
-                                <p class="input-group" eums-date-picker>
+                                <p class="table-date-width input-group" eums-date-picker>
                                     <input type="text"
                                            class="form-control"
                                            readonly="true"
@@ -174,26 +174,27 @@
                                        value="{{ item.modeOfDelivery }}">
                             </td>
                             <td ng-show="showExtraColumn">
-                                <input type="text" class="input form-control" ng-model="item.remark"
-                                       value="{{ item.remark }}">
-                            </td>
-                            <td>
-                                <div id="end-user-checkbox" ng-show="planNode || !showExtraColumn">
-                                    <input bs-switch type="checkbox"
-                                           state="{{ item.forEndUser }}"
-                                           ng-model="item.forEndUser"
-                                           on-text="Yes"
-                                           off-text="No"
-                                           on-color="success"
-                                           off-color="warning"
-                                           wrapper-class='enduser'
-                                           switchSize="normal">
+                                <div class="text-center">
+                                    <button class="btn btn-default glyphicon glyphicon-list-alt margin-bottom-5" title="Remark"
+                                            ng-click="addRemark($index, item)">
+                                    </button>
+                                    <button class="btn btn-primary glyphicon glyphicon-user margin-bottom-5" title="Sub-Consignees"
+                                            ng-show="showSubConsigneeButton(item) && showExtraColumn"
+                                            ng-click="addSubConsignee(item)">
+                                    </button>
                                 </div>
-                                <button class="btn btn-primary"
-                                        ng-show="showSubConsigneeButton(item) && showExtraColumn"
-                                        ng-click="addSubConsignee(item)">
-                                    Sub-Consignees
-                                </button>
+                            </td>
+                            <td ng-show="planNode || !showExtraColumn">
+                                <input bs-switch type="checkbox"
+                                       state="{{ item.forEndUser }}"
+                                       ng-model="item.forEndUser"
+                                       on-text="Yes"
+                                       off-text="No"
+                                       on-color="success"
+                                       off-color="warning"
+                                       label-text=""
+                                       wrapper-class='enduser'
+                                       switchSize="normal">
                             </td>
                         </tr>
                     </table>
@@ -218,4 +219,5 @@
         </div>
     </div>
     <ng-include src="'/static/app/views/contacts/partials/add-contact-modal.html'"></ng-include>
+    <ng-include src="'/static/app/views/distribution-planning/partials/add-remark-modal.html'"></ng-include>
 </div>
