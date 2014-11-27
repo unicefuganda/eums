@@ -58,13 +58,17 @@
         return L.divIcon({
             iconSize: new L.Point(25, 25),
             className: 'messages-aggregate-marker-icon',
-            html: '<div>' + content + '%</div>'
+            html: '<div ng-click=showDistrict()>' + content + '%</div>'
         });
     }
 
     function messagesAggregateMarker(layer, aggregateValue) {
         var marker = new L.Marker(layer.getCenter(), {
             icon: circleMarkerIcon(aggregateValue)
+        });
+
+        marker.on('click', function (e) {
+            layer.click();
         });
 
         if (typeof(aggregateValue) === 'number') {
