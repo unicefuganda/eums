@@ -22,21 +22,29 @@ class TestSalesOrdersVisionFacade(TestCase):
         work_book = Workbook()
         sheet = work_book.add_sheet('Sheet 1')
 
-        self.header = ['order_number', 'material_code', 'material_description', 'quantity',
-                       'net_value', 'net_price', 'date', 'issue_date', 'delivery_date', 'programme_name']
+        self.header = ['Sales Document', 'Sales Document Item', 'Material', 'Sales Order Qty',	'PO/STO Qty',
+                       'Item budget', 'Purchase order no.', 'Purchase order date', 'Budget year', 'Document Date',
+                       'Description', 'Receiving country', 'Country Short Name', 'WBS Element', 'Grant',
+                       'User field 1 WBS element', 'PGI/IR Quantity', 'Pgi/IR Amount', 'Shipment Qty',
+                       'Ship Inv. Amount', 'Ship Insurance Amt', 'Budget - Pgi/Ir - Ship Ins. - Ship Inv',
+                       'Delivery Completed', 'Shipping Completed', 'Supplies and freight action complete', 'Zflow_new',
+                       'Delivery Completed', 'Final Invoice', 'WBS_Supply_expenditure', 'WBS_Freight_expenditure',
+                       'WBS_Others_expenditure', 'PO/STO Amount', 'Purchasing Document']
 
-        self.first_row = ['20150432', 'SL001894', 'Helmet', '4.00', '12.123', '2.0', datetime.datetime(2014, 2, 18),
-                          datetime.datetime(2014, 2, 18), datetime.datetime(2014, 2, 18), 'ALIVE']
+        self.first_row = ['20146879', '10', 'S0009113', '1', '1', '3179.47', 'Emergency:Kyangwali', '2014-01-03',
+                          '2014', '2014-01-03', 'SQFlex 3-10 Pump C/W 1.4KW', '438', 'UGANDA', '4380/A0/04/105/007/020',
+                          'SM130359' '', '0', '0', '0', '0 ', '0', '3179.47', '', '', '@02@', '', 'Yes', 'No', '0',
+                          '0', '0', '2953.79', '']
 
-        self.second_row = ['20152484', 'X0001', 'This is a desc', '4.00', '12.123', '2.0',
-                           datetime.datetime(2014, 2, 18),
-                           datetime.datetime(2014, 2, 18), datetime.datetime(2014, 2, 18),
-                           'Y108 - PCR 4 CROSS SECTORAL']
+        self.second_row = ['20146879', '10', 'S0009113', '1', '1', '3179.47', 'Emergency:Kyangwali', '2014-01-03',
+                          '2014', '2014-01-03', 'SQFlex 3-10 Pump C/W 1.4KW', '438', 'UGANDA', '4380/A0/04/105/007/020',
+                          'SM130359' '', '0', '0', '0', '0 ', '0', '3179.47', '', '', '@02@', '', 'Yes', 'No', '0',
+                          '0', '0', '2953.79', '']
 
-        self.third_row = ['20150432', 'SL753725', 'TVs for Comms unit office', '4.00', '12.123', '2.0',
-                          datetime.datetime(2014, 2, 18), datetime.datetime(2014, 2, 18),
-                          datetime.datetime(2014, 2, 18),
-                          'YI107 - PCR 3 KEEP CHILDREN SAFE']
+        self.third_row = ['20146879', '10', 'S0009113', '1', '1', '3179.47', 'Emergency:Kyangwali', '2014-01-03',
+                          '2014', '2014-01-03', 'SQFlex 3-10 Pump C/W 1.4KW', '438', 'UGANDA', '4380/A0/04/105/007/020',
+                          'SM130359' '', '0', '0', '0', '0 ', '0', '3179.47', '', '', '@02@', '', 'Yes', 'No', '0',
+                          '0', '0', '2953.79', '']
 
         for row_index, row in enumerate([self.header, self.first_row, self.second_row, self.third_row]):
             for col_index, item in enumerate(row):
