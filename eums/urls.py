@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses
 from eums.api.answer.date_answers_endpoint import textAnswerRouter
@@ -19,6 +20,7 @@ from eums.api.stock_report.stock_report_endpoint import StockReport
 from eums.api.user.user_endpoint import userRouter
 from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
+from eums.views.password_management import ChangePasswordView, RecoverEmailSent
 
 
 urlpatterns = patterns(
@@ -37,6 +39,8 @@ urlpatterns = patterns(
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^reset/done/$', RedirectView.as_view(url='/login')),
+    url('', include('password_reset.urls')),
     url('', include('django.contrib.auth.urls')),
     url(r'^api/', include(distributionPlanRouter.urls)),
     url(r'^api/', include(distributionPlanNodeRouter.urls)),
@@ -55,3 +59,4 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 )
+

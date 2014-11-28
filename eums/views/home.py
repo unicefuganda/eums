@@ -1,8 +1,7 @@
-from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.core.urlresolvers import reverse
+from django.shortcuts import render
 from django.views.generic import TemplateView
 from braces.views import MultiplePermissionsRequiredMixin
+
 
 class Home(MultiplePermissionsRequiredMixin, TemplateView):
     def __init__(self, *args, **kwargs):
@@ -15,7 +14,7 @@ class Home(MultiplePermissionsRequiredMixin, TemplateView):
         return self._render_implementing_partner_view()
 
     def _render_unicef_view(self):
-        return render(self.request, "index.html" )
+        return render(self.request, "index.html")
 
     def _render_implementing_partner_view(self):
-        return render(self.request, "index.html" )
+        return render(self.request, "index.html")

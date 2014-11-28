@@ -6,8 +6,8 @@
         </div>
 
         <ul class="nav navbar-nav navbar-right">
-            <li><span id="user-icon" class="glyphicon glyphicon-user white"><span id="user">{{ user }}</span></span>
-            <li>
+            <li><span id="user-icon" class="glyphicon glyphicon-user white"><span id="user">{{ user }}<li>
+            <li><a href="/password_reset">Reset Password</a></li>
             <li><a href="{% url "logout" %}">Logout</a>
             <li>
         </ul>
@@ -16,7 +16,8 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
     <div class="container">
         <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
-            <li id="home-nav" {% if request.path == '/' %} class="active" {% endif %} ng-class="{ active: isActive('/')}">
+            <li id="home-nav" {% if request.path == '/' %} class="active" {% endif %}
+                ng-class="{ active: isActive('/')}">
                 {% if perms.auth.can_view_dashboard %}
                     <a href="/">Dashboard</a>
                 {% endif %}
@@ -26,9 +27,11 @@
         </ul>
 
         {% if perms.auth.can_view_users %}
-            <ul class="nav navbar-nav navbar-right"  >
-                <li id="admin-nav" class="dropdown {% if request.path == '/users/' %} active {% endif %}" ng-class="{ active: isActive('/users,/contacts')}">
-                    <a href="" data-toggle="dropdown" role="button" aria-expanded="false">Admin<span class="caret"></span></a>
+            <ul class="nav navbar-nav navbar-right">
+                <li id="admin-nav" class="dropdown {% if request.path == '/users/' %} active {% endif %}"
+                    ng-class="{ active: isActive('/users,/contacts')}">
+                    <a href="" data-toggle="dropdown" role="button" aria-expanded="false">Admin<span
+                            class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/users">Users</a></li>
                         <li class="divider"></li>
@@ -37,11 +40,11 @@
                 </li>
                 <li><a href="">Help</a></li>
                 <li>
-                <a href="">
-                    <span class="glyphicon glyphicon-globe"></span>
-                    <span class="pad-left-5">Uganda</span>
-                    <span class="caret"></span>
-                </a>
+                    <a href="">
+                        <span class="glyphicon glyphicon-globe"></span>
+                        <span class="pad-left-5">Uganda</span>
+                        <span class="caret"></span>
+                    </a>
                 </li>
             </ul>
         {% endif %}
