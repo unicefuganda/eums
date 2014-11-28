@@ -80,7 +80,7 @@ MAX_ALLOWED_REPLY_PERIOD = 7
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
-#TODO figure out a way to use environment variable with supervisor
+# TODO figure out a way to use environment variable with supervisor
 token = 'token'
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', token)
 RAPIDPRO_URL = 'https://rapidpro.io/api/v1/'
