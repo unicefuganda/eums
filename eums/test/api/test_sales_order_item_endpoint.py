@@ -13,7 +13,7 @@ class SalesOrderEndPointTest(AuthenticatedAPITestCase):
 
         sales_order_details = {'sales_order': sales_order['id'], 'item': item['id'], 'quantity': 23,
                                'net_price': 12000.0, 'net_value': 100.0, 'issue_date': '2014-01-21',
-                               'delivery_date': '2014-01-21'}
+                               'delivery_date': '2014-01-21', 'item_number': 10}
 
         created_sales_order = create_sales_order_item(self, sales_order_details)
 

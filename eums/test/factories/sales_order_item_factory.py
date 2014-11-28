@@ -10,6 +10,7 @@ class SalesOrderItemFactory(factory.DjangoModelFactory):
 
     sales_order = factory.SubFactory(SalesOrderFactory)
     item = factory.SubFactory(ItemFactory)
+    item_number = factory.Sequence(lambda n: 10 * n)
     quantity = 100
     net_price = 10.00
     net_value = 1000.00
