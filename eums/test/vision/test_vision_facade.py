@@ -3,7 +3,7 @@ import os
 import datetime
 
 from django.contrib.auth.models import User
-from mock import patch, MagicMock
+from mock import MagicMock
 from xlwt import Workbook
 
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, ReleaseOrderItem, Consignee
@@ -11,7 +11,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
-from eums.vision.vision_facade import ReleaseOrderFacade, SalesOrderFacade, Facade
+from eums.vision.vision_facade import ReleaseOrderFacade, SalesOrderFacade
 
 
 class TestSalesOrdersVisionFacade(TestCase):
@@ -54,7 +54,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         Programme.objects.all().delete()
         User.objects.all().delete()
 
-    def xtest_should_load_sales_order_data(self):
+    def test_should_load_sales_order_data(self):
 
         expected_data = [{'order_number': '20150432',
                           'programme_name': 'ALIVE',
