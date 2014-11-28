@@ -30,11 +30,15 @@
     }
 
 
+    function getPercentage(noProductReceived, consigneeResponses) {
+        return noProductReceived / consigneeResponses.length * 100;
+    }
+
     function getHeatMapColor(consigneeResponses) {
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
         var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
-        if (noProductReceived === consigneeResponses.length) return GREEN;
-        if (noProductReceived > 0 && noProductReceived < consigneeResponses.length) return ORANGE;
+        if (getPercentage(noProductReceived, consigneeResponses) >= 100) return GREEN;
+        if (getPercentage(noProductReceived, consigneeResponses) < 75 && getPercentage(noProductReceived, consigneeResponses) >= 50) return ORANGE;
         return RED;
     }
 
@@ -118,7 +122,7 @@
                         mapScope.data.totalStats = aggregates;
                     });
                     addHeatMapLayer(map, mapScope);
-                    window.map.setView([1.406, 32.000])
+                    window.map.setView([1.406, 32.000]);
                 }
             });
 
