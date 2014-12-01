@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
-
 from rest_framework.response import Response
 from rest_framework import status
+
 from eums.models import DistributionPlanLineItem
 
 
@@ -32,9 +32,21 @@ class StockReport(APIView):
             'document_id': sales_order_id,
             'total_value_received': total_value_received,
             'total_value_dispensed': value_dispensed,
-            'balance': balance}
+            'balance': balance,
+            'items': [{'code': line_item.item.item.material_code,
+                       'description': line_item.item.item.description,
+                       'quantity_delivered': line_item.targeted_quantity,
+                       'date_delivered': line_item.planned_distribution_date,
+                       'quantity_confirmed': line_item.targeted_quantity,
+                       'date_confirmed': line_item.planned_distribution_date,
+                       # TODO FIX this to get total quantities received downstream
+                       'quantity_dispatched': line_item.targeted_quantity,
+                       'date_dispatched': line_item.planned_distribution_date,
+                      'balance': 0}]
+        }
 
-    def _compute_value_dispensed(self, item_net_price, line_item):
+    @staticmethod
+    def _compute_value_dispensed(item_net_price, line_item):
         value_dispensed = 0
         for child_node in line_item.distribution_plan_node.children.all():
             child_line_item = child_node.distributionplanlineitem_set.all().first()
@@ -51,19 +63,22 @@ class StockReport(APIView):
                 reduced_report.append(report_item)
         return reduced_report
 
-    def _find_item_in_stock_report(self, reduced_report, report_item):
+    @staticmethod
+    def _find_item_in_stock_report(reduced_report, report_item):
         for item in reduced_report:
             if item['document_number'] == report_item['document_number']:
                 return item
         return None
 
-    def _update_report_item(self, matching_report_item, report_item):
+    @staticmethod
+    def _update_report_item(matching_report_item, report_item):
         matching_report_item['total_value_received'] = matching_report_item['total_value_received'] + report_item[
             'total_value_received']
         matching_report_item['total_value_dispensed'] = matching_report_item['total_value_dispensed'] + report_item[
             'total_value_dispensed']
         matching_report_item['balance'] = matching_report_item['total_value_received'] - matching_report_item[
             'total_value_dispensed']
+        matching_report_item['items'].append(report_item['items'][0])
 
 
 

@@ -1,3 +1,5 @@
+@import "variables";
+
 table tbody {
   height: 50px;
   overflow: auto;
@@ -11,6 +13,14 @@ table thead th {
 
 table thead tr {
   background-color: @brand-primary;
+}
+
+.nested > thead > tr {
+  background-color: @inner-table-header;
+}
+
+.nested {
+  width: 100%;
 }
 
 table thead tr th:hover {
