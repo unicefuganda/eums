@@ -13,6 +13,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
+        $scope.deliveryReportPage = $location.path() === '/delivery-reports';
+
         function reduceSalesOrder(salesOrders) {
             return _.remove(salesOrders, function (salesOrder, index) {
                 return index > 80;
