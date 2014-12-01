@@ -508,7 +508,7 @@
                             if (newValue.received) {
                                 receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived.toLowerCase() === 'yes' && response.satisfiedWithProduct.toLowerCase() === 'yes';
+                                        return response.productReceived && response.productReceived.toLowerCase() === 'yes';
                                     });
                                 });
                             }
@@ -516,7 +516,7 @@
                             if (newValue.notDelivered) {
                                 notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived.toLowerCase() === 'no';
+                                        return response.productReceived && response.productReceived.toLowerCase() === 'no';
                                     });
                                 });
                             }
@@ -524,7 +524,7 @@
                             if (newValue.receivedWithIssues) {
                                 receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived.toLowerCase() === 'yes' && (response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() !== 'yes');
+                                        return response.productReceived && response.productReceived.toLowerCase() === 'yes' && (response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() !== 'yes');
                                     });
                                 });
                             }
