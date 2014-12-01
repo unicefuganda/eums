@@ -12,5 +12,5 @@ class PurchaseOrderItem(models.Model):
         app_label = 'eums'
 
     def __unicode__(self):
-        return '%s' % self.sales_order_item.item.description
+        return '%s, %s %s' % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)
 
