@@ -21,6 +21,7 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
                     if (stockReport.data.length > 0) {
                         $scope.reportData = stockReport.data;
                         $scope.totals = StockReportService.computeStockTotals($scope.reportData);
+                        $scope.openDocument = undefined;
                     }
                     else {
                         $scope.reportData = [];
