@@ -19,15 +19,15 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
                 controller: 'DistributionPlanController'
             })
-            .when('/delivery-report/new/:salesOrderId-:salesOrderItemId-:distributionPlanNodeId', {
+            .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController'
             })
-            .when('/delivery-report/new/:salesOrderId-:salesOrderItemId', {
+            .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController'
             })
-            .when('/delivery-report/new/:salesOrderId', {
+            .when('/delivery-report/new/:purchaseOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController'
             })

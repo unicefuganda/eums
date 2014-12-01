@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'eums.ip', 'ngToast', 'Contact'])
-    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, SalesOrderItemService, IPService, ngToast, ContactService) {
+angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
+    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, PurchaseOrderService, PurchaseOrderItemService, SalesOrderItemService, IPService, ngToast, ContactService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
@@ -11,9 +11,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.itemIndex = '';
         $scope.track = false;
 
-        $scope.showExtraColumn = $location.path().substr(1, 15) !== 'delivery-report';
-        $scope.quantityHeaderText = $scope.showExtraColumn ? 'Targeted Qty' : 'Delivered Qty';
-        $scope.deliveryDateHeaderText = $scope.showExtraColumn ? 'Delivery Date' : 'Date Delivered';
+        $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
+        $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
+        $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
         function createToast(message, klass) {
             ngToast.create({
@@ -73,29 +73,57 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.distributionPlanLineItems = [];
         $scope.salesOrderItems = [];
 
-        SalesOrderService.getSalesOrder($routeParams.salesOrderId).then(function (response) {
-            $scope.selectedSalesOrder = response;
+        if($scope.distributionPlanReport){
+            SalesOrderService.getSalesOrder($routeParams.salesOrderId).then(function (response) {
+                $scope.selectedSalesOrder = response;
 
-            $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
-                SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
-                    var formattedSalesOrderItem = {
-                        display: result.item.description,
-                        materialCode: result.item.material_code,
-                        quantity: result.quantity,
-                        unit: result.item.unit.name,
-                        information: result
-                    };
-                    formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+                $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
+                    SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
+                        var formattedSalesOrderItem = {
+                            display: result.item.description,
+                            materialCode: result.item.material_code,
+                            quantity: result.quantity,
+                            unit: result.item.unit.name,
+                            information: result
+                        };
+                        formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
-                    if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                        $scope.selectedSalesOrderItem = formattedSalesOrderItem;
-                        $scope.selectSalesOrderItem();
-                    }
+                        if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                            $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                            $scope.selectSalesOrderItem();
+                        }
 
-                    $scope.salesOrderItems.push(formattedSalesOrderItem);
+                        $scope.salesOrderItems.push(formattedSalesOrderItem);
+                    });
                 });
             });
-        });
+        }
+        else{
+            PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
+                $scope.selectedPurchaseOrder = response;
+                $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
+
+                $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
+                    PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                        var formattedSalesOrderItem = {
+                            display: result.sales_order_item.item.description,
+                            materialCode: result.sales_order_item.item.material_code,
+                            quantity: result.sales_order_item.quantity,
+                            unit: result.sales_order_item.item.unit.name,
+                            information: result.sales_order_item
+                        };
+                        formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+
+                        if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                            $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                            $scope.selectSalesOrderItem();
+                        }
+
+                        $scope.salesOrderItems.push(formattedSalesOrderItem);
+                    });
+                });
+            });
+        }
 
         if ($routeParams.distributionPlanNodeId) {
             $scope.consignee_button_text = 'Add Sub-Consignee';
@@ -340,9 +368,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.addSubConsignee = function (lineItem) {
             var locPath =  $location.path().split('/')[1];
+            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
             $location.path(
-                    '/'+ locPath +'/new/' +
-                    $scope.selectedSalesOrder.id + '-' +
+                '/'+ locPath +'/new/' +
+                    documentId + '-' +
                     $scope.selectedSalesOrderItem.information.id + '-' +
                     lineItem.nodeId
             );
@@ -354,10 +383,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.previousConsignee = function (planNode) {
             var locPath =  $location.path().split('/')[1];
+            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
             if (planNode.parent) {
                 $location.path(
                         '/'+ locPath +'/new/' +
-                        $scope.selectedSalesOrder.id + '-' +
+                        documentId + '-' +
                         $scope.selectedSalesOrderItem.information.id + '-' +
                         planNode.parent
                 );
@@ -365,7 +395,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             else {
                 $location.path(
                         '/'+ locPath +'/new/' +
-                        $scope.selectedSalesOrder.id + '-' +
+                        documentId + '-' +
                         $scope.selectedSalesOrderItem.information.id
                 );
             }

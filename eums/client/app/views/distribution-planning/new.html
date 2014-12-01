@@ -5,13 +5,13 @@
         <div ng-show="planSaved">
             <alert type="success">Plan saved.</alert>
         </div>
-        <h4 class="page-header" ng-show="showExtraColumn">Create A Distribution Plan for Sales Order:
+        <h4 class="page-header" ng-show="distributionPlanReport">Create A Distribution Plan for Sales Order:
             <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
                     <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
                     </span>
         </h4>
-        <h4 class="page-header" ng-show="!showExtraColumn">Create an IP report for Sales Order:
-            <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
+        <h4 class="page-header" ng-show="!distributionPlanReport">Create an IP report for Purchase Order:
+            <span class="text-primary">{{ selectedPurchaseOrder.order_number }}</span>
                     <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
                     </span>
         </h4>
@@ -99,10 +99,10 @@
                         <th class="table-select-header-width">{{ planNode ? 'Sub-Consignee' : 'Consignee'}}</th>
                         <th class="table-contact-select-header-width">Contact Person</th>
                         <th class="table-select-header-width">District</th>
-                        <th ng-show="showExtraColumn">Mode of Delivery</th>
-                        <th class="table-header-width" ng-show="showExtraColumn">Remarks</th>
-                        <th class="table-header-width" ng-show="planNode || !showExtraColumn">End User</th>
-                        <th class="table-sub-consignee-header-width" ng-show="showExtraColumn"></th>
+                        <th ng-show="distributionPlanReport">Mode of Delivery</th>
+                        <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
+                        <th class="table-header-width" ng-show="planNode">End User</th>
+                        <th class="table-sub-consignee-header-width"></th>
 
                         <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
@@ -160,30 +160,30 @@
                                        ng-model="item.destinationLocation"
                                        value="{{ item.destinationLocation }}">
                             </td>
-                            <td id="input-mode-of-delivery" ng-show="showExtraColumn">
+                            <td id="input-mode-of-delivery" ng-show="distributionPlanReport">
                                 <input type="hidden" search-from-list
                                        list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"},
                                                 {"id": "WAREHOUSE", "name": "Warehouse"}]'
                                        ng-model="item.modeOfDelivery"
                                        value="{{ item.modeOfDelivery }}">
                             </td>
-                            <td ng-show="showExtraColumn">
+                            <td ng-show="distributionPlanReport">
                                 <div class="text-center">
                                     <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
                                             ng-click="addRemark($index, item)">
                                     </button>
                                 </div>
                             </td>
-                            <td ng-show="planNode || !showExtraColumn">
+                            <td ng-show="planNode">
                                 <div class="text-center">
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ item.forEndUser }}"
                                            ng-model="item.forEndUser">
                                 </div>
                             </td>
-                            <td ng-show="showExtraColumn">
+                            <td>
                                 <div class="text-center">
-                                    <button class="btn {{ showSubConsigneeButton(item) ? 'btn-primary' : 'btn-default'}}" title="Sub-Consignees"
+                                    <button class="btn {{ showSubConsigneeButton(item) ? 'btn-primary' : 'btn-default'}}" title="Consignees"
                                             ng-disabled="!showSubConsigneeButton(item)"
                                             ng-click="addSubConsignee(item)">Sub-Consignees
                                     </button>

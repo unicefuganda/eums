@@ -3,11 +3,11 @@
 {% block nav %}
     {% if perms.auth.can_view_distribution_plans %}
         <li id="distribution-plan-nav"
-            ng-class="{ active: isActive('/distribution-plans,/delivery-reports,/delivery-report/new/')} ">
+            ng-class="{ active: isActive('/distribution-plans,/distribution-plans/new/')} ">
             <a href="#/distribution-plans">Distribution Plans</a>
         </li>
         <li class="dropdown"
-            ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details')}">
+            ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details,/delivery-reports,/delivery-report/new/')}">
             <a href="#" class="dropdown-toggle">Delivery Reporting <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#/field-verification-reports">Field Verification</a></li>
@@ -21,8 +21,6 @@
                 <li><a href="#/distribution-plan-responses">Feedback Reports</a></li>
                 <li class="divider"></li>
                 <li><a href="#/reports">IP Stock Report</a></li>
-                <li class="divider"></li>
-                <li><a href="#/distribution-plan-responses">All Reports</a></li>
             </ul>
         </li>
         <li id="import-data-nav"

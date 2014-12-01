@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, ProgrammeService, SalesOrderService, $sorter) {
+angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder'])
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.contact = {};
@@ -15,6 +15,21 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.deliveryReportPage = $location.path() === '/delivery-reports';
 
+        if($scope.deliveryReportPage){
+            $scope.pageTitle = 'Reported By IP';
+            $scope.searchPromptText = 'Search by PO number, date or SO Number';
+            $scope.documentColumnTitle = 'Purchase Order Number';
+            $scope.descriptionColumnTitle = 'Sales Order Number';
+            $scope.descriptionColumnOrder = 'sales_order';
+        }
+        else{
+            $scope.pageTitle = 'Sales Orders';
+            $scope.searchPromptText = 'Search by document number, date or description';
+            $scope.documentColumnTitle = 'Document Number';
+            $scope.descriptionColumnTitle = 'Description';
+            $scope.descriptionColumnOrder = 'description';
+        }
+
         function reduceSalesOrder(salesOrders) {
             return _.remove(salesOrders, function (salesOrder, index) {
                 return index > 80;
@@ -25,10 +40,17 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            SalesOrderService.getSalesOrders().then(function (salesOrders) {
-                var sortedSalesOrder = salesOrders.sort();
-                $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
-            });
+            if($scope.deliveryReportPage){
+                PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
+                    $scope.salesOrders = purchaseOrders.sort();
+                });
+            }
+            else{
+                SalesOrderService.getSalesOrders().then(function (salesOrders) {
+                    var sortedSalesOrder = salesOrders.sort();
+                    $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
+                });
+            }
         };
 
         $scope.sortArrowClass = function (criteria) {

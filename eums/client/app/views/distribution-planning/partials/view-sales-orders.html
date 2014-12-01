@@ -8,7 +8,7 @@
                        class="form-control"
                        name="filter"
                        ng-model="query"
-                       placeholder="Search by document number, date or description"/>
+                       placeholder="{{ searchPromptText }}"/>
             </div>
         </div>
     </div>
@@ -19,8 +19,8 @@
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 20%">
-                    <a ng-click="sortBy('order_number')">Document Number <i
-                            ng-class="sortArrowClass('order_number')"></i></a>
+                    <a ng-click="sortBy('order_number')">{{ documentColumnTitle }} <i
+                            ng-class="sortArrowClass('order_number');"></i></a>
                 </th>
                 <th style="width: 30%">
                     <a ng-click="sortBy('date')">Date Created
@@ -28,8 +28,11 @@
                     </a>
                 </th>
                 <th style="width: 50%">
-                    <a ng-click="sortBy('description')">Short Description
-                        <i ng-class="sortArrowClass('description')"></i>
+                    <a ng-click="sortBy('description')" ng-show="!deliveryReportPage">{{ descriptionColumnTitle }}
+                        <i ng-class="sortArrowClass('description');"></i>
+                    </a>
+                    <a ng-click="sortBy('sales_order_number')" ng-show="deliveryReportPage">{{ descriptionColumnTitle }}
+                        <i ng-class="sortArrowClass('sales_order_number');"></i>
                     </a>
                 </th>
             </tr>
@@ -43,8 +46,8 @@
                 <td data-header="Date Created">
                     {{ salesOrder.date }}
                 </td>
-                <td data-header="Description">
-                    {{ salesOrder.description }}
+                <td data-header={{ deliveryReportPage ? "Sales Order" : "Description" }}>
+                    {{ deliveryReportPage ? salesOrder.sales_order : salesOrder.description }}
                 </td>
             </tr>
             </tbody>
