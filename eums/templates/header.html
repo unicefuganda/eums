@@ -3,11 +3,11 @@
 {% block nav %}
     {% if perms.auth.can_view_distribution_plans %}
         <li id="distribution-plan-nav"
-            ng-class="{ active: isActive('/distribution-plans,/distribution-plans/new/')} ">
+            ng-class="{ active: isActive('/distribution-plans,/delivery-report/new/')} ">
             <a href="#/distribution-plans">Distribution Plans</a>
         </li>
         <li class="dropdown"
-            ng-class="{ active: isActive('/field-verification-reports,/field-verification-report/details,/delivery-reports,/delivery-report/new/')}">
+            ng-class="{ active: isActive('/field-verification-reports,/delivery-reports')}">
             <a href="#" class="dropdown-toggle">Delivery Reporting <span class="caret"></span></a>
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#/field-verification-reports">Field Verification</a></li>
