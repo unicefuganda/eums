@@ -2,7 +2,7 @@
 
 angular.module('Home', ['GlobalStats', 'DistributionPlan'])
     .controller('HomeController', function ($rootScope, $scope, $location) {
-        $scope.filter = {programme: '', ip: '', year: '', received: true, notDelivered: true, receivedWithIssues: true};
+        $scope.filter = {programme: '', ip: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
 
         $scope.datepicker = {from: false, to: false};

@@ -283,7 +283,10 @@
                 });
 
                 scope.clearFilters = function () {
-                    scope.filter = {programme: '', ip: '', year: '', received: true, notDelivered: true, receivedWithIssues: true};
+                    $("#select-program").select2("val", "");
+                    $("#select-ip").select2("val", "");
+                    scope.filter = {programme: '', ip: '', year: ''};
+                    scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
                 };
 
             }
@@ -423,11 +426,10 @@
                         });
 
                     }).then(function (data) {
-                        var defaultProgramme = [
-                            {id: '', text: 'All Outcomes'}
-                        ];
                         $(elem).select2({
-                            data: defaultProgramme.concat(data)
+                            placeholder: 'All Outcomes',
+                            allowClear: true,
+                            data: data
                         });
                     });
 
@@ -456,11 +458,11 @@
                         var displayedData = _.uniq(data, function (ip) {
                             return ip.text.toLowerCase();
                         });
-                        var defaultIP = [
-                            {id: '', text: 'All Implementing Partners'}
-                        ];
+
                         $(elem).select2({
-                            data: defaultIP.concat(displayedData)
+                            placeholder: 'All Implementing Partners',
+                            allowClear: true,
+                            data: displayedData
                         });
                     });
                 }
@@ -497,11 +499,7 @@
                             }
 
                             if (!newValue.received && !newValue.notDelivered && !newValue.receivedWithIssues) {
-                                if (scope.isFiltered) {
-                                    scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
-                                } else {
-                                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
-                                }
+                                scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : [];
                                 return;
                             }
 
@@ -524,7 +522,7 @@
                             if (newValue.receivedWithIssues) {
                                 receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived && response.productReceived.toLowerCase() === 'yes' && (response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() !== 'yes');
+                                        return response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() !== 'yes';
                                     });
                                 });
                             }
