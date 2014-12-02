@@ -31,8 +31,8 @@
                     <a ng-click="sortBy('description')" ng-show="!deliveryReportPage">{{ descriptionColumnTitle }}
                         <i ng-class="sortArrowClass('description');"></i>
                     </a>
-                    <a ng-click="sortBy('sales_order_number')" ng-show="deliveryReportPage">{{ descriptionColumnTitle }}
-                        <i ng-class="sortArrowClass('sales_order_number');"></i>
+                    <a ng-click="sortBy('programme')" ng-show="deliveryReportPage">{{ descriptionColumnTitle }}
+                        <i ng-class="sortArrowClass('programme');"></i>
                     </a>
                 </th>
             </tr>
@@ -46,8 +46,8 @@
                 <td data-header="Date Created">
                     {{ salesOrder.date }}
                 </td>
-                <td data-header={{ deliveryReportPage ? "Sales Order" : "Description" }}>
-                    {{ deliveryReportPage ? salesOrder.sales_order : salesOrder.description }}
+                <td data-header={{ deliveryReportPage ? "Programme" : "Description" }}>
+                    {{ deliveryReportPage ? salesOrder.programme : salesOrder.description }}
                 </td>
             </tr>
             </tbody>
@@ -62,7 +62,7 @@
                       ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
                 There are no matches to your search criteria.
                 </span>
-            <span class="information message" ng-show="salesOrders.length == 0">There are no programmes available right now.</span>
+            <span class="information message" ng-show="salesOrders.length == 0">There are no {{ deliveryReportPage ? 'purchase orders' : 'sales orders' }} available right now.</span>
         </table>
     </div>
 </div>

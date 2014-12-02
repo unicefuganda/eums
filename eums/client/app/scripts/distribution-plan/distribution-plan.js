@@ -19,8 +19,8 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             $scope.pageTitle = 'Reported By IP';
             $scope.searchPromptText = 'Search by PO number, date or SO Number';
             $scope.documentColumnTitle = 'Purchase Order Number';
-            $scope.descriptionColumnTitle = 'Sales Order Number';
-            $scope.descriptionColumnOrder = 'sales_order';
+            $scope.descriptionColumnTitle = 'Programme';
+            $scope.descriptionColumnOrder = 'programme';
         }
         else{
             $scope.pageTitle = 'Sales Orders';

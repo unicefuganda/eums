@@ -10,7 +10,8 @@ describe('Purchase Order Service', function () {
         fullPurchaseOrder,
         stubPurchaseOrders,
         orderId = 1,
-        salesOrderOneId = 1;
+        salesOrderOneId = 1,
+        programmeName = 'Test Programme';
 
     beforeEach(function () {
         module('PurchaseOrder');
@@ -29,7 +30,7 @@ describe('Purchase Order Service', function () {
             salesorderitem_set: [1, 2],
             programme: {
                 id: 1,
-                name: 'Test Programme'
+                name: programmeName
             }
         };
 
@@ -38,7 +39,8 @@ describe('Purchase Order Service', function () {
             order_number: orderId,
             sales_order: salesOrderOneId,
             date: '2014-10-06',
-            purchaseorderitem_set: [1, 2]
+            purchaseorderitem_set: [1, 2],
+            programme: programmeName
         };
 
         fullPurchaseOrder = {
@@ -46,6 +48,7 @@ describe('Purchase Order Service', function () {
             order_number: stubPurchaseOrder.order_number,
             date: stubPurchaseOrder.date,
             purchaseorderitem_set: stubPurchaseOrder.purchaseorderitem_set,
+            programme: programmeName,
             sales_order: stubSalesOrder
         };
 

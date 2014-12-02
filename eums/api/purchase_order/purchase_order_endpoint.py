@@ -6,10 +6,14 @@ from eums.models import PurchaseOrder
 
 
 class PurchaseOrderSerialiser(serializers.ModelSerializer):
+    programme = serializers.SerializerMethodField('get_programme')
+
     class Meta:
         model = PurchaseOrder
-        fields = ('id', 'order_number', 'date', 'sales_order', 'purchaseorderitem_set')
+        fields = ('id', 'order_number', 'date', 'sales_order', 'programme', 'purchaseorderitem_set')
 
+    def get_programme(self, purchase_order):
+        return purchase_order.sales_order.programme.name
 
 class PurchaseOrderViewSet(ModelViewSet):
     queryset = PurchaseOrder.objects.all()
