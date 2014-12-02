@@ -1,4 +1,5 @@
 #EUMS 
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/unicefuganda/eums?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://snap-ci.com/unicefuganda/eums/branch/master/build_image)](https://snap-ci.com/unicefuganda/eums/branch/master)[![Coverage Status](https://img.shields.io/coveralls/unicefuganda/eums.svg)](https://coveralls.io/r/unicefuganda/eums)
 ====
 
