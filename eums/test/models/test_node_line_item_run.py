@@ -2,9 +2,7 @@ from unittest import TestCase
 import datetime
 
 from eums import settings
-from eums.fixtures.questions import seed_questions
-from eums.models import NodeLineItemRun, DistributionPlanLineItem, DistributionPlanNode, TextQuestion, NumericQuestion, \
-    MultipleChoiceQuestion
+from eums.models import NodeLineItemRun, DistributionPlanLineItem, DistributionPlanNode
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
