@@ -217,7 +217,7 @@ describe('NewDistributionPlanController', function () {
                 contactPerson: '5444d433ec8e8257ae48dc73',
                 modeOfDelivery: 'Warehouse',
                 remark: '',
-                tracked: true,
+                track: true,
                 forEndUser: false
             };
 
@@ -475,7 +475,7 @@ describe('NewDistributionPlanController', function () {
                 modeOfDelivery: '',
                 remark: '',
                 contactPerson: '',
-                tracked: false,
+                track: true,
                 forEndUser: false
             };
 
