@@ -1,5 +1,8 @@
 from decimal import Decimal
 
+from eums.fixtures.flows import seed_flows
+seed_flows()
+
 from eums.fixtures.questions import seed_questions
 from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
