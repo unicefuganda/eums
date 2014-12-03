@@ -25,6 +25,16 @@ class NodeLineItemRun(models.Model):
         multiple_choice_answers = self.multiplechoiceanswer_set.all()
         return list(numeric_answers) + list(text_answers) + list(multiple_choice_answers)
 
+    def questions_and_responses(self):
+        answers = self.answers()
+        return reduce(self._merge, answers, {})
+
+    @staticmethod
+    def _merge(answer_collection, answer):
+        value = answer.value if type(answer.value) is long else str(answer.value)
+        answer_collection[str(answer.question.label)] = value
+        return answer_collection
+
     def __unicode__(self):
         return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node_line_item.item.description,
                                                                self.node_line_item.distribution_plan_node.tree_position,

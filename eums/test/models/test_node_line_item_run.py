@@ -2,12 +2,17 @@ from unittest import TestCase
 import datetime
 
 from eums import settings
-from eums.models import NodeLineItemRun, DistributionPlanLineItem, DistributionPlanNode
+from eums.fixtures.questions import seed_questions
+from eums.models import NodeLineItemRun, DistributionPlanLineItem, DistributionPlanNode, TextQuestion, NumericQuestion, \
+    MultipleChoiceQuestion
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
+    NumericQuestionFactory
 
 
 class NodeLineItemRunTest(TestCase):
@@ -78,11 +83,28 @@ class NodeLineItemRunTest(TestCase):
         overdue_runs = NodeLineItemRun.overdue_runs()
         self.assertEqual(len(overdue_runs), 0)
 
-    def test_should_get_all_responses(self):
-        sugar_line_item_run = NodeLineItemRunFactory()
+    def test_should_get_all_answers(self):
+        run = NodeLineItemRunFactory()
 
-        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=sugar_line_item_run)
-        numeric_answer_one = NumericAnswerFactory(line_item_run=sugar_line_item_run)
-        line_item_run_answers = sugar_line_item_run.answers()
+        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=run)
+        numeric_answer_one = NumericAnswerFactory(line_item_run=run)
+        line_item_run_answers = run.answers()
         self.assertIn(multiple_answer_one, line_item_run_answers)
         self.assertIn(numeric_answer_one, line_item_run_answers)
+
+    def test_should_get_all_questions_and_responses(self):
+
+        run = NodeLineItemRunFactory()
+
+        item_received_question = MultipleChoiceQuestionFactory(label='product_received')
+        yes = OptionFactory(question=item_received_question, text='Yes')
+        item_received_question.multiplechoiceanswer_set.create(value=yes, line_item_run=run)
+
+        date_received_question = TextQuestionFactory(label='date_received')
+        date_received_question.textanswer_set.create(value='2014-01-01', line_item_run=run)
+
+        quantity_received_question = NumericQuestionFactory(label='quantity_received')
+        quantity_received_question.numericanswer_set.create(value=12, line_item_run=run)
+
+        expected_data = {'product_received': 'Yes', 'quantity_received': 12, 'date_received': '2014-01-01'}
+        self.assertDictEqual(run.questions_and_responses(), expected_data)

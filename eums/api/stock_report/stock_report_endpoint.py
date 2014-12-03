@@ -19,39 +19,52 @@ class StockReport(APIView):
 
         return stock_report
 
-    def _get_report_details_for_line_item(self, line_item):
-        sales_order_number = line_item.item.sales_order.order_number
-        sales_order_id = line_item.item.sales_order.id
-        item_net_price = line_item.item.net_price
-        total_value_received = item_net_price * line_item.targeted_quantity
-        value_dispensed = self._compute_value_dispensed(item_net_price, line_item)
-        balance = total_value_received - value_dispensed
+    @staticmethod
+    def _compute_quantity_received(line_item):
+        latest_run = line_item.latest_run()
+        responses = latest_run.questions_and_responses()
+        return responses.get('amountReceived', 0)
 
-        return {
-            'document_number': sales_order_number,
-            'document_id': sales_order_id,
-            'total_value_received': total_value_received,
-            'total_value_dispensed': value_dispensed,
-            'balance': balance,
-            'items': [{'code': line_item.item.item.material_code,
-                       'description': line_item.item.item.description,
-                       'quantity_delivered': line_item.targeted_quantity,
-                       'date_delivered': line_item.planned_distribution_date,
-                       'quantity_confirmed': line_item.targeted_quantity,
-                       'date_confirmed': line_item.planned_distribution_date,
-                       # TODO FIX this to get total quantities received downstream
-                       'quantity_dispatched': line_item.targeted_quantity,
-                       'date_dispatched': line_item.planned_distribution_date,
-                      'balance': 0}]
-        }
+    def _get_report_details_for_line_item(self, line_item):
+        purchase_order_item = line_item.item.purchase_order_item()
+        if purchase_order_item:
+            purchase_order_number = purchase_order_item.purchase_order.order_number
+            quantity_received = self._compute_quantity_received(line_item)
+            total_value_received = quantity_received * line_item.item.net_price
+            quantity_dispensed = self._compute_quantity_dispensed(line_item)
+            value_dispensed = quantity_dispensed * line_item.item.net_price
+
+            return {
+                'document_number': purchase_order_number,
+                'total_value_received': total_value_received,
+                'total_value_dispensed': value_dispensed,
+                'balance': (total_value_received - value_dispensed),
+                'items': [{'code': line_item.item.item.material_code,
+                           'description': line_item.item.item.description,
+                           'quantity_delivered': line_item.targeted_quantity,
+                           'date_delivered': str(line_item.planned_distribution_date),
+                           'quantity_confirmed': quantity_received,
+                           'date_confirmed': str(self._get_date_received(line_item)),
+                           'quantity_dispatched': quantity_dispensed,
+                           'balance': quantity_received - quantity_dispensed}]
+            }
+        return {}
 
     @staticmethod
-    def _compute_value_dispensed(item_net_price, line_item):
-        value_dispensed = 0
+    def _get_date_received(line_item):
+        latest_run = line_item.latest_run()
+        responses = latest_run.questions_and_responses()
+        return responses.get('dateOfReceipt', None)
+
+    @staticmethod
+    def _compute_quantity_dispensed(line_item):
+        total_quantity_dispensed = 0
         for child_node in line_item.distribution_plan_node.children.all():
             child_line_item = child_node.distributionplanlineitem_set.all().first()
-            value_dispensed = value_dispensed + (child_line_item.targeted_quantity * item_net_price)
-        return value_dispensed
+            latest_run = child_line_item.latest_run()
+            responses = latest_run.questions_and_responses()
+            total_quantity_dispensed = total_quantity_dispensed + responses.get('amountReceived', 0)
+        return total_quantity_dispensed
 
     def _reduce_stock_report(self, stock_report):
         reduced_report = []

@@ -1,9 +1,7 @@
-from eums.test.factories.consignee_factory import ConsigneeFactory
 import factory
 
 from eums.models import NodeLineItemRun
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 
 
 class NodeLineItemRunFactory(factory.DjangoModelFactory):

@@ -1,5 +1,4 @@
 from django.contrib.auth.models import User
-from rest_framework.test import APITestCase
 
 from eums.test.api.api_test_helpers import create_user
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase

@@ -18,6 +18,9 @@ class SalesOrderItem(models.Model):
     class Meta:
         app_label = 'eums'
 
+    def purchase_order_item(self):
+        return self.purchaseorderitem_set.all().first()
+
     def __unicode__(self):
         return '%s' % self.description
 
