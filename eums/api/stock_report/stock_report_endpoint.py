@@ -13,36 +13,40 @@ class StockReport(APIView):
         return Response(reduced_stock_report, status=status.HTTP_200_OK)
 
 
+def aggregate_line_items_into_stock_report(stock_report, line_item):
+    purchase_order_item = line_item.item.purchase_order_item()
+    if purchase_order_item:
+        stock_report.append(_get_report_details_for_line_item(line_item))
+    return stock_report
+
+
 def _build_stock_report(consignee_id):
     line_items = DistributionPlanLineItem.objects.filter(distribution_plan_node__consignee_id=consignee_id)
-    aggregator_function = lambda stock_report, line_item: stock_report + [_get_report_details_for_line_item(line_item)]
-    return reduce(aggregator_function, line_items, [])
+    return reduce(aggregate_line_items_into_stock_report, line_items, [])
 
 
 def _get_report_details_for_line_item(line_item):
     purchase_order_item = line_item.item.purchase_order_item()
-    if purchase_order_item:
-        purchase_order_number = purchase_order_item.purchase_order.order_number
-        quantity_received = _compute_quantity_received(line_item)
-        total_value_received = quantity_received * line_item.item.net_price
-        quantity_dispensed = _compute_quantity_dispensed(line_item)
-        value_dispensed = quantity_dispensed * line_item.item.net_price
+    purchase_order_number = purchase_order_item.purchase_order.order_number
+    quantity_received = _compute_quantity_received(line_item)
+    total_value_received = quantity_received * line_item.item.net_price
+    quantity_dispensed = _compute_quantity_dispensed(line_item)
+    value_dispensed = quantity_dispensed * line_item.item.net_price
 
-        return {
-            'document_number': purchase_order_number,
-            'total_value_received': total_value_received,
-            'total_value_dispensed': value_dispensed,
-            'balance': (total_value_received - value_dispensed),
-            'items': [{'code': line_item.item.item.material_code,
-                       'description': line_item.item.item.description,
-                       'quantity_delivered': line_item.targeted_quantity,
-                       'date_delivered': str(line_item.planned_distribution_date),
-                       'quantity_confirmed': quantity_received,
-                       'date_confirmed': str(_get_date_received(line_item)),
-                       'quantity_dispatched': quantity_dispensed,
-                       'balance': quantity_received - quantity_dispensed}]
-        }
-    return {}
+    return {
+        'document_number': purchase_order_number,
+        'total_value_received': total_value_received,
+        'total_value_dispensed': value_dispensed,
+        'balance': (total_value_received - value_dispensed),
+        'items': [{'code': line_item.item.item.material_code,
+                   'description': line_item.item.item.description,
+                   'quantity_delivered': line_item.targeted_quantity,
+                   'date_delivered': str(line_item.planned_distribution_date),
+                   'quantity_confirmed': quantity_received,
+                   'date_confirmed': str(_get_date_received(line_item)),
+                   'quantity_dispatched': quantity_dispensed,
+                   'balance': quantity_received - quantity_dispensed}]
+    }
 
 
 def _get_responses(line_item):

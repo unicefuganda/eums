@@ -20,45 +20,11 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         super(StockReportResponsesEndpointTest, self).setUp()
         self.setup_actors()
         self.setup_sales_orders_and_items()
-        self.setup_purchase_orders()
         self.setup_distribution_plans()
         self.setup_responses()
 
-    def setup_responses(self):
-        self.setup_runs()
-        seed_questions()
-        self.setup_answers()
-
-    def setup_quantity_received_answers(self):
-        quantity_received_qn = NumericQuestion.objects.get(
-            uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'])
-        quantity_received_qn.numericanswer_set.create(value=4, line_item_run=self.run_one)
-        quantity_received_qn.numericanswer_set.create(value=2, line_item_run=self.run_two)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_three)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_four)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_five)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_six)
-
-    def setup_answers(self):
-        self.setup_quantity_received_answers()
-        self.setup_date_received_answers()
-
-    def setup_date_received_answers(self):
-        date_received_question = TextQuestion.objects.get(
-            uuids=['abc9c005-7a7c-44f8-b946-e970a361b6cf', '884ed6d8-1cef-4878-999d-bce7de85e27c'])
-        date_received_question.textanswer_set.create(value='2014-01-01', line_item_run=self.run_one)
-        date_received_question.textanswer_set.create(value='2014-01-02', line_item_run=self.run_two)
-        date_received_question.textanswer_set.create(value='2014-01-03', line_item_run=self.run_three)
-
-    def setup_runs(self):
-        self.run_one = NodeLineItemRunFactory(node_line_item=self.plan_item_one)
-        self.run_two = NodeLineItemRunFactory(node_line_item=self.plan_item_two)
-        self.run_three = NodeLineItemRunFactory(node_line_item=self.plan_item_three)
-        self.run_four = NodeLineItemRunFactory(node_line_item=self.plan_item_four)
-        self.run_five = NodeLineItemRunFactory(node_line_item=self.plan_item_five)
-        self.run_six = NodeLineItemRunFactory(node_line_item=self.plan_item_six)
-
     def test_gets_stock_value_for_all_purchase_orders_for_an_ip(self):
+        self.setup_purchase_orders()
         expected_data = [{'document_number': unicode(self.po_one.order_number),
                           'total_value_received': Decimal('60.0000'),
                           'total_value_dispensed': Decimal('20.0000'),
@@ -99,6 +65,45 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
         self.assertListEqual(response.data, expected_data)
+
+    def test_returns_empty_list_if_no_matching_purchase_order_linked_to_the_line_item_exists(self):
+        endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
+        response = self.client.get(endpoint_url)
+        self.assertListEqual(response.data, [])
+
+    def setup_responses(self):
+        self.setup_runs()
+        seed_questions()
+        self.setup_answers()
+
+    def setup_quantity_received_answers(self):
+        quantity_received_qn = NumericQuestion.objects.get(
+            uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'])
+        quantity_received_qn.numericanswer_set.create(value=4, line_item_run=self.run_one)
+        quantity_received_qn.numericanswer_set.create(value=2, line_item_run=self.run_two)
+        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_three)
+        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_four)
+        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_five)
+        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_six)
+
+    def setup_answers(self):
+        self.setup_quantity_received_answers()
+        self.setup_date_received_answers()
+
+    def setup_date_received_answers(self):
+        date_received_question = TextQuestion.objects.get(
+            uuids=['abc9c005-7a7c-44f8-b946-e970a361b6cf', '884ed6d8-1cef-4878-999d-bce7de85e27c'])
+        date_received_question.textanswer_set.create(value='2014-01-01', line_item_run=self.run_one)
+        date_received_question.textanswer_set.create(value='2014-01-02', line_item_run=self.run_two)
+        date_received_question.textanswer_set.create(value='2014-01-03', line_item_run=self.run_three)
+
+    def setup_runs(self):
+        self.run_one = NodeLineItemRunFactory(node_line_item=self.plan_item_one)
+        self.run_two = NodeLineItemRunFactory(node_line_item=self.plan_item_two)
+        self.run_three = NodeLineItemRunFactory(node_line_item=self.plan_item_three)
+        self.run_four = NodeLineItemRunFactory(node_line_item=self.plan_item_four)
+        self.run_five = NodeLineItemRunFactory(node_line_item=self.plan_item_five)
+        self.run_six = NodeLineItemRunFactory(node_line_item=self.plan_item_six)
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.so_one)
