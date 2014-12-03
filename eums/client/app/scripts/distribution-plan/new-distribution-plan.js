@@ -233,7 +233,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 contactPerson: '',
                 modeOfDelivery: '',
                 remark: '',
-                tracked: false,
+                track: true,
                 forEndUser: false
             };
 
