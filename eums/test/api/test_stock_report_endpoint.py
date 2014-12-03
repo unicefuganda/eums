@@ -75,9 +75,47 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
     def test_returns_empty_list_if_no_runs_where_created_for_the_line_items(self):
         self.setup_purchase_orders()
+
+        expected_data = [{'document_number': unicode(self.po_one.order_number),
+                          'total_value_received': Decimal('0.0000'),
+                          'total_value_dispensed': Decimal('0.0000'),
+                          'balance': Decimal('0.0000'),
+                          'items': [{'code': unicode(self.po_item_two.sales_order_item.item.material_code),
+                                     'description': unicode(self.po_item_two.sales_order_item.item.description),
+                                     'quantity_delivered': 3,
+                                     'date_delivered': str(self.plan_item_two.planned_distribution_date),
+                                     'quantity_confirmed': 0,
+                                     'date_confirmed': 'None',
+                                     'quantity_dispatched': 0,
+                                     'balance': 0
+                                    },
+                                    {'code': unicode(self.po_item_one.sales_order_item.item.material_code),
+                                     'description': unicode(self.po_item_one.sales_order_item.item.description),
+                                     'quantity_delivered': 5,
+                                     'date_delivered': str(self.plan_item_one.planned_distribution_date),
+                                     'quantity_confirmed': 0,
+                                     'date_confirmed': 'None',
+                                     'quantity_dispatched': 0,
+                                     'balance': 0
+                                    }
+                          ]},
+                         {'document_number': unicode(self.po_two.order_number),
+                          'total_value_received': Decimal('0.0000'),
+                          'total_value_dispensed': Decimal('0.0000'),
+                          'balance': Decimal('0.0000'),
+                          'items': [{'code': unicode(self.po_item_three.sales_order_item.item.material_code),
+                                     'description': unicode(self.po_item_three.sales_order_item.item.description),
+                                     'quantity_delivered': 2,
+                                     'date_delivered': str(self.plan_item_three.planned_distribution_date),
+                                     'quantity_confirmed': 0,
+                                     'date_confirmed': 'None',
+                                     'quantity_dispatched': 0,
+                                     'balance': 0
+                                    }]}]
+
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
-        self.assertListEqual(response.data, [])
+        self.assertListEqual(response.data, expected_data)
 
     def setup_responses(self):
         self.setup_runs()

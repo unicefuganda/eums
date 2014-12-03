@@ -15,7 +15,7 @@ class StockReport(APIView):
 
 def aggregate_line_items_into_stock_report(stock_report, line_item):
     purchase_order_item = line_item.item.purchase_order_item()
-    if purchase_order_item and line_item.latest_run():
+    if purchase_order_item:
         stock_report.append(_get_report_details_for_line_item(line_item))
     return stock_report
 
@@ -51,8 +51,9 @@ def _get_report_details_for_line_item(line_item):
 
 def _get_responses(line_item):
     latest_run = line_item.latest_run()
-    responses = latest_run.questions_and_responses()
-    return responses
+    if latest_run:
+        return latest_run.questions_and_responses()
+    return {}
 
 
 def _compute_quantity_received(line_item):
@@ -70,7 +71,7 @@ def _compute_quantity_dispensed(line_item):
     for child_node in line_item.distribution_plan_node.children.all():
         child_line_item = child_node.distributionplanlineitem_set.all().first()
         responses = _get_responses(child_line_item)
-        total_quantity_dispensed = total_quantity_dispensed + responses.get('amountReceived', 0)
+        total_quantity_dispensed += responses.get('amountReceived', 0)
     return total_quantity_dispensed
 
 
