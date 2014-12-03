@@ -24,4 +24,7 @@ def add_string(int_1, int_2):
 
 @register.filter(name='add_css')
 def add_css(field, css):
-   return field.as_widget(attrs={"class":css})
+   field_classes = " "
+   if 'class' in field.field.widget.attrs:
+       field_classes += field.field.widget.attrs['class']
+   return field.as_widget(attrs={"class":css+field_classes})

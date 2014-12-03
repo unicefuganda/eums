@@ -1,5 +1,21 @@
 {% extends 'base/form.html' %}
+
+{% block javascripts %}
+    <script src="{{ STATIC_URL }}js/users.js" type="text/javascript" charset="utf-8"></script>
+{% endblock %}
+
 {% block display_form_fields %}
     <h4 class="page-header">{{ title }}</h4>
     {% include 'base/naked_form.html' with a_form=form %}
+    <script type="text/template" id="consignee-template">
+        <p>
+            <label for="consignee">Implementing Partner</label>
+                <select id="consignee" name="consignee">
+                    {%   for consignee in consignees %}
+                    <option value={{ consignee.id }}>{{ consignee.name }}</option>
+                    {% endfor %}
+                </select>
+             <label class="error"></label>
+        </p>
+    </script>
 {% endblock %}

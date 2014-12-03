@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from eums.forms.filter import UserFilterForm
 from eums.forms.user_profile import UserProfileForm, EditUserProfileForm
-
+from eums.models import Consignee
 
 class UsersList(PermissionRequiredMixin, ListView):
     permission_required = 'auth.can_view_users'
@@ -51,12 +51,12 @@ class CreateUser(PermissionRequiredMixin, CreateView):
     def form_invalid(self, form):
         return super(CreateUser, self).form_invalid(form)
 
-
     def get_context_data(self, **kwargs):
         context = super(CreateUser, self).get_context_data(**kwargs)
         context_vars = {'btn_label': "CREATE",
                         'title': "Create new user",
                         'id': 'create-user-form',
+                        'consignees': Consignee.objects.all(),
                         'cancel_url': reverse('list_users_page')}
         context.update(context_vars)
         return context

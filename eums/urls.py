@@ -35,6 +35,8 @@ urlpatterns = patterns(
     url(r'^api/hook', 'eums.api.rapid_pro_hooks.hook.hook', name='hook'),
     url(r'^api/import-sales-orders/', 'eums.api.import_data.import_sales_orders_endpoint.import_sales_orders',
         name='import_sales_orders'),
+    url(r'^api/permission', 'eums.api.permissions.permissions_endpoint.check_user_permission',
+        name='permissions'),
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),

@@ -1,6 +1,6 @@
 {% load generic_tags %}
 {% for field in a_form.visible_fields %}
-    <div id="{{ field.auto_id }}_div" class="form-group" {% if field.field.attrs %}
+    <div id="{{ field.auto_id }}_div" class="form-group {% if field.field.widget.attrs.class %} {{ field.field.widget.attrs.class }} {% endif %}" {% if field.field.attrs %}
         {{ field.field.attrs | safe }} {% endif %} >
         <label for="{{ field.auto_id }}" class="col-sm-2 control-label">{{ field.label }}</label>
 

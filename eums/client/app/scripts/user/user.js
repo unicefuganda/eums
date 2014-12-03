@@ -10,6 +10,14 @@ angular.module('User', ['eums.config']).factory('UserService', function ($http) 
                     lastName: response.data.last_name
                 };
             });
+        },
+
+        checkUserPermission: function (permission) {
+            return $http.get('/api/permission?permission=' + permission).then(function () {
+                return true;
+            }, function () {
+                return false;
+            });
         }
     };
 });

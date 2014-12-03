@@ -18,7 +18,8 @@
         "STOCK_REPORT": "/api/stock-report/",
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "DATE_ANSWERS": "/api/date-answers/",
-        "IMPORT_SALES_ORDERS": "/api/import-sales-orders/"
+        "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
+        "PERMISSION": "/api/permission"
     },
     "DISTRICTGEOJSONURL": "http://localhost:8000/static/app/data/districts.json",
     "DISTRICTJSONURL": "http://localhost:8000/static/app/data/district_name.json",

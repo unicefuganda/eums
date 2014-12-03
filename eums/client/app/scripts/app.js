@@ -1,79 +1,168 @@
 'use strict';
 
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs',
-    'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'DatePicker',
-    'StockReport', 'ngToast', 'cgBusy', 'Responses', 'Contact', 'ImportData'])
+        'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'DatePicker',
+        'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $routeProvider
             .when('/', {
                 templateUrl: '/static/app/views/home.html',
-                controller: 'HomeController'
+                controller: 'HomeController',
+                resolve: {
+                    permission: function (UserService, $location) {
+                     return UserService.checkUserPermission('auth.can_view_dashboard').then(function (auth) {
+                        if (!auth) {
+                            return $location.path('/delivery-reports');
+                        }
+                     });
+                    }
+                }
             })
             .when('/delivery-reports', {
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
-                controller: 'DistributionPlanController'
+                controller: 'DistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
             })
             .when('/distribution-plans', {
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
-                controller: 'DistributionPlanController'
+                controller: 'DistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
             })
             .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
             })
             .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
             })
             .when('/delivery-report/new/:purchaseOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
             })
             .when('/distribution-plan/new/:salesOrderId-:salesOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                    }
+                }
             })
             .when('/distribution-plan/new/:salesOrderId-:salesOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                    }
+                }
             })
             .when('/distribution-plan/new/:salesOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                    }
+                }
             })
             .when('/delivery-report/proceed/', {
                 templateUrl: '/static/app/views/distribution-planning/select-items.html',
-                controller: 'NewDistributionPlanController'
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
             })
             .when('/field-verification-reports', {
                 templateUrl: '/static/app/views/distribution-reporting/distribution-reporting.html',
-                controller: 'ManualReportingController'
+                controller: 'ManualReportingController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
+                    }
+                }
             })
             .when('/field-verification-report/details', {
                 templateUrl: '/static/app/views/distribution-reporting/details.html',
-                controller: 'ManualReportingController'
+                controller: 'ManualReportingController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
+                    }
+                }
             })
             .when('/reports', {
                 templateUrl: '/static/app/views/reports/ip-stock-report.html',
-                controller: 'StockReportController'
+                controller: 'StockReportController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
+                    }
+                }
             })
             .when('/import-data', {
                 templateUrl: '/static/app/views/import-data/import-data.html',
-                controller: 'ImportDataController'
+                controller: 'ImportDataController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
+                    }
+                }
             })
             .when('/distribution-plan-responses', {
                 templateUrl: '/static/app/views/reports/responses.html',
-                controller: 'ResponsesController'
+                controller: 'ResponsesController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                    }
+                }
             })
             .when('/contacts', {
                 templateUrl: '/static/app/views/contacts/contacts.html',
-                controller: 'ContactController'
+                controller: 'ContactController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_contacts');
+                    }
+                }
             })
             .when('/response-details/:district', {
                 templateUrl: '/static/app/views/responses/index.html',
-                controller: 'ResponseController'
+                controller: 'ResponseController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
+                    }
+                }
             })
             .otherwise({
                 redirectTo: '/'

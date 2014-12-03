@@ -8,8 +8,8 @@ class UserProfileTest(TestCase):
     def test_user_fields(self):
         user_profile = UserProfile()
         fields = [str(item.attname) for item in user_profile._meta.fields]
-        self.assertEqual(4, len(fields))
-        for field in ['id', 'created', 'modified', 'user_id']:
+        self.assertEqual(5, len(fields))
+        for field in ['id', 'created', 'modified', 'user_id', 'consignee_id']:
             self.assertIn(field, fields)
 
     def test_profile_associated_with_user(self):

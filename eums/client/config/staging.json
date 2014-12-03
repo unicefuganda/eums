@@ -16,7 +16,8 @@
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
-        "IMPORT_SALES_ORDERS": "/api/import-sales-orders/"
+        "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
+        "PERMISSION": "/api/permission/"
     },
     "DISTRICTGEOJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/districts.json",
     "DISTRICTJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/district_name.json",

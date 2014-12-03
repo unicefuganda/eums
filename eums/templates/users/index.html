@@ -21,6 +21,7 @@
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
+                <th>Implementing Partner</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -31,6 +32,7 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.groups.all | display_list }}</td>
+                    <td>{{ user.user_profile.consignee| default_if_none:"&nbsp" }}</td>
                     <td>
                         {% if user.is_active %}
                             Active

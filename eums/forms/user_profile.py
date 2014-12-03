@@ -3,12 +3,14 @@ from django.contrib.auth.models import User, Group
 from django import forms
 from django.forms import ModelForm
 
-from eums.models import UserProfile
+from eums.models import UserProfile, Consignee
 
 
 class UserProfileForm(UserCreationForm):
     groups = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label=None, required=True,
                                     widget=forms.RadioSelect(attrs={'class': 'radio-roles'}), label="Role")
+    consignee = forms.ModelChoiceField(queryset=Consignee.objects.all(), empty_label="Choose an Implementing Partner",
+                                          required=False)
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
@@ -26,32 +28,22 @@ class UserProfileForm(UserCreationForm):
             user.save()
             self.save_m2m()
             user_profile, b = UserProfile.objects.get_or_create(user=user)
+            user_profile.consignee = self.cleaned_data['consignee']
             user_profile.save()
         return user
 
-    def _check_regional_admin(self, message):
-        organization = self.cleaned_data.get('organization', None)
-        region = self.cleaned_data.get('region', None)
-        if not organization:
-            self._errors['organization'] = self.error_class([message])
-        if not region:
-            self._errors['region'] = self.error_class([message])
-
-    def _check_global_admin(self, message):
-        organization = self.cleaned_data.get('organization', None)
-        if not organization:
-            self._errors['organization'] = self.error_class([message])
-
-    def _check_country_admin(self, message):
-        country = self.cleaned_data.get('country', None)
-        if not country:
-            self._errors['country'] = self.error_class([message])
+    def _check_implementing_partner(self, message):
+        consignee = self.cleaned_data.get('consignee', None)
+        if not consignee:
+            self._errors['consignee'] = self.error_class([message])
 
     def clean(self):
         group = self.cleaned_data.get('groups', None)
         message = "This field is required."
         if not group:
             self._errors['groups'] = self.error_class([message])
+        elif group.name == 'Implementing Partner':
+            self._check_implementing_partner(message)
         return super(UserProfileForm, self).clean()
 
     def clean_email(self):
@@ -62,14 +54,6 @@ class UserProfileForm(UserCreationForm):
         username = self.cleaned_data['username']
         return self._clean_attribute(User, username=username)
 
-    def clean_country(self):
-        country = self.cleaned_data.get('country', None)
-        region = self.cleaned_data.get('region', None)
-        if (country is not None and region is not None) and country not in region.countries.all():
-            message = "%s does not belong to region %s" % (country.name, region.name)
-            self._add_error_country_messages(message)
-        return country
-
     def _clean_attribute(self, _class, **kwargs):
         attribute_name = kwargs.keys()[0]
         data_attr = kwargs[attribute_name]
@@ -79,10 +63,6 @@ class UserProfileForm(UserCreationForm):
             self._errors[attribute_name] = self.error_class([message])
             del self.cleaned_data[attribute_name]
         return data_attr
-
-    def _add_error_country_messages(self, message):
-        del self.cleaned_data['country']
-        self._errors['country'] = self.error_class([message])
 
 
 class EditUserProfileForm(ModelForm):

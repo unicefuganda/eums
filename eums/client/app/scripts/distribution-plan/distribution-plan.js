@@ -17,7 +17,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         if($scope.deliveryReportPage){
             $scope.pageTitle = 'Reported By IP';
-            $scope.searchPromptText = 'Search by PO number, date or SO Number';
+            $scope.searchPromptText = 'Search by PO number, date or programme';
             $scope.documentColumnTitle = 'Purchase Order Number';
             $scope.descriptionColumnTitle = 'Programme';
             $scope.descriptionColumnOrder = 'programme';
