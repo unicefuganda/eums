@@ -21,10 +21,11 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.setup_actors()
         self.setup_sales_orders_and_items()
         self.setup_distribution_plans()
-        self.setup_responses()
 
     def test_gets_stock_value_for_all_purchase_orders_for_an_ip(self):
         self.setup_purchase_orders()
+        self.setup_responses()
+
         expected_data = [{'document_number': unicode(self.po_one.order_number),
                           'total_value_received': Decimal('60.0000'),
                           'total_value_dispensed': Decimal('20.0000'),
@@ -67,6 +68,13 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.assertListEqual(response.data, expected_data)
 
     def test_returns_empty_list_if_no_matching_purchase_order_linked_to_the_line_item_exists(self):
+        self.setup_responses()
+        endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
+        response = self.client.get(endpoint_url)
+        self.assertListEqual(response.data, [])
+
+    def test_returns_empty_list_if_no_runs_where_created_for_the_line_items(self):
+        self.setup_purchase_orders()
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
         self.assertListEqual(response.data, [])

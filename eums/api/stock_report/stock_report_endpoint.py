@@ -15,7 +15,7 @@ class StockReport(APIView):
 
 def aggregate_line_items_into_stock_report(stock_report, line_item):
     purchase_order_item = line_item.item.purchase_order_item()
-    if purchase_order_item:
+    if purchase_order_item and line_item.latest_run():
         stock_report.append(_get_report_details_for_line_item(line_item))
     return stock_report
 
