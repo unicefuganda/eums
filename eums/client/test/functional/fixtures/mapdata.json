@@ -3499,7 +3499,7 @@
     {
         "fields": {
             "date": "2014-01-01",
-            "order_number": "ODER12345",
+            "order_number": "12345",
             "description": "sample sales order",
             "programme": 1
         },
