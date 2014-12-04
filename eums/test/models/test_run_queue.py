@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from eums.models import RunQueue
 from eums.test.factories.RunQueueFactory import RunQueueFactory
-from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 

@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
+from decimal import Decimal
 from xlutils.view import View
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem
-from datetime import datetime
+from datetime import datetime, date
 
 
 def _clean_input(value):
@@ -99,13 +100,15 @@ class SalesOrderFacade(Facade):
         order_item.sales_order = order
         sales_order_item, created = Item.objects.get_or_create(material_code=item['material_code'],
                                                                description=item['item_description'])
+        order_date = self._get_as_date(item['date'])
         order_item.item = sales_order_item
+        order_item.item_number = item['item_number']
         order_item.description = item['item_description']
-        order_item.quantity = item['quantity']
-        order_item.issue_date = item['issue_date'].date()
-        order_item.delivery_date = item['delivery_date'].date()
-        order_item.net_price = item['net_price']
-        order_item.net_value = item['net_value']
+        order_item.quantity = int(item['quantity'])
+        order_item.issue_date = order_date
+        order_item.delivery_date = order_date
+        order_item.net_value = Decimal(item['net_value'])
+        order_item.net_price = order_item.net_value / order_item.quantity
         order_item.save()
 
     def _append_new_order(self, item_dict, order_list, order_number):
@@ -117,8 +120,8 @@ class SalesOrderFacade(Facade):
     def _create_new_order(self, order):
         new_order = SalesOrder()
         new_order.order_number = order['order_number']
-        new_order.date = order['items'][0]['issue_date'].date()
-        programme, created = Programme.objects.get_or_create(name=order['programme_name'])
+        new_order.date = self._get_as_date(order['items'][0]['date'])
+        programme, created = Programme.objects.get_or_create(wbs_element_ex=order['programme_wbs_element'])
         new_order.programme = programme
         new_order.save()
         return new_order
@@ -127,6 +130,13 @@ class SalesOrderFacade(Facade):
     def _trim_programme_wbs(extended_programme_wbs):
         wbs_element_list = extended_programme_wbs.split('/')[:4]
         return '/'.join(wbs_element_list)
+
+    @staticmethod
+    def _get_as_date(raw_value):
+        if type(raw_value) is date:
+            return raw_value.date()
+        date_args = raw_value.split('-')
+        return date(int(date_args[0]), int(date_args[1]), int(date_args[2]))
 
 
 class ReleaseOrderFacade(Facade):
