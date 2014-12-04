@@ -1,6 +1,8 @@
 from unittest import TestCase
+from django.db import transaction
 
 from eums.models import SalesOrder
+from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 
 class SalesOrderTest(TestCase):
@@ -11,3 +13,10 @@ class SalesOrderTest(TestCase):
 
         for field in ['order_number', 'programme', 'date', 'description']:
             self.assertIn(field, fields_in_sales_order)
+
+    def test_no_two_sales_orders_should_have_the_same_order_number(self):
+        self.create_sales_order()
+        self.assertRaises(Exception, self.create_sales_order)
+
+    def create_sales_order(self):
+        SalesOrderFactory(order_number=123)
