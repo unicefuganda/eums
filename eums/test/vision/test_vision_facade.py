@@ -55,7 +55,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         Programme.objects.all().delete()
         User.objects.all().delete()
 
-    def test_should_load_sales_order_data(self):
+    def test_should_load_sales_order_data_excluding_summary_rows(self):
         sales_order_data = self.facade.load_order_data()
         self.assertEqual(sales_order_data, self.imported_sales_order_data)
 
@@ -180,7 +180,12 @@ class TestSalesOrdersVisionFacade(TestCase):
                           '4380/A0/04/106/004/010', 'KC130014' '', '2630', '20476.4', '2630', '0 ', '0', '1115.9', '',
                           '', '@DF@', '', 'Yes', 'No', '0', '0', '0', '20487.7', '']
 
-        for row_index, row in enumerate([self.header, self.first_row, self.second_row, self.third_row]):
+        self.summary_row = [20147028, '', '', '', '', '21592.3', '', '', '', '', '', '', '', '', '' '', '', '20476.4',
+                            '', '0', '0', '1115.9', '', '', '', '', '', '', '', '', '', '', '']
+
+        rows = [self.header, self.first_row, self.second_row, self.third_row, self.summary_row]
+
+        for row_index, row in enumerate(rows):
             for col_index, item in enumerate(row):
                 sheet.write(row_index, col_index, item)
 

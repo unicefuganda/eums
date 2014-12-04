@@ -59,16 +59,22 @@ class Facade():
         order_list = []
         for row in sheet:
             item_dict = self._filter_relevant_data(relevant_data, row)
-
-            order_number = item_dict['order_number']
-            order_index = self._index_in_list(order_number, order_list, 'order_number')
-            if order_index > -1:
-                self._remove_order_level_data_from(item_dict)
-                order_list[order_index].get('items').append(item_dict)
-            else:
-                self._append_new_order(item_dict, order_list, order_number)
+            if not self._is_summary_row(item_dict):
+                order_number = item_dict['order_number']
+                order_index = self._index_in_list(order_number, order_list, 'order_number')
+                if order_index > -1:
+                    self._remove_order_level_data_from(item_dict)
+                    order_list[order_index].get('items').append(item_dict)
+                else:
+                    self._append_new_order(item_dict, order_list, order_number)
 
         return order_list
+
+    def _is_summary_row(self, row):
+        for column in self.RELEVANT_DATA.values():
+            if row[column] is '':
+                return True
+        return False
 
     def _create_order_from_dict(self, order):
         new_order = self._create_new_order(order)
