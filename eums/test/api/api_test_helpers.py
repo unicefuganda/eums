@@ -94,7 +94,7 @@ def create_distribution_plan_line_item(test_case, item_details=None):
 def create_sales_order(test_case, sales_order_details=None):
     if not sales_order_details:
         programme = create_programme()
-        sales_order_details = {'order_number': "23E3EA", 'date': datetime.date(2014, 10, 5),
+        sales_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5),
                                'programme': programme.id, 'description': 'test'}
 
     response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')

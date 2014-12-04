@@ -4,7 +4,7 @@ from eums.models import Programme
 
 class SalesOrder(models.Model):
     programme = models.ForeignKey(Programme)
-    order_number = models.CharField(max_length=255)
+    order_number = models.IntegerField()
     date = models.DateField(auto_now=False)
     description = models.CharField(max_length=255, null=True)
 

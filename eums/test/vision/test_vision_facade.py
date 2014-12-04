@@ -19,7 +19,7 @@ class TestSalesOrdersVisionFacade(TestCase):
     def setUp(self):
         self.sales_order_file_location = 'sales_orders.xlsx'
         self.create_sales_order_workbook()
-        self.imported_sales_order_data = [{'order_number': u'20146879',
+        self.imported_sales_order_data = [{'order_number': 20146879,
                                            'programme_wbs_element': '4380/A0/04/105',
                                            'items': [
                                                {'material_code': u'S0009113',
@@ -35,7 +35,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                                 'net_value': u'2638.32',
                                                 'quantity': u'12'}], },
 
-                                          {'order_number': u'20147028',
+                                          {'order_number': 20147028,
                                            'programme_wbs_element': u'4380/A0/04/106',
                                            'items': [
                                                {'material_code': u'S7800001',
@@ -76,6 +76,27 @@ class TestSalesOrdersVisionFacade(TestCase):
 
         self.assert_sales_order_items_were_created(item_one, item_three, item_two)
 
+    def test_should_set_net_price_to_zero_if_quantity_of_an_item_is_zero(self):
+        ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
+        item_one = ItemFactory(material_code='S0009113', description='SQFlex 3-10 Pump C/W 1.4KW')
+
+        self.facade.save_order_data([{'order_number': 20146879,
+                                      'programme_wbs_element': '4380/A0/04/105',
+                                      'items': [
+                                          {'material_code': u'S0009113',
+                                           'item_number': u'10',
+                                           'item_description': u'SQFlex 3-10 Pump C/W 1.4KW',
+                                           'date': u'2014-01-03',
+                                           'net_value': u'3179.47',
+                                           'quantity': u'0'}]}])
+
+        order_item_one = SalesOrderItem(sales_order=SalesOrder.objects.all()[0], item_number=10, item=item_one,
+                                        quantity=0, net_value=Decimal('3179.4700'), net_price=Decimal('0.00'),
+                                        issue_date=datetime.date(2014, 1, 3), delivery_date=datetime.date(2014, 1, 3),
+                                        description=u'SQFlex 3-10 Pump C/W 1.4KW')
+
+        self.assert_sales_order_items_are_equal(order_item_one, SalesOrderItem.objects.all()[0])
+
     def test_should_load_sales_orders_from_excel_and_save(self):
         self.assertEqual(SalesOrder.objects.count(), 0)
 
@@ -88,9 +109,9 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.facade.save_order_data.assert_called_with(self.imported_sales_order_data)
 
     def assert_sales_orders_were_created(self, programme_one, programme_two):
-        sales_order_one = SalesOrder(order_number=unicode(20146879), programme=programme_one,
+        sales_order_one = SalesOrder(order_number=20146879, programme=programme_one,
                                      date=datetime.date(2014, 1, 3))
-        sales_order_two = SalesOrder(order_number=unicode(20147028), programme=programme_two,
+        sales_order_two = SalesOrder(order_number=20147028, programme=programme_two,
                                      date=datetime.date(2014, 1, 9))
 
         self.assert_sales_orders_are_equal(sales_order_one, SalesOrder.objects.all()[0])
@@ -144,17 +165,17 @@ class TestSalesOrdersVisionFacade(TestCase):
                        'Delivery Completed', 'Final Invoice', 'WBS_Supply_expenditure', 'WBS_Freight_expenditure',
                        'WBS_Others_expenditure', 'PO/STO Amount', 'Purchasing Document']
 
-        self.first_row = ['20146879', '10', 'S0009113', '1', '1', '3179.47', 'Emergency:Kyangwali', '2014-01-03',
+        self.first_row = [20146879, '10', 'S0009113', '1', '1', '3179.47', 'Emergency:Kyangwali', '2014-01-03',
                           '2014', '2014-01-03', 'SQFlex 3-10 Pump C/W 1.4KW', '438', 'UGANDA', '4380/A0/04/105/007/020',
                           'SM130359' '', '0', '0', '0', '0 ', '0', '3179.47', '', '', '@02@', '', 'Yes', 'No', '0',
                           '0', '0', '2953.79', '']
 
-        self.second_row = ['20146879', '20', 'SL006173', '12', '12', '2638.32', 'Emergency:Kyangwali', '2014-01-03',
+        self.second_row = [20146879, '20', 'SL006173', '12', '12', '2638.32', 'Emergency:Kyangwali', '2014-01-03',
                            '2014', '2014-01-03', 'Solar Power System', '438', 'UGANDA',
                            '4380/A0/04/105/007/020', 'SM130359' '', '0', '0', '0', '0 ', '0', '2638.32', '', '',
                            '@02@', '', 'Yes', 'No', '0', '0', '0', '2451.02', '']
 
-        self.third_row = ['20147028', '10', 'S7800001', '2630', '2630', '21592.3', '1.4 IKA Vitamin A', '2014-01-09',
+        self.third_row = [20147028, '10', 'S7800001', '2630', '2630', '21592.3', '1.4 IKA Vitamin A', '2014-01-09',
                           '2014', '2014-01-09', 'Retinol 100,000IU soft gel.caps/PAC-500', '438', 'UGANDA',
                           '4380/A0/04/106/004/010', 'KC130014' '', '2630', '20476.4', '2630', '0 ', '0', '1115.9', '',
                           '', '@DF@', '', 'Yes', 'No', '0', '0', '0', '20487.7', '']

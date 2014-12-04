@@ -108,7 +108,7 @@ class SalesOrderFacade(Facade):
         order_item.issue_date = order_date
         order_item.delivery_date = order_date
         order_item.net_value = Decimal(item['net_value'])
-        order_item.net_price = order_item.net_value / order_item.quantity
+        order_item.net_price = order_item.net_value / order_item.quantity if order_item.quantity else 0
         order_item.save()
 
     def _append_new_order(self, item_dict, order_list, order_number):

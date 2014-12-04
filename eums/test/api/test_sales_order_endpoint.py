@@ -11,7 +11,7 @@ ENDPOINT_URL = BACKEND_URL + 'sales-order/'
 class SalesOrderEndPointTest(AuthenticatedAPITestCase):
     def test_should_create_sales_order(self):
         programme = create_programme()
-        sales_order_details = {'order_number': "25432SW", 'date': datetime.date(2014, 10, 5),
+        sales_order_details = {'order_number': 345553, 'date': datetime.date(2014, 10, 5),
                                'programme': programme.id, 'description': 'test'}
 
         response = self.client.post(ENDPOINT_URL, sales_order_details, format='json')
