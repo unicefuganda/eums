@@ -17,6 +17,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
     def test_should_provide_summary_data_from_node_response(self):
         ip_node = DistributionPlanNodeFactory()
         multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
+        multiple_choice_question_two = MultipleChoiceQuestionFactory(label='satisfiedWithProduct')
         yes_option = OptionFactory(text='Yes', question=multiple_choice_question)
         OptionFactory(text='No', question=multiple_choice_question)
 
@@ -33,6 +34,9 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=line_item_run,
                                                           question=multiple_choice_question,
                                                           value=yes_option)
+        multiple_answer_two = MultipleChoiceAnswerFactory(line_item_run=line_item_run,
+                                                          question=multiple_choice_question_two,
+                                                          value=yes_option)
         numeric_answer_one = NumericAnswerFactory(line_item_run=line_item_run, value=80, question=numeric_question)
 
         url = "%s%d/" % (ENDPOINT_URL, node.consignee.id)
@@ -47,6 +51,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
                          u'ip': node.get_ip(),
                          u'%s' % numeric_question.label: u'%s' % numeric_answer_one.format(),
                          u'%s' % multiple_choice_question.label: u'%s' % multiple_answer_one.format(),
+                         u'%s' % multiple_choice_question_two.label: u'%s' % multiple_answer_two.format(),
                          u'programme': {u'id': programme.id, u'name': programme.name}}
 
         self.assertEqual(response.status_code, 200)
