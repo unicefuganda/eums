@@ -1,5 +1,5 @@
 from unittest import TestCase
-from django.db import transaction
+from django.db import IntegrityError
 
 from eums.models import SalesOrder
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -16,7 +16,7 @@ class SalesOrderTest(TestCase):
 
     def test_no_two_sales_orders_should_have_the_same_order_number(self):
         self.create_sales_order()
-        self.assertRaises(Exception, self.create_sales_order)
+        self.assertRaises(IntegrityError, self.create_sales_order)
 
     def create_sales_order(self):
         SalesOrderFactory(order_number=123)
