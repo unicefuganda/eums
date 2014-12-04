@@ -11,6 +11,8 @@ class TextAnswer(models.Model):
     def format(self):
         return self.value
 
+    def __unicode__(self):
+        return '%s' % self.value
 
 class NumericAnswer(models.Model):
     line_item_run = models.ForeignKey(NodeLineItemRun)
@@ -20,6 +22,9 @@ class NumericAnswer(models.Model):
     def format(self):
         return u'%s' % self.value
 
+    def __unicode__(self):
+        return '%s' % self.value
+
 
 class MultipleChoiceAnswer(models.Model):
     line_item_run = models.ForeignKey(NodeLineItemRun)
@@ -28,3 +33,6 @@ class MultipleChoiceAnswer(models.Model):
 
     def format(self):
         return self.value.text
+
+    def __unicode__(self):
+        return '%s' % self.value.text

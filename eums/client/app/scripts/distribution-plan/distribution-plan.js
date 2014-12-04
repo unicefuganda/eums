@@ -15,14 +15,14 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
 
         $scope.deliveryReportPage = $location.path() === '/delivery-reports';
 
-        if($scope.deliveryReportPage){
+        if ($scope.deliveryReportPage) {
             $scope.pageTitle = 'Reported By IP';
             $scope.searchPromptText = 'Search by PO number, date or programme';
             $scope.documentColumnTitle = 'Purchase Order Number';
             $scope.descriptionColumnTitle = 'Programme';
             $scope.descriptionColumnOrder = 'programme';
         }
-        else{
+        else {
             $scope.pageTitle = 'Sales Orders';
             $scope.searchPromptText = 'Search by document number, date or description';
             $scope.documentColumnTitle = 'Document Number';
@@ -40,12 +40,12 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            if($scope.deliveryReportPage){
+            if ($scope.deliveryReportPage) {
                 PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
                     $scope.salesOrders = purchaseOrders.sort();
                 });
             }
-            else{
+            else {
                 SalesOrderService.getSalesOrders().then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
                     $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
@@ -161,7 +161,6 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             var responses = [];
             if (district) {
                 responsesWithLocation.forEach(function (responseWithLocation) {
-
                     if (district.toLowerCase() === responseWithLocation.location.toLowerCase()) {
                         responses = responseWithLocation.consigneeResponses;
                     }

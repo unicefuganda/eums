@@ -13,6 +13,7 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan'])
         $scope.allResponsesMap = [];
         $scope.data = {topLevelResponses: [], allResponsesLocationMap: [], totalStats: {}, responses: [], district: ''};
         $scope.isFiltered = false;
+        $scope.notDeliveryStatus = false;
 
 
         $scope.showDetailedResponses = function () {

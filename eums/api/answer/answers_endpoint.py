@@ -9,6 +9,17 @@ class ResponseSerializer(object):
     def __init__(self, consignee_id=None):
         self.consignee_id = consignee_id
 
+    def add_product_received_field(self, responses):
+        if 'productReceived' not in responses:
+            responses['productReceived'] = 'No'
+        return responses
+
+    def add_product_satisfied_field(self, responses):
+        if 'satisfiedWithProduct' not in responses:
+            if responses['productReceived'].lower() == 'yes':
+                responses['satisfiedWithProduct'] = 'No'
+        return responses
+
     def get_all_nodes(self):
         all_nodes = DistributionPlanNode.objects.all()
         if self.consignee_id:
@@ -30,7 +41,8 @@ class ResponseSerializer(object):
                                                 'amountSent': item_run.node_line_item.targeted_quantity})
                 for response in responses:
                     formatted_run_responses.update({response.question.label: response.format()})
-                result.append(formatted_run_responses)
+                formatted_run_responses_with_product_received = self.add_product_received_field(formatted_run_responses)
+                result.append(self.add_product_satisfied_field(formatted_run_responses_with_product_received))
         return result
 
 

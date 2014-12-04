@@ -137,7 +137,7 @@
                 scope.reponsesFromDb = responsesWithLocation;
                 markersGroup.clearLayers && markersGroup.clearLayers();
 
-                if (scope.isFiltered) {
+                if (scope.isFiltered || scope.notDeliveryStatus) {
                     scope.allResponsesMap = scope.data.allResponsesLocationMap
                 } else {
                     scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
@@ -152,6 +152,7 @@
                 });
                 markersGroup = L.layerGroup(allMarkers);
                 markersGroup.addTo(map);
+                scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap);
             });
         }
 
@@ -286,6 +287,7 @@
                     $("#select-program").select2("val", "");
                     $("#select-ip").select2("val", "");
                     scope.filter = {programme: '', ip: '', year: ''};
+                    scope.dateFilter = {from: '', to: ''};
                     scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
                 };
 
@@ -394,7 +396,7 @@
                         window.map.addHeatMap(scope);
                     }
 
-                    if (scope.isFiltered) {
+                    if (scope.isFiltered || scope.notDeliveryStatus) {
                         scope.allResponsesMap = scope.data.allResponsesLocationMap
                     } else {
                         scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
@@ -468,18 +470,17 @@
                 }
             }
         }).directive('deliveryStatus', function (DistributionPlanService) {
-            function removeEmptyArray(filteredResponses) {
-                return filteredResponses.filter(function (response) {
-                    return response.length > 0;
-                });
-            }
+
 
             return {
                 restrict: 'A',
                 scope: false,
                 link: function (scope) {
                     scope.$watchCollection('deliveryStatus', function (newValue) {
-                        var responsesToPlot = scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.allResponsesMap;
+                        var responsesToPlot = scope.data.topLevelResponses.length ?
+                            scope.data.topLevelResponses : scope.notDeliveryStatus ?
+                            scope.reponsesFromDb : !scope.notDeliveryStatus ?
+                            scope.reponsesFromDb : scope.allResponsesMap;
 
                         var receivedResponses = [];
                         var notReceivedResponses = [];
@@ -499,14 +500,15 @@
                             }
 
                             if (!newValue.received && !newValue.notDelivered && !newValue.receivedWithIssues) {
-                                scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : [];
+                                scope.notDeliveryStatus = true;
+                                scope.data.allResponsesLocationMap = [];
                                 return;
                             }
 
                             if (newValue.received) {
                                 receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived && response.productReceived.toLowerCase() === 'yes';
+                                        return response.productReceived.toLowerCase() === 'yes';
                                     });
                                 });
                             }
@@ -514,7 +516,7 @@
                             if (newValue.notDelivered) {
                                 notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived && response.productReceived.toLowerCase() === 'no';
+                                        return response.productReceived.toLowerCase() === 'no';
                                     });
                                 });
                             }
@@ -522,15 +524,18 @@
                             if (newValue.receivedWithIssues) {
                                 receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
                                     return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() !== 'yes';
+                                        return Boolean(response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() === 'no' && response.productReceived.toLowerCase() === 'yes');
                                     });
                                 });
                             }
-                            var deliveryStatusResponses = receivedResponses.concat(notReceivedResponses, receivedResponsesWithIssues);
 
-                            scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(deliveryStatusResponses)));
+                            var received = _.flatten(receivedResponses).length ? _.flatten(receivedResponses) : _.flatten(receivedResponsesWithIssues);
+                            var deliveryStatusResponses = notReceivedResponses.concat(received);
+
+                            scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
 
                         });
+
                     });
                 }
             }
@@ -591,3 +596,4 @@
 
 })
 (angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'DistributionPlan', 'DatePicker', 'eums.mapFilter', 'map.layers']));
+
