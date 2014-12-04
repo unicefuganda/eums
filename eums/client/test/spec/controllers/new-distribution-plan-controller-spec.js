@@ -475,7 +475,7 @@ describe('NewDistributionPlanController', function () {
                 modeOfDelivery: '',
                 remark: '',
                 contactPerson: '',
-                track: true,
+                track: false,
                 forEndUser: false
             };
 
@@ -565,12 +565,15 @@ describe('NewDistributionPlanController', function () {
                     item: 1,
                     targetQuantity: 10,
                     plannedDistributionDate: '02/03/2014',
-                    remark: 'Remark'
+                    remark: 'Remark',
+                    track: true
                 };
 
                 scope.distributionPlanLineItems = [uiPlanItem];
+                scope.track = true;
                 scope.$apply();
             });
+
 
             describe(' and a distribution plan item has not been saved before, ', function () {
                 var nodeId;
@@ -635,7 +638,7 @@ describe('NewDistributionPlanController', function () {
                     expect(uiPlanItem.nodeId).toBe(nodeId);
                 });
 
-                it('a distribution plan line item linked to a saved node should be saved', function () {
+                it('a distribution plan line item linked to a saved node should be saved, with it\'s track property picked from the scope', function () {
                     scope.saveDistributionPlanLineItems();
                     scope.$apply();
 
@@ -644,7 +647,8 @@ describe('NewDistributionPlanController', function () {
                         targeted_quantity: uiPlanItem.targetQuantity,
                         distribution_plan_node: nodeId,
                         planned_distribution_date: distributionDateFormatedForSave,
-                        remark: uiPlanItem.remark
+                        remark: uiPlanItem.remark,
+                        track: uiPlanItem.track
                     });
                 });
 
@@ -699,7 +703,6 @@ describe('NewDistributionPlanController', function () {
                     var lineItemId = 1;
 
                     uiPlanItem.lineItemId = lineItemId;
-
                     scope.saveDistributionPlanLineItems();
                     scope.$apply();
 
@@ -711,7 +714,8 @@ describe('NewDistributionPlanController', function () {
                         targeted_quantity: uiPlanItem.targetQuantity,
                         distribution_plan_node: nodeId,
                         planned_distribution_date: distributionDateFormatedForSave,
-                        remark: uiPlanItem.remark
+                        remark: uiPlanItem.remark,
+                        track: uiPlanItem.track
                     });
                 });
             });

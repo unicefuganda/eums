@@ -233,7 +233,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 contactPerson: '',
                 modeOfDelivery: '',
                 remark: '',
-                track: true,
+                track: false,
                 forEndUser: false
             };
 
@@ -319,7 +319,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 targeted_quantity: nodeLineItem.targetQuantity,
                 distribution_plan_node: nodeId,
                 planned_distribution_date: formatDateForSave(plannedDate),
-                remark: nodeLineItem.remark
+                remark: nodeLineItem.remark,
+                track: $scope.track
             };
 
             if (lineItemId) {
