@@ -112,7 +112,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                                 var formattedSalesOrderItem = {
                                     display: result.sales_order_item.item.description,
                                     materialCode: result.sales_order_item.item.material_code,
-                                    quantity: $scope.selectedSalesOrderItem.quantity ? $scope.selectedSalesOrderItem.quantity : result.sales_order_item.quantity,
+                                    quantity: $scope.selectedSalesOrderItem ? $scope.selectedSalesOrderItem.quantity : result.sales_order_item.quantity,
                                     unit: result.sales_order_item.item.unit.name,
                                     information: result.sales_order_item
                                 };
