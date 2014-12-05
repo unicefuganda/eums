@@ -12,6 +12,7 @@
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
         "PURCHASE_ORDER": "/api/purchase-order/",
         "PURCHASE_ORDER_ITEM": "/api/purchase-order-item/",
+        "CONSIGNEE_PURCHASE_ORDERS": "/api/consignee-purchase-orders/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
         "RESPONSES": "/api/responses/",

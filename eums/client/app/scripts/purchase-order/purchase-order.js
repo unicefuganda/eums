@@ -9,6 +9,11 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder'])
                     return response.data;
                 });
             },
+            getConsigneePurchaseOrders: function (consigneeId) {
+                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE_PURCHASE_ORDERS + consigneeId).then(function (response) {
+                    return response.data;
+                });
+            },
             getPurchaseOrder: function (id) {
                 return $http.get(EumsConfig.BACKEND_URLS.PURCHASE_ORDER + id).then(function (response) {
                     var order = response.data;

@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, $sorter) {
+angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User'])
+    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.contact = {};
@@ -40,9 +40,18 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            if ($scope.deliveryReportPage) {
-                PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
-                    $scope.salesOrders = purchaseOrders.sort();
+            if($scope.deliveryReportPage){
+                UserService.getCurrentUser().then(function (user){
+                    if(user.consignee_id){
+                        PurchaseOrderService.getConsigneePurchaseOrders(user.consignee_id).then(function (purchaseOrders) {
+                            $scope.salesOrders = purchaseOrders.sort();
+                        });
+                    }
+                    else{
+                        PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
+                            $scope.salesOrders = purchaseOrders.sort();
+                        });
+                    }
                 });
             }
             else {
