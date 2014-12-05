@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
 from xlutils.view import View
-from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem
+from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem, \
+    PurchaseOrder, PurchaseOrderItem
 from datetime import datetime, date
 
 
@@ -50,11 +51,6 @@ class Facade():
                 return index
         return -1
 
-    @staticmethod
-    def _remove_order_level_data_from(item_dict):
-        del item_dict['order_number']
-        del item_dict['programme_wbs_element']
-
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         order_list = []
         for row in sheet:
@@ -82,6 +78,13 @@ class Facade():
         for item in order['items']:
             self._create_new_item(item, new_order)
 
+    @staticmethod
+    def _get_as_date(raw_value):
+        if type(raw_value) is date:
+            return raw_value.date()
+        date_args = raw_value.split('-')
+        return date(int(date_args[0]), int(date_args[1]), int(date_args[2]))
+
     @abstractmethod
     def _append_new_order(self, item_dict, order_list, order_number):
         pass
@@ -92,6 +95,10 @@ class Facade():
 
     @abstractmethod
     def _create_new_item(self, item, order):
+        pass
+
+    @abstractmethod
+    def _remove_order_level_data_from(self, item_dict):
         pass
 
 
@@ -132,49 +139,63 @@ class SalesOrderFacade(Facade):
         new_order.save()
         return new_order
 
+    def _remove_order_level_data_from(self, item_dict):
+        del item_dict['order_number']
+        del item_dict['programme_wbs_element']
+
     @staticmethod
     def _trim_programme_wbs(extended_programme_wbs):
         wbs_element_list = extended_programme_wbs.split('/')[:4]
         return '/'.join(wbs_element_list)
 
-    @staticmethod
-    def _get_as_date(raw_value):
-        if type(raw_value) is date:
-            return raw_value.date()
-        date_args = raw_value.split('-')
-        return date(int(date_args[0]), int(date_args[1]), int(date_args[2]))
-
 
 class ReleaseOrderFacade(Facade):
     RELEVANT_DATA = {0: 'order_number', 3: 'recommended_delivery_date', 4: 'material_code', 5: 'description',
-                     6: 'quantity', 7: 'value', 11: 'consignee', 14: 'sales_order', 15: 'purchase_order', 22: 'waybill'}
+                     6: 'quantity', 7: 'value', 11: 'consignee', 14: 'so_number', 15: 'purchase_order', 22: 'waybill',
+                     40: 'so_item_number', 41: 'po_item_number'}
 
     def _create_new_order(self, order):
         new_order = ReleaseOrder()
         new_order.order_number = order['order_number']
-        new_order.sales_order = SalesOrder.objects.get(order_number=order['sales_order'])
+        new_order.sales_order = SalesOrder.objects.get(order_number=order['so_number'])
         new_order.waybill = order['waybill']
-        new_order.delivery_date = datetime.strptime(order['recommended_delivery_date'], "%d/%m/%Y")
+        new_order.delivery_date = self._get_as_date(order['recommended_delivery_date'])
         new_order.consignee = Consignee.objects.get(customer_id=order['consignee'])
         new_order.save()
         return new_order
 
     def _create_new_item(self, item, order):
+        purchase_order, _ = PurchaseOrder.objects.get_or_create(order_number=item['purchase_order'],
+                                                                sales_order=order.sales_order, date=order.delivery_date)
+
+        sales_order_item = order.sales_order.salesorderitem_set.get(item_number=item['so_item_number'])
+
+        purchase_order_item, _ = PurchaseOrderItem.objects.get_or_create(purchase_order=purchase_order,
+                                                                         item_number=item['po_item_number'],
+                                                                         sales_order_item=sales_order_item)
         order_item = ReleaseOrderItem()
         order_item.release_order = order
-        order_item.purchase_order = item['purchase_order']
+        order_item.purchase_order_item = purchase_order_item
         order_item.item = Item.objects.get(material_code=item['material_code'])
         order_item.quantity = float(item['quantity'])
         order_item.value = float(item['value'])
         order_item.save()
 
     def _append_new_order(self, item_dict, order_list, order_number):
-        sales_order = item_dict['sales_order']
+        sales_order = item_dict['so_number']
         consignee = item_dict['consignee']
         waybill = item_dict['waybill']
         recommended_delivery_date = item_dict['recommended_delivery_date']
-        order_list.append({'sales_order': sales_order, 'order_number': order_number, 'consignee': consignee,
+        self._remove_order_level_data_from(item_dict)
+        order_list.append({'so_number': sales_order, 'order_number': order_number, 'consignee': consignee,
                            'recommended_delivery_date': recommended_delivery_date, 'waybill': waybill,
                            'items': [item_dict]})
+
+    def _remove_order_level_data_from(self, item_dict):
+        del item_dict['order_number']
+        del item_dict['so_number']
+        del item_dict['consignee']
+        del item_dict['waybill']
+        del item_dict['recommended_delivery_date']
 
 
