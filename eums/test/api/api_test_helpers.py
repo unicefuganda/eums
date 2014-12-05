@@ -108,8 +108,8 @@ def create_release_order(test_case, release_order_details=None):
         sales_order = SalesOrderFactory()
         consignee = ConsigneeFactory()
 
-        release_order_details = {'order_number': "232345434", 'delivery_date': datetime.date(2014, 10, 5),
-                                 'sales_order': sales_order.id, 'consignee': consignee.id, 'waybill': '234256'}
+        release_order_details = {'order_number': 232345434, 'delivery_date': datetime.date(2014, 10, 5),
+                                 'sales_order': sales_order.id, 'consignee': consignee.id, 'waybill': 234256}
 
     response = test_case.client.post(RELEASE_ORDER_ENDPOINT_URL, release_order_details, format='json')
 

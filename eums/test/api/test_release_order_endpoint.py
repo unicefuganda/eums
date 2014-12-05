@@ -17,8 +17,8 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
         sales_order = SalesOrderFactory()
         consignee = ConsigneeFactory()
 
-        release_order_details = {'order_number': "232345434", 'delivery_date': '2014-10-05',
-                                 'sales_order': sales_order.id, 'consignee': consignee.id, 'waybill': '234256'}
+        release_order_details = {'order_number': 232345434, 'delivery_date': '2014-10-05',
+                                 'sales_order': sales_order.id, 'consignee': consignee.id, 'waybill': 234256}
 
         created_release_order = create_release_order(self, release_order_details=release_order_details)
 

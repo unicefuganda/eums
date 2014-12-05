@@ -3,10 +3,10 @@ from eums.models import SalesOrder, Consignee
 
 
 class ReleaseOrder(models.Model):
-    order_number = models.CharField(max_length=255)
+    order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder)
     consignee = models.ForeignKey(Consignee)
-    waybill = models.CharField(max_length=100)
+    waybill = models.IntegerField()
     delivery_date = models.DateField(auto_now=False)
 
     class Meta:
