@@ -160,19 +160,24 @@ class ReleaseOrderFacade(Facade):
                      6: 'quantity', 7: 'value', 11: 'consignee', 14: 'so_number', 15: 'purchase_order', 22: 'waybill',
                      40: 'so_item_number', 41: 'po_item_number'}
 
-    def _create_new_order(self, order):
-        new_order = ReleaseOrder()
-        new_order.order_number = order['order_number']
-        new_order.sales_order = SalesOrder.objects.get(order_number=order['so_number'])
-        new_order.waybill = order['waybill']
-        new_order.delivery_date = self._get_as_date(order['recommended_delivery_date'])
-        new_order.consignee = Consignee.objects.get(customer_id=order['consignee'])
-        new_order.save()
-        return new_order
+    def _create_new_order(self, order_dict):
+        matching_release_orders = ReleaseOrder.objects.filter(order_number=order_dict['order_number'])
+        if len(matching_release_orders):
+            return matching_release_orders[0]
+
+        sales_order = SalesOrder.objects.get(order_number=order_dict['so_number'])
+        return ReleaseOrder.objects.create(order_number=order_dict['order_number'], waybill=order_dict['waybill'],
+                                           delivery_date=self._get_as_date(order_dict['recommended_delivery_date']),
+                                           consignee=Consignee.objects.get(customer_id=order_dict['consignee']),
+                                           sales_order=sales_order)
 
     def _create_new_item(self, item, order):
-        purchase_order, _ = PurchaseOrder.objects.get_or_create(order_number=item['purchase_order'],
-                                                                sales_order=order.sales_order, date=order.delivery_date)
+        matching_purchase_orders = PurchaseOrder.objects.filter(order_number=item['purchase_order'])
+        if len(matching_purchase_orders):
+            purchase_order = matching_purchase_orders[0]
+        else:
+            purchase_order = PurchaseOrder.objects.create(order_number=item['purchase_order'],
+                                                          sales_order=order.sales_order, date=order.delivery_date)
 
         sales_order_item = order.sales_order.salesorderitem_set.get(item_number=item['so_item_number'])
 

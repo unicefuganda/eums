@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from mock import MagicMock
 from xlwt import Workbook
 
-from eums.models import Item, Programme, ReleaseOrder, ReleaseOrderItem, PurchaseOrder, PurchaseOrderItem
+from eums.models import Item, Programme, ReleaseOrder, ReleaseOrderItem, PurchaseOrder, PurchaseOrderItem, Consignee
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -60,6 +60,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         ReleaseOrderItem.objects.all().delete()
         Programme.objects.all().delete()
         User.objects.all().delete()
+        Consignee.objects.all().delete()
 
     def test_should_load_release_order_data(self):
         release_order_data = self.facade.load_order_data()
@@ -99,6 +100,36 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assert_purchase_orders_were_created()
         self.assert_purchase_order_items_were_created()
         self.assert_release_order_items_were_created()
+
+    def test_should_not_recreate_existing_release_orders_when_saving_only_matching_by_order_number(self):
+        self.create_consignees()
+        self.create_items()
+        self.create_sales_orders()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrder.objects.count(), 2)
+
+        first_release_order = ReleaseOrder.objects.all().first()
+        first_release_order.delivery_date = datetime.date(2100, 01, 13)
+        first_release_order.save()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrder.objects.count(), 2)
+
+    def test_should_not_recreate_existing_purchase_orders_when_saving_only_matching_by_order_number(self):
+            self.create_consignees()
+            self.create_items()
+            self.create_sales_orders()
+
+            self.facade.save_order_data(self.imported_release_order_data)
+            self.assertEqual(ReleaseOrder.objects.count(), 2)
+
+            first_purchase_order = PurchaseOrder.objects.all().first()
+            first_purchase_order.date = datetime.date(2100, 01, 13)
+            first_purchase_order.save()
+
+            self.facade.save_order_data(self.imported_release_order_data)
+            self.assertEqual(PurchaseOrder.objects.count(), 2)
 
     def test_should_load_release_orders_from_excel_and_save(self):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
