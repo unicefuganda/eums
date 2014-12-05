@@ -8,5 +8,5 @@ class PurchaseOrderFactory(factory.DjangoModelFactory):
     class Meta:
         model = PurchaseOrder
 
-    order_number = factory.Sequence(lambda n: "2014{0}".format(n))
+    order_number = factory.Sequence(lambda n: int("2014{0}".format(n)))
     sales_order = factory.SubFactory(SalesOrderFactory)

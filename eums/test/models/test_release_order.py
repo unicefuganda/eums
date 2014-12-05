@@ -13,7 +13,7 @@ class ReleaseOrderTest(TestCase):
         for field in ['order_number', 'waybill', 'delivery_date', 'sales_order_id', 'consignee_id']:
             self.assertIn(field, fields_in_order)
 
-    def test_no_two_sales_orders_should_have_the_same_order_number(self):
+    def test_no_two_release_orders_should_have_the_same_order_number(self):
         create_release_order = lambda: ReleaseOrderFactory(order_number=1234)
         create_release_order()
         self.assertRaises(IntegrityError, create_release_order)

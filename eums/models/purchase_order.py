@@ -3,7 +3,7 @@ from eums.models import SalesOrder
 
 
 class PurchaseOrder(models.Model):
-    order_number = models.CharField(max_length=255)
+    order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder)
     date = models.DateField(auto_now=False, null=True)
 

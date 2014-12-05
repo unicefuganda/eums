@@ -12,8 +12,10 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
         model = PurchaseOrder
         fields = ('id', 'order_number', 'date', 'sales_order', 'programme', 'purchaseorderitem_set')
 
-    def get_programme(self, purchase_order):
+    @staticmethod
+    def get_programme(purchase_order):
         return purchase_order.sales_order.programme.name
+
 
 class PurchaseOrderViewSet(ModelViewSet):
     queryset = PurchaseOrder.objects.all()

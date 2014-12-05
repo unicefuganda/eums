@@ -29,7 +29,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.setup_purchase_orders()
         self.setup_responses()
 
-        expected_data = [{'document_number': unicode(self.po_one.order_number),
+        expected_data = [{'document_number': self.po_one.order_number,
                           'total_value_received': Decimal('60.0000'),
                           'total_value_dispensed': Decimal('20.0000'),
                           'balance': Decimal('40.0000'),
@@ -52,7 +52,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                      'balance': 3L
                                     }
                           ]},
-                         {'document_number': unicode(self.po_two.order_number),
+                         {'document_number': self.po_two.order_number,
                           'total_value_received': Decimal('10.0000'),
                           'total_value_dispensed': Decimal('10.0000'),
                           'balance': Decimal('0.0000'),
@@ -79,7 +79,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def test_returns_empty_list_if_no_runs_where_created_for_the_line_items(self):
         self.setup_purchase_orders()
 
-        expected_data = [{'document_number': unicode(self.po_one.order_number),
+        expected_data = [{'document_number': self.po_one.order_number,
                           'total_value_received': Decimal('0.0000'),
                           'total_value_dispensed': Decimal('0.0000'),
                           'balance': Decimal('0.0000'),
@@ -102,7 +102,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                      'balance': 0
                                     }
                           ]},
-                         {'document_number': unicode(self.po_two.order_number),
+                         {'document_number': self.po_two.order_number,
                           'total_value_received': Decimal('0.0000'),
                           'total_value_dispensed': Decimal('0.0000'),
                           'balance': Decimal('0.0000'),
