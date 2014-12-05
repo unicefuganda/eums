@@ -10,6 +10,11 @@ angular.module('Item', ['eums.config'])
             return getItemUnit(item.unit).then(function(response) {
                 item.unit = response.data;
                 return item;
+            }).catch(function(response) {
+                if(response.status === 404) {
+                    item.unit = {id: 0, name: 'Each'};
+                    return item;
+                }
             });
         };
 

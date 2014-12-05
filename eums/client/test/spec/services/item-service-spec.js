@@ -41,4 +41,30 @@ describe('Item Service', function() {
         });
         mockBackend.flush();
     });
+
+    it('should default item unit to Each of item has no item unit', function(done) {
+        var itemId = 1;
+        var itemUnitId = null;
+
+        var stubItem = {
+            id: itemId,
+            description: 'item description',
+            unit: null
+        };
+
+        var expectedItem = {
+            id: itemId,
+            description: 'item description',
+            unit: {id: 0, name: 'Each'}
+        };
+
+        mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(404, {});
+        mockBackend.whenGET(itemEndpointUrl + itemId + '/').respond(stubItem);
+
+        itemService.getItemDetails(itemId).then(function(item) {
+            expect(item).toEqual(expectedItem);
+            done();
+        });
+        mockBackend.flush();
+    });
 });
