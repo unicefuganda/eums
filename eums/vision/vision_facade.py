@@ -108,21 +108,25 @@ class SalesOrderFacade(Facade):
         13: 'programme_wbs_element', 1: 'item_number'
     }
 
-    def _create_new_item(self, item, order):
-        order_item = SalesOrderItem()
-        order_item.sales_order = order
-        sales_order_item, created = Item.objects.get_or_create(material_code=item['material_code'],
-                                                               description=item['item_description'])
-        order_date = self._get_as_date(item['date'])
-        order_item.item = sales_order_item
-        order_item.item_number = item['item_number']
-        order_item.description = item['item_description']
-        order_item.quantity = int(item['quantity'])
-        order_item.issue_date = order_date
-        order_item.delivery_date = order_date
-        order_item.net_value = Decimal(item['net_value'])
-        order_item.net_price = order_item.net_value / order_item.quantity if order_item.quantity else 0
-        order_item.save()
+    def _create_new_item(self, sales_order_item_dict, order):
+        item, created = Item.objects.get_or_create(material_code=sales_order_item_dict['material_code'],
+                                                   description=sales_order_item_dict['item_description'])
+        matching_items = SalesOrderItem.objects.filter(sales_order=order, item=item)
+
+        if len(matching_items):
+            return matching_items[0]
+
+        order_date = self._get_as_date(sales_order_item_dict['date'])
+        quantity = int(sales_order_item_dict['quantity'])
+        net_value = Decimal(sales_order_item_dict['net_value'])
+        net_price = net_value / quantity if quantity else 0
+
+        return SalesOrderItem.objects.get_or_create(sales_order=order, item=item,
+                                                    item_number=sales_order_item_dict['item_number'],
+                                                    description=sales_order_item_dict['item_description'],
+                                                    quantity=quantity,
+                                                    issue_date=order_date, delivery_date=order_date,
+                                                    net_value=net_value, net_price=net_price)
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order_program_wbs = self._trim_programme_wbs(item_dict['programme_wbs_element'])
@@ -131,13 +135,15 @@ class SalesOrderFacade(Facade):
                            'items': [item_dict]})
 
     def _create_new_order(self, order):
-        new_order = SalesOrder()
-        new_order.order_number = order['order_number']
-        new_order.date = self._get_as_date(order['items'][0]['date'])
+        order_number = order['order_number']
+        matching_sales_orders = SalesOrder.objects.filter(order_number=order_number)
+
+        if len(matching_sales_orders):
+            return matching_sales_orders[0]
+
         programme, created = Programme.objects.get_or_create(wbs_element_ex=order['programme_wbs_element'])
-        new_order.programme = programme
-        new_order.save()
-        return new_order
+        return SalesOrder.objects.create(order_number=order_number, programme=programme,
+                                         date=self._get_as_date(order['items'][0]['date']))
 
     def _remove_order_level_data_from(self, item_dict):
         del item_dict['order_number']

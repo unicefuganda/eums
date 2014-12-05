@@ -57,22 +57,54 @@ class TestSalesOrdersVisionFacade(TestCase):
         sales_order_data = self.facade.load_order_data()
         self.assertEqual(sales_order_data, self.imported_sales_order_data)
 
+    def create_items(self):
+        self.item_one = ItemFactory(material_code='S0009113', description='SQFlex 3-10 Pump C/W 1.4KW')
+        self.item_two = ItemFactory(material_code='SL006173', description='Solar Power System')
+        self.item_three = ItemFactory(material_code='S7800001', description='Retinol 100,000IU soft gel.caps/PAC-500')
+
+    def create_programmes(self):
+        self.programme_one = ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
+        self.programme_two = ProgrammeFactory(wbs_element_ex='4380/A0/04/106')
+
     def test_should_save_sales_order_data(self):
         self.assertEqual(SalesOrder.objects.count(), 0)
         self.assertEqual(SalesOrderItem.objects.count(), 0)
 
-        programme_one = ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
-        programme_two = ProgrammeFactory(wbs_element_ex='4380/A0/04/106')
-
-        item_one = ItemFactory(material_code='S0009113', description='SQFlex 3-10 Pump C/W 1.4KW')
-        item_two = ItemFactory(material_code='SL006173', description='Solar Power System')
-        item_three = ItemFactory(material_code='S7800001', description='Retinol 100,000IU soft gel.caps/PAC-500')
+        self.create_programmes()
+        self.create_items()
 
         self.facade.save_order_data(self.imported_sales_order_data)
 
-        self.assert_sales_orders_were_created(programme_one, programme_two)
+        self.assert_sales_orders_were_created(self.programme_one, self.programme_two)
+        self.assert_sales_order_items_were_created(self.item_one, self.item_three, self.item_two)
 
-        self.assert_sales_order_items_were_created(item_one, item_three, item_two)
+    def test_should_not_recreate_existing_sales_orders_when_saving_only_matching_by_order_number(self):
+        self.create_programmes()
+        self.create_items()
+
+        self.facade.save_order_data(self.imported_sales_order_data)
+        self.assertEqual(SalesOrder.objects.count(), 2)
+
+        first_sales_order = SalesOrder.objects.all().first()
+        first_sales_order.date = datetime.date(2100, 01, 13)
+        first_sales_order.save()
+
+        self.facade.save_order_data(self.imported_sales_order_data)
+        self.assertEqual(SalesOrder.objects.count(), 2)
+
+    def test_should_not_recreate_existing_sales_order_items_when_saving_only_matching_by_item_and_sales_order(self):
+        self.create_programmes()
+        self.create_items()
+
+        self.facade.save_order_data(self.imported_sales_order_data)
+        self.assertEqual(SalesOrderItem.objects.count(), 3)
+
+        first_sales_order_item = SalesOrderItem.objects.all().first()
+        first_sales_order_item.item_number = -13
+        first_sales_order_item.save()
+
+        self.facade.save_order_data(self.imported_sales_order_data)
+        self.assertEqual(SalesOrderItem.objects.count(), 3)
 
     def test_should_set_net_price_to_zero_if_quantity_of_an_item_is_zero(self):
         ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
