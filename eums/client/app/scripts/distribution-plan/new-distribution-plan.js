@@ -194,33 +194,36 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.selectSalesOrderItem = function () {
-            if($scope.user.consignee_id){
-                PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedSalesOrderItem.information.id).then(function (response) {
-                    var node = response;
-                    var locPath =  $location.path().split('/')[1];
-                    var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
-                    $location.path(
-                        '/'+ locPath +'/new/' +
-                            documentId + '-' +
-                        $scope.selectedSalesOrderItem.information.id + '-' +
-                        node
-                    );
-                });
-            }
-            else{
-                $scope.distributionPlanLineItems = [];
-
-                var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
-                SalesOrderItemService
-                    .getSalesOrderItem(selectedSalesOrderItem.information.id)
-                    .then(function (salesOrderItem) {
-                        SalesOrderItemService
-                            .getTopLevelDistributionPlanLineItems(salesOrderItem)
-                            .then(function (topLevelLineItems) {
-                                setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
-                            });
+            UserService.getCurrentUser().then(function (user){
+                $scope.user = user;
+                if(user.consignee_id){
+                    PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedSalesOrderItem.information.id).then(function (response) {
+                        var node = response;
+                        var locPath =  $location.path().split('/')[1];
+                        var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
+                        $location.path(
+                            '/'+ locPath +'/new/' +
+                                documentId + '-' +
+                            $scope.selectedSalesOrderItem.information.id + '-' +
+                            node
+                        );
                     });
-            }
+                }
+                else{
+                    $scope.distributionPlanLineItems = [];
+
+                    var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
+                    SalesOrderItemService
+                        .getSalesOrderItem(selectedSalesOrderItem.information.id)
+                        .then(function (salesOrderItem) {
+                            SalesOrderItemService
+                                .getTopLevelDistributionPlanLineItems(salesOrderItem)
+                                .then(function (topLevelLineItems) {
+                                    setDistributionPlanLineItems(selectedSalesOrderItem, topLevelLineItems);
+                                });
+                        });
+                }
+            });
         };
 
         var addNodeDetailsToLineItem = function (lineItem, node) {

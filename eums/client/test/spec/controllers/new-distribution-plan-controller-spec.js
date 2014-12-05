@@ -397,9 +397,9 @@ describe('NewDistributionPlanController', function () {
 
         it('should call the get distribution plan items service linked to the particular sales order item', function () {
             deferred.resolve(stubSalesOrderItem);
+            deferredUserPromise.resolve(stubUser);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
-            scope.user = stubUser;
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.information.item.description,
                 materialCode: stubSalesOrderItem.information.item.materialCode, quantity: stubSalesOrderItem.quantity,
@@ -422,10 +422,10 @@ describe('NewDistributionPlanController', function () {
             });
             var stubLineItem = {id: 1};
             deferred.resolve(stubSalesOrderItem);
+            deferredUserPromise.resolve(stubUser);
             deferredLineItem.resolve(stubLineItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
-            scope.user = stubUser;
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.information.item.description,
                 materialCode: stubSalesOrderItem.information.item.material_code,
