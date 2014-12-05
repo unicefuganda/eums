@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations, connection
+from django.db import migrations, connection
 
 
 def make_order_number_column_type_integer(apps, schema_editor):
@@ -17,7 +17,6 @@ def make_waybill_column_type_integer(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('eums', '0015_auto_20141204_1808'),
     ]

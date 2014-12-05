@@ -4,6 +4,9 @@ from eums.models.release_order_item import ReleaseOrderItem
 
 class ReleaseOrderItemTest(TestCase):
     def test_should_have_all_expected_fields(self):
-        fields_in_item = ReleaseOrderItem._meta._name_map
-        for field in ['release_order_id', 'item_id', 'quantity', 'value', 'purchase_order']:
-            self.assertIn(field, fields_in_item)
+        fields_in_order = [field for field in ReleaseOrderItem._meta._name_map]
+
+        self.assertEquals(len(ReleaseOrderItem._meta.fields), 6)
+
+        for field in ['release_order_id', 'item_id', 'quantity', 'value', 'purchase_order_item_id']:
+            self.assertIn(field, fields_in_order)
