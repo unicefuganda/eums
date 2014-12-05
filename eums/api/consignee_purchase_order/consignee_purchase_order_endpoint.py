@@ -24,7 +24,7 @@ class ConsigneePurchaseOrders(APIView):
                 "date": purchase_order.date,
                 "sales_order": purchase_order.sales_order_id,
                 "programme": purchase_order.sales_order.programme.name,
-                "purchaseorderitem_set": purchase_order.purchaseorderitem_set.values('id')
+                "purchaseorderitem_set": purchase_order.purchaseorderitem_set.values_list('id', flat=True)
             }
             result.append(formatted_purchase_order)
         return result

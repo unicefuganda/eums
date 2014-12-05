@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
-    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, PurchaseOrderService, PurchaseOrderItemService, SalesOrderItemService, IPService, ngToast, ContactService) {
+angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'User'])
+    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, PurchaseOrderService, PurchaseOrderItemService, SalesOrderItemService, IPService, UserService, ngToast, ContactService) {
 
         $scope.datepicker = {};
         $scope.districts = [];
@@ -23,7 +23,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 dismissOnTimeout: true
             });
         }
-
+        
         $scope.addContact = function (itemIndex, lineItem) {
             $scope.$parent.itemIndex = itemIndex;
             $scope.$parent.lineItem = lineItem;
@@ -99,29 +99,59 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
         else{
-            PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
-                $scope.selectedPurchaseOrder = response;
-                $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
+            UserService.getCurrentUser().then(function (user){
+                if(user.consignee_id){
+                    PurchaseOrderService.getConsigneePurchaseOrder($routeParams.purchaseOrderId, user.consignee_id).then(function (response) {
+                        $scope.selectedPurchaseOrder = response;
+                        $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
 
-                $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
-                    PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
-                        var formattedSalesOrderItem = {
-                            display: result.sales_order_item.item.description,
-                            materialCode: result.sales_order_item.item.material_code,
-                            quantity: result.sales_order_item.quantity,
-                            unit: result.sales_order_item.item.unit.name,
-                            information: result.sales_order_item
-                        };
-                        formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+                        $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
+                            PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                                var formattedSalesOrderItem = {
+                                    display: result.sales_order_item.item.description,
+                                    materialCode: result.sales_order_item.item.material_code,
+                                    quantity: result.sales_order_item.quantity,
+                                    unit: result.sales_order_item.item.unit.name,
+                                    information: result.sales_order_item
+                                };
+                                formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
-                        if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                            $scope.selectedSalesOrderItem = formattedSalesOrderItem;
-                            $scope.selectSalesOrderItem();
-                        }
+                                if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                                    $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                                    $scope.selectSalesOrderItem();
+                                }
 
-                        $scope.salesOrderItems.push(formattedSalesOrderItem);
+                                $scope.salesOrderItems.push(formattedSalesOrderItem);
+                            });
+                        });
                     });
-                });
+                }
+                else{
+                    PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
+                        $scope.selectedPurchaseOrder = response;
+                        $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
+
+                        $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
+                            PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                                var formattedSalesOrderItem = {
+                                    display: result.sales_order_item.item.description,
+                                    materialCode: result.sales_order_item.item.material_code,
+                                    quantity: result.sales_order_item.quantity,
+                                    unit: result.sales_order_item.item.unit.name,
+                                    information: result.sales_order_item
+                                };
+                                formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+
+                                if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                                    $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                                    $scope.selectSalesOrderItem();
+                                }
+
+                                $scope.salesOrderItems.push(formattedSalesOrderItem);
+                            });
+                        });
+                    });
+                }
             });
         }
 
