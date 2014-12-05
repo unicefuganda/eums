@@ -2,9 +2,9 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var mockNodeService, mockIPService, mockPlanService, mockSalesOrderItemService,
-        mockLineItemService, mockConsigneeService, mockSalesOrderService;
+        mockLineItemService, mockConsigneeService, mockSalesOrderService, mockUserService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelLineItems,
-        deferredPlanNode, deferredSalesOrder, deferredLineItem;
+        deferredPlanNode, deferredSalesOrder, deferredLineItem, deferredUserPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
@@ -32,6 +32,14 @@ describe('NewDistributionPlanController', function () {
             'salesorderitem_set': [3, 4]
         }
     ];
+
+    var stubUser = {
+        username: 'admin',
+        first_name: 'admin',
+        last_name: 'admin',
+        email: 'a@a.com',
+        consignee_id: null
+    };
 
     var stubSalesOrderItem = {
         id: 1,
@@ -96,6 +104,7 @@ describe('NewDistributionPlanController', function () {
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanLineItems']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['createPlan']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $q, $location) {
@@ -107,6 +116,7 @@ describe('NewDistributionPlanController', function () {
             deferredLineItem = $q.defer();
             deferredTopLevelLineItems = $q.defer();
             deferredSalesOrder = $q.defer();
+            deferredUserPromise = $q.defer();
             mockLineItemService.getLineItem.and.returnValue(deferredLineItem.promise);
             mockLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
@@ -117,6 +127,7 @@ describe('NewDistributionPlanController', function () {
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanLineItems.and.returnValue(deferredTopLevelLineItems.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
+            mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
 
             location = $location;
             scope = $rootScope.$new();
@@ -134,6 +145,7 @@ describe('NewDistributionPlanController', function () {
                     ConsigneeService: mockConsigneeService,
                     SalesOrderService: mockSalesOrderService,
                     IPService: mockIPService,
+                    UserService: mockUserService,
                     ngToast: mockToastProvider
                 });
         });
@@ -387,6 +399,7 @@ describe('NewDistributionPlanController', function () {
             deferred.resolve(stubSalesOrderItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
+            scope.user = stubUser;
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.information.item.description,
                 materialCode: stubSalesOrderItem.information.item.materialCode, quantity: stubSalesOrderItem.quantity,
@@ -412,6 +425,7 @@ describe('NewDistributionPlanController', function () {
             deferredLineItem.resolve(stubLineItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
+            scope.user = stubUser;
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.information.item.description,
                 materialCode: stubSalesOrderItem.information.item.material_code,

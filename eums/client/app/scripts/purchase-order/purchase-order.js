@@ -34,6 +34,11 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder'])
                         });
                     });
                 });
+            },
+            getConsigneePurchaseOrderNode: function (consigneeId, salesOrderItemId) {
+                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE_PURCHASE_ORDER_ITEMS + consigneeId + '/sales-order-item/' + salesOrderItemId).then(function (response) {
+                    return response.data;
+                });
             }
 
         };

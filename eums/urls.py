@@ -7,7 +7,7 @@ from eums.api.answer.date_answers_endpoint import textAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee import consigneeRouter
 from eums.api.consignee_purchase_order.consignee_purchase_order_endpoint import ConsigneePurchaseOrders
-from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems
+from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, ConsigneePurchaseOrderItemNode
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
 from eums.api.distribution_plan_line_item.distribution_plan_line_item import distributionPlanLineItemRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
@@ -45,6 +45,8 @@ urlpatterns = patterns(
         ConsigneePurchaseOrders.as_view(), name='consignee_purchase_orders'),
     url(r'^api/consignee-purchase-order-items/(?P<consignee_id>\d+)/purchase-order/(?P<purchase_order_id>\d+)/$',
         ConsigneePurchaseOrderItems.as_view(), name='consignee_purchase_order_items'),
+    url(r'^api/consignee-purchase-order-items/(?P<consignee_id>\d+)/sales-order-item/(?P<sales_order_item_id>\d+)/$',
+        ConsigneePurchaseOrderItemNode.as_view(), name='consignee_purchase_order_item_node'),
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
