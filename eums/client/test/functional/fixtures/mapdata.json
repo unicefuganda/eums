@@ -5578,7 +5578,7 @@
             "description": "Round Neck Tshirts",
             "sales_order": 24,
             "net_price": "817.4800",
-            "item": 49,
+            "item": 2,
             "delivery_date": "2014-08-11",
             "net_value": "3.8200",
             "quantity": 214
@@ -5592,7 +5592,7 @@
             "description": "Notebooks",
             "sales_order": 24,
             "net_price": "3348.5400",
-            "item": 48,
+            "item": 40,
             "delivery_date": "2014-08-11",
             "net_value": "4.7700",
             "quantity": 702
@@ -5970,7 +5970,7 @@
             "description": "Artem 20mg+Lumef120mg disp tabs/6/PAC-30",
             "sales_order": 33,
             "net_price": "67500.0000",
-            "item": 70,
+            "item": 2,
             "delivery_date": "2014-07-09",
             "net_value": "11.2500",
             "quantity": 6000
@@ -6292,7 +6292,7 @@
             "description": "Birth Registration forms",
             "sales_order": 37,
             "net_price": "11025.0000",
-            "item": 90,
+            "item": 2,
             "delivery_date": "2014-06-25",
             "net_value": "4.4100",
             "quantity": 2500
@@ -6320,7 +6320,7 @@
             "description": "TVs for Comms unit office",
             "sales_order": 38,
             "net_price": "0.0000",
-            "item": 91,
+            "item": 2,
             "delivery_date": "2014-06-25",
             "net_value": "0.0000",
             "quantity": 1
@@ -7062,7 +7062,7 @@
             "description": "Solar refrig-freezer,>50L,4.5Kw/24hrs",
             "sales_order": 49,
             "net_price": "6452.0000",
-            "item": 124,
+            "item": 2,
             "delivery_date": "2014-06-09",
             "net_value": "6452.0000",
             "quantity": 1
@@ -7314,7 +7314,7 @@
             "description": "Printed brochure (stickers)",
             "sales_order": 54,
             "net_price": "300.0000",
-            "item": 135,
+            "item": 2,
             "delivery_date": "2014-05-23",
             "net_value": "0.2000",
             "quantity": 1500
@@ -7790,7 +7790,7 @@
             "description": "Therapeutic spread,sachet 92g/CAR-150",
             "sales_order": 61,
             "net_price": "42120.0000",
-            "item": 20,
+            "item": 2,
             "delivery_date": "2014-05-05",
             "net_value": "54.0000",
             "quantity": 780
@@ -8504,7 +8504,7 @@
             "description": "Replenishment kit for S9935098",
             "sales_order": 76,
             "net_price": "679.0200",
-            "item": 58,
+            "item": 2,
             "delivery_date": "2014-03-26",
             "net_value": "45.2680",
             "quantity": 15
@@ -8532,7 +8532,7 @@
             "description": "Recreation kit-in-a-carton",
             "sales_order": 76,
             "net_price": "1843.5000",
-            "item": 188,
+            "item": 1,
             "delivery_date": "2014-03-26",
             "net_value": "68.2778",
             "quantity": 27
@@ -8560,7 +8560,7 @@
             "description": "Tarpaulin,plastic,roll,4x50m",
             "sales_order": 76,
             "net_price": "1268.6500",
-            "item": 59,
+            "item": 3,
             "delivery_date": "2014-03-26",
             "net_value": "126.8650",
             "quantity": 10
@@ -8588,7 +8588,7 @@
             "description": "Tent,light weight,rectangular,24m\u00b2",
             "sales_order": 76,
             "net_price": "26127.9000",
-            "item": 61,
+            "item": 4,
             "delivery_date": "2014-03-26",
             "net_value": "870.9300",
             "quantity": 30
@@ -8700,7 +8700,7 @@
             "description": "Safety box f.used syrgs/ndls 5lt/BOX-25",
             "sales_order": 77,
             "net_price": "2946.4500",
-            "item": 8,
+            "item": 2,
             "delivery_date": "2014-03-24",
             "net_value": "14.9566",
             "quantity": 197
@@ -9372,7 +9372,7 @@
             "description": "Expendables for use with IT equipment",
             "sales_order": 90,
             "net_price": "330.0000",
-            "item": 235,
+            "item": 2,
             "delivery_date": "2014-02-18",
             "net_value": "11.0000",
             "quantity": 30
@@ -9386,7 +9386,7 @@
             "description": "Expendables for use with IT equipment",
             "sales_order": 90,
             "net_price": "1470.0000",
-            "item": 235,
+            "item": 1,
             "delivery_date": "2014-02-18",
             "net_value": "49.0000",
             "quantity": 30
