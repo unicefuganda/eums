@@ -171,26 +171,34 @@ class ReleaseOrderFacade(Facade):
                                            consignee=Consignee.objects.get(customer_id=order_dict['consignee']),
                                            sales_order=sales_order)
 
-    def _create_new_item(self, item, order):
+    def _get_or_create_purchase_order(self, item, order):
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=item['purchase_order'])
         if len(matching_purchase_orders):
             purchase_order = matching_purchase_orders[0]
         else:
             purchase_order = PurchaseOrder.objects.create(order_number=item['purchase_order'],
                                                           sales_order=order.sales_order, date=order.delivery_date)
+        return purchase_order
 
-        sales_order_item = order.sales_order.salesorderitem_set.get(item_number=item['so_item_number'])
-
+    @staticmethod
+    def _get_or_create_purchase_order_item(item, purchase_order, sales_order_item):
         purchase_order_item, _ = PurchaseOrderItem.objects.get_or_create(purchase_order=purchase_order,
                                                                          item_number=item['po_item_number'],
                                                                          sales_order_item=sales_order_item)
-        order_item = ReleaseOrderItem()
-        order_item.release_order = order
-        order_item.purchase_order_item = purchase_order_item
-        order_item.item = Item.objects.get(material_code=item['material_code'])
-        order_item.quantity = float(item['quantity'])
-        order_item.value = float(item['value'])
-        order_item.save()
+        return purchase_order_item
+
+    def _create_new_item(self, item, order):
+        purchase_order = self._get_or_create_purchase_order(item, order)
+        sales_order_item = order.sales_order.salesorderitem_set.get(item_number=item['so_item_number'])
+        purchase_order_item = self._get_or_create_purchase_order_item(item, purchase_order, sales_order_item)
+
+        matching_ro_item = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
+                                                           purchase_order_item__item_number=purchase_order_item.
+                                                           item_number)
+        if not len(matching_ro_item):
+            ReleaseOrderItem.objects.create(release_order=order, purchase_order_item=purchase_order_item,
+                                            item=Item.objects.get(material_code=item['material_code']),
+                                            quantity=float(item['quantity']), value=float(item['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']

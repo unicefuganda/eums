@@ -62,10 +62,64 @@ class TestReleaseOrdersVisionFacade(TestCase):
         User.objects.all().delete()
         Consignee.objects.all().delete()
 
-    def test_should_load_release_order_data(self):
-        release_order_data = self.facade.load_order_data()
+    def create_release_order_workbook(self):
+        work_book = Workbook()
+        sheet = work_book.add_sheet('Sheet 1')
 
-        self.assertEqual(release_order_data, self.imported_release_order_data)
+        self.header = ['Release Order Number', 'Release Order Item', 'Release Order Date', 'Recommended Delivery Date',
+                       'Material', 'Material Description', 'Delivery Quantity', 'Value', 'Storage Location',
+                       'Warehouse Number', 'Warehouse Description', 'Consignee', 'Consignee Name', 'Authorized Person',
+                       'Release Document', 'Purchasing Document', 'Delivery', 'Grant', 'WBS Element', 'Pick Status',
+                       'Transfer Order Number', 'Transportation Planning Status', 'Waybill Number', 'Forwarder Name',
+                       'Shipment End Date', 'Goods Issue Status', 'Goods Issue Date', 'Release Order Sub-Item',
+                       'HigherLevelItemBatch', 'Release Order Type', 'Release unit', 'Moving price', 'Plant',
+                       'Plant Name', 'Storage Location Desc', 'Dest Warehouse Number', 'Dest Warehouse Description',
+                       'Ship-to party', 'Means of Trans. ID', 'Program Officer', 'Release Document Item',
+                       'Purchasing Item', 'Reference document', 'Reference item', 'Delivery Item',
+                       'Transfer Order Item', 'Forwarder Number', 'Goods Issue Number', 'Goods Issue Item', 'Batch',
+                       'SLED/BBD', 'Actual End Planning Date', 'Check-in Date', 'Planned Shipment Start Date',
+                       'Loading Start Date', 'Loading End Date', 'Actual Shipment Start Date',
+                       'Shipment Completion Date', 'Shipment Days Difference', 'Goods Issue Days Difference',
+                       'Handed-Over to IP Planned', 'Handed-Over to IP', 'Reason for Amendment', 'RO User Reference 1',
+                       'RO User Reference 2', 'RO User Reference 3', 'RO User Reference 4', 'RO User Reference 5',
+                       'WB User Reference 1', 'WB User Reference 2', 'WB User Reference 3', 'WB User Reference 4',
+                       'WB User Reference 5']
+
+        self.first_row = [54101099, 10, '2014-01-08', '2014-01-08', 'SL005144', 'Laptop Lenovo ThinkPad T510', '1',
+                          '1167.66', '2611', '261', 'Kampala W1', 'L438000393', 'OYAM DISTRICT ADMIN',
+                          'Nuhoddin Maarij', 20148031, 81018523, 56162712, 'SC130003', '4380/A0/04/107/002/012',
+                          'C', '7732', 'C', 72081598, 'UNICEF - Kampala Uganda Kampala Country Office Uganda',
+                          '08/05/2014', 'C', '8/20/2014', '0', '0', 'ZLO', 'EA', '1167.67', '5617', 'Uganda',
+                          'Kampala W1-Prog', '', '', 'L438000393', '', 'Silvia Pasti', 10, 10, '', '1', '1', '1',
+                          'F43801', '4900086016', '1', 'SYS0084421', '', '2014-05-08', '2014-05-08', '', '2014-05-08',
+                          '2014-05-08', '2014-05-08', '2014-05-08', '', '15', '', '', '', '', '', '', '', '',
+                          'CD 96-50U', 'UNICEF', 'Bongomin', '', '']
+        self.second_row = [54101099, 20, '2014-01-08', '2014-01-08', 'SL002248', 'Laptop bag', '1', '26.81', '2611',
+                           '261', 'Kampala W1', 'L438000393', 'OYAM DISTRICT ADMIN', 'Nuhoddin Maarij', 20148031,
+                           81018523, 56162712, 'SC130003', '4380/A0/04/107/002/012', 'C', '7732', 'C', 72081598,
+                           'UNICEF - Kampala Uganda Kampala Country Office Uganda', '2014-01-08', 'C', '2014-08-20',
+                           '0',
+                           '0', 'ZLO', 'EA', '26.81', '5617', 'Uganda', 'Kampala W1-Prog', '', '', 'L438000393', '',
+                           'Silvia Pasti', 20, 20, '', '2', '2', '2', 'F43801', '4900086016', '2', 'SYS0084422', '',
+                           '2014-05-08', '2014-05-08', '', '2014-05-08', '2014-05-08', '2014-05-08', '2014-05-08', '',
+                           '15', '', '', '', '', '', '', '', '', 'CD 96-50U', 'UNICEF', 'Bongomin', '', '']
+        self.third_row = [54101128, 20, '2014-08-01', '2014-04-08', 'S0000208',
+                          'F-75 therap.diet sachet 102.5g/CAR-120', '20', '1188.79', '2611', '261', 'Kampala W1',
+                          'L438000181', 'GULU HOSPITAL', 'NUHODDIN MAARIJ', 20147537, 45132639, 56165211,
+                          'SC130708', '4380/A0/04/105/004/022', 'C', '7665', 'C', 72081746,
+                          'Express Logistics Group Ltd.', '2014-07-08', 'C', '2014-08-20', '0', '0', 'ZLO', 'CAR',
+                          '59.44', '5617', 'Uganda', 'Kampala W1-Prog', '', '', 'L438000181', '', 'PRAKASH LAMSAL',
+                          20, 20, '', '2', '2', '2', '2300027179', '4900086015', '2', '100314', '2016-03-31',
+                          '2014-07-08', '2014-07-08', '', '2014-07-08', '2014-07-08', '2014-07-08', '2014-07-08', '',
+                          '13', '', '', '', '', '', '', '', '', 'UAN 853F', 'EXPRESS LOGISTICS', '2MT', 'SAMUEL', '']
+
+        rows = [self.header, self.first_row, self.second_row, self.third_row]
+
+        for row_index, row in enumerate(rows):
+            for col_index, item in enumerate(row):
+                sheet.write(row_index, col_index, item)
+
+        work_book.save(self.release_order_file_location)
 
     def create_items(self):
         self.item_one = ItemFactory(material_code='SL005144', description='Laptop Lenovo ThinkPad T510')
@@ -85,6 +139,11 @@ class TestReleaseOrdersVisionFacade(TestCase):
     def create_consignees(self):
         self.consignee_one = ConsigneeFactory(customer_id='L438000393')
         self.consignee_two = ConsigneeFactory(customer_id='L438000181')
+
+    def test_should_load_release_order_data(self):
+        release_order_data = self.facade.load_order_data()
+
+        self.assertEqual(release_order_data, self.imported_release_order_data)
 
     def test_should_save_release_order_data(self):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
@@ -116,13 +175,28 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 2)
 
+    def test_should_not_recreate_existing_release_order_items_when_saving_only_matching_by_order_number(self):
+        self.create_consignees()
+        self.create_items()
+        self.create_sales_orders()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrderItem.objects.count(), 3)
+
+        first_release_order_item = ReleaseOrderItem.objects.all().first()
+        first_release_order_item.quantity = -1
+        first_release_order_item.save()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrderItem.objects.count(), 3)
+
     def test_should_not_recreate_existing_purchase_orders_when_saving_only_matching_by_order_number(self):
             self.create_consignees()
             self.create_items()
             self.create_sales_orders()
 
             self.facade.save_order_data(self.imported_release_order_data)
-            self.assertEqual(ReleaseOrder.objects.count(), 2)
+            self.assertEqual(PurchaseOrder.objects.count(), 2)
 
             first_purchase_order = PurchaseOrder.objects.all().first()
             first_purchase_order.date = datetime.date(2100, 01, 13)
@@ -210,64 +284,3 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assertEqual(order_item_one.purchase_order.order_number, order_item_two.purchase_order.order_number)
         self.assertEqual(order_item_one.item_number, order_item_two.item_number)
         self.assertEqual(order_item_one.sales_order_item.id, order_item_two.sales_order_item.id)
-
-    def create_release_order_workbook(self):
-        work_book = Workbook()
-        sheet = work_book.add_sheet('Sheet 1')
-
-        self.header = ['Release Order Number', 'Release Order Item', 'Release Order Date', 'Recommended Delivery Date',
-                       'Material', 'Material Description', 'Delivery Quantity', 'Value', 'Storage Location',
-                       'Warehouse Number', 'Warehouse Description', 'Consignee', 'Consignee Name', 'Authorized Person',
-                       'Release Document', 'Purchasing Document', 'Delivery', 'Grant', 'WBS Element', 'Pick Status',
-                       'Transfer Order Number', 'Transportation Planning Status', 'Waybill Number', 'Forwarder Name',
-                       'Shipment End Date', 'Goods Issue Status', 'Goods Issue Date', 'Release Order Sub-Item',
-                       'HigherLevelItemBatch', 'Release Order Type', 'Release unit', 'Moving price', 'Plant',
-                       'Plant Name', 'Storage Location Desc', 'Dest Warehouse Number', 'Dest Warehouse Description',
-                       'Ship-to party', 'Means of Trans. ID', 'Program Officer', 'Release Document Item',
-                       'Purchasing Item', 'Reference document', 'Reference item', 'Delivery Item',
-                       'Transfer Order Item', 'Forwarder Number', 'Goods Issue Number', 'Goods Issue Item', 'Batch',
-                       'SLED/BBD', 'Actual End Planning Date', 'Check-in Date', 'Planned Shipment Start Date',
-                       'Loading Start Date', 'Loading End Date', 'Actual Shipment Start Date',
-                       'Shipment Completion Date', 'Shipment Days Difference', 'Goods Issue Days Difference',
-                       'Handed-Over to IP Planned', 'Handed-Over to IP', 'Reason for Amendment', 'RO User Reference 1',
-                       'RO User Reference 2', 'RO User Reference 3', 'RO User Reference 4', 'RO User Reference 5',
-                       'WB User Reference 1', 'WB User Reference 2', 'WB User Reference 3', 'WB User Reference 4',
-                       'WB User Reference 5']
-
-        self.first_row = [54101099, 10, '2014-01-08', '2014-01-08', 'SL005144', 'Laptop Lenovo ThinkPad T510', '1',
-                          '1167.66', '2611', '261', 'Kampala W1', 'L438000393', 'OYAM DISTRICT ADMIN',
-                          'Nuhoddin Maarij', 20148031, 81018523, 56162712, 'SC130003', '4380/A0/04/107/002/012',
-                          'C', '7732', 'C', 72081598, 'UNICEF - Kampala Uganda Kampala Country Office Uganda',
-                          '08/05/2014', 'C', '8/20/2014', '0', '0', 'ZLO', 'EA', '1167.67', '5617', 'Uganda',
-                          'Kampala W1-Prog', '', '', 'L438000393', '', 'Silvia Pasti', 10, 10, '', '1', '1', '1',
-                          'F43801', '4900086016', '1', 'SYS0084421', '', '2014-05-08', '2014-05-08', '', '2014-05-08',
-                          '2014-05-08', '2014-05-08', '2014-05-08', '', '15', '', '', '', '', '', '', '', '',
-                          'CD 96-50U', 'UNICEF', 'Bongomin', '', '']
-        self.second_row = [54101099, 20, '2014-01-08', '2014-01-08', 'SL002248', 'Laptop bag', '1', '26.81', '2611',
-                           '261', 'Kampala W1', 'L438000393', 'OYAM DISTRICT ADMIN', 'Nuhoddin Maarij', 20148031,
-                           81018523, 56162712, 'SC130003', '4380/A0/04/107/002/012', 'C', '7732', 'C', 72081598,
-                           'UNICEF - Kampala Uganda Kampala Country Office Uganda', '2014-01-08', 'C', '2014-08-20',
-                           '0',
-                           '0', 'ZLO', 'EA', '26.81', '5617', 'Uganda', 'Kampala W1-Prog', '', '', 'L438000393', '',
-                           'Silvia Pasti', 20, 20, '', '2', '2', '2', 'F43801', '4900086016', '2', 'SYS0084422', '',
-                           '2014-05-08', '2014-05-08', '', '2014-05-08', '2014-05-08', '2014-05-08', '2014-05-08', '',
-                           '15', '', '', '', '', '', '', '', '', 'CD 96-50U', 'UNICEF', 'Bongomin', '', '']
-        self.third_row = [54101128, 20, '2014-08-01', '2014-04-08', 'S0000208',
-                          'F-75 therap.diet sachet 102.5g/CAR-120', '20', '1188.79', '2611', '261', 'Kampala W1',
-                          'L438000181', 'GULU HOSPITAL', 'NUHODDIN MAARIJ', 20147537, 45132639, 56165211,
-                          'SC130708', '4380/A0/04/105/004/022', 'C', '7665', 'C', 72081746,
-                          'Express Logistics Group Ltd.', '2014-07-08', 'C', '2014-08-20', '0', '0', 'ZLO', 'CAR',
-                          '59.44', '5617', 'Uganda', 'Kampala W1-Prog', '', '', 'L438000181', '', 'PRAKASH LAMSAL',
-                          20, 20, '', '2', '2', '2', '2300027179', '4900086015', '2', '100314', '2016-03-31',
-                          '2014-07-08', '2014-07-08', '', '2014-07-08', '2014-07-08', '2014-07-08', '2014-07-08', '',
-                          '13', '', '', '', '', '', '', '', '', 'UAN 853F', 'EXPRESS LOGISTICS', '2MT', 'SAMUEL', '']
-
-        rows = [self.header, self.first_row, self.second_row, self.third_row]
-
-        for row_index, row in enumerate(rows):
-            for col_index, item in enumerate(row):
-                sheet.write(row_index, col_index, item)
-
-        work_book.save(self.release_order_file_location)
-
-
