@@ -111,6 +111,7 @@ class SalesOrderFacade(Facade):
     def _create_new_item(self, sales_order_item_dict, order):
         item, created = Item.objects.get_or_create(material_code=sales_order_item_dict['material_code'],
                                                    description=sales_order_item_dict['item_description'])
+
         matching_items = SalesOrderItem.objects.filter(sales_order=order, item=item)
 
         if len(matching_items):
@@ -171,7 +172,8 @@ class ReleaseOrderFacade(Facade):
                                            consignee=Consignee.objects.get(customer_id=order_dict['consignee']),
                                            sales_order=sales_order)
 
-    def _get_or_create_purchase_order(self, item, order):
+    @staticmethod
+    def _get_or_create_purchase_order(item, order):
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=item['purchase_order'])
         if len(matching_purchase_orders):
             purchase_order = matching_purchase_orders[0]

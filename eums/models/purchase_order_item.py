@@ -10,6 +10,7 @@ class PurchaseOrderItem(models.Model):
 
     class Meta:
         app_label = 'eums'
+        unique_together = ('purchase_order', 'item_number', 'sales_order_item')
 
     def __unicode__(self):
         return '%s, %s %s' % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)
