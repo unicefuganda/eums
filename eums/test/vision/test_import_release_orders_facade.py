@@ -58,11 +58,11 @@ class TestReleaseOrdersVisionFacade(TestCase):
     def tearDown(self):
         os.remove(self.release_order_file_location)
         Item.objects.all().delete()
+        Consignee.objects.all().delete()
         ReleaseOrder.objects.all().delete()
         ReleaseOrderItem.objects.all().delete()
         Programme.objects.all().delete()
         User.objects.all().delete()
-        Consignee.objects.all().delete()
 
     def create_release_order_workbook(self):
         work_book = Workbook()
@@ -163,8 +163,8 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assert_release_order_items_were_created()
 
     def test_should_create_consignee_when_saving_release_order_data_if_there_is_no_matching_consignee(self):
-        self.assertEqual(Consignee.objects.count(), 0)
-
+        Consignee.objects.all().delete()
+        
         self.create_items()
         self.create_sales_orders()
 
