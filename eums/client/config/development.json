@@ -21,6 +21,7 @@
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "DATE_ANSWERS": "/api/date-answers/",
         "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
+        "IMPORT_RELEASE_ORDERS": "/api/import-release-orders/",
         "PERMISSION": "/api/permission"
     },
     "DISTRICTGEOJSONURL": "http://localhost:8000/static/app/data/districts.json",

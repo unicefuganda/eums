@@ -19,6 +19,7 @@
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
         "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
+        "IMPORT_RELEASE_ORDERS": "/api/import-release-orders/",
         "PERMISSION": "/api/permission/"
     },
     "DISTRICTGEOJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/districts.json",

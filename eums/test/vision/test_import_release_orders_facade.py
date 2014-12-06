@@ -22,6 +22,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.imported_release_order_data = [{'order_number': 54101099.0,
                                              'so_number': 20148031.0,
                                              'consignee': u'L438000393',
+                                             'consignee_name': u'OYAM DISTRICT ADMIN',
                                              'waybill': 72081598.0,
                                              'recommended_delivery_date': '2014-01-08',
                                              'items': [{'material_code': u'SL005144',
@@ -41,6 +42,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                             {'order_number': 54101128.0,
                                              'so_number': 20147537.0,
                                              'consignee': u'L438000181',
+                                             'consignee_name': u'GULU HOSPITAL',
                                              'waybill': 72081746.0,
                                              'recommended_delivery_date': '2014-04-08',
                                              'items': [{'material_code': u'S0000208',
@@ -137,8 +139,8 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                                             item_number=20)
 
     def create_consignees(self):
-        self.consignee_one = ConsigneeFactory(customer_id='L438000393')
-        self.consignee_two = ConsigneeFactory(customer_id='L438000181')
+        self.consignee_one = ConsigneeFactory(customer_id='L438000393', name='OYAM DISTRICT ADMIN')
+        self.consignee_two = ConsigneeFactory(customer_id='L438000181', name='GULU HOSPITAL')
 
     def test_should_load_release_order_data(self):
         release_order_data = self.facade.load_order_data()
@@ -160,6 +162,23 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assert_purchase_order_items_were_created()
         self.assert_release_order_items_were_created()
 
+    def test_should_create_consignee_when_saving_release_order_data_if_there_is_no_matching_consignee(self):
+        self.assertEqual(Consignee.objects.count(), 0)
+
+        self.create_items()
+        self.create_sales_orders()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+
+        self.assert_consignees_were_created()
+
+    def test_should_not_save_a_release_order_with_no_matching_sales_order(self):
+        self.create_consignees()
+        self.create_items()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrder.objects.count(), 0)
+
     def test_should_not_recreate_existing_release_orders_when_saving_only_matching_by_order_number(self):
         self.create_consignees()
         self.create_items()
@@ -174,6 +193,16 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 2)
+
+    def test_should_not_create_existing_release_order_items_when_there_is_matching_sales_order_item(self):
+        self.create_consignees()
+        self.create_items()
+
+        self.sales_order_one = SalesOrderFactory(order_number=20148031)
+        self.sales_order_two = SalesOrderFactory(order_number=20147537)
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrderItem.objects.count(), 0)
 
     def test_should_not_recreate_existing_release_order_items_when_saving_only_matching_by_order_number(self):
         self.create_consignees()
@@ -215,6 +244,15 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
         self.facade.load_order_data.assert_called()
         self.facade.save_order_data.assert_called_with(self.imported_release_order_data)
+
+    def assert_consignees_were_created(self):
+        consignee_one = Consignee(name='OYAM DISTRICT ADMIN', customer_id='L438000393',
+                                  type=Consignee.TYPES.implementing_partner)
+        consignee_two = Consignee(name='GULU HOSPITAL', customer_id='L438000181',
+                                  type=Consignee.TYPES.implementing_partner)
+
+        self.assert_consignees_are_equal(consignee_one, Consignee.objects.all()[0])
+        self.assert_consignees_are_equal(consignee_two, Consignee.objects.all()[1])
 
     def assert_release_orders_were_created(self):
         release_order_one = ReleaseOrder(order_number=54101099, consignee=self.consignee_one, waybill=72081598,
@@ -260,6 +298,11 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assert_purchase_order_items_are_equal(order_item_one, PurchaseOrderItem.objects.all()[0])
         self.assert_purchase_order_items_are_equal(order_item_two, PurchaseOrderItem.objects.all()[1])
         self.assert_purchase_order_items_are_equal(order_item_three, PurchaseOrderItem.objects.all()[2])
+
+    def assert_consignees_are_equal(self, consignee_one, consignee_two):
+        self.assertEqual(consignee_one.name, consignee_two.name)
+        self.assertEqual(consignee_one.customer_id, consignee_two.customer_id)
+        self.assertEqual(consignee_one.type, consignee_two.type)
 
     def assert_release_orders_are_equal(self, order_one, order_two):
         self.assertEqual(order_one.order_number, order_two.order_number)

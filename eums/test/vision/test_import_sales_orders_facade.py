@@ -78,6 +78,17 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.assert_sales_orders_were_created(self.programme_one, self.programme_two)
         self.assert_sales_order_items_were_created(self.item_one, self.item_three, self.item_two)
 
+    def test_should_load_sales_orders_from_excel_and_save(self):
+        self.assertEqual(SalesOrder.objects.count(), 0)
+
+        self.facade.load_order_data = MagicMock(return_value=self.imported_sales_order_data)
+        self.facade.save_order_data = MagicMock()
+
+        self.facade.import_orders()
+
+        self.facade.load_order_data.assert_called()
+        self.facade.save_order_data.assert_called_with(self.imported_sales_order_data)
+
     def test_should_not_recreate_existing_sales_orders_when_saving_only_matching_by_order_number(self):
         self.create_programmes()
         self.create_items()
@@ -126,17 +137,6 @@ class TestSalesOrdersVisionFacade(TestCase):
                                         description=u'SQFlex 3-10 Pump C/W 1.4KW')
 
         self.assert_sales_order_items_are_equal(order_item_one, SalesOrderItem.objects.all()[0])
-
-    def test_should_load_sales_orders_from_excel_and_save(self):
-        self.assertEqual(SalesOrder.objects.count(), 0)
-
-        self.facade.load_order_data = MagicMock(return_value=self.imported_sales_order_data)
-        self.facade.save_order_data = MagicMock()
-
-        self.facade.import_orders()
-
-        self.facade.load_order_data.assert_called()
-        self.facade.save_order_data.assert_called_with(self.imported_sales_order_data)
 
     def assert_sales_orders_were_created(self, programme_one, programme_two):
         sales_order_one = SalesOrder(order_number=20146879, programme=programme_one,

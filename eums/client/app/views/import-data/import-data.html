@@ -3,29 +3,56 @@
         <h4 class="page-header">Import Data</h4>
         <ng-toast></ng-toast>
 
-        <div class="panel panel-default" uploader="uploader" filters="queueLimit, customFilter">
+        <div class="panel panel-default" uploader="salesOrdersUploader" filters="queueLimit, customFilter">
             <div class="row pad-20">
-                <label class="col-lg-2" for="import-sales-orders">Import Sales Orders:</label>
-                <input class="col-lg-3" type="file" nv-file-select="" uploader="uploader"/>
-                <span class="col-lg-1" ng-show="uploader.isHTML5"
-                      nowrap>{{ uploader.queue[0].file.size/1024/1024|number:2 }} MB</span>
+                <label class="col-lg-3" for="import-sales-orders">Import Sales Orders (in excel format):</label>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="salesOrdersUploader"/>
+                <span class="col-lg-1" ng-show="salesOrdersUploader.isHTML5"
+                      nowrap>{{ salesOrdersUploader.queue[0].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button type="button" class="btn btn-primary col-lg-1" ng-click="uploader.queue[0].upload()"
-                        ng-disabled="uploader.queue[0].isReady || uploader.queue[0].isUploading">
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="salesOrdersUploader.queue[0].upload()"
+                        ng-disabled="salesOrdersUploader.queue[0].isReady || salesOrdersUploader.queue[0].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
                 <div class="col-lg-1"></div>
                 <div class="col-lg-2">
                     <div class="progress">
-                        <div ng-show="uploader.isHTML5" class="progress-bar" role="progressbar"
-                             ng-style="{ 'width': uploader.queue[0].progress + '%' }"></div>
+                        <div ng-show="salesOrdersUploader.isHTML5" class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': salesOrdersUploader.queue[0].progress + '%' }"></div>
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <span ng-show=" uploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                    <span ng-show=" uploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                    <span ng-show=" uploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i></span>
+                </div>
+
+            </div>
+        </div>
+        <div class="panel panel-default" uploader="releaseOrdersUploader" filters="queueLimit, customFilter">
+            <div class="row pad-20">
+                <label class="col-lg-3" for="import-sales-orders">Import Release Orders (in excel format):</label>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="releaseOrdersUploader"/>
+                <span class="col-lg-1" ng-show="releaseOrdersUploader.isHTML5"
+                      nowrap>{{ releaseOrdersUploader.queue[0].file.size/1024/1024|number:2 }} MB</span>
+
+
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="releaseOrdersUploader.queue[0].upload()"
+                        ng-disabled="releaseOrdersUploader.queue[0].isReady || releaseOrdersUploader.queue[0].isUploading">
+                    <span class="glyphicon glyphicon-upload"></span> Upload
+                </button>
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <div class="progress">
+                        <div ng-show="releaseOrdersUploader.isHTML5" class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': releaseOrdersUploader.queue[0].progress + '%' }"></div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <span ng-show=" releaseOrdersUploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" releaseOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show=" releaseOrdersUploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i></span>
                 </div>
 
             </div>
