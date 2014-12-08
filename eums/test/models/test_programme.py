@@ -2,6 +2,7 @@ from unittest import TestCase
 from django.db import IntegrityError
 
 from eums.models import Programme
+from eums.test.factories.programme_factory import ProgrammeFactory
 
 
 class ProgrammeTest(TestCase):
@@ -14,7 +15,7 @@ class ProgrammeTest(TestCase):
             self.assertIn(field, fields_in_item)
 
     def test_no_two_programmes_should_have_the_same_wbs_element(self):
-        create_programme = lambda: Programme(wbs_element_ex='4380/A0/04/105')
+        create_programme = lambda: ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
         create_programme()
         self.assertRaises(IntegrityError, create_programme)
 
