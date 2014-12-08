@@ -3,7 +3,7 @@ from django.db import models
 
 class Programme(models.Model):
     name = models.CharField(max_length=255)
-    wbs_element_ex = models.CharField(max_length=255, unique=False)
+    wbs_element_ex = models.CharField(max_length=255, unique=True)
 
     class Meta:
         app_label = 'eums'
