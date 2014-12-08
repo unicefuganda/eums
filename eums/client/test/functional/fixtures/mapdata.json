@@ -568,7 +568,7 @@
     },
     {
         "fields": {
-            "material_code": "SL004638",
+            "material_code": "SL004639",
             "description": "Leaflet \u2013 A5 or A4 with 3 fold \u2013 Full",
             "unit": 1
         },
@@ -640,7 +640,7 @@
     },
     {
         "fields": {
-            "material_code": "S0000240",
+            "material_code": "S0060240",
             "description": "Therapeutic spread,sachet 92g/CAR-150",
             "unit": 4
         },
@@ -649,7 +649,7 @@
     },
     {
         "fields": {
-            "material_code": "S1561125",
+            "material_code": "S1569125",
             "description": "ReSoMal,42g sachet for 1 litre/CAR-100",
             "unit": 4
         },
@@ -667,7 +667,7 @@
     },
     {
         "fields": {
-            "material_code": "S0000208",
+            "material_code": "S0700208",
             "description": "F-75 therap.diet,sachet, 102.5g/CAR-120",
             "unit": 4
         },
@@ -676,7 +676,7 @@
     },
     {
         "fields": {
-            "material_code": "SL004169",
+            "material_code": "SL004159",
             "description": "Toner",
             "unit": 5
         },
@@ -703,7 +703,7 @@
     },
     {
         "fields": {
-            "material_code": "S9906623",
+            "material_code": "S1906623",
             "description": "IEHK2006,kit,suppl.1-drugs",
             "unit": 3
         },
@@ -712,7 +712,7 @@
     },
     {
         "fields": {
-            "material_code": "SL002371",
+            "material_code": "SL062371",
             "description": "MAMA KITS, CLEAN DELIVERY KITS",
             "unit": 3
         },
@@ -2044,7 +2044,7 @@
     },
     {
         "fields": {
-            "material_code": "SL004169",
+            "material_code": "SL004369",
             "description": "Toner",
             "unit": 1
         },
@@ -2053,7 +2053,7 @@
     },
     {
         "fields": {
-            "material_code": "SL003247",
+            "material_code": "SL007247",
             "description": "Printer",
             "unit": 1
         },
@@ -2791,7 +2791,7 @@
     },
     {
         "fields": {
-            "material_code": "S0145620",
+            "material_code": "S0145920",
             "description": "MUAC,Child 11.5 Red/PAC-50",
             "unit": 1
         },
@@ -2799,6 +2799,7 @@
         "pk": 248
     },
     {
+        
         "fields": {
             "material_code": "S0145630",
             "description": "MUAC,Adult,without colour code/PAC-50",

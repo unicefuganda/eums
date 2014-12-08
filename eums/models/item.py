@@ -10,6 +10,7 @@ class Item(models.Model):
 
     class Meta:
         app_label = 'eums'
+        unique_together = ('description', 'material_code')
 
     def __unicode__(self):
         return '%s' % self.description
