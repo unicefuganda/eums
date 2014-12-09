@@ -1,10 +1,11 @@
 #!/bin/bash
 KEY_LOCATION=$1
 USER=$2
-ADDRESS=$3
+HOST_IP=$3
+RAPIDPRO_API_TOKEN=$4
 
 echo "ssh into staging"
-ssh -t -t -i ${KEY_LOCATION} ${USER}@${ADDRESS} << EOF
+ssh -t -t -i ${KEY_LOCATION} ${USER}@${HOST_IP} << EOF
 
 echo "change to root user"
 sudo su
@@ -36,6 +37,12 @@ mkdir -p /home/eums-staging/provisioning
 
 echo "clone the provisoning repository"
 git clone https://github.com/unicefuganda/eums-provisioning.git /home/eums-staging/provisioning
+
+echo "Creating settings overrides"
+if [ ${RAPIDPRO_API_TOKEN} ]
+then
+    /home/eums-staging/provisioning/chef/cookbooks/backend/files/default/create-settings-overrides.sh ${RAPIDPRO_API_TOKEN} ${HOST_IP}
+fi
 
 echo "add cookbook and roles path to solo.rb"
 rm /etc/chef/solo.rb
