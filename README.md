@@ -69,7 +69,7 @@ File naming convention:
 e.g: test_location_form.py, test_location_model.py, test_location_views.py
 
 #Deployment
-*Use Ubuntu 14.04 Operating System
+*On Ubuntu 14.04,
 
 1. Add your public key to ~/.ssh/authorized_keys on the host server if you have not done this already
 
@@ -91,3 +91,9 @@ e.g: test_location_form.py, test_location_model.py, test_location_views.py
         - Not specifying the RapidPro token will cause provisioning not to replace your settings. Useful when you are re-provisioning an instance.
 
 5. Go to the [contacts repo](https://github.com/unicefuganda/contacts) and follow the deployment instructions
+
+6. The provisioning process creates flows and questions based on flow ids and node ids in the default End User and Middle
+   Man flows on the __UNICEF Uganda__ account. If you want to connect the app to another account, ensure that the flows from
+   the __UNICEF Uganda__ account are transferred to your new account and that the ids of the flows and the questions in 
+   your new EUMS instance's database match the flow ids and the node uuids in the new RapidPro account. If this is not done,
+   your new EUMS instance will not be able to start flows and/or receive messages from end users.
