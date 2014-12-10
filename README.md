@@ -77,15 +77,17 @@ e.g: test_location_form.py, test_location_model.py, test_location_views.py
 
         $ apt-get install chef
 
-3. Run the installation script for eums
+3. Obtain the eums MailGun API key or Setup a [mailGun](https://mailgun.com) account and get its key. You will need this in the next step.
+
+4. Run the installation script for eums
         
-        $ ./scripts/staging.sh <PRIVATE_KEY> <USER> <HOST_ADDRESS> <RAPIDPRO_API_TOKEN>
+        $ ./scripts/staging.sh <PRIVATE_KEY> <USER> <HOST_ADDRESS> <RAPIDPRO_API_TOKEN> <MAILGUN_API_TOKEN>
         
         # Example
-        $ ./scripts/staging.sh ~/.ssh/id_rsa eums 190.34.56.23 abscdf234352m324kladj602901mdsf0
+        $ ./scripts/staging.sh ~/.ssh/id_rsa eums 190.34.56.23 abscdf234352m324kladj602901mdsf0 mailGunAPIKey
         
         # Notes:
         - Use the API token for the RapidPro instance you want to connect the instance you are provisioning.
         - Not specifying the RapidPro token will cause provisioning not to replace your settings. Useful when you are re-provisioning an instance.
 
-4. Go to the [contacts repo](https://github.com/unicefuganda/contacts) and follow the deployment instructions
+5. Go to the [contacts repo](https://github.com/unicefuganda/contacts) and follow the deployment instructions

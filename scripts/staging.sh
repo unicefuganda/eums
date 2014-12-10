@@ -3,6 +3,7 @@ KEY_LOCATION=$1
 USER=$2
 HOST_IP=$3
 RAPIDPRO_API_TOKEN=$4
+MAILGUN_API_TOKEN=$5
 
 echo "ssh into staging"
 ssh -t -t -i ${KEY_LOCATION} ${USER}@${HOST_IP} << EOF
@@ -41,7 +42,7 @@ git clone https://github.com/unicefuganda/eums-provisioning.git /home/eums-stagi
 echo "Creating settings overrides"
 if [ ${RAPIDPRO_API_TOKEN} ]
 then
-    /home/eums-staging/provisioning/chef/cookbooks/backend/files/default/create-settings-overrides.sh ${RAPIDPRO_API_TOKEN} ${HOST_IP}
+    /home/eums-staging/provisioning/chef/cookbooks/backend/files/default/create-settings-overrides.sh ${RAPIDPRO_API_TOKEN} ${HOST_IP} ${MAILGUN_API_TOKEN}
 fi
 
 echo "add cookbook and roles path to solo.rb"
