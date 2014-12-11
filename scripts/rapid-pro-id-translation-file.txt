@@ -1,0 +1,30 @@
+# This line is a comment. It will be ignored when parsing this file.
+# Ensure to get the syntax right
+# The mapping is: id-in-the-default-rapid-pro-instance: id-in-your-rapid-pro-instance
+
+-- Questions --
+2ff9fab3-4c12-400e-a2fe-4551fa1ebc18: 79fdb0c0-82b5-49c8-8ac8-fb01b28b5466
+abc9c005-7a7c-44f8-b946-e970a361b6cf: 2edfacaf-d41d-4361-bb0f-450c5881fdfd
+69de6032-f4de-412a-9c9e-ed98fb9bca93: ff330f3b-1de5-4c66-91e3-11a405ccb3d8
+6c1cf92d-59b8-4bd3-815b-783abd3dfad9: 5b2da355-bbfa-483c-9fe9-0eefd2637bd0
+7a5c8f57-5c3f-4659-b717-0de556898157: 0884042a-7c5b-4d7c-a78e-0813dec8fc9d
+93bbd12e-417c-4789-9c42-6dc6959c03be: 6c2f99e3-aa5f-4add-8fe3-a807d3e7e15f
+18b2ea96-cb63-40d8-8c26-1985a944ff1c: 55841baa-620e-4509-b175-b1194ffd6aec
+e9c35020-e751-4611-b222-5573b7040c49: adc68550-1051-4d21-a493-ee67d33a962d
+84150f15-b18b-4efa-be6b-ad24bc68a08f: 0142e8ca-7a9a-4376-bc42-a8f05b0442f8
+dc27480e-4931-46a8-9bea-ad0dadbec1d8: bbb8f4ff-ae19-44e7-b2c1-cd1327225a26
+4dd1a813-27d4-4511-82e3-cc470fcd3baa: fac4840f-7e00-4f84-b9fd-ea01f62e3d04
+fe368546-1b9c-4a15-926d-68b7caaa0380: 99f6ce08-1e29-4eb7-a06f-2cef179166dc
+53a31c08-896e-43b2-bd1f-e5a527d389b9: e057be98-de44-4bb2-972b-2884c043bbc9
+884ed6d8-1cef-4878-999d-bce7de85e27c: 6b836669-0c65-4c88-bbf9-06057cebd5f5
+9af2907a-d3a6-41ee-8a12-0b3197d30baf: 99aee235-15f2-4b3a-b81b-83169a9426ad
+b8189435-a6b5-42a0-b5b0-91c95484dae1: 376c141e-b4db-4b11-b03f-a376773742a5
+4e46a52d-8ea1-4bc4-824c-f8da74ce7ad0: 4eaaa4ac-002a-40e9-94c5-8dce5cb972a5
+3f5d290a-067d-4cb9-bb09-ed7c424a6abd: 5b913822-9b42-40cb-bebd-1a18ade4a6d2
+269aa1f7-7ca5-46f6-9bc0-6ad3fb7a5629: c3923da2-ad04-4a7e-ad2a-bb34e0e88623
+-- End Questions --
+
+-- Flows --
+2436: 11345
+2662: 11367
+-- End Flows --

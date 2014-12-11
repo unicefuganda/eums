@@ -22,7 +22,8 @@ INSTALLED_APPS = (
     'bootstrap_pagination',
     'eums',
     'rest_framework',
-    'password_reset'
+    'password_reset',
+    'django_extensions'
 )
 
 MIDDLEWARE_CLASSES = (

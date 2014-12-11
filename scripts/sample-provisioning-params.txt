@@ -1,0 +1,5 @@
+USER=user
+KEY_LOCATION=/Users/me/.ssh/my_private_key_to_the_instance
+HOST_IP=10.10.10.10
+RAPIDPRO_API_TOKEN=RapidProToken
+MAILGUN_ACCESS_KEY=mailgunToken
