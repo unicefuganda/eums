@@ -32,7 +32,7 @@
                         <div class="col-lg-8">
                             <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
                                     class="form-control" ng-change="selectSalesOrderItem()"
-                                    ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems">
+                                    ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems | orderBy: 'display'">
                                 <option value="">Select Item</option>
                             </select>
                         </div>
