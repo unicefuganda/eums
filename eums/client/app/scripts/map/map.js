@@ -464,7 +464,7 @@
                         $(elem).select2({
                             placeholder: 'All Implementing Partners',
                             allowClear: true,
-                            data: displayedData
+                            data: _.sortBy(displayedData, function(ip) { return ip.text; })
                         });
                     });
                 }
