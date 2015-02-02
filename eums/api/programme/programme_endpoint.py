@@ -12,7 +12,7 @@ class ProgrammeSerialiser(serializers.ModelSerializer):
 
 
 class ProgrammeViewSet(ModelViewSet):
-    queryset = Programme.objects.all()
+    queryset = Programme.objects.all().order_by('name')
     serializer_class = ProgrammeSerialiser
 
 

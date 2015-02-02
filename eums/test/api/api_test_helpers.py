@@ -18,6 +18,7 @@ SALES_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'sales-order-item/'
 PURCHASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'purchase-order/'
 PURCHASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'purchase-order-item/'
 RELEASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'release-order/'
+PROGRAMME_ENDPOINT_URL = BACKEND_URL + 'programme/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
