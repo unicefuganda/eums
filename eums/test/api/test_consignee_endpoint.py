@@ -23,6 +23,19 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(get_response.status_code, 200)
         self.assertDictContainsSubset(consignee_details, get_response.data[0])
 
+    def test_should_get_consignees_sorted_by_name(self):
+        consignee_one_details = {'name': "Save the Children", 'type': "implementing_partner"}
+        consignee_two_details = {'name': "Feed the Children", 'type': "implementing_partner"}
+
+        create_consignee(self, consignee_one_details)
+        create_consignee(self, consignee_two_details)
+
+        get_response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(get_response.status_code, 200)
+        self.assertDictContainsSubset(consignee_two_details, get_response.data[0])
+        self.assertDictContainsSubset(consignee_one_details, get_response.data[1])
+
     def test_should_search_for_consignee_by_type(self):
         implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner'}
         middle_man = {'name': "Kibuli DHO", 'type': 'middle_man'}
