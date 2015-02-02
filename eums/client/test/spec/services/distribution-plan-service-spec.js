@@ -224,7 +224,8 @@ describe('UNICEF IP', function () {
             'amountReceived': '50',
             'consignee': {
                 'id': 10,
-                'name': 'PADER DHO'
+                'name': 'PADER DHO',
+                'type': 'END_USER'
             },
             'satisfiedWithProduct': 'Yes',
             'productReceived': 'Yes',
@@ -245,7 +246,8 @@ describe('UNICEF IP', function () {
             'amountReceived': '50',
             'consignee': {
                 'id': 10,
-                'name': 'PADER DHO'
+                'name': 'PADER DHO',
+                'type': 'END_USER'
             },
             'productReceived': 'No',
             'item': 'Safety box f.used syrgs/ndls 5lt/BOX-25',
@@ -264,7 +266,8 @@ describe('UNICEF IP', function () {
             'informedOfDelay': 'No',
             'consignee': {
                 'id': 4,
-                'name': 'ARUA DHO DR. ANGUZU PATRICK'
+                'name': 'ARUA DHO DR. ANGUZU PATRICK',
+                'type': 'MIDDLE_MAN'
             },
             'amountReceived': '30',
             'amountSent': 30,
@@ -408,7 +411,8 @@ describe('UNICEF IP', function () {
                         informedOfDelay: 'No',
                         consignee: {
                             id: 4,
-                            name: 'ARUA DHO DR. ANGUZU PATRICK'
+                            name: 'ARUA DHO DR. ANGUZU PATRICK',
+                            type: 'MIDDLE_MAN'
                         },
                         amountReceived: '30',
                         amountSent: 30,
@@ -434,7 +438,8 @@ describe('UNICEF IP', function () {
                         amountReceived: '50',
                         consignee: {
                             id: 10,
-                            name: 'PADER DHO'
+                            name: 'PADER DHO',
+                            type: 'END_USER'
                         },
                         satisfiedWithProduct: 'Yes',
                         productReceived: 'Yes',
@@ -456,7 +461,8 @@ describe('UNICEF IP', function () {
                         amountReceived: '50',
                         consignee: {
                             id: 10,
-                            name: 'PADER DHO'
+                            name: 'PADER DHO',
+                            type: 'END_USER'
                         }, productReceived: 'No',
                         item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
                         qualityOfProduct: 'Good',
@@ -484,7 +490,8 @@ describe('UNICEF IP', function () {
                         amountReceived: '50',
                         consignee: {
                             id: 10,
-                            name: 'PADER DHO'
+                            name: 'PADER DHO',
+                            type: 'END_USER'
                         }, productReceived: 'No',
                         item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
                         qualityOfProduct: 'Good',
@@ -502,7 +509,8 @@ describe('UNICEF IP', function () {
                         amountReceived: '50',
                         consignee: {
                             id: 10,
-                            name: 'PADER DHO'
+                            name: 'PADER DHO',
+                            type: 'END_USER'
                         },
                         satisfiedWithProduct: 'Yes',
                         productReceived: 'Yes',
