@@ -12,7 +12,7 @@ class ItemSerialiser(serializers.ModelSerializer):
 
 
 class ItemViewSet(ModelViewSet):
-    queryset = Item.objects.all()
+    queryset = Item.objects.all().order_by('description')
     serializer_class = ItemSerialiser
 
 
