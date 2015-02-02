@@ -13,7 +13,7 @@ class ConsigneeSerialiser(serializers.ModelSerializer):
 
 
 class ConsigneeViewSet(ModelViewSet):
-    queryset = Consignee.objects.all()
+    queryset = Consignee.objects.all().order_by('name')
     serializer_class = ConsigneeSerialiser
     filter_backends = (filters.SearchFilter,)
     search_fields = ('type',)
