@@ -35,7 +35,8 @@ class ResponseSerializer(object):
             formatted_run_responses = {'node': node.id,
                                        'ip': node.get_ip(),
                                        'programme': {'id': programme.id, 'name': programme.name},
-                                       'consignee': {'id': node.consignee.id, 'name': node.consignee.name}}
+                                       'consignee': {'id': node.consignee.id, 'name': node.consignee.name,
+                                                     'type': node.tree_position}}
             for item_run, responses in node_responses.iteritems():
                 formatted_run_responses.update({'item': item_run.node_line_item.item.description,
                                                 'amountSent': item_run.node_line_item.targeted_quantity})

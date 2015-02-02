@@ -49,8 +49,7 @@ class NodeLineItemRunTest(TestCase):
         one_day = datetime.timedelta(days=1)
 
         today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
-        expired_run_date = today - delivery_status_check_delay - max_allowed_reply_period - \
-                           one_day
+        expired_run_date = today - delivery_status_check_delay - max_allowed_reply_period - one_day
         valid_run_date = today - delivery_status_check_delay - max_allowed_reply_period + one_day
 
         expired_line_item_run = NodeLineItemRunFactory(status=NodeLineItemRun.STATUS.scheduled,
@@ -91,7 +90,6 @@ class NodeLineItemRunTest(TestCase):
         self.assertIn(numeric_answer_one, line_item_run_answers)
 
     def test_should_get_all_questions_and_responses(self):
-
         run = NodeLineItemRunFactory()
 
         item_received_question = MultipleChoiceQuestionFactory(label='product_received')
