@@ -216,7 +216,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/', {cache: true});
             },
             aggregateResponses: function () {
-                return this.getAllConsigneeResponses().then(function (responseFromServer) {
+                return this.getAllEndUserResponses().then(function (responseFromServer) {
                     return aggregateAllResponse(responseFromServer.data);
                 });
             },
@@ -225,6 +225,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                     return aggregateAllResponseFor(responsesWithLocation, district);
                 });
             },
+            // TODO: Replace all calls to getAllEndUserResponses to getAllConsigneeResponses
             getAllConsigneeResponses: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES, {cache: true});
             },
@@ -247,7 +248,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             },
             mapConsigneesResponsesToNodeLocation: function () {
                 var self = this;
-                return self.getAllConsigneeResponses().then(function (responses) {
+                return self.getAllEndUserResponses().then(function (responses) {
                     var consigneeResponseWithLocationPromises = responses.data.map(function (response) {
                         return self.getDistributionPlanNodeById(response.node).then(function (planNodeResponse) {
                             response.location = planNodeResponse.data.location;

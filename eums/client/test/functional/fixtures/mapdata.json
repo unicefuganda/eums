@@ -3059,7 +3059,7 @@
     {
         "fields": {
             "distribution_plan": 1,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "",
             "consignee": 1,
@@ -3072,7 +3072,7 @@
     {
         "fields": {
             "distribution_plan": 1,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "",
             "consignee": 2,
@@ -3098,7 +3098,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 10,
@@ -3111,7 +3111,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 4,
@@ -3124,7 +3124,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 6,
@@ -3137,7 +3137,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 5,
@@ -3150,7 +3150,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 7,
@@ -3163,7 +3163,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 8,
@@ -3176,7 +3176,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 9,
@@ -3189,7 +3189,7 @@
     {
         "fields": {
             "distribution_plan": 2,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 11,
@@ -3202,7 +3202,7 @@
     {
         "fields": {
             "distribution_plan": 3,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 21,
@@ -3215,7 +3215,7 @@
     {
         "fields": {
             "distribution_plan": 3,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 15,
@@ -3228,7 +3228,7 @@
     {
         "fields": {
             "distribution_plan": 3,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 17,
@@ -3241,7 +3241,7 @@
     {
         "fields": {
             "distribution_plan": 3,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 5,
@@ -3254,7 +3254,7 @@
     {
         "fields": {
             "distribution_plan": 3,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": 2,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 19,
@@ -3267,7 +3267,7 @@
     {
         "fields": {
             "distribution_plan": 5,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 33,
@@ -3280,7 +3280,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 32,
@@ -3293,7 +3293,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 32,
@@ -3306,7 +3306,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 36,
@@ -3319,7 +3319,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 33,
@@ -3332,7 +3332,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 33,
@@ -3345,7 +3345,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 33,
@@ -3358,7 +3358,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
@@ -3371,7 +3371,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 37,
@@ -3384,7 +3384,7 @@
     {
         "fields": {
             "distribution_plan": 7,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 38,
@@ -3397,7 +3397,7 @@
     {
         "fields": {
             "distribution_plan": 7,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 38,
@@ -3410,7 +3410,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 37,
@@ -3423,7 +3423,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "WAREHOUSE",
             "consignee": 37,
@@ -3436,7 +3436,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
@@ -3449,7 +3449,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
@@ -3462,7 +3462,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
@@ -3475,7 +3475,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
@@ -3488,7 +3488,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
@@ -3501,7 +3501,7 @@
     {
         "fields": {
             "distribution_plan": 6,
-            "tree_position": "MIDDLE_MAN",
+            "tree_position": "END_USER",
             "parent": null,
             "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
