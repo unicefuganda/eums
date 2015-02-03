@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses
+from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses
 from eums.api.answer.date_answers_endpoint import textAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee import consigneeRouter
@@ -52,6 +52,7 @@ urlpatterns = patterns(
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
+    url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
     url(r'^admin/', include(admin.site.urls)),

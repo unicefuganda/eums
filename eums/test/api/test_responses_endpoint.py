@@ -13,7 +13,7 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 ENDPOINT_URL = BACKEND_URL + 'responses/'
 
 
-class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
+class ResponsesEndPointTest(AuthenticatedAPITestCase):
     def create_questions_and_items(self):
         self.multiple_choice_question_two = MultipleChoiceQuestionFactory(label='satisfiedWithProduct')
         self.multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
