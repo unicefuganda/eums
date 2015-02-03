@@ -11,12 +11,8 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 templateUrl: '/static/app/views/home.html',
                 controller: 'HomeController',
                 resolve: {
-                    permission: function (UserService, $location) {
-                     return UserService.checkUserPermission('auth.can_view_dashboard').then(function (auth) {
-                        if (!auth) {
-                            return $location.path('/delivery-reports');
-                        }
-                     });
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
                     }
                 }
             })
