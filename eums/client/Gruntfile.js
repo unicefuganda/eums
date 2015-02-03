@@ -16,7 +16,6 @@ module.exports = function (grunt) {
 
     // Define the configuration for all the tasks
     grunt.initConfig({
-
         // The actual grunt server settings
         connect: {
             options: {
