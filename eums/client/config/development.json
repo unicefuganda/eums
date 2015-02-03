@@ -17,6 +17,7 @@
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
         "RESPONSES": "/api/responses/",
+        "END_USER_RESPONSES": "/api/end-user-responses/",
         "STOCK_REPORT": "/api/stock-report/",
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
         "DATE_ANSWERS": "/api/date-answers/",

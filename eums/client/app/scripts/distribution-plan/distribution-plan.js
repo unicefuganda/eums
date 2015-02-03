@@ -228,6 +228,9 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
             getAllConsigneeResponses: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.RESPONSES, {cache: true});
             },
+            getAllEndUserResponses: function () {
+                return $http.get(EumsConfig.BACKEND_URLS.END_USER_RESPONSES, {cache: true});
+            },
             getResponsesByLocation: function (district) {
                 return this.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                     return getResponseFor(responsesWithLocation, district);

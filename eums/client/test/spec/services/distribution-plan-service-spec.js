@@ -277,6 +277,49 @@ describe('UNICEF IP', function () {
             }
         }
     ];
+    var stubEndUserResponses = [
+        {
+            'node': planNodeOne,
+            'amountSent': 100,
+            'amountReceived': '50',
+            'consignee': {
+                'id': 10,
+                'name': 'PADER DHO',
+                'type': 'END_USER'
+            },
+            'satisfiedWithProduct': 'Yes',
+            'productReceived': 'Yes',
+            'item': 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+            'revisedDeliveryDate': 'didnt not specify',
+            'qualityOfProduct': 'Good',
+            'feedbackAboutDissatisfaction': 'they were damaged',
+            'informedOfDelay': 'No',
+            'dateOfReceipt': '7/10/2014',
+            'programme': {
+                'id': 3,
+                'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
+            }
+        },
+        {
+            'node': planNodeOne,
+            'amountSent': 100,
+            'amountReceived': '50',
+            'consignee': {
+                'id': 10,
+                'name': 'PADER DHO',
+                'type': 'END_USER'
+            },
+            'productReceived': 'No',
+            'item': 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+            'qualityOfProduct': 'Good',
+            'informedOfDelay': 'No',
+            'dateOfReceipt': '6/10/2014',
+            'programme': {
+                'id': 3,
+                'name': 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
+            }
+        }
+    ];
 
     var scope, distributionPlanNodeService, distributionPlanService, deferredPlanNodePromise, httpBackend, eumsConfig, deferredNodePromise;
 
@@ -336,6 +379,7 @@ describe('UNICEF IP', function () {
     describe('consignee responses', function () {
         beforeEach(function () {
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.END_USER_RESPONSES).respond(stubEndUserResponses);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(stubDistributionPlanNodes[0]);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeTwo + '/').respond(stubDistributionPlanNodes[1]);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER').respond([stubDistributionPlanNodes[2]]);
@@ -344,6 +388,13 @@ describe('UNICEF IP', function () {
         it('should get all consignee responses', function () {
             distributionPlanService.getAllConsigneeResponses().then(function (responses) {
                 expect(responses.data).toEqual(stubConsigneeResponses);
+            });
+            httpBackend.flush();
+        });
+
+        it('should get all end user responses', function () {
+            distributionPlanService.getAllEndUserResponses().then(function (responses) {
+                expect(responses.data).toEqual(stubEndUserResponses);
             });
             httpBackend.flush();
         });
