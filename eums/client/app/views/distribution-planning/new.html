@@ -100,7 +100,7 @@
                         <th class="table-select-header-width">District</th>
                         <th ng-show="distributionPlanReport">Mode of Delivery</th>
                         <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
-                        <th class="table-header-width" ng-show="planNode">End User</th>
+                        <th class="table-header-width">End User</th>
                         <th class="table-sub-consignee-header-width"></th>
 
                         <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
@@ -173,7 +173,7 @@
                                     </button>
                                 </div>
                             </td>
-                            <td ng-show="planNode">
+                            <td>
                                 <div class="text-center">
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ item.forEndUser }}"
