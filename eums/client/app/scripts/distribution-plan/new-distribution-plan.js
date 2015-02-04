@@ -11,6 +11,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.itemIndex = '';
         $scope.track = false;
         $scope.consigneeLevel = false;
+        $scope.isReport = false;
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
         $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
@@ -100,6 +101,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
         else {
+            $scope.isReport = true;
             UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
                 if (user.consignee_id) {
