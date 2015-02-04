@@ -464,13 +464,14 @@
                         $(elem).select2({
                             placeholder: 'All Implementing Partners',
                             allowClear: true,
-                            data: _.sortBy(displayedData, function(ip) { return ip.text; })
+                            data: _.sortBy(displayedData, function (ip) {
+                                return ip.text;
+                            })
                         });
                     });
                 }
             }
         }).directive('deliveryStatus', function (DistributionPlanService) {
-
 
             return {
                 restrict: 'A',
