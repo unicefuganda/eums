@@ -74,7 +74,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.distributionPlanLineItems = [];
         $scope.salesOrderItems = [];
 
-        if($scope.distributionPlanReport){
+        if ($scope.distributionPlanReport) {
             SalesOrderService.getSalesOrder($routeParams.salesOrderId).then(function (response) {
                 $scope.selectedSalesOrder = response;
 
@@ -99,10 +99,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 });
             });
         }
-        else{
-            UserService.getCurrentUser().then(function (user){
+        else {
+            UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
-                if(user.consignee_id){
+                if (user.consignee_id) {
                     PurchaseOrderService.getConsigneePurchaseOrder($routeParams.purchaseOrderId, user.consignee_id).then(function (response) {
                         $scope.selectedPurchaseOrder = response;
                         $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
@@ -120,7 +120,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
                                 if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId)) {
                                     $scope.selectedSalesOrderItem = formattedSalesOrderItem;
-                                    if(!$routeParams.distributionPlanNodeId){
+                                    if (!$routeParams.distributionPlanNodeId) {
                                         $scope.selectSalesOrderItem();
                                     }
                                 }
@@ -130,7 +130,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         });
                     });
                 }
-                else{
+                else {
                     PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
                         $scope.selectedPurchaseOrder = response;
                         $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
@@ -165,8 +165,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             DistributionPlanNodeService.getPlanNodeDetails($routeParams.distributionPlanNodeId).then(function (planNode) {
                 $scope.planNode = planNode;
 
-                UserService.getCurrentUser().then(function (user){
-                    if (user.consignee_id){
+                UserService.getCurrentUser().then(function (user) {
+                    if (user.consignee_id) {
                         $scope.consigneeLevel = $scope.planNode.parent ? false : true;
                     }
                 });
@@ -194,22 +194,22 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.selectSalesOrderItem = function () {
-            UserService.getCurrentUser().then(function (user){
+            UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
-                if(user.consignee_id){
+                if (user.consignee_id) {
                     PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedSalesOrderItem.information.id).then(function (response) {
                         var node = response;
-                        var locPath =  $location.path().split('/')[1];
-                        var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
+                        var locPath = $location.path().split('/')[1];
+                        var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
                         $location.path(
-                            '/'+ locPath +'/new/' +
+                                '/' + locPath + '/new/' +
                                 documentId + '-' +
-                            $scope.selectedSalesOrderItem.information.id + '-' +
-                            node
+                                $scope.selectedSalesOrderItem.information.id + '-' +
+                                node
                         );
                     });
                 }
-                else{
+                else {
                     $scope.distributionPlanLineItems = [];
 
                     var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
@@ -259,7 +259,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             lineItem.lineItemId = lineItem.id;
                             lineItem.item = $scope.selectedSalesOrderItem.information.id;
 
-                            if(lineItem.track) {
+                            if (lineItem.track) {
                                 $scope.track = true;
                             }
 
@@ -352,13 +352,13 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 contact_person_id: uiPlanItem.contactPerson,
                 distribution_plan: $scope.distributionPlan,
                 tree_position: uiPlanItem.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
-                mode_of_delivery: uiPlanItem.modeOfDelivery ? uiPlanItem.modeOfDelivery: 'WAREHOUSE',
+                mode_of_delivery: uiPlanItem.modeOfDelivery ? uiPlanItem.modeOfDelivery : 'WAREHOUSE',
                 parent: parentNodeId()
             };
 
             if (nodeId) {
                 node.id = nodeId;
-                node.children = uiPlanItem.nodeChildren ? uiPlanItem.nodeChildren : null;
+                node.children = uiPlanItem.nodeChildren ? uiPlanItem.nodeChildren : [];
                 return DistributionPlanNodeService.updateNode(node);
             }
             else {
@@ -370,7 +370,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             var lineItemId = nodeLineItem.lineItemId;
             var plannedDate = new Date(nodeLineItem.plannedDistributionDate);
 
-            if(plannedDate.toString() === 'Invalid Date'){
+            if (plannedDate.toString() === 'Invalid Date') {
                 var planDate = nodeLineItem.plannedDistributionDate.split('/');
                 plannedDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
@@ -429,10 +429,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.addSubConsignee = function (lineItem) {
-            var locPath =  $location.path().split('/')[1];
-            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
+            var locPath = $location.path().split('/')[1];
+            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
             $location.path(
-                '/'+ locPath +'/new/' +
+                    '/' + locPath + '/new/' +
                     documentId + '-' +
                     $scope.selectedSalesOrderItem.information.id + '-' +
                     lineItem.nodeId
@@ -444,11 +444,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.previousConsignee = function (planNode) {
-            var locPath =  $location.path().split('/')[1];
-            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id ;
+            var locPath = $location.path().split('/')[1];
+            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
             if (planNode.parent) {
                 $location.path(
-                        '/'+ locPath +'/new/' +
+                        '/' + locPath + '/new/' +
                         documentId + '-' +
                         $scope.selectedSalesOrderItem.information.id + '-' +
                         planNode.parent
@@ -456,7 +456,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
             else {
                 $location.path(
-                        '/'+ locPath +'/new/' +
+                        '/' + locPath + '/new/' +
                         documentId + '-' +
                         $scope.selectedSalesOrderItem.information.id
                 );
@@ -556,22 +556,23 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
     })
     .directive('onlyDigits', function () {
         return {
-          require: 'ngModel',
-          restrict: 'A',
-          link: function (scope, element, attr, ngModelCtrl) {
-            function inputValue(val) {
-              if (val) {
-                var digits = val.replace(/[^0-9]/g, '');
+            require: 'ngModel',
+            restrict: 'A',
+            link: function (scope, element, attr, ngModelCtrl) {
+                function inputValue(val) {
+                    if (val) {
+                        var digits = val.replace(/[^0-9]/g, '');
 
-                if (digits !== val) {
-                  ngModelCtrl.$setViewValue(digits);
-                  ngModelCtrl.$render();
+                        if (digits !== val) {
+                            ngModelCtrl.$setViewValue(digits);
+                            ngModelCtrl.$render();
+                        }
+                        return parseInt(digits, 10);
+                    }
+                    return undefined;
                 }
-                return parseInt(digits,10);
-              }
-              return undefined;
+
+                ngModelCtrl.$parsers.push(inputValue);
             }
-            ngModelCtrl.$parsers.push(inputValue);
-          }
         };
     });
