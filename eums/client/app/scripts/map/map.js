@@ -541,6 +541,7 @@
                                     return;
                                 }
 
+                                scope.isFiltered = true;
                                 if (newValue.received) {
                                     receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                         return responseLocationMap.consigneeResponses.filter(function (response) {
