@@ -371,6 +371,7 @@
             scope: false,
             link: function (scope) {
                 scope.$watchCollection('filter', function (newValue) {
+                    var filteredResponses;
                     scope.dateFilter = {from: '', to: ''};
                     var responsesToPlot = [];
                     if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
@@ -380,7 +381,7 @@
                     if (newValue.programme) {
                         scope.isFiltered = true;
                         scope.programmeFilter = true;
-                        var filteredResponses = scope.reponsesFromDb.map(function (responseLocationMap) {
+                        filteredResponses = scope.reponsesFromDb.map(function (responseLocationMap) {
                             return responseLocationMap.consigneeResponses.filter(function (response) {
                                 return parseInt(response.programme.id) === parseInt(newValue.programme);
                             });
@@ -398,7 +399,7 @@
                             responsesToPlot = scope.reponsesFromDb
                         }
 
-                        var filteredResponses = responsesToPlot.map(function (responseLocationMap) {
+                        filteredResponses = responsesToPlot.map(function (responseLocationMap) {
                             return responseLocationMap.consigneeResponses.filter(function (response) {
                                 return parseInt(response.ip.id) === parseInt(newValue.ip);
                             });
