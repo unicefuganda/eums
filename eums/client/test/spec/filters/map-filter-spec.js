@@ -143,13 +143,15 @@ describe('Map Filter Service', function () {
             });
         });
 
-        xit('should filter markers by ip', function (done) {
+        it('should filter markers by ip', function (done) {
             mapFilterService.setMapMarker(markerMapOne);
             mapFilterService.setMapMarker(markerMapTwo);
             var ip = 1;
 
-            deferredNodes.resolve([{data: distributionPlanNodeOne}]);
-            mapFilterService.filterMarkersByIp(ip).then(function (markers) {
+            deferredNodes.resolve([
+                {data: distributionPlanNodeOne}
+            ]);
+            mapFilterService.filterMarkersByIp(ip, mapFilterService.getAllMarkerMaps()).then(function (markers) {
                 expect(markers).toEqual([markerMapOne]);
                 done();
             });

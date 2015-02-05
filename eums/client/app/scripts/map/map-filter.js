@@ -37,6 +37,7 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
             },
             filterMarkersByIp: function (ip, markerMaps) {
                 return DistributionPlanService.getNodesBy(ip).then(function (data) {
+
                     var markers = data.map(function (node) {
                         return markerMaps.map(function (markerMap) {
                             if (markerMap.consigneeResponse[0].node === node.data.id) {

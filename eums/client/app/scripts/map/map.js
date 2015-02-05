@@ -513,6 +513,14 @@
                                     });
                                 });
                             }
+                            else {
+                                receivedResponses = responsesToPlot.map(function (responseLocationMap) {
+                                    return responseLocationMap.consigneeResponses.filter(function (response) {
+                                        return response.productReceived.toLowerCase() === 'no';
+                                    });
+                                });
+
+                            }
 
                             if (newValue.notDelivered) {
                                 notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
@@ -553,23 +561,25 @@
                 link: function (scope) {
                     scope.$watchCollection('[dateFilter.from, dateFilter.to]', function (newDates) {
                         var receivedResponses = [];
-                        var fromDate = moment(newDates[0]),
-                            toDate = moment(newDates[1]);
+                        var fromDate = moment(newDates[0]);
+                        var toDate = moment(newDates[1]);
                         var responsesToPlot = scope.allResponsesMap;
 
                         function isWithinDateRange(dateOfReceipt) {
+
                             var dateRange = moment().range(fromDate, toDate);
-                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD/MM/YYYY'));
+                            return  dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD/MM/YYYY'));
                         }
 
                         if (newDates[0] && newDates[1]) {
                             receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                 return responseLocationMap.consigneeResponses.filter(function (response) {
-                                    return isWithinDateRange(response.dateOfReceipt);
+                                    return  isWithinDateRange(response.dateOfReceipt);
                                 });
                             });
                         }
-                        scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(receivedResponses)));
+                        var cleanedResponses = removeEmptyArray(receivedResponses);
+                        scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(cleanedResponses));
 
                     });
                 }
