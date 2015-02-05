@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Home', ['GlobalStats', 'DistributionPlan'])
-    .controller('HomeController', function ($rootScope, $scope, $location) {
+    .controller('HomeController', function ($rootScope, $scope, $location, UserService) {
         $scope.filter = {programme: '', ip: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
 
@@ -15,7 +15,9 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan'])
         $scope.isFiltered = false;
         $scope.notDeliveryStatus = false;
 
-
+        UserService.getCurrentUser().then(function (user){
+            $scope.user = user;
+        });
         $scope.showDetailedResponses = function () {
             $location.path('/response-details/' + $scope.data.district);
         };

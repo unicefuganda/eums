@@ -5,11 +5,16 @@ describe('Module: Home', function () {
     beforeEach(module('Home'));
 
     describe('Controller:Home', function () {
-        beforeEach(inject(function ($controller, $rootScope, $location) {
+        var mockUserService, deferred;
+
+        beforeEach(inject(function ($controller, $rootScope, $location, $q) {
             location = $location;
             scope = $rootScope.$new();
+            mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+            deferred = $q.defer();
+            mockUserService.getCurrentUser.and.returnValue(deferred.promise);
             $controller('HomeController', {
-                $scope: scope});
+                $scope: scope, UserService: mockUserService});
         }));
 
         it('should redirect to detailed responses page', function () {

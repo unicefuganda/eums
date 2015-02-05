@@ -88,7 +88,7 @@
         }
     });
 
-    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService, $q, MapFilterService, DistributionPlanService) {
+    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService, $q, MapFilterService, DistributionPlanService, UserService) {
         var map, mapScope;
 
         var zoomControl = L.control.zoom({
@@ -134,25 +134,27 @@
         function addHeatMapLayer(map, scope) {
             var allMarkers = [];
             DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
-                scope.reponsesFromDb = responsesWithLocation;
-                markersGroup.clearLayers && markersGroup.clearLayers();
+                 filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
+                    scope.reponsesFromDb = filteredResponses;
+                    markersGroup.clearLayers && markersGroup.clearLayers();
 
-                if (scope.isFiltered || scope.notDeliveryStatus) {
-                    scope.allResponsesMap = scope.data.allResponsesLocationMap
-                } else {
-                    scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
-                }
+                    if (scope.isFiltered || scope.notDeliveryStatus) {
+                        scope.allResponsesMap = scope.data.allResponsesLocationMap
+                    } else {
+                        scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                    }
 
-                var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
-                angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
-                    layer.setStyle(getHeatMapStyle(allLocations, layerName));
-                    var marker = messagesAggregateMarker(layer, getMarkerContent(allLocations, layerName))
+                    var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
+                    angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
+                        layer.setStyle(getHeatMapStyle(allLocations, layerName));
+                        var marker = messagesAggregateMarker(layer, getMarkerContent(allLocations, layerName))
 
-                    marker && allMarkers.push(marker);
-                });
-                markersGroup = L.layerGroup(allMarkers);
-                markersGroup.addTo(map);
-                scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap);
+                        marker && allMarkers.push(marker);
+                    });
+                    markersGroup = L.layerGroup(allMarkers);
+                    markersGroup.addTo(map);
+                    scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap);
+                 });
             });
         }
 
@@ -166,6 +168,22 @@
                         LayerMap.addLayer(districtLayer, districtName.toLowerCase())
                     }
                 }).addTo(map);
+            });
+        }
+
+        function filterResponsesForUser(responsesToPlot){
+             return UserService.getCurrentUser().then(function (user){
+                if(user.consignee_id){
+                    var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
+                        return responsesWithLocation.consigneeResponses.filter(function (response) {
+                            return parseInt(response.consignee.id) === parseInt(user.consignee_id);
+                        });
+                    });
+                    return DistributionPlanService.groupResponsesByLocation(_.flatten(filteredIPResponses));
+                }
+                else{
+                    return responsesToPlot;
+                }
             });
         }
 
@@ -281,6 +299,7 @@
                     scope.hideMapMarkerDetails = function () {
                         scope.data.responses = null;
                     };
+
                 });
 
                 scope.clearFilters = function () {
@@ -340,7 +359,7 @@
             scope: false,
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
-    }).directive('filters', function (DistributionPlanService) {
+    }).directive('filters', function (DistributionPlanService, UserService) {
         function removeEmptyArray(filteredResponses) {
             return filteredResponses.filter(function (response) {
                 return response.length > 0;
@@ -471,7 +490,22 @@
                     });
                 }
             }
-        }).directive('deliveryStatus', function (DistributionPlanService) {
+        }).directive('deliveryStatus', function (DistributionPlanService, UserService) {
+            function filterResponsesForUser(responsesToPlot){
+                 return UserService.getCurrentUser().then(function (user){
+                    if(user.consignee_id){
+                        var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
+                            return responsesWithLocation.consigneeResponses.filter(function (response) {
+                                return parseInt(response.consignee.id) === parseInt(user.consignee_id);
+                            });
+                        });
+                        return DistributionPlanService.groupResponsesByLocation(_.flatten(filteredIPResponses));
+                    }
+                    else{
+                        return responsesToPlot;
+                    }
+                });
+            }
 
             return {
                 restrict: 'A',
@@ -489,69 +523,85 @@
                         scope.dateFilter = {from: '', to: ''};
 
                         DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
-                            scope.reponsesFromDb = responsesWithLocation;
+                            filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
+                                scope.reponsesFromDb = filteredResponses;
 
-                            if (newValue.received && newValue.notDelivered && newValue.receivedWithIssues) {
-                                if (scope.isFiltered) {
-                                    scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
-                                } else {
-                                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
+                                if (newValue.received && newValue.notDelivered && newValue.receivedWithIssues) {
+                                    if (scope.isFiltered) {
+                                        scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
+                                    } else {
+                                        scope.data.allResponsesLocationMap = scope.reponsesFromDb;
+                                    }
+                                    return;
                                 }
-                                return;
-                            }
 
-                            if (!newValue.received && !newValue.notDelivered && !newValue.receivedWithIssues) {
-                                scope.notDeliveryStatus = true;
-                                scope.data.allResponsesLocationMap = [];
-                                return;
-                            }
+                                if (!newValue.received && !newValue.notDelivered && !newValue.receivedWithIssues) {
+                                    scope.notDeliveryStatus = true;
+                                    scope.data.allResponsesLocationMap = [];
+                                    return;
+                                }
 
-                            if (newValue.received) {
-                                receivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                    return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived.toLowerCase() === 'yes';
+                                if (newValue.received) {
+                                    receivedResponses = responsesToPlot.map(function (responseLocationMap) {
+                                        return responseLocationMap.consigneeResponses.filter(function (response) {
+                                            return response.productReceived.toLowerCase() === 'yes';
+                                        });
                                     });
-                                });
-                            }
-                            else {
-                                receivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                    return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived.toLowerCase() === 'no';
+                                }
+                                else {
+                                    receivedResponses = responsesToPlot.map(function (responseLocationMap) {
+                                        return responseLocationMap.consigneeResponses.filter(function (response) {
+                                            return response.productReceived.toLowerCase() === 'no';
+                                        });
                                     });
-                                });
 
-                            }
+                                }
 
-                            if (newValue.notDelivered) {
-                                notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                    return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return response.productReceived.toLowerCase() === 'no';
+                                if (newValue.notDelivered) {
+                                    notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
+                                        return responseLocationMap.consigneeResponses.filter(function (response) {
+                                            return response.productReceived.toLowerCase() === 'no';
+                                        });
                                     });
-                                });
-                            }
+                                }
 
-                            if (newValue.receivedWithIssues) {
-                                receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
-                                    return responseLocationMap.consigneeResponses.filter(function (response) {
-                                        return Boolean(response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() === 'no' && response.productReceived.toLowerCase() === 'yes');
+                                if (newValue.receivedWithIssues) {
+                                    receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
+                                        return responseLocationMap.consigneeResponses.filter(function (response) {
+                                            return Boolean(response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() === 'no' && response.productReceived.toLowerCase() === 'yes');
+                                        });
                                     });
-                                });
-                            }
+                                }
 
-                            var received = _.flatten(receivedResponses).length ? _.flatten(receivedResponses) : _.flatten(receivedResponsesWithIssues);
-                            var deliveryStatusResponses = notReceivedResponses.concat(received);
+                                var received = _.flatten(receivedResponses).length ? _.flatten(receivedResponses) : _.flatten(receivedResponsesWithIssues);
+                                var deliveryStatusResponses = notReceivedResponses.concat(received);scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
 
-                            scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
-
+                                scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
+                            });
                         });
-
                     });
                 }
             }
-        }).directive('dateRangeFilter', function (DistributionPlanService) {
+        }).directive('dateRangeFilter', function (DistributionPlanService, UserService) {
             function removeEmptyArray(filteredResponses) {
                 return filteredResponses.filter(function (response) {
                     return response.length > 0;
+                });
+            }
+
+            function filterResponsesForUser(responsesToPlot){
+                 return UserService.getCurrentUser().then(function (user){
+                    if(user.consignee_id){
+                        var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
+                            return responsesWithLocation.consigneeResponses.filter(function (response) {
+                                return parseInt(response.consignee.id) === parseInt(user.consignee_id);
+                            });
+                        });
+                        return DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredIPResponses)));
+                    }
+                    else{
+                        return responsesToPlot;
+                    }
                 });
             }
 
@@ -580,7 +630,7 @@
                         }
                         var cleanedResponses = removeEmptyArray(receivedResponses);
                         scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(cleanedResponses));
-
+                        scope.data.allResponsesLocationMap = filterResponsesForUser(scope.data.allResponsesLocationMap);
                     });
                 }
             }

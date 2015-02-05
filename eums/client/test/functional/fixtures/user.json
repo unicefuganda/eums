@@ -16,5 +16,42 @@
         },
         "model": "auth.user",
         "pk": 1
+    },
+    {
+        "fields": {
+            "username": "wakiso",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": false,
+            "is_staff": false,
+            "last_login": "2015-02-04T17:02:46.534",
+            "groups": [2],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$zXues7bdIbYE$Agj3fZdiacmK5JJriCkDgcNvn/Q53JCDvfF37i+mPJ4=",
+            "email": "ip@ip.com",
+            "date_joined": "2014-12-03T17:40:36.415"
+        },
+        "model": "auth.user",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "customer_id": "L438000484",
+            "type": "implementing_partner",
+            "name": "WAKISO DHO"
+        },
+        "model": "eums.consignee",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "user": 2,
+            "consignee": 5,
+            "modified": "2014-12-03T17:40:36.537",
+            "created": "2014-12-03T17:40:36.534"
+        },
+        "model": "eums.userprofile",
+        "pk": 1
     }
 ]

@@ -205,15 +205,6 @@
     },
     {
         "fields": {
-            "customer_id": "L438000484",
-            "type": "implementing_partner",
-            "name": "WAKISO DHO"
-        },
-        "model": "eums.consignee",
-        "pk": 5
-    },
-    {
-        "fields": {
             "customer_id": "L438000215",
             "type": "implementing_partner",
             "name": "KAABONG DHO"
