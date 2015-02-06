@@ -5,6 +5,11 @@
 
         <div class="panel panel-default" uploader="salesOrdersUploader" filters="queueLimit, customFilter">
             <div class="row pad-20">
+                <h4 class="underline">Instructions</h4>
+                <span>To import Sales Orders from vision, export Sales Orders (ZROST) for the time period
+                you want with the <em><strong>default</strong></em> rows selected and in <em><strong>excel (.xls) format.</strong></em></span>
+            </div>
+            <div class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Sales Orders (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="salesOrdersUploader"/>
                 <span class="col-lg-1" ng-show="salesOrdersUploader.isHTML5"
@@ -31,6 +36,12 @@
             </div>
         </div>
         <div class="panel panel-default" uploader="releaseOrdersUploader" filters="queueLimit, customFilter">
+            <div class="row pad-20">
+                <h4 class="underline">Instructions</h4>
+                <span>To import Release Orders and Purchase Orders from vision, export Release Orders for the time period
+                you want with the <em><strong>default</strong></em> rows selected and in <em><strong>excel (.xls) format</strong></em>.<br/></span>
+                <span>Note that the Release Order export from Vision has both Release Order and Purchase Order data.</span>
+            </div>
             <div class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Release Orders (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="releaseOrdersUploader"/>
