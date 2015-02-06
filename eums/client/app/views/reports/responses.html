@@ -17,7 +17,7 @@
                                 chosen
                                 ng-model="selectedProgramme"
                                 ng-change="selectProgramme()"
-                                ng-options="programmes.name for programmes in programmes track by programmes.id">
+                                ng-options="programmes.name for programmes in programmes | orderBy: 'name' track by programmes.id">
                             <option value=""></option>
                         </select>
                     </div>
@@ -39,7 +39,7 @@
                                 chosen
                                 ng-model="selectedSalesOrder"
                                 ng-change="selectSalesOrder()"
-                                ng-options="salesOrder.order_number for salesOrder in salesOrders track by salesOrder.id">
+                                ng-options="salesOrder.order_number for salesOrder in salesOrders | orderBy: 'order_number' track by salesOrder.id ">
                             <option value=""></option>
                         </select>
                     </div>
@@ -61,7 +61,7 @@
                                 chosen
                                 ng-model="selectedSalesOrderItem"
                                 ng-change="selectSalesOrderItem()"
-                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems track by salesOrderItem.id">
+                                ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems | orderBy: 'display' track by salesOrderItem.id">
                             <option value=""></option>
                         </select>
                     </div>
@@ -83,7 +83,7 @@
                                 chosen
                                 ng-model="selectedSalesOrderItemConsignee"
                                 ng-change="selectSalesOrderItemConsignee()"
-                                ng-options="salesOrderItemConsignee.consignee_name for salesOrderItemConsignee in salesOrderItemConsignees track by salesOrderItemConsignee.consignee">
+                                ng-options="salesOrderItemConsignee.consignee_name for salesOrderItemConsignee in salesOrderItemConsignees | orderBy: 'consignee_name' track by salesOrderItemConsignee.consignee">
                             <option value=""></option>
                         </select>
                     </div>
