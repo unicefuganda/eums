@@ -5,6 +5,13 @@
         });
     }
 
+    function getNumberOfIssues(receivedCriteria, data) {
+        return data.filter(function (answer) {
+            return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase() && answer.satisfiedWithProduct && answer.satisfiedWithProduct.toLowerCase() === 'no';
+        });
+    }
+
+
     function getMarkerContent(allDistricts, layerName) {
         var content = '';
         allDistricts.forEach(function (district) {
@@ -36,9 +43,10 @@
 
     function getHeatMapColor(consigneeResponses) {
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
+        var noProductReceivedWithIssues = getNumberOfIssues("yes", consigneeResponses).length;
         var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
-        if (getPercentage(noProductReceived, consigneeResponses) >= 100) return GREEN;
-        if (getPercentage(noProductReceived, consigneeResponses) < 75 && getPercentage(noProductReceived, consigneeResponses) >= 50) return ORANGE;
+        if ((getPercentage(noProductReceived, consigneeResponses) >= 100) && getPercentage(noProductReceivedWithIssues, consigneeResponses) < 50) return GREEN;
+        if ((getPercentage(noProductReceived, consigneeResponses) < 75 && getPercentage(noProductReceived, consigneeResponses) >= 50) || getPercentage(noProductReceivedWithIssues, consigneeResponses) >= 50) return ORANGE;
         return RED;
     }
 
@@ -546,17 +554,12 @@
                                 if (newValue.received) {
                                     receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                         return responseLocationMap.consigneeResponses.filter(function (response) {
-                                            return response.productReceived.toLowerCase() === 'yes';
+                                            if (response.satisfiedWithProduct)
+                                                return Boolean(response.productReceived.toLowerCase() === 'yes' && response.satisfiedWithProduct.toLowerCase() === 'yes');
+                                            else
+                                                return response.productReceived.toLowerCase() === 'yes'
                                         });
                                     });
-                                }
-                                else {
-                                    receivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                        return responseLocationMap.consigneeResponses.filter(function (response) {
-                                            return response.productReceived.toLowerCase() === 'no';
-                                        });
-                                    });
-
                                 }
 
                                 if (newValue.notDelivered) {
