@@ -143,7 +143,6 @@
                     } else {
                         scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
                     }
-
                     var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                         layer.setStyle(getHeatMapStyle(allLocations, layerName));
@@ -308,6 +307,7 @@
                     scope.filter = {programme: '', ip: '', year: ''};
                     scope.dateFilter = {from: '', to: ''};
                     scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
+                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
                 };
 
             }
@@ -576,7 +576,6 @@
 
                                 var received = _.flatten(receivedResponses).length ? _.flatten(receivedResponses) : _.flatten(receivedResponsesWithIssues);
                                 var deliveryStatusResponses = notReceivedResponses.concat(received);scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
-
                                 scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
                             });
                         });
@@ -614,7 +613,10 @@
                         var receivedResponses = [];
                         var fromDate = moment(newDates[0]);
                         var toDate = moment(newDates[1]);
-                        var responsesToPlot = scope.allResponsesMap;
+                        var responsesToPlot = scope.data.topLevelResponses.length ?
+                            scope.data.topLevelResponses : scope.notDeliveryStatus ?
+                            scope.reponsesFromDb : !scope.notDeliveryStatus ?
+                            scope.reponsesFromDb : scope.allResponsesMap;
 
                         function isWithinDateRange(dateOfReceipt) {
 
@@ -623,6 +625,7 @@
                         }
 
                         if (newDates[0] && newDates[1]) {
+                            scope.isFiltered = true;
                             receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                 return responseLocationMap.consigneeResponses.filter(function (response) {
                                     return  isWithinDateRange(response.dateOfReceipt);
@@ -631,7 +634,9 @@
                         }
                         var cleanedResponses = removeEmptyArray(receivedResponses);
                         scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(cleanedResponses));
-                        scope.data.allResponsesLocationMap = filterResponsesForUser(scope.data.allResponsesLocationMap);
+                        filterResponsesForUser(scope.data.allResponsesLocationMap).then(function (filteredResponses){
+                            scope.data.allResponsesLocationMap = filteredResponses;
+                        });
                     });
                 }
             }
