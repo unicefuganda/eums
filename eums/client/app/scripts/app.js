@@ -2,7 +2,7 @@
 
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs',
         'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'DatePicker',
-        'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData'])
+        'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData', 'EndUserResponses'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -94,6 +94,15 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            .when('/end-user-responses', {
+                templateUrl: '/static/app/views/reports/end-user-responses.html',
+                controller: 'EndUserResponsesController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
                     }
                 }
             })

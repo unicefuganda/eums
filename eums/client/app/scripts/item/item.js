@@ -25,6 +25,11 @@ angular.module('Item', ['eums.config'])
                     var item = response.data;
                     return fillOutItemUnit(item);
                 });
+            },
+            fetchItems: function() {
+                return $http.get(EumsConfig.BACKEND_URLS.ITEM).then(function (response) {
+                    return response.data;
+                });
             }
         };
     });

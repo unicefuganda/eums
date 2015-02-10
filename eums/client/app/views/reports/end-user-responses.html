@@ -1,0 +1,98 @@
+<div class="container-fluid">
+    <div ng-controller="EndUserResponsesController" class="content" ng-init="initialize()">
+        <h4 class="page-header">End User Feedback Report
+        </h4>
+
+        <div class="row pad-20">
+            <div class="form-inline">
+                <div class="form-group col-lg-4">
+                    <label for="select-sales-order" class="control-label description-label">
+                        Outcome:
+                    </label>
+
+                    <select required="required"
+                            class="form-control responses-select"
+                            data-placeholder="Choose Outcome"
+                            chosen
+                            ng-model="selectedProgramme"
+                            ng-change="selectProgramme()"
+                            ng-options="programmes.name for programmes in programmes track by programmes.id">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label for="select-sales-order" class="control-label description-label">
+                        Implementing Partner:
+                    </label>
+
+                    <select required="required"
+                            class="form-control responses-select"
+                            data-placeholder="Choose IP"
+                            chosen
+                            ng-model="selectedConsignee"
+                            ng-change="selectConsignee()"
+                            ng-options="consignee.name for consignee in consignees track by consignee.id">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="form-group col-lg-4">
+                    <label for="select-sales-order" class="control-label description-label">
+                        Item:
+                    </label>
+
+                    <select required="required"
+                            class="form-control responses-select"
+                            data-placeholder="Choose Item"
+                            chosen
+                            ng-model="selectedItem"
+                            ng-change="selectItem()"
+                            ng-options="item.description for item in items track by item.id">
+                        <option value=""></option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="table-wrapper">
+            <table si-table class="table table-bordered table-hover table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th class="table-header">Item Description</th>
+                    <th class="table-header">Outcome</th>
+                    <th class="table-header">End User</th>
+                    <th class="table-header">Item Received</th>
+                    <th class="table-header">Date Received</th>
+                    <th class="table-header">Quantity Sent</th>
+                    <th class="table-header">Quantity Received</th>
+                    <th class="table-header">Quality of Product</th>
+                    <th class="table-header">Satisfied?</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="response in filteredResponses">
+                    <td class="table-body" data-header="Description">{{ response.item }}</td>
+                    <td class="table-body" data-header="Date Created">{{ response.programme.name }}</td>
+                    <td class="table-body" data-header="Description">{{ response.consignee.name }}</td>
+                    <td class="table-body" data-header="Description">{{ response.productReceived }}</td>
+                    <td class="table-body" data-header="Document Number">{{ response.dateOfReceipt }}</td>
+                    <td class="table-body" data-header="Description">{{ response.amountSent }}</td>
+                    <td class="table-body" data-header="Description">{{ response.amountReceived || '0' }}</td>
+                    <td class="table-body" data-header="Description">{{ response.qualityOfProduct }}</td>
+                    <td class="table-body" data-header="Description">{{ response.satisfiedWithProduct }}</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="9">
+                        <si-table-pagination limit="10" indices="3"></si-table-pagination>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <!-- END TABLE -->
+    </div>
+</div>
+</div>

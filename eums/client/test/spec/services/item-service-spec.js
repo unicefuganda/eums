@@ -2,6 +2,8 @@ describe('Item Service', function() {
 
     var itemService, mockBackend, itemEndpointUrl, itemUnitEndpointUrl;
 
+    var itemId = 1;
+
     beforeEach(function() {
         module('Item');
 
@@ -13,9 +15,21 @@ describe('Item Service', function() {
         });
     });
 
-    it('should get item details', function(done) {
-        var itemId = 1;
+    it('should know how to fetch all items', function (done) {
+        var stubItem = {
+            id: itemId,
+            name: 'Test Item'
+        };
 
+        mockBackend.whenGET(itemEndpointUrl).respond([stubItem]);
+        itemService.fetchItems().then(function (response) {
+            expect(response).toEqual([stubItem]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should get item details', function(done) {
         var itemUnitId = 1;
 
         var stubItem = {
