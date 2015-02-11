@@ -411,9 +411,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.saveDistributionPlanLineItems = function () {
+            var message  = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
             var saveWithToast = function () {
                 saveDistributionPlanLineItems().then(function () {
-                    createToast('Plan Saved!', 'success');
+                    createToast(message, 'success');
                 });
             };
 
