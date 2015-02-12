@@ -177,6 +177,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 var nodeLineItemId = $scope.planNode.distributionplanlineitem_set[0];
 
                 DistributionPlanLineItemService.getLineItem(nodeLineItemId).then(function (lineItem) {
+                    $scope.track = lineItem.track;
+
                     SalesOrderItemService.getSalesOrderItem($routeParams.salesOrderItemId).then(function (result) {
                         $scope.selectedSalesOrderItem = {
                             display: result.item.description,
