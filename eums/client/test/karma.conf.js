@@ -9,13 +9,13 @@ module.exports = function (config) {
         frameworks: ['jasmine'],
 
         files: [
+            'bower_components/jquery/dist/jquery.min.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'bower_components/angular-route/angular-route.min.js',
             'bower_components/ng-table/ng-table.js',
             'bower_components/si-table/dist/si-table.js',
-            'bower_components/jquery/dist/jquery.min.js',
             'bower_components/angular-animate/angular-animate.min.js',
             'bower_components/angular-sanitize/angular-sanitize.min.js',
             'bower_components/ngtoast/dist/ngToast.min.js',

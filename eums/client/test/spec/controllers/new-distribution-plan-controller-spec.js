@@ -129,6 +129,22 @@ describe('NewDistributionPlanController', function () {
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
 
+            //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
+            if(!routeParams.distributionPlanNodeId){
+                spyOn(angular, 'element').and.callFake(function () {
+                    return {
+                        modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                            return status;
+                        }),
+                        hasClass : jasmine.createSpy('hasClass').and.callFake(function (status) {
+                            return status;
+                        }),
+                        removeClass : jasmine.createSpy('removeClass').and.callFake(function (status) {
+                            return status;
+                        })};
+                });
+            }
+
             location = $location;
             scope = $rootScope.$new();
 
@@ -150,6 +166,7 @@ describe('NewDistributionPlanController', function () {
                 });
         });
     };
+
     beforeEach(function () {
         setUp({salesOrderId: 1});
     });
