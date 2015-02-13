@@ -350,7 +350,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         function computeQuantityLeft(salesOrderItem) {
             var reduced = $scope.distributionPlanLineItems.reduce(function (previous, current) {
-                return {targetQuantity: previous.targetQuantity + current.targetQuantity};
+                return {targetQuantity: isNaN(current.targetQuantity) ?  previous.targetQuantity : (previous.targetQuantity + current.targetQuantity)};
             }, {targetQuantity: 0});
 
             return salesOrderItem.quantity - reduced.targetQuantity;
@@ -359,7 +359,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.invalidLineItems = true;
         $scope.$watch('distributionPlanLineItems', function (newPlanItems) {
             function invalidFields(item) {
-                return item.targetQuantity <= 0 || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.plannedDistributionDate;
+                return item.targetQuantity <= 0 || isNaN(item.targetQuantity) || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.plannedDistributionDate;
             }
 
             function anyInvalidFields(lineItems) {
