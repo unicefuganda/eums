@@ -7,9 +7,6 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
         $scope.programmeResponses = [];
         $scope.consigneeResponses = [];
         $scope.itemResponses = [];
-        $scope.allProgramResponses = true;
-        $scope.allConsigneeResponses = true;
-        $scope.allItemResponses = true;
         $scope.programmes = [{id: 0, name: 'All Outcomes'}];
         $scope.consignees = [{id: 0, name: 'All Implementing Partners'}];
         $scope.items = [{id: 0, description: 'All Items'}];
@@ -30,56 +27,42 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
 
             DistributionPlanService.getAllEndUserResponses().then(function (allResponses){
                 $scope.allResponses = allResponses.data;
+                $scope.programmeResponses = $scope.allResponses;
+                $scope.consigneeResponses = $scope.allResponses;
+                $scope.itemResponses = $scope.allResponses;
             });
         };
 
         function setFilteredResponses(){
-            if (!$scope.allProgramResponses || !$scope.allConsigneeResponses || !$scope.allItemResponses){
-                $scope.programmeResponses = $scope.allProgramResponses ? [] : $scope.programmeResponses;
-                $scope.consigneeResponses = $scope.allConsigneeResponses ? [] : $scope.consigneeResponses;
-                $scope.itemResponses = $scope.allItemResponses ? [] : $scope.itemResponses;
-            }
-            $scope.filteredResponses = _.union($scope.programmeResponses, $scope.consigneeResponses, $scope.itemResponses);
+            $scope.filteredResponses = _.intersection($scope.programmeResponses, $scope.consigneeResponses, $scope.itemResponses);
         }
 
         $scope.selectProgramme = function () {
+            $scope.programmeResponses = $scope.allResponses;
             if (Boolean($scope.selectedProgramme.id)) {
                 $scope.programmeResponses = $scope.allResponses.filter(function (end_user_response) {
                     return parseInt(end_user_response.programme.id) === parseInt($scope.selectedProgramme.id);
                 });
-                $scope.allProgramResponses = false;
-            }
-            else{
-                $scope.programmeResponses = $scope.allResponses;
-                $scope.allProgramResponses = true;
             }
             setFilteredResponses();
         };
 
         $scope.selectConsignee = function () {
+            $scope.consigneeResponses = $scope.allResponses;
             if (Boolean($scope.selectedConsignee.id)) {
                 $scope.consigneeResponses = $scope.allResponses.filter(function (end_user_response) {
                     return parseInt(end_user_response.consignee.id) === parseInt($scope.selectedConsignee.id);
                 });
-                $scope.allConsigneeResponses = false;
-            }
-            else{
-                $scope.consigneeResponses = $scope.allResponses;
-                $scope.allConsigneeResponses = true;
             }
             setFilteredResponses();
         };
 
         $scope.selectItem = function () {
+            $scope.itemResponses = $scope.allResponses;
             if (Boolean($scope.selectedItem.id)) {
                 $scope.itemResponses = $scope.allResponses.filter(function (end_user_response) {
                     return end_user_response.item === $scope.selectedItem.description;
                 });
-                $scope.allItemResponses = false;
-            }
-            else{
-                $scope.itemResponses = $scope.allResponses;
-                $scope.allItemResponses = true;
             }
             setFilteredResponses();
         };

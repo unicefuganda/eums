@@ -261,4 +261,20 @@ describe('EndUserResponsesController', function () {
         expect(scope.allResponses).toEqual(stubResponses.data);
         expect(scope.filteredResponses).toEqual([stubResponses.data[0]]);
     });
+
+    it('should fetch filtered responses when programme is first selected and then consignee is selected', function () {
+        deferredDistributionPlanPromise.resolve(stubResponses);
+        scope.selectedProgramme = stubProgrammes.data[0].programme;
+        scope.selectedConsignee = stubConsignees[0].consignee;
+
+        scope.initialize();
+        scope.$apply();
+        scope.selectProgramme();
+        scope.$apply();
+        scope.selectConsignee();
+        scope.$apply();
+
+        expect(scope.allResponses).toEqual(stubResponses.data);
+        expect(scope.filteredResponses).toEqual([stubResponses.data[0]]);
+    });
 });
