@@ -41,6 +41,14 @@ describe('NewDistributionPlanController', function () {
         consignee_id: null
     };
 
+    var stubIPUser = {
+        username: 'ip',
+        first_name: 'ip',
+        last_name: 'ip',
+        email: 'ip@ip.com',
+        consignee_id: 1
+    };
+
     var stubSalesOrderItem = {
         id: 1,
         sales_order: '1',
@@ -128,6 +136,7 @@ describe('NewDistributionPlanController', function () {
             mockSalesOrderItemService.getTopLevelDistributionPlanLineItems.and.returnValue(deferredTopLevelLineItems.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
+
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
             if(!routeParams.distributionPlanNodeId){
@@ -405,6 +414,7 @@ describe('NewDistributionPlanController', function () {
         it('should put a distribution plan on the scope if distribution plan node exists', function () {
             setUp({salesOrderId: 1, distributionPlanNodeId: 1});
 
+            deferredUserPromise.resolve(stubUser);
             deferredLineItem.resolve({});
             deferredPlanNode.resolve({distribution_plan: 2, distributionplanlineitem_set: [1]});
             scope.$apply();
@@ -413,8 +423,10 @@ describe('NewDistributionPlanController', function () {
         });
 
         it('should call the get distribution plan items service linked to the particular sales order item', function () {
-            deferred.resolve(stubSalesOrderItem);
             deferredUserPromise.resolve(stubUser);
+            scope.$apply();
+
+            deferred.resolve(stubSalesOrderItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
             scope.selectedSalesOrderItem = {
@@ -430,6 +442,9 @@ describe('NewDistributionPlanController', function () {
         });
 
         it('should put the distribution plan items linked to the particular sales order item on the scope', function () {
+            deferredUserPromise.resolve(stubUser);
+            scope.$apply();
+
             deferredPlanNode.resolve({
                 consignee: {
                     name: 'Save the Children'
@@ -439,7 +454,6 @@ describe('NewDistributionPlanController', function () {
             });
             var stubLineItem = {id: 1};
             deferred.resolve(stubSalesOrderItem);
-            deferredUserPromise.resolve(stubUser);
             deferredLineItem.resolve(stubLineItem);
             deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
 
@@ -597,7 +611,7 @@ describe('NewDistributionPlanController', function () {
                     targetQuantity: 10,
                     plannedDistributionDate: '02/03/2014',
                     remark: 'Remark',
-                    track: true
+                    track: false
                 };
 
                 scope.distributionPlanLineItems = [uiPlanItem];
@@ -611,6 +625,7 @@ describe('NewDistributionPlanController', function () {
                 beforeEach(function () {
                     nodeId = 1;
                     deferredPlanNode.resolve({id: nodeId});
+                    deferredUserPromise.resolve(stubUser);
                 });
 
                 it('a node for the plan item should be saved with no parent id as implementing partner', function () {
@@ -679,7 +694,7 @@ describe('NewDistributionPlanController', function () {
                         distribution_plan_node: nodeId,
                         planned_distribution_date: distributionDateFormatedForSave,
                         remark: uiPlanItem.remark,
-                        track: uiPlanItem.track
+                        track: scope.track
                     });
                 });
 
@@ -694,8 +709,37 @@ describe('NewDistributionPlanController', function () {
 
                     expect(uiPlanItem.lineItemId).toBe(lineItemId);
                 });
+            });
 
+            it('should setting track to true if user is an IP user', function() {
+                var expectedUIPlanItem = {
+                    consignee: 1,
+                    destinationLocation: 'Kampala',
+                    contactPerson: '0489284',
+                    distributionPlan: 1,
+                    tree_position: 'MIDDLE_MAN',
+                    modeOfDelivery: 'WAREHOUSE',
+                    item: 1,
+                    targetQuantity: 10,
+                    plannedDistributionDate: '02/03/2014',
+                    remark: 'Remark',
+                    track: true
+                };
 
+                var nodeId = 1;
+                deferredPlanNode.resolve({id: nodeId});
+                deferredUserPromise.resolve(stubIPUser);
+                scope.track = false;
+
+                var lineItemId = 1;
+                var createLineItemPromise = q.defer();
+                createLineItemPromise.resolve(expectedUIPlanItem);
+                mockLineItemService.updateLineItem.and.returnValue(createLineItemPromise.promise);
+
+                scope.saveDistributionPlanLineItems();
+                scope.$apply();
+
+                expect(expectedUIPlanItem.track).toBe(true);
             });
 
             describe(' and a distribution plan item has already been saved, ', function () {
@@ -704,6 +748,7 @@ describe('NewDistributionPlanController', function () {
                 beforeEach(inject(function ($q) {
                     nodeId = 1;
                     deferredPlanNode.resolve({id: nodeId});
+                    deferredUserPromise.resolve(stubUser);
 
                     deferred = $q.defer();
                     deferred.resolve({});
@@ -746,7 +791,7 @@ describe('NewDistributionPlanController', function () {
                         distribution_plan_node: nodeId,
                         planned_distribution_date: distributionDateFormatedForSave,
                         remark: uiPlanItem.remark,
-                        track: uiPlanItem.track
+                        track: scope.track
                     });
                 });
             });
