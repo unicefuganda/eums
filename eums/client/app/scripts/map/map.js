@@ -45,7 +45,7 @@
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
         var noProductReceivedWithIssues = getNumberOfIssues("yes", consigneeResponses).length;
         var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
-        if ((getPercentage(noProductReceived, consigneeResponses) >= 100) && getPercentage(noProductReceivedWithIssues, consigneeResponses) < 50) return GREEN;
+        if ((getPercentage(noProductReceived, consigneeResponses) >= 75) && getPercentage(noProductReceivedWithIssues, consigneeResponses) < 50) return GREEN;
         if ((getPercentage(noProductReceived, consigneeResponses) < 75 && getPercentage(noProductReceived, consigneeResponses) >= 50) || getPercentage(noProductReceivedWithIssues, consigneeResponses) >= 50) return ORANGE;
         return RED;
     }
