@@ -97,7 +97,7 @@ describe('Distribution Plan Node Service', function () {
     beforeEach(function () {
         module('DistributionPlanNode');
 
-        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'updateLineItem']);
+        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'updateLineItemField']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
@@ -177,7 +177,7 @@ describe('Distribution Plan Node Service', function () {
         var tracking = true;
 
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNodeTwo);
-        mockLineItemService.updateLineItem.and.returnValue(fullLineItemOne);
+        mockLineItemService.updateLineItemField.and.returnValue(fullLineItemOne);
         planNodeService.updateNodeTracking(updatedNode, tracking).then(function (returnedLineItem) {
             expect(returnedLineItem).toEqual([fullLineItemOne]);
             done();
