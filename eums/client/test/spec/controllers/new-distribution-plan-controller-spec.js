@@ -709,6 +709,33 @@ describe('NewDistributionPlanController', function () {
 
                     expect(uiPlanItem.lineItemId).toBe(lineItemId);
                 });
+
+                it('should call updatePlanTracking if track is set to true and on first Level', function() {
+                    var distributionPlan = 1;
+                    var tracking = true;
+                    scope.track = tracking;
+                    scope.consigneeLevel = true;
+
+                    scope.saveDistributionPlanLineItems();
+                    scope.$apply();
+
+                    expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
+                        distributionPlan,
+                        tracking
+                    );
+                });
+
+                it('should not call updatePlanTracking if track is set to true and not on first Level', function() {
+                    var distributionPlan = 1;
+                    var tracking = true;
+                    scope.track = tracking;
+                    scope.consigneeLevel = false;
+
+                    scope.saveDistributionPlanLineItems();
+                    scope.$apply();
+
+                    expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalledWith();
+                });
             });
 
             it('should setting track to true if user is an IP user', function() {
