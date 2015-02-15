@@ -104,14 +104,13 @@ describe('NewDistributionPlanController', function () {
     };
 
     var setUp = function (routeParams) {
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan']);
+        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan', 'updatePlanTracking']);
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'createLineItem', 'updateLineItem']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById', 'fetchConsignees']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanLineItems']);
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['createPlan']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
@@ -125,6 +124,7 @@ describe('NewDistributionPlanController', function () {
             deferredTopLevelLineItems = $q.defer();
             deferredSalesOrder = $q.defer();
             deferredUserPromise = $q.defer();
+            mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
             mockLineItemService.getLineItem.and.returnValue(deferredLineItem.promise);
             mockLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
@@ -712,34 +712,22 @@ describe('NewDistributionPlanController', function () {
             });
 
             it('should setting track to true if user is an IP user', function() {
-                var expectedUIPlanItem = {
-                    consignee: 1,
-                    destinationLocation: 'Kampala',
-                    contactPerson: '0489284',
-                    distributionPlan: 1,
-                    tree_position: 'MIDDLE_MAN',
-                    modeOfDelivery: 'WAREHOUSE',
-                    item: 1,
-                    targetQuantity: 10,
-                    plannedDistributionDate: '02/03/2014',
-                    remark: 'Remark',
-                    track: true
-                };
-
                 var nodeId = 1;
                 deferredPlanNode.resolve({id: nodeId});
                 deferredUserPromise.resolve(stubIPUser);
                 scope.track = false;
 
-                var lineItemId = 1;
-                var createLineItemPromise = q.defer();
-                createLineItemPromise.resolve(expectedUIPlanItem);
-                mockLineItemService.updateLineItem.and.returnValue(createLineItemPromise.promise);
-
                 scope.saveDistributionPlanLineItems();
                 scope.$apply();
 
-                expect(expectedUIPlanItem.track).toBe(true);
+                expect(mockLineItemService.createLineItem).toHaveBeenCalledWith({
+                    item: uiPlanItem.item,
+                    targeted_quantity: uiPlanItem.targetQuantity,
+                    distribution_plan_node: nodeId,
+                    planned_distribution_date: distributionDateFormatedForSave,
+                    remark: uiPlanItem.remark,
+                    track: true
+                });
             });
 
             describe(' and a distribution plan item has already been saved, ', function () {

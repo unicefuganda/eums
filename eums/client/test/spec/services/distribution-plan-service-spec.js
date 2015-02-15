@@ -8,6 +8,12 @@ describe('Distribution Plan Service', function () {
         distributionplannode_set: [1, 2, 3, 4]
     };
 
+    var stubPlanTwo = {
+        id: planId,
+        programme: 1,
+        distributionplannode_set: [1]
+    };
+
     var fullNodeOne = {
         id: 1,
         parent: null,
@@ -83,7 +89,7 @@ describe('Distribution Plan Service', function () {
     beforeEach(function () {
         module('DistributionPlan');
 
-        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails']);
+        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'updateNodeTracking']);
 
         module(function ($provide) {
             $provide.value('DistributionPlanNodeService', mockNodeService);
@@ -135,6 +141,18 @@ describe('Distribution Plan Service', function () {
         mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanOne);
         distributionPlanService.getPlanDetails(planId).then(function (detailedPlan) {
             expect(detailedPlan).toEqual(expectedPlan);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should update plan tracking details', function (done) {
+        var tracking = true;
+        mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanTwo);
+        mockNodeService.updateNodeTracking.and.returnValue(fullNodeOne);
+
+        distributionPlanService.updatePlanTracking(planId, tracking).then(function (returnedNodeItem) {
+            expect(returnedNodeItem).toEqual([fullNodeOne]);
             done();
         });
         mockBackend.flush();

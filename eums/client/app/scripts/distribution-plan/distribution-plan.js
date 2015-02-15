@@ -332,6 +332,19 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                         return {error: response};
                     }
                 });
+            },
+            updatePlanTracking: function (planId, tracking) {
+                var getPlanPromise = this.getPlanById(planId);
+                return getPlanPromise.then(function (response) {
+                    var plan = response.data;
+                    var nodeUpdatePromises = [];
+
+                    plan.distributionplannode_set.forEach(function (nodeId) {
+                        nodeUpdatePromises.push(DistributionPlanNodeService.updateNodeTracking(nodeId, tracking));
+                    });
+
+                    return $q.all(nodeUpdatePromises)
+                });
             }
         };
     })

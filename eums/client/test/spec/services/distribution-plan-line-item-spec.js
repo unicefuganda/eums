@@ -61,5 +61,17 @@ describe('Distribution Plan Line Item Service', function () {
         });
         mockBackend.flush();
     });
+
+    it('should update line item field', function(done) {
+        var updatedLineItem = {id: 1};
+        var updatedLineItemField = {tracking: true};
+        var expectedLineItem = {id: 1, tracking: true};
+        mockBackend.whenPATCH(lineItemEndpointUrl + updatedLineItem.id + '/').respond(expectedLineItem);
+        lineItemService.updateLineItemField(updatedLineItem, updatedLineItemField).then(function (returnedLineItem) {
+            expect(returnedLineItem).toEqual(expectedLineItem);
+            done();
+        });
+        mockBackend.flush();
+    });
 });
 

@@ -88,6 +88,21 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                 return $http.put(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + node.id + '/', node).then(function (response) {
                     return response.data;
                 });
+            },
+            updateNodeTracking: function (planNodeId, tracking) {
+                var getPlanNodePromise = this.getPlanNodeById(planNodeId);
+                return getPlanNodePromise.then(function (response) {
+                    var planNode = response.data;
+                    var lineItemUpdatePromises = [];
+                    var lineItemFields = {track: tracking};
+
+                    planNode.distributionplanlineitem_set.forEach(function (lineItemId) {
+                        var lineItem = {id: lineItemId};
+                        lineItemUpdatePromises.push(DistributionPlanLineItemService.updateLineItemField(lineItem, lineItemFields));
+                    });
+
+                    return $q.all(lineItemUpdatePromises)
+                });
             }
         };
 

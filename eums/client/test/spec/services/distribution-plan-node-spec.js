@@ -18,6 +18,18 @@ describe('Distribution Plan Node Service', function () {
         consignee: consigneeId
     };
 
+    var stubPlanNodeTwo = {
+        id: planNodeId,
+        parent: null,
+        distribution_plan: 1,
+        location: 'Kampala',
+        modeOfDelivery: 'Warehouse',
+        contact_person_id: contactId,
+        children: [2],
+        distributionplanlineitem_set: [lineItemOneId],
+        consignee: consigneeId
+    };
+
     var fullLineItemOne = {
         id: lineItemOneId,
         item: 1,
@@ -25,7 +37,8 @@ describe('Distribution Plan Node Service', function () {
         under_current_supply_plan: false,
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
-        distribution_plan_node: planNodeId
+        distribution_plan_node: planNodeId,
+        track: true
     };
 
     var fullLineItemTwo = {
@@ -35,7 +48,8 @@ describe('Distribution Plan Node Service', function () {
         under_current_supply_plan: false,
         plannedDistributionDate: '2014-02-23',
         remark: 'In bad condition',
-        distribution_plan_node: planNodeId
+        distribution_plan_node: planNodeId,
+        track: true
     };
 
     var fullConsignee = {
@@ -83,7 +97,7 @@ describe('Distribution Plan Node Service', function () {
     beforeEach(function () {
         module('DistributionPlanNode');
 
-        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem']);
+        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'updateLineItem']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
@@ -153,6 +167,19 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.whenPUT(planNodeEndpointUrl + planNodeId + '/').respond(updatedNode);
         planNodeService.updateNode(updatedNode).then(function (returnedNode) {
             expect(returnedNode).toEqual(updatedNode);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should update node tracking details', function (done) {
+        var updatedNode = 1;
+        var tracking = true;
+
+        mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNodeTwo);
+        mockLineItemService.updateLineItem.and.returnValue(fullLineItemOne);
+        planNodeService.updateNodeTracking(updatedNode, tracking).then(function (returnedLineItem) {
+            expect(returnedLineItem).toEqual([fullLineItemOne]);
             done();
         });
         mockBackend.flush();
