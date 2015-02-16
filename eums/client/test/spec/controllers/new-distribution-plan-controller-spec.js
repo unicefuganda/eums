@@ -710,6 +710,33 @@ describe('NewDistributionPlanController', function () {
                     expect(uiPlanItem.lineItemId).toBe(lineItemId);
                 });
 
+                it('should call updatePlanTracking if track is set to true and no plan Node', function() {
+                    var distributionPlan = 1;
+                    var tracking = true;
+                    scope.track = tracking;
+                    scope.planNode = NaN;
+
+                    scope.saveDistributionPlanLineItems();
+                    scope.$apply();
+
+                    expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
+                        distributionPlan,
+                        tracking
+                    );
+                });
+
+                it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function() {
+                    var distributionPlan = 1;
+                    var tracking = true;
+                    scope.track = tracking;
+                    scope.planNode = 1;
+
+                    scope.saveDistributionPlanLineItems();
+                    scope.$apply();
+
+                    expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalled();
+                });
+
                 it('should call updatePlanTracking if track is set to true and on first Level', function() {
                     var distributionPlan = 1;
                     var tracking = true;

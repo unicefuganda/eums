@@ -460,7 +460,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function savePlanTracking(){
-            if($scope.track && $scope.consigneeLevel)
+            if($scope.track && (!$scope.planNode || $scope.consigneeLevel))
                 DistributionPlanService.updatePlanTracking($scope.distributionPlan, $scope.track);
         }
 
