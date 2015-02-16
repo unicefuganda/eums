@@ -81,7 +81,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('rapid_pro_id', models.IntegerField()),
                 ('end_nodes', djorm_pgarray.fields.IntegerArrayField(dimension=2)),
-                ('for_node_type', models.CharField(unique=True, max_length=255, choices=[(b'END_USER', b'End user'), (b'MIDDLE_MAN', b'Middleman'), (b'IMPLEMENTING_PARTNER', b'Implementing Partner')])),
+                ('for_node_type', models.CharField(unique=True, max_length=255, choices=[(b'END_USER', b'End User'), (b'MIDDLE_MAN', b'Middleman'), (b'IMPLEMENTING_PARTNER', b'Implementing Partner')])),
             ],
             options={
             },
