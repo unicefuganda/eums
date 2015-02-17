@@ -424,6 +424,17 @@ describe('NewDistributionPlanController', function () {
             expect(scope.distributionPlan).toEqual(2);
         });
 
+        it('should put a distribution plan on the scope if distribution plan node exists', function () {
+            setUp({salesOrderId: 1, distributionPlanNodeId: 1});
+
+            deferredUserPromise.resolve(stubUser);
+            deferredLineItem.resolve({});
+            deferredPlanNode.resolve({distribution_plan: 2, distributionplanlineitem_set: [1]});
+            scope.$apply();
+
+            expect(scope.distributionPlan).toEqual(2);
+        });
+
         it('should call the get distribution plan items service linked to the particular sales order item', function () {
             deferredUserPromise.resolve(stubUser);
             scope.$apply();
@@ -498,6 +509,19 @@ describe('NewDistributionPlanController', function () {
             scope.$apply();
 
             expect(scope.distributionPlanLineItems).toEqual([]);
+        });
+
+        it('should reset track, inavalidLine items and distribution plan if newly selected item has no items', function () {
+            scope.track = true;
+            scope.invalidLineItems = false;
+            scope.distributionPlan = 1;
+
+            scope.selectSalesOrderItem();
+            scope.$apply();
+
+            expect(scope.track).toEqual(false);
+            expect(scope.invalidLineItems).toEqual(NaN);
+            expect(scope.distributionPlan).toEqual(NaN);
         });
     });
 

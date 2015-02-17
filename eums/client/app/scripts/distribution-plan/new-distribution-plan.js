@@ -248,6 +248,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.selectSalesOrderItem = function () {
             $scope.track = false;
             $scope.invalidLineItems = NaN;
+            $scope.distributionPlan = NaN;
+
             showLoadingModal(true);
 
             getUser().then(function (user){
