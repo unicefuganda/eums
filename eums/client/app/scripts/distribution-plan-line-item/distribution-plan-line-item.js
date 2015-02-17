@@ -20,7 +20,7 @@ angular.module('DistributionPlanLineItem', ['eums.config', 'Item'])
                     });
             },
             updateLineItemField: function (lineItem, lineItemFields) {
-                return $http.patch(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItem.id + '/', lineItemFields)
+                return $http({ method: 'PATCH', url: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM + lineItem.id + '/', data: lineItemFields})
                     .then(function (response) {
                         return response.data;
                     });
