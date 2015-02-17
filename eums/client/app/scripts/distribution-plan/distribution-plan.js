@@ -343,7 +343,7 @@ angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanN
                         nodeUpdatePromises.push(DistributionPlanNodeService.updateNodeTracking(nodeId, tracking));
                     });
 
-                    return $q.all(nodeUpdatePromises)
+                    return $q.all(nodeUpdatePromises);
                 });
             }
         };

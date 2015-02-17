@@ -101,7 +101,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                         lineItemUpdatePromises.push(DistributionPlanLineItemService.updateLineItemField(lineItem, lineItemFields));
                     });
 
-                    return $q.all(lineItemUpdatePromises)
+                    return $q.all(lineItemUpdatePromises);
                 });
             }
         };
