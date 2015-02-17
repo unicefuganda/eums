@@ -526,10 +526,57 @@ describe('NewDistributionPlanController', function () {
     });
 
     describe('when track item checkbox changes, ', function () {
+        beforeEach(function () {
+            scope.track = true;
+            scope.distributionPlan = 1;
+        });
+
         it('should set the invalidLineItems value', function () {
             scope.$apply();
             scope.trackSalesOrderItem();
             expect(scope.invalidLineItems).toEqual(false);
+        });
+
+        it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function() {
+            scope.planNode = 1;
+
+            scope.trackSalesOrderItem();
+            scope.$apply();
+
+            expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalled();
+        });
+
+        it('should call updatePlanTracking if track is set to true and on first Level', function() {
+            scope.consigneeLevel = true;
+
+            scope.trackSalesOrderItem();
+            scope.$apply();
+
+            expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
+                1,
+                true
+            );
+        });
+
+        it('should not call updatePlanTracking if track is set to true and not on first Level', function() {
+            scope.consigneeLevel = false;
+
+            scope.trackSalesOrderItem();
+            scope.$apply();
+
+            expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalledWith();
+        });
+
+        it('should call updatePlanTracking if track is set to true and no plan Node', function() {
+            scope.planNode = NaN;
+
+            scope.trackSalesOrderItem();
+            scope.$apply();
+
+            expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
+                1,
+                true
+            );
         });
     });
 
@@ -742,58 +789,6 @@ describe('NewDistributionPlanController', function () {
                     scope.$apply();
 
                     expect(uiPlanItem.lineItemId).toBe(lineItemId);
-                });
-
-                it('should call updatePlanTracking if track is set to true and no plan Node', function() {
-                    var distributionPlan = 1;
-                    var tracking = true;
-                    scope.track = tracking;
-                    scope.planNode = NaN;
-
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
-                        distributionPlan,
-                        tracking
-                    );
-                });
-
-                it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function() {
-                    var tracking = true;
-                    scope.track = tracking;
-                    scope.planNode = 1;
-
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalled();
-                });
-
-                it('should call updatePlanTracking if track is set to true and on first Level', function() {
-                    var distributionPlan = 1;
-                    var tracking = true;
-                    scope.track = tracking;
-                    scope.consigneeLevel = true;
-
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
-                        distributionPlan,
-                        tracking
-                    );
-                });
-
-                it('should not call updatePlanTracking if track is set to true and not on first Level', function() {
-                    var tracking = true;
-                    scope.track = tracking;
-                    scope.consigneeLevel = false;
-
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalledWith();
                 });
             });
 

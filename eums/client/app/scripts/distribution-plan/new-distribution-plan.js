@@ -284,8 +284,15 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         };
 
+        function savePlanTracking(){
+            if($scope.track && $scope.distributionPlan && (!$scope.planNode || $scope.consigneeLevel)){
+                DistributionPlanService.updatePlanTracking($scope.distributionPlan, $scope.track);
+            }
+        }
+
         $scope.trackSalesOrderItem = function () {
             $scope.invalidLineItems = anyInvalidFields($scope.distributionPlanLineItems);
+            savePlanTracking();
         };
 
         var addNodeDetailsToLineItem = function (lineItem, node) {
@@ -477,12 +484,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
 
-        function savePlanTracking(){
-            if($scope.track && (!$scope.planNode || $scope.consigneeLevel)){
-                DistributionPlanService.updatePlanTracking($scope.distributionPlan, $scope.track);
-            }
-        }
-
         function saveDistributionPlanLineItems() {
             var savePlanItemPromises = [];
             $scope.distributionPlanLineItems.forEach(function (item) {
@@ -500,7 +501,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             var message  = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
             var saveWithToast = function () {
                 saveDistributionPlanLineItems().then(function () {
-                    savePlanTracking();
                     createToast(message, 'success');
                 });
             };
