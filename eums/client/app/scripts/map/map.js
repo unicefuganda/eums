@@ -409,7 +409,7 @@
 
                         filteredResponses = responsesToPlot.map(function (responseLocationMap) {
                             return responseLocationMap.consigneeResponses.filter(function (response) {
-                                return parseInt(response.ip.id) === parseInt(newValue.ip);
+                                return parseInt(response.consignee.id) === parseInt(newValue.ip);
                             });
                         });
                         scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
@@ -477,7 +477,7 @@
                         var dataPromises = ips.map(function (ip) {
                             return ConsigneeService.getConsigneeById(ip.data.consignee).then(function (consignee) {
                                 return {
-                                    id: ip.data.id,
+                                    id: consignee.id,
                                     text: consignee.name
                                 }
                             });
