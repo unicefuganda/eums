@@ -9,7 +9,8 @@ describe('Distribution Plan Line Item Service', function () {
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
         track: true,
-        distribution_plan_node: 1
+        distribution_plan_node: 1,
+        flow_triggered : false
     };
 
     var expectedLineItem = {
@@ -19,7 +20,8 @@ describe('Distribution Plan Line Item Service', function () {
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
         track: true,
-        distribution_plan_node: 1
+        distribution_plan_node: 1,
+        flow_triggered : false
     };
 
 

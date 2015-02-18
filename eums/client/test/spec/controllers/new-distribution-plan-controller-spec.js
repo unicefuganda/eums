@@ -602,7 +602,8 @@ describe('NewDistributionPlanController', function () {
                 remark: '',
                 contactPerson: '',
                 track: false,
-                forEndUser: false
+                forEndUser: false,
+                flowTriggered : false
             };
 
             scope.addDistributionPlanItem();

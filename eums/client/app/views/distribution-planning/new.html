@@ -109,7 +109,7 @@
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
-                                <input type="text" id="input-quantity" class="form-control"
+                                <input type="text" id="input-quantity" class="form-control" ng-disabled="item.flowTriggered"
                                        ng-model="item.targetQuantity" only-digits>
                             </td>
                             <td>
@@ -119,6 +119,7 @@
                                            readonly="true"
                                            datepicker-popup="dd/MM/yyyy"
                                            ng-model="item.plannedDistributionDate"
+                                           ng-disabled="item.flowTriggered"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            ng-required="true"
@@ -126,7 +127,7 @@
                                            required="required"/>
                                           <span class="input-group-btn">
 
-                                            <button type="button" class="btn btn-default" ng-click="open($event, $index )">
+                                            <button type="button" class="btn btn-default" ng-click="open($event, $index )" ng-disabled="item.flowTriggered">
                                                 <i class="glyphicon glyphicon-calendar"></i></button>
                                           </span>
                                 </p>
@@ -134,6 +135,7 @@
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ consignees }}"
                                        ng-model="item.consignee"
+                                       ng-disabled="item.flowTriggered"
                                        value="{{ item.consignee }}">
                             </td>
 
@@ -144,11 +146,13 @@
                                                value="{{ item.contactPerson }}"
                                                required="required"
                                                ng-model="item.contactPerson"
-                                               ng-attr-id="{{ 'contact-select-' + $index}}">
+                                               ng-attr-id="{{ 'contact-select-' + $index}}"
+                                               ng-disabled="item.flowTriggered">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button"
                                                 ng-click="addContact($index, item)"
+                                                ng-disabled="item.flowTriggered"
                                                 class="btn btn-default ">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
@@ -159,6 +163,7 @@
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ districts }}"
                                        ng-model="item.destinationLocation"
+                                       ng-disabled="item.flowTriggered"
                                        value="{{ item.destinationLocation }}">
                             </td>
                             <td id="input-mode-of-delivery" ng-show="distributionPlanReport">
@@ -166,12 +171,14 @@
                                        list='[{"id": "DIRECT_DELIVERY", "name": "Direct Delivery"},
                                                 {"id": "WAREHOUSE", "name": "Warehouse"}]'
                                        ng-model="item.modeOfDelivery"
+                                       ng-disabled="item.flowTriggered"
                                        value="{{ item.modeOfDelivery }}">
                             </td>
                             <td ng-show="distributionPlanReport">
                                 <div class="text-center">
                                     <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
-                                            ng-click="addRemark($index, item)">
+                                            ng-click="addRemark($index, item)"
+                                            ng-disabled="item.flowTriggered">
                                     </button>
                                 </div>
                             </td>
@@ -179,7 +186,8 @@
                                 <div class="text-center">
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ item.forEndUser }}"
-                                           ng-model="item.forEndUser">
+                                           ng-model="item.forEndUser"
+                                           ng-disabled="item.flowTriggered">
                                 </div>
                             </td>
                             <td>

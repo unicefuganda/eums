@@ -6,10 +6,11 @@ from eums.models import DistributionPlanLineItem
 
 
 class DistributionPlanLineItemSerialiser(serializers.ModelSerializer):
+    flow_triggered = serializers.Field(source='latest_run')
     class Meta:
         model = DistributionPlanLineItem
         fields = ('id', 'item', 'targeted_quantity', 'planned_distribution_date', 'distribution_plan_node', 'remark',
-                  'track')
+                  'track', 'flow_triggered')
 
 
 class DistributionPlanLineItemViewSet(ModelViewSet):

@@ -331,6 +331,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             lineItem.targetQuantity = lineItem.targeted_quantity;
                             lineItem.lineItemId = lineItem.id;
                             lineItem.item = $scope.selectedSalesOrderItem.information.id;
+                            lineItem.flowTriggered = lineItem.flow_triggered ? true : false;
 
                             if (lineItem.track) {
                                 $scope.track = true;
@@ -378,7 +379,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 modeOfDelivery: '',
                 remark: '',
                 track: false,
-                forEndUser: false
+                forEndUser: false,
+                flowTriggered: false
             };
 
             $scope.distributionPlanLineItems.push(distributionPlanLineItem);
