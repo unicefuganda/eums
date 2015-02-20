@@ -5,9 +5,10 @@ HOST_IP=""
 RAPIDPRO_API_TOKEN=""
 MAILGUN_ACCESS_KEY=""
 
-while read line
-do
-    IFS="=" read -a line_parts <<< "${line}"
+DONE=false
+until $DONE ;do
+    read || DONE=true
+    IFS="=" read -a line_parts <<< "${REPLY}"
     key=${line_parts[0]}
     value=${line_parts[1]}
     if [ "$key" == "KEY_LOCATION" ]; then
