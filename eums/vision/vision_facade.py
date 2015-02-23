@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
-from datetime import date
+from datetime import date, datetime
 
 from xlutils.view import View
 
@@ -83,6 +83,8 @@ class Facade():
     @staticmethod
     def _get_as_date(raw_value):
         if type(raw_value) is date:
+            return raw_value.date()
+        elif type(raw_value) is datetime:
             return raw_value.date()
         date_args = raw_value.split('-')
         return date(int(date_args[0]), int(date_args[1]), int(date_args[2]))
