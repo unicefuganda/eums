@@ -21,6 +21,8 @@
                 <th class="table-header">Item Description</th>
                 <th class="table-header">Outcome</th>
                 <th class="table-header">Implementing Partner</th>
+                <th class="table-header">Purchase Order</th>
+                <th class="table-header table-header-end-user">End User</th>
                 <th class="table-header">Item Received</th>
                 <th class="table-header">Date Received</th>
                 <th class="table-header">Quantity Sent</th>
@@ -32,20 +34,26 @@
 
             <tbody>
             <tr ng-repeat="response in allResponses | filter:query:strict">
-                <td class="table-body" data-header="Description">{{ response.item }}</td>
-                <td class="table-body" data-header="Date Created">{{ response.programme.name }}</td>
-                <td class="table-body" data-header="Description">{{ response.consignee.name }}</td>
-                <td class="table-body" data-header="Description">{{ response.productReceived }}</td>
-                <td class="table-body" data-header="Document Number">{{ response.dateOfReceipt }}</td>
-                <td class="table-body" data-header="Description">{{ response.amountSent }}</td>
-                <td class="table-body" data-header="Description">{{ response.amountReceived || '0' }}</td>
-                <td class="table-body" data-header="Description">{{ response.qualityOfProduct }}</td>
-                <td class="table-body" data-header="Description">{{ response.satisfiedWithProduct }}</td>
+                <td class="table-body">{{ response.item }}</td>
+                <td class="table-body">{{ response.programme.name }}</td>
+                <td class="table-body">{{ response.consignee.name }}</td>
+                <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchase_order)">{{ response.purchase_order.order_number }}</a></td>
+                <td class="table-body">
+                    <span class="table-body-end-user">{{ response.contact_person.firstName }} {{ response.contact_person.lastName }}</span>
+                    <a custom-popover class="btn btn-default btn-xs glyphicon glyphicon-earphone pull-right"
+                       ng-show="response.contact_person.phone" popover-html="{{ response.contact_person.phone }}"></a>
+                </td>
+                <td class="table-body">{{ response.productReceived }}</td>
+                <td class="table-body">{{ response.dateOfReceipt }}</td>
+                <td class="table-body">{{ response.amountSent }}</td>
+                <td class="table-body">{{ response.amountReceived || '0' }}</td>
+                <td class="table-body">{{ response.qualityOfProduct }}</td>
+                <td class="table-body">{{ response.satisfiedWithProduct }}</td>
             </tr>
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="9">
+                <td colspan="11">
                     <si-table-pagination limit="10" indices="3"></si-table-pagination>
                 </td>
             </tr>
