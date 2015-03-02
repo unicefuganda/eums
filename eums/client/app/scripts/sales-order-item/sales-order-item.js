@@ -19,6 +19,12 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                     return fillOutItem(sales_order_item);
                 });
             },
+            getPOItemforSOItem: function (salesOrderItemID) {
+                var getPurchaseOrderItemPromise = $http.get(EumsConfig.BACKEND_URLS.PO_ITEM_FOR_SO_ITEM + salesOrderItemID + '/');
+                return getPurchaseOrderItemPromise.then(function (response) {
+                    return response.data;
+                });
+            },
             getTopLevelDistributionPlanLineItems: function (salesOrderItem) {
                 var allDistributionLineItems = salesOrderItem.distributionplanlineitem_set;
 

@@ -18,7 +18,7 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
 
 
 class PurchaseOrderViewSet(ModelViewSet):
-    queryset = PurchaseOrder.objects.all()
+    queryset = PurchaseOrder.objects.all().order_by('order_number')
     serializer_class = PurchaseOrderSerialiser
 
 

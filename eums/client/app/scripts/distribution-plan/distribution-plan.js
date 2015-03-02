@@ -1,11 +1,10 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['Contact', 'eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User'])
-    .controller('DistributionPlanController', function ($scope, ContactService, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
+angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User'])
+    .controller('DistributionPlanController', function ($scope, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
-        $scope.contact = {};
         $scope.errorMessage = '';
         $scope.planId = '';
 

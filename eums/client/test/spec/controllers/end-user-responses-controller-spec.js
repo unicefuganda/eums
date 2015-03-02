@@ -1,7 +1,7 @@
 describe('EndUserResponsesController', function () {
-    var mockDistributionPlanService, mockProgrammeService, mockConsigneeService, mockItemService;
+    var mockDistributionPlanService, mockProgrammeService, mockConsigneeService, mockPurchaseOrderService, mockItemService;
 
-    var deferredDistributionPlanPromise,  deferredProgrammePromise, deferredConsigneePromise, deferredItemPromise;
+    var deferredDistributionPlanPromise,  deferredProgrammePromise, deferredConsigneePromise, deferredPurchaseOrderPromise, deferredItemPromise;
 
     var scope, q;
 
@@ -28,6 +28,16 @@ describe('EndUserResponsesController', function () {
             mode_of_delivery: 'WAREHOUSE',
             parent: null,
             tree_position: 'MIDDLE_MAN'
+        }
+    ];
+
+    var stubPurchaseOrders =  [
+        {
+            id: 1,
+            order_number: 25565,
+            sales_order: 2,
+            date: '2014-10-06',
+            purchaseorderitem_set: [3, 4]
         }
     ];
 
@@ -62,7 +72,13 @@ describe('EndUserResponsesController', function () {
                     name: 'Alive'
                 },
             qualityOfProduct: 'Good',
-            satisfiedWithProduct: 'Yes'
+            satisfiedWithProduct: 'Yes',
+            purchase_order: 25565,
+            contact_person:{
+                firstName: 'John',
+                secondName: 'Doe',
+                phone: '+234778945674'
+            }
         },
         {
             amountReceived: '10',
@@ -84,7 +100,13 @@ describe('EndUserResponsesController', function () {
                     name: 'Malaria Consortium'
                 },
             qualityOfProduct: 'Good',
-            satisfiedWithProduct: 'No'
+            satisfiedWithProduct: 'No',
+            purchase_order: 25567,
+            contact_person:{
+                firstName: 'Jane',
+                secondName: 'Doe',
+                phone: '+234778345674'
+            }
         }
       ]
     };
@@ -95,6 +117,7 @@ describe('EndUserResponsesController', function () {
         mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['getAllEndUserResponses']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['fetchConsignees']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['fetchItems']);
 
         inject(function ($controller, $q, $rootScope) {
@@ -103,9 +126,11 @@ describe('EndUserResponsesController', function () {
             deferredProgrammePromise = $q.defer();
             deferredConsigneePromise = $q.defer();
             deferredItemPromise = $q.defer();
+            deferredPurchaseOrderPromise = $q.defer();
             mockDistributionPlanService.getAllEndUserResponses.and.returnValue(deferredDistributionPlanPromise.promise);
             mockProgrammeService.fetchProgrammes.and.returnValue(deferredProgrammePromise.promise);
             mockConsigneeService.fetchConsignees.and.returnValue(deferredConsigneePromise.promise);
+            mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockItemService.fetchItems.and.returnValue(deferredItemPromise.promise);
 
             scope = $rootScope.$new();
@@ -115,6 +140,7 @@ describe('EndUserResponsesController', function () {
                 DistributionPlanService: mockDistributionPlanService,
                 ProgrammeService: mockProgrammeService,
                 ConsigneeService: mockConsigneeService,
+                PurchaseOrderService: mockPurchaseOrderService,
                 ItemService: mockItemService
             });
         });
@@ -134,6 +160,14 @@ describe('EndUserResponsesController', function () {
         scope.$apply();
 
         expect(scope.consignees).toEqual([{ id : 0, name : 'All Implementing Partners' }].concat(stubConsignees));
+    });
+
+    it('should fetch all purchase orders when controller is initialized', function () {
+        deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
+        scope.initialize();
+        scope.$apply();
+
+        expect(scope.purchaseOrders).toEqual([{ id : 0, order_number : 'All Purchase Orders' }].concat(stubPurchaseOrders));
     });
 
     it('should fetch all items when controller is initialized', function () {
@@ -198,6 +232,32 @@ describe('EndUserResponsesController', function () {
         scope.initialize();
         scope.$apply();
         scope.selectConsignee();
+        scope.$apply();
+
+        expect(scope.allResponses).toEqual(stubResponses.data);
+        expect(scope.filteredResponses).toEqual(stubResponses.data);
+    });
+
+    it('should fetch filtered responses for purchase orders when purchase order is selected', function () {
+        deferredDistributionPlanPromise.resolve(stubResponses);
+        scope.selectedPurchaseOrder = stubPurchaseOrders[0];
+
+        scope.initialize();
+        scope.$apply();
+        scope.selectPurchaseOrder();
+        scope.$apply();
+
+        expect(scope.allResponses).toEqual(stubResponses.data);
+        expect(scope.filteredResponses).toEqual([stubResponses.data[0]]);
+    });
+
+    it('should fetch all responses for purchase orders when All Purchase Orders is selected', function () {
+        deferredDistributionPlanPromise.resolve(stubResponses);
+        scope.selectedPurchaseOrder = {id:0, order_number:'All Purchase Orders'};
+
+        scope.initialize();
+        scope.$apply();
+        scope.selectPurchaseOrder();
         scope.$apply();
 
         expect(scope.allResponses).toEqual(stubResponses.data);

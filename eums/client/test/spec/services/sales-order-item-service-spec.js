@@ -2,7 +2,7 @@ describe('Sales Order Item Service', function () {
 
     var salesOrderItemEndpointUrl, itemEndpointUrl, itemUnitEndpointUrl,
         distributionPlanLineItemEndpointUrl, distributionPlanNodeEndpointUrl,
-        consigneeEndpointUrl;
+        consigneeEndpointUrl, poItemForSalesOrderItemEndpointUrl;
     var mockBackend;
     var salesOrderItemService;
 
@@ -42,6 +42,7 @@ describe('Sales Order Item Service', function () {
             itemUnitEndpointUrl = EumsConfig.BACKEND_URLS.ITEM_UNIT;
             salesOrderItemService = SalesOrderItemService;
             salesOrderItemEndpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER_ITEM;
+            poItemForSalesOrderItemEndpointUrl = EumsConfig.BACKEND_URLS.PO_ITEM_FOR_SO_ITEM;
             distributionPlanLineItemEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM;
             distributionPlanNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
             consigneeEndpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;
@@ -51,6 +52,7 @@ describe('Sales Order Item Service', function () {
         mockBackend.whenGET(itemEndpointUrl + itemId + '/').respond(stubItem);
         mockBackend.whenGET(salesOrderItemEndpointUrl + salesOrderItemId + '/').respond(stubSalesOrderItem);
     });
+
     it('should get item details', function (done) {
         var expectedSalesOrderItem = {
             id: 1, sales_order: '1',
@@ -69,6 +71,31 @@ describe('Sales Order Item Service', function () {
         mockBackend.flush();
     });
 
+    it('should get purchase order item details', function (done) {
+        var stubPurchaseOrder = {
+            id: 1,
+            order_number: 1,
+            sales_order: 1,
+            date: '2014-10-06',
+            purchaseorderitem_set: [1, 2],
+            programme: 'TEST PROGRAMME'
+        };
+
+        var expectedPurchaseOrderItem = {
+            id: 1,
+            item_number: itemId,
+            purchase_order: stubPurchaseOrder,
+            sales_order_item_id: salesOrderItemId
+        };
+
+        mockBackend.whenGET(poItemForSalesOrderItemEndpointUrl + salesOrderItemId + '/').respond(expectedPurchaseOrderItem);
+
+        salesOrderItemService.getPOItemforSOItem(salesOrderItemId).then(function (purchaseOrderItem) {
+            expect(purchaseOrderItem).toEqual(expectedPurchaseOrderItem);
+            done();
+        });
+        mockBackend.flush();
+    });
 
     it('should provide top level distribution plan line items', function (done) {
         var stubLineItemWithParent = {id: 42, distribution_plan_node: 42};

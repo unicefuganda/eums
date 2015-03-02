@@ -121,6 +121,19 @@ def create_release_order(test_case, release_order_details=None):
     return formatted_data
 
 
+def create_purchase_order(test_case, purchase_order_details=None):
+    if not purchase_order_details:
+        programme = create_programme()
+        sales_order = create_sales_order()
+        purchase_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5),
+                               'programme': programme.id, 'description': 'test', "sales_order": sales_order['id']}
+
+    response = test_case.client.post(PURCHASE_ORDER_ENDPOINT_URL, purchase_order_details, format='json')
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
+
+
 def create_sales_order_item(test_case, sales_order_item_details=None):
     response = test_case.client.post(SALES_ORDER_ITEM_ENDPOINT_URL, sales_order_item_details, format='json')
 
@@ -131,6 +144,14 @@ def create_sales_order_item(test_case, sales_order_item_details=None):
     formatted_data['delivery_date'] = str(formatted_data['delivery_date'])
 
     return formatted_data
+
+
+def create_purchase_order_item(test_case, purchase_order_item_details=None):
+    response = test_case.client.post(PURCHASE_ORDER_ITEM_ENDPOINT_URL, purchase_order_item_details, format='json')
+
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
 
 
 def create_item_unit(test_case, item_unit_details=None):

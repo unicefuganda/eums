@@ -5,8 +5,8 @@
 
         <div class="row pad-20">
             <div class="form-inline">
-                <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="control-label description-label">
+                <div class="form-group col-lg-3">
+                    <label for="select-sales-order" class="control-label description-label col-lg-12">
                         Outcome:
                     </label>
 
@@ -20,8 +20,8 @@
                         <option value=""></option>
                     </select>
                 </div>
-                <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="control-label description-label">
+                <div class="form-group col-lg-3">
+                    <label for="select-sales-order" class="control-label description-label col-lg-12">
                         Implementing Partner:
                     </label>
 
@@ -35,8 +35,23 @@
                         <option value=""></option>
                     </select>
                 </div>
-                <div class="form-group col-lg-4">
-                    <label for="select-sales-order" class="control-label description-label">
+                <div class="form-group col-lg-3">
+                    <label for="select-purchase-order" class="control-label description-label col-lg-12">
+                        Purchase Order:
+                    </label>
+
+                    <select required="required"
+                            class="form-control responses-select"
+                            data-placeholder="Choose Purchase Order"
+                            chosen
+                            ng-model="selectedPurchaseOrder"
+                            ng-change="selectPurchaseOrder()"
+                            ng-options="purchaseOrder.order_number for purchaseOrder in purchaseOrders track by purchaseOrder.id">
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="form-group col-lg-3">
+                    <label for="select-sales-order" class="control-label description-label col-lg-12">
                         Item:
                     </label>
 
@@ -61,6 +76,8 @@
                     <th class="table-header">Item Description</th>
                     <th class="table-header">Outcome</th>
                     <th class="table-header">Implementing Partner</th>
+                    <th class="table-header">Purchase Order</th>
+                    <th class="table-header">Contact</th>
                     <th class="table-header">Item Received</th>
                     <th class="table-header">Date Received</th>
                     <th class="table-header">Quantity Sent</th>
@@ -72,21 +89,23 @@
 
                 <tbody>
                 <tr ng-repeat="response in filteredResponses">
-                    <td class="table-body" data-header="Description">{{ response.item }}</td>
-                    <td class="table-body" data-header="Date Created">{{ response.programme.name }}</td>
-                    <td class="table-body" data-header="Description">{{ response.consignee.name }}</td>
-                    <td class="table-body" data-header="Description">{{ response.productReceived }}</td>
-                    <td class="table-body" data-header="Document Number">{{ response.dateOfReceipt }}</td>
-                    <td class="table-body" data-header="Description">{{ response.amountSent }}</td>
-                    <td class="table-body" data-header="Description">{{ response.amountReceived || '0' }}</td>
-                    <td class="table-body" data-header="Description">{{ response.qualityOfProduct }}</td>
-                    <td class="table-body" data-header="Description">{{ response.satisfiedWithProduct }}</td>
+                    <td class="table-body">{{ response.item }}</td>
+                    <td class="table-body">{{ response.programme.name }}</td>
+                    <td class="table-body">{{ response.consignee.name }}</td>
+                    <td class="table-body">{{ response.purchase_order }}</td>
+                    <td class="table-body">{{ response.contact_person.firstName }} {{ response.contact_person.lastName }} {{ response.contact_person.phone }}</td>
+                    <td class="table-body">{{ response.productReceived }}</td>
+                    <td class="table-body">{{ response.dateOfReceipt }}</td>
+                    <td class="table-body">{{ response.amountSent }}</td>
+                    <td class="table-body">{{ response.amountReceived || '0' }}</td>
+                    <td class="table-body">{{ response.qualityOfProduct }}</td>
+                    <td class="table-body">{{ response.satisfiedWithProduct }}</td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="9">
-                        <si-table-pagination limit="10" indices="3"></si-table-pagination>
+                    <td colspan="11">
+                        <si-table-pagination limit="20" indices="3"></si-table-pagination>
                     </td>
                 </tr>
                 </tfoot>
