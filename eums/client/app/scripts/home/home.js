@@ -23,10 +23,6 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
         };
 
     }).controller('ResponseController', function ($scope, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, SalesOrderItemService) {
-        getAllResponsesByDate().then(function (allResponses){
-            $scope.allResponses = allResponses;
-        });
-
         function getAllResponsesByDate(){
             return DistributionPlanService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
                 var nodePromises = [];
@@ -59,6 +55,10 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
 
             });
         }
+
+        getAllResponsesByDate().then(function (allResponses){
+            $scope.allResponses = allResponses;
+        });
     })
     .directive('customPopover', function () {
             return {
