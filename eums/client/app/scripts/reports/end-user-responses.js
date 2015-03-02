@@ -31,7 +31,17 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                 $scope.items = $scope.items.concat(items);
             });
 
-            DistributionPlanService.getAllEndUserResponses().then(function (allResponses){
+            getAllEndUserResponses().then(function (allResponses){
+                $scope.allResponses = allResponses;
+                $scope.programmeResponses = allResponses;
+                $scope.consigneeResponses = allResponses;
+                $scope.purchaseOrderResponses = allResponses;
+                $scope.itemResponses = allResponses;
+            });
+        };
+
+        function getAllEndUserResponses(){
+            return DistributionPlanService.getAllEndUserResponses().then(function (allResponses){
                 var nodePromises = [];
                 var poItemPromises = [];
 
@@ -54,18 +64,14 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                     }
                 });
 
-                $q.all(nodePromises).then( function(){
-                    $q.all(poItemPromises).then( function(){
-                        $scope.allResponses = allResponses.data;
-                        $scope.programmeResponses = $scope.allResponses;
-                        $scope.consigneeResponses = $scope.allResponses;
-                        $scope.purchaseOrderResponses = $scope.allResponses;
-                        $scope.itemResponses = $scope.allResponses;
+                return $q.all(nodePromises).then( function(){
+                    return $q.all(poItemPromises).then( function(){
+                        return allResponses.data;
                     });
                 });
 
             });
-        };
+        }
 
         function setFilteredResponses(){
             $scope.filteredResponses = _.intersection($scope.programmeResponses, $scope.consigneeResponses, $scope.purchaseOrderResponses, $scope.itemResponses);
