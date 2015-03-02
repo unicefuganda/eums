@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programme', 'Consignee', 'PurchaseOrder', 'Item', 'DistributionPlanNode', 'SalesOrderItem'])
-    .controller('EndUserResponsesController',function ($scope, $q, DistributionPlanService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
+    .controller('EndUserResponsesController',function ($scope, $q, $location, DistributionPlanService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
         $scope.allResponses = [];
         $scope.filteredResponses = [];
         $scope.programmeResponses = [];
@@ -55,7 +55,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                                     var sales_order_item_id = planNode.lineItems[0].item;
                                     poItemPromises.push(
                                         SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem){
-                                            response.purchase_order = poItem.length > 0 ? poItem.purchase_order.order_number : '';
+                                            response.purchase_order = poItem.length > 0 ? poItem.purchase_order : '';
                                         })
                                     );
                                 }
@@ -101,7 +101,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
             $scope.purchaseOrderResponses = $scope.allResponses;
             if (Boolean($scope.selectedPurchaseOrder.id)) {
                 $scope.purchaseOrderResponses = $scope.allResponses.filter(function (end_user_response) {
-                    return parseInt(end_user_response.purchase_order) === parseInt($scope.selectedPurchaseOrder.order_number);
+                    return parseInt(end_user_response.purchase_order.order_number) === parseInt($scope.selectedPurchaseOrder.order_number);
                 });
             }
             setFilteredResponses();
@@ -115,5 +115,9 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                 });
             }
             setFilteredResponses();
+        };
+
+        $scope.clickPurchaseOrder = function (selectedPurchaseOrder) {
+            $location.path('/delivery-report/new/' + selectedPurchaseOrder.id);
         };
     });

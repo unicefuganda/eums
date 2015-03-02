@@ -92,7 +92,7 @@
                     <td class="table-body">{{ response.item }}</td>
                     <td class="table-body">{{ response.programme.name }}</td>
                     <td class="table-body">{{ response.consignee.name }}</td>
-                    <td class="table-body">{{ response.purchase_order }}</td>
+                    <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchase_order)">{{ response.purchase_order.order_number }}</a></td>
                     <td class="table-body">{{ response.contact_person.firstName }} {{ response.contact_person.lastName }} {{ response.contact_person.phone }}</td>
                     <td class="table-body">{{ response.productReceived }}</td>
                     <td class="table-body">{{ response.dateOfReceipt }}</td>

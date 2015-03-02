@@ -3,7 +3,7 @@ describe('EndUserResponsesController', function () {
 
     var deferredDistributionPlanPromise,  deferredProgrammePromise, deferredConsigneePromise, deferredPurchaseOrderPromise, deferredItemPromise;
 
-    var scope, q;
+    var scope, q, location;
 
     var stubProgrammes = { data: [
             {
@@ -73,7 +73,10 @@ describe('EndUserResponsesController', function () {
                 },
             qualityOfProduct: 'Good',
             satisfiedWithProduct: 'Yes',
-            purchase_order: 25565,
+            purchase_order: {
+                id: 1,
+                order_number: 25565
+            },
             contact_person:{
                 firstName: 'John',
                 secondName: 'Doe',
@@ -101,7 +104,10 @@ describe('EndUserResponsesController', function () {
                 },
             qualityOfProduct: 'Good',
             satisfiedWithProduct: 'No',
-            purchase_order: 25567,
+            purchase_order: {
+                id: 2,
+                order_number: 25567
+            },
             contact_person:{
                 firstName: 'Jane',
                 secondName: 'Doe',
@@ -120,7 +126,7 @@ describe('EndUserResponsesController', function () {
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['fetchItems']);
 
-        inject(function ($controller, $q, $rootScope) {
+        inject(function ($controller, $q, $location, $rootScope) {
             q = $q;
             deferredDistributionPlanPromise = $q.defer();
             deferredProgrammePromise = $q.defer();
@@ -134,9 +140,11 @@ describe('EndUserResponsesController', function () {
             mockItemService.fetchItems.and.returnValue(deferredItemPromise.promise);
 
             scope = $rootScope.$new();
+            location = $location;
 
             $controller('EndUserResponsesController', {
                 $scope: scope,
+                $location: location,
                 DistributionPlanService: mockDistributionPlanService,
                 ProgrammeService: mockProgrammeService,
                 ConsigneeService: mockConsigneeService,
