@@ -120,4 +120,16 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
         $scope.clickPurchaseOrder = function (selectedPurchaseOrder) {
             $location.path('/delivery-report/new/' + selectedPurchaseOrder.id);
         };
+    })
+    .directive('customPopover', function () {
+        return {
+            restrict: 'A',
+            link: function (scope, el, attrs) {
+                $(el).popover({
+                    trigger: 'hover',
+                    html: true,
+                    content: attrs.popoverHtml
+                });
+            }
+        };
     });
