@@ -101,7 +101,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
             $scope.purchaseOrderResponses = $scope.allResponses;
             if (Boolean($scope.selectedPurchaseOrder.id)) {
                 $scope.purchaseOrderResponses = $scope.allResponses.filter(function (end_user_response) {
-                    return parseInt(end_user_response.purchase_order.order_number) === parseInt($scope.selectedPurchaseOrder.order_number);
+                    return $.isEmptyObject(end_user_response.purchase_order) ? false : parseInt(end_user_response.purchase_order.order_number) === parseInt($scope.selectedPurchaseOrder.order_number);
                 });
             }
             setFilteredResponses();
