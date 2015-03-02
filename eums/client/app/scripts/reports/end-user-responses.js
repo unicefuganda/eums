@@ -55,7 +55,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                                     var sales_order_item_id = planNode.lineItems[0].item;
                                     poItemPromises.push(
                                         SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem){
-                                            response.purchase_order = poItem.length > 0 ? poItem.purchase_order : '';
+                                            response.purchase_order = poItem.purchase_order;
                                         })
                                     );
                                 }

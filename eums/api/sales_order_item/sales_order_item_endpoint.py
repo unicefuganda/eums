@@ -39,4 +39,4 @@ class soItemPOItem(APIView):
             formatted_purchase_dict['purchase_order'] = model_to_dict(purchase_order)
             return formatted_purchase_dict
         else:
-            return []
+            return {}
