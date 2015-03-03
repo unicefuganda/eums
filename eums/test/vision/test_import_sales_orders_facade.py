@@ -20,28 +20,28 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.imported_sales_order_data = [{'order_number': 20146879,
                                            'programme_wbs_element': '4380/A0/04/105',
                                            'items': [
-                                               {'material_code': u'S0009113',
-                                                'item_number': u'10',
-                                                'item_description': u'SQFlex 3-10 Pump C/W 1.4KW',
-                                                'date': u'2014-01-03',
-                                                'net_value': u'3179.47',
-                                                'quantity': u'1'},
-                                               {'material_code': u'SL006173',
-                                                'item_number': u'20',
-                                                'item_description': u'Solar Power System',
-                                                'date': u'2014-01-03',
-                                                'net_value': u'2638.32',
-                                                'quantity': u'12'}], },
+                                               {'material_code': 'S0009113',
+                                                'item_number': 10,
+                                                'item_description': 'SQFlex 3-10 Pump C/W 1.4KW',
+                                                'date': '2014-01-03',
+                                                'net_value': 3179.47,
+                                                'quantity': 1},
+                                               {'material_code': 'SL006173',
+                                                'item_number': 20,
+                                                'item_description': 'Solar Power System',
+                                                'date': '2014-01-03',
+                                                'net_value': 2638.32,
+                                                'quantity': 12}], },
 
                                           {'order_number': 20147028,
-                                           'programme_wbs_element': u'4380/A0/04/106',
+                                           'programme_wbs_element': '4380/A0/04/106',
                                            'items': [
-                                               {'material_code': u'S7800001',
-                                                'item_number': u'10',
-                                                'item_description': u'Retinol 100,000IU soft gel.caps/PAC-500',
-                                                'date': u'2014-01-09',
-                                                'net_value': u'21592.3',
-                                                'quantity': u'2630'}]}]
+                                               {'material_code': 'S7800001',
+                                                'item_number': 10,
+                                                'item_description': 'Retinol 100,000IU soft gel.caps/PAC-500',
+                                                'date': '2014-01-09',
+                                                'net_value': 21592.3,
+                                                'quantity': 2630}]}]
 
         self.facade = SalesOrderFacade(self.sales_order_file_location)
 
@@ -195,10 +195,10 @@ class TestSalesOrdersVisionFacade(TestCase):
                        'Delivery Completed', 'Final Invoice', 'WBS_Supply_expenditure', 'WBS_Freight_expenditure',
                        'WBS_Others_expenditure', 'PO/STO Amount', 'Purchasing Document']
 
-        self.first_row = [20146879, '10', 'S0009113', '1', '1', '3179.47', 'Emergency:Kyangwali', '2014-01-03',
-                          '2014', '2014-01-03', 'SQFlex 3-10 Pump C/W 1.4KW', '438', 'UGANDA', '4380/A0/04/105/007/020',
-                          'SM130359' '', '0', '0', '0', '0 ', '0', '3179.47', '', '', '@02@', '', 'Yes', 'No', '0',
-                          '0', '0', '2953.79', '']
+        self.first_row = [u'20146879', u'10', u'S0009113', u'1', u'1', u'3179.47', u'Emergency:Kyangwali', u'2014-01-03',
+                          u'2014', u'2014-01-03', u'SQFlex 3-10 Pump C/W 1.4KW', u'438', u'UGANDA', u'4380/A0/04/105/007/020',
+                          u'SM130359' u'', u'0', u'0', u'0', u'0 ', u'0', u'3179.47', u'', u'', u'@02@', u'', u'Yes', u'No', u'0',
+                          u'0', u'0', u'2953.79', u'']
 
         self.second_row = [20146879, '20', 'SL006173', '12', '12', '2638.32', 'Emergency:Kyangwali', '2014-01-03',
                            '2014', '2014-01-03', 'Solar Power System', '438', 'UGANDA',

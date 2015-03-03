@@ -1,14 +1,20 @@
 from abc import ABCMeta, abstractmethod
 from decimal import Decimal
 from datetime import date, datetime
+import re
 
 from xlutils.view import View
 
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem, \
     PurchaseOrder, PurchaseOrderItem
 
-
 def _clean_input(value):
+    parseStr = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
+                        re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$',x) and float(x) or x
+    
+    if type(value) == unicode:
+        encoded_value = value.encode('ascii', 'ignore')
+        value = parseStr(encoded_value)
     if type(value) == int:
         return value
     elif type(value) == str:
