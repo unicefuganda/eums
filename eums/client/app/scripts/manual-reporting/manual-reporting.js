@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 'eums.ip'])
+angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 'eums.ip', 'PurchaseOrder', 'ReleaseOrder'])
     .factory('DistributionReportingParameters', function () {
         var distributionReportingParameters = {};
         return{
@@ -12,7 +12,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
             }
         };
     })
-    .controller('ManualReportingController', function ($sorter, $scope, $location, DistributionReportingParameters, IPService, $timeout) {
+    .controller('ManualReportingController', function ($sorter, $scope, $q, $location, DistributionReportingParameters, IPService, $timeout, PurchaseOrderService, ReleaseOrderService) {
         $scope.sortBy = $sorter;
         $scope.datepicker = {};
         // Should be in another controller
@@ -28,25 +28,29 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         var waybills = [];
 
         $scope.initialize = function () {
-            this.sortBy('doc_number');
+            this.sortBy('order_number');
             this.sort.descending = false;
-            purchaseOrders = [
-                {id: 1, doc_number: 65025072, date: '11/11/2014', programme: 'YI107 - PCR 3 KEEP CHILDREN SAFE'},
-                {id: 2, doc_number: 65025073, date: '2/10/2013', programme: 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'},
-                {id: 3, doc_number: 65025496, date: '12/03/2013', programme: 'Y108 - PCR 4 CROSS SECTORAL'},
-                {id: 4, doc_number: 65025623, date: '3/3/2013', programme: 'YP109 - PCR 5 SUPPORT'},
-                {id: 5, doc_number: 65026064, date: '2/3/2014', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'},
-                {id: 6, doc_number: 65026445, date: '4/21/2014', programme: 'YI101 KEEP CHILDREN AND MOTHERS ALIVE'}
-            ];
-            waybills = [
-                {id: 1, doc_number: 72081598, date: '12/13/2012', programme: 'YI101 KEEP CHILDREN AND MOTHERS ALIVE'},
-                {id: 2, doc_number: 72994735, date: '2/14/2013', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'},
-                {id: 3, doc_number: 34839344, date: '2/14/2013', programme: 'YP109 - PCR 5 SUPPORT'},
-                {id: 4, doc_number: 20038445, date: '3/3/2013', programme: 'YI107 - PCR 3 KEEP CHILDREN SAFE'},
-                {id: 5, doc_number: 90384434, date: '3/3/2013', programme: 'Y108 - PCR 4 CROSS SECTORAL'},
-                {id: 6, doc_number: 10293800, date: '3/25/2013', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'}
-            ];
-            $scope.toggleDocumentType('PO');
+
+            var documentPromises = [];
+
+            documentPromises.push(
+                PurchaseOrderService.getPurchaseOrders().then(function (responses) {
+                    purchaseOrders = responses;
+                })
+            );
+
+            documentPromises.push(
+                ReleaseOrderService.getReleaseOrders().then(function (responses) {
+                    responses.forEach(function (response) {
+                        response.date = response.delivery_date;
+                    });
+                    waybills = responses;
+                })
+            );
+
+            $q.all(documentPromises).then( function(){
+                $scope.toggleDocumentType('PO');
+            });
         };
 
         $scope.toggleDocumentType = function (type) {

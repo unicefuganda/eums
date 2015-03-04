@@ -28,10 +28,10 @@
                     <thead ng-init="initialize()">
                     <tr>
                         <th style="width: 20%">
-                            <a ng-if="currentDocumentType === 'PO'" ng-click="sortBy('doc_number')">Purchase Order
-                                <i ng-class="sortArrowClass('doc_number')"></i></a>
-                            <a ng-if="currentDocumentType === 'WB'" ng-click="sortBy('doc_number')">Waybill
-                                <i ng-class="sortArrowClass('doc_number')"></i></a>
+                            <a ng-if="currentDocumentType === 'PO'" ng-click="sortBy('order_number')">Purchase Order
+                                <i ng-class="sortArrowClass('order_number')"></i></a>
+                            <a ng-if="currentDocumentType === 'WB'" ng-click="sortBy('order_number')">Waybill
+                                <i ng-class="sortArrowClass('order_number')"></i></a>
                         </th>
                         <th style="width: 30%">
                             <a ng-click="sortBy('date')">Date Created
@@ -49,7 +49,7 @@
                     <tbody>
                     <tr ng-repeat="document in documents | documentFilter: query | orderBy: sort.criteria:!sort.descending">
                         <td data-header="Document Number">
-                            <a ng-click="selectDocument(document)">{{ document.doc_number }}</a>
+                            <a ng-click="selectDocument(document)">{{ document.order_number }}</a>
                         </td>
                         <td data-header="Date Created">
                             {{ document.date }}

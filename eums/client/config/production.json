@@ -12,6 +12,7 @@
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
         "PURCHASE_ORDER": "/api/purchase-order/",
         "PURCHASE_ORDER_ITEM": "/api/purchase-order-item/",
+        "RELEASE_ORDER": "/api/release-order/",
         "PO_ITEM_FOR_SO_ITEM": "/api/so-item-po-item/",
         "CONSIGNEE_PURCHASE_ORDERS": "/api/consignee-purchase-orders/",
         "CONSIGNEE_PURCHASE_ORDER_ITEMS": "/api/consignee-purchase-order-items/",

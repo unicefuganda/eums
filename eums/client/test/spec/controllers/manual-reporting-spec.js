@@ -1,16 +1,49 @@
 describe('NewDistributionPlanController', function () {
-    var location, scope, sorter, timeout, mockDistributionReportingParametersService, mockIPService, deferred;
+    var location, scope, sorter, timeout, q;
+    var mockDistributionReportingParametersService, mockIPService, mockPurchaseOrderService, mockReleaseOrderService;
+    var deferred, deferredPurchaseOrderPromise, deferredReleaseOrderPromise;
+    var stubPurchaseOrders, stubReleaseOrders;
+    var orderId = 1,
+        salesOrderOneId = 1,
+        programmeName = 'Test Programme';
 
     beforeEach(module('ManualReporting'));
 
     beforeEach(function () {
+        stubPurchaseOrders = [{
+            id: 1,
+            order_number: orderId,
+            sales_order: salesOrderOneId,
+            date: '2014-10-06',
+            purchaseorderitem_set: [1, 2],
+            programme: programmeName
+        }];
+
+        stubReleaseOrders = [{
+            id: 1,
+            order_number: orderId,
+            delivery_date: '2014-10-06',
+            description: 'Midwife Supplies',
+            consignee: 1,
+            waybill: 1,
+            sales_order: 1,
+            releaseorderitem_set: [1, 2],
+            programme: programmeName
+        }];
 
         mockDistributionReportingParametersService = jasmine.createSpyObj('mockDistributionReportingParametersService', ['saveVariable', 'retrieveVariable']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
+        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrders']);
 
         inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
+            q = $q;
             deferred = $q.defer();
+            deferredPurchaseOrderPromise = $q.defer();
+            deferredReleaseOrderPromise = $q.defer();
             mockIPService.loadAllDistricts.and.returnValue(deferred.promise);
+            mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
+            mockReleaseOrderService.getReleaseOrders.and.returnValue(deferredReleaseOrderPromise.promise);
             location = $location;
             scope = $rootScope.$new();
             sorter = $sorter;
@@ -23,7 +56,9 @@ describe('NewDistributionPlanController', function () {
                     DistributionReportingParameters: mockDistributionReportingParametersService,
                     IPService: mockIPService,
                     $timeout: timeout,
-                    $sorter: sorter
+                    $sorter: sorter,
+                    PurchaseOrderService: mockPurchaseOrderService,
+                    ReleaseOrderService: mockReleaseOrderService
                 });
         });
     });
@@ -45,18 +80,15 @@ describe('NewDistributionPlanController', function () {
     });
 
     describe('when initialized', function () {
+        beforeEach(function () {
+            deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
+            deferredReleaseOrderPromise.resolve(stubReleaseOrders);
+        });
+
         it('should set document on the scope', function () {
-            var purchaseOrders = [
-                {id: 1, doc_number: 65025072, date: '11/11/2014', programme: 'YI107 - PCR 3 KEEP CHILDREN SAFE'},
-                {id: 2, doc_number: 65025073, date: '2/10/2013', programme: 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'},
-                {id: 3, doc_number: 65025496, date: '12/03/2013', programme: 'Y108 - PCR 4 CROSS SECTORAL'},
-                {id: 4, doc_number: 65025623, date: '3/3/2013', programme: 'YP109 - PCR 5 SUPPORT'},
-                {id: 5, doc_number: 65026064, date: '2/3/2014', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'},
-                {id: 6, doc_number: 65026445, date: '4/21/2014', programme: 'YI101 KEEP CHILDREN AND MOTHERS ALIVE'}
-            ];
-            scope.initialize();
-            scope.$apply();
-            expect(scope.documents).toEqual(purchaseOrders);
+              scope.initialize();
+              scope.$apply();
+              expect(scope.documents).toEqual(stubPurchaseOrders);
         });
 
         it('should set document type on the scope', function () {
@@ -76,7 +108,7 @@ describe('NewDistributionPlanController', function () {
         it('should sort by document number', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sort.criteria).toBe('doc_number');
+            expect(scope.sort.criteria).toBe('order_number');
         });
 
         it('should sort in descending order', function () {
@@ -94,16 +126,15 @@ describe('NewDistributionPlanController', function () {
         it('should set the clicked column as active', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sortArrowClass('doc_number')).toEqual('active glyphicon glyphicon-arrow-down');
+            expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-down');
         });
 
         it('should set the clicked column as active and have the up arrow when ascending', function () {
             scope.initialize();
             scope.sort.descending = true;
             scope.$apply();
-            expect(scope.sortArrowClass('doc_number')).toEqual('active glyphicon glyphicon-arrow-up');
+            expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-up');
         });
-
     });
 
     describe('when document type is toggled', function () {
@@ -122,35 +153,23 @@ describe('NewDistributionPlanController', function () {
         });
 
         it('should know to use the purchase orders if the document type selected is purchase orders', function () {
-            var purchaseOrders = [
-                {id: 1, doc_number: 65025072, date: '11/11/2014', programme: 'YI107 - PCR 3 KEEP CHILDREN SAFE'},
-                {id: 2, doc_number: 65025073, date: '2/10/2013', programme: 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS'},
-                {id: 3, doc_number: 65025496, date: '12/03/2013', programme: 'Y108 - PCR 4 CROSS SECTORAL'},
-                {id: 4, doc_number: 65025623, date: '3/3/2013', programme: 'YP109 - PCR 5 SUPPORT'},
-                {id: 5, doc_number: 65026064, date: '2/3/2014', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'},
-                {id: 6, doc_number: 65026445, date: '4/21/2014', programme: 'YI101 KEEP CHILDREN AND MOTHERS ALIVE'}
-            ];
+            deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
+            deferredReleaseOrderPromise.resolve(stubReleaseOrders);
 
             scope.initialize();
             scope.$apply();
             scope.toggleDocumentType('PO');
-            expect(scope.documents).toEqual(purchaseOrders);
+            expect(scope.documents).toEqual(stubPurchaseOrders);
         });
 
         it('should know to use the waybills if the document type selected is waybills', function () {
-            var waybills = [
-                {id: 1, doc_number: 72081598, date: '12/13/2012', programme: 'YI101 KEEP CHILDREN AND MOTHERS ALIVE'},
-                {id: 2, doc_number: 72994735, date: '2/14/2013', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'},
-                {id: 3, doc_number: 34839344, date: '2/14/2013', programme: 'YP109 - PCR 5 SUPPORT'},
-                {id: 4, doc_number: 20038445, date: '3/3/2013', programme: 'YI107 - PCR 3 KEEP CHILDREN SAFE'},
-                {id: 5, doc_number: 90384434, date: '3/3/2013', programme: 'Y108 - PCR 4 CROSS SECTORAL'},
-                {id: 6, doc_number: 10293800, date: '3/25/2013', programme: 'YI106 - PCR 2 KEEP CHILDREN LEARNING'}
-            ];
+            deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
+            deferredReleaseOrderPromise.resolve(stubReleaseOrders);
 
             scope.initialize();
             scope.$apply();
             scope.toggleDocumentType('WB');
-            expect(scope.documents).toEqual(waybills);
+            expect(scope.documents).toEqual(stubReleaseOrders);
         });
     });
 
