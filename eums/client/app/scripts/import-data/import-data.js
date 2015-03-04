@@ -9,4 +9,8 @@ angular.module('ImportData', ['eums.config', 'angularFileUpload'])
         $scope.releaseOrdersUploader = new FileUploader({
             url: EumsConfig.BACKEND_URLS.IMPORT_RELEASE_ORDERS
         });
+
+        $scope.purchaseOrdersUploader = new FileUploader({
+            url: EumsConfig.BACKEND_URLS.IMPORT_PURCHASE_ORDERS
+        });
     });

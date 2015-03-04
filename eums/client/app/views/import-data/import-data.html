@@ -68,6 +68,39 @@
 
             </div>
         </div>
+        <div class="panel panel-default" uploader="purchaseOrdersUploader" filters="queueLimit, customFilter">
+            <div class="row pad-20">
+                <h4 class="underline">Import Direct Delivery Purchase Orders</h4>
+                <span>To import Purchase Orders from vision, export Purchase Orders for the time period
+                you want with in <em><strong>excel (.xls) format</strong></em>.<br/></span>
+                <span>Note that this import is intended for Direct Delivery Purchase Order (EXPD) data.</span>
+            </div>
+            <div class="row pad-20">
+                <label class="col-lg-3" for="import-sales-orders">Import Purchase Orders (in excel format):</label>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="purchaseOrdersUploader"/>
+                <span class="col-lg-1" ng-show="purchaseOrdersUploader.isHTML5"
+                      nowrap>{{ purchaseOrdersUploader.queue[0].file.size/1024/1024|number:2 }} MB</span>
+
+
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="purchaseOrdersUploader.queue[0].upload()"
+                        ng-disabled="purchaseOrdersUploader.queue[0].isReady || purchaseOrdersUploader.queue[0].isUploading">
+                    <span class="glyphicon glyphicon-upload"></span> Upload
+                </button>
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <div class="progress">
+                        <div ng-show="purchaseOrdersUploader.isHTML5" class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': purchaseOrdersUploader.queue[0].progress + '%' }"></div>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <span ng-show=" purchaseOrdersUploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" purchaseOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show=" purchaseOrdersUploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i></span>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 

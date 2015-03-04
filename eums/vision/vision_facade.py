@@ -11,7 +11,7 @@ from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrde
 def _clean_input(value):
     parseStr = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
                         re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$',x) and float(x) or x
-    
+
     if type(value) == unicode:
         encoded_value = value.encode('ascii', 'ignore')
         value = parseStr(encoded_value)
@@ -247,3 +247,50 @@ class ReleaseOrderFacade(Facade):
             return SalesOrder.objects.filter(order_number=order_dict['so_number'])
         return []
 
+class PurchaseOrderFacade(Facade):
+    RELEVANT_DATA = {6: 'order_number', 7: 'po_item_number', 9: 'material_code', 10: 'material_description',
+                     20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
+
+    def _create_new_order(self, order_dict):
+        matching_purchase_orders = PurchaseOrder.objects.filter(order_number=order_dict['order_number'])
+        if len(matching_purchase_orders):
+            return matching_purchase_orders[0]
+
+        matching_sales_orders = self._get_matching_sales_order(order_dict)
+        if len(matching_sales_orders):
+            return PurchaseOrder.objects.create(order_number=order_dict['order_number'],
+                                                sales_order=matching_sales_orders[0],
+                                                date=self._get_as_date(order_dict['po_date']))
+
+    def _create_new_item(self, item_dict, order):
+        matching_sales_order_items = order.sales_order.salesorderitem_set.filter(item_number=item_dict['so_item_number'])
+
+        if len(matching_sales_order_items):
+            matching_po_item = PurchaseOrderItem.objects.filter(purchase_order__order_number=order.order_number,
+                                                                item_number=item_dict['po_item_number'],
+                                                                sales_order_item=matching_sales_order_items[0])
+
+            if not len(matching_po_item):
+                item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
+                                                     description=item_dict['material_description'])
+                PurchaseOrderItem.objects.get_or_create(purchase_order=order,
+                                                        item_number=item_dict['po_item_number'],
+                                                        sales_order_item=matching_sales_order_items[0])
+
+    def _append_new_order(self, item_dict, order_list, order_number):
+        sales_order = item_dict['so_number']
+        po_date = item_dict['po_date']
+        self._remove_order_level_data_from(item_dict)
+        order_list.append({'so_number': sales_order, 'order_number': order_number,
+                           'po_date': po_date, 'items': [item_dict]})
+
+    def _remove_order_level_data_from(self, item_dict):
+        del item_dict['order_number']
+        del item_dict['so_number']
+        del item_dict['po_date']
+
+    @staticmethod
+    def _get_matching_sales_order(order_dict):
+        if not isinstance(order_dict['so_number'], basestring):
+            return SalesOrder.objects.filter(order_number=order_dict['so_number'])
+        return []

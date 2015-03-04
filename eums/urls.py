@@ -39,6 +39,8 @@ urlpatterns = patterns(
         name='import_sales_orders'),
     url(r'^api/import-release-orders/', 'eums.api.import_data.import_orders_endpoint.import_release_orders',
         name='import_release_orders'),
+    url(r'^api/import-purchase-orders/', 'eums.api.import_data.import_orders_endpoint.import_purchase_orders',
+        name='import_purchase_orders'),
     url(r'^api/permission', 'eums.api.permissions.permissions_endpoint.check_user_permission',
         name='permissions'),
     url(r'^api/current-user', 'eums.api.current_user.current_user_endpoint.current_user',
