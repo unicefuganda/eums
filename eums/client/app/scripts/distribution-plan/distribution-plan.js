@@ -36,6 +36,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         }
 
         $scope.initialize = function () {
+            angular.element('#loading').modal();
             this.sortBy('order_number');
             this.sort.descending = false;
 
@@ -44,11 +45,13 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                     if(user.consignee_id){
                         PurchaseOrderService.getConsigneePurchaseOrders(user.consignee_id).then(function (purchaseOrders) {
                             $scope.salesOrders = purchaseOrders.sort();
+                            angular.element('#loading').modal('hide');
                         });
                     }
                     else{
                         PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
                             $scope.salesOrders = purchaseOrders.sort();
+                            angular.element('#loading').modal('hide');
                         });
                     }
                 });
@@ -57,6 +60,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 SalesOrderService.getSalesOrders().then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
                     $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
+                    angular.element('#loading').modal('hide');
                 });
             }
         };

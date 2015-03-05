@@ -28,6 +28,8 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         var waybills = [];
 
         $scope.initialize = function () {
+            angular.element('#loading').modal();
+
             this.sortBy('order_number');
             this.sort.descending = false;
 
@@ -50,6 +52,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
 
             $q.all(documentPromises).then( function(){
                 $scope.toggleDocumentType('PO');
+                angular.element('#loading').modal('hide');
             });
         };
 

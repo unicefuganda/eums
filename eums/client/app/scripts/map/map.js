@@ -140,6 +140,7 @@
         var markersGroup = [];
 
         function addHeatMapLayer(map, scope) {
+            angular.element('#loading').modal();
             var allMarkers = [];
             DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                  filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
@@ -161,6 +162,7 @@
                     markersGroup = L.layerGroup(allMarkers);
                     markersGroup.addTo(map);
                     scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap);
+                    angular.element('#loading').modal('hide');
                  });
             });
         }

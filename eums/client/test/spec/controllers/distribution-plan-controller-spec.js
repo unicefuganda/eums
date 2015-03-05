@@ -51,6 +51,14 @@ describe('DistributionPlanController', function () {
             filter = $filter;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
 
+            spyOn(angular, 'element').and.callFake(function () {
+                return {
+                    modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                        return status;
+                    })
+                };
+            });
+
             $controller('DistributionPlanController',
                 {$scope: scope, ContactService: mockContactService,
                     DistributionPlanService: mockPlanService,

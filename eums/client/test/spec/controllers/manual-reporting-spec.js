@@ -49,6 +49,14 @@ describe('NewDistributionPlanController', function () {
             sorter = $sorter;
             timeout = $timeout;
 
+            spyOn(angular, 'element').and.callFake(function () {
+                return {
+                    modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                        return status;
+                    })
+                };
+            });
+
             $controller('ManualReportingController',
                 {
                     $scope: scope,
