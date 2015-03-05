@@ -7,11 +7,13 @@ from django.contrib.auth.models import User
 from mock import MagicMock
 from xlwt import Workbook
 
-from eums.models import Item, Programme, ReleaseOrder, ReleaseOrderItem, PurchaseOrder, PurchaseOrderItem, Consignee
+from eums.models import Item, Programme, ReleaseOrder, ReleaseOrderItem, Consignee
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.vision.vision_facade import ReleaseOrderFacade
 
 
@@ -21,6 +23,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_release_order_workbook()
         self.imported_release_order_data = [{'order_number': 54101099.0,
                                              'so_number': 20148031.0,
+                                             'purchase_order': 81018523.0,
                                              'consignee': 'L438000393',
                                              'consignee_name': 'OYAM DISTRICT ADMIN',
                                              'waybill': 72081598.0,
@@ -41,6 +44,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                                         'so_item_number': 20}]},
                                             {'order_number': 54101128.0,
                                              'so_number': 20147537.0,
+                                             'purchase_order': 45132639.0,
                                              'consignee': 'L438000181',
                                              'consignee_name': 'GULU HOSPITAL',
                                              'waybill': 72081746.0,
@@ -138,6 +142,16 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.sales_order_item_three = SalesOrderItemFactory(sales_order=self.sales_order_two, item=self.item_three,
                                                             item_number=20)
 
+    def create_purchase_orders(self):
+        self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order = self.sales_order_one)
+        self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order = self.sales_order_two)
+        self.purchase_order_item_one = PurchaseOrderItemFactory(purchase_order=self.purchase_order_one, sales_order_item=self.sales_order_item_one,
+                                                          item_number=10)
+        self.purchase_order_item_two = PurchaseOrderItemFactory(purchase_order=self.purchase_order_one, sales_order_item=self.sales_order_item_two,
+                                                          item_number=20)
+        self.purchase_order_item_three = PurchaseOrderItemFactory(purchase_order=self.purchase_order_two, sales_order_item=self.sales_order_item_three,
+                                                            item_number=20)
+
     def create_consignees(self):
         self.consignee_one = ConsigneeFactory(customer_id='L438000393', name='OYAM DISTRICT ADMIN')
         self.consignee_two = ConsigneeFactory(customer_id='L438000181', name='GULU HOSPITAL')
@@ -154,12 +168,11 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_consignees()
         self.create_items()
         self.create_sales_orders()
+        self.create_purchase_orders()
 
         self.facade.save_order_data(self.imported_release_order_data)
 
         self.assert_release_orders_were_created()
-        self.assert_purchase_orders_were_created()
-        self.assert_purchase_order_items_were_created()
         self.assert_release_order_items_were_created()
 
     def test_should_create_consignee_when_saving_release_order_data_if_there_is_no_matching_consignee(self):
@@ -167,6 +180,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         
         self.create_items()
         self.create_sales_orders()
+        self.create_purchase_orders()
 
         self.facade.save_order_data(self.imported_release_order_data)
 
@@ -179,10 +193,19 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 0)
 
+    def test_should_not_save_a_release_order_with_no_matching_purchase_order(self):
+        self.create_consignees()
+        self.create_items()
+        self.create_sales_orders()
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrder.objects.count(), 0)
+
     def test_should_not_recreate_existing_release_orders_when_saving_only_matching_by_order_number(self):
         self.create_consignees()
         self.create_items()
         self.create_sales_orders()
+        self.create_purchase_orders()
 
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 2)
@@ -194,7 +217,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 2)
 
-    def test_should_not_create_existing_release_order_items_when_there_is_matching_sales_order_item(self):
+    def test_should_not_create_existing_release_order_items_when_there_is_no_matching_sales_order_item(self):
         self.create_consignees()
         self.create_items()
 
@@ -204,10 +227,22 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 0)
 
+    def test_should_not_create_existing_release_order_items_when_there_is_no_matching_purchase_order_item(self):
+        self.create_consignees()
+        self.create_items()
+        self.create_sales_orders()
+
+        self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order = self.sales_order_one)
+        self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order = self.sales_order_two)
+
+        self.facade.save_order_data(self.imported_release_order_data)
+        self.assertEqual(ReleaseOrderItem.objects.count(), 0)
+
     def test_should_not_recreate_existing_release_order_items_when_saving_only_matching_by_order_number(self):
         self.create_consignees()
         self.create_items()
         self.create_sales_orders()
+        self.create_purchase_orders()
 
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
@@ -218,21 +253,6 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
-
-    def test_should_not_recreate_existing_purchase_orders_when_saving_only_matching_by_order_number(self):
-            self.create_consignees()
-            self.create_items()
-            self.create_sales_orders()
-
-            self.facade.save_order_data(self.imported_release_order_data)
-            self.assertEqual(PurchaseOrder.objects.count(), 2)
-
-            first_purchase_order = PurchaseOrder.objects.all().first()
-            first_purchase_order.date = datetime.date(2100, 01, 13)
-            first_purchase_order.save()
-
-            self.facade.save_order_data(self.imported_release_order_data)
-            self.assertEqual(PurchaseOrder.objects.count(), 2)
 
     def test_should_load_release_orders_from_excel_and_save(self):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
@@ -265,39 +285,18 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def assert_release_order_items_were_created(self):
         order_item_one = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[0], item=self.item_one,
-                                          purchase_order_item=PurchaseOrderItem.objects.all()[0], quantity=1,
+                                          purchase_order_item=self.purchase_order_item_one, quantity=1,
                                           value=Decimal('1167.66'))
         order_item_two = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[0], item=self.item_two,
-                                          purchase_order_item=PurchaseOrderItem.objects.all()[1], quantity=1,
+                                          purchase_order_item=self.purchase_order_item_two, quantity=1,
                                           value=Decimal('26.81'))
         order_item_three = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[1], item=self.item_three,
-                                            purchase_order_item=PurchaseOrderItem.objects.all()[2], quantity=20,
+                                            purchase_order_item=self.purchase_order_item_three, quantity=20,
                                             value=Decimal('1188.79'))
 
         self.assert_release_order_items_are_equal(order_item_one, ReleaseOrderItem.objects.all()[0])
         self.assert_release_order_items_are_equal(order_item_two, ReleaseOrderItem.objects.all()[1])
         self.assert_release_order_items_are_equal(order_item_three, ReleaseOrderItem.objects.all()[2])
-
-    def assert_purchase_orders_were_created(self):
-        self.purchase_order_one = PurchaseOrder(order_number=81018523, sales_order=self.sales_order_one,
-                                                date=datetime.date(2014, 1, 8))
-        self.purchase_order_two = PurchaseOrder(order_number=45132639, sales_order=self.sales_order_two,
-                                                date=datetime.date(2014, 4, 8))
-
-        self.assert_purchase_orders_are_equal(self.purchase_order_one, PurchaseOrder.objects.all()[0])
-        self.assert_purchase_orders_are_equal(self.purchase_order_two, PurchaseOrder.objects.all()[1])
-
-    def assert_purchase_order_items_were_created(self):
-        order_item_one = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=10,
-                                           sales_order_item=self.sales_order_item_one)
-        order_item_two = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=20,
-                                           sales_order_item=self.sales_order_item_two)
-        order_item_three = PurchaseOrderItem(purchase_order=self.purchase_order_two, item_number=20,
-                                             sales_order_item=self.sales_order_item_three)
-
-        self.assert_purchase_order_items_are_equal(order_item_one, PurchaseOrderItem.objects.all()[0])
-        self.assert_purchase_order_items_are_equal(order_item_two, PurchaseOrderItem.objects.all()[1])
-        self.assert_purchase_order_items_are_equal(order_item_three, PurchaseOrderItem.objects.all()[2])
 
     def assert_consignees_are_equal(self, consignee_one, consignee_two):
         self.assertEqual(consignee_one.name, consignee_two.name)
@@ -317,13 +316,3 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assertEqual(order_item_one.purchase_order_item_id, order_item_two.purchase_order_item_id)
         self.assertEqual(order_item_one.quantity, order_item_two.quantity)
         self.assertEqual(order_item_one.value, order_item_two.value)
-
-    def assert_purchase_orders_are_equal(self, order_one, order_two):
-        self.assertEqual(order_one.order_number, order_two.order_number)
-        self.assertEqual(order_one.sales_order_id, order_two.sales_order_id)
-        self.assertEqual(order_one.date, order_two.date)
-
-    def assert_purchase_order_items_are_equal(self, order_item_one, order_item_two):
-        self.assertEqual(order_item_one.purchase_order.order_number, order_item_two.purchase_order.order_number)
-        self.assertEqual(order_item_one.item_number, order_item_two.item_number)
-        self.assertEqual(order_item_one.sales_order_item.id, order_item_two.sales_order_item.id)

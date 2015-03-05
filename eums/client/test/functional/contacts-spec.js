@@ -16,6 +16,7 @@ describe('contacts page', function () {
     });
 
     it('should go to the contacts page', function () {
+        browser.sleep(5000);
         element(by.id('admin-nav')).click();
         element(by.id('contact-nav')).click();
         browser.sleep(2000);

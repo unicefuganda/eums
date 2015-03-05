@@ -180,41 +180,41 @@ class ReleaseOrderFacade(Facade):
                                                        name=order_dict['consignee_name'])
 
         matching_sales_orders = self._get_matching_sales_order(order_dict)
-        if len(matching_sales_orders):
+        matching_purchase_orders = self._get_matching_purchase_order(order_dict)
+        if len(matching_sales_orders) and len(matching_purchase_orders):
             return ReleaseOrder.objects.create(order_number=order_dict['order_number'], waybill=order_dict['waybill'],
                                                delivery_date=self._get_as_date(order_dict['recommended_delivery_date']),
                                                consignee=consignee,
                                                sales_order=matching_sales_orders[0])
 
     def _create_new_item(self, item_dict, order):
-        purchase_order = self._get_or_create_purchase_order(item_dict, order)
-        matching_sales_order_items = order.sales_order.salesorderitem_set.filter(
-            item_number=item_dict['so_item_number'])
+        matching_purchase_orders = self._get_matching_purchase_order(item_dict)
 
-        if len(matching_sales_order_items):
-            purchase_order_item = self._get_or_create_purchase_order_item(item_dict, purchase_order,
-                                                                          matching_sales_order_items[0])
+        if len(matching_purchase_orders):
+            matching_purchase_order_items = PurchaseOrderItem.objects.filter(purchase_order=matching_purchase_orders[0],
+                                                                            item_number=item_dict['po_item_number'])
 
-            matching_ro_item = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
-                                                               purchase_order_item__item_number=purchase_order_item.
-                                                               item_number)
-            if not len(matching_ro_item):
-                item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
-                                                     description=item_dict['description'])
-                ReleaseOrderItem.objects.create(release_order=order, purchase_order_item=purchase_order_item,
-                                                item=item,
-                                                quantity=float(item_dict['quantity']), value=float(item_dict['value']))
+            if len(matching_purchase_order_items):
+                matching_ro_item = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
+                                                                   purchase_order_item=matching_purchase_order_items[0])
+                if not len(matching_ro_item):
+                    item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
+                                                         description=item_dict['description'])
+                    ReleaseOrderItem.objects.create(release_order=order, purchase_order_item=matching_purchase_order_items[0],
+                                                    item=item,
+                                                    quantity=float(item_dict['quantity']), value=float(item_dict['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']
+        purchase_order = item_dict['purchase_order']
         consignee = item_dict['consignee']
         consignee_name = item_dict['consignee_name']
         waybill = item_dict['waybill']
         recommended_delivery_date = item_dict['recommended_delivery_date']
         self._remove_order_level_data_from(item_dict)
-        order_list.append({'so_number': sales_order, 'order_number': order_number, 'consignee': consignee,
-                           'consignee_name': consignee_name, 'recommended_delivery_date': recommended_delivery_date,
-                           'waybill': waybill, 'items': [item_dict]})
+        order_list.append({'so_number': sales_order, 'purchase_order': purchase_order, 'order_number': order_number,
+                           'consignee': consignee, 'consignee_name': consignee_name,
+                           'recommended_delivery_date': recommended_delivery_date,'waybill': waybill, 'items': [item_dict]})
 
     def _remove_order_level_data_from(self, item_dict):
         del item_dict['order_number']
@@ -225,26 +225,15 @@ class ReleaseOrderFacade(Facade):
         del item_dict['recommended_delivery_date']
 
     @staticmethod
-    def _get_or_create_purchase_order(item, order):
-        matching_purchase_orders = PurchaseOrder.objects.filter(order_number=item['purchase_order'])
-        if len(matching_purchase_orders):
-            purchase_order = matching_purchase_orders[0]
-        else:
-            purchase_order = PurchaseOrder.objects.create(order_number=item['purchase_order'],
-                                                          sales_order=order.sales_order, date=order.delivery_date)
-        return purchase_order
-
-    @staticmethod
-    def _get_or_create_purchase_order_item(item, purchase_order, sales_order_item):
-        purchase_order_item, _ = PurchaseOrderItem.objects.get_or_create(purchase_order=purchase_order,
-                                                                         item_number=item['po_item_number'],
-                                                                         sales_order_item=sales_order_item)
-        return purchase_order_item
-
-    @staticmethod
     def _get_matching_sales_order(order_dict):
         if not isinstance(order_dict['so_number'], basestring):
             return SalesOrder.objects.filter(order_number=order_dict['so_number'])
+        return []
+
+    @staticmethod
+    def _get_matching_purchase_order(order_dict):
+        if not isinstance(order_dict['purchase_order'], basestring):
+            return PurchaseOrder.objects.filter(order_number=order_dict['purchase_order'])
         return []
 
 class PurchaseOrderFacade(Facade):
