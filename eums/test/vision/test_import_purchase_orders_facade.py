@@ -1,6 +1,7 @@
 from unittest import TestCase
 import os
 import datetime
+from decimal import Decimal
 
 from mock import MagicMock
 from xlwt import Workbook
@@ -21,10 +22,14 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                              'po_date': '2015-01-15',
                                              'items': [{'material_code': 'SL005144',
                                                         'material_description': 'Laptop Lenovo ThinkPad T510',
+                                                        'quantity': 8000,
+                                                        'value': 3436.82,
                                                         'po_item_number': 10,
                                                         'so_item_number': 10},
                                                        {'material_code': 'SL002248',
                                                         'material_description': 'Laptop bag',
+                                                        'quantity': 1000,
+                                                        'value': 2000.01,
                                                         'po_item_number': 20,
                                                         'so_item_number': 20}]},
                                             {'order_number': 54101128,
@@ -32,6 +37,8 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                              'po_date': '2015-01-18',
                                              'items': [{'material_code': 'S0000208',
                                                         'material_description': 'F-75 therap.diet sachet 102.5g/CAR-120',
+                                                        'quantity': 5000,
+                                                        'value': 4850.19,
                                                         'po_item_number': 20,
                                                         'so_item_number': 20}]}]
 
@@ -72,7 +79,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.second_row = [u'617',u'Kampala, Uganda',u'15/01/2015',u'2015',u'1',u'ZLC',u'54101099',u'20',u'1',u'SL002248',
                           u'Laptop bag',u'Z11109',u'WATER AND SANITATION',u'PROG',u'UGX',u'1190.00',
-                          u'3436.82',u'9520000.00',u'8000',u'8000',u'20153976',u'20',u'',u'',u'ALIVE:WASH Ltrine mt',
+                          u'2000.01',u'9520000.00',u'1000',u'8000',u'20153976',u'20',u'',u'',u'ALIVE:WASH Ltrine mt',
                           u'Z43801',u'UNICEF-UGANDA-KAMPALA',u'30323186',u'40',u'',u'0',u'DAP',u'UNICEF SPEDAG INTERFREIGHT',
                           u'4380/A0/04/105/007/017',u'30.06.2015',u'SM140277',u'',u'SOLOWO',u'2300026922',
                           u'Techno Relief Services (U) Ltd',u'Uganda',u'1',u'15/01/2015',u'30/01/2015',u'30/01/2015',u'',
@@ -81,7 +88,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.third_row = [u'617',u'Kampala, Uganda',u'15/01/2015',u'2015',u'1',u'ZLC',u'54101128',u'20',u'1',u'S0000208',
                           u'F-75 therap.diet sachet 102.5g/CAR-120',u'Z11109',u'WATER AND SANITATION',u'PROG',u'UGX',u'1190.00',
-                          u'3436.82',u'9520000.00',u'8000',u'8000',u'20143982',u'20',u'',u'',u'ALIVE:WASH Ltrine mt',
+                          u'4850.19',u'9520000.00',u'5000',u'8000',u'20143982',u'20',u'',u'',u'ALIVE:WASH Ltrine mt',
                           u'Z43801',u'UNICEF-UGANDA-KAMPALA',u'30323186',u'40',u'',u'0',u'DAP',u'UNICEF SPEDAG INTERFREIGHT',
                           u'4380/A0/04/105/007/017',u'30.06.2015',u'SM140277',u'',u'SOLOWO',u'2300026922',
                           u'Techno Relief Services (U) Ltd',u'Uganda',u'1',u'2015-01-18',u'30/01/2015',u'30/01/2015',u'',
@@ -193,11 +200,14 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
     def assert_purchase_order_items_were_created(self):
         order_item_one = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=10,
-                                           sales_order_item=self.sales_order_item_one)
+                                           sales_order_item=self.sales_order_item_one, quantity=8000,
+                                           value=Decimal('3436.82'))
         order_item_two = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=20,
-                                           sales_order_item=self.sales_order_item_two)
+                                           sales_order_item=self.sales_order_item_two, quantity=1000,
+                                           value=Decimal('2000.01'))
         order_item_three = PurchaseOrderItem(purchase_order=self.purchase_order_two, item_number=20,
-                                             sales_order_item=self.sales_order_item_three)
+                                             sales_order_item=self.sales_order_item_three, quantity=5000,
+                                           value=Decimal('4850.19'))
 
         self.assert_purchase_order_items_are_equal(order_item_one, PurchaseOrderItem.objects.all()[0])
         self.assert_purchase_order_items_are_equal(order_item_two, PurchaseOrderItem.objects.all()[1])

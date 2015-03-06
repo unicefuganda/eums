@@ -238,7 +238,7 @@ class ReleaseOrderFacade(Facade):
 
 class PurchaseOrderFacade(Facade):
     RELEVANT_DATA = {6: 'order_number', 7: 'po_item_number', 9: 'material_code', 10: 'material_description',
-                     20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
+                     16: 'value', 18: 'quantity', 20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
 
     def _create_new_order(self, order_dict):
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=order_dict['order_number'])
@@ -264,7 +264,9 @@ class PurchaseOrderFacade(Facade):
                                                      description=item_dict['material_description'])
                 PurchaseOrderItem.objects.get_or_create(purchase_order=order,
                                                         item_number=item_dict['po_item_number'],
-                                                        sales_order_item=matching_sales_order_items[0])
+                                                        sales_order_item=matching_sales_order_items[0],
+                                                        quantity=float(item_dict['quantity']),
+                                                        value=float(item_dict['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']

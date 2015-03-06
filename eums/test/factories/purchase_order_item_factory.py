@@ -12,3 +12,5 @@ class PurchaseOrderItemFactory(factory.DjangoModelFactory):
     purchase_order = factory.SubFactory(PurchaseOrderFactory)
     sales_order_item = factory.SubFactory(SalesOrderItemFactory)
     item_number = factory.Sequence(lambda n: 10 * n)
+    quantity = 100
+    value = 1000.00

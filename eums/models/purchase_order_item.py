@@ -7,6 +7,8 @@ class PurchaseOrderItem(models.Model):
     purchase_order = models.ForeignKey(PurchaseOrder)
     item_number = models.IntegerField()
     sales_order_item = models.ForeignKey(SalesOrderItem)
+    quantity = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 
     class Meta:
         app_label = 'eums'

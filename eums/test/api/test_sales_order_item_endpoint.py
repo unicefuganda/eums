@@ -35,14 +35,15 @@ class POItemForSOItemEndPointTest(AuthenticatedAPITestCase):
         created_purchase_order = create_purchase_order(self, purchase_order_details)
 
         purchase_order_item_details = { 'purchase_order': created_purchase_order['id'], 'item_number': item['id'],
-                                        'sales_order_item': created_sales_order_item['id']
+                                        'quantity': 12000, 'value': 100.0, 'sales_order_item': created_sales_order_item['id']
                                       }
         created_purchase_order_item = create_purchase_order_item(self, purchase_order_item_details)
 
         po_details = {u'id': created_purchase_order['id'], 'order_number': created_purchase_order['order_number'],
                       'date': created_purchase_order['date'], 'sales_order': sales_order['id']}
         po_item_details = { u'id': created_purchase_order_item['id'], 'item_number': item['id'],
-            'purchase_order': po_details, 'sales_order_item': created_sales_order_item['id']
+            'purchase_order': po_details, 'sales_order_item': created_sales_order_item['id'],
+            'quantity': 12000, 'value': 100.0
         }
 
         get_response = self.client.get(PO_ITEM_FOR_SO_ITEM_ENDPOINT_URL + str(created_sales_order_item['id'])+'/')
