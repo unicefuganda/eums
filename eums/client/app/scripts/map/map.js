@@ -369,7 +369,7 @@
             scope: false,
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
-    }).directive('filters', function (DistributionPlanService, UserService) {
+    }).directive('mapFilters', function (DistributionPlanService, UserService) {
         function removeEmptyArray(filteredResponses) {
             return filteredResponses.filter(function (response) {
                 return response.length > 0;
