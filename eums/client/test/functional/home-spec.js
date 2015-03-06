@@ -53,6 +53,7 @@ describe('Home Page', function () {
         });
 
         it('should highlight a layer', function () {
+            browser.sleep(5000)
             homePage.highLightMapLayer('wakiso');
             browser.sleep(5000);
             expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
@@ -67,7 +68,7 @@ describe('Home Page', function () {
         });
 
         it('should navigate to detail responses page when page link is clicked', function () {
-             browser.sleep(5000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
             browser.sleep(5000);
             responsePage = homePage.goToResponseDetailsPage();
