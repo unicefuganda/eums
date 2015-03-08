@@ -115,9 +115,18 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                     }
                 }
             })
-            .when('/field-verification-report/details', {
+            .when('/field-verification-details/purchase-order/:purchaseOrderId', {
                 templateUrl: '/static/app/views/distribution-reporting/details.html',
-                controller: 'ManualReportingController',
+                controller: 'ManualReportingDetailsController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_reports');
+                    }
+                }
+            })
+            .when('/field-verification-details/waybill/:releaseOrderId', {
+                templateUrl: '/static/app/views/distribution-reporting/details.html',
+                controller: 'ManualReportingDetailsController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_reports');

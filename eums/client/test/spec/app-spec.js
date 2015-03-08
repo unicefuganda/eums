@@ -46,10 +46,16 @@ describe('Route Provider', function () {
         expect(routes.routes['/field-verification-reports'].templateUrl).toBe('/static/app/views/distribution-reporting/distribution-reporting.html');
     });
 
-    it('should know distribution reporting details route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/field-verification-report/details');
-        expect(routes.routes['/field-verification-report/details'].controller).toBe('ManualReportingController');
-        expect(routes.routes['/field-verification-report/details'].templateUrl).toBe('/static/app/views/distribution-reporting/details.html');
+    it('should know distribution reporting details route exists for purchase order', function () {
+        expect((Object.keys(routes.routes))).toContain('/field-verification-details/purchase-order/:purchaseOrderId');
+        expect(routes.routes['/field-verification-details/purchase-order/:purchaseOrderId'].controller).toBe('ManualReportingDetailsController');
+        expect(routes.routes['/field-verification-details/purchase-order/:purchaseOrderId'].templateUrl).toBe('/static/app/views/distribution-reporting/details.html');
+    });
+
+    it('should know distribution reporting details route exists for waybill', function () {
+        expect((Object.keys(routes.routes))).toContain('/field-verification-details/waybill/:releaseOrderId');
+        expect(routes.routes['/field-verification-details/waybill/:releaseOrderId'].controller).toBe('ManualReportingDetailsController');
+        expect(routes.routes['/field-verification-details/waybill/:releaseOrderId'].templateUrl).toBe('/static/app/views/distribution-reporting/details.html');
     });
 
 });

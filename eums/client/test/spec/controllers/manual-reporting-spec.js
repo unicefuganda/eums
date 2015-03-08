@@ -1,6 +1,6 @@
-describe('NewDistributionPlanController', function () {
+describe('ManualReportingController', function () {
     var location, scope, sorter, timeout, q;
-    var mockDistributionReportingParametersService, mockIPService, mockPurchaseOrderService, mockReleaseOrderService;
+    var  mockPurchaseOrderService, mockReleaseOrderService;
     var deferred, deferredPurchaseOrderPromise, deferredReleaseOrderPromise;
     var stubPurchaseOrders, stubReleaseOrders;
     var orderId = 1,
@@ -31,8 +31,6 @@ describe('NewDistributionPlanController', function () {
             programme: programmeName
         }];
 
-        mockDistributionReportingParametersService = jasmine.createSpyObj('mockDistributionReportingParametersService', ['saveVariable', 'retrieveVariable']);
-        mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrders']);
 
@@ -41,7 +39,6 @@ describe('NewDistributionPlanController', function () {
             deferred = $q.defer();
             deferredPurchaseOrderPromise = $q.defer();
             deferredReleaseOrderPromise = $q.defer();
-            mockIPService.loadAllDistricts.and.returnValue(deferred.promise);
             mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockReleaseOrderService.getReleaseOrders.and.returnValue(deferredReleaseOrderPromise.promise);
             location = $location;
@@ -61,8 +58,6 @@ describe('NewDistributionPlanController', function () {
                 {
                     $scope: scope,
                     $location: location,
-                    DistributionReportingParameters: mockDistributionReportingParametersService,
-                    IPService: mockIPService,
                     $timeout: timeout,
                     $sorter: sorter,
                     PurchaseOrderService: mockPurchaseOrderService,
@@ -101,7 +96,6 @@ describe('NewDistributionPlanController', function () {
 
         it('should set document type on the scope', function () {
             var expectedDocumentType = 'PO';
-            mockDistributionReportingParametersService.retrieveVariable.and.returnValue(expectedDocumentType);
             scope.initialize();
             scope.$apply();
             expect(scope.currentDocumentType).toEqual(expectedDocumentType);
@@ -146,20 +140,6 @@ describe('NewDistributionPlanController', function () {
     });
 
     describe('when document type is toggled', function () {
-        it('should know to call the save variable with PO if type is purchase orders', function () {
-            scope.toggleDocumentType('PO');
-            scope.$apply();
-            expect(mockDistributionReportingParametersService.saveVariable).toHaveBeenCalledWith('currentDocumentType', 'PO');
-
-        });
-
-        it('should know to call the save variable with WB if type is waybills', function () {
-            scope.toggleDocumentType('WB');
-            scope.$apply();
-            expect(mockDistributionReportingParametersService.saveVariable).toHaveBeenCalledWith('currentDocumentType', 'WB');
-
-        });
-
         it('should know to use the purchase orders if the document type selected is purchase orders', function () {
             deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
             deferredReleaseOrderPromise.resolve(stubReleaseOrders);
@@ -182,68 +162,19 @@ describe('NewDistributionPlanController', function () {
     });
 
     describe('when select document', function () {
-        it('should change the location to details', function () {
+        it('should change the location to for purchase order document', function () {
             var document = {id: 1, doc_number: 1234, date: '2014-10-09', programme: 'Safe Water'};
+            scope.currentDocumentType = 'PO'
             scope.selectDocument(document);
             scope.$apply();
-            expect(location.path()).toEqual('/field-verification-report/details/');
+            expect(location.path()).toEqual('/field-verification-details/purchase-order/'+document.id);
         });
 
-        it('should save the order details', function () {
+        it('should change the location to for waybill document', function () {
             var document = {id: 1, doc_number: 1234, date: '2014-10-09', programme: 'Safe Water'};
-
-            var expectedOrderDetails = {
-                id: document.id, order_number: document.doc_number, date: document.date, programme: document.programme,
-                items: [
-                    {id: 1, description: 'Printer cartridges HP 21', materialCode: '213442', quantity: 20, unit: 'each',
-                        responses: [
-                            {
-                                received: 'YES',
-                                quantity: 30,
-                                consignee: 'Jinja Hospital',
-                                dateReceived: '01/10/2014',
-                                quality: 'Damaged',
-                                location: 'Jinja',
-                                remark: ''
-                            }
-                        ]},
-                    {id: 2, description: 'School Books', materialCode: '2123342', quantity: 100, unit: 'cartons', responses: [
-                        {
-                            received: 'NO',
-                            quantity: '',
-                            consignee: 'Director Shimoni',
-                            dateReceived: '',
-                            quality: '',
-                            location: 'Wakiso',
-                            remark: '2 weeks delay'
-                        }
-                    ]},
-                    {id: 1, description: 'Dell Computers', materialCode: '21346256', quantity: 500, unit: 'each', responses: [
-                        {
-                            received: 'YES',
-                            quantity: 23,
-                            consignee: 'Head Teacher Nyakasura',
-                            dateReceived: '01/10/2014',
-                            quality: 'Substandard',
-                            location: 'Buvuma',
-                            remark: ''
-                        }
-                    ]},
-                    {id: 1, description: 'School text books', materialCode: '56787562', quantity: 600, unit: 'each', responses: [
-                        {
-                            received: 'NO',
-                            quantity: '',
-                            consignee: 'Director KPS',
-                            dateReceived: '',
-                            quality: '',
-                            location: 'Kampala',
-                            remark: 'No response from IP'
-                        }
-                    ]}
-                ]};
             scope.selectDocument(document);
             scope.$apply();
-            expect(mockDistributionReportingParametersService.saveVariable).toHaveBeenCalledWith('selectedPurchaseOrder', expectedOrderDetails);
+            expect(location.path()).toEqual('/field-verification-details/waybill/'+document.id);
         });
     });
 
@@ -262,58 +193,4 @@ describe('NewDistributionPlanController', function () {
             expect(scope.placeHolderText).toEqual(expectedPlaceHolderMessage);
         });
     });
-
-    describe('when save responses', function () {
-        it('should set the scope variable to true', function () {
-            scope.saveResponses();
-            scope.$apply();
-            expect(scope.reportSaved).toBeTruthy();
-        });
-
-        it('should set the scope variable to false when time out happens', function(){
-            scope.saveResponses();
-            timeout.flush();
-            scope.$apply();
-
-            expect(scope.reportSaved).toBeFalsy();
-        });
-    });
-
-    describe('when add responses', function () {
-        it('should have document selected with default values', function () {
-            var expectedResponse = {responses: [
-                {
-                    received: '',
-                    quantity: '',
-                    consignee: '',
-                    dateReceived: '',
-                    quality: '',
-                    location: ''
-                }
-            ]};
-            scope.documentItemSelected = {responses: []};
-            scope.addResponse();
-            scope.$apply();
-            expect(scope.documentItemSelected).toEqual(expectedResponse);
-        });
-
-        it('should set the date picker', function () {
-            scope.documentItemSelected = {responses: []};
-            scope.addResponse();
-            scope.$apply();
-            expect(scope.datepicker).toEqual({0: false});
-        });
-    });
-});
-
-describe('DistributionReportingParameters', function(){
-    beforeEach(module('ManualReporting'));
-
-
-    it('should know how to save and retrieve variables', inject(function(DistributionReportingParameters){
-        var expectedValue = 'Test Variable';
-        var expectedKey = 'test_variable';
-        DistributionReportingParameters.saveVariable(expectedKey, expectedValue);
-        expect(DistributionReportingParameters.retrieveVariable(expectedKey)).toEqual(expectedValue);
-    }));
 });
