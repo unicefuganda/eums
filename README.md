@@ -92,8 +92,8 @@ e.g: test_location_form.py, test_location_model.py, test_location_views.py
 
 6. Go to the [contacts repo](https://github.com/unicefuganda/contacts) and follow the deployment instructions
 
-7. The provisioning process creates flows and questions based on flow ids and node ids in the default End User and Middle
-   Man flows on the __UNICEF Uganda__ account. If you want to connect the app to another account, ensure that the flows from
+7. The provisioning process creates flows and questions based on flow ids and node ids in the default End User and EUMS IP & Sub-consignees
+   flows on the __UNICEF Uganda__ account. If you want to connect the app to another account, ensure that the flows from
    the __UNICEF Uganda__ account are transferred to your new account and that the ids of the flows and the questions in 
    your new EUMS instance's database match the flow ids and the node uuids in the new RapidPro account. If this is not done,
    your new EUMS instance will not be able to start flows and/or receive messages from end users.
