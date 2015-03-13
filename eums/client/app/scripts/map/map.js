@@ -110,7 +110,7 @@
                 scrollWheelZoom: false,
                 touchZoom: false,
                 doubleClickZoom: false
-            }).setView([1.406, 32.000], 7);
+            }).setView(EumsConfig.MAP_OPTIONS.CENTER, EumsConfig.MAP_OPTIONS.ZOOM_LEVEL);
 
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
@@ -130,7 +130,7 @@
                         mapScope.data.totalStats = aggregates;
                     });
                     addHeatMapLayer(map, mapScope);
-                    window.map.setView([1.406, 32.000]);
+                    window.map.setView(EumsConfig.MAP_OPTIONS.CENTER);
                 }
             });
 
@@ -172,7 +172,7 @@
                 L.geoJson(response.data, {
                     style: EumsConfig.districtLayerStyle,
                     onEachFeature: function (feature, layer) {
-                        var districtName = feature.properties.DNAME_2010 || 'unknown';
+                        var districtName = feature.properties[EumsConfig.DISTRICT_NAME_LOCATOR] || 'unknown';
                         var districtLayer = Layer.build(map, layer, EumsConfig, scope, districtName);
                         LayerMap.addLayer(districtLayer, districtName.toLowerCase())
                     }
@@ -232,7 +232,7 @@
                 return L.layerGroup(markers).addTo(map);
             },
             setView: function () {
-                map.setView([1.406, 32.000]);
+                map.setView(EumsConfig.MAP_OPTIONS.CENTER);
             },
             removeMarker: function (marker) {
                 map.removeLayer(marker);

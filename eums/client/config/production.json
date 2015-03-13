@@ -39,5 +39,10 @@
         "weight": 1,
         "color": "@brand-primary",
         "fillOpacity": 0.8
-    }
+    },
+    "MAP_OPTIONS": {
+        "CENTER": [1.406, 32.000],
+        "ZOOM_LEVEL": 7
+    },
+    "DISTRICT_NAME_LOCATOR": "DNAME_2010"
 }

@@ -42,5 +42,10 @@
         "color": "@brand-primary",
         "fillOpacity": 0.8
     },
-    "IPJSONURL": "http://localhost:8000/static/app/data/ip.json"
+    "IPJSONURL": "http://localhost:8000/static/app/data/ip.json",
+    "MAP_OPTIONS": {
+        "CENTER": [1.406, 32.000],
+        "ZOOM_LEVEL": 7
+    },
+    "DISTRICT_NAME_LOCATOR": "DNAME_2010"
 }
