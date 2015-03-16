@@ -8,8 +8,9 @@ from eums.models import NodeLineItemRun, MultipleChoiceQuestion
 def create_received_no_answers(apps, schema_editor):
     """Forward data migration that creates no answers for completed runs where no was not saved
     """
-    product_received_question = MultipleChoiceQuestion.objects.get(label='productReceived')
-    if product_received_question:
+    product_received_question_filter = MultipleChoiceQuestion.objects.filter(label='productReceived')
+    if product_received_question_filter:
+        product_received_question = product_received_question_filter[0]
         product_not_received_answer_option = product_received_question.option_set.get(text='No')
         if product_not_received_answer_option:
             completed_runs = NodeLineItemRun.objects.filter(status='completed')
@@ -28,8 +29,9 @@ def remove_received_no_answers(apps, schema_editor):
     """Backward data migration that removes no answers for completed runs where no was not saved
 
     """
-    product_received_question = MultipleChoiceQuestion.objects.get(label='productReceived')
-    if product_received_question:
+    product_received_question_filter = MultipleChoiceQuestion.objects.filter(label='productReceived')
+    if product_received_question_filter:
+        product_received_question = product_received_question_filter[0]
         product_not_received_answer_option = product_received_question.option_set.get(text='No')
         if product_not_received_answer_option:
             completed_runs = NodeLineItemRun.objects.filter(status='completed')
