@@ -28,7 +28,9 @@
         "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
         "IMPORT_RELEASE_ORDERS": "/api/import-release-orders/",
         "IMPORT_PURCHASE_ORDERS": "/api/import-purchase-orders/",
+        "RECEIVED_OPTIONS": "api/received-options/",
         "QUALITY_OPTIONS": "api/quality-options/",
+        "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission"
     },
     "DISTRICTGEOJSONURL": "http://localhost:8000/static/app/data/districts.json",

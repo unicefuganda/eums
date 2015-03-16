@@ -14,11 +14,20 @@ class OptionViewSet(ModelViewSet):
     queryset = Option.objects.all().order_by('text')
     serializer_class = OptionSerialiser
 
+class ReceivedOptionViewSet(ModelViewSet):
+    queryset = Option.objects.filter(question__label='productReceived').order_by('-text')
+    serializer_class = OptionSerialiser
+
 class QualityOptionViewSet(ModelViewSet):
     queryset = Option.objects.filter(question__label='qualityOfProduct').order_by('text')
     serializer_class = OptionSerialiser
 
+class SatisfiedOptionViewSet(ModelViewSet):
+    queryset = Option.objects.filter(question__label='satisfiedWithProduct').order_by('-text')
+    serializer_class = OptionSerialiser
 
 optionRouter = DefaultRouter()
 optionRouter.register(r'option', OptionViewSet)
+optionRouter.register(r'received-options', ReceivedOptionViewSet)
 optionRouter.register(r'quality-options', QualityOptionViewSet)
+optionRouter.register(r'satisfied-options', SatisfiedOptionViewSet)

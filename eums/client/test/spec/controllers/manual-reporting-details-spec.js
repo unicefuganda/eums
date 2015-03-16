@@ -2,10 +2,11 @@ describe('ManualReportingDetailsController', function () {
     beforeEach(module('ManualReportingDetails'));
 
      var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
-         mockReleaseOrderService, mockReleaseOrderItemService, mockDistributionPlanLineItemService;
+         mockReleaseOrderService, mockReleaseOrderItemService, mockDistributionPlanLineItemService,
+         mockDistributionPlanService, mockDistributionPlanNodeService;
      var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
          deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
-         deferredLineItemPromise;
+         deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise;
      var scope, q, mockToastProvider, location;
      var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
      var orderId = 1,
@@ -16,7 +17,7 @@ describe('ManualReportingDetailsController', function () {
 
     beforeEach(function () {
         stubSalesOrder =  {
-            id: 1,
+            id: salesOrderId,
             'programme': {
                 id: 3,
                 name: 'Alive'
@@ -103,12 +104,14 @@ describe('ManualReportingDetailsController', function () {
     var setUp = function (routeParams) {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['fetchConsignees']);
-        mockOptionService = jasmine.createSpyObj('mockOptionService', ['qualityOptions']);
+        mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'qualityOptions', 'satisfiedOptions']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrder']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrderItem']);
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrder']);
         mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrderItem']);
         mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemResponse']);
+        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
+        mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
@@ -121,14 +124,19 @@ describe('ManualReportingDetailsController', function () {
             deferredReleaseOrderPromise = $q.defer();
             deferredReleaseOrderItemPromise = $q.defer();
             deferredLineItemPromise = $q.defer();
+            deferredDistributionPlanPromise = $q.defer();
+            deferredDistributionPlanNodePromise = $q.defer();
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockConsigneeService.fetchConsignees.and.returnValue(deferredConsigneePromise.promise);
+            mockOptionService.receivedOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.qualityOptions.and.returnValue(deferredOptionPromise.promise);
+            mockOptionService.satisfiedOptions.and.returnValue(deferredOptionPromise.promise);
             mockPurchaseOrderService.getPurchaseOrder.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockPurchaseOrderItemService.getPurchaseOrderItem.and.returnValue(deferredPurchaseOrderItemPromise.promise);
             mockReleaseOrderService.getReleaseOrder.and.returnValue(deferredReleaseOrderPromise.promise);
             mockReleaseOrderItemService.getReleaseOrderItem.and.returnValue(deferredReleaseOrderItemPromise.promise);
             mockDistributionPlanLineItemService.getLineItemResponse.and.returnValue(deferredLineItemPromise.promise);
+            mockDistributionPlanService.createPlan.and.returnValue(deferredDistributionPlanPromise.promise);
             location = $location;
             scope = $rootScope.$new();
 
@@ -160,7 +168,9 @@ describe('ManualReportingDetailsController', function () {
                     ReleaseOrderService: mockReleaseOrderService,
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     ngToast: mockToastProvider,
-                    DistributionPlanLineItemService: mockDistributionPlanLineItemService
+                    DistributionPlanLineItemService: mockDistributionPlanLineItemService,
+                    DistributionPlanService: mockDistributionPlanService,
+                    DistributionPlanNodeService: mockDistributionPlanNodeService
                 });
         });
     };
@@ -191,14 +201,34 @@ describe('ManualReportingDetailsController', function () {
                 expect(scope.consignees).toEqual(expectedConsignees);
             });
 
-            it('should load quality responses list on the scope', function () {
-                var stubOptions = [{id: 1, text: 'Test Option'}];
-                var expectedQualityOptions = [{id: 1, name: 'Test Option'}];
+            it('should load received responses option list on the scope', function () {
+                var stubOptions = [{id: 1, text: 'Test Received Option'}];
+                var expectedReceivedOptions = [{id: 1, name: 'Test Received Option'}];
+                deferredOptionPromise.resolve(stubOptions);
+                scope.initialize();
+                scope.$apply();
+
+                expect(scope.receivedResponsesList).toEqual(expectedReceivedOptions);
+            });
+
+            it('should load quality responses option list on the scope', function () {
+                var stubOptions = [{id: 1, text: 'Test Quality Option'}];
+                var expectedQualityOptions = [{id: 1, name: 'Test Quality Option'}];
                 deferredOptionPromise.resolve(stubOptions);
                 scope.initialize();
                 scope.$apply();
 
                 expect(scope.qualityResponsesList).toEqual(expectedQualityOptions);
+            });
+
+            it('should load satisfied responses option list on the scope', function () {
+                var stubOptions = [{id: 1, text: 'Test Satisfied Option'}];
+                var expectedSatisfiedOptions = [{id: 1, name: 'Test Satisfied Option'}];
+                deferredOptionPromise.resolve(stubOptions);
+                scope.initialize();
+                scope.$apply();
+
+                expect(scope.receivedResponsesList).toEqual(expectedSatisfiedOptions);
             });
         });
 
@@ -301,22 +331,26 @@ describe('ManualReportingDetailsController', function () {
                         amountReceived: {
                             id: 1,
                             value: 80,
-                            formatted_value: '80'
+                            formatted_value: '80',
+                            question_id: 1
                         },
                         satisfiedWithProduct: {
                             id: 2,
                             value: 1,
-                            formatted_value: 'Yes'
+                            formatted_value: 'Yes',
+                            question_id: 2
                         },
                         productReceived: {
                             id: 3,
                             value: 3,
-                            formatted_value: 'Yes'
+                            formatted_value: 'Yes',
+                            question_id: 3
                         },
                         dateOfReceipt: {
                             id: 4,
                             value:'04/10/2014',
-                            formatted_value: '04/10/2014'
+                            formatted_value: '04/10/2014',
+                            question_id: 4
                         }
                     }
               };
@@ -328,7 +362,7 @@ describe('ManualReportingDetailsController', function () {
                     consignee: responseItem.node.consignee,
                     endUser: responseItem.node.contact_person_id,
                     location: responseItem.node.location,
-                    received: 'Yes',
+                    received: responseItem.responses.productReceived.value,
                     received_answer: responseItem.responses.productReceived,
                     quantity: responseItem.responses.amountReceived.formatted_value,
                     quantity_answer: responseItem.responses.amountReceived,
@@ -336,7 +370,7 @@ describe('ManualReportingDetailsController', function () {
                     dateReceived_answer: responseItem.responses.dateOfReceipt,
                     quality: '',
                     quality_answer: undefined,
-                    satisfied: 'Yes',
+                    satisfied: responseItem.responses.satisfiedWithProduct.value,
                     satisfied_answer: responseItem.responses.satisfiedWithProduct,
                     remark: responseItem.line_item.remark
               }];
@@ -424,21 +458,98 @@ describe('ManualReportingDetailsController', function () {
         });
     });
 
-//    describe('when save responses', function () {
-//        it('should set the scope variable to true', function () {
-//            scope.saveResponses();
-//            scope.$apply();
-//            expect(scope.reportSaved).toBeTruthy();
-//        });
+    describe('when saving responses', function () {
+        var programmeId, distributionPlan;
+
+        beforeEach(function () {
+            setUp({});
+            distributionPlan = {id: 1};
+            programmeId = 42;
+            deferredDistributionPlanPromise.resolve(distributionPlan);
+
+            scope.salesOrder = {programme: {id: programmeId}};
+            scope.$apply();
+        });
+
+        describe('and the report is successfully saved, ', function () {
+            it('a toast confirming the save action should be created', function () {
+                scope.saveResponses();
+                scope.$apply();
+
+                var expectedToastArguments = {
+                    content: 'Report Saved!',
+                    class: 'success',
+                    maxNumber: 1,
+                    dismissOnTimeout: true
+                };
+                expect(mockToastProvider.create).toHaveBeenCalledWith(expectedToastArguments);
+            });
+
+            it('puts a promise on the scope to notify the ui that saving is done', function () {
+                scope.saveResponses();
+                scope.$apply();
+
+                expect(scope.saveReponsesPromise).toBeTruthy();
+            });
+        });
+
+        describe('and a plan for the sales order item has not been saved, ', function () {
+            it('a distribution plan should be created', function () {
+                scope.saveResponses();
+                scope.$apply();
+
+                expect(mockDistributionPlanService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+            });
+
+            it('the created distribution plan should be put on the scope', function () {
+                scope.saveResponses();
+                scope.$apply();
+
+                expect(scope.distributionPlanId).toEqual(distributionPlan.id);
+            });
+        });
+
+        describe('and a plan exists for the current responses, ', function () {
+            it('a distribution plan should not be created', function () {
+                scope.distributionPlanId = 1;
+                scope.$apply();
+
+                scope.saveResponses();
+                scope.$apply();
+
+                expect(mockDistributionPlanService.createPlan).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('when saving an existing response, ', function () {
+//            var responseItem;
+//            var distributionDateFormatedForSave = '2014-2-3';
 //
-//        it('should set the scope variable to false when time out happens', function(){
-//            scope.saveResponses();
-//            timeout.flush();
-//            scope.$apply();
+//            beforeEach(function () {
+//                responseItem = {
+//                    newResponse: false,
+//                    consignee: 1,
+//                    endUser: '0489284',
+//                    location: 'Kampala',
+//                    received: 'Yes',
+//                    received_answer: responseItem.responses.productReceived,
+//                    quantity: 10,
+//                    quantity_answer: responseItem.responses.amountReceived,
+//                    dateReceived: '02/03/2014',
+//                    dateReceived_answer: responseItem.responses.dateOfReceipt,
+//                    quality: 3,
+//                    quality_answer: responseItem.responses.qualityOfProduct,
+//                    satisfied: 'Yes',
+//                    satisfied_answer: responseItem.responses.satisfiedWithProduct,
+//                    remark: 'This is a remark'
+//                };
 //
-//            expect(scope.reportSaved).toBeFalsy();
-//        });
-//    });
+//                scope.responses = [responseItem];
+//                scope.track = true;
+//                scope.$apply();
+//            });
+        });
+    });
 
     describe('when add responses', function () {
         beforeEach(function () {

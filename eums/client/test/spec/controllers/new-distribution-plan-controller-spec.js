@@ -646,7 +646,7 @@ describe('NewDistributionPlanController', function () {
                 scope.saveDistributionPlanLineItems();
                 scope.$apply();
 
-                expect(scope.savePlanPromise.then).toBeTruthy();
+                expect(scope.savePlanPromise).toBeTruthy();
             });
         });
 

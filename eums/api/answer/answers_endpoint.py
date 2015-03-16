@@ -67,7 +67,8 @@ class ResponseSerializer(object):
                 node_results[response.question.label] =  {
                     'id': response.id,
                     'value': response_value,
-                    'formatted_value': response.format()
+                    'formatted_value': response.format(),
+                    'question_id': response.question.id,
                 }
         return node_results
 

@@ -1,17 +1,13 @@
 'use strict';
 
-angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder', 'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'DistributionPlanLineItem'])
-    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanLineItemService) {
+angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder', 'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'DistributionPlanLineItem', 'DistributionPlan', 'DistributionPlanNode'])
+    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService) {
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.responseIndex = '';
         $scope.response = {};
         $scope.documentItems = [];
         $scope.responses = [];
-        $scope.receivedResponsesList = [{'id': 'Yes', 'name': 'Yes'},
-                                        {'id': 'No', 'name': 'No'}];
-        $scope.satisfiedResponsesList = [{'id': 'Yes', 'name': 'Yes'},
-                                        {'id': 'No', 'name': 'No'}];
 
         function createToast(message, klass) {
             ngToast.create({
@@ -46,6 +42,15 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
         }
 
+        function loadReceivedResponsesList(){
+            $scope.receivedResponsesList = [];
+            OptionService.receivedOptions().then(function (response) {
+                response.forEach(function (response){
+                    $scope.receivedResponsesList.push({id: response.id, name: response.text});
+                });
+            });
+        }
+
         function loadQualityResponsesList(){
             $scope.qualityResponsesList = [];
             OptionService.qualityOptions().then(function (response) {
@@ -55,10 +60,22 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
         }
 
+         function loadSatisfiedResponsesList(){
+            $scope.satisfiedResponsesList = [];
+            OptionService.satisfiedOptions().then(function (response) {
+                response.forEach(function (response){
+                    $scope.satisfiedResponsesList.push({id: response.id, name: response.text});
+                });
+            });
+        }
+
+
         function loadLists(){
              loadDistricts();
              loadConsignees();
+             loadReceivedResponsesList();
              loadQualityResponsesList();
+             loadSatisfiedResponsesList();
         }
 
         function loadPurchaseOrderItems(){
@@ -206,7 +223,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     consignee: responseItem.node.consignee,
                     endUser: responseItem.node.contact_person_id,
                     location: responseItem.node.location,
-                    received: responseItem.responses.productReceived ? 'Yes' : 'No',
+                    received: responseItem.responses.productReceived ? responseItem.responses.productReceived.value : '',
                     received_answer: responseItem.responses.productReceived,
                     quantity: responseItem.responses.amountReceived ? responseItem.responses.amountReceived.formatted_value : 0,
                     quantity_answer: responseItem.responses.amountReceived,
@@ -214,7 +231,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     dateReceived_answer: responseItem.responses.dateOfReceipt,
                     quality: responseItem.responses.qualityOfProduct ? responseItem.responses.qualityOfProduct.value : '',
                     quality_answer: responseItem.responses.qualityOfProduct,
-                    satisfied: responseItem.responses.satisfiedWithProduct ? 'Yes' : 'No',
+                    satisfied: responseItem.responses.satisfiedWithProduct ? responseItem.responses.satisfiedWithProduct.value : '',
                     satisfied_answer: responseItem.responses.satisfiedWithProduct,
                     remark: responseItem.line_item.remark
                 };
@@ -270,12 +287,48 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }, true);
 
-        $scope.saveResponses = function () {
+
+        function saveResponseItems(){
+            var saveResponseItemPromises = [];
+//            $scope.distributionPlanLineItems.forEach(function (item) {
+//                saveNode(item).then(function (createdNode) {
+//                    item.nodeId = createdNode.id;
+//                    savePlanItemPromises.push(saveLineItem(item, createdNode.id));
+//                });
+//            });
+            var squashedSaveResponsesPromises = $q.all(saveResponseItemPromises);
+            $scope.saveReponsesPromise = squashedSaveResponsesPromises;
+            return squashedSaveResponsesPromises;
+        }
+
+        var saveWithToast = function () {
+            saveResponseItems().then(function (response) {
+                createToast('Report Saved!', 'success');
+            });
         };
 
-//        var formatDateForSave = function (date) {
-//            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-//        };
+        function createDistributionPlan(){
+            return DistributionPlanService.createPlan({programme: $scope.salesOrder.programme.id})
+                .then(function (createdPlan) {
+                   return createdPlan
+                });
+        }
+
+        $scope.saveResponses = function () {
+            if ($scope.distributionPlanId) {
+                saveWithToast();
+            }
+            else {
+                createDistributionPlan().then(function (createdPlan) {
+                    $scope.distributionPlanId = createdPlan.id;
+                    saveWithToast();
+                });
+            }
+        };
+
+        var formatDateForSave = function (date) {
+            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        };
     })
     .directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
