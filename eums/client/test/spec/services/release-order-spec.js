@@ -4,7 +4,9 @@ describe('Release Order Service', function () {
         mockBackend,
         endpointUrl,
         mockPurchaseOrderService,
+        mockSalesOrderService,
         scope,
+        stubSalesOrder,
         fullPurchaseOrder,
         stubReleaseOrder,
         fullReleaseOrder,
@@ -16,10 +18,23 @@ describe('Release Order Service', function () {
         module('ReleaseOrder');
 
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrder']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
 
         module(function ($provide) {
             $provide.value('PurchaseOrderService', mockPurchaseOrderService);
+            $provide.value('SalesOrderService', mockSalesOrderService);
         });
+
+        stubSalesOrder =  {
+            id: 1,
+            'programme': {
+                id: 3,
+                name: 'Alive'
+            },
+            'order_number': 10,
+            'date': '2014-10-05',
+            'salesorderitem_set': ['1']
+        }
 
         fullPurchaseOrder = {
             id: 1,
@@ -55,6 +70,7 @@ describe('Release Order Service', function () {
 
         fullReleaseOrder = stubReleaseOrder;
         fullReleaseOrder.purchase_order = fullPurchaseOrder;
+        fullReleaseOrder.sales_order = stubSalesOrder;
 
         stubReleaseOrders = [
             stubReleaseOrder,
@@ -73,9 +89,12 @@ describe('Release Order Service', function () {
 
         inject(function (ReleaseOrderService, $httpBackend, EumsConfig, $q, $rootScope) {
             var deferred = $q.defer();
+            var deferredSalesOrderPromise = $q.defer();
             scope = $rootScope.$new();
             deferred.resolve(fullPurchaseOrder);
+            deferredSalesOrderPromise.resolve(stubSalesOrder);
             mockPurchaseOrderService.getPurchaseOrder.and.returnValue(deferred.promise);
+            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrderPromise.promise);
 
             mockBackend = $httpBackend;
             endpointUrl = EumsConfig.BACKEND_URLS.RELEASE_ORDER;

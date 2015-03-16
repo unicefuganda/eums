@@ -67,6 +67,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
                 $scope.orderNumber = response.order_number;
                 $scope.orderProgramme = response.programme;
+                $scope.salesOrder = response.sales_order;
 
                 var purchaseOrderItemSetPromises = [];
                 response.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
@@ -96,6 +97,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             ReleaseOrderService.getReleaseOrder($routeParams.releaseOrderId).then(function (response) {
                 $scope.orderNumber = response.waybill;
                 $scope.orderProgramme = response.programme;
+                $scope.salesOrder = response.sales_order;
 
                 var releaseOrderItemSetPromises = [];
                 response.releaseorderitem_set.forEach(function (releaseOrderItem) {

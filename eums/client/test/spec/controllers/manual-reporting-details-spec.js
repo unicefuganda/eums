@@ -7,7 +7,7 @@ describe('ManualReportingDetailsController', function () {
          deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
          deferredLineItemPromise;
      var scope, q, mockToastProvider, location;
-     var stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
+     var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
      var orderId = 1,
          salesOrderId = 1,
          programmeName = 'Test Programme';
@@ -15,10 +15,21 @@ describe('ManualReportingDetailsController', function () {
 
 
     beforeEach(function () {
+        stubSalesOrder =  {
+            id: 1,
+            'programme': {
+                id: 3,
+                name: 'Alive'
+            },
+            'order_number': 10,
+            'date': '2014-10-05',
+            'salesorderitem_set': ['1']
+        }
+
         stubPurchaseOrder = {
             id: 1,
             order_number: orderId,
-            sales_order: salesOrderId,
+            sales_order: stubSalesOrder,
             date: '2014-10-06',
             purchaseorderitem_set: [1],
             programme: programmeName
@@ -31,7 +42,8 @@ describe('ManualReportingDetailsController', function () {
             description: 'Midwife Supplies',
             consignee: 1,
             waybill: 12,
-            sales_order: 1,
+            sales_order: stubSalesOrder,
+            purchase_order: stubPurchaseOrder,
             releaseorderitem_set: [1],
             programme: programmeName
         };
@@ -203,6 +215,7 @@ describe('ManualReportingDetailsController', function () {
                   expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
                   expect(scope.orderNumber).toEqual(stubPurchaseOrder.order_number);
                   expect(scope.orderProgramme).toEqual(stubPurchaseOrder.programme);
+                  expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
 
             it('should set documentItems on the scope', function () {
@@ -237,6 +250,7 @@ describe('ManualReportingDetailsController', function () {
                   expect(scope.reportingDetailsTitle).toEqual('Report By Waybill:');
                   expect(scope.orderNumber).toEqual(stubReleaseOrder.waybill);
                   expect(scope.orderProgramme).toEqual(stubReleaseOrder.programme);
+                  expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
 
             it('should set documentItems on the scope', function () {
