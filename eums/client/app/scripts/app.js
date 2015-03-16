@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs',
-        'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'DatePicker',
+        'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker',
         'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData', 'EndUserResponses'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';

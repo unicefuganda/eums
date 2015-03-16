@@ -4,10 +4,10 @@ angular.module('PurchaseOrderItem', ['eums.config', 'SalesOrderItem'])
     .factory('PurchaseOrderItemService', function ($http, $q, EumsConfig, SalesOrderItemService) {
         var purchase_order_item;
 
-        var fillOutSalesOrderItem = function (salesOrderItem) {
-            return SalesOrderItemService.getSalesOrderItem(salesOrderItem.sales_order_item).then(function (salesOrderItemDetails) {
-                salesOrderItem.sales_order_item = salesOrderItemDetails;
-                return salesOrderItem;
+        var fillOutSalesOrderItem = function (purchaseOrderItem) {
+            return SalesOrderItemService.getSalesOrderItem(purchaseOrderItem.sales_order_item).then(function (salesOrderItemDetails) {
+                purchaseOrderItem.sales_order_item = salesOrderItemDetails;
+                return purchaseOrderItem;
             });
         };
 

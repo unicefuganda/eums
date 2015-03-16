@@ -164,7 +164,7 @@ describe('ManualReportingController', function () {
     describe('when select document', function () {
         it('should change the location to for purchase order document', function () {
             var document = {id: 1, doc_number: 1234, date: '2014-10-09', programme: 'Safe Water'};
-            scope.currentDocumentType = 'PO'
+            scope.currentDocumentType = 'PO';
             scope.selectDocument(document);
             scope.$apply();
             expect(location.path()).toEqual('/field-verification-details/purchase-order/'+document.id);

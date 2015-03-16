@@ -653,9 +653,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             link: function (scope, element, attr, ngModelCtrl) {
                 function inputValue(val) {
                     if (val) {
-                        var digits = val.replace(/[^0-9]/g, '');
+                        var digits = val.toString().replace(/[^0-9]/g, '');
 
-                        if (digits !== val) {
+                        if (digits.toString() !== val.toString()) {
                             ngModelCtrl.$setViewValue(digits);
                             ngModelCtrl.$render();
                         }

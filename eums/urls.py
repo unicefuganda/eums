@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses
+from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, PlanItemResponses
 from eums.api.answer.date_answers_endpoint import textAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee import consigneeRouter
@@ -15,6 +15,7 @@ from eums.api.item.item_endpoint import itemRouter
 from eums.api.item_unit.item_unit_endpoint import itemUnitRouter
 from eums.api.programme.programme_endpoint import programmeRouter
 from eums.api.release_order.release_order_endpoint import releaseOrderRouter
+from eums.api.release_order_item.release_order_item_endpoint import releaseOrderItemRouter
 from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
 from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter, soItemPOItem
 from eums.api.purchase_order.purchase_order_endpoint import purchaseOrderRouter
@@ -24,6 +25,7 @@ from eums.api.stock_report.stock_report_endpoint import StockReport
 from eums.api.user.user_endpoint import userRouter
 from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
+from eums.api.option.option_endpoint import optionRouter
 from eums.views.password_management import ChangePasswordView, RecoverEmailSent
 
 
@@ -56,6 +58,7 @@ urlpatterns = patterns(
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
+    url(r'^api/plan-item-responses/(?P<plan_item_id>\d+)/$', PlanItemResponses.as_view(), name='plan_item_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
@@ -71,13 +74,15 @@ urlpatterns = patterns(
     url(r'^api/', include(programmeRouter.urls)),
     url(r'^api/', include(consigneeRouter.urls)),
     url(r'^api/', include(salesOrderRouter.urls)),
-    url(r'^api/', include(releaseOrderRouter.urls)),
     url(r'^api/', include(salesOrderItemRouter.urls)),
     url(r'^api/', include(distributionReportRouter.urls)),
     url(r'^api/', include(userRouter.urls)),
     url(r'^api/', include(textAnswerRouter.urls)),
+    url(r'^api/', include(optionRouter.urls)),
     url(r'^api/', include(purchaseOrderRouter.urls)),
     url(r'^api/', include(purchaseOrderItemRouter.urls)),
+    url(r'^api/', include(releaseOrderRouter.urls)),
+    url(r'^api/', include(releaseOrderItemRouter.urls)),
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),

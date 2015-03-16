@@ -2,19 +2,17 @@
     <div class="content">
         <ng-toast></ng-toast>
 
-        <div ng-show="planSaved">
-            <alert type="success" ng-show="distributionPlanReport">Plan saved.</alert>
-            <alert type="success" ng-show="!distributionPlanReport">Report saved.</alert>
-        </div>
         <h4 class="page-header" ng-show="distributionPlanReport">Create A Distribution Plan for Sales Order:
             <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
-                    <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
-                    </span>
+            <span class="pull-right">PCR:
+                <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
+            </span>
         </h4>
         <h4 class="page-header" ng-show="!distributionPlanReport">Report Delivery for Purchase Order:
             <span class="text-primary">{{ selectedPurchaseOrder.order_number }}</span>
-                    <span class="pull-right">PCR: <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
-                    </span>
+            <span class="pull-right">PCR:
+                <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
+            </span>
         </h4>
 
         <div ng-show="selectedSalesOrderItem">

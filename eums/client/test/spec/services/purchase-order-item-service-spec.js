@@ -7,7 +7,9 @@ describe('Purchase Order Item Service', function () {
         scope,
         purchaseOrderItemId = 1,
         salesOrderItemId = 1,
-        itemId = 1;
+        itemId = 1,
+        quantity = 100,
+        value = 1000.00;
 
     var stubItem = {
         id: itemId,
@@ -33,7 +35,9 @@ describe('Purchase Order Item Service', function () {
     var stubPurchaseOrderItem = {
         id: purchaseOrderItemId,
         item_number: itemId,
-        sales_order_item: salesOrderItemId
+        sales_order_item: salesOrderItemId,
+        quantity: quantity,
+        value: value
     };
 
     beforeEach(function () {
@@ -61,7 +65,9 @@ describe('Purchase Order Item Service', function () {
         var expectedPurchaseOrderItem = {
             id: purchaseOrderItemId,
             item_number: itemId,
-            sales_order_item: stubSalesOrderItem
+            sales_order_item: stubSalesOrderItem,
+            quantity: quantity,
+            value: value
         };
 
         mockBackend.whenGET(endpointUrl + purchaseOrderItemId + '/').respond(stubPurchaseOrderItem);

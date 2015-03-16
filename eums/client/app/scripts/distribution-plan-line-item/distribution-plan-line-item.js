@@ -24,6 +24,11 @@ angular.module('DistributionPlanLineItem', ['eums.config', 'Item'])
                     .then(function (response) {
                         return response.data;
                     });
+            },
+            getLineItemResponse: function (lineItemId) {
+                return $http.get(EumsConfig.BACKEND_URLS.PLAN_ITEM_RESPONSES + lineItemId + '/').then(function (response) {
+                    return response.data;
+                });
             }
         };
     });

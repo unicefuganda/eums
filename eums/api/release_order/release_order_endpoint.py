@@ -10,7 +10,7 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = ReleaseOrder
-        fields = ('id', 'order_number', 'sales_order', 'programme', 'consignee', 'waybill', 'delivery_date',
+        fields = ('id', 'order_number', 'sales_order', 'purchase_order', 'programme', 'consignee', 'waybill', 'delivery_date',
                   'releaseorderitem_set')
 
     @staticmethod

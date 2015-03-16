@@ -28,14 +28,16 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                              'consignee_name': 'OYAM DISTRICT ADMIN',
                                              'waybill': 72081598.0,
                                              'recommended_delivery_date': '2014-01-08',
-                                             'items': [{'material_code': 'SL005144',
+                                             'items': [{'ro_item_number': 10,
+                                                        'material_code': 'SL005144',
                                                         'description': 'Laptop Lenovo ThinkPad T510',
                                                         'quantity': 1,
                                                         'value': 1167.66,
                                                         'purchase_order': 81018523.0,
                                                         'po_item_number': 10,
                                                         'so_item_number': 10},
-                                                       {'material_code': 'SL002248',
+                                                       {'ro_item_number': 20,
+                                                        'material_code': 'SL002248',
                                                         'description': 'Laptop bag',
                                                         'quantity': 1,
                                                         'value': 26.81,
@@ -49,7 +51,8 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                              'consignee_name': 'GULU HOSPITAL',
                                              'waybill': 72081746.0,
                                              'recommended_delivery_date': '2014-04-08',
-                                             'items': [{'material_code': 'S0000208',
+                                             'items': [{'ro_item_number': 10,
+                                                        'material_code': 'S0000208',
                                                         'description': 'F-75 therap.diet sachet 102.5g/CAR-120',
                                                         'quantity': 20,
                                                         'value': 1188.79,
@@ -109,7 +112,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                            'Silvia Pasti', u'20', u'20', '', '2', '2', '2', 'F43801', '4900086016', '2', 'SYS0084422', '',
                            '2014-05-08', '2014-05-08', '', '2014-05-08', '2014-05-08', '2014-05-08', '2014-05-08', '',
                            '15', '', '', '', '', '', '', '', '', 'CD 96-50U', 'UNICEF', 'Bongomin', '', '']
-        self.third_row = [54101128, 20, '2014-08-01', '2014-04-08', 'S0000208',
+        self.third_row = [54101128, 10, '2014-08-01', '2014-04-08', 'S0000208',
                           'F-75 therap.diet sachet 102.5g/CAR-120', '20', '1188.79', '2611', '261', 'Kampala W1',
                           'L438000181', 'GULU HOSPITAL', 'NUHODDIN MAARIJ', 20147537, 45132639, 56165211,
                           'SC130708', '4380/A0/04/105/004/022', 'C', '7665', 'C', 72081746,
@@ -276,9 +279,11 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def assert_release_orders_were_created(self):
         release_order_one = ReleaseOrder(order_number=54101099, consignee=self.consignee_one, waybill=72081598,
-                                         sales_order=self.sales_order_one, delivery_date=datetime.date(2014, 1, 8))
+                                         sales_order=self.sales_order_one, purchase_order=self.purchase_order_one,
+                                         delivery_date=datetime.date(2014, 1, 8))
         release_order_two = ReleaseOrder(order_number=54101128, consignee=self.consignee_two, waybill=72081746,
-                                         sales_order=self.sales_order_two, delivery_date=datetime.date(2014, 4, 8))
+                                         sales_order=self.sales_order_two, purchase_order=self.purchase_order_one,
+                                         delivery_date=datetime.date(2014, 4, 8))
 
         self.assert_release_orders_are_equal(release_order_one, ReleaseOrder.objects.all()[0])
         self.assert_release_orders_are_equal(release_order_two, ReleaseOrder.objects.all()[1])
@@ -286,13 +291,13 @@ class TestReleaseOrdersVisionFacade(TestCase):
     def assert_release_order_items_were_created(self):
         order_item_one = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[0], item=self.item_one,
                                           purchase_order_item=self.purchase_order_item_one, quantity=1,
-                                          value=Decimal('1167.66'))
+                                          value=Decimal('1167.66'), item_number=10)
         order_item_two = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[0], item=self.item_two,
                                           purchase_order_item=self.purchase_order_item_two, quantity=1,
-                                          value=Decimal('26.81'))
+                                          value=Decimal('26.81'), item_number=20)
         order_item_three = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[1], item=self.item_three,
                                             purchase_order_item=self.purchase_order_item_three, quantity=20,
-                                            value=Decimal('1188.79'))
+                                            value=Decimal('1188.79'), item_number=10)
 
         self.assert_release_order_items_are_equal(order_item_one, ReleaseOrderItem.objects.all()[0])
         self.assert_release_order_items_are_equal(order_item_two, ReleaseOrderItem.objects.all()[1])

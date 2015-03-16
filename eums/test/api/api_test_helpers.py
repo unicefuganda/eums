@@ -1,9 +1,11 @@
 import datetime
 
-from eums.models import Programme, ItemUnit, Item
+from eums.models import Programme, ItemUnit, Item, Question
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 
 
 DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
@@ -18,7 +20,9 @@ SALES_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'sales-order-item/'
 PURCHASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'purchase-order/'
 PURCHASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'purchase-order-item/'
 RELEASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'release-order/'
+RELEASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'release-order-item/'
 PROGRAMME_ENDPOINT_URL = BACKEND_URL + 'programme/'
+OPTION_ENDPOINT_URL = BACKEND_URL + 'option/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -107,10 +111,12 @@ def create_sales_order(test_case, sales_order_details=None):
 def create_release_order(test_case, release_order_details=None):
     if not release_order_details:
         sales_order = SalesOrderFactory()
+        purchase_order = PurchaseOrderFactory()
         consignee = ConsigneeFactory()
 
         release_order_details = {'order_number': 232345434, 'delivery_date': datetime.date(2014, 10, 5),
-                                 'sales_order': sales_order.id, 'consignee': consignee.id, 'waybill': 234256}
+                                 'sales_order': sales_order.id, 'purchase_order': purchase_order.id,
+                                 'consignee': consignee.id, 'waybill': 234256}
 
     response = test_case.client.post(RELEASE_ORDER_ENDPOINT_URL, release_order_details, format='json')
 
@@ -154,6 +160,14 @@ def create_purchase_order_item(test_case, purchase_order_item_details=None):
     return response.data
 
 
+def create_release_order_item(test_case, release_order_item_details=None):
+    response = test_case.client.post(RELEASE_ORDER_ITEM_ENDPOINT_URL, release_order_item_details, format='json')
+
+    test_case.assertEqual(response.status_code, 201)
+
+    return response.data
+
+
 def create_item_unit(test_case, item_unit_details=None):
     if not item_unit_details:
         item_unit_details = {'name': "EA"}
@@ -180,4 +194,13 @@ def create_user(test_case, user_details=None):
     response = test_case.client.post(USER_ENDPOINT_URL, user_details, format='json')
     test_case.assertEqual(response.status_code, 201)
 
+    return response.data
+
+
+def create_option(test_case,option_details=None):
+    if not option_details:
+        multiple_choice_question = MultipleChoiceQuestionFactory()
+        option_details = {'text': "Option text", 'question': multiple_choice_question.id}
+
+    response = test_case.client.post(OPTION_ENDPOINT_URL, option_details, format='json')
     return response.data

@@ -167,7 +167,7 @@ class SalesOrderFacade(Facade):
 
 
 class ReleaseOrderFacade(Facade):
-    RELEVANT_DATA = {0: 'order_number', 3: 'recommended_delivery_date', 4: 'material_code', 5: 'description',
+    RELEVANT_DATA = {0: 'order_number', 1: 'ro_item_number', 3: 'recommended_delivery_date', 4: 'material_code', 5: 'description',
                      6: 'quantity', 7: 'value', 11: 'consignee', 14: 'so_number', 15: 'purchase_order', 22: 'waybill',
                      40: 'so_item_number', 41: 'po_item_number', 12: 'consignee_name'}
 
@@ -185,7 +185,8 @@ class ReleaseOrderFacade(Facade):
             return ReleaseOrder.objects.create(order_number=order_dict['order_number'], waybill=order_dict['waybill'],
                                                delivery_date=self._get_as_date(order_dict['recommended_delivery_date']),
                                                consignee=consignee,
-                                               sales_order=matching_sales_orders[0])
+                                               sales_order=matching_sales_orders[0],
+                                               purchase_order=matching_purchase_orders[0])
 
     def _create_new_item(self, item_dict, order):
         matching_purchase_orders = self._get_matching_purchase_order(item_dict)
@@ -202,6 +203,7 @@ class ReleaseOrderFacade(Facade):
                                                          description=item_dict['description'])
                     ReleaseOrderItem.objects.create(release_order=order, purchase_order_item=matching_purchase_order_items[0],
                                                     item=item,
+                                                    item_number=item_dict['ro_item_number'],
                                                     quantity=float(item_dict['quantity']), value=float(item_dict['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):

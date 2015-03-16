@@ -1,17 +1,10 @@
 <div class="container-fluid">
-    <div class="content">
-        <div ng-show="reportSaved">
-            <alert type="success">Report saved.</alert>
-        </div>
+    <div class="content" ng-init="initialize()">
+        <ng-toast></ng-toast>
 
-        <h4 class="page-header" ng-if="currentDocumentType === 'PO'">Report By PO:
-            <span class="text-primary">{{ document.order_number  }}</span>
-            <span class="pull-right">PCR: <span class="text-primary">{{ document.programme }}</span></span>
-        </h4>
-
-        <h4 class="page-header" ng-if="currentDocumentType === 'WB'">Report By Waybill:
-            <span class="text-primary">{{ document.order_number  }}</span>
-            <span class="pull-right">PCR: <span class="text-primary">{{ document.programme }}</span></span>
+        <h4 class="page-header">{{ reportingDetailsTitle }}
+            <span class="text-primary">{{ orderNumber  }}</span>
+            <span class="pull-right">PCR: <span class="text-primary">{{ orderProgramme }}</span></span>
         </h4>
 
         <div class="row">
@@ -21,24 +14,24 @@
                         Description:</label>
 
                     <div class="col-lg-8">
-                        <select id="select-sales-order" ng-model="documentItemSelected" required="required"
-                                class="form-control"
-                                ng-options="documentItem.description for documentItem in document.items">
+                        <select id="select-sales-order" ng-model="selectedDocumentItem" required="required"
+                                class="form-control" ng-change="selectDocumentItem()"
+                                ng-options="documentItem.description for documentItem in documentItems">
                             <option value="" selected="selected">Select Item</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div ng-show="documentItemSelected" class="material-items well col-lg-7 pull-right">
+            <div ng-show="selectedDocumentItem" class="material-items well col-lg-7 pull-right">
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ documentItemSelected.material_code }}</span>
+                            <span class="badge alert-info">{{ selectedDocumentItem.materialCode }}</span>
                             Material Code
                         </li>
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ documentItemSelected.description }}</span>
+                            <span class="badge alert-info">{{ selectedDocumentItem.description }}</span>
                             Short Description
                         </li>
                     </ul>
@@ -46,11 +39,11 @@
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ documentItemSelected.quantity  | number }}</span>
+                            <span class="badge alert-info">{{ selectedDocumentItem.quantity  | number }}</span>
                             Total Quantity
                         </li>
                         <li class="list-group-item">
-                            <span class="badge alert-info">{{ documentItemSelected.unit }}</span>
+                            <span class="badge alert-info">{{ selectedDocumentItem.unit }}</span>
                             Unit
                         </li>
                     </ul>
@@ -58,82 +51,111 @@
             </div>
         </div>
 
-        <div ng-show="documentItemSelected && document.items" class="panel panel-default">
+        <div ng-show="selectedDocumentItem" class="panel panel-default">
             <div class="panel-body">
-                <div ng-show="documentItemSelected.responses">
-                    <table id="distributionPlanTable"
-                           class="table table-bordered table-striped table-hover table-condensed">
-                        <th class="table-select-header-width">End User</th>
-                        <th class="table-select-header-width">District</th>
-                        <th class="">Received</th>
-                        <th class="">Quantity</th>
-                        <th class="">Date Received</th>
-                        <th class="table-select-header-width">Quality</th>
-                        <th class="">Remark</th>
+                <table id="distributionPlanTable"
+                       class="table table-bordered table-striped table-hover table-condensed">
+                    <th class="table-select-header-width">Implementing Partner</th>
+                    <th class="table-contact-select-header-width">End User</th>
+                    <th class="table-select-header-width">District</th>
+                    <th class="table-header-width">Received</th>
+                    <th class="table-header-width">Quantity</th>
+                    <th class="table-date">Date Received</th>
+                    <th class="table-select-header-width">Quality</th>
+                    <th class="table-header-width">Satisfied</th>
+                    <th class="table-header-width">Remark</th>
 
-                        <tr ng-repeat="response in documentItemSelected.responses">
-                            <td>
-                                <input type="text" class="input form-control" ng-model="response.consignee"
-                                       value="{{ response.consignee }}">
-                            </td>
-                            <td>
-                                <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="response.location" value="{{ response.location }}">
-                            </td>
-                            <td id="input-delivery-reporting-received">
-                                <input type="hidden" search-from-list
-                                       list='[{"id": "YES", "name": "Yes"},
-                                        {"id": "NO", "name": "No"}]'
-                                       ng-model="response.received"
-                                       value="{{ response.received }}">
-                            </td>
-                            <td id="input-delivery-reporting-quantity">
-                                <input type="number" min="0" ng-disabled="response.received === 'NO'"
+                    <tr ng-repeat="(responseIndex, response) in responses">
+                        <td class="table-select-max-width">
+                            <input type="hidden" search-from-list list="{{ consignees }}"
+                                   ng-model="response.consignee" ng-disabled="!response.newResponse"
+                                   value="{{ response.consignee }}">
+                        </td>
+                        <td class="table-select-max-width">
+                            <div class="form-inline">
+                                <div class="form-group table-contact-form-group col-md-10">
+                                    <input type="hidden" search-contacts
+                                           value="{{ response.endUser }}"
+                                           required="required"
+                                           ng-model="response.endUser"
+                                           ng-disabled="!response.newResponse"
+                                           ng-attr-id="{{ 'contact-select-' + $index}}">
+                                </div>
+                                <div class="form-group table-contact-form-group col-md-2">
+                                    <button type="button"
+                                            ng-click="addContact($index, response)"
+                                            ng-disabled="!response.newResponse"
+                                            class="btn btn-default ">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="table-select-max-width">
+                            <input type="hidden" search-from-list list="{{ districts }}"
+                                   ng-model="response.location"
+                                   ng-disabled="!response.newResponse"
+                                   value="{{ response.location }}">
+                        </td>
+                        <td id="input-delivery-reporting-received">
+                            <input type="hidden" search-from-list
+                                   list=" {{receivedResponsesList}} "
+                                   ng-model="response.received"
+                                   value="{{ response.received }}">
+                        </td>
+                        <td id="input-delivery-reporting-quantity">
+                            <input type="text" id="input-quantity" class="form-control"
+                                   ng-disabled="response.received === 'No'" ng-model="response.quantity" only-digits>
+                        </td>
+
+                        <td>
+                            <p class="table-date-width input-group" eums-date-picker>
+                                <input type="text"
                                        class="form-control"
-                                       ng-model="response.quantity" value="{{ response.quantity }}">
-                            </td>
+                                       datepicker-popup="dd/MM/yyyy"
+                                       ng-disabled="response.received === 'No'"
+                                       ng-model="response.dateReceived"
+                                       is-open="datepicker[$index]"
+                                       datepicker-options="dateOptions"
+                                       show-button-bar="false"
+                                       value="{{ response.dateReceived | date : 'dd/MM/yyyy' }}"/>
+                              <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open($event, $index)"
+                                        ng-disabled="response.received === 'No'"><i
+                                        class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
+                            </p>
+                        </td>
 
-                            <td class="table-date">
-                                <p class="input-group" eums-date-picker>
-                                    <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
-                                           ng-disabled="response.received === 'NO'" ng-model="response.dateReceived"
-                                           is-open="datepicker[$index]" datepicker-options="dateOptions"
-                                           show-button-bar="false"
-                                           value="{{ response.dateReceived | date : 'dd/MM/yyyy' }}"/>
-                                  <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default" ng-click="open($event, $index)"
-                                            ng-disabled="response.received === 'NO'"><i
-                                            class="glyphicon glyphicon-calendar"></i></button>
-                                  </span>
-                                </p>
-                            </td>
+                        <td>
+                            <input type="hidden" search-from-list ng-disabled="response.received === 'No'"
+                                   list="{{ qualityResponsesList }}"
+                                   ng-model="response.quality"
+                                   value="{{ response.quality }}">
+                        </td>
 
-                            <td>
-                                <input type="hidden" search-from-list ng-disabled="response.received === 'NO'"
-                                       list='[{"id": "Damaged", "name": "Damaged"},
-                                        {"id": "Expired", "name": "Expired"},
-                                        {"id": "Substandard", "name": "Substandard"},
-                                        {"id": "Unclassified", "name": "Other"},
-                                        {"id": "Good", "name": "Good"}]'
-                                       ng-model="response.quality"
-                                       value="{{ response.quality }}">
-                            </td>
+                        <td id="input-delivery-reporting-satisfied">
+                            <input type="hidden" search-from-list ng-disabled="response.received === 'No'"
+                                   list="{{ satisfiedResponsesList }}"
+                                   ng-model="response.satisfied"
+                                   value="{{ response.satisfied }}">
+                        </td>
 
-                            <td>
-                                <input type="text" class="input form-control" style="width: 100%"
-                                       ng-model="response.remark"
-                                       value="{{ response.remark }}">
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
+                        <td>
+                            <div class="text-center">
+                                <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
+                                        ng-click="addRemark($index, response)">
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div class="pad-20">
-                <button ng-show="documentItemSelected" type="button" class="btn btn-primary" ng-click="addResponse()">
+                <button ng-show="selectedDocumentItem" type="button" class="btn btn-primary" ng-click="addResponse()">
                     <i class="glyphicon glyphicon-plus"></i>Add End User
                 </button>
-                <div ng-show="documentItemSelected.responses" style="float: right">
+                <div ng-show="responses" style="float: right">
                     <button type="button" class="btn btn-primary" ng-click="saveResponses()">
                         <i class="glyphicon glyphicon-floppy-save"> </i>Save
                     </button>
@@ -141,4 +163,6 @@
             </div>
         </div>
     </div>
+    <ng-include src="'/static/app/views/contacts/partials/add-contact-modal.html'"></ng-include>
+    <ng-include src="'/static/app/views/distribution-reporting/partials/add-remark-modal.html'"></ng-include>
 </div>

@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('ReleaseOrder', ['eums.config'])
-    .factory('ReleaseOrderService', function ($http, EumsConfig) {
+angular.module('ReleaseOrder', ['eums.config', 'PurchaseOrder'])
+    .factory('ReleaseOrderService', function ($http, EumsConfig, PurchaseOrderService) {
         return {
             getReleaseOrders: function () {
                 var getOrdersPromise = $http.get(EumsConfig.BACKEND_URLS.RELEASE_ORDER);
@@ -11,7 +11,11 @@ angular.module('ReleaseOrder', ['eums.config'])
             },
             getReleaseOrder: function (id) {
                 return $http.get(EumsConfig.BACKEND_URLS.RELEASE_ORDER + id).then(function (response) {
-                    return response.data;
+                    var order = response.data;
+                    return PurchaseOrderService.getPurchaseOrder(order.purchase_order).then(function (purchase_order) {
+                        order.purchase_order = purchase_order;
+                        return order;
+                    });
                 });
             }
 

@@ -11,6 +11,7 @@ from eums.test.factories.question_factory import NumericQuestionFactory, Multipl
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'responses/'
+PLAN_ITEM_ENDPOINT_URL = BACKEND_URL + 'plan-item-responses/'
 END_USER_ENDPOINT_URL = BACKEND_URL + 'end-user-responses/'
 
 
@@ -130,3 +131,60 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.assertEquals(len(response.data), 1)
         self.assertEquals(expected_data_node, response.data[0])
         self.assertDictContainsSubset(expected_data_node, response.data[0])
+
+    def test_should_provide_summary_data_from_plan_item_response_for_end_user(self):
+        self.create_questions_and_items()
+        self.create_nodes_and_line_item()
+        self.create_line_item_runs_and_answers()
+
+        url = "%s%d/" % (PLAN_ITEM_ENDPOINT_URL, self.node_line_item_two.id)
+        response = self.client.get(url, format='json')
+
+        expected_data = {
+                "node": {
+                    "plan_id": self.end_user_node.distribution_plan.id,
+                    "contact_person_id": self.end_user_node.contact_person_id,
+                    "consignee": self.end_user_node.consignee.id,
+                    "id": self.end_user_node.id,
+                    "location": self.end_user_node.location
+                },
+                "line_item": {
+                    "remark": self.node_line_item_two.remark,
+                    "id": self.node_line_item_two.id
+                },
+                "responses": {
+                     self.numeric_question.label: {
+                        "id": self.run_two_numeric_answer_one.id,
+                        "value": self.run_two_numeric_answer_one.value,
+                        "formatted_value": self.run_two_numeric_answer_one.format()
+                    },
+                     self.multiple_choice_question.label: {
+                        "id": self.run_two_multiple_answer_one.id,
+                        "value": self.yes_option.id,
+                        "formatted_value": self.run_two_multiple_answer_one.format()
+                    },
+                    self.multiple_choice_question_two.label: {
+                        "id": self.run_two_multiple_answer_two.id,
+                        "value": self.yes_option.id,
+                        "formatted_value": self.run_two_multiple_answer_two.format()
+                    }
+                }
+        }
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(expected_data, response.data)
+        self.assertDictContainsSubset(expected_data, response.data)
+
+    def test_should_not_provide_summary_data_from_plan_item_response_for_middleman_user(self):
+        self.create_questions_and_items()
+        self.create_nodes_and_line_item()
+        self.create_line_item_runs_and_answers()
+
+        url = "%s%d/" % (PLAN_ITEM_ENDPOINT_URL, self.node_line_item_one.id)
+        response = self.client.get(url, format='json')
+
+        expected_data = {}
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(expected_data, response.data)
+        self.assertEquals(len(response.data), 0)

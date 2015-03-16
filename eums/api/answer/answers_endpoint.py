@@ -2,7 +2,8 @@ import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from eums.models import DistributionPlanNode
+from eums.models import DistributionPlanNode, DistributionPlanLineItem
+from eums.models.answers import MultipleChoiceAnswer
 
 
 class ResponseSerializer(object):
@@ -40,20 +41,41 @@ class ResponseSerializer(object):
                                                  'type': node.tree_position}}
         return formatted_run_responses
 
+    def node_responses(self, node):
+        node_results = []
+        node_responses = node.responses()
+        programme = node.distribution_plan.programme
+        formatted_run_responses = self.format_run_responses(node, programme)
+        for item_run, responses in node_responses.iteritems():
+            formatted_run_responses.update({'item': item_run.node_line_item.item.description,
+                                            'amountSent': item_run.node_line_item.targeted_quantity})
+            for response in responses:
+                formatted_run_responses.update({response.question.label: response.format()})
+            formatted_run_responses_with_product_received = self.add_product_received_field(formatted_run_responses)
+            node_results.append(self.add_product_satisfied_field(formatted_run_responses_with_product_received))
+        return node_results
+
+    def detailed_node_responses(self, node):
+        node_results = {}
+        node_responses = node.responses()
+        for item_run, responses in node_responses.iteritems():
+            for response in responses:
+                response_value = response.value
+                if type(response) is MultipleChoiceAnswer:
+                    response_value = response.value_id
+
+                node_results[response.question.label] =  {
+                    'id': response.id,
+                    'value': response_value,
+                    'formatted_value': response.format()
+                }
+        return node_results
+
     def serialize_responses(self, for_end_user=False):
         all_nodes = self.get_all_nodes(for_end_user)
         result = []
         for node in all_nodes:
-            node_responses = node.responses()
-            programme = node.distribution_plan.programme
-            formatted_run_responses = self.format_run_responses(node, programme)
-            for item_run, responses in node_responses.iteritems():
-                formatted_run_responses.update({'item': item_run.node_line_item.item.description,
-                                                'amountSent': item_run.node_line_item.targeted_quantity})
-                for response in responses:
-                    formatted_run_responses.update({response.question.label: response.format()})
-                formatted_run_responses_with_product_received = self.add_product_received_field(formatted_run_responses)
-                result.append(self.add_product_satisfied_field(formatted_run_responses_with_product_received))
+            result = result + self.node_responses(node)
         return result
 
 
@@ -73,3 +95,31 @@ class AllEndUserResponses(APIView):
     def get(self, request, *args, **kwargs):
         result = ResponseSerializer().serialize_responses(for_end_user=True)
         return Response(result, status=status.HTTP_200_OK)
+
+
+class PlanItemResponses(APIView):
+    def get(self, request, plan_item_id, *args, **kwargs):
+        planItem = DistributionPlanLineItem.objects.filter(id=plan_item_id).first()
+        result = {}
+        if planItem and planItem.distribution_plan_node.tree_position == 'END_USER':
+            if planItem.distribution_plan_node.responses():
+                result = {
+                    'node': self._get_node(planItem.distribution_plan_node),
+                    'line_item': self._get_line_item(planItem),
+                    'responses': ResponseSerializer().detailed_node_responses(planItem.distribution_plan_node)
+                }
+
+        return Response(result, status=status.HTTP_200_OK)
+
+    def _get_node(self, node):
+        return { 'id': node.id,
+                'location': node.location,
+                'consignee': node.consignee_id,
+                'contact_person_id': node.contact_person_id,
+                'plan_id': node.distribution_plan_id
+               }
+
+    def _get_line_item(self, lineItem):
+        return { 'id': lineItem.id,
+                 'remark': lineItem.remark
+            }

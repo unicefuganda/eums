@@ -1,6 +1,6 @@
 describe('Distribution Plan Line Item Service', function () {
 
-    var lineItemService, mockBackend, lineItemEndpointUrl;
+    var lineItemService, mockBackend, lineItemEndpointUrl, lineItemResponseEndpointUrl;
 
     var lineItemId, itemId = 1;
     var stubLineItem = {
@@ -24,6 +24,42 @@ describe('Distribution Plan Line Item Service', function () {
         flow_triggered : false
     };
 
+    var expectedLineItemResponse = {
+        'node': {
+            'plan_id': 53,
+            'contact_person_id': '54578a695d1b1dbd44790208',
+            'consignee': 17,
+            'id': 106,
+            'location': 'Adjumani'
+        },
+        'line_item': {
+            'remark': 'This stuff',
+            'id': 100
+        },
+        'responses': {
+            'qualityOfProduct': {
+                'id': 178,
+                'value': 3,
+                'formatted_value': 'Good'
+            },
+            'amountReceived': {
+                'id': 52,
+                'value': 25,
+                'formatted_value': '25'
+            },
+            'dateOfReceipt': {
+                'id': 43,
+                'value': '04/10/2014',
+                'formatted_value': '04/10/2014'
+            },
+            'productReceived': {
+                'id': 103,
+                'value': 1,
+                'formatted_value': 'Yes'
+            }
+        }
+    };
+
 
     beforeEach(function () {
         module('DistributionPlanLineItem');
@@ -31,6 +67,7 @@ describe('Distribution Plan Line Item Service', function () {
         inject(function (DistributionPlanLineItemService, $httpBackend, EumsConfig) {
             mockBackend = $httpBackend;
             lineItemEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_LINE_ITEM;
+            lineItemResponseEndpointUrl = EumsConfig.BACKEND_URLS.PLAN_ITEM_RESPONSES;
             lineItemService = DistributionPlanLineItemService;
         });
 
@@ -71,6 +108,15 @@ describe('Distribution Plan Line Item Service', function () {
         mockBackend.whenPATCH(lineItemEndpointUrl + updatedLineItem.id + '/').respond(expectedLineItem);
         lineItemService.updateLineItemField(updatedLineItem, updatedLineItemField).then(function (returnedLineItem) {
             expect(returnedLineItem).toEqual(expectedLineItem);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should get line item response', function (done) {
+        mockBackend.whenGET(lineItemResponseEndpointUrl + lineItemId + '/').respond(expectedLineItemResponse);
+        lineItemService.getLineItemResponse(lineItemId).then(function (returnedLineItemResponse) {
+            expect(returnedLineItemResponse).toEqual(expectedLineItemResponse);
             done();
         });
         mockBackend.flush();
