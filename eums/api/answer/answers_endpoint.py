@@ -11,12 +11,6 @@ class ResponseSerializer(object):
         self.consignee_id = consignee_id
 
     @staticmethod
-    def add_product_received_field(responses):
-        if 'productReceived' not in responses:
-            responses['productReceived'] = 'No'
-        return responses
-
-    @staticmethod
     def add_product_satisfied_field(responses):
         if 'satisfiedWithProduct' not in responses:
             if responses['productReceived'].lower() == 'yes':
@@ -51,8 +45,7 @@ class ResponseSerializer(object):
                                             'amountSent': item_run.node_line_item.targeted_quantity})
             for response in responses:
                 formatted_run_responses.update({response.question.label: response.format()})
-            formatted_run_responses_with_product_received = self.add_product_received_field(formatted_run_responses)
-            node_results.append(self.add_product_satisfied_field(formatted_run_responses_with_product_received))
+            node_results.append(self.add_product_satisfied_field(formatted_run_responses))
         return node_results
 
     def detailed_node_responses(self, node):
