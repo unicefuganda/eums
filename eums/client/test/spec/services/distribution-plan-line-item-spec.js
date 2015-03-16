@@ -32,10 +32,6 @@ describe('Distribution Plan Line Item Service', function () {
             'id': 106,
             'location': 'Adjumani'
         },
-        'line_item': {
-            'remark': 'This stuff',
-            'id': 100
-        },
         'responses': {
             'qualityOfProduct': {
                 'id': 178,

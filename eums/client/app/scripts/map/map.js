@@ -137,10 +137,20 @@
             return map;
         }
 
+        function showLoadingModal(show){
+            if (show && !angular.element('#loading').hasClass('in')){
+                angular.element('#loading').modal();
+            }
+            else if (!show){
+                 angular.element('#loading').modal('hide');
+                 angular.element('#loading.modal').removeClass('in');
+            }
+        }
+
         var markersGroup = [];
 
         function addHeatMapLayer(map, scope) {
-            angular.element('#loading').modal();
+            showLoadingModal(true);
             var allMarkers = [];
             DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                  filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
@@ -162,7 +172,7 @@
                     markersGroup = L.layerGroup(allMarkers);
                     markersGroup.addTo(map);
                     scope.data.totalStats = DistributionPlanService.aggregateStats(scope.allResponsesMap);
-                    angular.element('#loading').modal('hide');
+                    showLoadingModal(false);
                  });
             });
         }

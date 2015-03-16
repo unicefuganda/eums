@@ -148,10 +148,6 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                     "id": self.end_user_node.id,
                     "location": self.end_user_node.location
                 },
-                "line_item": {
-                    "remark": self.node_line_item_two.remark,
-                    "id": self.node_line_item_two.id
-                },
                 "responses": {
                      self.numeric_question.label: {
                         "id": self.run_two_numeric_answer_one.id,

@@ -236,7 +236,8 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     quality_answer: responseItem.responses.qualityOfProduct,
                     satisfied: responseItem.responses.satisfiedWithProduct ? responseItem.responses.satisfiedWithProduct.value : '',
                     satisfied_answer: responseItem.responses.satisfiedWithProduct,
-                    remark: responseItem.line_item.remark
+                    remark: responseItem.responses.feedbackAboutDissatisfaction ? responseItem.responses.feedbackAboutDissatisfaction.formatted_value : '',
+                    remark_answer: responseItem.responses.feedbackAboutDissatisfaction
                 };
 
                $scope.responses.push(responseItemDetails);
@@ -290,15 +291,24 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }, true);
 
+        function saveResponse(response){
+
+        }
 
         function saveResponseItems(){
             var saveResponseItemPromises = [];
-//            $scope.distributionPlanLineItems.forEach(function (item) {
-//                saveNode(item).then(function (createdNode) {
-//                    item.nodeId = createdNode.id;
-//                    savePlanItemPromises.push(saveLineItem(item, createdNode.id));
-//                });
-//            });
+            $scope.responses.forEach(function (response) {
+                if(response.newResponse){
+                    console.log('complete');
+//                  saveNode(item).then(function (createdNode) {
+//                        item.nodeId = createdNode.id;
+//                      savePlanItemPromises.push(saveLineItem(item, createdNode.id));
+//                  });
+                }
+                else{
+                    saveResponseItemPromises.push(saveResponse(response));
+                }
+            });
             var squashedSaveResponsesPromises = $q.all(saveResponseItemPromises);
             $scope.saveReponsesPromise = squashedSaveResponsesPromises;
             return squashedSaveResponsesPromises;

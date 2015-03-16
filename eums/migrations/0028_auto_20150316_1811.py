@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from eums.models.answers import MultipleChoiceAnswer
 from eums.models import NodeLineItemRun, MultipleChoiceQuestion
 
 def create_received_no_answers(apps, schema_editor):

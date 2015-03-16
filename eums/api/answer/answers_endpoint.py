@@ -99,7 +99,6 @@ class PlanItemResponses(APIView):
             if planItem.distribution_plan_node.responses():
                 result = {
                     'node': self._get_node(planItem.distribution_plan_node),
-                    'line_item': self._get_line_item(planItem),
                     'responses': ResponseSerializer().detailed_node_responses(planItem.distribution_plan_node)
                 }
 
@@ -112,8 +111,3 @@ class PlanItemResponses(APIView):
                 'contact_person_id': node.contact_person_id,
                 'plan_id': node.distribution_plan_id
                }
-
-    def _get_line_item(self, lineItem):
-        return { 'id': lineItem.id,
-                 'remark': lineItem.remark
-            }

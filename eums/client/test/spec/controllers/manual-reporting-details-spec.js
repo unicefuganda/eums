@@ -324,10 +324,6 @@ describe('ManualReportingDetailsController', function () {
                         id: 1,
                         location: 'Kampala'
                     },
-                    line_item: {
-                        remark: 'Test remark',
-                        id: 1
-                    },
                     responses: {
                         amountReceived: {
                             id: 1,
@@ -373,7 +369,8 @@ describe('ManualReportingDetailsController', function () {
                     quality_answer: undefined,
                     satisfied: responseItem.responses.satisfiedWithProduct.value,
                     satisfied_answer: responseItem.responses.satisfiedWithProduct,
-                    remark: responseItem.line_item.remark
+                    remark: '',
+                    remark_answer: undefined
               }];
 
               deferredLineItemPromise.resolve(responseItem);
