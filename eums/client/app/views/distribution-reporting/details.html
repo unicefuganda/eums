@@ -155,7 +155,7 @@
                 <button ng-show="selectedDocumentItem" type="button" class="btn btn-primary" ng-click="addResponse()">
                     <i class="glyphicon glyphicon-plus"></i>Add End User
                 </button>
-                <div ng-show="responses" style="float: right">
+                <div ng-show="responses.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
                             ng-click="saveResponses()"
                             ng-disabled="invalidResponses">
