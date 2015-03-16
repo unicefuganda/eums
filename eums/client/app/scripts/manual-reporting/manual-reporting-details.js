@@ -46,6 +46,9 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             $scope.receivedResponsesList = [];
             OptionService.receivedOptions().then(function (response) {
                 response.forEach(function (response){
+                    if(response.text == 'No'){
+                        $scope.receivedNoId = response.id;
+                    }
                     $scope.receivedResponsesList.push({id: response.id, name: response.text});
                 });
             });

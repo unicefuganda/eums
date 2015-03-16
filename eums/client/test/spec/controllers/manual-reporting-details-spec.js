@@ -202,13 +202,14 @@ describe('ManualReportingDetailsController', function () {
             });
 
             it('should load received responses option list on the scope', function () {
-                var stubOptions = [{id: 1, text: 'Test Received Option'}];
-                var expectedReceivedOptions = [{id: 1, name: 'Test Received Option'}];
+                var stubOptions = [{id: 1, text: 'Test Received Option'}, {id: 35, text: 'No'}];
+                var expectedReceivedOptions = [{id: 1, name: 'Test Received Option'}, {id: 35, name: 'No'}];
                 deferredOptionPromise.resolve(stubOptions);
                 scope.initialize();
                 scope.$apply();
 
                 expect(scope.receivedResponsesList).toEqual(expectedReceivedOptions);
+                expect(scope.receivedNoId).toEqual(35);
             });
 
             it('should load quality responses option list on the scope', function () {

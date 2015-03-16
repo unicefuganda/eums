@@ -105,7 +105,7 @@
                         </td>
                         <td id="input-delivery-reporting-quantity">
                             <input type="text" id="input-quantity" class="form-control"
-                                   ng-disabled="response.received === 'No'" ng-model="response.quantity" only-digits>
+                                   ng-disabled="response.received === receivedNoId" ng-model="response.quantity" only-digits>
                         </td>
 
                         <td>
@@ -113,7 +113,7 @@
                                 <input type="text"
                                        class="form-control"
                                        datepicker-popup="dd/MM/yyyy"
-                                       ng-disabled="response.received === 'No'"
+                                       ng-disabled="response.received === receivedNoId"
                                        ng-model="response.dateReceived"
                                        is-open="datepicker[$index]"
                                        datepicker-options="dateOptions"
@@ -121,21 +121,21 @@
                                        value="{{ response.dateReceived | date : 'dd/MM/yyyy' }}"/>
                               <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="open($event, $index)"
-                                        ng-disabled="response.received === 'No'"><i
+                                        ng-disabled="response.received === receivedNoId"><i
                                         class="glyphicon glyphicon-calendar"></i></button>
                               </span>
                             </p>
                         </td>
 
                         <td>
-                            <input type="hidden" search-from-list ng-disabled="response.received === 'No'"
+                            <input type="hidden" search-from-list ng-disabled="response.received === receivedNoId"
                                    list="{{ qualityResponsesList }}"
                                    ng-model="response.quality"
                                    value="{{ response.quality }}">
                         </td>
 
                         <td id="input-delivery-reporting-satisfied">
-                            <input type="hidden" search-from-list ng-disabled="response.received === 'No'"
+                            <input type="hidden" search-from-list ng-disabled="response.received === receivedNoId"
                                    list="{{ satisfiedResponsesList }}"
                                    ng-model="response.satisfied"
                                    value="{{ response.satisfied }}">
