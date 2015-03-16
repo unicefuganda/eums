@@ -11,6 +11,7 @@ describe('ManualReportingDetailsController', function () {
      var orderId = 1,
          salesOrderId = 1,
          programmeName = 'Test Programme';
+     var responseItem;
 
 
     beforeEach(function () {
@@ -269,10 +270,8 @@ describe('ManualReportingDetailsController', function () {
                     sales_order_item: stubSalesOrderItem,
                     distributionplanlineitems: stubSalesOrderItem.distributionplanlineitem_set
               };
-          });
 
-          it('should set responses on the scope', function () {
-              var responseItem={
+              responseItem = {
                     node: {
                         plan_id: 1,
                         contact_person_id: 1,
@@ -307,6 +306,9 @@ describe('ManualReportingDetailsController', function () {
                         }
                     }
               };
+          });
+
+          it('should set responses on the scope', function () {
               var expectedResponseDetails = [{
                     newResponse: false,
                     consignee: responseItem.node.consignee,
@@ -332,7 +334,81 @@ describe('ManualReportingDetailsController', function () {
               expect(scope.distributionPlanId).toEqual(responseItem.node.plan_id);
               expect(scope.responses).toEqual(expectedResponseDetails);
           });
-     });
+
+          it('should set a distribution plan on the scope if responses exists', function () {
+              deferredLineItemPromise.resolve(responseItem);
+              scope.selectDocumentItem();
+              scope.$apply();
+
+              expect(scope.distributionPlanId).toEqual(responseItem.node.plan_id);
+          });
+    });
+
+    describe('when responses list on scope changes, ', function () {
+        describe('disabling save with invalidResponses field', function () {
+            var invalidResponse;
+            var validResponse = {
+                consignee: 4,
+                endUser: '5444d433ec8e8257ae48dc73',
+                location: 'Adjumani',
+                received: 'Yes',
+                quantity: 0,
+                dateReceived: '',
+                quality: '',
+                satisfied: '',
+                remark: ''
+            };
+
+            beforeEach(function () {
+                scope.responses = [];
+                scope.$apply();
+            });
+
+            it('sets the invalidLineItems field to false when there are no invalid responses', function () {
+                scope.invalidResponses = false;
+                scope.responses.push(validResponse);
+                scope.$apply();
+
+                expect(scope.invalidResponses).toBeFalsy();
+            });
+
+            it('sets the invalidLineItems field to true when there are responses with no consignee', function () {
+                invalidResponse = angular.copy(validResponse);
+                delete invalidResponse.consignee;
+                scope.responses.push(invalidResponse);
+                scope.$apply();
+
+                expect(scope.invalidResponses).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are responses with no end user', function () {
+                invalidResponse = angular.copy(validResponse);
+                invalidResponse.endUser = '';
+                scope.responses.push(invalidResponse);
+                scope.$apply();
+
+                expect(scope.invalidResponses).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are responses with no received value', function () {
+                invalidResponse = angular.copy(validResponse);
+                invalidResponse.received = '';
+                scope.responses.push(invalidResponse);
+                scope.$apply();
+
+                expect(scope.invalidResponses).toBeTruthy();
+            });
+
+            it('sets the invalidLineItems field to true when there are responses with invalid quantity fields', function () {
+                invalidResponse = angular.copy(validResponse);
+                invalidResponse.quantity = -1;
+                scope.responses.push(invalidResponse);
+                scope.$apply();
+
+                expect(scope.invalidResponses).toBeTruthy();
+            });
+        });
+    });
 
 //    describe('when save responses', function () {
 //        it('should set the scope variable to true', function () {
@@ -379,6 +455,56 @@ describe('ManualReportingDetailsController', function () {
             scope.addResponse();
             scope.$apply();
             expect(scope.datepicker).toEqual({0: false});
+        });
+    });
+
+    describe('adding a contact', function () {
+        describe('with invalid fields', function () {
+           it('should be invalid when no number is supplied', function () {
+               scope.contact = {
+                   firstName: 'Dude',
+                   lastName: 'Awesome',
+                   phone: ''
+               };
+               scope.$apply();
+
+               expect(scope.invalidContact(scope.contact)).toBeTruthy();
+           });
+
+           it('should be invalid when no first name is supplied', function () {
+               scope.contact = {
+                   firstName: '',
+                   lastName: 'Awesome',
+                   phone: '+256782555444'
+               };
+               scope.$apply();
+
+               expect(scope.invalidContact(scope.contact)).toBeTruthy();
+           });
+
+           it('should be invalid when no last name is supplied', function () {
+               scope.contact = {
+                   firstName: 'Dudette',
+                   lastName: '',
+                   phone: '+256782555444'
+               };
+               scope.$apply();
+
+               expect(scope.invalidContact(scope.contact)).toBeTruthy();
+           });
+        });
+
+        describe('with valid fields', function () {
+            it('should be valid when full name and phone number are supplied', function () {
+                scope.contact = {
+                    firstName: 'Dudette',
+                    lastName: 'Awesome',
+                    phone: '+256782555444'
+                };
+                scope.$apply();
+
+                expect(scope.invalidContact(scope.contact)).toBeFalsy();
+            });
         });
     });
 });

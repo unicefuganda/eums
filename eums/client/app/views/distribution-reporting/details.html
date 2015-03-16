@@ -156,7 +156,9 @@
                     <i class="glyphicon glyphicon-plus"></i>Add End User
                 </button>
                 <div ng-show="responses" style="float: right">
-                    <button type="button" class="btn btn-primary" ng-click="saveResponses()">
+                    <button type="button" class="btn btn-primary"
+                            ng-click="saveResponses()"
+                            ng-disabled="invalidResponses">
                         <i class="glyphicon glyphicon-floppy-save"> </i>Save
                     </button>
                 </div>

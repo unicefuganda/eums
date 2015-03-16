@@ -277,7 +277,7 @@ describe('NewDistributionPlanController', function () {
                 expect(scope.invalidLineItems).toBeFalsy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with invalid target Quanitities', function () {
+            it('sets the invalidLineItems field to true when there are line items with invalid target Quantities', function () {
                 invalidLineItem = angular.copy(validLineItem);
                 invalidLineItem.targetQuantity = -1;
                 scope.distributionPlanLineItems.push(invalidLineItem);

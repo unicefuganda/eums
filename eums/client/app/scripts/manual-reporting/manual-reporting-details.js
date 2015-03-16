@@ -246,6 +246,28 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             setDatePickers();
         };
 
+        function invalidResponseFields(response) {
+            return !response.consignee || !response.endUser || !response.location  || !response.received || response.quantity < 0;
+        }
+
+        function anyInvalidResponses(responseItems) {
+            var responsesWithInvalidFields = responseItems.filter(function (response) {
+                return invalidResponseFields(response);
+            });
+            return responsesWithInvalidFields.length > 0;
+        }
+
+        $scope.$watch('responses', function (responseItems) {
+            if(isNaN($scope.invalidResponses) && responseItems.length){
+                $scope.invalidResponses = true;
+                return;
+            }
+
+            if (responseItems.length) {
+                $scope.invalidResponses = anyInvalidResponses(responseItems);
+            }
+        }, true);
+
         $scope.saveResponses = function () {
         };
 
