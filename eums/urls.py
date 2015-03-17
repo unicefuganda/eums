@@ -24,6 +24,7 @@ from eums.api.purchase_order.purchase_order_endpoint import purchaseOrderRouter
 from eums.api.purchase_order_item.purchase_order_item_endpoint import purchaseOrderItemRouter
 from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
 from eums.api.stock_report.stock_report_endpoint import StockReport
+from eums.api.question.question_endpoint import questionRouter
 from eums.api.user.user_endpoint import userRouter
 from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
@@ -87,6 +88,7 @@ urlpatterns = patterns(
     url(r'^api/', include(purchaseOrderItemRouter.urls)),
     url(r'^api/', include(releaseOrderRouter.urls)),
     url(r'^api/', include(releaseOrderItemRouter.urls)),
+    url(r'^api/', include(questionRouter.urls)),
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),

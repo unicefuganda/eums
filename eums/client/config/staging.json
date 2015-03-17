@@ -19,6 +19,7 @@
         "CONSIGNEE_PURCHASE_ORDER_ITEMS": "/api/consignee-purchase-order-items/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
+        "QUESTION": "/api/question/",
         "RESPONSES": "/api/responses/",
         "END_USER_RESPONSES": "/api/end-user-responses/",
         "PLAN_ITEM_RESPONSES": "/api/plan-item-responses/",
