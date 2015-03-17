@@ -46,7 +46,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             $scope.receivedResponsesList = [];
             OptionService.receivedOptions().then(function (response) {
                 response.forEach(function (response){
-                    if(response.text == 'No'){
+                    if(response.text === 'No'){
                         $scope.receivedNoId = response.id;
                     }
                     $scope.receivedResponsesList.push({id: response.id, name: response.text});
@@ -297,12 +297,18 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }, true);
 
+
+
+        function saveNewResponse(response){
+            return response;
+        }
+
         function saveResponseReceived(lineItemRunId, response){
             var received = response.received;
             var receivedDetails = response.received_answer;
 
             if(received){
-                if(typeof(receivedDetails) == "undefined"){
+                if(typeof(receivedDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('productReceived').then(function (question){
                         var answerDetails = {question: question.id,
                                              value: received,
@@ -324,7 +330,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             var quantityDetails = response.quantity_answer;
 
             if(quantity){
-                if(typeof(quantityDetails) == "undefined"){
+                if(typeof(quantityDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('amountReceived').then(function (question){
                         var answerDetails = {question: question.id,
                                              value: quantity,
@@ -346,7 +352,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             var dateReceivedDetails = response.dateReceived_answer;
 
             if(dateReceived){
-                if(typeof(dateReceivedDetails) == "undefined"){
+                if(typeof(dateReceivedDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('dateOfReceipt').then(function (question){
                         var answerDetails = {question: question.id,
                                              value: dateReceived,
@@ -368,7 +374,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             var qualityDetails = response.quality_answer;
 
             if(quality){
-                if(typeof(qualityDetails) == "undefined"){
+                if(typeof(qualityDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('qualityOfProduct').then(function (question){
                         var answerDetails = {question: question.id,
                                              value: quality,
@@ -391,7 +397,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             var satisfiedDetails = response.satisfied_answer;
 
             if(satisfied){
-                if(typeof(satisfiedDetails) == "undefined"){
+                if(typeof(satisfiedDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('satisfiedWithProduct').then(function (question){
                         var answerDetails = {question: question.id,
                                              value: satisfied,
@@ -414,7 +420,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             var remarkDetails = response.remark_answer;
 
             if(remark){
-                if(typeof(remarkDetails) == "undefined"){
+                if(typeof(remarkDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('feedbackAboutDissatisfaction').then(function (question){
                         var answerDetails = {question: question.id,
                                              value: remark,
@@ -440,7 +446,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             saveResponsePartsPromise.push(saveResponseSatisfied(response.lineItemRunId, response));
             saveResponsePartsPromise.push(saveResponseRemark(response.lineItemRunId, response));
             var squashedResponsesPartsPromises = $q.all(saveResponsePartsPromise);
-            return squashedResponsesPartsPromises
+            return squashedResponsesPartsPromises;
         }
 
         function saveResponseItems(){
@@ -450,11 +456,10 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     saveResponseItemPromises.push(saveResponse(response));
                 }
                 else{
-                    console.log('complete');
-//                  saveNode(item).then(function (createdNode) {
-//                        item.nodeId = createdNode.id;
-//                      savePlanItemPromises.push(saveLineItem(item, createdNode.id));
-//                  });
+                    saveNewResponse(response).then(function (newResponse){
+                          return newResponse;
+//                        saveResponseItemPromises.push(saveResponse(newResponse));
+                    });
                 }
             });
             var squashedSaveResponsesPromises = $q.all(saveResponseItemPromises);
@@ -463,7 +468,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }
 
         var saveWithToast = function () {
-            saveResponseItems().then(function (response) {
+            saveResponseItems().then(function () {
                 createToast('Report Saved!', 'success');
             });
         };
@@ -471,7 +476,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         function createDistributionPlan(){
             return DistributionPlanService.createPlan({programme: $scope.salesOrder.programme.id})
                 .then(function (createdPlan) {
-                   return createdPlan
+                   return createdPlan;
                 });
         }
 
@@ -487,9 +492,9 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         };
 
-        var formatDateForSave = function (date) {
-            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-        };
+//        var formatDateForSave = function (date) {
+//            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+//        };
     })
     .directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {

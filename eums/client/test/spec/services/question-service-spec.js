@@ -11,7 +11,7 @@ describe('Question Service', function () {
     beforeEach(function () {
         module('Question');
 
-        inject(function (QuestionService, $httpBackend, EumsConfig, $q) {
+        inject(function (QuestionService, $httpBackend, EumsConfig) {
             mockBackend = $httpBackend;
             questionEndpointUrl = EumsConfig.BACKEND_URLS.QUESTION;
             questionService = QuestionService;
@@ -19,7 +19,7 @@ describe('Question Service', function () {
     });
 
     it('should get question by label', function (done) {
-        mockBackend.whenGET(questionEndpointUrl + '?search=productReceived').respond(stubQuestion);
+        mockBackend.whenGET(questionEndpointUrl + '?search=productReceived').respond([stubQuestion]);
         var label = 'productReceived';
 
         questionService.getQuestionByLabel(label).then(function (questions) {

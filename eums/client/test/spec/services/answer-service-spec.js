@@ -28,7 +28,7 @@ describe('Answer Service', function() {
             question: questionId,
             value: 'Test Item',
             line_item_run: lineItemRunId
-        }
+        };
 
         it('should know how to create a text answer', function (done) {
             mockBackend.whenPOST(textAnswerEndpointUrl).respond(201, expectedAnswer);
@@ -40,7 +40,7 @@ describe('Answer Service', function() {
         });
 
         it('should know how to update a text answer', function (done) {
-            var updatedTextAnswerField = {value: 'Edited'}
+            var updatedTextAnswerField = {value: 'Edited'};
             mockBackend.whenPATCH(textAnswerEndpointUrl + answerId + '/').respond(expectedAnswer);
             answerService.updateTextAnswer(answerId, updatedTextAnswerField).then(function (response) {
                 expect(response).toEqual(expectedAnswer);
@@ -62,7 +62,7 @@ describe('Answer Service', function() {
             question: questionId,
             value: 1,
             line_item_run: lineItemRunId
-        }
+        };
 
         it('should know how to create a numeric answer', function (done) {
             mockBackend.whenPOST(numericAnswerEndpointUrl).respond(201, expectedAnswer);
@@ -74,7 +74,7 @@ describe('Answer Service', function() {
         });
 
         it('should know how to update text answer', function (done) {
-            var updatedNumericAnswerField = {value: 3}
+            var updatedNumericAnswerField = {value: 3};
             mockBackend.whenPATCH(numericAnswerEndpointUrl + answerId + '/').respond(expectedAnswer);
             answerService.updateNumericAnswer(answerId, updatedNumericAnswerField).then(function (response) {
                 expect(response).toEqual(expectedAnswer);
@@ -96,7 +96,7 @@ describe('Answer Service', function() {
             question: questionId,
             value: 1,
             line_item_run: lineItemRunId
-        }
+        };
 
         it('should know how to create a multiple choice answer', function (done) {
             mockBackend.whenPOST(multipleChoiceAnswerEndpointUrl).respond(201, expectedAnswer);
@@ -108,7 +108,7 @@ describe('Answer Service', function() {
         });
 
         it('should know how to update multiple choice answer', function (done) {
-            var updatedMultipleChoiceAnswerField = {value: 3}
+            var updatedMultipleChoiceAnswerField = {value: 3};
             mockBackend.whenPATCH(multipleChoiceAnswerEndpointUrl + answerId + '/').respond(expectedAnswer);
             answerService.updateMultipleChoiceAnswer(answerId, updatedMultipleChoiceAnswerField).then(function (response) {
                 expect(response).toEqual(expectedAnswer);

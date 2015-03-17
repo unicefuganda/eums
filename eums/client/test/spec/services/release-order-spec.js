@@ -34,7 +34,7 @@ describe('Release Order Service', function () {
             'order_number': 10,
             'date': '2014-10-05',
             'salesorderitem_set': ['1']
-        }
+        };
 
         fullPurchaseOrder = {
             id: 1,
