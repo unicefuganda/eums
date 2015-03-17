@@ -405,14 +405,25 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }
 
         function saveResponseDateReceived(lineItemRunId, response){
+            var formatReceivedDate = function (date) {
+                return date.getDate() + '/' + (date.getMonth() + 1)  + '/' + date.getFullYear();
+            };
+
             var dateReceived = response.dateReceived;
             var dateReceivedDetails = response.dateReceived_answer;
 
             if(dateReceived){
+                var plannedDate = new Date(response.dateReceived);
+
+                if (plannedDate.toString() === 'Invalid Date') {
+                    var planDate = response.dateReceived.split('/');
+                    plannedDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
+                }
+
                 if(typeof(dateReceivedDetails) === 'undefined'){
                     return QuestionService.getQuestionByLabel('dateOfReceipt').then(function (question){
                         var answerDetails = {question: question.id,
-                                             value: dateReceived,
+                                             value: formatReceivedDate(plannedDate),
                                              line_item_run: lineItemRunId};
                         return AnswerService.createTextAnswer(answerDetails).then(function (response_answer){
                               response.dateReceived_answer = response_answer;
@@ -420,7 +431,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     });
                 }
                 else{
-                    var updatedValue = {value: dateReceived};
+                    var updatedValue = {value: formatReceivedDate(plannedDate)};
                     return AnswerService.updateTextAnswer(dateReceivedDetails.id, updatedValue);
                 }
             }
