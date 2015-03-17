@@ -24,6 +24,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
                 ReleaseOrderService.getReleaseOrders().then(function (responses) {
                     responses.forEach(function (response) {
                         response.date = response.delivery_date;
+                        response.order_number = response.waybill;
                     });
                     waybills = responses;
                 })
