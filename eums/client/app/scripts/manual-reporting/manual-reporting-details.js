@@ -1,7 +1,12 @@
 'use strict';
 
-angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder', 'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'DistributionPlanLineItem', 'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question'])
-    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, AnswerService, QuestionService) {
+angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
+        'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'DistributionPlanLineItem',
+        'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'NodeLineItemRun'])
+    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService,
+                 ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
+                 ReleaseOrderItemService, ngToast, ContactService, DistributionPlanLineItemService,
+                 DistributionPlanService, DistributionPlanNodeService, AnswerService, QuestionService, NodeLineItemRunService) {
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.responseIndex = '';
@@ -298,9 +303,61 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }, true);
 
 
+        function saveLineItemRun(response, lineItemId){
+            var nodeLineItemRun = {
+                scheduled_message_task_id: 'MANUAL',
+                node_line_item: lineItemId,
+                status: 'completed',
+                phone: 'MANUAL'
+            };
+
+            return NodeLineItemRunService.createNodeLineItemRun(nodeLineItemRun);
+        }
+
+
+        function saveLineItem(response, nodeId){
+            var plannedDate = response.dateReceived ? new Date(response.dateReceived) : new Date();
+
+            if (plannedDate.toString() === 'Invalid Date') {
+                var planDate = response.dateReceived.split('/');
+                plannedDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
+            }
+
+            var lineItem = {
+                item: $scope.selectedDocumentItem.sales_order_item.id,
+                targeted_quantity: response.quantity,
+                distribution_plan_node: nodeId,
+                planned_distribution_date: formatDateForSave(plannedDate),
+                remark: '',
+                track: false
+            };
+
+            return DistributionPlanLineItemService.createLineItem(lineItem);
+        }
+
+        function saveNode(response){
+            var node = {
+                consignee: response.consignee,
+                location: response.location,
+                contact_person_id: response.endUser,
+                distribution_plan: $scope.distributionPlanId,
+                tree_position: 'END_USER',
+                mode_of_delivery: 'WAREHOUSE',
+                parent: null
+            };
+
+            return DistributionPlanNodeService.createNode(node);
+        }
 
         function saveNewResponse(response){
-            return response;
+            return saveNode(response).then(function (createdNode) {
+                return saveLineItem(response, createdNode.id).then(function (createdLineItem){
+                    return saveLineItemRun(response, createdLineItem.id).then(function (createdLineItemRun){
+                        response.lineItemRunId = createdLineItemRun.id;
+                        return response;
+                    });
+                });
+            });
         }
 
         function saveResponseReceived(lineItemRunId, response){
@@ -457,8 +514,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 }
                 else{
                     saveNewResponse(response).then(function (newResponse){
-                          return newResponse;
-//                        saveResponseItemPromises.push(saveResponse(newResponse));
+                        saveResponseItemPromises.push(saveResponse(newResponse));
                     });
                 }
             });
@@ -492,9 +548,9 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         };
 
-//        var formatDateForSave = function (date) {
-//            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-//        };
+        var formatDateForSave = function (date) {
+            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+        };
     })
     .directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {

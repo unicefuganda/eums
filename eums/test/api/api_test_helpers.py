@@ -23,6 +23,7 @@ RELEASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'release-order/'
 RELEASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'release-order-item/'
 PROGRAMME_ENDPOINT_URL = BACKEND_URL + 'programme/'
 OPTION_ENDPOINT_URL = BACKEND_URL + 'option/'
+NODE_LINE_ITEM_RUN_ENDPOINT_URL = BACKEND_URL + 'node-line-item-run/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -203,4 +204,11 @@ def create_option(test_case,option_details=None):
         option_details = {'text': "Option text", 'question': multiple_choice_question.id}
 
     response = test_case.client.post(OPTION_ENDPOINT_URL, option_details, format='json')
+    return response.data
+
+def create_node_line_item_run(test_case, node_line_item_run_details=None):
+    response = test_case.client.post(NODE_LINE_ITEM_RUN_ENDPOINT_URL, node_line_item_run_details, format='json')
+
+    test_case.assertEqual(response.status_code, 201)
+
     return response.data

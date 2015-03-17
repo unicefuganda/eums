@@ -68,7 +68,7 @@
                     <tr ng-repeat="(responseIndex, response) in responses">
                         <td class="table-select-max-width">
                             <input type="hidden" search-from-list list="{{ consignees }}"
-                                   ng-model="response.consignee" ng-disabled="!response.newResponse"
+                                   ng-model="response.consignee" ng-disabled="response.lineItemRunId"
                                    value="{{ response.consignee }}">
                         </td>
                         <td class="table-select-max-width">
@@ -78,13 +78,13 @@
                                            value="{{ response.endUser }}"
                                            required="required"
                                            ng-model="response.endUser"
-                                           ng-disabled="!response.newResponse"
+                                           ng-disabled="response.lineItemRunId"
                                            ng-attr-id="{{ 'contact-select-' + $index}}">
                                 </div>
                                 <div class="form-group table-contact-form-group col-md-2">
                                     <button type="button"
                                             ng-click="addContact($index, response)"
-                                            ng-disabled="!response.newResponse"
+                                            ng-disabled="response.lineItemRunId"
                                             class="btn btn-default ">
                                         <i class="glyphicon glyphicon-plus"></i>
                                     </button>
@@ -94,7 +94,7 @@
                         <td class="table-select-max-width">
                             <input type="hidden" search-from-list list="{{ districts }}"
                                    ng-model="response.location"
-                                   ng-disabled="!response.newResponse"
+                                   ng-disabled="response.lineItemRunId"
                                    value="{{ response.location }}">
                         </td>
                         <td id="input-delivery-reporting-received">
