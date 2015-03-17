@@ -150,7 +150,6 @@
         var markersGroup = [];
 
         function addHeatMapLayer(map, scope) {
-            showLoadingModal(true);
             var allMarkers = [];
             DistributionPlanService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                  filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
@@ -215,6 +214,7 @@
                     layerName && this.clickLayer(layerName);
                     return this;
                 }.bind(this)).then(function () {
+                    showLoadingModal(true);
                     this.addHeatMap(scope);
                 }.bind(this)).then(function () {
                     return this;
