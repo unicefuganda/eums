@@ -5,7 +5,7 @@ angular.module('Question', ['eums.config'])
         return {
             getQuestionByLabel: function (label) {
                 return $http.get(EumsConfig.BACKEND_URLS.QUESTION + '?search=' + label).then(function (response) {
-                    return response.data;
+                    return response.data[0];
                 });
             }
         };

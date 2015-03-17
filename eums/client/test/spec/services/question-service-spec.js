@@ -8,9 +8,6 @@ describe('Question Service', function () {
         label: 'productReceived'
     };
 
-    var questionList = [stubQuestion];
-
-
     beforeEach(function () {
         module('Question');
 
@@ -22,11 +19,11 @@ describe('Question Service', function () {
     });
 
     it('should get question by label', function (done) {
-        mockBackend.whenGET(questionEndpointUrl + '?search=productReceived').respond(questionList);
+        mockBackend.whenGET(questionEndpointUrl + '?search=productReceived').respond(stubQuestion);
         var label = 'productReceived';
 
         questionService.getQuestionByLabel(label).then(function (questions) {
-            expect(questions).toEqual(questionList);
+            expect(questions).toEqual(stubQuestion);
             done();
         });
         mockBackend.flush();

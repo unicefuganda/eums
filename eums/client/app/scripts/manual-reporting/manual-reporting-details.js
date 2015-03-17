@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder', 'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'DistributionPlanLineItem', 'DistributionPlan', 'DistributionPlanNode'])
-    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService) {
+angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder', 'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact', 'DistributionPlanLineItem', 'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question'])
+    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanLineItemService, DistributionPlanService, DistributionPlanNodeService, AnswerService, QuestionService) {
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.responseIndex = '';
@@ -297,23 +297,148 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }, true);
 
-        function saveResponseReceived(lineItemRunId, answer, answerDetails){
-            if(isNaN(answerDetails)){
+        function saveResponseReceived(lineItemRunId, response){
+            var received = response.received;
+            var receivedDetails = response.received_answer;
 
+            if(received){
+                if(typeof(receivedDetails) == "undefined"){
+                    return QuestionService.getQuestionByLabel('productReceived').then(function (question){
+                        var answerDetails = {question: question.id,
+                                             value: received,
+                                             line_item_run: lineItemRunId};
+                        return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer){
+                              response.received_answer = response_answer;
+                        });
+                    });
+                }
+                else{
+                    var updatedValue = {value: received};
+                    return AnswerService.updateMultipleChoiceAnswer(receivedDetails.id, updatedValue);
+                }
             }
-            else{
+        }
 
+        function saveResponseQuantity(lineItemRunId, response){
+            var quantity = response.quantity;
+            var quantityDetails = response.quantity_answer;
+
+            if(quantity){
+                if(typeof(quantityDetails) == "undefined"){
+                    return QuestionService.getQuestionByLabel('amountReceived').then(function (question){
+                        var answerDetails = {question: question.id,
+                                             value: quantity,
+                                             line_item_run: lineItemRunId};
+                        return AnswerService.createNumericAnswer(answerDetails).then(function (response_answer){
+                              response.quantity_answer = response_answer;
+                        });
+                    });
+                }
+                else{
+                    var updatedValue = {value: quantity};
+                    return AnswerService.updateNumericAnswer(quantityDetails.id, updatedValue);
+                }
+            }
+        }
+
+        function saveResponseDateReceived(lineItemRunId, response){
+            var dateReceived = response.dateReceived;
+            var dateReceivedDetails = response.dateReceived_answer;
+
+            if(dateReceived){
+                if(typeof(dateReceivedDetails) == "undefined"){
+                    return QuestionService.getQuestionByLabel('dateOfReceipt').then(function (question){
+                        var answerDetails = {question: question.id,
+                                             value: dateReceived,
+                                             line_item_run: lineItemRunId};
+                        return AnswerService.createTextAnswer(answerDetails).then(function (response_answer){
+                              response.dateReceived_answer = response_answer;
+                        });
+                    });
+                }
+                else{
+                    var updatedValue = {value: dateReceived};
+                    return AnswerService.updateTextAnswer(dateReceivedDetails.id, updatedValue);
+                }
+            }
+        }
+
+        function saveResponseQuality(lineItemRunId, response){
+            var quality = response.quality;
+            var qualityDetails = response.quality_answer;
+
+            if(quality){
+                if(typeof(qualityDetails) == "undefined"){
+                    return QuestionService.getQuestionByLabel('qualityOfProduct').then(function (question){
+                        var answerDetails = {question: question.id,
+                                             value: quality,
+                                             line_item_run: lineItemRunId};
+                        return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer){
+                              response.quality_answer = response_answer;
+                        });
+                    });
+                }
+                else{
+                    var updatedValue = {value: quality};
+                    return AnswerService.updateMultipleChoiceAnswer(qualityDetails.id, updatedValue);
+                }
+            }
+        }
+
+
+        function saveResponseSatisfied(lineItemRunId, response){
+            var satisfied = response.satisfied;
+            var satisfiedDetails = response.satisfied_answer;
+
+            if(satisfied){
+                if(typeof(satisfiedDetails) == "undefined"){
+                    return QuestionService.getQuestionByLabel('satisfiedWithProduct').then(function (question){
+                        var answerDetails = {question: question.id,
+                                             value: satisfied,
+                                             line_item_run: lineItemRunId};
+                        return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer){
+                              response.satisfied_answer = response_answer;
+                        });
+                    });
+                }
+                else{
+                    var updatedValue = {value: satisfied};
+                    return AnswerService.updateMultipleChoiceAnswer(satisfiedDetails.id, updatedValue);
+                }
+            }
+        }
+
+
+        function saveResponseRemark(lineItemRunId, response){
+            var remark = response.remark;
+            var remarkDetails = response.remark_answer;
+
+            if(remark){
+                if(typeof(remarkDetails) == "undefined"){
+                    return QuestionService.getQuestionByLabel('feedbackAboutDissatisfaction').then(function (question){
+                        var answerDetails = {question: question.id,
+                                             value: remark,
+                                             line_item_run: lineItemRunId};
+                        return AnswerService.createTextAnswer(answerDetails).then(function (response_answer){
+                              response.remark_answer = response_answer;
+                        });
+                    });
+                }
+                else{
+                    var updatedValue = {value: remark};
+                    return AnswerService.updateTextAnswer(remarkDetails.id, updatedValue);
+                }
             }
         }
 
         function saveResponse(response){
             var saveResponsePartsPromise = [];
-            saveResponsePartsPromise.push(saveResponseReceived(response.lineItemRunId, response.received, response.received_answer));
-            saveResponsePartsPromise.push(saveResponseQuantity(response.lineItemRunId, response.quantity, response.quantity_answer));
-            saveResponsePartsPromise.push(saveResponseDateReceived(response.lineItemRunId, response.dateReceived, response.dateReceived_answer));
-            saveResponsePartsPromise.push(saveResponseQuality(response.lineItemRunId, response.quality, response.quality_answer));
-            saveResponsePartsPromise.push(saveResponseSatisfied(response.lineItemRunId, response.satisfied, response.satisfied_answer));
-            saveResponsePartsPromise.push(saveResponseRemark(response.lineItemRunId, response.remark, response.remark_answer));
+            saveResponsePartsPromise.push(saveResponseReceived(response.lineItemRunId, response));
+            saveResponsePartsPromise.push(saveResponseQuantity(response.lineItemRunId, response));
+            saveResponsePartsPromise.push(saveResponseDateReceived(response.lineItemRunId, response));
+            saveResponsePartsPromise.push(saveResponseQuality(response.lineItemRunId, response));
+            saveResponsePartsPromise.push(saveResponseSatisfied(response.lineItemRunId, response));
+            saveResponsePartsPromise.push(saveResponseRemark(response.lineItemRunId, response));
             var squashedResponsesPartsPromises = $q.all(saveResponsePartsPromise);
             return squashedResponsesPartsPromises
         }
