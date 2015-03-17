@@ -3,7 +3,9 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, PlanItemResponses
-from eums.api.answer.date_answers_endpoint import textAnswerRouter
+from eums.api.answer.text_answers_endpoint import textAnswerRouter
+from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
+from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee import consigneeRouter
 from eums.api.consignee_purchase_order.consignee_purchase_order_endpoint import ConsigneePurchaseOrders
@@ -78,6 +80,8 @@ urlpatterns = patterns(
     url(r'^api/', include(distributionReportRouter.urls)),
     url(r'^api/', include(userRouter.urls)),
     url(r'^api/', include(textAnswerRouter.urls)),
+    url(r'^api/', include(numericAnswerRouter.urls)),
+    url(r'^api/', include(multipleChoiceAnswerRouter.urls)),
     url(r'^api/', include(optionRouter.urls)),
     url(r'^api/', include(purchaseOrderRouter.urls)),
     url(r'^api/', include(purchaseOrderItemRouter.urls)),

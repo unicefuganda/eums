@@ -324,30 +324,27 @@ describe('ManualReportingDetailsController', function () {
                         id: 1,
                         location: 'Kampala'
                     },
+                    line_item_run_id: 1,
                     responses: {
                         amountReceived: {
                             id: 1,
                             value: 80,
-                            formatted_value: '80',
-                            question_id: 1
+                            formatted_value: '80'
                         },
                         satisfiedWithProduct: {
                             id: 2,
                             value: 1,
-                            formatted_value: 'Yes',
-                            question_id: 2
+                            formatted_value: 'Yes'
                         },
                         productReceived: {
                             id: 3,
                             value: 3,
-                            formatted_value: 'Yes',
-                            question_id: 3
+                            formatted_value: 'Yes'
                         },
                         dateOfReceipt: {
                             id: 4,
                             value:'04/10/2014',
-                            formatted_value: '04/10/2014',
-                            question_id: 4
+                            formatted_value: '04/10/2014'
                         }
                     }
               };
@@ -355,7 +352,7 @@ describe('ManualReportingDetailsController', function () {
 
           it('should set responses on the scope', function () {
               var expectedResponseDetails = [{
-                    newResponse: false,
+                    lineItemRunId: responseItem.line_item_run_id,
                     consignee: responseItem.node.consignee,
                     endUser: responseItem.node.contact_person_id,
                     location: responseItem.node.location,
@@ -556,16 +553,22 @@ describe('ManualReportingDetailsController', function () {
 
         it('should have document selected with default values', function () {
             var expectedResponse = [{
-                newResponse: true,
+                lineItemRunId: '',
                 consignee: '',
                 endUser: '',
                 location: '',
                 received: '',
+                received_answer: undefined,
                 quantity: 0,
+                quantity_answer: undefined,
                 dateReceived: '',
+                dateReceived_answer: undefined,
                 quality: '',
+                quality_answer: undefined,
                 satisfied: '',
-                remark: ''
+                satisfied_answer: undefined,
+                remark: '',
+                remark_answer: undefined
             }];
             scope.responses = [];
             scope.addResponse();

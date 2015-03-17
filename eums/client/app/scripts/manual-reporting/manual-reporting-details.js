@@ -222,7 +222,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             responseItems.forEach(function (responseItem) {
                setDistributionPlan(responseItem);
                var responseItemDetails =  {
-                    newResponse: false,
+                    lineItemRunId: responseItem.line_item_run_id,
                     consignee: responseItem.node.consignee,
                     endUser: responseItem.node.contact_person_id,
                     location: responseItem.node.location,
@@ -253,16 +253,22 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         $scope.addResponse = function () {
             var newResponseItem = {
-                newResponse: true,
+                lineItemRunId: '',
                 consignee: '',
                 endUser: '',
                 location: '',
                 received: '',
+                received_answer: undefined,
                 quantity: 0,
+                quantity_answer: undefined,
                 dateReceived: '',
+                dateReceived_answer: undefined,
                 quality: '',
+                quality_answer: undefined,
                 satisfied: '',
-                remark: ''
+                satisfied_answer: undefined,
+                remark: '',
+                remark_answer: undefined
             };
 
             $scope.responses.push(newResponseItem);
@@ -291,22 +297,39 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }, true);
 
-        function saveResponse(response){
+        function saveResponseReceived(lineItemRunId, answer, answerDetails){
+            if(isNaN(answerDetails)){
 
+            }
+            else{
+
+            }
+        }
+
+        function saveResponse(response){
+            var saveResponsePartsPromise = [];
+            saveResponsePartsPromise.push(saveResponseReceived(response.lineItemRunId, response.received, response.received_answer));
+            saveResponsePartsPromise.push(saveResponseQuantity(response.lineItemRunId, response.quantity, response.quantity_answer));
+            saveResponsePartsPromise.push(saveResponseDateReceived(response.lineItemRunId, response.dateReceived, response.dateReceived_answer));
+            saveResponsePartsPromise.push(saveResponseQuality(response.lineItemRunId, response.quality, response.quality_answer));
+            saveResponsePartsPromise.push(saveResponseSatisfied(response.lineItemRunId, response.satisfied, response.satisfied_answer));
+            saveResponsePartsPromise.push(saveResponseRemark(response.lineItemRunId, response.remark, response.remark_answer));
+            var squashedResponsesPartsPromises = $q.all(saveResponsePartsPromise);
+            return squashedResponsesPartsPromises
         }
 
         function saveResponseItems(){
             var saveResponseItemPromises = [];
             $scope.responses.forEach(function (response) {
-                if(response.newResponse){
+                if(response.lineItemRunId){
+                    saveResponseItemPromises.push(saveResponse(response));
+                }
+                else{
                     console.log('complete');
 //                  saveNode(item).then(function (createdNode) {
 //                        item.nodeId = createdNode.id;
 //                      savePlanItemPromises.push(saveLineItem(item, createdNode.id));
 //                  });
-                }
-                else{
-                    saveResponseItemPromises.push(saveResponse(response));
                 }
             });
             var squashedSaveResponsesPromises = $q.all(saveResponseItemPromises);

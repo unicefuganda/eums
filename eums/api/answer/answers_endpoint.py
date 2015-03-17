@@ -48,9 +48,8 @@ class ResponseSerializer(object):
             node_results.append(self.add_product_satisfied_field(formatted_run_responses))
         return node_results
 
-    def detailed_node_responses(self, node):
+    def detailed_node_responses(self, node_responses):
         node_results = {}
-        node_responses = node.responses()
         for item_run, responses in node_responses.iteritems():
             for response in responses:
                 response_value = response.value
@@ -61,7 +60,6 @@ class ResponseSerializer(object):
                     'id': response.id,
                     'value': response_value,
                     'formatted_value': response.format(),
-                    'question_id': response.question.id,
                 }
         return node_results
 
@@ -96,10 +94,13 @@ class PlanItemResponses(APIView):
         planItem = DistributionPlanLineItem.objects.filter(id=plan_item_id).first()
         result = {}
         if planItem and planItem.distribution_plan_node.tree_position == 'END_USER':
-            if planItem.distribution_plan_node.responses():
+            node_responses = planItem.distribution_plan_node.responses()
+            line_item_run = node_responses.keys()[0]
+            if node_responses:
                 result = {
                     'node': self._get_node(planItem.distribution_plan_node),
-                    'responses': ResponseSerializer().detailed_node_responses(planItem.distribution_plan_node)
+                    'line_item_run_id': line_item_run.id,
+                    'responses': ResponseSerializer().detailed_node_responses(node_responses)
                 }
 
         return Response(result, status=status.HTTP_200_OK)

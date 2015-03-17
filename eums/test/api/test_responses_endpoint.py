@@ -148,24 +148,22 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                     "id": self.end_user_node.id,
                     "location": self.end_user_node.location
                 },
+                "line_item_run_id": self.line_item_run_two.id,
                 "responses": {
                      self.numeric_question.label: {
                         "id": self.run_two_numeric_answer_one.id,
                         "value": self.run_two_numeric_answer_one.value,
-                        "formatted_value": self.run_two_numeric_answer_one.format(),
-                        "question_id": self.numeric_question.id
+                        "formatted_value": self.run_two_numeric_answer_one.format()
                     },
                      self.multiple_choice_question.label: {
                         "id": self.run_two_multiple_answer_one.id,
                         "value": self.yes_option.id,
-                        "formatted_value": self.run_two_multiple_answer_one.format(),
-                        "question_id": self.multiple_choice_question.id
+                        "formatted_value": self.run_two_multiple_answer_one.format()
                     },
                     self.multiple_choice_question_two.label: {
                         "id": self.run_two_multiple_answer_two.id,
                         "value": self.yes_option.id,
-                        "formatted_value": self.run_two_multiple_answer_two.format(),
-                        "question_id": self.multiple_choice_question_two.id
+                        "formatted_value": self.run_two_multiple_answer_two.format()
                     }
                 }
         }

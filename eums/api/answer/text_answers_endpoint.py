@@ -8,13 +8,17 @@ from eums.models import TextAnswer
 class TextAnswerSerialiser(serializers.ModelSerializer):
     class Meta:
         model = TextAnswer
-        fields = ('value', 'question')
+        fields = ('id', 'question', 'value', 'line_item_run')
 
 
 class TextAnswerViewSet(ModelViewSet):
+    queryset = TextAnswer.objects.all().order_by('id')
+    serializer_class = TextAnswerSerialiser
+
+class DateAnswerViewSet(ModelViewSet):
     queryset = TextAnswer.objects.filter(question__label='dateOfReceipt')
     serializer_class = TextAnswerSerialiser
 
-
 textAnswerRouter = DefaultRouter()
+textAnswerRouter.register(r'text-answers', TextAnswerViewSet)
 textAnswerRouter.register(r'date-answers', TextAnswerViewSet)
