@@ -32,6 +32,7 @@ The district names are needed when creating distribution plans as locations for 
 
 * Clone the script at `https://github.com/twkampala/geojson-feature-name-extractor.git`
 * `cd geojson-feature-name-extractor`
+* Copy your recently created GeoJSON file somewhere in this directory (as this is read relatively in the path input below).
 * Configure the script to enable it to find your GeoJSON file and tell it where to write the output:
 	* Edit `geojson-feature-name-extractor/config.json`
 	* `inputFilePath: '/path/to/your-geojson.json'`
