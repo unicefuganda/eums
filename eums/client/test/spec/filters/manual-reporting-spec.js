@@ -8,24 +8,24 @@
                 filter = $filter;
                 documents = [
                     {
-                        doc_number: '1234',
+                        order_number: '1234',
                         'date': '2014-10-06',
                         'programme': 'Midwife Supplies'
                     },
                     {
-                        doc_number: '6234',
+                        order_number: '6234',
                         'date': '2014-12-06',
                         'programme': 'Vehicles'
                     },
                     {
-                        doc_number: '00006',
+                        order_number: '00006',
                         'date': '2014-11-06',
                         'programme': 'Nets'
                     }
                 ];
             }));
 
-            it('should filter by sales document number', function () {
+            it('should filter by sales order number', function () {
                 expect(filter('documentFilter')(documents, '1234')).toEqual([documents[0]]);
             });
 
