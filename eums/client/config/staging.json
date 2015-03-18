@@ -52,7 +52,6 @@
         "color": "@brand-primary",
         "fillOpacity": 0.8
     },
-    "IPJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/ip.json",
     "MAP_OPTIONS": {
         "CENTER": [1.406, 32.000],
         "ZOOM_LEVEL": 7

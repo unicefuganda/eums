@@ -17,7 +17,7 @@ describe('Home Page', function () {
 
         it('should get global stats on map', function () {
             browser.sleep(5000);
-            expect(homePage.mapLocation.getText()).toEqual('Responses for UGANDA');
+            expect(homePage.mapLocation.getText()).toEqual('');
             expect(homePage.numberSent.getText()).toEqual('11');
             expect(homePage.numberDelivered.getText()).toEqual('8');
             expect(homePage.numberNotDelivered.getText()).toEqual('3');
@@ -112,7 +112,7 @@ describe('Home Page', function () {
 
         it('should get global stats on map only for IP', function () {
             browser.sleep(5000);
-            expect(homePage.mapLocation.getText()).toEqual('Responses for UGANDA');
+            expect(homePage.mapLocation.getText()).toEqual('');
             expect(homePage.numberSent.getText()).toEqual('2');
             expect(homePage.numberDelivered.getText()).toEqual('1');
             expect(homePage.numberNotDelivered.getText()).toEqual('1');

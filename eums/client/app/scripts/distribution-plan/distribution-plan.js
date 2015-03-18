@@ -143,7 +143,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             });
 
             return {
-                location: location ? location : 'UGANDA',
+                location: location,
                 totalSent: totalSent,
                 totalReceived: totalYes,
                 totalNotReceived: totalSent - totalYes

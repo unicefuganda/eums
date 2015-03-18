@@ -12,7 +12,8 @@
 
             <div map-summary consigneeDetails></div>
             <div id="stats-panel">
-                <div class="panel-header">Responses for {{ data.totalStats.location }}</div>
+                <div class="panel-header" ng-show="data.totalStats.location">Responses for {{ data.totalStats.location }}</div>
+                <div class="panel-header" ng-show="!data.totalStats.location">All Responses</div>
                 <ul class="list-group">
                     <li class="list-group-item">
                         <span class="badge alert-info">{{ data.totalStats.totalSent }}</span>
