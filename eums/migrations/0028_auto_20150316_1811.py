@@ -10,8 +10,8 @@ def create_received_no_answers(apps, schema_editor):
     product_received_question_filter = MultipleChoiceQuestion.objects.filter(label='productReceived')
     if product_received_question_filter:
         product_received_question = product_received_question_filter[0]
-        product_not_received_answer_option = product_received_question.option_set.get(text='No')
-        if product_not_received_answer_option:
+        product_not_received_answer_option_filter = product_received_question.option_set.filter(text='No')
+        if product_not_received_answer_option_filter:
             completed_runs = NodeLineItemRun.objects.filter(status='completed')
             for run in completed_runs:
                 product_received_answer = run.multiplechoiceanswer_set.filter(question=product_received_question)
@@ -20,7 +20,7 @@ def create_received_no_answers(apps, schema_editor):
 
                 # Create no answer for run
                 run.multiplechoiceanswer_set.create(question=product_received_question,
-                                                    value=product_not_received_answer_option,
+                                                    value=product_not_received_answer_option_filter[0],
                                                     line_item_run=run)
 
 
@@ -31,13 +31,13 @@ def remove_received_no_answers(apps, schema_editor):
     product_received_question_filter = MultipleChoiceQuestion.objects.filter(label='productReceived')
     if product_received_question_filter:
         product_received_question = product_received_question_filter[0]
-        product_not_received_answer_option = product_received_question.option_set.get(text='No')
-        if product_not_received_answer_option:
+        product_not_received_answer_option_filter = product_received_question.option_set.filter(text='No')
+        if product_not_received_answer_option_filter:
             completed_runs = NodeLineItemRun.objects.filter(status='completed')
             for run in completed_runs:
                 # Delete no answer for run
                 run.multiplechoiceanswer_set.filter(question=product_received_question,
-                                                    value=product_not_received_answer_option).delete()
+                                                    value=product_not_received_answer_option_filter[0]).delete()
 
 class Migration(migrations.Migration):
 
