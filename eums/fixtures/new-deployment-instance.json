@@ -1,0 +1,5819 @@
+[
+    {
+        "fields": {
+            "name": "kgs"
+        },
+        "model": "eums.itemunit",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "name": "Each"
+        },
+        "model": "eums.itemunit",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "name": "Kit"
+        },
+        "model": "eums.itemunit",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "name": "Sachet"
+        },
+        "model": "eums.itemunit",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "name": "PU"
+        },
+        "model": "eums.itemunit",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "material_code": "DEFE2454534534",
+            "description": "flour",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "material_code": "SDER34545645",
+            "description": "sugar",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "material_code": "SL005144",
+            "description": "Laptop,Lenovo,ThinkPad T510",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "material_code": "SL002248",
+            "description": "Laptop bag",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "material_code": "SL005981",
+            "description": "EXTRA POWER ADAPTER",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "material_code": "SL002315",
+            "description": "LENOVO USB 2.0 SUPER MULTI-BURNER DRIVE",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "material_code": "SL014169",
+            "description": "Toner",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "material_code": "S0782208",
+            "description": "Safety box f.used syrgs/ndls 5lt/BOX-25",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "material_code": "S0000240",
+            "description": "Therapeutic spread,sachet 92g/CAR-150",
+            "unit": 4
+        },
+        "model": "eums.item",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "material_code": "S1561125",
+            "description": "ReSoMal,42g sachet for 1 litre/CAR-100",
+            "unit": 4
+        },
+        "model": "eums.item",
+        "pk": 10
+    },
+    {
+        "fields": {
+            "material_code": "S0145620",
+            "description": "MUAC,Child 11.5 Red/PAC-50",
+            "unit": 4
+        },
+        "model": "eums.item",
+        "pk": 11
+    },
+    {
+        "fields": {
+            "material_code": "S0000208",
+            "description": "F-75 therap.diet,sachet, 102.5g/CAR-120",
+            "unit": 4
+        },
+        "model": "eums.item",
+        "pk": 12
+    },
+    {
+        "fields": {
+            "material_code": "SL204169",
+            "description": "Toner",
+            "unit": 5
+        },
+        "model": "eums.item",
+        "pk": 13
+    },
+    {
+        "fields": {
+            "material_code": "SL003247",
+            "description": "Printer",
+            "unit": 2
+        },
+        "model": "eums.item",
+        "pk": 14
+    },
+    {
+        "fields": {
+            "material_code": "S9906621",
+            "description": "IEHK2006,kit,basic unit",
+            "unit": 3
+        },
+        "model": "eums.item",
+        "pk": 15
+    },
+    {
+        "fields": {
+            "material_code": "S9916623",
+            "description": "IEHK2006,kit,suppl.1-drugs",
+            "unit": 3
+        },
+        "model": "eums.item",
+        "pk": 16
+    },
+    {
+        "fields": {
+            "material_code": "SL002371",
+            "description": "MAMA KITS, CLEAN DELIVERY KITS",
+            "unit": 3
+        },
+        "model": "eums.item",
+        "pk": 17
+    },
+    {
+        "fields": {
+            "material_code": "S9906623",
+            "description": "IEHK2006,kit,suppl.1-drugs",
+            "unit": 3
+        },
+        "model": "eums.item",
+        "pk": 18
+    },
+    {
+        "fields": {
+            "material_code": "S9901006",
+            "description": "IEHK2011,kit,suppl.1-medicines",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 19
+    },
+    {
+        "fields": {
+            "material_code": "S0100240",
+            "description": "Therapeutic spread,sachet 92g/CAR-150",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 20
+    },
+    {
+        "fields": {
+            "material_code": "S0000209",
+            "description": "F-100 therap. diet, sachet,114g/CAR-90",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 21
+    },
+    {
+        "fields": {
+            "material_code": "S0001208",
+            "description": "F-75 therap.diet,sachet, 102.5g/CAR-120",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 22
+    },
+    {
+        "fields": {
+            "material_code": "S0114530",
+            "description": "Portable baby/child L-hgt mea.syst/SET-2",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 23
+    },
+    {
+        "fields": {
+            "material_code": "S0572510",
+            "description": "Blanket,survival,220x140cm (Adult)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 24
+    },
+    {
+        "fields": {
+            "material_code": "S0156000",
+            "description": "Sterilizer,steam,39L",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 25
+    },
+    {
+        "fields": {
+            "material_code": "S0791500",
+            "description": "Vacuum extractor,Bird,manual,comple.set",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 26
+    },
+    {
+        "fields": {
+            "material_code": "S0004123",
+            "description": "Motor cycles- Yamaha DT125",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 27
+    },
+    {
+        "fields": {
+            "material_code": "S9906730",
+            "description": "Diarrhoeal Disease Set Packing",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 28
+    },
+    {
+        "fields": {
+            "material_code": "SL006645",
+            "description": "Round Neck T-Shirts",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 29
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "PVC Horizontal banner 6m x 2m",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 30
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Tear Drops 70cm x265cm, 300cm length to",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 31
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Rollup Exhibition Stands (Heavy Wide bas",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 32
+    },
+    {
+        "fields": {
+            "material_code": "S0000538",
+            "description": "Chlorine 65% - 45 Kg. cartons",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 33
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "PVC banners",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 34
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Tally sheets printed on A4 Paper",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 35
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Throw Boxes",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 36
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Play Card box",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 37
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Value Cards and Value Card messages box",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 38
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Play card messages box",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 39
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Value cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 40
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Value Cards messages",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 41
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Message Booklet-Full colour print,",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 42
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Play Cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 43
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Play Card messages",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 44
+    },
+    {
+        "fields": {
+            "material_code": "U458000",
+            "description": "MIcrosoft windows 7 Proefessional OLP NL",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 45
+    },
+    {
+        "fields": {
+            "material_code": "SL004775",
+            "description": "Bar Soap 800gm",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 46
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Invitation Cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 47
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Notebooks",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 48
+    },
+    {
+        "fields": {
+            "material_code": "SL006645",
+            "description": "Round Neck Tshirts",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 49
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "PVC Horizontal Banner",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 50
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Banner",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 51
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Pull Up Stand banners",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 52
+    },
+    {
+        "fields": {
+            "material_code": "U792100",
+            "description": "Printing services (NSGE) booklets",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 53
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Longitudinal ANC Register",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 54
+    },
+    {
+        "fields": {
+            "material_code": "U792100",
+            "description": "Alt Corporal punishment abridged version",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 55
+    },
+    {
+        "fields": {
+            "material_code": "U792100",
+            "description": "Alt Corporal punishment Original version",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 56
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "Training&demonstrational models,articles",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 57
+    },
+    {
+        "fields": {
+            "material_code": "S9935095",
+            "description": "Replenishment kit for S9935098",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 58
+    },
+    {
+        "fields": {
+            "material_code": "S5086012",
+            "description": "Tarpaulin,plastic,roll,4x50m",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 59
+    },
+    {
+        "fields": {
+            "material_code": "S9935062",
+            "description": "Early Childhood Development (ECD - IKA)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 60
+    },
+    {
+        "fields": {
+            "material_code": "S5088008",
+            "description": "Tent,light weight,rectangular,24m\u00b2",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 61
+    },
+    {
+        "fields": {
+            "material_code": "S5088020",
+            "description": "Tent,light weight,rectangular,72m\u00b2",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 62
+    },
+    {
+        "fields": {
+            "material_code": "S9910003",
+            "description": "Surg.inst.,delivery /SET",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 63
+    },
+    {
+        "fields": {
+            "material_code": "S0845000",
+            "description": "Resuscitator,hand-oper.,infant/child,set",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 64
+    },
+    {
+        "fields": {
+            "material_code": "SL004619",
+            "description": "Printed Book",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 65
+    },
+    {
+        "fields": {
+            "material_code": "S0000204",
+            "description": "Amoxicillin 125mg disp.tab/PAC-30",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 66
+    },
+    {
+        "fields": {
+            "material_code": "S1580020",
+            "description": "Zinc 20mg tablets/PAC-100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 67
+    },
+    {
+        "fields": {
+            "material_code": "S0000207",
+            "description": "Amoxicillin 125mg disp.tab/PAC-20",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 68
+    },
+    {
+        "fields": {
+            "material_code": "S0845010",
+            "description": "Timer,respiration for ARI",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 69
+    },
+    {
+        "fields": {
+            "material_code": "S1300074",
+            "description": "Artem 20mg+Lumef120mg disp tabs/6/PAC-30",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 70
+    },
+    {
+        "fields": {
+            "material_code": "S0003581",
+            "description": "SD Bioline Mal Pf (HRP2)kit/25\u2019",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 71
+    },
+    {
+        "fields": {
+            "material_code": "S1561121",
+            "description": "ORS low osm. 20.5g/1L CAR/10x100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 72
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ICCM Facilitators Guide",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 73
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHTJob Aids",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 74
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHTParticipants Manual",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 75
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHTCertificate basic package",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 76
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ICCM Sick Child Job Aid",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 77
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ICCM Training Certificate",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 78
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHTPatient Register",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 79
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHTFacilitator Guide",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 80
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHT TOT Guide",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 81
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Medicine Boxes",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 82
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "TARGUS CARRYING CASE, NYLON NOTEPAC BASI",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 83
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "Internet Modems - MTN",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 84
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "Internet Modems - Orange",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 85
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "Dongle, modem - Airtel",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 86
+    },
+    {
+        "fields": {
+            "material_code": "U452150",
+            "description": "Computers,laptop/notebook",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 87
+    },
+    {
+        "fields": {
+            "material_code": "U322000",
+            "description": "Information Guide for Adolescents",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 88
+    },
+    {
+        "fields": {
+            "material_code": "U322000",
+            "description": "Life skills Training Guide Manual",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 89
+    },
+    {
+        "fields": {
+            "material_code": "SL001679",
+            "description": "Birth Registration forms",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 90
+    },
+    {
+        "fields": {
+            "material_code": "U471000",
+            "description": "TVs for Comms unit office",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 91
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet-VHT Registers",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 92
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet-VHT Referral forms",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 93
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet-IYCG Counselling cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 94
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet-Health worker ref. forms",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 95
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet-VHT Manuals",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 96
+    },
+    {
+        "fields": {
+            "material_code": "U271610",
+            "description": "Tarpaulins",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 97
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "UNICEF branded notepads",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 98
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "UNICEF branded folders",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 99
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "UNICEF Exhibition banners",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 100
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "UNICEF branded feather banners",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 101
+    },
+    {
+        "fields": {
+            "material_code": "S1561185",
+            "description": "ReSoMal,42g sachet for 1 litre/CAR-100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 102
+    },
+    {
+        "fields": {
+            "material_code": "S0481053",
+            "description": "Thermometer,clinical,digital,32-43\u00baC",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 103
+    },
+    {
+        "fields": {
+            "material_code": "S0557200",
+            "description": "Sling for use w5555,0557000,0557100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 104
+    },
+    {
+        "fields": {
+            "material_code": "S9910005",
+            "description": "Surg.inst.,dressing /SET",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 105
+    },
+    {
+        "fields": {
+            "material_code": "S0777500",
+            "description": "Speculum,vaginal,Graves,95x35mm",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 106
+    },
+    {
+        "fields": {
+            "material_code": "S0683200",
+            "description": "Sphygmomanometer,(adult),aneroid",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 107
+    },
+    {
+        "fields": {
+            "material_code": "S0683300",
+            "description": "Sphygmomanometer,(child),aneroid",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 108
+    },
+    {
+        "fields": {
+            "material_code": "S9910002",
+            "description": "Surg.inst.,curettage /SET",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 109
+    },
+    {
+        "fields": {
+            "material_code": "S0145520",
+            "description": "Scale,infant,clinic,beamtype,16kg x 10g",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 110
+    },
+    {
+        "fields": {
+            "material_code": "S0140500",
+            "description": "Scale,physician,adult,metric,6-180kg",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 111
+    },
+    {
+        "fields": {
+            "material_code": "S0114520",
+            "description": "Portable baby/child/adult L-hgt mea.syst",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 112
+    },
+    {
+        "fields": {
+            "material_code": "S0760640",
+            "description": "Pump,suction,foot-operated",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 113
+    },
+    {
+        "fields": {
+            "material_code": "S0002047",
+            "description": "Oxygen concentrator/SET",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 114
+    },
+    {
+        "fields": {
+            "material_code": "S0001300",
+            "description": "Microscope, binocular, basic",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 115
+    },
+    {
+        "fields": {
+            "material_code": "SL001824",
+            "description": "GUM BOOTS, White, labour ward use",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 116
+    },
+    {
+        "fields": {
+            "material_code": "S0002171",
+            "description": "Table,examination - Couch",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 117
+    },
+    {
+        "fields": {
+            "material_code": "S0002152",
+            "description": "Trolley,dressing,ss,2 trays",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 118
+    },
+    {
+        "fields": {
+            "material_code": "SL001824",
+            "description": "GUM BOOTS,white-Labour ward use",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 119
+    },
+    {
+        "fields": {
+            "material_code": "SL004605",
+            "description": "Printed Flyer",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 120
+    },
+    {
+        "fields": {
+            "material_code": "S0686000",
+            "description": "Stethoscope,binaural,complete",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 121
+    },
+    {
+        "fields": {
+            "material_code": "S9910006",
+            "description": "Surg.inst.,exam/sut,vaginal/cervical/SET",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 122
+    },
+    {
+        "fields": {
+            "material_code": "S0002299",
+            "description": "Ess. spares for 10 solar systems ordered",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 123
+    },
+    {
+        "fields": {
+            "material_code": "S0005077",
+            "description": "Solar refrig-freezer,>50L,4.5Kw/24hrs",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 124
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "DCC Guidlines",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 125
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Brochures",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 126
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Posture - Your right as a child-School",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 127
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Posture - violence against women and chi",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 128
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "Targus Carrying Case Nylon Notepac",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 129
+    },
+    {
+        "fields": {
+            "material_code": "S0003595",
+            "description": "STAT-PAK HIV1/2,dipstick,kit/30",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 130
+    },
+    {
+        "fields": {
+            "material_code": "S0003406",
+            "description": "Uni-Gold HIV1/2,kit/20",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 131
+    },
+    {
+        "fields": {
+            "material_code": "S0003403",
+            "description": "Alere Determine HIV1/2,WB set,kit/100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 132
+    },
+    {
+        "fields": {
+            "material_code": "U454200",
+            "description": "HP  LaserJet P3015DN",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 133
+    },
+    {
+        "fields": {
+            "material_code": "U452150",
+            "description": "Laptops-ThinkPad x230 Notebook",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 134
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Printed brochure (stickers)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 135
+    },
+    {
+        "fields": {
+            "material_code": "SL006645",
+            "description": "Round neck T-Shirts",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 136
+    },
+    {
+        "fields": {
+            "material_code": "SL006645",
+            "description": "T-shirt, cotton",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 137
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Press Banner",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 138
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Pull up Banners",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 139
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Tear Drops- Feather Banners",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 140
+    },
+    {
+        "fields": {
+            "material_code": "SL002071",
+            "description": "MAMA KITS, CLEAN DELIVERY KITS",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 141
+    },
+    {
+        "fields": {
+            "material_code": "SL007747",
+            "description": "Latrin material, foundation, wooden",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 142
+    },
+    {
+        "fields": {
+            "material_code": "SL007746",
+            "description": "Latrin material, wooden",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 143
+    },
+    {
+        "fields": {
+            "material_code": "S0686000",
+            "description": "Stethoscope,binaural (digital)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 144
+    },
+    {
+        "fields": {
+            "material_code": "S0683300",
+            "description": "Sphygmomanometer,aneroid(Mercury)moveabl",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 145
+    },
+    {
+        "fields": {
+            "material_code": "S0683300",
+            "description": "Sphygmomanometer, adult",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 146
+    },
+    {
+        "fields": {
+            "material_code": "S0305020",
+            "description": "Plastic Aprons",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 147
+    },
+    {
+        "fields": {
+            "material_code": "SL001824",
+            "description": "GUM BOOTS-White, use in labour rooms",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 148
+    },
+    {
+        "fields": {
+            "material_code": "S0002164",
+            "description": "Wheelchair,adult",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 149
+    },
+    {
+        "fields": {
+            "material_code": "S0002160",
+            "description": "Bedscreen,hospital,on castors",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 150
+    },
+    {
+        "fields": {
+            "material_code": "S0002150",
+            "description": "Cot,baby,hospital,w/mattresses ,on cast",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 151
+    },
+    {
+        "fields": {
+            "material_code": "S0002152",
+            "description": "Wheeling Trolleys",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 152
+    },
+    {
+        "fields": {
+            "material_code": "S0002035",
+            "description": "Table,resusc,newborn,w/access",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 153
+    },
+    {
+        "fields": {
+            "material_code": "S5086012",
+            "description": "Tarpaulin, Plastic rolls",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 154
+    },
+    {
+        "fields": {
+            "material_code": "U467100",
+            "description": "SD Memory card",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 155
+    },
+    {
+        "fields": {
+            "material_code": "U467100",
+            "description": "Samsung S duos 2 (7582)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 156
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Community Based Newborn Care",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 157
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHT Nutrition Facilitators Guide",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 158
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Newborn facilitators manual",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 159
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHT Nutrition Participants Manual",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 160
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "Lenovo Optical Scrollpoint USB mouse",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 161
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "Targus Carrying Case, Nylon Notepc basic",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 162
+    },
+    {
+        "fields": {
+            "material_code": "SL001894",
+            "description": "Helmet",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 163
+    },
+    {
+        "fields": {
+            "material_code": "SL001679",
+            "description": "A5 Manila White printing paper for Birth",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 164
+    },
+    {
+        "fields": {
+            "material_code": "SL004169",
+            "description": "Toner",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 165
+    },
+    {
+        "fields": {
+            "material_code": "S1003247",
+            "description": "Printer",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 166
+    },
+    {
+        "fields": {
+            "material_code": "SL000171",
+            "description": "APC Smart UPS",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 167
+    },
+    {
+        "fields": {
+            "material_code": "SL003339",
+            "description": "EMO Effective Micro Organism Cleana",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 168
+    },
+    {
+        "fields": {
+            "material_code": "SL004164",
+            "description": "Squatting plate, Latrine Slabs",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 169
+    },
+    {
+        "fields": {
+            "material_code": "U441800",
+            "description": "Latrine digging kits",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 170
+    },
+    {
+        "fields": {
+            "material_code": "S0686500",
+            "description": "Stethoscope,foetal,Pinard",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 171
+    },
+    {
+        "fields": {
+            "material_code": "S0211000",
+            "description": "Basin,kidney,stainless steel,825ml",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 172
+    },
+    {
+        "fields": {
+            "material_code": "S0141021",
+            "description": "Scale,electronic,mother/child,150kgx100g",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 173
+    },
+    {
+        "fields": {
+            "material_code": "SL005328",
+            "description": "Birth Cushion set",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 174
+    },
+    {
+        "fields": {
+            "material_code": "S9908200",
+            "description": "Sterilization, kit C",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 175
+    },
+    {
+        "fields": {
+            "material_code": "SL002486",
+            "description": "Mattress With PVC Cover,Adult",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 176
+    },
+    {
+        "fields": {
+            "material_code": "SL001638",
+            "description": "Patient Bed:W.Back Rest & w.out castors",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 177
+    },
+    {
+        "fields": {
+            "material_code": "SL002486",
+            "description": "Mattress With PVC Cover,Adul 190x90x10cm",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 178
+    },
+    {
+        "fields": {
+            "material_code": "SL001638",
+            "description": "Patient Bed:With Back Rest& w.out castor",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 179
+    },
+    {
+        "fields": {
+            "material_code": "SL005328",
+            "description": "Birth Cushion Set",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 180
+    },
+    {
+        "fields": {
+            "material_code": "SL001638",
+            "description": "Patient Bed: With castors",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 181
+    },
+    {
+        "fields": {
+            "material_code": "S0002151",
+            "description": "Bed,labour/delivery,w/access",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 182
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printing CP Mapping Report",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 183
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Printed material",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 184
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "Internet Modems",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 185
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "PRINTING OF PRIMARY 4 MATHS BOOK",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 186
+    },
+    {
+        "fields": {
+            "material_code": "S5086011",
+            "description": "Tarpaulin,reinforc.,plastic,sheet,4x5m",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 187
+    },
+    {
+        "fields": {
+            "material_code": "S9935035",
+            "description": "Recreation kit-in-a-carton",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 188
+    },
+    {
+        "fields": {
+            "material_code": "S5088015",
+            "description": "Tent,light weight,rectangular,42m\u00b2",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 189
+    },
+    {
+        "fields": {
+            "material_code": "S0782156",
+            "description": "Syringe,A-D,0.5ml,Soloshot Mini/BOX-100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 190
+    },
+    {
+        "fields": {
+            "material_code": "S0782306",
+            "description": "Syringe,RUP, 5ml,w/fixed ndl/BOX-100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 191
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "A4 Size booklet",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 192
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Posters",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 193
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Child Poverty Report Voices",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 194
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Child Poverty Report Analysis",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 195
+    },
+    {
+        "fields": {
+            "material_code": "U471000",
+            "description": "TV & radio transmitters&part/access",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 196
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "OTC Client cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 197
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Ration cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 198
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Clinical Monitoring Forms",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 199
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Monthly report forms",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 200
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "OTC Registers",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 201
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "New IYCF Guidelines (2012)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 202
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "IYCF Counselling cards",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 203
+    },
+    {
+        "fields": {
+            "material_code": "SL000018",
+            "description": "Bookend",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 204
+    },
+    {
+        "fields": {
+            "material_code": "U484650",
+            "description": "Dispensing bags, plastic (PAK 100)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 205
+    },
+    {
+        "fields": {
+            "material_code": "U484650",
+            "description": "Polythene \"biohazard\" bags (red)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 206
+    },
+    {
+        "fields": {
+            "material_code": "SL001251",
+            "description": "Disinfectant ( 1000 ml Bottle)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 207
+    },
+    {
+        "fields": {
+            "material_code": "U484000",
+            "description": "Cotton wool, 250g, roll, non-ster",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 208
+    },
+    {
+        "fields": {
+            "material_code": "U484650",
+            "description": "Gloves, non-sterile, latex, large dispos",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 209
+    },
+    {
+        "fields": {
+            "material_code": "SL001638",
+            "description": "Portable examination beds",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 210
+    },
+    {
+        "fields": {
+            "material_code": "S1555370",
+            "description": "Albendazole 400mg chewable tabs/PAC-100",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 211
+    },
+    {
+        "fields": {
+            "material_code": "S1550025",
+            "description": "Fe(as fum.)+folic 60+0.4mg tab/PAC-1000",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 212
+    },
+    {
+        "fields": {
+            "material_code": "S1583015",
+            "description": "Retinol 100,000IU soft gel.caps/PAC-500",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 213
+    },
+    {
+        "fields": {
+            "material_code": "S1568045",
+            "description": "Sulfadox+Pyrimeth 500+25mg tabs/PAC-1000",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 214
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Graph Book ( 48 pages)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 215
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Art Book (48 pages)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 216
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Pencils (HB)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 217
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Counter books 2 Quire",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 218
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Mathematical set (Oxford)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 219
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Box file (ALBA RADO)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 220
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Pens (BIC)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 221
+    },
+    {
+        "fields": {
+            "material_code": "U317100",
+            "description": "Packaging and Branding",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 222
+    },
+    {
+        "fields": {
+            "material_code": "SL003850",
+            "description": "Sanitary Pads (Afripads)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 223
+    },
+    {
+        "fields": {
+            "material_code": "SL001149",
+            "description": "Tshirts",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 224
+    },
+    {
+        "fields": {
+            "material_code": "S0004208",
+            "description": "Bicycles",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 225
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flyers: Tippy Tap",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 226
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flyers: Feeding children",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 227
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flyers: Breast feeding",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 228
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flyers: Hand washing",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 229
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flyers: Making water safe",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 230
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flyers: How to avoid diarrhea",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 231
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet-Message Booklet",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 232
+    },
+    {
+        "fields": {
+            "material_code": "SL004164",
+            "description": "Squatting plate, Latrine Slab",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 233
+    },
+    {
+        "fields": {
+            "material_code": "SL002247",
+            "description": "Computer, laptop",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 234
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "Expendables for use with IT equipment",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 235
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Booklet: Introduction to Quality Improv'",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 236
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Booklet:-Immunisation Practice in Ug",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 237
+    },
+    {
+        "fields": {
+            "material_code": "S0002172",
+            "description": "Table,baby dressing",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 238
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "RMNCH Plan",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 239
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Printed booklet",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 240
+    },
+    {
+        "fields": {
+            "material_code": "S1300075",
+            "description": "Artem20mg+Lumef120mg disp tabs/12/PAC-30",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 241
+    },
+    {
+        "fields": {
+            "material_code": "S0000559",
+            "description": "Chlorine test,DPD N\u00ba3,Rapid,tabs/PAC-250",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 242
+    },
+    {
+        "fields": {
+            "material_code": "S0000235",
+            "description": "Hygiene kit,adult",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 243
+    },
+    {
+        "fields": {
+            "material_code": "S5006051",
+            "description": "Chlorine/pH, Pool Tester Kit for 250 tst",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 244
+    },
+    {
+        "fields": {
+            "material_code": "S1588345",
+            "description": "Water purif.(NaDCC) 67mg tabs/BOX-16000",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 245
+    },
+    {
+        "fields": {
+            "material_code": "U441800",
+            "description": "Sanitation Digging Kit",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 246
+    },
+    {
+        "fields": {
+            "material_code": "S0005828",
+            "description": "Water quality assessment kit,basic",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 247
+    },
+    {
+        "fields": {
+            "material_code": "S0155620",
+            "description": "MUAC,Child 11.5 Red/PAC-50",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 248
+    },
+    {
+        "fields": {
+            "material_code": "S0145630",
+            "description": "MUAC,Adult,without colour code/PAC-50",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 249
+    },
+    {
+        "fields": {
+            "material_code": "S0114540",
+            "description": "Portable baby/chd/adt L-H mea.syst/SET-2",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 250
+    },
+    {
+        "fields": {
+            "material_code": "S0114052",
+            "description": "Nut. kit,inpatient,module-equipment",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 251
+    },
+    {
+        "fields": {
+            "material_code": "X0001",
+            "description": "Freight",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 252
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "Scan Disk 4GB Flash Card",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 253
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "I GB data top up bundles",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 254
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "3 GB top up for the modems",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 255
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "USB Modems",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 256
+    },
+    {
+        "fields": {
+            "material_code": "U467100",
+            "description": "Samsung Galaxy Fame",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 257
+    },
+    {
+        "fields": {
+            "material_code": "SL002247",
+            "description": "HP Probook Computer Laptop 4340s",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 258
+    },
+    {
+        "fields": {
+            "material_code": "S359184",
+            "description": "Oral Polio Vaccine,vial of 20 doses",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 259
+    },
+    {
+        "fields": {
+            "material_code": "S7800001",
+            "description": "Retinol 100,000IU soft gel.caps/PAC-500",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 260
+    },
+    {
+        "fields": {
+            "material_code": "S7800002",
+            "description": "Retinol 200,000IU soft gel.caps/PAC-500",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 261
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Drop Cable, (water resistant cable)",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 262
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Cable Ties",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 263
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Dayliff PVC 3M",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 264
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Water Proof Joint (6.0)mm2",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 265
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "1.25\" Cover Plate",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 266
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Pedestal Stand",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 267
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Solar Power System",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 268
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Electrical Fittings",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 269
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Plumbing fitting",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 270
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Switch Box, Power Control Unit CU",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 271
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Solar Panel mountng Structure",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 272
+    },
+    {
+        "fields": {
+            "material_code": "SL006147",
+            "description": "Earthing System & Lightining Protection",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 273
+    },
+    {
+        "fields": {
+            "material_code": "U711100",
+            "description": "Transport and installation charges",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 274
+    },
+    {
+        "fields": {
+            "material_code": "S0009113",
+            "description": "SQFlex 3-10 Pump C/W 1.4KW",
+            "unit": 1
+        },
+        "model": "eums.item",
+        "pk": 275
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Router bit 3x8mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 276
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Rubber for gasket EPDM, 1m",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 277
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Cariage bolt M6x25 A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 278
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Led signal lamp yellow 230V/AC",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 279
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Switch 250VAC 5A",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 280
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Flexible edge rubber PVC. 2m",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 281
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Glue for various material",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 282
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Audio splitter for speaker & headset 3.5",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 283
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Cutting disc, INNX 115mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 284
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Grommet, 10-50mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 285
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Rubber plug, black IP44",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 286
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Cable plug 10mm2 M8 tin coat",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 287
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Cap rail",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 288
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Falt head screw 3.0 x15",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 289
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Cable binder black2.5x100mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 290
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Wire Yf 2.5mm2 black",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 291
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Wire Yf 2.5 mm2 red",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 292
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Wire Yf 10mm2 yellow-green",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 293
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Wire Yf 10mm2 black",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 294
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Wire Yf 10mm2 red",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 295
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Electrical relay 2pole, 11-15VDC 15A",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 296
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Morningstar relay driver RD- 1",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 297
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Socket extension, 1.4m",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 298
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Solar Charge controller steca Solarit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 299
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "HDMI cable (male/male) 2.0m",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 300
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Patch cable 0.5m Rj4.5 cat 6A grey",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 301
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Micro-HMDI male to HDMI maleconverter1.5",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 302
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Trendnet TE 100-S5 Ethernet Switch 5port",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 303
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Transcend SDHC 8GB Class 10 flash memor",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 304
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "HDMIsplitter 1xin +",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 305
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Logitech B100 optical USB mouse",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 306
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Logitech USB keyboard K120",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 307
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Power supply 5v 3A DC",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 308
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Micro-HMDI male to HDMI male converter 2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 309
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Telefunken with built in DVD player 22in",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 310
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Gechic On-lap Monitor 2501C 15.6\"",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 311
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Transcend SDHC 32GB Class 10 flash memor",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 312
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "ODROID x21.7GHz Exynos4 Quad Dev platfor",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 313
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Logitech mono speakers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 314
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Auvisio 2.0 PC speaker",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 315
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "CSL-USB Webcam Incl Mikrofon",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 316
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Padlock mount bracket",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 317
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Padlock 30mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 318
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "LCD screen wall mounting system",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 319
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Acrylic glass scratch proof, 3mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 320
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Acrylic glass scratch proof, 4mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 321
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Rounded head screw M4x20 A2 two pin type",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 322
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Hex nut M5 A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 323
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Hex nut M10 A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 324
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Bolt M5x20stainless steel A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 325
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Bolt M10x40stainless steel A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 326
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Bolt M10x30stainless steel A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 327
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Bolt M10x100stainless steel A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 328
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Flat Head screw 4.2x38 stainless A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 329
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Washer M10 A2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 330
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "USB 2.0Hub 3Port 60mm diameter",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 331
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Hinge 100x100x1.6stainless",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 332
+    },
+    {
+        "fields": {
+            "material_code": "U454000",
+            "description": "Table plate diameter 1200mm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 333
+    },
+    {
+        "fields": {
+            "material_code": "S0008464",
+            "description": "1.5\" GI Sockets",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 334
+    },
+    {
+        "fields": {
+            "material_code": "S0008466",
+            "description": "2.5\" GI Socket",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 335
+    },
+    {
+        "fields": {
+            "material_code": "S0008212",
+            "description": "40mm Couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 336
+    },
+    {
+        "fields": {
+            "material_code": "S0008213",
+            "description": "50mm Couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 337
+    },
+    {
+        "fields": {
+            "material_code": "S0008214",
+            "description": "63mm Couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 338
+    },
+    {
+        "fields": {
+            "material_code": "S0008215",
+            "description": "75mm Couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 339
+    },
+    {
+        "fields": {
+            "material_code": "S0008216",
+            "description": "90mm Couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 340
+    },
+    {
+        "fields": {
+            "material_code": "S0008456",
+            "description": "2.5\" GI pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 341
+    },
+    {
+        "fields": {
+            "material_code": "S0008454",
+            "description": "1.5\" GI pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 342
+    },
+    {
+        "fields": {
+            "material_code": "SL008363",
+            "description": "40mm PN6 Hdpe Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 343
+    },
+    {
+        "fields": {
+            "material_code": "SL008362",
+            "description": "50mm PN6 Hdpe Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 344
+    },
+    {
+        "fields": {
+            "material_code": "SL008361",
+            "description": "63mm PN6 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 345
+    },
+    {
+        "fields": {
+            "material_code": "SL008361",
+            "description": "63mm PN10 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 346
+    },
+    {
+        "fields": {
+            "material_code": "S0008205",
+            "description": "75mm PN10 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 347
+    },
+    {
+        "fields": {
+            "material_code": "S0008206",
+            "description": "90mm PN10 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 348
+    },
+    {
+        "fields": {
+            "material_code": "SL008360",
+            "description": "Safety Rope (12mm)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 349
+    },
+    {
+        "fields": {
+            "material_code": "SL008360",
+            "description": "Electrical fittings in Pump Room:Junctio",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 350
+    },
+    {
+        "fields": {
+            "material_code": "SL008359",
+            "description": "2.5mm2 Drop Cable",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 351
+    },
+    {
+        "fields": {
+            "material_code": "SL008358",
+            "description": "Additional dry run sensor",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 352
+    },
+    {
+        "fields": {
+            "material_code": "SL000443",
+            "description": "Solar inverter/controller RSI 3000",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 353
+    },
+    {
+        "fields": {
+            "material_code": "SL001808",
+            "description": "Grundfos SP 5 A-21 Pump",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 354
+    },
+    {
+        "fields": {
+            "material_code": "SL006519",
+            "description": "Pressure gauge and switch",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 355
+    },
+    {
+        "fields": {
+            "material_code": "SL008072",
+            "description": "Pump control panel-Isolator, indicator l",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 356
+    },
+    {
+        "fields": {
+            "material_code": "SL001732",
+            "description": "12.5 KVA Diesel Lister Petter generator",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 357
+    },
+    {
+        "fields": {
+            "material_code": "SL008356",
+            "description": "Solar panel Ground Mounting Structure",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 358
+    },
+    {
+        "fields": {
+            "material_code": "SL008355",
+            "description": "Lightining protection-solar array pump",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 359
+    },
+    {
+        "fields": {
+            "material_code": "SL008354",
+            "description": "Earthing system for solar array and pump",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 360
+    },
+    {
+        "fields": {
+            "material_code": "SL008353",
+            "description": "Solar wire and connectors",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 361
+    },
+    {
+        "fields": {
+            "material_code": "SL008072",
+            "description": "Pump - Electrical fittings in control ro",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 362
+    },
+    {
+        "fields": {
+            "material_code": "SL007743",
+            "description": "Cable joint kit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 363
+    },
+    {
+        "fields": {
+            "material_code": "SL000081",
+            "description": "Electrode cable",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 364
+    },
+    {
+        "fields": {
+            "material_code": "SL008352",
+            "description": "Pump electrodes",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 365
+    },
+    {
+        "fields": {
+            "material_code": "SL008351",
+            "description": "SW235 panels",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 366
+    },
+    {
+        "fields": {
+            "material_code": "SL008350",
+            "description": "Comprehansive Installation and Mant. Kit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 367
+    },
+    {
+        "fields": {
+            "material_code": "SL003723",
+            "description": "India Mark II, O & M kit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 368
+    },
+    {
+        "fields": {
+            "material_code": "SL008349",
+            "description": "Pump handles",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 369
+    },
+    {
+        "fields": {
+            "material_code": "SL005909",
+            "description": "Water tanks",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 370
+    },
+    {
+        "fields": {
+            "material_code": "SL003428",
+            "description": "Raiser pipe, 3m",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 371
+    },
+    {
+        "fields": {
+            "material_code": "SL005772",
+            "description": "Connecting rod, 3m",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 372
+    },
+    {
+        "fields": {
+            "material_code": "SL008348",
+            "description": "Cylinder set - Deep well",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 373
+    },
+    {
+        "fields": {
+            "material_code": "SL008347",
+            "description": "Cylinder set - Shallow well",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 374
+    },
+    {
+        "fields": {
+            "material_code": "SL008346",
+            "description": "Pump head complete",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 375
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Sockets",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 376
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Bearing space",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 377
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Reducer Caps",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 378
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Pump Bucket",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 379
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "M12*50 Rod Coupler",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 380
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Rubber Sealing (UV)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 381
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Rubber Sealing (LV)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 382
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Sealing Ring",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 383
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Upper Valves Complete",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 384
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "M12*20 bolt",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 385
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Chain with Coupling",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 386
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Check Valve",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 387
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "6204Z Bearing",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 388
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "4 MM Washer",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 389
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Ss Axle",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 390
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "Nylock Nut M10",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 391
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "HT bolt M10*40",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 392
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "M12 Nut",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 393
+    },
+    {
+        "fields": {
+            "material_code": "SL003701",
+            "description": "M12*40 bolt",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 394
+    },
+    {
+        "fields": {
+            "material_code": "S0109000",
+            "description": "Drum,sterilizing,340mm diam",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 395
+    },
+    {
+        "fields": {
+            "material_code": "X0001",
+            "description": "Freight, Insurance & Inspection",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 396
+    },
+    {
+        "fields": {
+            "material_code": "S9901004",
+            "description": "IEHK2011,kit,basic unit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 397
+    },
+    {
+        "fields": {
+            "material_code": "S9901009",
+            "description": "IEHK2011,kit,suppl.2-equipment",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 398
+    },
+    {
+        "fields": {
+            "material_code": "S9908400",
+            "description": "Resuscitation kit,basic",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 399
+    },
+    {
+        "fields": {
+            "material_code": "SL001028",
+            "description": "Clean delivery kitS",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 400
+    },
+    {
+        "fields": {
+            "material_code": "SL002247",
+            "description": "Computer, laptop(Lenovo thinkpad)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 401
+    },
+    {
+        "fields": {
+            "material_code": "SL005328",
+            "description": "Birth Cushion(innovative reusable delive",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 402
+    },
+    {
+        "fields": {
+            "material_code": "S9902219",
+            "description": "Midwifery kit,3-renewable",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 403
+    },
+    {
+        "fields": {
+            "material_code": "S9902218",
+            "description": "Midwifery kit,2-equipment",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 404
+    },
+    {
+        "fields": {
+            "material_code": "S0557200",
+            "description": "Sling for use w/0145555,0557000,0557100",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 405
+    },
+    {
+        "fields": {
+            "material_code": "SL003914",
+            "description": "Tape measure, Baby head, Sec 212",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 406
+    },
+    {
+        "fields": {
+            "material_code": "SL008038",
+            "description": "Vaccum Aspirators, manual, plastic",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 407
+    },
+    {
+        "fields": {
+            "material_code": "SL008037",
+            "description": "Drip stand, metallic, adjustable",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 408
+    },
+    {
+        "fields": {
+            "material_code": "S5088020",
+            "description": "Tent,light weight,rectangular,75m\u00b2",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 409
+    },
+    {
+        "fields": {
+            "material_code": "S0572510",
+            "description": "Blanket,survival,220x140cm",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 410
+    },
+    {
+        "fields": {
+            "material_code": "S0004123",
+            "description": "Motorcycle,Yamaha DT125",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 411
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "English Ebola Q & A Ebola Booklet",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 412
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "English Pictorial Ebola Leaflet",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 413
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "English Pictorial Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 414
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Ngakarimojong Pictorial Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 415
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Swahili Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 416
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Japhadhola Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 417
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Lusamia Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 418
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Kupsabiny Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 419
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Acholi Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 420
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Alur Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 421
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Madi Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 422
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Lugbara Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 423
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Runyankole Rukiga Ebola Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 424
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rwamba Ebola posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 425
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rukonzo Ebola posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 426
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Luganda Ebola posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 427
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rutooro/Runyoro Ebola posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 428
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "2.5\" GI pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 429
+    },
+    {
+        "fields": {
+            "material_code": "SL000937",
+            "description": "Potty - Children squating potty",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 430
+    },
+    {
+        "fields": {
+            "material_code": "S0008464",
+            "description": "Socket,eq,fthd,GI.,1\u00bd\" ND,14 Bar",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 431
+    },
+    {
+        "fields": {
+            "material_code": "S0008466",
+            "description": "Socket,eq,fthd,GI.,2\u00bd\" ND,14 Bar",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 432
+    },
+    {
+        "fields": {
+            "material_code": "S0008212",
+            "description": "Coupler,eq,PP,comp,HDPE 40mm OD-P",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 433
+    },
+    {
+        "fields": {
+            "material_code": "S0008401",
+            "description": "Coupler,PP,comp,HDPE 50mmxflng 2\"O/ND-P",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 434
+    },
+    {
+        "fields": {
+            "material_code": "S0008402",
+            "description": "Coupler,PP,comp,HDPE 63mmxflng 2\"O/ND-P",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 435
+    },
+    {
+        "fields": {
+            "material_code": "S0008403",
+            "description": "Coupler,PP,comp,HDPE 75mmxflng 2\u00bd\"O/ND-P",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 436
+    },
+    {
+        "fields": {
+            "material_code": "S0008404",
+            "description": "Coupler,PP,comp,HDPE 90mmxflng 3\" O/ND-P",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 437
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "1.5\" GI pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 438
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "40mm PN6 Hdpe Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 439
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "50mm PN6 Hdpe Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 440
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "63mm PN6 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 441
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "63mm PN10 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 442
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "75mm PN10 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 443
+    },
+    {
+        "fields": {
+            "material_code": "U432500",
+            "description": "90mm PN10 HDPE Pipe",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 444
+    },
+    {
+        "fields": {
+            "material_code": "S0008392",
+            "description": "40mm HDPE end cap",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 445
+    },
+    {
+        "fields": {
+            "material_code": "S0008393",
+            "description": "50mm end cap",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 446
+    },
+    {
+        "fields": {
+            "material_code": "S0008343",
+            "description": "50mm 90 degree tee",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 447
+    },
+    {
+        "fields": {
+            "material_code": "S0008417",
+            "description": "50mm HDPE Clamp saddles",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 448
+    },
+    {
+        "fields": {
+            "material_code": "S0008421",
+            "description": "63mm x 32 mm HDPE clamp saddle",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 449
+    },
+    {
+        "fields": {
+            "material_code": "S0008245",
+            "description": "40mm HDPE Adaptor",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 450
+    },
+    {
+        "fields": {
+            "material_code": "S0008248",
+            "description": "63mm adaptors",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 451
+    },
+    {
+        "fields": {
+            "material_code": "S0008212",
+            "description": "40mm HDPE couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 452
+    },
+    {
+        "fields": {
+            "material_code": "S0008224",
+            "description": "50mm HDPE coplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 453
+    },
+    {
+        "fields": {
+            "material_code": "S0008226",
+            "description": "63mm HDPE couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 454
+    },
+    {
+        "fields": {
+            "material_code": "S0008202",
+            "description": "40mm OD HDPE pipe PN 10",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 455
+    },
+    {
+        "fields": {
+            "material_code": "S0008203",
+            "description": "50mm OD HDPE pipe PN 10",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 456
+    },
+    {
+        "fields": {
+            "material_code": "S0008204",
+            "description": "63mm OD HDPE pipe PN 16",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 457
+    },
+    {
+        "fields": {
+            "material_code": "S0005840",
+            "description": "Latrine digging kits",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 458
+    },
+    {
+        "fields": {
+            "material_code": "S0005840",
+            "description": "Sanplats",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 459
+    },
+    {
+        "fields": {
+            "material_code": "U454200",
+            "description": "HP LaserJet P3015DN",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 460
+    },
+    {
+        "fields": {
+            "material_code": "SL000266",
+            "description": "Bag, VHT Black",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 461
+    },
+    {
+        "fields": {
+            "material_code": "SL000338",
+            "description": "T-shirt, large",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 462
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "Press Backdrop Banner",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 463
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rutooro/RunyoroPictorial Leaflet Ebo&Mar",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 464
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rukonzo Pictorial Leaflet Ebola &Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 465
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Swahili Pictorial Leaflet Ebola &Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 466
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Luganda Pictorial Leaflet Ebola &Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 467
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "English Pictorial Leaflet Ebola &Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 468
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Runyankore/Rukiga Pictorial Poster Eb&Ma",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 469
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rukonzo Pictorial Poster Ebola & Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 470
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Rutooro/Runyoro Pictorial Poster",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 471
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Swahili Pictorial Poster Ebola & Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 472
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Luganda Pictorial Poster Ebola & Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 473
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "English Pictorial Poster Ebola & Marburg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 474
+    },
+    {
+        "fields": {
+            "material_code": "S0000591",
+            "description": "Photometer,HemoCue Hb 301/SET",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 475
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Envelopes",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 476
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "VHT Flip charts",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 477
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Staple wires - small boxes",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 478
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Staplers-machine",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 479
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Transparent File Folders",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 480
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Box files - pieces",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 481
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Office clips (small & Big) 10 small boxs",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 482
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Yellow stickers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 483
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "Pen, ball point, blue-Box",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 484
+    },
+    {
+        "fields": {
+            "material_code": "SL004169",
+            "description": "Toner-Print toner cartridge Kyocera",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 485
+    },
+    {
+        "fields": {
+            "material_code": "SL004169",
+            "description": "Toner - Print toner cartridge",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 486
+    },
+    {
+        "fields": {
+            "material_code": "SL006505",
+            "description": "A4 Photocopyiing paper",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 487
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "Flip chart",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 488
+    },
+    {
+        "fields": {
+            "material_code": "S0003581",
+            "description": "SD Bioline Mal Pf (HRP2), kit/25 (RDTs)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 489
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Printing papers A4",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 490
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Flash disks",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 491
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Name tags",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 492
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Markers assorted colors",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 493
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Notebooks rules & punched A4",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 494
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Pens",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 495
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Post it sticky notes- Large size",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 496
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Masking tapes",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 497
+    },
+    {
+        "fields": {
+            "material_code": "U389100",
+            "description": "Flip Charts",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 498
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "NeoNatalie Resuscitator",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 499
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "Mama Natalie complete",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 500
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "HMS Action Plan (Posters)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 501
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "HMS Facilitator guide",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 502
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "HMS Facilitator flip chart",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 503
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "HBB Action Plan (Posters)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 504
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "HBB learner workbooks",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 505
+    },
+    {
+        "fields": {
+            "material_code": "U389900",
+            "description": "HBBFacilitator Flip Chart",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 506
+    },
+    {
+        "fields": {
+            "material_code": "U484650",
+            "description": "Gloves, non-sterile, latex, large",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 507
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ICCM TOTGuide",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 508
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ICCM Facilitator Guide",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 509
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHTSick child job aid",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 510
+    },
+    {
+        "fields": {
+            "material_code": "SL001563",
+            "description": "Medicine box",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 511
+    },
+    {
+        "fields": {
+            "material_code": "SL000266",
+            "description": "VHT bag - Black",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 512
+    },
+    {
+        "fields": {
+            "material_code": "SL004357",
+            "description": "VHT Register",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 513
+    },
+    {
+        "fields": {
+            "material_code": "U452110",
+            "description": "HP ProDisplay P221 (21.5\" Wide Monitor)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 514
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "TARGUS CARRYING CASE, NYLON EXECUTIVE MO",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 515
+    },
+    {
+        "fields": {
+            "material_code": "U456100",
+            "description": "LOGILINK sECURITY CABLE W/COMBINATION",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 516
+    },
+    {
+        "fields": {
+            "material_code": "X0001",
+            "description": "Freight charges",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 517
+    },
+    {
+        "fields": {
+            "material_code": "SL001721",
+            "description": "Generator",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 518
+    },
+    {
+        "fields": {
+            "material_code": "SL006173",
+            "description": "Solar Panel",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 519
+    },
+    {
+        "fields": {
+            "material_code": "S0004123",
+            "description": "Motorcycle (Yamaha DT)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 520
+    },
+    {
+        "fields": {
+            "material_code": "U452110",
+            "description": "HP Compaq EliteDesk 800 SFF",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 521
+    },
+    {
+        "fields": {
+            "material_code": "U452150",
+            "description": "Computer - Lap top",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 522
+    },
+    {
+        "fields": {
+            "material_code": "SL002757",
+            "description": "Digital Camera",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 523
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "modem, Airtel or MTN",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 524
+    },
+    {
+        "fields": {
+            "material_code": "SL002646",
+            "description": "Mouse",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 525
+    },
+    {
+        "fields": {
+            "material_code": "SL002247",
+            "description": "Computer, laptop -Dell Inspiron",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 526
+    },
+    {
+        "fields": {
+            "material_code": "S0008172",
+            "description": "50mm end cap",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 527
+    },
+    {
+        "fields": {
+            "material_code": "SL001172",
+            "description": "50mm 90degree tee",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 528
+    },
+    {
+        "fields": {
+            "material_code": "S0008415",
+            "description": "50mm HDPE Clamp saddles",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 529
+    },
+    {
+        "fields": {
+            "material_code": "S0008050",
+            "description": "50mm HDPE couplers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 530
+    },
+    {
+        "fields": {
+            "material_code": "S0008065",
+            "description": "50mm OD HDPE pipe PN 10",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 531
+    },
+    {
+        "fields": {
+            "material_code": "SL003868",
+            "description": "2'' Atalanta swallow / Lister AC1 Pumpse",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 532
+    },
+    {
+        "fields": {
+            "material_code": "SL000424",
+            "description": "Collapsible bladder tanks (10000 litre c",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 533
+    },
+    {
+        "fields": {
+            "material_code": "SL002695",
+            "description": "NFI Kit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 534
+    },
+    {
+        "fields": {
+            "material_code": "S9935025",
+            "description": "Recreation kit",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 535
+    },
+    {
+        "fields": {
+            "material_code": "S9935098",
+            "description": "School-in-a-box,40 students",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 536
+    },
+    {
+        "fields": {
+            "material_code": "S9935012",
+            "description": "School-in-a-carton,40 students",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 537
+    },
+    {
+        "fields": {
+            "material_code": "S0003582",
+            "description": "SD Bioline Malaria Pf/pan, kit/25",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 538
+    },
+    {
+        "fields": {
+            "material_code": "SL003929",
+            "description": "Office Table/desks",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 539
+    },
+    {
+        "fields": {
+            "material_code": "SL002744",
+            "description": "Chairs",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 540
+    },
+    {
+        "fields": {
+            "material_code": "U454200",
+            "description": "Printer",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 541
+    },
+    {
+        "fields": {
+            "material_code": "SL008257",
+            "description": "Mattress, hospital, Child (With PVC Cove",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 542
+    },
+    {
+        "fields": {
+            "material_code": "SL008256",
+            "description": "Bed, hospital, Child",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 543
+    },
+    {
+        "fields": {
+            "material_code": "S0002170",
+            "description": "Stretcher,patient,w/side rails",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 544
+    },
+    {
+        "fields": {
+            "material_code": "S0002150",
+            "description": "Baby cot- Standard",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 545
+    },
+    {
+        "fields": {
+            "material_code": "S0305000",
+            "description": "Apron,protection,plastic,reusable",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 546
+    },
+    {
+        "fields": {
+            "material_code": "S9910000",
+            "description": "Caesarean sets",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 547
+    },
+    {
+        "fields": {
+            "material_code": "SL008712",
+            "description": "Cylinder head, nitrogen",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 548
+    },
+    {
+        "fields": {
+            "material_code": "SL008713",
+            "description": "Cylinder head, oxygen",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 549
+    },
+    {
+        "fields": {
+            "material_code": "S0002046",
+            "description": "Vaporizer for Anaesthesia machine(part)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 550
+    },
+    {
+        "fields": {
+            "material_code": "U459100",
+            "description": "APC Smart UPS 750 230V",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 551
+    },
+    {
+        "fields": {
+            "material_code": "U454200",
+            "description": "Toner Catridges",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 552
+    },
+    {
+        "fields": {
+            "material_code": "U454200",
+            "description": "HP LaserJet Enterprise P3015dn Printers",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 553
+    },
+    {
+        "fields": {
+            "material_code": "S359163",
+            "description": "Measles vaccine,vial of 10 doses",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 554
+    },
+    {
+        "fields": {
+            "material_code": "S0005396",
+            "description": "Generator set,diesel,air cooled,20kVA **",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 555
+    },
+    {
+        "fields": {
+            "material_code": "S0005407",
+            "description": "Generator set,diesel,air cooled,10kVA**",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 556
+    },
+    {
+        "fields": {
+            "material_code": "S0005404",
+            "description": "Generator set,diesel,air cooled,15kVA**",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 557
+    },
+    {
+        "fields": {
+            "material_code": "SL000368",
+            "description": "Bed sheets",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 558
+    },
+    {
+        "fields": {
+            "material_code": "SL008440",
+            "description": "Solar Suitcase",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 559
+    },
+    {
+        "fields": {
+            "material_code": "SL001170",
+            "description": "Ambulance, tricycle",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 560
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Children's Rights & Busi Principles Info",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 561
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Investor Perspectives & Children's Right",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 562
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Children's Rights & Business Principles",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 563
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "How Business Affects Us",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 564
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Children's Rights&Corporate Sector bklet",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 565
+    },
+    {
+        "fields": {
+            "material_code": "S0003581",
+            "description": "SD Bioline Mal Pf (HRP2), kit/25",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 566
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Q & A \u2013 A5 \u2013 12 pages \u2013 full colour",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 567
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Fact sheet \u2013 A4 \u2013 Full colour \u2013 double s",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 568
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Leaflet \u2013 A5 or A4 with 3 fold \u2013 Full",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 569
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Posters \u2013 A2 \u2013 Full colour \u2013 one sided",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 570
+    },
+    {
+        "fields": {
+            "material_code": "SL000338",
+            "description": "T-shirt, Extra large",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 571
+    },
+    {
+        "fields": {
+            "material_code": "SL000338",
+            "description": "T-shirt, medium",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 572
+    },
+    {
+        "fields": {
+            "material_code": "SL000338",
+            "description": "T-shirt, XXL.",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 573
+    },
+    {
+        "fields": {
+            "material_code": "SL002486",
+            "description": "Patient Mattress - child with PV Ccover",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 574
+    },
+    {
+        "fields": {
+            "material_code": "SL001638",
+            "description": "Patient bed - Child",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 575
+    },
+    {
+        "fields": {
+            "material_code": "U452110",
+            "description": "Personal Computer (PC),general purpose",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 576
+    },
+    {
+        "fields": {
+            "material_code": "U452110",
+            "description": "Computer server and peripherals",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 577
+    },
+    {
+        "fields": {
+            "material_code": "SL001668",
+            "description": "Android samrt and solar charger",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 578
+    },
+    {
+        "fields": {
+            "material_code": "S359321",
+            "description": "HepB vaccine,vial of single dose",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 579
+    },
+    {
+        "fields": {
+            "material_code": "S359190",
+            "description": "bOPV,bivalent type 1+3,vial of 20 doses",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 580
+    },
+    {
+        "fields": {
+            "material_code": "SL006132",
+            "description": "POLYTHYLENE SHEET - 36 / 20 MTR LENGTH",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 581
+    },
+    {
+        "fields": {
+            "material_code": "SL008285",
+            "description": "Jerry Can, rigid, plastic, 3L",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 582
+    },
+    {
+        "fields": {
+            "material_code": "U792100",
+            "description": "Printing SitAn Posters",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 583
+    },
+    {
+        "fields": {
+            "material_code": "U792100",
+            "description": "Printing of summary (SitAn)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 584
+    },
+    {
+        "fields": {
+            "material_code": "U792100",
+            "description": "printing Situation Analysis (SitAn) of C",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 585
+    },
+    {
+        "fields": {
+            "material_code": "X0001",
+            "description": "Freight expences",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 586
+    },
+    {
+        "fields": {
+            "material_code": "S5088020",
+            "description": "Tarpuline, light weight, rectangular, 72",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 587
+    },
+    {
+        "fields": {
+            "material_code": "SL004638",
+            "description": "Posters Full colour",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 588
+    },
+    {
+        "fields": {
+            "material_code": "SL000300",
+            "description": "Pledge banners Tepeth day",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 589
+    },
+    {
+        "fields": {
+            "material_code": "SL000300",
+            "description": "Feather banners Tepeth day",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 590
+    },
+    {
+        "fields": {
+            "material_code": "SL001563",
+            "description": "Medicine boxes",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 591
+    },
+    {
+        "fields": {
+            "material_code": "SL000338",
+            "description": "T-shirts",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 592
+    },
+    {
+        "fields": {
+            "material_code": "SL000266",
+            "description": "VHT Bags - Black",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 593
+    },
+    {
+        "fields": {
+            "material_code": "S0845010",
+            "description": "HEA - Uganda CO to purchase 2000 respira",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 594
+    },
+    {
+        "fields": {
+            "material_code": "U467100",
+            "description": "Samsung s dous 2 (7582)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 595
+    },
+    {
+        "fields": {
+            "material_code": "SL008441",
+            "description": "Marble plaques",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 596
+    },
+    {
+        "fields": {
+            "material_code": "U484650",
+            "description": "Gloves,exam,latex,powderfreemedium(100pc",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 597
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "VHT RDT Job Aids",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 598
+    },
+    {
+        "fields": {
+            "material_code": "SL004741",
+            "description": "Jerry cans, rigid, plastic 20 litres for",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 599
+    },
+    {
+        "fields": {
+            "material_code": "S0005840",
+            "description": "Latrine construction kits",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 600
+    },
+    {
+        "fields": {
+            "material_code": "SL001638",
+            "description": "Patient beds with castors and backrest",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 601
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "PP Framework document",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 602
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ENC Learners work book",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 603
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ENC Faciliators Flip Chart",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 604
+    },
+    {
+        "fields": {
+            "material_code": "S9935060",
+            "description": "ECD kiits",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 605
+    },
+    {
+        "fields": {
+            "material_code": "S0000981",
+            "description": "LLIN,75-100d,w/b/g,180x160x150cm LxWxH",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 606
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Brochure",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 607
+    },
+    {
+        "fields": {
+            "material_code": "SL004601",
+            "description": "Children Laws",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 608
+    },
+    {
+        "fields": {
+            "material_code": "SL001267",
+            "description": "Dongles, Modem - Orange",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 609
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "UNICEF Uganda 2014 Executive Diaries",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 610
+    },
+    {
+        "fields": {
+            "material_code": "SL001000",
+            "description": "Drums of Chlorine Powder- 25 Kg",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 611
+    },
+    {
+        "fields": {
+            "material_code": "U320000",
+            "description": "UNICEF 2015 EXECUTIVE DIARIES",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 612
+    },
+    {
+        "fields": {
+            "material_code": "U447462",
+            "description": "Water treatment(Solvatten)",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 613
+    },
+    {
+        "fields": {
+            "material_code": "SL004594",
+            "description": "ECD CAREGIVER BOOK",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 614
+    },
+    {
+        "fields": {
+            "material_code": "SL003929",
+            "description": "P/S classroom desks.",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 615
+    },
+    {
+        "fields": {
+            "material_code": "U282363",
+            "description": "Round Neck T-Shirts",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 616
+    },
+    {
+        "fields": {
+            "material_code": "SL001679",
+            "description": "Form, Birth registration",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 617
+    },
+    {
+        "fields": {
+            "material_code": "S0004208",
+            "description": "Bicycle,heavy duty,roadster,gents",
+            "unit": null
+        },
+        "model": "eums.item",
+        "pk": 618
+    },
+    {
+        "fields": {
+            "text": "Was product received?",
+            "uuids": "[\"2ff9fab3-4c12-400e-a2fe-4551fa1ebc18\", \"93bbd12e-417c-4789-9c42-6dc6959c03be\", \"53a31c08-896e-43b2-bd1f-e5a527d389b9\", \"b8189435-a6b5-42a0-b5b0-91c95484dae1\"]",
+            "label": "productReceived"
+        },
+        "model": "eums.question",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "text": "What date was it received?",
+            "uuids": "[\"abc9c005-7a7c-44f8-b946-e970a361b6cf\", \"884ed6d8-1cef-4878-999d-bce7de85e27c\"]",
+            "label": "dateOfReceipt"
+        },
+        "model": "eums.question",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "text": "How much was received?",
+            "uuids": "[\"69de6032-f4de-412a-9c9e-ed98fb9bca93\", \"9af2907a-d3a6-41ee-8a12-0b3197d30baf\"]",
+            "label": "amountReceived"
+        },
+        "model": "eums.question",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "text": "What is the quality of the product?",
+            "uuids": "[\"6c1cf92d-59b8-4bd3-815b-783abd3dfad9\", \"fe368546-1b9c-4a15-926d-68b7caaa0380\"]",
+            "label": "qualityOfProduct"
+        },
+        "model": "eums.question",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "text": "Are you satisfied with the product?",
+            "uuids": "[\"7a5c8f57-5c3f-4659-b717-0de556898157\", \"dc27480e-4931-46a8-9bea-ad0dadbec1d8\"]",
+            "label": "satisfiedWithProduct"
+        },
+        "model": "eums.question",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "text": "Have you been informed of the delay?",
+            "uuids": "[\"18b2ea96-cb63-40d8-8c26-1985a944ff1c\", \"84150f15-b18b-4efa-be6b-ad24bc68a08f\", \"4e46a52d-8ea1-4bc4-824c-f8da74ce7ad0\", \"269aa1f7-7ca5-46f6-9bc0-6ad3fb7a5629\"]",
+            "label": "informedOfDelay"
+        },
+        "model": "eums.question",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "text": "What did the partner say is the revised delivery date?",
+            "uuids": "[\"e9c35020-e751-4611-b222-5573b7040c49\", \"3f5d290a-067d-4cb9-bb09-ed7c424a6abd\"]",
+            "label": "revisedDeliveryDate"
+        },
+        "model": "eums.question",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "text": "Feedback about Dissatisfaction",
+            "uuids": "[\"4dd1a813-27d4-4511-82e3-cc470fcd3baa\"]",
+            "label": "feedbackAboutDissatisfaction"
+        },
+        "model": "eums.question",
+        "pk": 8
+    },
+    {
+        "fields": {},
+        "model": "eums.numericquestion",
+        "pk": 3
+    },
+    {
+        "fields": {},
+        "model": "eums.textquestion",
+        "pk": 2
+    },
+    {
+        "fields": {},
+        "model": "eums.textquestion",
+        "pk": 7
+    },
+    {
+        "fields": {},
+        "model": "eums.textquestion",
+        "pk": 8
+    },
+    {
+        "fields": {},
+        "model": "eums.multiplechoicequestion",
+        "pk": 1
+    },
+    {
+        "fields": {},
+        "model": "eums.multiplechoicequestion",
+        "pk": 4
+    },
+    {
+        "fields": {},
+        "model": "eums.multiplechoicequestion",
+        "pk": 5
+    },
+    {
+        "fields": {},
+        "model": "eums.multiplechoicequestion",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "text": "Yes",
+            "question": 1
+        },
+        "model": "eums.option",
+        "pk": 1
+    },
+    {
+        "fields": {
+            "text": "Damaged",
+            "question": 4
+        },
+        "model": "eums.option",
+        "pk": 2
+    },
+    {
+        "fields": {
+            "text": "Good",
+            "question": 4
+        },
+        "model": "eums.option",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "text": "Expired",
+            "question": 4
+        },
+        "model": "eums.option",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "text": "No",
+            "question": 5
+        },
+        "model": "eums.option",
+        "pk": 5
+    },
+    {
+        "fields": {
+            "text": "Yes",
+            "question": 5
+        },
+        "model": "eums.option",
+        "pk": 6
+    },
+    {
+        "fields": {
+            "text": "No",
+            "question": 6
+        },
+        "model": "eums.option",
+        "pk": 7
+    },
+    {
+        "fields": {
+            "text": "Yes",
+            "question": 6
+        },
+        "model": "eums.option",
+        "pk": 8
+    },
+    {
+        "fields": {
+            "text": "No",
+            "question": 1
+        },
+        "model": "eums.option",
+        "pk": 9
+    },
+    {
+        "fields": {
+            "end_nodes": "[[4, 2], [4, 4], [5, 6], [6, 7], [6, 8], [7, -1], [8, -1]]",
+            "for_node_type": "END_USER",
+            "rapid_pro_id": 2436
+        },
+        "model": "eums.flow",
+        "pk": 3
+    },
+    {
+        "fields": {
+            "end_nodes": "[[3, -1], [6, 8], [7, -1]]",
+            "for_node_type": "MIDDLE_MAN",
+            "rapid_pro_id": 2662
+        },
+        "model": "eums.flow",
+        "pk": 4
+    },
+    {
+        "fields": {
+            "username": "admin",
+            "first_name": "",
+            "last_name": "",
+            "is_active": true,
+            "is_superuser": true,
+            "is_staff": true,
+            "last_login": "2014-12-08T18:31:59.019",
+            "groups": [],
+            "user_permissions": [],
+            "password": "pbkdf2_sha256$12000$PzJDgoCvVN9w$65lvvRp/vLr0Kpbubhsn6SpWM3634omKe7ZxYGp3Yfg=",
+            "email": "aaa@dd.cc",
+            "date_joined": "2014-10-27T13:46:10.890"
+        },
+        "model": "auth.user",
+        "pk": 1
+    }
+]
