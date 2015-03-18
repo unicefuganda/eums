@@ -68,6 +68,8 @@ File naming convention:
 * for tests: test_[[OBJECT]]_[[ACTION]].py
 e.g: test_location_form.py, test_location_model.py, test_location_views.py
 
+When running feature tests with grunt make sure the local instance of djangoserver is not running, else they will likely fail since they will try run against the local instance.
+
 #Deployment
 *On Ubuntu 14.04,
 
