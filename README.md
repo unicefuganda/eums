@@ -68,7 +68,12 @@ File naming convention:
 * for tests: test_[[OBJECT]]_[[ACTION]].py
 e.g: test_location_form.py, test_location_model.py, test_location_views.py
 
+#Feature tests
 When running feature tests with grunt make sure the local instance of djangoserver is not running, else they will likely fail since they will try run against the local instance.
+
+Feature tests may also fail if you don't have chromedriver installed. If you use brew this can be done running
+
+        $ brew install chromedriver
 
 #Deployment
 *On Ubuntu 14.04,
