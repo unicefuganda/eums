@@ -1,4 +1,6 @@
 (function (module) {
+    var SEVENTY_FIVE_PERCENT = 75, FIFTY_PERCENT = 50;
+
     function getNumberOf(receivedCriteria, data) {
         return data.filter(function (answer) {
             return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase();
@@ -41,12 +43,23 @@
         return noProductReceived / consigneeResponses.length * 100;
     }
 
-    function getHeatMapColor(consigneeResponses) {
+    function getPercentageReceived(consigneeResponses) {
         var noProductReceived = getNumberOf("yes", consigneeResponses).length;
+        return getPercentage(noProductReceived, consigneeResponses);
+    }
+
+    function getPercentageReceivedWithIssues(consigneeResponses) {
         var noProductReceivedWithIssues = getNumberOfIssues("yes", consigneeResponses).length;
+        return getPercentage(noProductReceivedWithIssues, consigneeResponses);
+    }
+
+    function getHeatMapColor(consigneeResponses) {
         var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
-        if ((getPercentage(noProductReceived, consigneeResponses) >= 75) && getPercentage(noProductReceivedWithIssues, consigneeResponses) < 50) return GREEN;
-        if ((getPercentage(noProductReceived, consigneeResponses) < 75 && getPercentage(noProductReceived, consigneeResponses) >= 50) || getPercentage(noProductReceivedWithIssues, consigneeResponses) >= 50) return ORANGE;
+        var percentageReceived = getPercentageReceived(consigneeResponses);
+        var percentageReceivedWithIssues = getPercentageReceivedWithIssues(consigneeResponses);
+
+        if (percentageReceived >= SEVENTY_FIVE_PERCENT && percentageReceivedWithIssues < FIFTY_PERCENT) return GREEN;
+        if ((percentageReceived < SEVENTY_FIVE_PERCENT && percentageReceived >= FIFTY_PERCENT) || percentageReceivedWithIssues >= FIFTY_PERCENT) return ORANGE;
         return RED;
     }
 
@@ -528,6 +541,33 @@
                 });
             }
 
+            function getReceivedResponses(responsesToPlot){
+                return responsesToPlot.map(function (responseLocationMap) {
+                    var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
+                    var percentageReceivedWithIssues = getPercentageReceivedWithIssues(responseLocationMap.consigneeResponses);
+                    if (percentageReceived >= SEVENTY_FIVE_PERCENT && percentageReceivedWithIssues < FIFTY_PERCENT)
+                        return responseLocationMap.consigneeResponses;
+                    return [];
+                });
+            }
+
+            function getNotReceivedResponses(responsesToPlot){
+                return responsesToPlot.map(function (responseLocationMap) {
+                    var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
+                    return percentageReceived < FIFTY_PERCENT ? responseLocationMap.consigneeResponses : [];
+                });
+            }
+
+            function getReceivedResponsesWithIssues(responsesToPlot){
+                return responsesToPlot.map(function (responseLocationMap) {
+                    var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
+                    var percentageReceivedWithIssues = getPercentageReceivedWithIssues(responseLocationMap.consigneeResponses);
+                    if ((percentageReceived < SEVENTY_FIVE_PERCENT && percentageReceived >= FIFTY_PERCENT) || percentageReceivedWithIssues >= FIFTY_PERCENT)
+                        return responseLocationMap.consigneeResponses;
+                    return [];
+                });
+            }
+
             return {
                 restrict: 'A',
                 scope: false,
@@ -563,35 +603,21 @@
                                 }
 
                                 scope.isFiltered = true;
+
                                 if (newValue.received) {
-                                    receivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                        return responseLocationMap.consigneeResponses.filter(function (response) {
-                                            if (response.satisfiedWithProduct)
-                                                return Boolean(response.productReceived.toLowerCase() === 'yes' && response.satisfiedWithProduct.toLowerCase() === 'yes');
-                                            else
-                                                return response.productReceived.toLowerCase() === 'yes'
-                                        });
-                                    });
+                                    receivedResponses = getReceivedResponses(responsesToPlot)
                                 }
 
                                 if (newValue.notDelivered) {
-                                    notReceivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                        return responseLocationMap.consigneeResponses.filter(function (response) {
-                                            return response.productReceived.toLowerCase() === 'no';
-                                        });
-                                    });
+                                    notReceivedResponses = getNotReceivedResponses(responsesToPlot);
                                 }
 
                                 if (newValue.receivedWithIssues) {
-                                    receivedResponsesWithIssues = responsesToPlot.map(function (responseLocationMap) {
-                                        return responseLocationMap.consigneeResponses.filter(function (response) {
-                                            return Boolean(response.satisfiedWithProduct && response.satisfiedWithProduct.toLowerCase() === 'no' && response.productReceived.toLowerCase() === 'yes');
-                                        });
-                                    });
+                                    receivedResponsesWithIssues = getReceivedResponsesWithIssues(responsesToPlot);
                                 }
 
-                                var received = _.flatten(receivedResponses).length ? _.flatten(receivedResponses) : _.flatten(receivedResponsesWithIssues);
-                                var deliveryStatusResponses = notReceivedResponses.concat(received);scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
+                                var received = receivedResponses.concat(receivedResponsesWithIssues);
+                                var deliveryStatusResponses = notReceivedResponses.concat(received);
                                 scope.data.allResponsesLocationMap = DistributionPlanService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
                             });
                         });
