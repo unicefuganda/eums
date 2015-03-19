@@ -6,110 +6,95 @@ End User Monitoring System
 
 Installation
 ------------
-* Postgres should be running "install postgresql from http://www.postgresql.org/download/"
-* Ensure that postgres user exits" (createuser -s -r postgres)
+* Install and Setup PostgreSQL
+	* For Mac Users, can run the following:
+		*  `brew install postgres` - install with brew
+		*  `postgres -D /usr/local/var/postgres` - start postgres server
+	*  `createuser -s -r postgres` - create the `postgres` user
+	*  `createdb -O postgres eums` - create the `eums` database
 
-##Git
+* Install [Node](http://nodejs.org/).
 
+* Install chromedriver for running feature tests.
+	* `brew install chromedriver` 
+
+* A note on Python Virtual Environments
+	* We recommend using and managing your virtual environments with [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/). 
+	* If you are using a shared Virtual Environments directory that is not the default location used by virtualenvwrapper (~/.virtualenvs/), you will need to note this location for later use when running functional tests.
+
+* Set up the project and install necessary packages
+
+        # Clone the repository
+        
         $ git clone https://github.com/unicefuganda/eums.git
-
         $ cd eums
 
-        $ virtualenv eums
+        # Create and source your virtual environment in one of two ways:
         
+        1) example using virtualenvwrapper
+
+        $ source /usr/local/bin/virutalenvwrapper.sh
+        $ mkvirtualenv eums
+        
+        2) example using virtualenv within project directory
+
+        $ virtualenv eums
         $ source eums/bin/activate
+        
+        # Install necessary packages
 
         $ pip install -r requirements.txt
-
         $ cd eums/client
-
-        "install node from http://nodejs.org/"
-
         $ npm install
-
         $ npm install -g bower
-
         $ bower install
-
         $ npm install -g grunt-cli
+        
+* Populate the database. Note to install one of the fixtures (e.g. new\_data.json), you will need to comment out the `schedule_run_for(line_item)` line in the `handlers.py` file before running the `loaddata` script below.
 
-        $ grunt - tests should all pass
-
-        $ cd ../..
-
-        $ createdb -O postgres eums
-
+        $ cd to/the/project/root
         $ python manage.py syncdb --noinput
-
         $ python manage.py migrate
-
-        $ python manage.py runserver
-
-==
-
-#Note
-
-Before you start up the server make sure you have redis-server installed and running 
-        
-        $ brew install redis
-        
-        $ redis-server
-==
-
-To install one of the fixtures (e.g. new_data.json), you will need to comment out the 'schedule_run_for(line_item)' line in the handlers.py file before running
-        
         $ python manage.py loaddata sample-data.json
 
-To test
-        
+* Run the tests to verify setup
+
         $ python manage.py test
-
-File naming convention:
-* for tests: test_[[OBJECT]]_[[ACTION]].py
-e.g: test_location_form.py, test_location_model.py, test_location_views.py
-
-#Feature tests
-When running feature tests with grunt make sure the local instance of djangoserver is not running, else they will likely fail since they will try run against the local instance.
-
-Feature tests may also fail if you don't have chromedriver installed. If you use brew this can be done running
-
-        $ brew install chromedriver
-
-#Deployment
-*On Ubuntu 14.04,
-
-1. Add your public key to ~/.ssh/authorized_keys on the host server if you have not done this already
-
-2. Install chef version 11.8.2
-
-        $ apt-get install chef
-
-3. Obtain the eums MailGun API key or Setup a [mailGun](https://mailgun.com) account and get its key. You will need this in the next step.
-
-4. Create a text file with provisioning parameters. (host, user, ssh-key, etc). See scripts/sample-provisioning-params.txt for details.
-    No comments are allowed in this file.
-
-5. Run the installation script for eums
+        $ cd eums/client
+        $ grunt
         
-        $ ./scripts/staging.sh /path/to/your/provisioning-params.txt
+        # If your virtual environment is not at ~/.virtualenvs/, run:
         
-        # Notes:
-        - Use the API token for the RapidPro instance you want to connect the instance you are provisioning.
-        - Not specifying the RapidPro token will cause provisioning not to replace your settings. Useful when you are re-provisioning an instance.
+        $ grunt --venvHome=relative/path/to/virtualenv/
 
-6. Go to the [contacts repo](https://github.com/unicefuganda/contacts) and follow the deployment instructions
-
-7. The provisioning process creates flows and questions based on flow ids and node ids in the default End User and EUMS IP & Sub-consignees
-   flows on the __UNICEF Uganda__ account. If you want to connect the app to another account, ensure that the flows from
-   the __UNICEF Uganda__ account are transferred to your new account and that the ids of the flows and the questions in 
-   your new EUMS instance's database match the flow ids and the node uuids in the new RapidPro account. If this is not done,
-   your new EUMS instance will not be able to start flows and/or receive messages from end users.
-   
-   There are files under the __scripts__ directory to help with the translation. One is rapid-pro-id-translation.txt and the 
-   other is translate_rapid_pro_ids.py. Add your translations to rapid-pro-id-translation.txt (instructions can be found therein) 
-   then run 
+* Start the redis server
         
-        $ cd /home/eums/app/scripts
-        $ ../manage.py runscript translate_rapid_pro_ids
-       
-   Your translation will be done.
+        $ brew install redis
+        $ redis-server
+
+* Start the application server
+
+        $ cd to/the/project/root
+        $ python manage.py runserver
+        
+
+#Troubleshooting
+
+* When running feature tests with grunt make sure the local instance of djangoserver is not running, else they will likely fail since they will try run against the local instance.
+
+* When installing packages, we have seen node packages throw a `CERT_UNTRUSTED` error at times. This is due to a [strict SSL issue](http://bower.io/docs/config/#strict-ssl). In this case, you can add a `.bowerrc` file in the `eums/client` directory with the following contents:
+
+        {
+			"directory": "bower_components",
+			"registry": "http://bower.herokuapp.com",
+			"strict-ssl": false
+		}
+	
+* At times, `npm` has been unable to set the PhantomJS binary to the correct path, even when installing globally. In this case, set it explicitly.
+
+* Also note that the karma server and PhantomJS will both run on port `8080`. Make sure this port is free when running `grunt`.
+
+
+#Deployments
+
+For deployments, see the [Deployment Guide](https://github.com/unicefuganda/eums/wiki/Deployment-Guide).
