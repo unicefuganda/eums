@@ -128,7 +128,7 @@
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
                 maxZoom: 13,
-                minZoom: 7
+                minZoom: 6
             }).addTo(map);
 
 
