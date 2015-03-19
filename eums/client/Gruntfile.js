@@ -14,6 +14,8 @@ module.exports = function (grunt) {
         dist: 'dist'
     };
 
+    var venvHome = grunt.option('venvHome') || '~/.virtualenvs/';
+
     // Define the configuration for all the tasks
     grunt.initConfig({
         // The actual grunt server settings
@@ -197,7 +199,7 @@ module.exports = function (grunt) {
 
         shell: {
             sourceEnv: {
-                command: 'source ../../eums/bin/activate'
+                command: 'source ' + venvHome + 'eums/bin/activate'
             },
             createDb: {
                 command: 'createdb eums_test'
