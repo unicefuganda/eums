@@ -197,7 +197,7 @@ module.exports = function (grunt) {
 
         shell: {
             sourceEnv: {
-                command: 'source ~/virtualenvs/eums/bin/activate'
+                command: 'source ../../eums/bin/activate'
             },
             createDb: {
                 command: 'createdb eums_test'
