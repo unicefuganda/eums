@@ -50,13 +50,13 @@ Installation
         $ bower install
         $ npm install -g grunt-cli
         
-* Populate the database. Note to install one of the fixtures (e.g. new\_data.json), you will need to comment out the `schedule_run_for(line_item)` line in the `handlers.py` file before running the `loaddata` script below.
+* Populate the database.
 
         $ cd to/the/project/root
         $ python manage.py syncdb --noinput
         $ python manage.py migrate
         
-* In order to load seed data there are two fixture files available 'sample-data.json' and 'new-deployment-instance.json'. The sample-data.json contains example responses, distribution plans, sales orders etc. The new-deployment-instance.json is recommended for a clean instance where plans, sales orders, purchase orders, responses are not loaded but tables such as flow, items, item units are filled in. Load the data by running the command line below with the appropriate fixture file name.   
+* In order to load seed data there are two fixture files available 'sample-data.json' and 'new-deployment-instance.json'. The sample-data.json contains example responses, distribution plans, sales orders etc. The new-deployment-instance.json is recommended for a clean instance where plans, sales orders, purchase orders, responses are not loaded but tables such as flow, items, item units are filled in. Load the data by running the command line below with the appropriate fixture file name. (Note that if running with the 'sample-data.json' file, you will need to comment out the `schedule_run_for(line_item)` line in the `handlers.py` file.)
 
         $ python manage.py loaddata [fixture-file-name]
 
@@ -81,7 +81,8 @@ Installation
         $ python manage.py runserver
         
 
-#Troubleshooting
+Troubleshooting
+------------
 
 * When running feature tests with grunt make sure the local instance of djangoserver is not running, else they will likely fail since they will try run against the local instance.
 
@@ -98,6 +99,7 @@ Installation
 * Also note that the karma server and PhantomJS will both run on port `8080`. Make sure this port is free when running `grunt`.
 
 
-#Deployments
+Deployments
+------------
 
 For deployments, see the [Deployment Guide](https://github.com/unicefuganda/eums/wiki/Deployment-Guide).
