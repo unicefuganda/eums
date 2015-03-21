@@ -1,5 +1,4 @@
 {
-    "CONTACT_SERVICE_URL": "http://prodURL:8005/api/contacts/",
     "BACKEND_URLS": {
         "DISTRIBUTION_REPORT": "/api/distribution-report/",
         "DISTRIBUTION_PLAN": "/api/distribution-plan/",
@@ -38,7 +37,10 @@
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission"
     },
-     "districtLayerStyle": {
+    "CONTACT_SERVICE_URL": "http://eum.unicefuganda.org/contacts/",
+    "DISTRICTGEOJSONURL": "static/app/data/districts.json",
+    "DISTRICTJSONURL": "static/app/data/district_name.json",
+    "districtLayerStyle": {
         "weight": 1,
         "color": "#036E97",
         "fillColor": "#CCE9F4",

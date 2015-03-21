@@ -1,5 +1,4 @@
 {
-    "CONTACT_SERVICE_URL": "http://stg.eum.unicefuganda.org/contacts/",
     "BACKEND_URLS": {
         "DISTRIBUTION_REPORT": "/api/distribution-report/",
         "DISTRIBUTION_PLAN": "/api/distribution-plan/",
@@ -38,8 +37,9 @@
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission"
     },
-    "DISTRICTGEOJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/districts.json",
-    "DISTRICTJSONURL": "http://stg.eum.unicefuganda.org/static/app/data/district_name.json",
+    "CONTACT_SERVICE_URL": "http://stg.eum.unicefuganda.org/contacts/",
+    "DISTRICTGEOJSONURL": "static/app/data/districts.json",
+    "DISTRICTJSONURL": "static/app/data/district_name.json",
     "districtLayerStyle": {
         "weight": 1,
         "color": "#036E97",
