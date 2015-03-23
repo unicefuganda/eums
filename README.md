@@ -60,7 +60,7 @@ Installation
 
         $ python manage.py loaddata [fixture-file-name]
 
-* Run the tests to verify setup
+* Run the tests to verify setup. 
 
         $ python manage.py test
         $ cd eums/client
@@ -69,6 +69,8 @@ Installation
         # If your virtual environment is not at ~/.virtualenvs/, run:
         
         $ grunt --venvHome=relative/path/to/virtualenv/
+        
+**Note:** Grunt Karma:Unit tests run on port 8080. If you need these to run on a different port adjust the port value on eums/eums/client/test/karma.conf.js accordingly.
 
 * Start the redis server
         
