@@ -31,7 +31,7 @@ echo "change to root user"
 sudo su
 
 echo "Go to home"
-cd /home
+cd /var/www
 
 echo "remove previous code"
 rm -rf eums-provisioning
@@ -50,39 +50,39 @@ echo "install ruby shadow"
 gem install ruby-shadow
 
 echo "remove chef directory"
-rm -rf /home/eums-staging/provisioning
+rm -rf /var/www/eums-provisioning
 
 echo "create chef directory"
-mkdir -p /home/eums-staging/provisioning
+mkdir -p /var/www/eums-provisioning
 
 echo "clone the provisoning repository"
-git clone https://github.com/unicefuganda/eums-provisioning.git /home/eums-staging/provisioning
+git clone https://github.com/unicefuganda/eums-provisioning.git /var/www/eums-provisioning
 
 echo "Creating settings overrides"
 if [ ${RAPIDPRO_API_TOKEN} ]
 then
-    /home/eums-staging/provisioning/chef/cookbooks/backend/files/default/create-settings-overrides.sh ${RAPIDPRO_API_TOKEN} ${HOST_IP} ${MAILGUN_ACCESS_KEY}
+    /var/www/eums-provisioning/chef/cookbooks/backend/files/default/create-settings-overrides.sh ${RAPIDPRO_API_TOKEN} ${HOST_IP} ${MAILGUN_ACCESS_KEY}
 fi
 
 echo "add cookbook and roles path to solo.rb"
 rm /etc/chef/solo.rb
 
-echo 'cookbook_path "/home/eums-staging/provisioning/chef/cookbooks"' >> /etc/chef/solo.rb
-echo 'role_path "/home/eums-staging/provisioning/chef/roles"' >> /etc/chef/solo.rb
+echo 'cookbook_path "/var/www/eums-provisioning/chef/cookbooks"' >> /etc/chef/solo.rb
+echo 'role_path "/var/www/eums-provisioning/chef/roles"' >> /etc/chef/solo.rb
 
 echo "provision eums to staging"
 chef-solo -o role[staging]
 
 echo 'replacing settings file'
 if test -f "/home/staging-files/settings.py";
-    then cp /home/staging-files/settings.py  /home/eums/app/eums/local_settings.py
+    then cp /var/www/eums-config/settings.py  /var/www/somalia/eums/eums/local_settings.py
 fi
 
 if test -f "/home/staging-files/staging.json";
-    then cp /home/staging-files/staging.json  /home/eums/app/eums/client/config/staging.json
+    then cp /var/www/eums-config/staging.json  /var/www/somalia/eums/eums/client/config/staging.json
 fi
 
-cd /home/eums/app/eums/client
+cd /var/www/somalia/eums/eums/client
 grunt build-staging
 
 echo "restart uwsgi"
