@@ -75,14 +75,14 @@ chef-solo -o role[staging]
 
 echo 'replacing settings file'
 if test -f "/home/staging-files/settings.py";
-    then cp /var/www/eums-config/settings.py  /var/www/somalia/eums/eums/local_settings.py
+    then cp /var/www/eums-config/settings.py  /var/www/eums/eums/local_settings.py
 fi
 
 if test -f "/home/staging-files/staging.json";
-    then cp /var/www/eums-config/staging.json  /var/www/somalia/eums/eums/client/config/staging.json
+    then cp /var/www/eums-config/staging.json  /var/www/eums/eums/client/config/staging.json
 fi
 
-cd /var/www/somalia/eums/eums/client
+cd /var/www/eums/eums/client
 grunt build-staging
 
 echo "restart uwsgi"
