@@ -1,12 +1,18 @@
-<div class="container-fluid">
+<div id="vision-import" class="container-fluid">
     <div class="content">
         <h4 class="page-header">Import Data</h4>
 
+        <div class="important-note">
+            <em><strong>Important Note:</strong> When importing VISION tables make sure you <u>import the Sales Orders first, then Purchase orders and lastly the Release Orders</u>. This is because Purchase Orders require Sales Orders to exist in the system to be imported, while Release Orders require both Sales Orders and Purchase Orders.</em>
+        </div>
+
+        <div class="user-manual">
+            A user manual on how to extract the VISION tables can be found <a href="https://docs.google.com/document/d/176OWeAPqay5eV6f5n-ql1hfzi2MoOTR5gCBhysOsfrM/edit?usp=sharing" target="_blank">here</a>.
+        </div>
+
         <div class="panel panel-default" uploader="salesOrdersUploader" filters="queueLimit, customFilter">
             <div class="row pad-20">
-                <h4 class="underline">Import Sales Orders (ZORD)</h4>
-                <span>To import Sales Orders from vision, export Sales Orders (ZORD) for the time period
-                you want with the <em><strong>default</strong></em> rows selected and in <em><strong>excel (.xls) format.</strong></em></span>
+                <h4 class="underline">Import Sales Orders (ZSOCLS)</h4>
             </div>
             <div class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Sales Orders (in excel format):</label>
@@ -37,8 +43,6 @@
         <div class="panel panel-default" uploader="purchaseOrdersUploader" filters="queueLimit, customFilter">
             <div class="row pad-20">
                 <h4 class="underline">Import Purchase Orders (ZEXPD)</h4>
-                <span>To import Purchase Orders from vision, export Purchase Orders (ZEXPD) for the time period
-                you want with in <em><strong>excel (.xls) format</strong></em>.<br/></span>
             </div>
             <div class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Purchase Orders (in excel format):</label>
@@ -68,9 +72,7 @@
         </div>
         <div class="panel panel-default" uploader="releaseOrdersUploader" filters="queueLimit, customFilter">
             <div class="row pad-20">
-                <h4 class="underline">Import Release Orders (ZROST)</h4>
-                <span>To import Release Orders from vision, export Release Orders (ZROST) for the time period
-                you want with the <em><strong>default</strong></em> rows selected and in <em><strong>excel (.xls) format</strong></em>.<br/></span>
+                <h4 class="underline">Import Release Orders (ZROSTS)</h4>
             </div>
             <div class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Release Orders (in excel format):</label>
