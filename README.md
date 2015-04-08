@@ -56,7 +56,7 @@ Installation
         $ python manage.py syncdb --noinput
         $ python manage.py migrate
         
-* In order to load seed data there are two fixture files available 'sample-data.json' and 'new-deployment-instance.json'. The sample-data.json contains example responses, distribution plans, sales orders etc. The new-deployment-instance.json is recommended for a clean instance where plans, sales orders, purchase orders, responses are not loaded but tables such as flow, items, item units are filled in. Load the data by running the command line below with the appropriate fixture file name. (Note that if running with the 'sample-data.json' file, you will need to comment out the `schedule_run_for(line_item)` line in the `handlers.py` file.)
+* In order to load seed data there are two fixture files available 'sample-data.json' and 'new-deployment-instance.json'. The sample-data.json contains example responses, distribution plans, sales orders etc. The new-deployment-instance.json is recommended for a clean instance where plans, sales orders, purchase orders, responses are not loaded but tables such as flow, items, item units are filled in. Load the data by running the command line below with the appropriate fixture file name. (Note that if running with the 'sample-data.json' file, you will need to comment out the `schedule_run_for(line_item)` line in the `eums/signals/handlers.py` file.)
 
         $ python manage.py loaddata [fixture-file-name]
 
