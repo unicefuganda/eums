@@ -8,9 +8,10 @@ from xlutils.view import View
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem, \
     PurchaseOrder, PurchaseOrderItem
 
+
 def _clean_input(value):
     parseStr = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
-                        re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$',x) and float(x) or x
+                         re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$', x) and float(x) or x
 
     if type(value) == unicode:
         encoded_value = value.encode('ascii', 'ignore')
@@ -167,7 +168,8 @@ class SalesOrderFacade(Facade):
 
 
 class ReleaseOrderFacade(Facade):
-    RELEVANT_DATA = {0: 'order_number', 1: 'ro_item_number', 3: 'recommended_delivery_date', 4: 'material_code', 5: 'description',
+    RELEVANT_DATA = {0: 'order_number', 1: 'ro_item_number', 3: 'recommended_delivery_date', 4: 'material_code',
+                     5: 'description',
                      6: 'quantity', 7: 'value', 11: 'consignee', 14: 'so_number', 15: 'purchase_order', 22: 'waybill',
                      40: 'so_item_number', 41: 'po_item_number', 12: 'consignee_name'}
 
@@ -193,7 +195,7 @@ class ReleaseOrderFacade(Facade):
 
         if len(matching_purchase_orders):
             matching_purchase_order_items = PurchaseOrderItem.objects.filter(purchase_order=matching_purchase_orders[0],
-                                                                            item_number=item_dict['po_item_number'])
+                                                                             item_number=item_dict['po_item_number'])
 
             if len(matching_purchase_order_items):
                 matching_ro_item = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
@@ -201,10 +203,12 @@ class ReleaseOrderFacade(Facade):
                 if not len(matching_ro_item):
                     item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
                                                          description=item_dict['description'])
-                    ReleaseOrderItem.objects.create(release_order=order, purchase_order_item=matching_purchase_order_items[0],
+                    ReleaseOrderItem.objects.create(release_order=order,
+                                                    purchase_order_item=matching_purchase_order_items[0],
                                                     item=item,
                                                     item_number=item_dict['ro_item_number'],
-                                                    quantity=float(item_dict['quantity']), value=float(item_dict['value']))
+                                                    quantity=float(item_dict['quantity']),
+                                                    value=float(item_dict['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']
@@ -216,7 +220,8 @@ class ReleaseOrderFacade(Facade):
         self._remove_order_level_data_from(item_dict)
         order_list.append({'so_number': sales_order, 'purchase_order': purchase_order, 'order_number': order_number,
                            'consignee': consignee, 'consignee_name': consignee_name,
-                           'recommended_delivery_date': recommended_delivery_date,'waybill': waybill, 'items': [item_dict]})
+                           'recommended_delivery_date': recommended_delivery_date, 'waybill': waybill,
+                           'items': [item_dict]})
 
     def _remove_order_level_data_from(self, item_dict):
         del item_dict['order_number']
@@ -238,6 +243,7 @@ class ReleaseOrderFacade(Facade):
             return PurchaseOrder.objects.filter(order_number=order_dict['purchase_order'])
         return []
 
+
 class PurchaseOrderFacade(Facade):
     RELEVANT_DATA = {6: 'order_number', 7: 'po_item_number', 9: 'material_code', 10: 'material_description',
                      16: 'value', 18: 'quantity', 20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
@@ -248,13 +254,15 @@ class PurchaseOrderFacade(Facade):
             return matching_purchase_orders[0]
 
         matching_sales_orders = self._get_matching_sales_order(order_dict)
+        po_date = None if order_dict['po_date'] == '' else self._get_as_date(order_dict['po_date'])
         if len(matching_sales_orders):
             return PurchaseOrder.objects.create(order_number=order_dict['order_number'],
                                                 sales_order=matching_sales_orders[0],
-                                                date=self._get_as_date(order_dict['po_date']))
+                                                date=po_date)
 
     def _create_new_item(self, item_dict, order):
-        matching_sales_order_items = order.sales_order.salesorderitem_set.filter(item_number=item_dict['so_item_number'])
+        matching_sales_order_items = order.sales_order.salesorderitem_set.filter(
+            item_number=item_dict['so_item_number'])
 
         if len(matching_sales_order_items):
             matching_po_item = PurchaseOrderItem.objects.filter(purchase_order__order_number=order.order_number,
@@ -287,3 +295,9 @@ class PurchaseOrderFacade(Facade):
         if not isinstance(order_dict['so_number'], basestring):
             return SalesOrder.objects.filter(order_number=order_dict['so_number'])
         return []
+
+    def _is_summary_row(self, row):
+        for column in self.RELEVANT_DATA.values():
+            if column != 'po_date' and row[column] is '':
+                return True
+        return False
