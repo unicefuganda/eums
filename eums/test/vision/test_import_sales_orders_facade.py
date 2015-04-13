@@ -18,7 +18,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.sales_order_file_location = 'sales_orders.xlsx'
         self.create_sales_order_workbook()
         self.imported_sales_order_data = [{'order_number': 20146879,
-                                           'programme_wbs_element': '4380/A0/04/105',
+                                           'programme_wbs_element': '4380/A0/04/105/007',
                                            'items': [
                                                {'material_code': 'S0009113',
                                                 'item_number': 10,
@@ -34,7 +34,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                                 'quantity': 12}], },
 
                                           {'order_number': 20147028,
-                                           'programme_wbs_element': '4380/A0/04/106',
+                                           'programme_wbs_element': '4380/A0/04/106/004',
                                            'items': [
                                                {'material_code': 'S7800001',
                                                 'item_number': 10,
@@ -63,8 +63,8 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.item_three = ItemFactory(material_code='S7800001', description='Retinol 100,000IU soft gel.caps/PAC-500')
 
     def create_programmes(self):
-        self.programme_one = ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
-        self.programme_two = ProgrammeFactory(wbs_element_ex='4380/A0/04/106')
+        self.programme_one = ProgrammeFactory(wbs_element_ex='4380/A0/04/105/007')
+        self.programme_two = ProgrammeFactory(wbs_element_ex='4380/A0/04/106/004')
 
     def test_should_save_sales_order_data(self):
         self.assertEqual(SalesOrder.objects.count(), 0)
@@ -118,11 +118,11 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.assertEqual(SalesOrderItem.objects.count(), 3)
 
     def test_should_set_net_price_to_zero_if_quantity_of_an_item_is_zero(self):
-        ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
+        ProgrammeFactory(wbs_element_ex='4380/A0/04/105/007')
         item_one = ItemFactory(material_code='S0009113', description='SQFlex 3-10 Pump C/W 1.4KW')
 
         self.facade.save_order_data([{'order_number': 20146879,
-                                      'programme_wbs_element': '4380/A0/04/105',
+                                      'programme_wbs_element': '4380/A0/04/105/007',
                                       'items': [
                                           {'material_code': u'S0009113',
                                            'item_number': u'10',
