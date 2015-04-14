@@ -123,7 +123,8 @@ class SalesOrderFacade(Facade):
         item, created = Item.objects.get_or_create(material_code=sales_order_item_dict['material_code'],
                                                    description=sales_order_item_dict['item_description'])
 
-        matching_items = SalesOrderItem.objects.filter(sales_order=order, item=item)
+        matching_items = SalesOrderItem.objects.filter(sales_order=order, item=item,
+                                                       item_number=sales_order_item_dict['item_number'])
 
         if len(matching_items):
             return matching_items[0]

@@ -17,7 +17,7 @@ class SalesOrderItem(models.Model):
 
     class Meta:
         app_label = 'eums'
-        unique_together = ('item', 'sales_order')
+        unique_together = ('item', 'item_number', 'sales_order')
 
     def purchase_order_item(self):
         return self.purchaseorderitem_set.all().first()

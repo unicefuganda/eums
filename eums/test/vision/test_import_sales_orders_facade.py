@@ -10,6 +10,8 @@ from xlwt import Workbook
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
+from eums.test.factories.sales_order_factory import SalesOrderFactory
+from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 from eums.vision.vision_facade import SalesOrderFacade
 
 
@@ -103,7 +105,29 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_sales_order_data)
         self.assertEqual(SalesOrder.objects.count(), 2)
 
-    def test_should_not_recreate_existing_sales_order_items_when_saving_only_matching_by_item_and_sales_order(self):
+    def test_should_create_sales_order_items_with_different_item_numbers(self):
+        sales_order_facade = SalesOrderFacade('some/location')
+        item = ItemFactory(material_code='MYCODE123', description='Some Description')
+        sales_order = SalesOrderFactory()
+        
+        sales_order_item = SalesOrderItemFactory(
+            item=item, 
+            item_number=200, 
+            sales_order=sales_order)
+
+        sales_order_item_row = {
+            'item_number': 220, 
+            'material_code': 'MYCODE123', 
+            'item_description': 'Some Description', 
+            'date': datetime.datetime(2015, 5, 8, 0, 0), 
+            'net_value': 250.0, 
+            'quantity': 5.0 }
+
+        sales_order_facade._create_new_item(sales_order_item_row, sales_order)
+
+        self.assertEqual(2, SalesOrderItem.objects.count())
+
+    def test_should_match_sales_order_items_with_same_item_and_sales_order_and_item_number(self):
         self.create_programmes()
         self.create_items()
 
@@ -115,7 +139,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         first_sales_order_item.save()
 
         self.facade.save_order_data(self.imported_sales_order_data)
-        self.assertEqual(SalesOrderItem.objects.count(), 3)
+        self.assertEqual(SalesOrderItem.objects.count(), 4)
 
     def test_should_set_net_price_to_zero_if_quantity_of_an_item_is_zero(self):
         ProgrammeFactory(wbs_element_ex='4380/A0/04/105/007')
