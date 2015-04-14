@@ -121,7 +121,7 @@ class TestSalesOrdersVisionFacade(TestCase):
             'item_number': 220, 
             'material_code': 'MYCODE123', 
             'item_description': 'Some Description', 
-            'date': datetime.datetime(2015, 5, 8, 0, 0), 
+            'date': '2015-8-5', 
             'net_value': 250.0, 
             'quantity': 5.0 }
 
