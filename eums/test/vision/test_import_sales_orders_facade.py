@@ -106,6 +106,8 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.assertEqual(SalesOrder.objects.count(), 2)
 
     def test_should_create_sales_order_items_with_different_item_numbers(self):
+        num_sales_order_imports = SalesOrderItem.objects.count()
+
         sales_order_facade = SalesOrderFacade('some/location')
         item = ItemFactory(material_code='MYCODE123', description='Some Description')
         sales_order = SalesOrderFactory()
@@ -125,7 +127,7 @@ class TestSalesOrdersVisionFacade(TestCase):
 
         sales_order_facade._create_new_item(sales_order_item_row, sales_order)
 
-        self.assertEqual(2, SalesOrderItem.objects.count())
+        self.assertEqual(num_sales_order_imports+2, SalesOrderItem.objects.count())
 
     def test_should_match_sales_order_items_with_same_item_and_sales_order_and_item_number(self):
         self.create_programmes()
