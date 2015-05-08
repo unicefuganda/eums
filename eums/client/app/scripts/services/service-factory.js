@@ -17,6 +17,11 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                 return $http.post(options.uri, object).then(function (response) {
                     return response.data;
                 })
+            },
+            update: function (object) {
+                return $http.put(options.uri + object.id + '/', object).then(function (response) {
+                    return response;
+                });
             }
         };
     };

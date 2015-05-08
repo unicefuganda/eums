@@ -40,6 +40,17 @@ describe('Service Factory', function () {
         });
         mockBackend.flush();
     });
+
+    it('should update object', function(done) {
+        mockBackend.whenPUT(endpointUrl + fakeOne.id + '/').respond(200);
+        var changedOne = Object.clone(fakeOne);
+        changedOne.propertyOne = 'changed';
+        service.update(changedOne).then(function (response) {
+            expect(response.status).toEqual(200);
+            done();
+        });
+        mockBackend.flush();
+    });
 });
 
 
