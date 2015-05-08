@@ -14,18 +14,27 @@ describe('Service Factory', function () {
         });
     });
 
-    it('should get all objects from api endpoint', function(done) {
+    it('should get all objects from api endpoint', function (done) {
         mockBackend.whenGET(endpointUrl).respond(fakeObjects);
-        service.all().then(function(objects) {
+        service.all().then(function (objects) {
             expect(objects).toEqual(fakeObjects);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should get object by id', function(done) {
+    it('should get object by id', function (done) {
         mockBackend.whenGET(endpointUrl + fakeOne.id + '/').respond(fakeOne);
-        service.get(fakeOne.id).then(function(object) {
+        service.get(fakeOne.id).then(function (object) {
+            expect(object).toEqual(fakeOne);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should create an object', function (done) {
+        mockBackend.whenPOST(endpointUrl).respond(201, fakeOne);
+        service.create(fakeOne).then(function (object) {
             expect(object).toEqual(fakeOne);
             done();
         });
