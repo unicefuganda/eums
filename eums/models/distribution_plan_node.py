@@ -42,13 +42,16 @@ class DistributionPlanNode(models.Model):
             return self.parent.get_ip()
 
     def current_run(self):
-        return self.nodelineitemrun_set.filter(status='scheduled').first()
+        return self.noderun_set.filter(status='scheduled').first()
 
     def completed_run(self):
-        return self.nodelineitemrun_set.filter(status='completed').first()
+        return self.noderun_set.filter(status='completed').first()
 
     def latest_run(self):
-        return self.nodelineitemrun_set.all().last()
+        return self.noderun_set.all().last()
+
+    def _completed_runs(self):
+        return self.noderun_set.filter(status='completed')
 
     def responses(self):
-        return dict(map(lambda run: (run, run.answers()), self.completed_run()))
+        return dict(map(lambda run: (run, run.answers()), self._completed_runs()))

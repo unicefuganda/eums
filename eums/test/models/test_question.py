@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from eums.models import Option
 from eums.models.question import Question, MultipleChoiceQuestion, TextQuestion, NumericQuestion
-from eums.test.factories.node_line_item_run_factory import NodeRunFactory
+from eums.test.factories.node_run_factory import NodeRunFactory
 
 
 class QuestionTest(TestCase):

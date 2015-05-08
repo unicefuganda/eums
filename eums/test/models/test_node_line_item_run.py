@@ -2,11 +2,11 @@ from unittest import TestCase
 import datetime
 
 from eums import settings
-from eums.models import NodeLineItemRun, DistributionPlanNode
+from eums.models import NodeRun, DistributionPlanNode
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
-from eums.test.factories.node_line_item_run_factory import NodeRunFactory
+from eums.test.factories.node_run_factory import NodeRunFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
     NumericQuestionFactory
@@ -18,27 +18,27 @@ class NodeRunTest(TestCase):
         self.node = DistributionPlanNodeFactory(consignee=self.consignee)
 
     def tearDown(self):
-        NodeLineItemRun.objects.all().delete()
+        NodeRun.objects.all().delete()
         DistributionPlanNode.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
-        node_run = NodeLineItemRun()
+        node_run = NodeRun()
         fields_in_node_run = [field.attname for field in node_run._meta.fields]
         self.assertEqual(len(fields_in_node_run), 5)
 
-        for field in ['scheduled_message_task_id', 'node_line_item_id', 'status', 'phone']:
+        for field in ['scheduled_message_task_id', 'node_id', 'status', 'phone']:
             self.assertIn(field, fields_in_node_run)
 
     def test_should_get_current_run_for_consignee_with_run_with_status_scheduled(self):
         node_run = NodeRunFactory(node=self.node)
 
-        self.assertEqual(NodeLineItemRun.current_run_for_node(self.node), node_run)
+        self.assertEqual(NodeRun.current_run_for_node(self.node), node_run)
 
     def test_should_get_none_when_current_run_is_called_for_a_consignee_with_no_runs_scheduled(self):
-        NodeRunFactory(node=self.node, status=NodeLineItemRun.STATUS.expired)
-        NodeRunFactory(node=self.node, status=NodeLineItemRun.STATUS.completed)
+        NodeRunFactory(node=self.node, status=NodeRun.STATUS.expired)
+        NodeRunFactory(node=self.node, status=NodeRun.STATUS.completed)
 
-        self.assertEqual(NodeLineItemRun.current_run_for_node(self.node), None)
+        self.assertEqual(NodeRun.current_run_for_node(self.node), None)
 
     def test_should_get_over_due_runs(self):
         delivery_status_check_delay = datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
@@ -49,14 +49,14 @@ class NodeRunTest(TestCase):
         expired_run_date = today - delivery_status_check_delay - max_allowed_reply_period - one_day
         valid_run_date = today - delivery_status_check_delay - max_allowed_reply_period + one_day
 
-        expired_run = NodeRunFactory(status=NodeLineItemRun.STATUS.scheduled,
+        expired_run = NodeRunFactory(status=NodeRun.STATUS.scheduled,
                                      node=DistributionPlanNodeFactory(
                                          planned_distribution_date=expired_run_date))
-        NodeRunFactory(status=NodeLineItemRun.STATUS.scheduled,
+        NodeRunFactory(status=NodeRun.STATUS.scheduled,
                        node=DistributionPlanNodeFactory(
                            planned_distribution_date=valid_run_date))
 
-        overdue_runs = NodeLineItemRun.overdue_runs()
+        overdue_runs = NodeRun.overdue_runs()
 
         self.assertEqual(len(overdue_runs), 1)
         self.assertEqual(overdue_runs[0], expired_run)
@@ -64,17 +64,17 @@ class NodeRunTest(TestCase):
     def test_should_not_get_completed_expired_or_cancelled_runs_when_getting_expired_runs(self):
         expired_run_date = datetime.date(1990, 1, 1)
 
-        NodeRunFactory(status=NodeLineItemRun.STATUS.completed,
+        NodeRunFactory(status=NodeRun.STATUS.completed,
                        node=DistributionPlanNodeFactory(
                            planned_distribution_date=expired_run_date))
-        NodeRunFactory(status=NodeLineItemRun.STATUS.expired,
+        NodeRunFactory(status=NodeRun.STATUS.expired,
                        node=DistributionPlanNodeFactory(
                            planned_distribution_date=expired_run_date))
-        NodeRunFactory(status=NodeLineItemRun.STATUS.cancelled,
+        NodeRunFactory(status=NodeRun.STATUS.cancelled,
                        node=DistributionPlanNodeFactory(
                            planned_distribution_date=expired_run_date))
 
-        overdue_runs = NodeLineItemRun.overdue_runs()
+        overdue_runs = NodeRun.overdue_runs()
         self.assertEqual(len(overdue_runs), 0)
 
     def test_should_get_all_answers(self):

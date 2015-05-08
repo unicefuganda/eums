@@ -6,7 +6,7 @@ from celery.task import periodic_task
 from django.conf import settings
 
 from eums.celery import app
-from eums.models import NodeLineItemRun, RunQueue, DistributionPlanNode, Flow
+from eums.models import NodeRun, RunQueue, DistributionPlanNode, Flow
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
 
@@ -16,13 +16,13 @@ def schedule_run_for(node):
         _cancel_run(current_run)
 
     run_delay = _calculate_delay(node)
-    if NodeLineItemRun.current_run_for_node(node):
+    if NodeRun.current_run_for_node(node):
         RunQueue.enqueue(node, run_delay)
     else:
         contact = node.build_contact()
         task = _schedule_run.apply_async(args=[node.id], countdown=run_delay)
-        NodeLineItemRun.objects.create(scheduled_message_task_id=task.id, node=node,
-                                       status=NodeLineItemRun.STATUS.scheduled, phone=contact['phone'])
+        NodeRun.objects.create(scheduled_message_task_id=task.id, node=node,
+                                       status=NodeRun.STATUS.scheduled, phone=contact['phone'])
 
 
 @app.task
@@ -59,15 +59,15 @@ def _calculate_delay(node):
 
 def _cancel_run(run):
     app.control.revoke(run.scheduled_message_task_id)
-    run.status = NodeLineItemRun.STATUS.cancelled
+    run.status = NodeRun.STATUS.cancelled
     run.save()
 
 
 @periodic_task(run_every=crontab(minute=0, hour=0))
 def expire_overdue_runs():
-    overdue_runs = NodeLineItemRun.overdue_runs()
+    overdue_runs = NodeRun.overdue_runs()
     for overdue_run in overdue_runs:
-        overdue_run.status = NodeLineItemRun.STATUS.expired
+        overdue_run.status = NodeRun.STATUS.expired
         overdue_run.save()
         next_run = RunQueue.dequeue(overdue_run.node.contact_person_id)
         if next_run:

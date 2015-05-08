@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0031_migrate_data_from_lineitem_to_node'),
+        ('eums', '0030_auto_20150506_1141'),
     ]
 
     operations = [
@@ -17,34 +17,24 @@ class Migration(migrations.Migration):
             new_name='node_run',
         ),
         migrations.RenameField(
+            model_name='noderun',
+            old_name='node_line_item',
+            new_name='node',
+        ),
+        migrations.RenameField(
             model_name='numericanswer',
             old_name='line_item_run',
             new_name='node_run',
         ),
         migrations.RenameField(
+            model_name='runqueue',
+            old_name='node_line_item',
+            new_name='node',
+        ),
+        migrations.RenameField(
             model_name='textanswer',
             old_name='line_item_run',
             new_name='node_run',
-        ),
-        migrations.RemoveField(
-            model_name='nodelineitemrun',
-            name='node_line_item',
-        ),
-        migrations.RemoveField(
-            model_name='runqueue',
-            name='node_line_item',
-        ),
-        migrations.AddField(
-            model_name='nodelineitemrun',
-            name='node',
-            field=models.ForeignKey(default=None, to='eums.DistributionPlanNode'),
-            preserve_default=False,
-        ),
-        migrations.AddField(
-            model_name='runqueue',
-            name='node',
-            field=models.ForeignKey(default=None, to='eums.DistributionPlanNode'),
-            preserve_default=False,
         ),
         migrations.AlterField(
             model_name='distributionplannode',

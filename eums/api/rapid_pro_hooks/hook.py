@@ -1,7 +1,7 @@
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from eums.models import NodeLineItemRun, RunQueue, Flow
+from eums.models import NodeRun, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
 
@@ -12,9 +12,9 @@ def hook(request):
     try:
         params = request.POST
         flow = Flow.objects.get(rapid_pro_id=params['flow'])
-        node_run = NodeLineItemRun.objects.filter(
+        node_run = NodeRun.objects.filter(
             phone=params['phone'],
-            status=NodeLineItemRun.STATUS.scheduled).order_by('-id').first()
+            status=NodeRun.STATUS.scheduled).order_by('-id').first()
 
         question = _get_matching_question([params['step']])
         answer = question.create_answer(params, node_run)
@@ -41,7 +41,7 @@ def _schedule_next_run(line_item):
 
 
 def _mark_as_complete(node_run):
-    node_run.status = NodeLineItemRun.STATUS.completed
+    node_run.status = NodeRun.STATUS.completed
     node_run.save()
 
 

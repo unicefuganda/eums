@@ -8,14 +8,14 @@ from mock import MagicMock, ANY, patch
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
 from eums.models import DistributionPlanNode as Node, Flow
-from eums.models import NodeLineItemRun, RunQueue
+from eums.models import NodeRun, RunQueue
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory, \
     DistributionPlanNodeFactory
 from eums.test.factories.flow_factory import FlowFactory
-from eums.test.factories.node_line_item_run_factory import NodeRunFactory
+from eums.test.factories.node_run_factory import NodeRunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
 
 
@@ -116,7 +116,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(self.node)
 
-        self.assertEqual(node_run.status, NodeLineItemRun.STATUS.cancelled)
+        self.assertEqual(node_run.status, NodeRun.STATUS.cancelled)
         local_celery.app.control.revoke.assert_called()
         mock_start_delivery_run.assert_called()
 
@@ -145,7 +145,7 @@ class FlowSchedulerTest(TestCase):
         expire_overdue_runs()
 
         mock_get_overdue_runs.assert_called()
-        self.assertEqual(node_run.status, NodeLineItemRun.STATUS.expired)
+        self.assertEqual(node_run.status, NodeRun.STATUS.expired)
 
 
     @patch('eums.models.RunQueue.dequeue')
