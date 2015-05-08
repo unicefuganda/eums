@@ -112,3 +112,4 @@ class DistributionPlanNodeTest(TestCase):
         second_run = NodeRunFactory(node=self.node)
 
         self.assertEqual(self.node.latest_run(), second_run)
+
