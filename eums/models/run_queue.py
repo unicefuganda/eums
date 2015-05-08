@@ -19,7 +19,7 @@ class RunQueue(models.Model):
     @classmethod
     def enqueue(cls, node, run_delay):
         cls.objects.create(node=node, status=RunQueue.STATUS.not_started,
-                           contact_person_id=node.distribution_plan_node.contact_person_id,
+                           contact_person_id=node.contact_person_id,
                            run_delay=run_delay)
 
     @classmethod

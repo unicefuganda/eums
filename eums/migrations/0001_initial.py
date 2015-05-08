@@ -35,18 +35,6 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='DistributionPlanLineItem',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('targeted_quantity', models.IntegerField()),
-                ('planned_distribution_date', models.DateField()),
-                ('remark', models.TextField(null=True, blank=True)),
-            ],
-            options={
-            },
-            bases=(models.Model,),
-        ),
-        migrations.CreateModel(
             name='DistributionPlanNode',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -118,13 +106,13 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='NodeLineItemRun',
+            name='NodeRun',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('scheduled_message_task_id', models.CharField(max_length=255)),
                 ('status', model_utils.fields.StatusField(default=b'scheduled', max_length=100, no_check_for_status=True, choices=[(b'scheduled', b'scheduled'), (b'completed', b'completed'), (b'expired', b'expired'), (b'cancelled', b'cancelled')])),
                 ('phone', models.CharField(max_length=255)),
-                ('node_line_item', models.ForeignKey(to='eums.DistributionPlanLineItem')),
+                ('node_line_item', models.ForeignKey(to='eums.DistributionPlanNode')),
             ],
             options={
             },
@@ -135,7 +123,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.BigIntegerField()),
-                ('line_item_run', models.ForeignKey(to='eums.NodeLineItemRun')),
+                ('line_item_run', models.ForeignKey(to='eums.NodeRun')),
             ],
             options={
             },
@@ -225,7 +213,7 @@ class Migration(migrations.Migration):
                 ('contact_person_id', models.CharField(max_length=255)),
                 ('status', model_utils.fields.StatusField(default=b'not_started', max_length=100, no_check_for_status=True, choices=[(b'not_started', b'not_started'), (b'started', b'started')])),
                 ('run_delay', models.DecimalField(max_digits=12, decimal_places=1)),
-                ('node_line_item', models.ForeignKey(to='eums.DistributionPlanLineItem')),
+                ('node_line_item', models.ForeignKey(to='eums.DistributionPlanNode')),
             ],
             options={
             },
@@ -266,7 +254,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('value', models.CharField(max_length=255)),
-                ('line_item_run', models.ForeignKey(to='eums.NodeLineItemRun')),
+                ('line_item_run', models.ForeignKey(to='eums.NodeRun')),
             ],
             options={
             },
@@ -312,7 +300,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='multiplechoiceanswer',
             name='line_item_run',
-            field=models.ForeignKey(to='eums.NodeLineItemRun'),
+            field=models.ForeignKey(to='eums.NodeRun'),
             preserve_default=True,
         ),
         migrations.AddField(
@@ -342,18 +330,6 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='distributionreport',
             unique_together=set([('consignee', 'programme')]),
-        ),
-        migrations.AddField(
-            model_name='distributionplanlineitem',
-            name='distribution_plan_node',
-            field=models.ForeignKey(to='eums.DistributionPlanNode'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='distributionplanlineitem',
-            name='item',
-            field=models.ForeignKey(to='eums.SalesOrderItem'),
-            preserve_default=True,
         ),
         migrations.AddField(
             model_name='distributionplan',

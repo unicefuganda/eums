@@ -1,12 +1,12 @@
 from urllib import quote_plus
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
-from eums.test.factories.node_line_item_run_factory import NodeRunFactory
+from eums.test.factories.node_run_factory import NodeRunFactory
 
 from mock import patch
 from rest_framework.test import APITestCase
 
 from eums.test.factories.RunQueueFactory import RunQueueFactory
-from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, NodeLineItemRun, Flow, \
+from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, NodeRun, Flow, \
     MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion
 from eums.test.config import BACKEND_URL
 from eums.test.factories.flow_factory import FlowFactory
@@ -139,7 +139,7 @@ class HookTest(APITestCase):
 
         node = DistributionPlanNodeFactory()
         node_run = NodeRunFactory(node=node, phone=self.PHONE,
-                                                    status=NodeLineItemRun.STATUS.scheduled)
+                                                    status=NodeRun.STATUS.scheduled)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
@@ -151,8 +151,8 @@ class HookTest(APITestCase):
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
-        node_run = NodeLineItemRun.objects.get(id=node_run.id)
-        self.assertEqual(node_run.status, NodeLineItemRun.STATUS.completed)
+        node_run = NodeRun.objects.get(id=node_run.id)
+        self.assertEqual(node_run.status, NodeRun.STATUS.completed)
 
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
@@ -165,7 +165,7 @@ class HookTest(APITestCase):
         NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
 
         node = DistributionPlanNodeFactory()
-        original_status = NodeLineItemRun.STATUS.scheduled
+        original_status = NodeRun.STATUS.scheduled
         node_run = NodeRunFactory(node=node, phone=self.PHONE,
                                                     status=original_status)
 
@@ -176,7 +176,7 @@ class HookTest(APITestCase):
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
-        node_run = NodeLineItemRun.objects.get(id=node_run.id)
+        node_run = NodeRun.objects.get(id=node_run.id)
         self.assertEqual(node_run.status, original_status)
 
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
