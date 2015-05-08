@@ -1,16 +1,15 @@
 from unittest import TestCase
 
 from django.conf import settings
+from eums.test.factories.node_line_item_run_factory import NodeRunFactory
 from mock import patch
 
-from eums.models import DistributionPlanNode
+from eums.models import DistributionPlanNode, NodeLineItemRun
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
-from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory, \
     DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
@@ -25,7 +24,8 @@ class DistributionPlanNodeTest(TestCase):
 
         self.assertEqual(len(self.node._meta.fields), 8)
         for field in ['parent', 'distribution_plan', 'consignee', 'tree_position', 'location', 'mode_of_delivery',
-                      'contact_person_id']:
+                      'contact_person_id', 'item_id', 'targeted_quantity', 'planned_distribution_date', 'remark',
+                      'id', 'track']:
             self.assertIn(field, fields)
 
     @patch('requests.get')
@@ -53,27 +53,63 @@ class DistributionPlanNodeTest(TestCase):
 
         node = DistributionPlanNodeFactory()
         item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
-        node_line_item_one = DistributionPlanLineItemFactory(distribution_plan_node=node, targeted_quantity=100,
-                                                             item=item)
-        line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item_one, status='completed')
+        node_one = DistributionPlanNodeFactory(targeted_quantity=100,
+                                               item=item)
+        node_run = NodeRunFactory(node=node_one, status='completed')
 
         sugar_item = SalesOrderItemFactory(item=sugar, description='10 bags of sugar')
-        sugar_node_line_item_one = DistributionPlanLineItemFactory(distribution_plan_node=node, targeted_quantity=100,
-                                                                   item=sugar_item)
-        sugar_line_item_run = NodeLineItemRunFactory(node_line_item=sugar_node_line_item_one, status='completed')
+        sugar_node_one = DistributionPlanNodeFactory(targeted_quantity=100,
+                                                     item=sugar_item)
+        sugar_node_run = NodeRunFactory(node=sugar_node_one, status='completed')
 
-        multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=line_item_run, question=multichoice_question,
+        multiple_answer_one = MultipleChoiceAnswerFactory(node_run=node_run, question=multichoice_question,
                                                           value=yes_option)
-        numeric_answer_one = NumericAnswerFactory(line_item_run=line_item_run, value=80, question=numeric_question)
+        numeric_answer_one = NumericAnswerFactory(node_run=node_run, value=80, question=numeric_question)
 
-        multiple_answer_two = MultipleChoiceAnswerFactory(line_item_run=sugar_line_item_run,
+        multiple_answer_two = MultipleChoiceAnswerFactory(node_run=sugar_node_run,
                                                           question=multichoice_question, value=no_option)
-        numeric_answer_two = NumericAnswerFactory(line_item_run=sugar_line_item_run, value=80,
+        numeric_answer_two = NumericAnswerFactory(node_run=sugar_node_run, value=80,
                                                   question=numeric_question)
         node_responses = node.responses()
 
-        self.assertIn(multiple_answer_one, node_responses[line_item_run])
-        self.assertIn(numeric_answer_one, node_responses[line_item_run])
+        self.assertIn(multiple_answer_one, node_responses[node_run])
+        self.assertIn(numeric_answer_one, node_responses[node_run])
 
-        self.assertIn(multiple_answer_two, node_responses[sugar_line_item_run])
-        self.assertIn(numeric_answer_two, node_responses[sugar_line_item_run])
+        self.assertIn(multiple_answer_two, node_responses[sugar_node_run])
+        self.assertIn(numeric_answer_two, node_responses[sugar_node_run])
+
+    def test_should_get_node_run_with_status_scheduled(self):
+        node_run = NodeRunFactory(node=self.node,
+                                  status=NodeLineItemRun.STATUS.scheduled)
+        self.assertEqual(self.node.current_run(), node_run)
+
+    def test_should_not_get_node_run_with_status_completed(self):
+        NodeRunFactory(node=self.node, status=NodeLineItemRun.STATUS.completed)
+        self.assertEqual(self.node.current_run(), None)
+
+    def test_should_not_get_node_run_with_status_expired(self):
+        NodeRunFactory(node=self.node, status=NodeLineItemRun.STATUS.expired)
+        self.assertEqual(self.node.current_run(), None)
+
+    def test_should_not_get_node_run_with_status_cancelled(self):
+        NodeRunFactory(node=self.node, status=NodeLineItemRun.STATUS.cancelled)
+        self.assertEqual(self.node.current_run(), None)
+
+    def test_should_get_the_completed_node_run(self):
+        self.assertIsNone(self.node.completed_run())
+
+        node_run = NodeRunFactory(node=self.node,
+                                  status=NodeLineItemRun.STATUS.completed)
+
+        self.assertEqual(self.node.completed_run(), node_run)
+
+    def test_should_get_latest_run(self):
+        first_run = NodeRunFactory(node=self.node)
+
+        self.assertEqual(self.node.latest_run(), first_run)
+
+        second_run = NodeRunFactory(node=self.node)
+
+        self.assertEqual(self.node.latest_run(), second_run)
+
+

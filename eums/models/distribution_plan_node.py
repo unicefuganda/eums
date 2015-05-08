@@ -21,6 +21,11 @@ class DistributionPlanNode(models.Model):
     contact_person_id = models.CharField(max_length=255)
     tree_position = models.CharField(max_length=255, choices=((MIDDLE_MAN, 'Middleman'), (END_USER, 'End User'),
                                                               (IMPLEMENTING_PARTNER, 'Implementing Partner')))
+    item = models.ForeignKey('SalesOrderItem')
+    targeted_quantity = models.IntegerField()
+    track = models.BooleanField(default=False)
+    planned_distribution_date = models.DateField(null=False)
+    remark = models.TextField(blank=True, null=True)
 
     def build_contact(self):
         response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))
@@ -30,13 +35,20 @@ class DistributionPlanNode(models.Model):
     def __unicode__(self):
         return "%s %s %s " % (self.consignee.name, self.tree_position, str(self.distribution_plan))
 
-    def responses(self):
-        all_line_items = self.distributionplanlineitem_set.all()
-        completed_line_item_runs = filter(None, map(lambda line_item: line_item.completed_run(), all_line_items))
-        return dict(map(lambda run: (run, run.answers()), completed_line_item_runs))
-
     def get_ip(self):
         if not self.parent:
             return {'id': self.id, 'location': self.location}
         else:
             return self.parent.get_ip()
+
+    def current_run(self):
+        return self.nodelineitemrun_set.filter(status='scheduled').first()
+
+    def completed_run(self):
+        return self.nodelineitemrun_set.filter(status='completed').first()
+
+    def latest_run(self):
+        return self.nodelineitemrun_set.all().last()
+
+    def responses(self):
+        return dict(map(lambda run: (run, run.answers()), self.completed_run()))

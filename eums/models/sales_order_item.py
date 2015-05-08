@@ -1,7 +1,5 @@
 from django.db import models
-from eums.models import SalesOrder
-
-from eums.models.item import Item
+from eums.models import SalesOrder, Item
 
 
 class SalesOrderItem(models.Model):

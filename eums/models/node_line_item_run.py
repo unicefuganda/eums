@@ -6,13 +6,13 @@ from model_utils.fields import StatusField
 from model_utils import Choices
 
 from eums import settings
-from eums.models import DistributionPlanLineItem
+from eums.models import DistributionPlanNode
 
 
 class NodeLineItemRun(models.Model):
     STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
-    node_line_item = models.ForeignKey(DistributionPlanLineItem)
+    node = models.ForeignKey(DistributionPlanNode)
     status = StatusField()
     phone = models.CharField(max_length=255)
 
@@ -36,14 +36,14 @@ class NodeLineItemRun(models.Model):
         return answer_collection
 
     def __unicode__(self):
-        return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node_line_item.item.description,
-                                                               self.node_line_item.distribution_plan_node.tree_position,
+        return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node.item.description,
+                                                               self.node.distribution_plan_node.tree_position,
                                                                self.phone, self.status)
 
     @classmethod
     def current_run_for_node(cls, node):
         return NodeLineItemRun.objects.filter(
-            Q(node_line_item__distribution_plan_node=node) &
+            Q(node=node) &
             Q(status=NodeLineItemRun.STATUS.scheduled)).first()
 
     @classmethod
@@ -55,4 +55,4 @@ class NodeLineItemRun(models.Model):
         latest_allowed_date = today - delivery_status_check_delay - max_allowed_reply_period
 
         return NodeLineItemRun.objects.filter(Q(status=NodeLineItemRun.STATUS.scheduled) &
-                                              Q(node_line_item__planned_distribution_date__lt=latest_allowed_date))
+                                      Q(node__planned_distribution_date__lt=latest_allowed_date))

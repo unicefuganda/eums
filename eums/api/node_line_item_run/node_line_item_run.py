@@ -5,16 +5,16 @@ from rest_framework.viewsets import ModelViewSet
 from eums.models import NodeLineItemRun
 
 
-class NodeLineItemRunSerialiser(serializers.ModelSerializer):
+class NodeRunSerialiser(serializers.ModelSerializer):
     class Meta:
         model = NodeLineItemRun
-        fields = ('id', 'scheduled_message_task_id', 'node_line_item', 'status', 'phone')
+        fields = ('id', 'scheduled_message_task_id', 'node', 'status', 'phone')
 
 
-class NodeLineItemRunViewSet(ModelViewSet):
+class NodeRunViewSet(ModelViewSet):
     queryset = NodeLineItemRun.objects.all()
-    serializer_class = NodeLineItemRunSerialiser
+    serializer_class = NodeRunSerialiser
 
 
-nodeLineItemRunRouter = DefaultRouter()
-nodeLineItemRunRouter.register(r'node-line-item-run', NodeLineItemRunViewSet)
+nodeRunRouter = DefaultRouter()
+nodeRunRouter.register(r'node-line-item-run', NodeRunViewSet)

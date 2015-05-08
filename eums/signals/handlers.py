@@ -1,12 +1,13 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from eums.models import DistributionPlanLineItem
+from eums.models import DistributionPlanNode
 from eums.services.flow_scheduler import schedule_run_for
 
 
-@receiver(post_save, sender=DistributionPlanLineItem)
+@receiver(post_save, sender=DistributionPlanNode)
 def on_post_save_line_item(sender, **kwargs):
-    line_item = kwargs['instance']
-    if(line_item.track and (line_item.latest_run() == None)):
-        schedule_run_for(line_item)
+    node = kwargs['instance']
+    if node.track and node.latest_run() is None:
+        schedule_run_for(node)
+

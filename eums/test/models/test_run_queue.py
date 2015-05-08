@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from eums.models import RunQueue
 from eums.test.factories.RunQueueFactory import RunQueueFactory
-from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 
 
@@ -11,10 +10,10 @@ class RunQueueTest(TestCase):
         RunQueue.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
-        node_line_item_run = RunQueue()
-        fields_in_run_queue = [field.attname for field in node_line_item_run._meta.fields]
+        node_run = RunQueue()
+        fields_in_run_queue = [field.attname for field in node_run._meta.fields]
 
-        for field in ['node_line_item_id', 'contact_person_id', 'status', 'run_delay']:
+        for field in ['node_id', 'contact_person_id', 'status', 'run_delay']:
             self.assertIn(field, fields_in_run_queue)
 
     def test_can_deque_next_run_for_a_particular_contact_person(self):
@@ -40,9 +39,8 @@ class RunQueueTest(TestCase):
         run_delay = 1000
 
         node = DistributionPlanNodeFactory(contact_person_id=contact_person_id)
-        node_line_item = DistributionPlanLineItemFactory(distribution_plan_node=node)
 
-        RunQueue.enqueue(node_line_item, run_delay)
+        RunQueue.enqueue(node, run_delay)
         queued_run = RunQueue.dequeue(contact_person_id)
 
         self.assertEqual(queued_run.status, RunQueue.STATUS.not_started)

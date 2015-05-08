@@ -5,7 +5,7 @@ from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, Nume
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.node_line_item_run_factory import NodeRunFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, NumericQuestionFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
@@ -38,10 +38,10 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
                                                                targeted_quantity=50,
                                                                item=item)
 
-        line_item_run = NodeLineItemRunFactory(node_line_item=node_line_item, status='completed')
-        line_item_run_one = NodeLineItemRunFactory(node_line_item=node_line_item_one, status='completed')
-        line_item_run_two = NodeLineItemRunFactory(node_line_item=node_line_item_two, status='completed')
-        line_item_run_three = NodeLineItemRunFactory(node_line_item=node_line_item_three, status='completed')
+        line_item_run = NodeRunFactory(node_line_item=node_line_item, status='completed')
+        line_item_run_one = NodeRunFactory(node_line_item=node_line_item_one, status='completed')
+        line_item_run_two = NodeRunFactory(node_line_item=node_line_item_two, status='completed')
+        line_item_run_three = NodeRunFactory(node_line_item=node_line_item_three, status='completed')
 
         NumericAnswerFactory(line_item_run=line_item_run, value=80, question=numeric_question)
         MultipleChoiceAnswerFactory(line_item_run=line_item_run_one,

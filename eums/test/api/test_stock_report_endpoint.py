@@ -11,7 +11,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.node_line_item_run_factory import NodeRunFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -147,12 +147,12 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         date_received_question.textanswer_set.create(value='2014-01-03', line_item_run=self.run_three)
 
     def setup_runs(self):
-        self.run_one = NodeLineItemRunFactory(node_line_item=self.plan_item_one)
-        self.run_two = NodeLineItemRunFactory(node_line_item=self.plan_item_two)
-        self.run_three = NodeLineItemRunFactory(node_line_item=self.plan_item_three)
-        self.run_four = NodeLineItemRunFactory(node_line_item=self.plan_item_four)
-        self.run_five = NodeLineItemRunFactory(node_line_item=self.plan_item_five)
-        self.run_six = NodeLineItemRunFactory(node_line_item=self.plan_item_six)
+        self.run_one = NodeRunFactory(node_line_item=self.plan_item_one)
+        self.run_two = NodeRunFactory(node_line_item=self.plan_item_two)
+        self.run_three = NodeRunFactory(node_line_item=self.plan_item_three)
+        self.run_four = NodeRunFactory(node_line_item=self.plan_item_four)
+        self.run_five = NodeRunFactory(node_line_item=self.plan_item_five)
+        self.run_six = NodeRunFactory(node_line_item=self.plan_item_six)
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.so_one)
