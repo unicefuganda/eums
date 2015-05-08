@@ -10,6 +10,7 @@ module.exports = function (config) {
 
         files: [
             'bower_components/jquery/dist/jquery.min.js',
+            'bower_components/sugar/release/sugar.min.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
             'bower_components/angular-mocks/angular-mocks.js',
