@@ -13,15 +13,15 @@ class Question(models.Model):
 
 
 class NumericQuestion(Question):
-    def create_answer(self, params, line_item_run):
+    def create_answer(self, params, node_run):
         value = params['text']
-        return self.numericanswer_set.create(question=self, value=value, line_item_run=line_item_run)
+        return self.numericanswer_set.create(question=self, value=value, node_run=node_run)
 
 
 class TextQuestion(Question):
-    def create_answer(self, params, line_item_run):
+    def create_answer(self, params, node_run):
         value = params['text']
-        return self.textanswer_set.create(question=self, value=value, line_item_run=line_item_run)
+        return self.textanswer_set.create(question=self, value=value, node_run=node_run)
 
 
 class MultipleChoiceQuestion(Question):
@@ -31,7 +31,7 @@ class MultipleChoiceQuestion(Question):
         super(MultipleChoiceQuestion, self).save(*args, **kwargs)
         self.option_set.create(text=self.UNCATEGORISED)
 
-    def create_answer(self, raw_params, line_item_run):
+    def create_answer(self, raw_params, node_run):
         params = dict(raw_params)
         values = []
         for val in params['values']:
@@ -39,4 +39,4 @@ class MultipleChoiceQuestion(Question):
 
         params = filter(lambda v: self.label == v['label'], values)[0]
         matching_option = self.option_set.get(text=params['category']['eng'])
-        return self.multiplechoiceanswer_set.create(question=self, value=matching_option, line_item_run=line_item_run)
+        return self.multiplechoiceanswer_set.create(question=self, value=matching_option, node_run=node_run)

@@ -1,6 +1,5 @@
 from django.db import models
-
-from eums.models.item_unit import ItemUnit
+from eums.models import ItemUnit
 
 
 class Item(models.Model):

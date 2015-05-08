@@ -5,7 +5,7 @@ from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleCho
 from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.node_line_item_run_factory import NodeRunFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
@@ -44,7 +44,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                                                                   item=self.item)
 
     def create_line_item_runs_and_answers(self):
-        self.line_item_run_one = NodeLineItemRunFactory(node_line_item=self.node_line_item_one, status='completed')
+        self.line_item_run_one = NodeRunFactory(node_line_item=self.node_line_item_one, status='completed')
         self.run_one_multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=self.line_item_run_one,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)
@@ -54,7 +54,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.run_one_numeric_answer_one = NumericAnswerFactory(line_item_run=self.line_item_run_one, value=80,
                                                                question=self.numeric_question)
 
-        self.line_item_run_two = NodeLineItemRunFactory(node_line_item=self.node_line_item_two, status='completed')
+        self.line_item_run_two = NodeRunFactory(node_line_item=self.node_line_item_two, status='completed')
         self.run_two_multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=self.line_item_run_two,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)

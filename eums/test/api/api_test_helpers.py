@@ -206,8 +206,8 @@ def create_option(test_case,option_details=None):
     response = test_case.client.post(OPTION_ENDPOINT_URL, option_details, format='json')
     return response.data
 
-def create_node_line_item_run(test_case, node_line_item_run_details=None):
-    response = test_case.client.post(NODE_LINE_ITEM_RUN_ENDPOINT_URL, node_line_item_run_details, format='json')
+def create_node_run(test_case, node_run_details=None):
+    response = test_case.client.post(NODE_LINE_ITEM_RUN_ENDPOINT_URL, node_run_details, format='json')
 
     test_case.assertEqual(response.status_code, 201)
 

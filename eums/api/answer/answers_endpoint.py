@@ -2,7 +2,7 @@ import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from eums.models import DistributionPlanNode, DistributionPlanLineItem
+from eums.models import DistributionPlanNode
 from eums.models.answers import MultipleChoiceAnswer
 
 
@@ -90,16 +90,16 @@ class AllEndUserResponses(APIView):
 
 
 class PlanItemResponses(APIView):
-    def get(self, request, plan_item_id, *args, **kwargs):
-        planItem = DistributionPlanLineItem.objects.filter(id=plan_item_id).first()
+    def get(self, request, node_id, *args, **kwargs):
+        planNode = DistributionPlanNode.objects.filter(id=node_id).first()
         result = {}
-        if planItem and planItem.distribution_plan_node.tree_position == 'END_USER':
-            node_responses = planItem.distribution_plan_node.responses()
-            line_item_run = node_responses.keys()[0]
+        if planNode and planNode.tree_position == 'END_USER':
+            node_responses = planNode.responses()
+            node_run = node_responses.keys()[0]
             if node_responses:
                 result = {
-                    'node': self._get_node(planItem.distribution_plan_node),
-                    'line_item_run_id': line_item_run.id,
+                    'node': self._get_node(planNode),
+                    'line_item_run_id': node_run.id,
                     'responses': ResponseSerializer().detailed_node_responses(node_responses)
                 }
 

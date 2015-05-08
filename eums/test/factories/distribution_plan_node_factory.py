@@ -1,3 +1,5 @@
+from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
+from eums.test.helpers.fake_datetime import FakeDate
 import factory
 
 from eums.models import DistributionPlanNode
@@ -16,3 +18,8 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     location = "Kampala"
     contact_person_id = factory.Sequence(lambda n: "{0}".format(n))
     mode_of_delivery = DistributionPlanNode.THROUGH_WAREHOUSE
+    item = factory.SubFactory(SalesOrderItemFactory)
+    track = False
+    targeted_quantity = 10
+    planned_distribution_date = FakeDate.today()
+    remark = "In good condition"

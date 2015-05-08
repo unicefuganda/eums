@@ -4,7 +4,7 @@ from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQu
 
 
 class TextAnswer(models.Model):
-    line_item_run = models.ForeignKey(NodeLineItemRun)
+    node_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(TextQuestion)
     value = models.CharField(max_length=255)
 
@@ -15,7 +15,7 @@ class TextAnswer(models.Model):
         return '%s' % self.value
 
 class NumericAnswer(models.Model):
-    line_item_run = models.ForeignKey(NodeLineItemRun)
+    node_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
 
@@ -27,7 +27,7 @@ class NumericAnswer(models.Model):
 
 
 class MultipleChoiceAnswer(models.Model):
-    line_item_run = models.ForeignKey(NodeLineItemRun)
+    node_run = models.ForeignKey(NodeLineItemRun)
     question = models.ForeignKey(MultipleChoiceQuestion)
     value = models.ForeignKey(Option)
 

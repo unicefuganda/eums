@@ -3,7 +3,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory
 from eums.test.factories.question_factory import NumericQuestionFactory
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.node_line_item_run_factory import NodeRunFactory
 
 
 ENDPOINT_URL = BACKEND_URL + 'numeric-answers/'
@@ -26,7 +26,7 @@ class NumericAnswerEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_create_numeric_answers(self):
         numeric_question = NumericQuestionFactory(label='dateOfReceipt')
-        line_item_run = NodeLineItemRunFactory()
+        line_item_run = NodeRunFactory()
         numeric_answer_details = {
             "value": 1,
             "question": numeric_question.id,

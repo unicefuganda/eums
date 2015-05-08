@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from eums.models import Option
 from eums.models.question import Question, MultipleChoiceQuestion, TextQuestion, NumericQuestion
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
+from eums.test.factories.node_line_item_run_factory import NodeRunFactory
 
 
 class QuestionTest(TestCase):
@@ -39,8 +39,8 @@ class TextQuestionTest(QuestionTest):
     def test_should_save_text_answer(self):
         text = 'Some text'
         params = {'text': text}
-        line_item_run = NodeLineItemRunFactory()
-        self.text_question.create_answer(params, line_item_run)
+        node_run = NodeRunFactory()
+        self.text_question.create_answer(params, node_run)
         answers = self.text_question.textanswer_set.all()
 
         self.assertEqual(answers.count(), 1)
@@ -58,8 +58,8 @@ class MultipleChoiceQuestionTest(QuestionTest):
                                u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (category, label)],
                   u'time': [u'2014-10-22T11:57:35.606372Z']}]
 
-        line_item_run = NodeLineItemRunFactory()
-        self.multiple_choice_question.create_answer(params, line_item_run)
+        node_run = NodeRunFactory()
+        self.multiple_choice_question.create_answer(params, node_run)
         answers = self.multiple_choice_question.multiplechoiceanswer_set.all()
 
         self.assertEqual(answers.count(), 1)
@@ -71,8 +71,8 @@ class NumericQuestionTest(QuestionTest):
         numeric_question = NumericQuestion.objects.create(text='How old are you?')
         number = 20
         params = {'text': number}
-        line_item_run = NodeLineItemRunFactory()
-        numeric_question.create_answer(params, line_item_run)
+        node_run = NodeRunFactory()
+        numeric_question.create_answer(params, node_run)
         answers = numeric_question.numericanswer_set.all()
 
         self.assertEqual(answers.count(), 1)
