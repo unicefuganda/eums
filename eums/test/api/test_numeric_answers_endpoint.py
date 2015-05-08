@@ -5,7 +5,6 @@ from eums.test.factories.answer_factory import NumericAnswerFactory
 from eums.test.factories.question_factory import NumericQuestionFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
 
-
 ENDPOINT_URL = BACKEND_URL + 'numeric-answers/'
 
 

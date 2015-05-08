@@ -148,7 +148,6 @@ class FlowSchedulerTest(TestCase):
         mock_get_overdue_runs.assert_called()
         self.assertEqual(node_run.status, NodeRun.STATUS.expired)
 
-
     @patch('eums.models.RunQueue.dequeue')
     @patch('eums.services.flow_scheduler.schedule_run_for')
     @patch('eums.models.NodeRun.overdue_runs')

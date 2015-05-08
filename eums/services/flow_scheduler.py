@@ -22,7 +22,7 @@ def schedule_run_for(node):
         contact = node.build_contact()
         task = _schedule_run.apply_async(args=[node.id], countdown=run_delay)
         NodeRun.objects.create(scheduled_message_task_id=task.id, node=node,
-                                       status=NodeRun.STATUS.scheduled, phone=contact['phone'])
+                               status=NodeRun.STATUS.scheduled, phone=contact['phone'])
 
 @app.task
 def _schedule_run(node_id):

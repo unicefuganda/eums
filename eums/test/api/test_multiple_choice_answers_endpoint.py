@@ -5,7 +5,6 @@ from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
 
-
 ENDPOINT_URL = BACKEND_URL + 'multiple-choice-answers/'
 
 
