@@ -40,6 +40,7 @@ class NodeRunTest(TestCase):
 
         self.assertEqual(NodeRun.current_run_for_node(self.node), None)
 
+
     def test_should_get_over_due_runs(self):
         delivery_status_check_delay = datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
         max_allowed_reply_period = datetime.timedelta(days=settings.MAX_ALLOWED_REPLY_PERIOD)
@@ -75,6 +76,7 @@ class NodeRunTest(TestCase):
                            planned_distribution_date=expired_run_date))
 
         overdue_runs = NodeRun.overdue_runs()
+
         self.assertEqual(len(overdue_runs), 0)
 
     def test_should_get_all_answers(self):

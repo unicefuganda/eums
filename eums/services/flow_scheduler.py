@@ -24,7 +24,6 @@ def schedule_run_for(node):
         NodeRun.objects.create(scheduled_message_task_id=task.id, node=node,
                                        status=NodeRun.STATUS.scheduled, phone=contact['phone'])
 
-
 @app.task
 def _schedule_run(node_id):
     node = DistributionPlanNode.objects.get(id=node_id)

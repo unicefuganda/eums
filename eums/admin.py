@@ -1,7 +1,11 @@
 from django.contrib import admin
 
 from eums.models import DistributionPlan, Programme, DistributionPlanNode, Item, \
+<<<<<<< HEAD
     ItemUnit, Consignee, NodeRun, SalesOrder, SalesOrderItem, Option, TextAnswer, NumericAnswer, \
+=======
+    ItemUnit, Consignee, NodeLineItemRun, SalesOrder, SalesOrderItem, Option, TextAnswer, NumericAnswer, \
+>>>>>>> @francikas @oloo Intermediate commit in refactoring out distribution plan line item
     MultipleChoiceAnswer, DistributionReport, PurchaseOrder, PurchaseOrderItem, ReleaseOrder, ReleaseOrderItem, Flow, \
     Question
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion

@@ -5,6 +5,7 @@ from eums.test.factories.node_run_factory import NodeRunFactory
 from mock import patch
 
 from eums.models import DistributionPlanNode, NodeRun
+
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory, \
@@ -111,5 +112,4 @@ class DistributionPlanNodeTest(TestCase):
         second_run = NodeRunFactory(node=self.node)
 
         self.assertEqual(self.node.latest_run(), second_run)
-
 

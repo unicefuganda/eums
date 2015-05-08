@@ -144,7 +144,6 @@ class HookTest(APITestCase):
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
             contact_person_id=node.contact_person_id)
-
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
 
@@ -168,7 +167,6 @@ class HookTest(APITestCase):
         original_status = NodeRun.STATUS.scheduled
         node_run = NodeRunFactory(node=node, phone=self.PHONE,
                                   status=original_status)
-
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
             contact_person_id=node.contact_person_id)

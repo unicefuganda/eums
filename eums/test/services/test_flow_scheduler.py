@@ -117,6 +117,7 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(self.node)
 
         self.assertEqual(node_run.status, NodeRun.STATUS.cancelled)
+
         local_celery.app.control.revoke.assert_called()
         mock_start_delivery_run.assert_called()
 

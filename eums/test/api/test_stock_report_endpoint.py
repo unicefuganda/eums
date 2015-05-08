@@ -12,6 +12,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
+
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -155,6 +156,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.run_four = NodeRunFactory(node=self.middle_man_node_one)
         self.run_five = NodeRunFactory(node=self.middle_man_node_two)
         self.run_six = NodeRunFactory(node=self.end_user_node)
+
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.so_one)

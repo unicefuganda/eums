@@ -34,7 +34,6 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
         node_run_one = NodeRunFactory(node=child_node_one, status='completed')
         node_run_two = NodeRunFactory(node=child_node_two, status='completed')
         node_run_three = NodeRunFactory(node=child_node_three, status='completed')
-
         NumericAnswerFactory(node_run=node_run, value=80, question=numeric_question)
         MultipleChoiceAnswerFactory(node_run=node_run_one,
                                     question=multichoice_question,

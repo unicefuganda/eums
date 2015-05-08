@@ -5,6 +5,7 @@ from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleCho
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
+
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory

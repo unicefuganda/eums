@@ -5,7 +5,6 @@ from eums.test.factories.answer_factory import TextAnswerFactory
 from eums.test.factories.question_factory import TextQuestionFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
 
-
 ENDPOINT_URL = BACKEND_URL + 'text-answers/'
 
 
@@ -27,6 +26,7 @@ class TextAnswerEndpointTest(AuthenticatedAPITestCase):
     def test_should_create_text_answers(self):
         text_question = TextQuestionFactory(label='dateOfReceipt')
         node_run = NodeRunFactory()
+
         text_answer_details = {
             "value": "1",
             "question": text_question.id,
