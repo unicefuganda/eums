@@ -22,6 +22,11 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                 return $http.put(options.uri + object.id + '/', object).then(function (response) {
                     return response;
                 });
+            },
+            del: function(object) {
+                return $http.delete(options.uri + object.id + '/', object).then(function (response) {
+                    return response;
+                });
             }
         };
     };

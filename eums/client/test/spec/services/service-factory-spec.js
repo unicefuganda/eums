@@ -51,6 +51,15 @@ describe('Service Factory', function () {
         });
         mockBackend.flush();
     });
+
+    it('should delete object by id', function(done) {
+        mockBackend.whenDELETE(endpointUrl + fakeTwo.id + '/').respond(200);
+        service.del(fakeTwo).then(function(response) {
+            expect(response.status).toEqual(200);
+            done();
+        });
+        mockBackend.flush();
+    });
 });
 
 
