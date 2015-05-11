@@ -1,11 +1,16 @@
 'use strict';
 
 angular.module('GenericService', []).factory('ServiceFactory', function ($http, $q) {
-    var buildObject = function (object, buildMap) {
+    var serviceOptions;
+
+    var buildObject = function (object, nestedFields) {
         var buildOutPromises = [];
+        var buildMap = nestedFieldsToBuildMap(nestedFields);
+
         Object.each(buildMap, function (property, service) {
             buildOutPromises.push(service.get(object[property]))
         });
+
         return $q.all(buildOutPromises).then(function (builtObjects) {
             builtObjects.each(function (builtObject, index) {
                 object[Object.keys(buildMap)[index]] = builtObject;
@@ -14,21 +19,29 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
         });
     };
 
-    var nestedObjectsToIds = function(object) {
+    var nestedObjectsToIds = function (object) {
         var objectToFlatten = Object.clone(object);
-        return Object.map(objectToFlatten, function(key, value, original) {
+        return Object.map(objectToFlatten, function (key, value, original) {
             typeof value === 'object' && value.id && (original[key] = value.id);
             return original[key];
         });
     };
 
+    var nestedFieldsToBuildMap = function (fields) {
+        return fields.reduce(function (previous, current) {
+            previous[current] = serviceOptions.propertyServiceMap[current];
+            return previous;
+        }, {});
+    };
+
     return function (options) {
+        serviceOptions = options;
         return {
-            all: function (nestedBuildParams) {
-                !nestedBuildParams && (nestedBuildParams = {});
+            all: function (nestedFields) {
+                !nestedFields && (nestedFields = []);
                 return $http.get(options.uri).then(function (response) {
                     var buildPromises = response.data.map(function (flatObject) {
-                        return buildObject(flatObject, nestedBuildParams);
+                        return buildObject(flatObject, nestedFields);
                     });
                     return $q.all(buildPromises).then(function (builtObjects) {
                         return builtObjects.map(function (object) {
@@ -37,10 +50,10 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                     });
                 });
             },
-            get: function (id, nestedBuildParams) {
-                !nestedBuildParams && (nestedBuildParams = {});
+            get: function (id, nestedFields) {
+                !nestedFields && (nestedFields = []);
                 return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                    return buildObject(response.data, nestedBuildParams).then(function (builtObject) {
+                    return buildObject(response.data, nestedFields).then(function (builtObject) {
                         return builtObject;
                     });
                 });

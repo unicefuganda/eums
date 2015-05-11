@@ -14,7 +14,7 @@ describe('Service Factory', function () {
             q = $q;
             mockBackend = $httpBackend;
             nestedService = ServiceFactory({uri: nestedEndpoint});
-            topLevelService = ServiceFactory({uri: topLevelEndpoint, flatten: ["nested"]});
+            topLevelService = ServiceFactory({uri: topLevelEndpoint, propertyServiceMap: {nested: nestedService}});
         });
     });
 
@@ -45,7 +45,7 @@ describe('Service Factory', function () {
         expectedFakeOne.nested = nestedOne;
         expectedFakeTwo.nested = nestedTwo;
 
-        topLevelService.all({nested: nestedService}).then(function (objects) {
+        topLevelService.all(['nested']).then(function (objects) {
             expect(objects).toEqual([expectedFakeOne, expectedFakeTwo]);
             done();
         });
@@ -67,7 +67,7 @@ describe('Service Factory', function () {
         var expectedFakeOne = Object.clone(fakeOne);
         expectedFakeOne.nested = nestedOne;
 
-        topLevelService.get(fakeOne.id, {nested: nestedService}).then(function (object) {
+        topLevelService.get(fakeOne.id, ['nested']).then(function (object) {
             expect(object).toEqual(expectedFakeOne);
             done();
         });
