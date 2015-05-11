@@ -33,16 +33,16 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                 return $http.get(options.uri);
             },
             get: function (id) {
-                return $http.get(options.uri + id + '/');
+                return $http.get('{1}{2}/'.assign(options.uri, id));
             },
             create: function (object) {
                 return $http.post(options.uri, object);
             },
             update: function (object) {
-                return $http.put(options.uri + object.id + '/', object);
+                return $http.put('{1}{2}/'.assign(options.uri, object.id), object);
             },
             del: function (object) {
-                return $http.delete(options.uri + object.id + '/', object);
+                return $http.delete('{1}{2}/'.assign(options.uri, object.id), object);
             }
         };
     };

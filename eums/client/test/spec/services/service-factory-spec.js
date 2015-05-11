@@ -53,7 +53,7 @@ describe('Service Factory', function () {
     });
 
     it('should get object by id', function (done) {
-        mockBackend.whenGET(topLevelEndpoint + fakeOne.id + '/').respond(fakeOne);
+        mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(fakeOne);
         topLevelService.get(fakeOne.id).success(function (object) {
             expect(object).toEqual(fakeOne);
             done();
@@ -62,7 +62,7 @@ describe('Service Factory', function () {
     });
 
     it('should notify when get object by id does not return 200', function (done) {
-        mockBackend.whenGET(topLevelEndpoint + fakeOne.id + '/').respond(401);
+        mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(401);
         topLevelService.get(fakeOne.id).catch(function (error) {
             expect(error.status).toBe(401);
             done();
@@ -89,7 +89,7 @@ describe('Service Factory', function () {
     });
 
     it('should update object', function (done) {
-        mockBackend.whenPUT(topLevelEndpoint + fakeOne.id + '/').respond(200);
+        mockBackend.whenPUT('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(200);
         var changedOne = Object.clone(fakeOne);
         changedOne.propertyOne = 'changed';
         topLevelService.update(changedOne).success(function (response, status) {
@@ -100,7 +100,7 @@ describe('Service Factory', function () {
     });
 
     it('should notify when update object does not return 200', function (done) {
-        mockBackend.whenPUT(topLevelEndpoint + fakeOne.id + '/').respond(401);
+        mockBackend.whenPUT('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(401);
         var changedOne = Object.clone(fakeOne);
         changedOne.propertyOne = 'changed';
         topLevelService.update(changedOne).catch(function (error) {
@@ -110,9 +110,8 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-
     it('should delete object by id', function (done) {
-        mockBackend.whenDELETE(topLevelEndpoint + fakeTwo.id + '/').respond(200);
+        mockBackend.whenDELETE('{1}{2}/'.assign(topLevelEndpoint, fakeTwo.id)).respond(200);
         topLevelService.del(fakeTwo).success(function (response, status) {
             expect(status).toEqual(200);
             done();
@@ -121,15 +120,13 @@ describe('Service Factory', function () {
     });
 
     it('should notify when delete does not return 200', function (done) {
-        mockBackend.whenDELETE(topLevelEndpoint + fakeTwo.id + '/').respond(401);
+        mockBackend.whenDELETE('{1}{2}/'.assign(topLevelEndpoint, fakeTwo.id)).respond(401);
         topLevelService.del(fakeTwo).catch(function (error) {
             expect(error.status).toBe(401);
             done();
         });
         mockBackend.flush();
     });
-
-
 });
 
 
