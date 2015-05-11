@@ -374,7 +374,6 @@ module.exports = function (grunt) {
     grunt.registerTask('functional-selenium', [
         'build',
         'clean:server',
-        'shell:sourceEnv',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
