@@ -1,4 +1,4 @@
-Django==1.7
+Django==1.8
 Factory==1.2
 Markdown==2.4.1
 amqp==1.4.6
