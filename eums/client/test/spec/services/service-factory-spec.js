@@ -20,7 +20,7 @@ describe('Service Factory', function () {
 
     it('should get all objects from api endpoint', function (done) {
         mockBackend.whenGET(topLevelEndpoint).respond(fakeObjects);
-        topLevelService.all().success(function (objects) {
+        topLevelService.all().then(function (objects) {
             expect(objects).toEqual(fakeObjects);
             done();
         });

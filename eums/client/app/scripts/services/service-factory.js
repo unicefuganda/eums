@@ -17,20 +17,17 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
     return function (options) {
         return {
             all: function (opts) {
-                //!opts && (opts = {build: {}});
-                if (opts) {
-                    return $http.get(options.uri).then(function (response) {
-                        var buildPromises = response.data.map(function (flatObject) {
-                            return buildObject(flatObject, opts.build);
-                        });
-                        return $q.all(buildPromises).then(function (builtObjects) {
-                            return builtObjects.map(function (object) {
-                                return object;
-                            });
+                !opts && (opts = {build: {}});
+                return $http.get(options.uri).then(function (response) {
+                    var buildPromises = response.data.map(function (flatObject) {
+                        return buildObject(flatObject, opts.build);
+                    });
+                    return $q.all(buildPromises).then(function (builtObjects) {
+                        return builtObjects.map(function (object) {
+                            return object;
                         });
                     });
-                }
-                return $http.get(options.uri);
+                });
             },
             get: function (id) {
                 return $http.get('{1}{2}/'.assign(options.uri, id));
