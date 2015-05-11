@@ -6,9 +6,9 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
         Object.each(buildMap, function (property, service) {
             buildOutPromises.push(service.get(object[property]))
         });
-        return $q.all(buildOutPromises).then(function (responses) {
-            responses.each(function (buildResponse, index) {
-                object[Object.keys(buildMap)[index]] = buildResponse.data;
+        return $q.all(buildOutPromises).then(function (builtObjects) {
+            builtObjects.each(function (builtObject, index) {
+                object[Object.keys(buildMap)[index]] = builtObject;
             });
             return object;
         });
@@ -30,16 +30,24 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                 });
             },
             get: function (id) {
-                return $http.get('{1}{2}/'.assign(options.uri, id));
+                return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
+                    return response.data;
+                });
             },
             create: function (object) {
-                return $http.post(options.uri, object);
+                return $http.post(options.uri, object).then(function (response) {
+                    return response.data;
+                });
             },
             update: function (object) {
-                return $http.put('{1}{2}/'.assign(options.uri, object.id), object);
+                return $http.put('{1}{2}/'.assign(options.uri, object.id), object).then(function (response) {
+                    return response.status;
+                });
             },
             del: function (object) {
-                return $http.delete('{1}{2}/'.assign(options.uri, object.id), object);
+                return $http.delete('{1}{2}/'.assign(options.uri, object.id), object).then(function (response) {
+                    return response.status;
+                });
             }
         };
     };

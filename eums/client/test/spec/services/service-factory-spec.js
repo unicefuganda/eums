@@ -54,7 +54,7 @@ describe('Service Factory', function () {
 
     it('should get object by id', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(fakeOne);
-        topLevelService.get(fakeOne.id).success(function (object) {
+        topLevelService.get(fakeOne.id).then(function (object) {
             expect(object).toEqual(fakeOne);
             done();
         });
@@ -72,7 +72,7 @@ describe('Service Factory', function () {
 
     it('should create an object', function (done) {
         mockBackend.whenPOST(topLevelEndpoint).respond(201, fakeOne);
-        topLevelService.create(fakeOne).success(function (object) {
+        topLevelService.create(fakeOne).then(function (object) {
             expect(object).toEqual(fakeOne);
             done();
         });
@@ -92,7 +92,7 @@ describe('Service Factory', function () {
         mockBackend.whenPUT('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(200);
         var changedOne = Object.clone(fakeOne);
         changedOne.propertyOne = 'changed';
-        topLevelService.update(changedOne).success(function (response, status) {
+        topLevelService.update(changedOne).then(function (status) {
             expect(status).toEqual(200);
             done();
         });
@@ -112,7 +112,7 @@ describe('Service Factory', function () {
 
     it('should delete object by id', function (done) {
         mockBackend.whenDELETE('{1}{2}/'.assign(topLevelEndpoint, fakeTwo.id)).respond(200);
-        topLevelService.del(fakeTwo).success(function (response, status) {
+        topLevelService.del(fakeTwo).then(function (status) {
             expect(status).toEqual(200);
             done();
         });
