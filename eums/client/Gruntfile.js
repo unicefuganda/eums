@@ -171,6 +171,16 @@ module.exports = function (grunt) {
                     }
                 }
             },
+            headless_selenium: {
+                options: {
+                    configFile: 'test/functional_selenium_conf.js',
+                    keepAlive: false,
+                    args: {
+                        specs: ['test/functional/*-spec.js'],
+                        browser: 'chrome'
+                    }
+                }
+            },
             firefox: {
                 options: {
                     configFile: 'test/functional_conf.js',
@@ -343,7 +353,7 @@ module.exports = function (grunt) {
         'less'
     ]);
 
-    grunt.registerTask('functional', [
+    grunt.registerTask('prepare-for-server-start', [
         'build',
         'clean:server',
         'shell:sourceEnv',
@@ -351,9 +361,20 @@ module.exports = function (grunt) {
         'shell:createDb',
         'shell:runMigrations',
         'shell:seedData',
-        'shell:mapData',
+        'shell:mapData'
+    ]);
+
+    grunt.registerTask('functional', [
+        'prepare-for-server-start',
         'run:djangoServer',
         'protractor:headless',
+        'shell:stopServer'
+    ]);
+
+    grunt.registerTask('functional-selenium', [
+        'prepare-for-server-start',
+        'run:djangoServer',
+        'protractor:headless_selenium',
         'shell:stopServer'
     ]);
 
