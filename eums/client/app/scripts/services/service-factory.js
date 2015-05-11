@@ -14,6 +14,16 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
         });
     };
 
+    var nestedObjectsToIds = function(object) {
+        var objectToFlatten = Object.clone(object);
+        return Object.map(objectToFlatten, function(key, value, original) {
+            if (typeof value === 'object' && value.id) {
+                original[key] = value.id;
+            }
+            return original[key];
+        });
+    };
+
     return function (options) {
         return {
             all: function (nestedBuildParams) {
@@ -43,7 +53,8 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                 });
             },
             update: function (object) {
-                return $http.put('{1}{2}/'.assign(options.uri, object.id), object).then(function (response) {
+                var flatObject = nestedObjectsToIds(object);
+                return $http.put('{1}{2}/'.assign(options.uri, object.id), flatObject).then(function (response) {
                     return response.status;
                 });
             },

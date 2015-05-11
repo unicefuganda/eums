@@ -14,7 +14,7 @@ describe('Service Factory', function () {
             q = $q;
             mockBackend = $httpBackend;
             nestedService = ServiceFactory({uri: nestedEndpoint});
-            topLevelService = ServiceFactory({uri: topLevelEndpoint});
+            topLevelService = ServiceFactory({uri: topLevelEndpoint, flatten: ["nested"]});
         });
     });
 
@@ -106,6 +106,17 @@ describe('Service Factory', function () {
         var changedOne = Object.clone(fakeOne);
         changedOne.propertyOne = 'changed';
         topLevelService.update(changedOne).then(function (status) {
+            expect(status).toEqual(200);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should flatten properties when updating', function (done) {
+        var nestedFakeOne = Object.clone(fakeOne);
+        nestedFakeOne.nested = nestedOne;
+        mockBackend.expectPUT('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id), fakeOne).respond(200);
+        topLevelService.update(nestedFakeOne).then(function (status) {
             expect(status).toEqual(200);
             done();
         });
