@@ -45,7 +45,7 @@ describe('Service Factory', function () {
         expectedFakeOne.nested = nestedOne;
         expectedFakeTwo.nested = nestedTwo;
 
-        topLevelService.all({build: {nested: nestedService}}).then(function (objects) {
+        topLevelService.all({nested: nestedService}).then(function (objects) {
             expect(objects).toEqual([expectedFakeOne, expectedFakeTwo]);
             done();
         });
@@ -67,7 +67,7 @@ describe('Service Factory', function () {
         var expectedFakeOne = Object.clone(fakeOne);
         expectedFakeOne.nested = nestedOne;
 
-        topLevelService.get(fakeOne.id, {build: {nested: nestedService}}).then(function (object) {
+        topLevelService.get(fakeOne.id, {nested: nestedService}).then(function (object) {
             expect(object).toEqual(expectedFakeOne);
             done();
         });

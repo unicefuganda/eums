@@ -16,11 +16,11 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
 
     return function (options) {
         return {
-            all: function (opts) {
-                !opts && (opts = {build: {}});
+            all: function (nestedBuildParams) {
+                !nestedBuildParams && (nestedBuildParams = {});
                 return $http.get(options.uri).then(function (response) {
                     var buildPromises = response.data.map(function (flatObject) {
-                        return buildObject(flatObject, opts.build);
+                        return buildObject(flatObject, nestedBuildParams);
                     });
                     return $q.all(buildPromises).then(function (builtObjects) {
                         return builtObjects.map(function (object) {
@@ -29,10 +29,10 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                     });
                 });
             },
-            get: function (id, opts) {
-                !opts && (opts = {build: {}});
+            get: function (id, nestedBuildParams) {
+                !nestedBuildParams && (nestedBuildParams = {});
                 return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                    return buildObject(response.data, opts.build).then(function (builtObject) {
+                    return buildObject(response.data, nestedBuildParams).then(function (builtObject) {
                         return builtObject;
                     });
                 });
