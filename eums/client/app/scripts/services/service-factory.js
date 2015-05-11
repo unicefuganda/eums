@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase, toSnakeCase) {
+angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase) {
     var serviceOptions;
 
     var buildObject = function (object, nestedFields) {
@@ -8,7 +8,7 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
         var buildMap = nestedFieldsToBuildMap(nestedFields);
 
         Object.each(buildMap, function (property, service) {
-            buildOutPromises.push(service.get(object[property]))
+            buildOutPromises.push(service.get(object[property]));
         });
 
         return $q.all(buildOutPromises).then(function (builtObjects) {
@@ -22,7 +22,9 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
     var nestedObjectsToIds = function (object) {
         var objectToFlatten = Object.clone(object);
         return Object.map(objectToFlatten, function (key, value, original) {
-            typeof value === 'object' && value.id && (original[key] = value.id);
+            if (typeof value === 'object' && value.id) {
+                original[key] = value.id;
+            }
             return original[key];
         });
     };
