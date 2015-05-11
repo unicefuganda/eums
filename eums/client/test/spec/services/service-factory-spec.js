@@ -36,7 +36,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should build nested objects when fetching all object if needed', function(done) {
+    it('should build nested objects when fetching all objects if needed', function (done) {
         mockBackend.whenGET(topLevelEndpoint).respond(fakeObjects);
         mockBackend.whenGET('{1}{2}/'.assign(nestedEndpoint, nestedOne.id)).respond(nestedOne);
         mockBackend.whenGET('{1}{2}/'.assign(nestedEndpoint, nestedTwo.id)).respond(nestedTwo);
@@ -45,7 +45,7 @@ describe('Service Factory', function () {
         expectedFakeOne.nested = nestedOne;
         expectedFakeTwo.nested = nestedTwo;
 
-        topLevelService.all({build: {nested: nestedService}}).then(function(objects) {
+        topLevelService.all({build: {nested: nestedService}}).then(function (objects) {
             expect(objects).toEqual([expectedFakeOne, expectedFakeTwo]);
             done();
         });
@@ -56,6 +56,19 @@ describe('Service Factory', function () {
         mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(fakeOne);
         topLevelService.get(fakeOne.id).then(function (object) {
             expect(object).toEqual(fakeOne);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should build nested objects when fetching object by id if needed', function (done) {
+        mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(fakeOne);
+        mockBackend.whenGET('{1}{2}/'.assign(nestedEndpoint, nestedOne.id)).respond(nestedOne);
+        var expectedFakeOne = Object.clone(fakeOne);
+        expectedFakeOne.nested = nestedOne;
+
+        topLevelService.get(fakeOne.id, {build: {nested: nestedService}}).then(function (object) {
+            expect(object).toEqual(expectedFakeOne);
             done();
         });
         mockBackend.flush();

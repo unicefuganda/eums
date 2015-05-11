@@ -29,9 +29,12 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                     });
                 });
             },
-            get: function (id) {
+            get: function (id, opts) {
+                !opts && (opts = {build: {}});
                 return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                    return response.data;
+                    return buildObject(response.data, opts.build).then(function (builtObject) {
+                        return builtObject;
+                    });
                 });
             },
             create: function (object) {
