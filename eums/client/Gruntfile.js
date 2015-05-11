@@ -371,19 +371,6 @@ module.exports = function (grunt) {
         'shell:stopServer'
     ]);
 
-    grunt.registerTask('functional-selenium', [
-        'build',
-        'clean:server',
-        'shell:dropDb',
-        'shell:createDb',
-        'shell:runMigrations',
-        'shell:seedData',
-        'shell:mapData',
-        'run:djangoServer',
-        'protractor:headless_selenium',
-        'shell:stopServer'
-    ]);
-
     grunt.registerTask('functional-staging', [
         'build',
         'clean:server',
