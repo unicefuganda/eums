@@ -1,8 +1,7 @@
+from eums.models import DistributionPlanNode
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-
-from eums.models import DistributionPlanLineItem
 
 
 class StockReport(APIView):
@@ -13,64 +12,63 @@ class StockReport(APIView):
         return Response(reduced_stock_report, status=status.HTTP_200_OK)
 
 
-def aggregate_line_items_into_stock_report(stock_report, line_item):
-    purchase_order_item = line_item.item.purchase_order_item()
+def aggregate_nodes_into_stock_report(stock_report, node):
+    purchase_order_item = node.item.purchase_order_item()
     if purchase_order_item:
-        stock_report.append(_get_report_details_for_line_item(line_item))
+        stock_report.append(_get_report_details_for_node(node))
     return stock_report
 
 
 def _build_stock_report(consignee_id):
-    line_items = DistributionPlanLineItem.objects.filter(distribution_plan_node__consignee_id=consignee_id)
-    return reduce(aggregate_line_items_into_stock_report, line_items, [])
+    nodes = DistributionPlanNode.objects.filter(consignee_id=consignee_id)
+    return reduce(aggregate_nodes_into_stock_report, nodes, [])
 
 
-def _get_report_details_for_line_item(line_item):
-    purchase_order_item = line_item.item.purchase_order_item()
+def _get_report_details_for_node(node):
+    purchase_order_item = node.item.purchase_order_item()
     purchase_order_number = purchase_order_item.purchase_order.order_number
-    quantity_received = _compute_quantity_received(line_item)
-    total_value_received = quantity_received * line_item.item.net_price
-    quantity_dispensed = _compute_quantity_dispensed(line_item)
-    value_dispensed = quantity_dispensed * line_item.item.net_price
+    quantity_received = _compute_quantity_received(node)
+    total_value_received = quantity_received * node.item.net_price
+    quantity_dispensed = _compute_quantity_dispensed(node)
+    value_dispensed = quantity_dispensed * node.item.net_price
 
     return {
         'document_number': purchase_order_number,
         'total_value_received': total_value_received,
         'total_value_dispensed': value_dispensed,
         'balance': (total_value_received - value_dispensed),
-        'items': [{'code': line_item.item.item.material_code,
-                   'description': line_item.item.item.description,
-                   'quantity_delivered': line_item.targeted_quantity,
-                   'date_delivered': str(line_item.planned_distribution_date),
+        'items': [{'code': node.item.item.material_code,
+                   'description': node.item.item.description,
+                   'quantity_delivered': node.targeted_quantity,
+                   'date_delivered': str(node.planned_distribution_date),
                    'quantity_confirmed': quantity_received,
-                   'date_confirmed': str(_get_date_received(line_item)),
+                   'date_confirmed': str(_get_date_received(node)),
                    'quantity_dispatched': quantity_dispensed,
                    'balance': quantity_received - quantity_dispensed}]
     }
 
 
-def _get_responses(line_item):
-    latest_run = line_item.latest_run()
+def _get_responses(node):
+    latest_run = node.latest_run()
     if latest_run:
         return latest_run.questions_and_responses()
     return {}
 
 
-def _compute_quantity_received(line_item):
-    responses = _get_responses(line_item)
+def _compute_quantity_received(node):
+    responses = _get_responses(node)
     return responses.get('amountReceived', 0)
 
 
-def _get_date_received(line_item):
-    responses = _get_responses(line_item)
+def _get_date_received(node):
+    responses = _get_responses(node)
     return responses.get('dateOfReceipt', None)
 
 
-def _compute_quantity_dispensed(line_item):
+def _compute_quantity_dispensed(node):
     total_quantity_dispensed = 0
-    for child_node in line_item.distribution_plan_node.children.all():
-        child_line_item = child_node.distributionplanlineitem_set.all().first()
-        responses = _get_responses(child_line_item)
+    for child_node in node.children.all():
+        responses = _get_responses(child_node)
         total_quantity_dispensed += responses.get('amountReceived', 0)
     return total_quantity_dispensed
 

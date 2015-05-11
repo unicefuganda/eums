@@ -42,8 +42,8 @@ class ResponseSerializer(object):
         programme = node.distribution_plan.programme
         formatted_run_responses = self.format_run_responses(node, programme)
         for item_run, responses in node_responses.iteritems():
-            formatted_run_responses.update({'item': item_run.node_line_item.item.description,
-                                            'amountSent': item_run.node_line_item.targeted_quantity})
+            formatted_run_responses.update({'item': item_run.node.item.description,
+                                            'amountSent': item_run.node.targeted_quantity})
             for response in responses:
                 formatted_run_responses.update({response.question.label: response.format()})
             node_results.append(self.add_product_satisfied_field(formatted_run_responses))
@@ -90,7 +90,7 @@ class AllEndUserResponses(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
-class PlanItemResponses(APIView):
+class NodeResponses(APIView):
     def get(self, request, node_id, *args, **kwargs):
         planNode = DistributionPlanNode.objects.filter(id=node_id).first()
         result = {}
@@ -100,7 +100,7 @@ class PlanItemResponses(APIView):
             if node_responses:
                 result = {
                     'node': self._get_node(planNode),
-                    'line_item_run_id': node_run.id,
+                    'node_run_id': node_run.id,
                     'responses': ResponseSerializer().detailed_node_responses(node_responses)
                 }
 

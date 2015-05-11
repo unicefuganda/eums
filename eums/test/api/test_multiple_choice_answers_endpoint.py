@@ -18,7 +18,7 @@ class MultipleChoiceAnswerEndpointTest(AuthenticatedAPITestCase):
             "id": multiple_choice_answer.id,
             "value": multiple_choice_answer.value.id,
             "question": multiple_choice_answer.question_id,
-            "line_item_run": multiple_choice_answer.line_item_run_id
+            "node_run": multiple_choice_answer.node_run_id
         }
         response = self.client.get(ENDPOINT_URL)
 
@@ -28,11 +28,11 @@ class MultipleChoiceAnswerEndpointTest(AuthenticatedAPITestCase):
     def test_should_create_multiple_choice_answers(self):
         multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
         yes_option = multiple_choice_question.option_set.first()
-        line_item_run = NodeRunFactory()
+        node_run = NodeRunFactory()
         multiple_choice_answer_details = {
             "value": yes_option.id,
             "question": multiple_choice_question.id,
-            "line_item_run": line_item_run.id
+            "node_run": node_run.id
         }
         response = self.client.post(ENDPOINT_URL, multiple_choice_answer_details, format='json')
 

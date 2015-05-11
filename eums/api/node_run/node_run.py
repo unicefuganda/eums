@@ -17,4 +17,4 @@ class NodeRunViewSet(ModelViewSet):
 
 
 nodeRunRouter = DefaultRouter()
-nodeRunRouter.register(r'node-line-item-run', NodeRunViewSet)
+nodeRunRouter.register(r'node-run', NodeRunViewSet)

@@ -10,7 +10,7 @@ def _generate_response_data(node):
     responses = node.responses()
     data = {'children': [], 'answers': {}}
     for node_run, answers in responses.iteritems():
-        data.update({'node': node_run.distribution_plan_node.consignee.name})
+        data.update({'node': node_run.node.consignee.name})
         for answer in answers:
             data['answers'].update({answer.question.label: answer.format()})
     return data
