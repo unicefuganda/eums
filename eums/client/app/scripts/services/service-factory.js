@@ -38,10 +38,9 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
         serviceOptions = options;
         return {
             all: function (nestedFields) {
-                !nestedFields && (nestedFields = []);
                 return $http.get(options.uri).then(function (response) {
                     var buildPromises = response.data.map(function (flatObject) {
-                        return buildObject(flatObject, nestedFields);
+                        return buildObject(flatObject, nestedFields || []);
                     });
                     return $q.all(buildPromises).then(function (builtObjects) {
                         return builtObjects.map(function (object) {
@@ -51,9 +50,8 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
                 });
             },
             get: function (id, nestedFields) {
-                !nestedFields && (nestedFields = []);
                 return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                    return buildObject(response.data, nestedFields).then(function (builtObject) {
+                    return buildObject(response.data, nestedFields || []).then(function (builtObject) {
                         return builtObject;
                     });
                 });
