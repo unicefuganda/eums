@@ -372,7 +372,14 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('functional-selenium', [
-        'prepare-for-server-start',
+        'build',
+        'clean:server',
+        'shell:sourceEnv',
+        'shell:dropDb',
+        'shell:createDb',
+        'shell:runMigrations',
+        'shell:seedData',
+        'shell:mapData',
         'run:djangoServer',
         'protractor:headless_selenium',
         'shell:stopServer'
