@@ -101,10 +101,10 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should update object', function (done) {
-        mockBackend.whenPUT('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(200);
+    it('should update flat object', function (done) {
         var changedOne = Object.clone(fakeOne);
         changedOne.propertyOne = 'changed';
+        mockBackend.expectPUT('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id), changedOne).respond(200);
         topLevelService.update(changedOne).then(function (status) {
             expect(status).toEqual(200);
             done();
