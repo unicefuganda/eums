@@ -2,7 +2,6 @@ from eums.models import DistributionPlanNode
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
-from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
@@ -11,7 +10,7 @@ from eums.test.factories.question_factory import NumericQuestionFactory, Multipl
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'responses/'
-PLAN_ITEM_ENDPOINT_URL = BACKEND_URL + 'plan-item-responses/'
+NODE_ENDPOINT_URL = BACKEND_URL + 'node-responses/'
 END_USER_ENDPOINT_URL = BACKEND_URL + 'end-user-responses/'
 
 
@@ -28,40 +27,38 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         salt = ItemFactory(description='Salt')
         self.item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
 
-    def create_nodes_and_line_item(self):
+    def create_nodes(self):
         self.ip_node = DistributionPlanNodeFactory()
         self.middle_man_node = DistributionPlanNodeFactory(parent=self.ip_node,
                                                            tree_position=DistributionPlanNode.MIDDLE_MAN,
-                                                           distribution_plan=self.ip_node.distribution_plan)
-        self.node_line_item_one = DistributionPlanLineItemFactory(distribution_plan_node=self.middle_man_node,
-                                                                  targeted_quantity=100,
-                                                                  item=self.item)
+                                                           distribution_plan=self.ip_node.distribution_plan,
+                                                           targeted_quantity=100,
+                                                           item=self.item)
         self.end_user_node = DistributionPlanNodeFactory(parent=self.middle_man_node,
                                                          tree_position=DistributionPlanNode.END_USER,
-                                                         distribution_plan=self.ip_node.distribution_plan)
-        self.node_line_item_two = DistributionPlanLineItemFactory(distribution_plan_node=self.end_user_node,
-                                                                  targeted_quantity=100,
-                                                                  item=self.item)
+                                                         distribution_plan=self.ip_node.distribution_plan,
+                                                         targeted_quantity=100,
+                                                         item=self.item)
 
-    def create_line_item_runs_and_answers(self):
-        self.line_item_run_one = NodeRunFactory(node_line_item=self.node_line_item_one, status='completed')
-        self.run_one_multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=self.line_item_run_one,
+    def create_node_runs_and_answers(self):
+        self.node_run_one = NodeRunFactory(node=self.middle_man_node, status='completed')
+        self.run_one_multiple_answer_one = MultipleChoiceAnswerFactory(node_run=self.node_run_one,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)
-        self.run_one_multiple_answer_two = MultipleChoiceAnswerFactory(line_item_run=self.line_item_run_one,
+        self.run_one_multiple_answer_two = MultipleChoiceAnswerFactory(node_run=self.node_run_one,
                                                                        question=self.multiple_choice_question_two,
                                                                        value=self.yes_option)
-        self.run_one_numeric_answer_one = NumericAnswerFactory(line_item_run=self.line_item_run_one, value=80,
+        self.run_one_numeric_answer_one = NumericAnswerFactory(node_run=self.node_run_one, value=80,
                                                                question=self.numeric_question)
 
-        self.line_item_run_two = NodeRunFactory(node_line_item=self.node_line_item_two, status='completed')
-        self.run_two_multiple_answer_one = MultipleChoiceAnswerFactory(line_item_run=self.line_item_run_two,
+        self.node_run_two = NodeRunFactory(node=self.end_user_node, status='completed')
+        self.run_two_multiple_answer_one = MultipleChoiceAnswerFactory(node_run=self.node_run_two,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)
-        self.run_two_multiple_answer_two = MultipleChoiceAnswerFactory(line_item_run=self.line_item_run_two,
+        self.run_two_multiple_answer_two = MultipleChoiceAnswerFactory(node_run=self.node_run_two,
                                                                        question=self.multiple_choice_question_two,
                                                                        value=self.yes_option)
-        self.run_two_numeric_answer_one = NumericAnswerFactory(line_item_run=self.line_item_run_two, value=80,
+        self.run_two_numeric_answer_one = NumericAnswerFactory(node_run=self.node_run_two, value=80,
                                                                question=self.numeric_question)
 
     def expected_response_data(self, node, consignee, programme, type):
@@ -77,8 +74,8 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_provide_summary_data_from_node_response(self):
         self.create_questions_and_items()
-        self.create_nodes_and_line_item()
-        self.create_line_item_runs_and_answers()
+        self.create_nodes()
+        self.create_node_runs_and_answers()
 
         url = "%s%d/" % (ENDPOINT_URL, self.middle_man_node.consignee.id)
         response = self.client.get(url, format='json')
@@ -95,8 +92,8 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_provide_summary_data_from_all_node_responses(self):
         self.create_questions_and_items()
-        self.create_nodes_and_line_item()
-        self.create_line_item_runs_and_answers()
+        self.create_nodes()
+        self.create_node_runs_and_answers()
 
         response = self.client.get(ENDPOINT_URL, format='json')
         consignee_one = self.middle_man_node.consignee
@@ -117,8 +114,8 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_provide_summary_data_from_all_end_user_node_responses(self):
         self.create_questions_and_items()
-        self.create_nodes_and_line_item()
-        self.create_line_item_runs_and_answers()
+        self.create_nodes()
+        self.create_node_runs_and_answers()
 
         response = self.client.get(END_USER_ENDPOINT_URL, format='json')
         consignee = self.end_user_node.consignee
@@ -132,52 +129,52 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.assertEquals(expected_data_node, response.data[0])
         self.assertDictContainsSubset(expected_data_node, response.data[0])
 
-    def test_should_provide_summary_data_from_plan_item_response_for_end_user(self):
+    def test_should_provide_summary_data_from_node_response_for_end_user(self):
         self.create_questions_and_items()
-        self.create_nodes_and_line_item()
-        self.create_line_item_runs_and_answers()
+        self.create_nodes()
+        self.create_node_runs_and_answers()
 
-        url = "%s%d/" % (PLAN_ITEM_ENDPOINT_URL, self.node_line_item_two.id)
+        url = "%s%d/" % (NODE_ENDPOINT_URL, self.end_user_node.id)
         response = self.client.get(url, format='json')
 
         expected_data = {
-                "node": {
-                    "plan_id": self.end_user_node.distribution_plan.id,
-                    "contact_person_id": self.end_user_node.contact_person_id,
-                    "consignee": self.end_user_node.consignee.id,
-                    "id": self.end_user_node.id,
-                    "location": self.end_user_node.location
+            "node": {
+                "plan_id": self.end_user_node.distribution_plan.id,
+                "contact_person_id": self.end_user_node.contact_person_id,
+                "consignee": self.end_user_node.consignee.id,
+                "id": self.end_user_node.id,
+                "location": self.end_user_node.location
+            },
+            "node_run_id": self.node_run_two.id,
+            "responses": {
+                self.numeric_question.label: {
+                    "id": self.run_two_numeric_answer_one.id,
+                    "value": self.run_two_numeric_answer_one.value,
+                    "formatted_value": self.run_two_numeric_answer_one.format()
                 },
-                "line_item_run_id": self.line_item_run_two.id,
-                "responses": {
-                     self.numeric_question.label: {
-                        "id": self.run_two_numeric_answer_one.id,
-                        "value": self.run_two_numeric_answer_one.value,
-                        "formatted_value": self.run_two_numeric_answer_one.format()
-                    },
-                     self.multiple_choice_question.label: {
-                        "id": self.run_two_multiple_answer_one.id,
-                        "value": self.yes_option.id,
-                        "formatted_value": self.run_two_multiple_answer_one.format()
-                    },
-                    self.multiple_choice_question_two.label: {
-                        "id": self.run_two_multiple_answer_two.id,
-                        "value": self.yes_option.id,
-                        "formatted_value": self.run_two_multiple_answer_two.format()
-                    }
+                self.multiple_choice_question.label: {
+                    "id": self.run_two_multiple_answer_one.id,
+                    "value": self.yes_option.id,
+                    "formatted_value": self.run_two_multiple_answer_one.format()
+                },
+                self.multiple_choice_question_two.label: {
+                    "id": self.run_two_multiple_answer_two.id,
+                    "value": self.yes_option.id,
+                    "formatted_value": self.run_two_multiple_answer_two.format()
                 }
+            }
         }
 
         self.assertEqual(response.status_code, 200)
         self.assertEquals(expected_data, response.data)
         self.assertDictContainsSubset(expected_data, response.data)
 
-    def test_should_not_provide_summary_data_from_plan_item_response_for_middleman_user(self):
+    def test_should_not_provide_summary_data_from_node_response_for_middleman_user(self):
         self.create_questions_and_items()
-        self.create_nodes_and_line_item()
-        self.create_line_item_runs_and_answers()
+        self.create_nodes()
+        self.create_node_runs_and_answers()
 
-        url = "%s%d/" % (PLAN_ITEM_ENDPOINT_URL, self.node_line_item_one.id)
+        url = "%s%d/" % (NODE_ENDPOINT_URL, self.node_run_one.id)
         response = self.client.get(url, format='json')
 
         expected_data = {}

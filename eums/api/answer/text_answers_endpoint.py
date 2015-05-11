@@ -8,7 +8,7 @@ from eums.models import TextAnswer
 class TextAnswerSerialiser(serializers.ModelSerializer):
     class Meta:
         model = TextAnswer
-        fields = ('id', 'question', 'value', 'line_item_run')
+        fields = ('id', 'question', 'value', 'node_run')
 
 
 class TextAnswerViewSet(ModelViewSet):

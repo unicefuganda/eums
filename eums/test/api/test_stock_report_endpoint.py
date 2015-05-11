@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from eums.fixtures.flows import seed_flows
+
 seed_flows()
 
 from eums.fixtures.questions import seed_questions
@@ -9,7 +10,6 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
-from eums.test.factories.distribution_plan_line_item_factory import DistributionPlanLineItemFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.node_run_factory import NodeRunFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
@@ -29,48 +29,49 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.setup_purchase_orders()
         self.setup_responses()
 
-        expected_data = [{'document_number': self.po_one.order_number,
-                          'total_value_received': Decimal('60.0000'),
-                          'total_value_dispensed': Decimal('20.0000'),
-                          'balance': Decimal('40.0000'),
-                          'items': [{'code': unicode(self.po_item_two.sales_order_item.item.material_code),
-                                     'description': unicode(self.po_item_two.sales_order_item.item.description),
-                                     'quantity_delivered': 3,
-                                     'date_delivered': str(self.plan_item_two.planned_distribution_date),
-                                     'quantity_confirmed': 2L,
-                                     'date_confirmed': '2014-01-02',
-                                     'quantity_dispatched': 1L,
-                                     'balance': 1L
-                                    },
-                                    {'code': unicode(self.po_item_one.sales_order_item.item.material_code),
-                                     'description': unicode(self.po_item_one.sales_order_item.item.description),
-                                     'quantity_delivered': 5,
-                                     'date_delivered': str(self.plan_item_one.planned_distribution_date),
-                                     'quantity_confirmed': 4L,
-                                     'date_confirmed': '2014-01-01',
-                                     'quantity_dispatched': 1L,
-                                     'balance': 3L
-                                    }
-                          ]},
-                         {'document_number': self.po_two.order_number,
-                          'total_value_received': Decimal('10.0000'),
-                          'total_value_dispensed': Decimal('10.0000'),
-                          'balance': Decimal('0.0000'),
-                          'items': [{'code': unicode(self.po_item_three.sales_order_item.item.material_code),
-                                     'description': unicode(self.po_item_three.sales_order_item.item.description),
-                                     'quantity_delivered': 2,
-                                     'date_delivered': str(self.plan_item_three.planned_distribution_date),
-                                     'quantity_confirmed': 1L,
-                                     'date_confirmed': '2014-01-03',
-                                     'quantity_dispatched': 1L,
-                                     'balance': 0L
-                                    }]}]
+        expected_data = [
+            {'document_number': self.po_two.order_number,
+             'total_value_received': Decimal('10.0000'),
+             'total_value_dispensed': Decimal('10.0000'),
+             'balance': Decimal('0.0000'),
+             'items': [{'code': unicode(self.po_item_three.sales_order_item.item.material_code),
+                        'description': unicode(self.po_item_three.sales_order_item.item.description),
+                        'quantity_delivered': 2,
+                        'date_delivered': str(self.ip_node_three.planned_distribution_date),
+                        'quantity_confirmed': 1L,
+                        'date_confirmed': '2014-01-03',
+                        'quantity_dispatched': 1L,
+                        'balance': 0L
+                        }]},
+            {'document_number': self.po_one.order_number,
+             'total_value_received': Decimal('60.0000'),
+             'total_value_dispensed': Decimal('20.0000'),
+             'balance': Decimal('40.0000'),
+             'items': [{'code': unicode(self.po_item_two.sales_order_item.item.material_code),
+                        'description': unicode(self.po_item_two.sales_order_item.item.description),
+                        'quantity_delivered': 3,
+                        'date_delivered': str(self.ip_node_two.planned_distribution_date),
+                        'quantity_confirmed': 2L,
+                        'date_confirmed': '2014-01-02',
+                        'quantity_dispatched': 1L,
+                        'balance': 1L
+                        },
+                       {'code': unicode(self.po_item_one.sales_order_item.item.material_code),
+                        'description': unicode(self.po_item_one.sales_order_item.item.description),
+                        'quantity_delivered': 5,
+                        'date_delivered': str(self.ip_node_one.planned_distribution_date),
+                        'quantity_confirmed': 4L,
+                        'date_confirmed': '2014-01-01',
+                        'quantity_dispatched': 1L,
+                        'balance': 3L
+                        }
+                       ]}]
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
         self.assertListEqual(response.data, expected_data)
 
-    def test_returns_empty_list_if_no_matching_purchase_order_linked_to_the_line_item_exists(self):
+    def test_returns_empty_list_if_no_matching_purchase_order_linked_to_the_node_exists(self):
         self.setup_responses()
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
@@ -79,42 +80,43 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def test_returns_empty_list_if_no_runs_where_created_for_the_line_items(self):
         self.setup_purchase_orders()
 
-        expected_data = [{'document_number': self.po_one.order_number,
-                          'total_value_received': Decimal('0.0000'),
-                          'total_value_dispensed': Decimal('0.0000'),
-                          'balance': Decimal('0.0000'),
-                          'items': [{'code': unicode(self.po_item_two.sales_order_item.item.material_code),
-                                     'description': unicode(self.po_item_two.sales_order_item.item.description),
-                                     'quantity_delivered': 3,
-                                     'date_delivered': str(self.plan_item_two.planned_distribution_date),
-                                     'quantity_confirmed': 0,
-                                     'date_confirmed': 'None',
-                                     'quantity_dispatched': 0,
-                                     'balance': 0
-                                    },
-                                    {'code': unicode(self.po_item_one.sales_order_item.item.material_code),
-                                     'description': unicode(self.po_item_one.sales_order_item.item.description),
-                                     'quantity_delivered': 5,
-                                     'date_delivered': str(self.plan_item_one.planned_distribution_date),
-                                     'quantity_confirmed': 0,
-                                     'date_confirmed': 'None',
-                                     'quantity_dispatched': 0,
-                                     'balance': 0
-                                    }
-                          ]},
-                         {'document_number': self.po_two.order_number,
-                          'total_value_received': Decimal('0.0000'),
-                          'total_value_dispensed': Decimal('0.0000'),
-                          'balance': Decimal('0.0000'),
-                          'items': [{'code': unicode(self.po_item_three.sales_order_item.item.material_code),
-                                     'description': unicode(self.po_item_three.sales_order_item.item.description),
-                                     'quantity_delivered': 2,
-                                     'date_delivered': str(self.plan_item_three.planned_distribution_date),
-                                     'quantity_confirmed': 0,
-                                     'date_confirmed': 'None',
-                                     'quantity_dispatched': 0,
-                                     'balance': 0
-                                    }]}]
+        expected_data = [
+            {'document_number': self.po_two.order_number,
+             'total_value_received': Decimal('0.0000'),
+             'total_value_dispensed': Decimal('0.0000'),
+             'balance': Decimal('0.0000'),
+             'items': [{'code': unicode(self.po_item_three.sales_order_item.item.material_code),
+                        'description': unicode(self.po_item_three.sales_order_item.item.description),
+                        'quantity_delivered': 2,
+                        'date_delivered': str(self.ip_node_three.planned_distribution_date),
+                        'quantity_confirmed': 0,
+                        'date_confirmed': 'None',
+                        'quantity_dispatched': 0,
+                        'balance': 0
+                        }]},
+            {'document_number': self.po_one.order_number,
+             'total_value_received': Decimal('0.0000'),
+             'total_value_dispensed': Decimal('0.0000'),
+             'balance': Decimal('0.0000'),
+             'items': [{'code': unicode(self.po_item_two.sales_order_item.item.material_code),
+                        'description': unicode(self.po_item_two.sales_order_item.item.description),
+                        'quantity_delivered': 3,
+                        'date_delivered': str(self.ip_node_two.planned_distribution_date),
+                        'quantity_confirmed': 0,
+                        'date_confirmed': 'None',
+                        'quantity_dispatched': 0,
+                        'balance': 0
+                        },
+                       {'code': unicode(self.po_item_one.sales_order_item.item.material_code),
+                        'description': unicode(self.po_item_one.sales_order_item.item.description),
+                        'quantity_delivered': 5,
+                        'date_delivered': str(self.ip_node_one.planned_distribution_date),
+                        'quantity_confirmed': 0,
+                        'date_confirmed': 'None',
+                        'quantity_dispatched': 0,
+                        'balance': 0
+                        }
+                       ]}]
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
@@ -128,12 +130,12 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setup_quantity_received_answers(self):
         quantity_received_qn = NumericQuestion.objects.get(
             uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'])
-        quantity_received_qn.numericanswer_set.create(value=4, line_item_run=self.run_one)
-        quantity_received_qn.numericanswer_set.create(value=2, line_item_run=self.run_two)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_three)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_four)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_five)
-        quantity_received_qn.numericanswer_set.create(value=1, line_item_run=self.run_six)
+        quantity_received_qn.numericanswer_set.create(value=4, node_run=self.run_one)
+        quantity_received_qn.numericanswer_set.create(value=2, node_run=self.run_two)
+        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_three)
+        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_four)
+        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_five)
+        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_six)
 
     def setup_answers(self):
         self.setup_quantity_received_answers()
@@ -142,17 +144,17 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setup_date_received_answers(self):
         date_received_question = TextQuestion.objects.get(
             uuids=['abc9c005-7a7c-44f8-b946-e970a361b6cf', '884ed6d8-1cef-4878-999d-bce7de85e27c'])
-        date_received_question.textanswer_set.create(value='2014-01-01', line_item_run=self.run_one)
-        date_received_question.textanswer_set.create(value='2014-01-02', line_item_run=self.run_two)
-        date_received_question.textanswer_set.create(value='2014-01-03', line_item_run=self.run_three)
+        date_received_question.textanswer_set.create(value='2014-01-01', node_run=self.run_one)
+        date_received_question.textanswer_set.create(value='2014-01-02', node_run=self.run_two)
+        date_received_question.textanswer_set.create(value='2014-01-03', node_run=self.run_three)
 
     def setup_runs(self):
-        self.run_one = NodeRunFactory(node_line_item=self.plan_item_one)
-        self.run_two = NodeRunFactory(node_line_item=self.plan_item_two)
-        self.run_three = NodeRunFactory(node_line_item=self.plan_item_three)
-        self.run_four = NodeRunFactory(node_line_item=self.plan_item_four)
-        self.run_five = NodeRunFactory(node_line_item=self.plan_item_five)
-        self.run_six = NodeRunFactory(node_line_item=self.plan_item_six)
+        self.run_one = NodeRunFactory(node=self.ip_node_one)
+        self.run_two = NodeRunFactory(node=self.ip_node_two)
+        self.run_three = NodeRunFactory(node=self.ip_node_three)
+        self.run_four = NodeRunFactory(node=self.middle_man_node_one)
+        self.run_five = NodeRunFactory(node=self.middle_man_node_two)
+        self.run_six = NodeRunFactory(node=self.end_user_node)
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.so_one)
@@ -183,38 +185,28 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.plan_two = DistributionPlanFactory()
         self.plan_three = DistributionPlanFactory()
         self.setup_nodes()
-        self.setup_plan_items()
-
-    def setup_plan_items(self):
-        self.plan_item_one = DistributionPlanLineItemFactory(distribution_plan_node=self.ip_node_one,
-                                                             item=self.so_item_one, targeted_quantity=5)
-        self.plan_item_two = DistributionPlanLineItemFactory(distribution_plan_node=self.ip_node_two,
-                                                             item=self.so_item_two, targeted_quantity=3)
-        self.plan_item_three = DistributionPlanLineItemFactory(distribution_plan_node=self.ip_node_two,
-                                                               item=self.so_item_three, targeted_quantity=2)
-
-        self.plan_item_four = DistributionPlanLineItemFactory(distribution_plan_node=self.middle_man_node_one,
-                                                              item=self.so_item_one, targeted_quantity=2)
-        self.plan_item_five = DistributionPlanLineItemFactory(distribution_plan_node=self.middle_man_node_two,
-                                                              item=self.so_item_two, targeted_quantity=2)
-        self.plan_item_six = DistributionPlanLineItemFactory(distribution_plan_node=self.end_user_node,
-                                                             item=self.so_item_three, targeted_quantity=2)
 
     def setup_nodes(self):
         self.ip_node_one = DistributionPlanNodeFactory(distribution_plan=self.plan_one, consignee=self.ip,
-                                                       tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+                                                       tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                                       item=self.so_item_one, targeted_quantity=5)
         self.ip_node_two = DistributionPlanNodeFactory(distribution_plan=self.plan_two, consignee=self.ip,
-                                                       tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+                                                       tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                                       item=self.so_item_two, targeted_quantity=3)
         self.ip_node_three = DistributionPlanNodeFactory(distribution_plan=self.plan_three, consignee=self.ip,
-                                                         tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+                                                         tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                                         item=self.so_item_three, targeted_quantity=2)
 
         self.middle_man_node_one = DistributionPlanNodeFactory(distribution_plan=self.plan_three,
                                                                consignee=self.middle_man_one,
                                                                tree_position=DistributionPlanNode.MIDDLE_MAN,
-                                                               parent=self.ip_node_one)
+                                                               parent=self.ip_node_one, item=self.so_item_one,
+                                                               targeted_quantity=2)
         self.middle_man_node_two = DistributionPlanNodeFactory(distribution_plan=self.plan_three,
                                                                consignee=self.middle_man_two, parent=self.ip_node_two,
-                                                               tree_position=DistributionPlanNode.MIDDLE_MAN)
+                                                               tree_position=DistributionPlanNode.MIDDLE_MAN,
+                                                               item=self.so_item_two, targeted_quantity=2)
         self.end_user_node = DistributionPlanNodeFactory(distribution_plan=self.plan_three, consignee=self.end_user,
                                                          tree_position=DistributionPlanNode.END_USER,
-                                                         parent=self.ip_node_three)
+                                                         parent=self.ip_node_three, item=self.so_item_three,
+                                                         targeted_quantity=2)

@@ -12,7 +12,7 @@ class SalesOrderItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = SalesOrderItem
         fields = ('id', 'sales_order', 'item', 'quantity', 'net_price', 'net_value', 'issue_date', 'delivery_date',
-                  'item_number', 'distributionplanlineitem_set')
+                  'item_number', 'distributionplannode_set')
 
 
 class SalesOrderItemViewSet(ModelViewSet):

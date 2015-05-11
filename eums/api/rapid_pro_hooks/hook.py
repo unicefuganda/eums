@@ -29,15 +29,15 @@ def hook(request):
 
 
 def _dequeue_next_run(node_run):
-    next_run = RunQueue.dequeue(contact_person_id=node_run.node.distribution_plan_node.contact_person_id)
+    next_run = RunQueue.dequeue(contact_person_id=node_run.node.contact_person_id)
     if next_run:
         _schedule_next_run(next_run.node)
         next_run.status = RunQueue.STATUS.started
         next_run.save()
 
 
-def _schedule_next_run(line_item):
-    schedule_run_for(line_item)
+def _schedule_next_run(node):
+    schedule_run_for(node)
 
 
 def _mark_as_complete(node_run):

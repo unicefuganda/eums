@@ -8,7 +8,7 @@ from eums.models import NumericAnswer
 class NumericAnswerSerialiser(serializers.ModelSerializer):
     class Meta:
         model = NumericAnswer
-        fields = ('id', 'question', 'value', 'line_item_run')
+        fields = ('id', 'question', 'value', 'node_run')
 
 
 class NumericAnswerViewSet(ModelViewSet):

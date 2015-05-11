@@ -105,7 +105,7 @@ class HookTest(APITestCase):
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_dequeue_next_node_when_question_is_final(self, mock_run_queue_dequeue,
-                                                                     mock_schedule_next_run):
+                                                             mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
@@ -130,7 +130,7 @@ class HookTest(APITestCase):
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_mark_node_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue,
-                                                                          mock_schedule_next_run):
+                                                                     mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
@@ -139,11 +139,11 @@ class HookTest(APITestCase):
 
         node = DistributionPlanNodeFactory()
         node_run = NodeRunFactory(node=node, phone=self.PHONE,
-                                                    status=NodeRun.STATUS.scheduled)
+                                  status=NodeRun.STATUS.scheduled)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
-            contact_person_id=node.distribution_plan_node.contact_person_id)
+            contact_person_id=node.contact_person_id)
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
@@ -157,7 +157,7 @@ class HookTest(APITestCase):
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_not_mark_node_run_as_complete_when_question_is_not_final(self, mock_run_queue_dequeue,
-                                                                                  mock_schedule_next_run):
+                                                                             mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
 
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
@@ -167,7 +167,7 @@ class HookTest(APITestCase):
         node = DistributionPlanNodeFactory()
         original_status = NodeRun.STATUS.scheduled
         node_run = NodeRunFactory(node=node, phone=self.PHONE,
-                                                    status=original_status)
+                                  status=original_status)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
