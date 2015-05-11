@@ -61,6 +61,15 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should convert objects to camelCase after fetching them from api', function(done) {
+        mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond({id: 1, first_property: 3});
+        topLevelService.get(1).then(function (object) {
+            expect(object).toEqual({id: 1, firstProperty: 3});
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should build nested objects when fetching object by id if needed', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond(fakeOne);
         mockBackend.whenGET('{1}{2}/'.assign(nestedEndpoint, nestedOne.id)).respond(nestedOne);

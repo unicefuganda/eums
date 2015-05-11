@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('GenericService', []).factory('ServiceFactory', function ($http, $q) {
+angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase, toSnakeCase) {
     var serviceOptions;
 
     var buildObject = function (object, nestedFields) {
@@ -34,6 +34,13 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
         }, {});
     };
 
+    function changeCase(obj, converter) {
+        return Object.keys(obj).reduce(function (acc, current) {
+            acc[converter(current)] = obj[current];
+            return acc;
+        }, {});
+    }
+
     return function (options) {
         serviceOptions = options;
         return {
@@ -52,7 +59,7 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
             get: function (id, nestedFields) {
                 return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
                     return buildObject(response.data, nestedFields || []).then(function (builtObject) {
-                        return builtObject;
+                        return changeCase(builtObject, toCamelCase);
                     });
                 });
             },
