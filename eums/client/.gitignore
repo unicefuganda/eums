@@ -5,4 +5,3 @@ dist
 bower_components
 app/scripts/config/config.js
 coverage/
-test/karma.conf.js

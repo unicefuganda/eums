@@ -29,6 +29,9 @@ module.exports = function (config) {
             'bower_components/es5-shim/es5-shim.min.js',
             'bower_components/es5-shim/es5-sham.min.js',
             'bower_components/angular-file-upload/angular-file-upload.min.js',
+            'bower_components/angular-gs-capitalize/build/angular-gs-capitalize.min.js',
+            'bower_components/angular-gs-to-camel-case/build/angular-gs-to-camel-case.min.js',
+            'bower_components/angular-gs-to-snake-case/build/angular-gs-to-snake-case.min.js',
             'app/media/lodash.js',
             'app/scripts/**/*.js',
             'test/spec/**/*.js'
