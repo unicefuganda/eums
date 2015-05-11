@@ -17,9 +17,7 @@ angular.module('GenericService', []).factory('ServiceFactory', function ($http, 
     var nestedObjectsToIds = function(object) {
         var objectToFlatten = Object.clone(object);
         return Object.map(objectToFlatten, function(key, value, original) {
-            if (typeof value === 'object' && value.id) {
-                original[key] = value.id;
-            }
+            typeof value === 'object' && value.id && (original[key] = value.id);
             return original[key];
         });
     };
