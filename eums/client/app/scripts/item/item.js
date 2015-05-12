@@ -1,14 +1,12 @@
 'use strict';
 
-angular.module('Item', ['eums.config'])
-    .factory('ItemService', function($http, EumsConfig) {
-        var getItemUnit = function(itemUnitId) {
-            return $http.get(EumsConfig.BACKEND_URLS.ITEM_UNIT + itemUnitId + '/');
-        };
+angular.module('Item', ['eums.config', 'eums.service-factory'])
+    .factory('ItemService', function($http, EumsConfig, ServiceFactory) {
+        var ItemUnitService = ServiceFactory({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});
 
         var fillOutItemUnit= function(item) {
-            return getItemUnit(item.unit).then(function(response) {
-                item.unit = response.data;
+            return ItemUnitService.get(item.unit).then(function(itemUnit) {
+                item.unit = itemUnit;
                 return item;
             }).catch(function(response) {
                 if(response.status === 404) {
