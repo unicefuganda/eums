@@ -61,6 +61,12 @@ angular.module('Consignee', ['eums.config', 'Contact'])
                         return response;
                     }
                 });
+            },
+            getByTopLevelNode: function(){
+                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE+ '?node=top')
+                    .then(function(response){
+                       return response.data;
+                    });
             }
         };
     });

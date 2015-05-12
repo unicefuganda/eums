@@ -96,4 +96,13 @@ describe('Consignee Service', function () {
         mockBackend.flush();
     });
 
+    it('should get all consignees by node level ', function (done) {
+        mockBackend.whenGET(consigneeEndpointUrl + '?node=top').respond(consigneeList);
+        consigneeService.getByTopLevelNode().then(function (consignees) {
+            expect(consignees).toEqual(consigneeList);
+            done();
+        });
+        mockBackend.flush();
+    });
+
 });
