@@ -36,8 +36,11 @@ ADD scripts/eums.nginx.config /etc/nginx/conf.d/eums-server.conf
 ##############################################################################
 ## Set up PostgresSQL DB
 ##############################################################################
+ENV LANGUAGE en_US.UTF-8
+ENV LANG  en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 RUN /etc/init.d/postgresql start
-RUN createuser -s -r postgres
 RUN createdb -O postgres eums
 
 
