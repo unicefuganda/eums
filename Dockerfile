@@ -36,8 +36,10 @@ ADD scripts/eums.nginx.config /etc/nginx/conf.d/eums-server.conf
 ##############################################################################
 ## Set up PostgresSQL DB
 ##############################################################################
+RUN /etc/init.d/postgresql start
 RUN createuser -s -r postgres
 RUN createdb -O postgres eums
+
 
 ##############################################################################
 ## Python Pre-requisites
