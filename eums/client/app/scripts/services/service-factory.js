@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase, toSnakeCase) {
+angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase, toSnakeCase) {
     var serviceOptions;
 
     var buildArrayProperty = function (object, property, service) {

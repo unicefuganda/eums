@@ -9,7 +9,7 @@ describe('Service Factory', function () {
     const fakeObjects = [fakeOne, fakeTwo];
 
     beforeEach(function () {
-        module('GenericService');
+        module('eums.service-factory');
         inject(function (ServiceFactory, $httpBackend, $q) {
             q = $q;
             mockBackend = $httpBackend;

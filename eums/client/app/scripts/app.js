@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'GenericService', 'gs.to-snake-case', 'gs.to-camel-case',
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionPlan', 'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case',
         'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker',
         'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData', 'EndUserResponses'])
     .config(function ($routeProvider, $httpProvider) {
