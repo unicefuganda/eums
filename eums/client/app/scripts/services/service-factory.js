@@ -51,7 +51,11 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
                     var buildPromises = response.data.map(function (flatObject) {
                         return buildObject(flatObject, nestedFields || []);
                     });
-                    return $q.all(buildPromises);
+                    return $q.all(buildPromises).then(function (builtObjects) {
+                        return builtObjects.map(function (object) {
+                            return changeCase(object, toCamelCase);
+                        });
+                    });
                 });
             },
             get: function (id, nestedFields) {

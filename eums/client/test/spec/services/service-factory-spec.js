@@ -27,6 +27,15 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should convert objects to camelCase after fetching all them from api', function(done) {
+        mockBackend.whenGET(topLevelEndpoint).respond([{id: 1, first_property: 3}, {id: 2, first_property: 4}]);
+        topLevelService.all().then(function (object) {
+            expect(object).toEqual([{id: 1, firstProperty: 3}, {id: 2, firstProperty: 4}]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should notify when fetching objects does not return 200', function (done) {
         mockBackend.whenGET(topLevelEndpoint).respond(401);
         topLevelService.all().catch(function (error) {
