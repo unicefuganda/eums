@@ -7,7 +7,5 @@ gitRevision=$GO_REVISION
 echo "Packaging for Artifact=$artifactName BuildCounter=$artifactCounter GitRevision=$gitRevision"
 
 mkdir -p /opt/app/staging/$artifactName/$artifactCounter
-sudo su
-docker build -t thoughtworks/eums:$artifactCounter .
-docker save -o /opt/app/staging/$artifactName/$artifactCounter/eums_docker_image.tar thoughtworks/eums:$artifactCounter
-exit
+sudo docker build -t thoughtworks/eums:$artifactCounter .
+sudo docker save -o /opt/app/staging/$artifactName/$artifactCounter/eums_docker_image.tar thoughtworks/eums:$artifactCounter
