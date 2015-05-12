@@ -71,9 +71,9 @@ describe('Service Factory', function () {
     });
 
     it('should convert objects to camelCase after fetching them from api', function(done) {
-        mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond({id: 1, first_property: 3});
+        mockBackend.whenGET('{1}{2}/'.assign(topLevelEndpoint, fakeOne.id)).respond({id: 1, first_property: {inner_property: 2}});
         topLevelService.get(1).then(function (object) {
-            expect(object).toEqual({id: 1, firstProperty: 3});
+            expect(object).toEqual({id: 1, firstProperty: {innerProperty: 2}});
             done();
         });
         mockBackend.flush();

@@ -38,7 +38,12 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
 
     function changeCase(obj, converter) {
         return Object.keys(obj).reduce(function (acc, current) {
-            acc[converter(current)] = obj[current];
+            if(typeof obj[current] === 'object' && !obj[current].hasOwnProperty('length')) {
+                acc[converter(current)] = changeCase(obj[current], converter);
+            }
+            else {
+                acc[converter(current)] = obj[current];
+            }
             return acc;
         }, {});
     }
