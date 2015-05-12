@@ -41,6 +41,9 @@ ENV LANG  en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 RUN locale-gen en_US.UTF-8 && dpkg-reconfigure locales
 RUN /etc/init.d/postgresql start
+RUN su postgres
+RUN createuser -s -r root
+RUN exit
 RUN createdb -O postgres eums
 
 
