@@ -14,7 +14,9 @@ describe('Service Factory', function () {
             q = $q;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
-            levelOneService = ServiceFactory({uri: levelOneEndpoint, propertyServiceMap: {nested: levelTwoService, children: levelTwoService}});
+            levelOneService = ServiceFactory({uri: levelOneEndpoint, propertyServiceMap: {
+                nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
+            });
         });
     });
 
@@ -93,13 +95,14 @@ describe('Service Factory', function () {
     });
 
     it('should fetch objects in list properties when fetching all when required', function(done) {
-        var flat = {id: 11, children: [nestedOne.id, nestedTwo.id]};
+        var flat = {id: 11, children: [nestedOne.id, nestedTwo.id], relatives: [nestedOne.id, nestedTwo.id]};
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, flat.id)).respond(flat);
         mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedOne.id)).respond(nestedOne);
         mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedTwo.id)).respond(nestedTwo);
         var built = Object.clone(flat);
         built.children = [nestedOne, nestedTwo];
-        levelOneService.get(flat.id, ['children']).then(function(object) {
+        built.relatives = [nestedOne, nestedTwo];
+        levelOneService.get(flat.id, ['children', 'relatives']).then(function(object) {
             expect(object).toEqual(built);
             done();
         });

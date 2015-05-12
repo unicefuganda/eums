@@ -3,40 +3,48 @@
 angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase) {
     var serviceOptions;
 
-    var buildObject = function (object, nestedFields) {
-        var buildOutPromises = [];
-        var buildMap = nestedFieldsToBuildMap(nestedFields);
-        var allListPropertiesBuilt;
-        Object.each(buildMap, function (property, service) {
-            if (object[property].hasOwnProperty('length')) {
-                var listBuildPromises = [];
-                object[property].forEach(function (objectId) {
-                    listBuildPromises.push(service.get(objectId));
-                });
-                allListPropertiesBuilt = $q.all(listBuildPromises).then(function (builtListObjects) {
-                    builtListObjects.each(function (builtObject, index) {
-                        object[property][index] = builtObject;
-                    });
-                    return object;
-                });
-            }
-            else {
-                buildOutPromises.push(service.get(object[property]));
-            }
+    var buildArrayProperty = function (object, property, service) {
+        var buildPromises = [];
+        object[property].forEach(function (objectId) {
+            buildPromises.push(service.get(objectId));
         });
+        return $q.all(buildPromises).then(function (builtListObjects) {
+            builtListObjects.each(function (builtObject, index) {
+                object[property][index] = builtObject;
+            });
+            return object;
+        });
+    };
 
-        var allObjectPropertiesBuilt = $q.all(buildOutPromises).then(function (builtObjects) {
+    function attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap) {
+        return $q.all(objectPropertyBuildPromises).then(function (builtObjects) {
             builtObjects.each(function (builtObject, index) {
                 object[Object.keys(buildMap)[index]] = builtObject;
             });
             return object;
         });
+    }
 
-        if (allListPropertiesBuilt) {
-            return allListPropertiesBuilt.then(function () {
-                return allObjectPropertiesBuilt;
-            });
-        } else return allObjectPropertiesBuilt;
+    var buildObject = function (object, nestedFields) {
+        var deferred = $q.defer();
+        deferred.resolve();
+        var objectPropertyBuildPromises = [];
+        var arrayPropertyBuildPromises = [];
+        var allObjectPropertiesBuilt = deferred.promise;
+        var buildMap = nestedFieldsToBuildMap(nestedFields);
+
+        Object.each(buildMap, function (property, service) {
+            if (object[property].hasOwnProperty('length'))
+                arrayPropertyBuildPromises.push(buildArrayProperty(object, property, service));
+            else
+                objectPropertyBuildPromises.push(service.get(object[property]));
+        });
+
+        allObjectPropertiesBuilt = attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap);
+
+        return $q.all(arrayPropertyBuildPromises).then(function () {
+            return allObjectPropertiesBuilt;
+        });
     };
 
     var nestedObjectsToIds = function (object) {
