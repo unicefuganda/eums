@@ -6,17 +6,37 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
     var buildObject = function (object, nestedFields) {
         var buildOutPromises = [];
         var buildMap = nestedFieldsToBuildMap(nestedFields);
-
+        var allListPropertiesBuilt;
         Object.each(buildMap, function (property, service) {
-            buildOutPromises.push(service.get(object[property]));
+            if (object[property].hasOwnProperty('length')) {
+                var listBuildPromises = [];
+                object[property].forEach(function (objectId) {
+                    listBuildPromises.push(service.get(objectId));
+                });
+                allListPropertiesBuilt = $q.all(listBuildPromises).then(function (builtListObjects) {
+                    builtListObjects.each(function (builtObject, index) {
+                        object[property][index] = builtObject;
+                    });
+                    return object;
+                });
+            }
+            else {
+                buildOutPromises.push(service.get(object[property]));
+            }
         });
 
-        return $q.all(buildOutPromises).then(function (builtObjects) {
+        var allObjectPropertiesBuilt = $q.all(buildOutPromises).then(function (builtObjects) {
             builtObjects.each(function (builtObject, index) {
                 object[Object.keys(buildMap)[index]] = builtObject;
             });
             return object;
         });
+
+        if (allListPropertiesBuilt) {
+            return allListPropertiesBuilt.then(function () {
+                return allObjectPropertiesBuilt;
+            });
+        } else return allObjectPropertiesBuilt;
     };
 
     var nestedObjectsToIds = function (object) {
@@ -38,7 +58,7 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
 
     function changeCase(obj, converter) {
         return Object.keys(obj).reduce(function (acc, current) {
-            if(typeof obj[current] === 'object' && !obj[current].hasOwnProperty('length')) {
+            if (typeof obj[current] === 'object' && !obj[current].hasOwnProperty('length')) {
                 acc[converter(current)] = changeCase(obj[current], converter);
             }
             else {
