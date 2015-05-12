@@ -23,6 +23,17 @@ RUN apt-get install git -y
 RUN git clone https://github.com/unicefuganda/eums-provisioning.git /var/www/eums-provisioning
 
 ##############################################################################
+## Install NGINX
+##############################################################################
+RUN apt-get -y install software-properties-common
+RUN add-apt-repository ppa:guardianproject/ppa
+RUN apt-get -y update
+RUN apt-get -y install nginx
+ADD scripts/nginx.config /etc/nginx/nginx.conf
+ADD scripts/eums.nginx.config /etc/nginx/conf.d/eums-server.conf
+
+
+##############################################################################
 ## Set up PostgresSQL DB
 ##############################################################################
 RUN createuser -s -r postgres
