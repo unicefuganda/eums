@@ -14,8 +14,10 @@ describe('Service Factory', function () {
             q = $q;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
-            levelOneService = ServiceFactory({uri: levelOneEndpoint, propertyServiceMap: {
-                nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
+            levelOneService = ServiceFactory({
+                uri: levelOneEndpoint, propertyServiceMap: {
+                    nested: levelTwoService, children: levelTwoService, relatives: levelTwoService
+                }
             });
         });
     });
@@ -29,7 +31,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should convert objects to camelCase after fetching all them from api', function(done) {
+    it('should convert objects to camelCase after fetching all them from api', function (done) {
         mockBackend.whenGET(levelOneEndpoint).respond([{id: 1, first_property: 3}, {id: 2, first_property: 4}]);
         levelOneService.all().then(function (object) {
             expect(object).toEqual([{id: 1, firstProperty: 3}, {id: 2, firstProperty: 4}]);
@@ -72,7 +74,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should convert objects to camelCase after fetching them from api', function(done) {
+    it('should convert objects to camelCase after fetching them from api', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({id: 1, first_property: {inner_property: 2}});
         levelOneService.get(1).then(function (object) {
             expect(object).toEqual({id: 1, firstProperty: {innerProperty: 2}});
@@ -81,7 +83,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should convert arrays to camelCase after fetching from the api', function(done){
+    it('should convert arrays to camelCase after fetching from the api', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({id: 1, first_property: [{inner_property: 2}]});
         levelOneService.get(1).then(function (object) {
             expect(object).toEqual({id: 1, firstProperty: [{innerProperty: 2}]});
@@ -103,7 +105,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should fetch objects in list properties when fetching all when required', function(done) {
+    it('should fetch objects in list properties when fetching all when required', function (done) {
         var flat = {id: 11, children: [nestedOne.id, nestedTwo.id], relatives: [nestedOne.id, nestedTwo.id]};
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, flat.id)).respond(flat);
         mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedOne.id)).respond(nestedOne);
@@ -111,7 +113,7 @@ describe('Service Factory', function () {
         var built = Object.clone(flat);
         built.children = [nestedOne, nestedTwo];
         built.relatives = [nestedOne, nestedTwo];
-        levelOneService.get(flat.id, ['children', 'relatives']).then(function(object) {
+        levelOneService.get(flat.id, ['children', 'relatives']).then(function (object) {
             expect(object).toEqual(built);
             done();
         });
@@ -128,9 +130,32 @@ describe('Service Factory', function () {
     });
 
     it('should create an object', function (done) {
-        mockBackend.whenPOST(levelOneEndpoint).respond(201, fakeOne);
+        var expected = {id: 1, property_one: 'one', property_two: 'two', nested: 1};
+        mockBackend.expectPOST(levelOneEndpoint, expected).respond(201, fakeOne);
         levelOneService.create(fakeOne).then(function (object) {
             expect(object).toEqual(fakeOne);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should flatten nested objects to ids before create', function (done) {
+        var obj = {some_property: {id: 1}};
+        var flattened = {some_property: 1};
+        var expected = {id: 3, some_property: 1};
+        mockBackend.expectPOST(levelOneEndpoint, flattened).respond(201, expected);
+        levelOneService.create(obj).then(function (created) {
+            expect(created).toEqual(expected);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it("should change object keys to snake case when creating object", function (done) {
+        var obj = {someProperty: 1};
+        var expected = {some_property: 1};
+        mockBackend.expectPOST(levelOneEndpoint, expected).respond(201, {id: 5, some_property: 1});
+        levelOneService.create(obj).then(function () {
             done();
         });
         mockBackend.flush();
@@ -145,22 +170,12 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should update flat object', function (done) {
+    it('should flatten object and change object keys to snake case before update', function (done) {
         var changedOne = Object.clone(fakeOne);
         changedOne.propertyOne = 'changed';
-        mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), changedOne).respond(200);
+        var expected = {id: 1, property_one: changedOne.propertyOne, property_two: 'two', nested: 1};
+        mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), expected).respond(200);
         levelOneService.update(changedOne).then(function (status) {
-            expect(status).toEqual(200);
-            done();
-        });
-        mockBackend.flush();
-    });
-
-    it('should flatten properties when updating', function (done) {
-        var nestedFakeOne = Object.clone(fakeOne);
-        nestedFakeOne.nested = nestedOne;
-        mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), fakeOne).respond(200);
-        levelOneService.update(nestedFakeOne).then(function (status) {
             expect(status).toEqual(200);
             done();
         });

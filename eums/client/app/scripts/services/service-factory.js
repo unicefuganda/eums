@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase) {
+angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).factory('ServiceFactory', function ($http, $q, toCamelCase, toSnakeCase) {
     var serviceOptions;
 
     var buildArrayProperty = function (object, property, service) {
@@ -98,13 +98,14 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
                 });
             },
             create: function (object) {
-                return $http.post(options.uri, object).then(function (response) {
+                var flatObject = nestedObjectsToIds(object);
+                return $http.post(options.uri, changeCase(flatObject, toSnakeCase)).then(function (response) {
                     return response.data;
                 });
             },
             update: function (object) {
                 var flatObject = nestedObjectsToIds(object);
-                return $http.put('{1}{2}/'.assign(options.uri, object.id), flatObject).then(function (response) {
+                return $http.put('{1}{2}/'.assign(options.uri, object.id), changeCase(flatObject, toSnakeCase)).then(function (response) {
                     return response.status;
                 });
             },
