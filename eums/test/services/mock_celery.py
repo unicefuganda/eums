@@ -8,7 +8,7 @@ class MockCelery():
         self.task_id = None
 
     def task(self, *args, **_):
-        if args and not self.method:
+        if args:
             self.method = args[0]
             self.method.apply_async = self.__async_to_sync
             return self.method

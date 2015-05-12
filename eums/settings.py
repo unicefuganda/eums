@@ -61,7 +61,7 @@ USE_L10N = True
 
 TEMPLATE_DIRS = (os.path.join(BASE_DIR, 'eums/templates'),)
 
-FILE_UPLOAD_MAX_MEMORY_SIZE = 56214400
+FILE_UPLOAD_MAX_MEMORY_SIZE = 26214400
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',

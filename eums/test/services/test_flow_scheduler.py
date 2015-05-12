@@ -188,4 +188,3 @@ class FlowSchedulerTest(TestCase):
 
 
 reload(rapid_pro_facade)
-reload(celery)

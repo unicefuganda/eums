@@ -7,8 +7,7 @@ from django.conf import settings
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eums.settings')
 
 app = Celery('eums', broker='redis://localhost:6379/0', backend='redis://',
-             include=['eums.services.flow_scheduler',
-                      'eums.api.import_data.import_orders_endpoint'])
+             include=['eums.services.flow_scheduler'])
 
 CELERY_TIMEZONE = 'Africa/Kampala'
 
