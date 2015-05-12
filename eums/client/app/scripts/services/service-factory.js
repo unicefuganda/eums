@@ -34,7 +34,7 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
         var buildMap = nestedFieldsToBuildMap(nestedFields);
 
         Object.each(buildMap, function (property, service) {
-            if (object[property].hasOwnProperty('length'))
+            if (Array.isArray(object[property]))
                 arrayPropertyBuildPromises.push(buildArrayProperty(object, property, service));
             else
                 objectPropertyBuildPromises.push(service.get(object[property]));
@@ -66,7 +66,12 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
 
     function changeCase(obj, converter) {
         return Object.keys(obj).reduce(function (acc, current) {
-            if (typeof obj[current] === 'object' && !obj[current].hasOwnProperty('length')) {
+            if (Array.isArray(obj[current])) {
+                acc[converter(current)] = obj[current].map(function (element) {
+                    return changeCase(element, converter);
+                });
+            }
+            else if (typeof obj[current] === 'object') {
                 acc[converter(current)] = changeCase(obj[current], converter);
             }
             else {
