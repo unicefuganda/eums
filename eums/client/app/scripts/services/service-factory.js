@@ -34,7 +34,7 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
         var buildMap = nestedFieldsToBuildMap(nestedFields);
 
         Object.each(buildMap, function (property, service) {
-            if (Array.isArray(object[property]))
+            if (Object.isArray(object[property]))
                 arrayPropertyBuildPromises.push(buildArrayProperty(object, property, service));
             else
                 objectPropertyBuildPromises.push(service.get(object[property]));
@@ -50,9 +50,7 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
     var nestedObjectsToIds = function (object) {
         var objectToFlatten = Object.clone(object);
         return Object.map(objectToFlatten, function (key, value, original) {
-            if (typeof value === 'object' && value.id) {
-                original[key] = value.id;
-            }
+            Object.isObject(value) && value.id && (original[key] = value.id);
             return original[key];
         });
     };
@@ -66,17 +64,13 @@ angular.module('GenericService', ['gs.to-camel-case', 'gs.to-snake-case']).facto
 
     function changeCase(obj, converter) {
         return Object.keys(obj).reduce(function (acc, current) {
-            if (Array.isArray(obj[current])) {
+            if (Object.isArray(obj[current]))
                 acc[converter(current)] = obj[current].map(function (element) {
                     return changeCase(element, converter);
                 });
-            }
-            else if (typeof obj[current] === 'object') {
+            else if (Object.isObject(obj[current]))
                 acc[converter(current)] = changeCase(obj[current], converter);
-            }
-            else {
-                acc[converter(current)] = obj[current];
-            }
+            else acc[converter(current)] = obj[current];
             return acc;
         }, {});
     }
