@@ -1,23 +1,10 @@
 'use strict';
 
-angular.module('Option', ['eums.config'])
-    .factory('OptionService', function($http, EumsConfig) {
+angular.module('Option', ['eums.config', 'eums.service-factory'])
+    .factory('OptionService', function($http, EumsConfig, ServiceFactory) {
         return {
-            receivedOptions: function() {
-                return $http.get(EumsConfig.BACKEND_URLS.RECEIVED_OPTIONS).then(function(response) {
-                    return response.data;
-                });
-            },
-            qualityOptions: function() {
-                return $http.get(EumsConfig.BACKEND_URLS.QUALITY_OPTIONS).then(function(response) {
-                    return response.data;
-                });
-            },
-            satisfiedOptions: function() {
-                return $http.get(EumsConfig.BACKEND_URLS.SATISFIED_OPTIONS).then(function(response) {
-                    return response.data;
-                });
-            }
+            receivedOptions: ServiceFactory({uri: EumsConfig.BACKEND_URLS.RECEIVED_OPTIONS}).all,
+            qualityOptions: ServiceFactory({uri: EumsConfig.BACKEND_URLS.QUALITY_OPTIONS}).all,
+            satisfiedOptions: ServiceFactory({uri: EumsConfig.BACKEND_URLS.SATISFIED_OPTIONS}).all
         };
     });
-
