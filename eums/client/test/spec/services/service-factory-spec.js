@@ -325,6 +325,34 @@ describe('Service Factory', function () {
             mockBackend.flush();
         });
     });
+
+    describe('with "idField" option set', function () {
+        var service;
+        beforeEach(function () {
+            service = serviceFactory({
+                uri: levelOneEndpoint,
+                idField: '_id'
+            });
+        });
+
+        it('should use specified id field on .update', function (done) {
+            var obj = {_id: 1, some_property: 1};
+            mockBackend.expectPUT("{1}{2}/".assign(levelOneEndpoint, obj._id), obj).respond(200);
+            service.update(obj).then(function () {
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should use specified id field on .delete', function (done) {
+            var obj = {_id: 1, some_property: 1};
+            mockBackend.expectDELETE("{1}{2}/".assign(levelOneEndpoint, obj._id)).respond(200);
+            service.del(obj).then(function () {
+                done();
+            });
+            mockBackend.flush();
+        });
+    });
 });
 
 

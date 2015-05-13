@@ -79,6 +79,8 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         return function (options) {
             serviceOptions = options;
             options.changeCase == undefined && (options.changeCase = true);
+            var idField = options.idField || 'id';
+
             var service = {
                 all: function (nestedFields) {
                     return $http.get(options.uri).then(function (response) {
@@ -111,12 +113,12 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                 update: function (object) {
                     var flatObject = nestedObjectsToIds(object);
                     var objectToPut = options.changeCase ? changeCase(flatObject, toSnakeCase): flatObject;
-                    return $http.put('{1}{2}/'.assign(options.uri, object.id), objectToPut).then(function (response) {
+                    return $http.put('{1}{2}/'.assign(options.uri, object[idField]), objectToPut).then(function (response) {
                         return response.status;
                     });
                 },
                 del: function (object) {
-                    return $http.delete('{1}{2}/'.assign(options.uri, object.id), object).then(function (response) {
+                    return $http.delete('{1}{2}/'.assign(options.uri, object[idField]), object).then(function (response) {
                         return response.status;
                     });
                 }
