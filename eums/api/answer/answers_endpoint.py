@@ -31,6 +31,7 @@ class ResponseSerializer(object):
         formatted_run_responses = {'node': node.id,
                                    'ip': node.get_ip(),
                                    'programme': {'id': programme.id, 'name': programme.name},
+                                   'location': node.location,
                                    'consignee': {'id': node.consignee.id, 'name': node.consignee.name,
                                                  'type': node.tree_position}}
         return formatted_run_responses

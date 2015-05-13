@@ -250,15 +250,8 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 return orderResponsesByDateReceived(getResponseFor(responsesLocationMap, location));
             },
             mapConsigneesResponsesToNodeLocation: function () {
-                var self = this;
-                return self.getAllEndUserResponses().then(function (responses) {
-                    var consigneeResponseWithLocationPromises = responses.data.map(function (response) {
-                        return self.getDistributionPlanNodeById(response.node).then(function (planNodeResponse) {
-                            response.location = planNodeResponse.data.location;
-                            return response;
-                        });
-                    });
-                    return $q.all(consigneeResponseWithLocationPromises);
+                return this.getAllEndUserResponses().then(function (responses) {
+                    return $q.all(responses.data);
                 });
             },
             groupResponsesByLocation: function (responses) {

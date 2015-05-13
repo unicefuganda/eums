@@ -316,7 +316,8 @@ describe('UNICEF IP', function () {
             'programme': {
                 'id': 3,
                 'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
-            }
+            },
+            location:'Mbarara'
         },
         {
             'node': planNodeOne,
@@ -335,7 +336,8 @@ describe('UNICEF IP', function () {
             'programme': {
                 'id': 3,
                 'name': 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
-            }
+            },
+            location: 'Mbarara'
         }
     ];
 

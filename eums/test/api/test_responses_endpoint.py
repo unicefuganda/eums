@@ -72,7 +72,8 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                          u'%s' % self.numeric_question.label: u'%s' % self.run_one_numeric_answer_one.format(),
                          u'%s' % self.multiple_choice_question.label: u'%s' % self.run_one_multiple_answer_one.format(),
                          u'%s' % self.multiple_choice_question_two.label: u'%s' % self.run_one_multiple_answer_two.format(),
-                         u'programme': {u'id': programme.id, u'name': programme.name}}
+                         u'programme': {u'id': programme.id, u'name': programme.name},
+                         u'location': node.location}
         return expected_data
 
     def test_should_provide_summary_data_from_node_response(self):
