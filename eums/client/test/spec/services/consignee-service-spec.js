@@ -28,7 +28,7 @@ describe('Consignee Service', function () {
     beforeEach(function () {
         module('Consignee');
 
-        mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
 
         module(function ($provide) {
             $provide.value('ContactService', mockContactService);
@@ -37,7 +37,7 @@ describe('Consignee Service', function () {
         inject(function (ConsigneeService, $httpBackend, EumsConfig, $q) {
             var deferred = $q.defer();
             deferred.resolve(fullContactResponse);
-            mockContactService.getContactById.and.returnValue(deferred.promise);
+            mockContactService.get.and.returnValue(deferred.promise);
 
             mockBackend = $httpBackend;
             consigneeEndpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;

@@ -41,7 +41,7 @@ describe('Contacts Service', function () {
     });
 
     it('should add contact to', function (done) {
-        contactService.addContact(stubContact).then(function (response) {
+        contactService.create(stubContact).then(function (response) {
             expect(response.data).toEqual(expectedContact);
             done();
         });
@@ -50,7 +50,7 @@ describe('Contacts Service', function () {
 
     it('should get contact from contacts backend by id', function (done) {
         mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact._id + '/').respond(expectedContact);
-        contactService.getContactById(expectedContact._id).then(function (contact) {
+        contactService.get(expectedContact._id).then(function (contact) {
             expect(contact).toEqual(expectedContact);
             done();
         });
@@ -69,7 +69,7 @@ describe('Contacts Service', function () {
 
     it('should load all contacts', function (done) {
         mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL).respond(expectedContacts);
-        contactService.getAllContacts().then(function (contacts) {
+        contactService.all().then(function (contacts) {
             expect(contacts).toEqual(expectedContacts);
             done();
         });
@@ -78,7 +78,7 @@ describe('Contacts Service', function () {
 
     it('should delete a contact', function (done) {
         mockContactsBackend.whenDELETE(config.CONTACT_SERVICE_URL + expectedContact._id + '/').respond(null);
-        contactService.deleteContact(expectedContact).then(function (response) {
+        contactService.del(expectedContact).then(function (response) {
             expect(response).toBe(null);
             done();
         });
@@ -87,7 +87,7 @@ describe('Contacts Service', function () {
 
     it('should edit an existing contact', function(done) {
         mockContactsBackend.whenPUT(config.CONTACT_SERVICE_URL, expectedContact).respond(expectedContact);
-        contactService.editContact(expectedContact).then(function(response) {
+        contactService.update(expectedContact).then(function(response) {
             expect(response).toEqual(expectedContact);
             done();
         });

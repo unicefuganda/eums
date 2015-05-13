@@ -165,7 +165,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         $scope.saveContact = function () {
             ContactService
-                .addContact($scope.contact)
+                .create($scope.contact)
                 .then(function (contactResponse) {
                     $('#add-contact-modal').modal('hide');
 
@@ -593,7 +593,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         $timeout(function () {
                             var modelValue = ngModel.$modelValue;
                             if (modelValue) {
-                                ContactService.getContactById(modelValue).then(function (contact) {
+                                ContactService.get(modelValue).then(function (contact) {
                                     if (contact._id) {
                                         callback({
                                             id: contact._id,

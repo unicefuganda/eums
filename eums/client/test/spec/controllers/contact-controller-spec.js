@@ -36,10 +36,10 @@ describe('ContactController', function () {
         module('siTable');
 
         mockContactService = jasmine.createSpyObj('mockContactService',
-            ['getAllContacts',
-                'addContact',
-                'editContact',
-                'deleteContact']);
+            ['all',
+                'create',
+                'update',
+                'del']);
 
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
@@ -51,10 +51,10 @@ describe('ContactController', function () {
             deferred = $q.defer();
             stubContactPromise = $q.defer();
             toastPromise = $q.defer();
-            mockContactService.getAllContacts.and.returnValue(stubContactsPromise.promise);
-            mockContactService.addContact.and.returnValue(stubContactPromise.promise);
-            mockContactService.editContact.and.returnValue(deferred.promise);
-            mockContactService.deleteContact.and.returnValue(deferred.promise);
+            mockContactService.all.and.returnValue(stubContactsPromise.promise);
+            mockContactService.create.and.returnValue(stubContactPromise.promise);
+            mockContactService.update.and.returnValue(deferred.promise);
+            mockContactService.del.and.returnValue(deferred.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
 
             spyOn(angular, 'element').and.callFake(function () {
@@ -184,7 +184,7 @@ describe('ContactController', function () {
             scope.$apply();
 
             expect(angular.element).toHaveBeenCalledWith('#add-contact-modal');
-            expect(mockContactService.addContact).toHaveBeenCalledWith(stubNewContact);
+            expect(mockContactService.create).toHaveBeenCalledWith(stubNewContact);
         });
 
         it('should show an error if contact service is down', function() {
@@ -223,12 +223,12 @@ describe('ContactController', function () {
     describe('editing a contact', function () {
         it('should edit a contact', function () {
             deferred.resolve();
-            scope.editContact(stubContact);
+            scope.update(stubContact);
             scope.$apply();
 
             expect(angular.element).toHaveBeenCalledWith('#edit-contact-modal');
-            expect(mockContactService.editContact).toHaveBeenCalledWith(stubContact);
-            expect(mockContactService.getAllContacts).toHaveBeenCalled();
+            expect(mockContactService.update).toHaveBeenCalledWith(stubContact);
+            expect(mockContactService.all).toHaveBeenCalled();
         });
     });
 
@@ -243,7 +243,7 @@ describe('ContactController', function () {
             scope.$apply();
 
             expect(angular.element).toHaveBeenCalledWith('#delete-contact-modal');
-            expect(mockContactService.deleteContact).toHaveBeenCalledWith(stubContact);
+            expect(mockContactService.del).toHaveBeenCalledWith(stubContact);
         });
     });
 
