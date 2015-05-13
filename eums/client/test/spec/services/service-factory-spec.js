@@ -105,6 +105,16 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should not build nested object if its id is null even if building the nested object is requested', function(done) {
+        var obj = {id: fakeOne.id, nested: null};
+        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, obj.id)).respond(obj);
+        levelOneService.get(obj.id, ['nested']).then(function (object) {
+            expect(object).toEqual(obj);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should fetch objects in list properties when fetching all when required', function (done) {
         var flat = {id: 11, children: [nestedOne.id, nestedTwo.id], relatives: [nestedOne.id, nestedTwo.id]};
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, flat.id)).respond(flat);

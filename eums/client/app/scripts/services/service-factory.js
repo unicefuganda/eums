@@ -38,7 +38,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                 if (Object.isArray(object[property]))
                     arrayPropertyBuildPromises.push(buildArrayProperty(object, property, service));
                 else
-                    objectPropertyBuildPromises.push(service.get(object[property]));
+                    object[property] && objectPropertyBuildPromises.push(service.get(object[property]));
             });
 
             allObjectPropertiesBuilt = attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap);
