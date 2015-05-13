@@ -1,5 +1,5 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService, modelService, serviceFactory;
+    var mockBackend, q, levelOneService, levelTwoService, serviceFactory;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
@@ -7,9 +7,6 @@ describe('Service Factory', function () {
     const nestedOne = {id: 1, properties: {}};
     const nestedTwo = {id: 2, properties: []};
     const fakeObjects = [fakeOne, fakeTwo];
-    var Model = function (json) {
-        this.firstName = json.firstName.toUpperCase();
-    };
 
     beforeEach(function () {
         module('eums.service-factory');
@@ -18,11 +15,6 @@ describe('Service Factory', function () {
             serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
-
-            modelService = ServiceFactory({
-                uri: levelTwoEndpoint,
-                model: Model
-            });
 
             levelOneService = ServiceFactory({
                 uri: levelOneEndpoint,
@@ -236,24 +228,40 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should channel returned json through model if model option is provided, converting the object to camelCase', function (done) {
-        var plainObject = {id: 1, first_name: 'Job'};
-        mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, plainObject.id)).respond(plainObject);
-        modelService.get(plainObject.id).then(function (modelObject) {
-            expect(modelObject).toEqual(new Model({id: 1, firstName: 'Job'}));
-            done();
+    describe('when model option is specified', function () {
+        var service;
+        var Model = function (json) {
+            this.firstName = json.firstName.toUpperCase();
+        };
+        beforeEach(function () {
+            service = serviceFactory({
+                uri: levelTwoEndpoint,
+                model: Model
+            });
         });
-        mockBackend.flush();
-    });
 
-    it('should return json through model when getting all if model option is provided, the object is converted to camelCase', function (done) {
-        var plainObjects = [{id: 1, first_name: 'Job'}, {id: 2, first_name: 'Nim'}];
-        mockBackend.whenGET(levelTwoEndpoint).respond(plainObjects);
-        modelService.all().then(function (modelObjects) {
-            expect(modelObjects).toEqual([new Model({id: 1, firstName: 'Job'}), new Model({id: 2, firstName: 'Nim'})]);
-            done();
+        it('should channel returned json through model, converting the object to camelCase', function (done) {
+            var plainObject = {id: 1, first_name: 'Job'};
+            mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, plainObject.id)).respond(plainObject);
+            service.get(plainObject.id).then(function (modelObject) {
+                expect(modelObject).toEqual(new Model({id: 1, firstName: 'Job'}));
+                done();
+            });
+            mockBackend.flush();
         });
-        mockBackend.flush();
+
+        it('should return json through model when getting all, converting objects to camelCase', function (done) {
+            var plainObjects = [{id: 1, first_name: 'Job'}, {id: 2, first_name: 'Nim'}];
+            mockBackend.whenGET(levelTwoEndpoint).respond(plainObjects);
+            service.all().then(function (modelObjects) {
+                expect(modelObjects).toEqual([new Model({id: 1, firstName: 'Job'}), new Model({
+                    id: 2,
+                    firstName: 'Nim'
+                })]);
+                done();
+            });
+            mockBackend.flush();
+        });
     });
 
     it('should add specified methods to service', function () {
