@@ -94,7 +94,8 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                 get: function (id, nestedFields) {
                     return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
                         return buildObject(response.data, nestedFields || []).then(function (builtObject) {
-                            return changeCase(builtObject, toCamelCase);
+                            var camelCaseObject = changeCase(builtObject, toCamelCase);
+                            return options.model ? new options.model(camelCaseObject) : camelCaseObject;
                         });
                     });
                 },

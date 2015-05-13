@@ -1,5 +1,5 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService;
+    var mockBackend, q, levelOneService, levelTwoService, serviceFactory;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
@@ -12,12 +12,12 @@ describe('Service Factory', function () {
         module('eums.service-factory');
         inject(function (ServiceFactory, $httpBackend, $q) {
             q = $q;
+            serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
             levelOneService = ServiceFactory({
-                uri: levelOneEndpoint, propertyServiceMap: {
-                    nested: levelTwoService, children: levelTwoService, relatives: levelTwoService
-                }
+                uri: levelOneEndpoint,
+                propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService},
             });
         });
     });
@@ -75,7 +75,10 @@ describe('Service Factory', function () {
     });
 
     it('should convert objects to camelCase after fetching them from api', function (done) {
-        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({id: 1, first_property: {inner_property: 2}});
+        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({
+            id: 1,
+            first_property: {inner_property: 2}
+        });
         levelOneService.get(1).then(function (object) {
             expect(object).toEqual({id: 1, firstProperty: {innerProperty: 2}});
             done();
@@ -84,7 +87,10 @@ describe('Service Factory', function () {
     });
 
     it('should convert arrays to camelCase after fetching from the api', function (done) {
-        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({id: 1, first_property: [{inner_property: 2}]});
+        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({
+            id: 1,
+            first_property: [{inner_property: 2}]
+        });
         levelOneService.get(1).then(function (object) {
             expect(object).toEqual({id: 1, firstProperty: [{innerProperty: 2}]});
             done();
@@ -105,7 +111,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should not build nested object if its id is null even if building the nested object is requested', function(done) {
+    it('should not build nested object if its id is null even if building the nested object is requested', function (done) {
         var obj = {id: fakeOne.id, nested: null};
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, obj.id)).respond(obj);
         levelOneService.get(obj.id, ['nested']).then(function (object) {
@@ -216,6 +222,23 @@ describe('Service Factory', function () {
         mockBackend.whenDELETE('{1}{2}/'.assign(levelOneEndpoint, fakeTwo.id)).respond(401);
         levelOneService.del(fakeTwo).catch(function (error) {
             expect(error.status).toBe(401);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should channel returned json through model if model option is provided, converting the object to camelCase', function (done) {
+        var Model = function(json) {
+            this.firstName = json.firstName.toUpperCase();
+        };
+        var service = serviceFactory({
+            uri: levelOneEndpoint,
+            model: Model
+        });
+        var plainObject = {id: 1, first_name: 'Job'};
+        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, plainObject.id)).respond(plainObject);
+        service.get(plainObject.id).then(function (modelObject) {
+            expect(modelObject).toEqual(new Model({id: 1, firstName: 'Job'}));
             done();
         });
         mockBackend.flush();
