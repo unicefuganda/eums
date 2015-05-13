@@ -1,8 +1,19 @@
 'use strict';
 
 angular.module('Item', ['eums.config', 'eums.service-factory'])
-    .factory('ItemService', function($http, EumsConfig, ServiceFactory) {
+    .factory('Item', function () {
+        return function (json) {
+            !json && (json = {});
+            this.id = json.id || '';
+            this.description = json.description || '';
+            this.unit = json.unit || {name: 'Each'};
+        };
+    }).factory('ItemService', function ($http, EumsConfig, ServiceFactory, Item) {
         var ItemUnitService = ServiceFactory({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});
-        return ServiceFactory({uri: EumsConfig.BACKEND_URLS.ITEM, propertyServiceMap: {unit: ItemUnitService}});
+        return ServiceFactory({
+            uri: EumsConfig.BACKEND_URLS.ITEM,
+            propertyServiceMap: {unit: ItemUnitService},
+            model: Item
+        });
     });
 
