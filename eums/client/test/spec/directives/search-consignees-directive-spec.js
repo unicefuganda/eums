@@ -15,11 +15,12 @@ describe('Search Consignee Directive', function () {
 
     beforeEach(function () {
         module('Consignee');
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneesByType']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneesByType', 'getByTopLevelNode']);
 
         inject(function ($rootScope, $compile, $q) {
             deferredStubIps = $q.defer();
             mockConsigneeService.getConsigneesByType.and.returnValue(deferredStubIps.promise);
+            mockConsigneeService.getConsigneebyType.and.returnValue(stubIpList);
 
             scope = $rootScope.$new();
             scope.ips = stubIpList;
@@ -33,10 +34,15 @@ describe('Search Consignee Directive', function () {
 
         it('should initialize with the first IP in the list', function () {
             deferredStubIps.resolve(stubIpList);
-            console.log('testing directive');
 
             scope.$apply();
             expect(mockConsigneeService.getConsigneesByType).toHaveBeenCalledWith('implementing_partner');
+            expect(mockConsigneeService.getByTopLevelNode).toHaveBeenCalled();
+        });
+
+        it('should Invoke getByTopLevelNode', function () {
+            scope.$apply();
+            expect(mockConsigneeService.getByTopLevelNode).toHaveBeenCalled();
         });
     });
 });

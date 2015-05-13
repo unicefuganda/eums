@@ -495,29 +495,19 @@
             return {
                 restrict: 'A',
                 link: function (scope, elem) {
-                    DistributionPlanService.getAllPlansNodes().then(function (responses) {
-                        var ips = responses.filter(function (response) {
-                            return !response.data.parent;
-                        });
-                        var dataPromises = ips.map(function (ip) {
-                            return ConsigneeService.getConsigneeById(ip.data.consignee).then(function (consignee) {
-                                return {
-                                    id: consignee.id,
-                                    text: consignee.name
-                                }
-                            });
-                        });
 
-                        return $q.all(dataPromises);
-                    }).then(function (data) {
-                        var displayedData = _.uniq(data, function (ip) {
-                            return ip.text.toLowerCase();
+                    ConsigneeService.getByTopLevelNode().then(function (displayedData){
+                        var data = displayedData.map(function(consignee){
+                            return {
+                                id: consignee.id,
+                                text: consignee.name
+                            }
                         });
 
                         $(elem).select2({
                             placeholder: 'All Implementing Partners',
                             allowClear: true,
-                            data: _.sortBy(displayedData, function (ip) {
+                            data: _.sortBy(data, function (ip) {
                                 return ip.text;
                             })
                         });
