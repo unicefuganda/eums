@@ -3,6 +3,7 @@ describe('Sales Order Item Service', function () {
     var salesOrderItemEndpointUrl, itemEndpointUrl, itemUnitEndpointUrl,
         distributionPlanNodeEndpointUrl,
         consigneeEndpointUrl, poItemForSalesOrderItemEndpointUrl, contactEndpointUrl;
+
     var mockBackend;
     var salesOrderItemService;
 

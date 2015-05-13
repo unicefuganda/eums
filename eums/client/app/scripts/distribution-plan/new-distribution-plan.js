@@ -285,6 +285,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.trackSalesOrderItem = function () {
             $scope.invalidNodes = anyInvalidFields($scope.distributionPlanNodes);
+
             savePlanTracking();
         };
 
@@ -325,7 +326,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             };
 
             $scope.distributionPlanNodes.push(distributionPlanNode);
-
             setDatePickers();
         };
 
