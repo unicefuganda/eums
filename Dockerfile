@@ -85,25 +85,43 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 RUN pg_createcluster 9.4 main --start
 ADD scripts/pg_hba.conf /pg_hba.conf
-
-
-
 ADD scripts/initdb.sh /opt/scripts/initdb.sh
 RUN chmod a+x /opt/scripts/initdb.sh
 RUN /opt/scripts/initdb.sh 9.4
 
 
-# migrate the database
-#RUN python manage.py syncdb --noinput
-#RUN python manage.py migrate --settings=eums.${eums.environment}_settings
-#RUN python manage.py loaddata eums/fixtures/new-deployment-instance.json --settings=${eums.environment}.snap_settings
+##############################################################################
+## install NodeJS
+##############################################################################
+# verify gpg and sha256: http://nodejs.org/dist/v0.10.30/SHASUMS256.txt.asc
+# gpg: aka "Timothy J Fontaine (Work) <tj.fontaine@joyent.com>"
+# gpg: aka "Julien Gilli <jgilli@fastmail.fm>"
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 7937DFD2AB06298B2293C3187D33FF9D0246406D 114F43EE0176B71C7BC219DD50A3051F888C628D
 
-# Install NPM and bower dependencies
-#RUN cd eums/client
-#RUN npm install
-#RUN npm install -g bower
-#RUN bower install
-#RUN npm install -g grunt-cli
+ENV NODE_VERSION 0.10.21
+ENV NPM_VERSION 1.3.11
+
+RUN curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
+    && curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+    && gpg --verify SHASUMS256.txt.asc \
+    && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
+    && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
+    && curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+	&& rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
+	&& npm install -g npm@1.4.28 \
+	&& npm install -g npm@"$NPM_VERSION" \
+	&& npm install -g grunt-cli@0.1.13 \
+	&& npm cache clear
+
+
+##############################################################################
+# Install APP NPM and bower dependencies
+##############################################################################
+RUN cd /opt/app/eums/eums/client
+RUN npm install
+RUN npm install -g bower
+RUN bower install
+RUN npm install -g grunt-cli
 
 EXPOSE 22 8000
 
