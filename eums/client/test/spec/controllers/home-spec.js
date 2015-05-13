@@ -64,11 +64,9 @@ describe('Module: Home', function () {
             location: 'Kampala',
             modeOfDelivery: 'Warehouse',
             children: [2],
-            distributionplanlineitem_set: [1, 2],
             consignee: {},
             contact_person_id: 1,
-            contact_person: {firstName: 'Bob'},
-            lineItems: [1, 2]
+            contact_person: {firstName: 'Bob'}
 
         };
 

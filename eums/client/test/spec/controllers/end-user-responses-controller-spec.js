@@ -22,7 +22,7 @@ describe('EndUserResponsesController', function () {
             consignee_name: 'PADER DHO',
             contact_person_id: '5420508290cc38715b1af928',
             distribution_plan: 2,
-            distributionplanlineitem_set: [1],
+            distributionplannode_set: [1],
             id: 5,
             location: 'PADER',
             mode_of_delivery: 'WAREHOUSE',

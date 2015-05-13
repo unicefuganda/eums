@@ -107,7 +107,8 @@ module.exports = function (grunt) {
                     'dist/app.min.js': ['app/scripts/**/*.js']
                 },
                 options: {
-                    mangle: false
+                    mangle: false,
+                    beautify: true
                 }
             }
         },
@@ -346,7 +347,7 @@ module.exports = function (grunt) {
     grunt.registerTask('functional', [
         'build',
         'clean:server',
-        'shell:sourceEnv',
+//        'shell:sourceEnv',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
