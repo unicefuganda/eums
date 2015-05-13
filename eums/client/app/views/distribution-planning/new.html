@@ -36,7 +36,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem && distributionPlanLineItems.length && !user.consignee_id && isReport">
+                    <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem && distributionPlanNodes.length && !user.consignee_id && isReport">
                         <label for="select-sales-order" class="col-lg-4 control-label description-label">
                             Track Item:
                         </label>
@@ -88,7 +88,7 @@
         <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default"
              cg-busy="{promise: savePlanPromise, message: 'Saving Plan'}">
             <div class="panel-body">
-                <div ng-show="distributionPlanLineItems.length">
+                <div ng-show="distributionPlanNodes.length">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover table-condensed">
                         <th class="table-header-width" id="input-available-quantity-header">Avail. Qty</th>
@@ -103,7 +103,7 @@
                         <th class="table-header-width">End User</th>
                         <th class="table-sub-consignee-header-width"></th>
 
-                        <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
+                        <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
@@ -207,9 +207,9 @@
                     <i class="glyphicon glyphicon-plus"> </i>
                     {{ consignee_button_text }}
                 </button>
-                <div ng-show="distributionPlanLineItems.length" class="pull-right">
+                <div ng-show="distributionPlanNodes.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
-                            ng-click="saveDistributionPlanLineItems()"
+                            ng-click="saveDistributionPlanNodes()"
                             ng-disabled="invalidLineItems">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save

@@ -1,10 +1,11 @@
 describe('Distribution Plan Node Service', function () {
 
-    var planNodeService, mockLineItemService, mockConsigneeService, mockContactService;
+    var planNodeService, mockConsigneeService, mockContactService;
     var mockBackend, q;
     var planNodeEndpointUrl;
+    var nodeResponsesEndpointUrl;
 
-    var planNodeId = 1, lineItemOneId = 1, lineItemTwoId = 2, consigneeId = 1, contactId = 1;
+    var planNodeId = 1, consigneeId = 1, contactId = 1, itemId = 1;
 
     var stubPlanNode = {
         id: planNodeId,
@@ -14,41 +15,12 @@ describe('Distribution Plan Node Service', function () {
         modeOfDelivery: 'Warehouse',
         contact_person_id: contactId,
         children: [2],
-        distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
-        consignee: consigneeId
-    };
-
-    var stubPlanNodeTwo = {
-        id: planNodeId,
-        parent: null,
-        distribution_plan: 1,
-        location: 'Kampala',
-        modeOfDelivery: 'Warehouse',
-        contact_person_id: contactId,
-        children: [2],
-        distributionplanlineitem_set: [lineItemOneId],
-        consignee: consigneeId
-    };
-
-    var fullLineItemOne = {
-        id: lineItemOneId,
-        item: 1,
+        consignee: consigneeId,
+        item: itemId,
         quantity: 10,
         under_current_supply_plan: false,
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
-        distribution_plan_node: planNodeId,
-        track: true
-    };
-
-    var fullLineItemTwo = {
-        id: lineItemTwoId,
-        item: 2,
-        quantity: 10,
-        under_current_supply_plan: false,
-        plannedDistributionDate: '2014-02-23',
-        remark: 'In bad condition',
-        distribution_plan_node: planNodeId,
         track: true
     };
 
@@ -69,47 +41,62 @@ describe('Distribution Plan Node Service', function () {
         location: 'Kampala',
         modeOfDelivery: 'Warehouse',
         children: [2],
-        distributionplanlineitem_set: [lineItemOneId, lineItemTwoId],
         consignee: fullConsignee,
         contact_person_id: fullContact.id,
         contact_person: fullContact,
-        lineItems: [fullLineItemOne, fullLineItemTwo]
+        item: itemId,
+        quantity: 10,
+        under_current_supply_plan: false,
+        plannedDistributionDate: '2014-02-23',
+        remark: 'In good condition',
+        track: true
     };
 
-    var fakeGetLineItem = function () {
-        var lineItemId = arguments[0];
-
-        var deferredLineItemOneRequest = q.defer();
-        deferredLineItemOneRequest.resolve(fullLineItemOne);
-
-        var deferredLineItemTwoRequest = q.defer();
-        deferredLineItemTwoRequest.resolve(fullLineItemTwo);
-
-        if (lineItemId === lineItemOneId) {
-            return deferredLineItemOneRequest.promise;
+    var expectedNodeResponse = {
+        'node': {
+            'plan_id': 53,
+            'contact_person_id': '54578a695d1b1dbd44790208',
+            'consignee': 17,
+            'id': 106,
+            'location': 'Adjumani'
+        },
+        'responses': {
+            'qualityOfProduct': {
+                'id': 178,
+                'value': 3,
+                'formatted_value': 'Good'
+            },
+            'amountReceived': {
+                'id': 52,
+                'value': 25,
+                'formatted_value': '25'
+            },
+            'dateOfReceipt': {
+                'id': 43,
+                'value': '04/10/2014',
+                'formatted_value': '04/10/2014'
+            },
+            'productReceived': {
+                'id': 103,
+                'value': 1,
+                'formatted_value': 'Yes'
+            }
         }
-        else if (lineItemId === lineItemTwoId) {
-            return deferredLineItemTwoRequest.promise;
-        }
-        return null;
     };
 
     beforeEach(function () {
         module('DistributionPlanNode');
 
-        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'updateLineItemField']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
 
         module(function ($provide) {
-            $provide.value('DistributionPlanLineItemService', mockLineItemService);
             $provide.value('ConsigneeService', mockConsigneeService);
             $provide.value('ContactService', mockContactService);
         });
 
         inject(function (DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
             q = $q;
-            mockLineItemService.getLineItem.and.callFake(fakeGetLineItem);
 
             var deferredConsigneeRequest = q.defer();
             deferredConsigneeRequest.resolve(fullConsignee);
@@ -121,6 +108,7 @@ describe('Distribution Plan Node Service', function () {
 
             mockBackend = $httpBackend;
             planNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
+            nodeResponsesEndpointUrl = EumsConfig.BACKEND_URLS.NODE_RESPONSES;
             planNodeService = DistributionPlanNodeService;
         });
     });
@@ -129,10 +117,16 @@ describe('Distribution Plan Node Service', function () {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
             id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
-            distributionplanlineitem_set: [], children: [], tree_position: 'END_USER'
+            children: [], tree_position: 'END_USER', item: itemId,
+            quantity: 10, under_current_supply_plan: false,
+            plannedDistributionDate: '2014-02-23',
+            remark: 'In bad condition',
+            track: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
-        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER'})
+        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
+            quantity: 10, plannedDistributionDate: '2014-02-23', remark: 'In bad condition',
+            track: true})
             .then(function (createdNode) {
                 expect(createdNode).toEqual(stubCreatedNode);
                 done();
@@ -143,10 +137,19 @@ describe('Distribution Plan Node Service', function () {
     it('should only return a response when the status is not 201', function () {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
-            distributionplanlineitem_set: [], children: [], tree_position: 'END_USER'
+            children: [], tree_position: 'END_USER', item: itemId,
+            quantity: 10, under_current_supply_plan: false,
+            plannedDistributionDate: '2014-02-23',
+            remark: 'In bad condition',
+            track: true
         };
-         mockBackend.whenPOST(planNodeEndpointUrl).respond(202, stubCreatedNode);
-        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER'})
+        mockBackend.whenPOST(planNodeEndpointUrl).respond(202, stubCreatedNode);
+        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER',
+            item: itemId,
+            quantity: 10, under_current_supply_plan: false,
+            plannedDistributionDate: '2014-02-23',
+            remark: 'In bad condition',
+            track: true})
             .then(function (createdNode) {
                 expect(createdNode.status).toEqual(202);
             });
@@ -172,33 +175,14 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.flush();
     });
 
-    it('should update node tracking details', function (done) {
-        var updatedNode = 1;
-        var tracking = true;
-
-        mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNodeTwo);
-        mockLineItemService.updateLineItemField.and.returnValue(fullLineItemOne);
-        planNodeService.updateNodeTracking(updatedNode, tracking).then(function (returnedLineItem) {
-            expect(returnedLineItem).toEqual([fullLineItemOne]);
+    it('should get node response', function (done) {
+        mockBackend.whenGET(nodeResponsesEndpointUrl + planNodeId + '/').respond(expectedNodeResponse);
+        planNodeService.getNodeResponse(planNodeId).then(function (returnedNodeResponse) {
+            expect(returnedNodeResponse).toEqual(expectedNodeResponse);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should get all child node line items', function (done) {
-        var stubNode = {id: 42, children: [23, 76]};
-        var stubChildOne = {id: 23, parent: stubNode.id, distributionplanlineitem_set: [55, 57]};
-        var stubChildTwo = {id: 76, parent: stubNode.id, distributionplanlineitem_set: [98, 99]};
-        var expectedChildNodeLineItems = [55, 57, 98, 99];
-
-        mockBackend.whenGET(planNodeEndpointUrl + stubChildOne.id + '/').respond(stubChildOne);
-        mockBackend.whenGET(planNodeEndpointUrl + stubChildTwo.id + '/').respond(stubChildTwo);
-
-        planNodeService.getPlanNodeChildLineItems(stubNode).then(function (children) {
-            expect(children).toEqual(expectedChildNodeLineItems);
-            done();
-        });
-        mockBackend.flush();
-    });
 });
 

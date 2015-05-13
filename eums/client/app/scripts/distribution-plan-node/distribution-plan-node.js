@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem', 'Contact', 'Consignee'])
-    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, DistributionPlanLineItemService, ContactService, ConsigneeService) {
+angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee'])
+    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService) {
         var fillOutContactPerson = function (planNode) {
             return ContactService.getContactById(planNode.contact_person_id).then(function (contact) {
                 planNode.contact_person = contact;
@@ -19,20 +19,6 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
             });
         };
 
-        var fillOutLineItem = function (lineItemId, node) {
-            return DistributionPlanLineItemService.getLineItem(lineItemId)
-                .then(function (lineItemDetails) {
-                    node.lineItems.push(lineItemDetails);
-                });
-        };
-
-        var getLineItemsForChild = function (childId, service) {
-            return service.getPlanNodeById(childId).then(function (response) {
-                var childNode = response.data;
-                return childNode.distributionplanlineitem_set;
-            });
-        };
-
         return {
             getPlanNodeById: function (planNodeId) {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeId + '/');
@@ -44,34 +30,9 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                     var fillOutPromises = [];
                     fillOutPromises.push(fillOutContactPerson(planNode));
                     fillOutPromises.push(fillOutConsignee(planNode));
-                    planNode.lineItems = [];
-                    planNode.distributionplanlineitem_set.forEach(function (lineItemId) {
-                        fillOutPromises.push(fillOutLineItem(lineItemId, planNode));
-                    });
-
                     return $q.all(fillOutPromises).then(function () {
                         return planNode;
                     });
-                });
-            },
-            getPlanNodeChildLineItems: function (node) {
-                var childNodeLineItems = [];
-                var children = node.children;
-
-                var promises = [];
-                var service = this;
-                children.forEach(function (child) {
-                    promises.push(getLineItemsForChild(child, service));
-                });
-
-                promises.forEach(function(promise) {
-                    promise.then(function(array) {
-                        childNodeLineItems = childNodeLineItems.concat(array);
-                    });
-                });
-
-                return $q.all(promises).then(function () {
-                    return childNodeLineItems;
                 });
             },
             createNode: function (nodeDetails) {
@@ -89,21 +50,11 @@ angular.module('DistributionPlanNode', ['eums.config', 'DistributionPlanLineItem
                     return response.data;
                 });
             },
-            updateNodeTracking: function (planNodeId, tracking) {
-                var getPlanNodePromise = this.getPlanNodeById(planNodeId);
-                return getPlanNodePromise.then(function (response) {
-                    var planNode = response.data;
-                    var lineItemUpdatePromises = [];
-                    var lineItemFields = {track: tracking};
 
-                    planNode.distributionplanlineitem_set.forEach(function (lineItemId) {
-                        var lineItem = {id: lineItemId};
-                        lineItemUpdatePromises.push(DistributionPlanLineItemService.updateLineItemField(lineItem, lineItemFields));
-                    });
-
-                    return $q.all(lineItemUpdatePromises);
+            getNodeResponse: function (nodeId) {
+                return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
+                    return response.data;
                 });
             }
         };
-
     });

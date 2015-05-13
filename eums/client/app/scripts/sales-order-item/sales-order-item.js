@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode', 'DistributionPlanLineItem', 'Consignee'])
-    .factory('SalesOrderItemService', function ($http, $q, EumsConfig, ItemService, DistributionPlanNodeService, DistributionPlanLineItemService, ConsigneeService) {
+angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode', 'Consignee'])
+    .factory('SalesOrderItemService', function ($http, $q, EumsConfig, ItemService, DistributionPlanNodeService, ConsigneeService) {
         var sales_order_item;
 
         var fillOutItem = function (lineItem) {
@@ -25,56 +25,20 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                     return response.data;
                 });
             },
-            getTopLevelDistributionPlanLineItems: function (salesOrderItem) {
-                var allDistributionLineItems = salesOrderItem.distributionplanlineitem_set;
-
-                var lineItemPromises = [],
-                    lineItems = [];
-
-                allDistributionLineItems.forEach(function (lineItemId) {
-                    var lineItemPromise = DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
-                        return DistributionPlanNodeService.getPlanNodeById(lineItem.distribution_plan_node).then(function (planNodeResponse) {
-                            lineItem.distribution_plan_parent_node = planNodeResponse.data.parent;
-                            return lineItem;
-                        });
-                    });
-                    lineItemPromises.push(lineItemPromise);
-                });
-
-                lineItemPromises.forEach(function (promise) {
-                    promise.then(function (lineItem) {
-                        lineItems.push(lineItem);
-                    });
-                });
-
-                function hasNoParent(lineItem) {
-                    return !lineItem.distribution_plan_parent_node;
-                }
-
-                function id(lineItem) {
-                    return lineItem.id;
-                }
-
-                return $q.all(lineItemPromises).then(function () {
-                    return lineItems.filter(hasNoParent).map(id);
-                });
-            },
             getTopLevelDistributionPlanNodes: function (salesOrderItem) {
-                var allDistributionLineItems = salesOrderItem.distributionplanlineitem_set;
+                var allDistributionPlanNodes = salesOrderItem.distributionplannode_set;
 
                 var planNodePromises = [],
                     planNodes = [];
 
-                allDistributionLineItems.forEach(function (lineItemId) {
-                    var planNodePromise = DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
-                        return DistributionPlanNodeService.getPlanNodeById(lineItem.distribution_plan_node).then(function (planNodeResponse) {
+                allDistributionPlanNodes.forEach(function (nodeId) {
+                    var planNodePromise = DistributionPlanNodeService.getPlanNodeById(nodeId).then(function (planNodeResponse) {
                             var planNode = planNodeResponse.data;
                             return ConsigneeService.getConsigneeById(planNode.consignee).then(function (consigneeResponse) {
                                 planNode.consignee_name = consigneeResponse.name;
                                 return planNode;
                             });
                         });
-                    });
                     planNodePromises.push(planNodePromise);
                 });
 
