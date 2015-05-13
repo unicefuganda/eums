@@ -168,7 +168,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it("should change object keys to snake case when creating object", function (done) {
+    it('should change object keys to snake case when creating object', function (done) {
         var obj = {someProperty: 1};
         var expected = {some_property: 1};
         mockBackend.expectPOST(levelOneEndpoint, expected).respond(201, {id: 5, some_property: 1});
@@ -269,7 +269,7 @@ describe('Service Factory', function () {
             uri: levelOneEndpoint,
             methods: {
                 testMethod: function () {
-                    return 10
+                    return 10;
                 }
             }
         });
@@ -298,7 +298,7 @@ describe('Service Factory', function () {
 
         it('should not change case on .get', function (done) {
             var obj = {id: 1, some_property: 1};
-            mockBackend.whenGET("{1}{2}/".assign(levelOneEndpoint, obj.id)).respond(200, obj);
+            mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, obj.id)).respond(200, obj);
             service.get(obj.id).then(function (object) {
                 expect(object).toEqual(obj);
                 done();
@@ -308,7 +308,7 @@ describe('Service Factory', function () {
 
         it('should not change case on .update', function (done) {
             var obj = {id: 1, someProperty: 1};
-            mockBackend.expectPUT("{1}{2}/".assign(levelOneEndpoint, obj.id), obj).respond(200);
+            mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, obj.id), obj).respond(200);
             service.update(obj).then(function () {
                 done();
             });
@@ -337,7 +337,7 @@ describe('Service Factory', function () {
 
         it('should use specified id field on .update', function (done) {
             var obj = {_id: 1, some_property: 1};
-            mockBackend.expectPUT("{1}{2}/".assign(levelOneEndpoint, obj._id), obj).respond(200);
+            mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, obj._id), obj).respond(200);
             service.update(obj).then(function () {
                 done();
             });
@@ -346,7 +346,7 @@ describe('Service Factory', function () {
 
         it('should use specified id field on .delete', function (done) {
             var obj = {_id: 1, some_property: 1};
-            mockBackend.expectDELETE("{1}{2}/".assign(levelOneEndpoint, obj._id)).respond(200);
+            mockBackend.expectDELETE('{1}{2}/'.assign(levelOneEndpoint, obj._id)).respond(200);
             service.del(obj).then(function () {
                 done();
             });
