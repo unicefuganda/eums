@@ -584,7 +584,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     width: '150px',
                     query: function (query) {
                         var data = {results: []};
-                        ContactService.getContactsBySearchQuery(query.term).then(function (foundContacts) {
+                        ContactService.filter(query.term).then(function (foundContacts) {
                             data.results = formatResponse(foundContacts);
                             query.callback(data);
                         });
