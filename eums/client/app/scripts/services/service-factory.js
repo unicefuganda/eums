@@ -86,7 +86,8 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         });
                         return $q.all(buildPromises).then(function (builtObjects) {
                             return builtObjects.map(function (object) {
-                                return changeCase(object, toCamelCase);
+                                var camelCaseObject = changeCase(object, toCamelCase);
+                                return options.model ? new options.model(camelCaseObject) : camelCaseObject;
                             });
                         });
                     });

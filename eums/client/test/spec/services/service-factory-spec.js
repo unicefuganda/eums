@@ -245,6 +245,15 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should return json through model when getting all if model option is provided, the object is converted to camelCase', function(done) {
+        var plainObjects = [{id: 1, first_name: 'Job'}, {id: 2, first_name: 'Nim'}];
+        mockBackend.whenGET(levelTwoEndpoint).respond(plainObjects);
+        modelService.all().then(function (modelObjects) {
+            expect(modelObjects).toEqual([new Model({id: 1, firstName: 'Job'}), new Model({id: 2, firstName: 'Nim'})]);
+            done();
+        });
+        mockBackend.flush();
+    });
 
 });
 
