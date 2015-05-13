@@ -3,7 +3,7 @@ describe('Item Model', function() {
     beforeEach(function() {
         module('Item');
         inject(function(Item) {
-            ItemModel = Item
+            ItemModel = Item;
         });
     });
 

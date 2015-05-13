@@ -175,7 +175,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it("should change object keys to snake case when creating object", function (done) {
+    it('should change object keys to snake case when creating object', function (done) {
         var obj = {someProperty: 1};
         var expected = {some_property: 1};
         mockBackend.expectPOST(levelOneEndpoint, expected).respond(201, {id: 5, some_property: 1});

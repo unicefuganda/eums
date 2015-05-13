@@ -19,6 +19,7 @@
     "trailing": true,
     "smarttabs": true,
     "validthis": true,
+    "expr": true,
     "globals": {
         "angular": false,
         "$": false,
