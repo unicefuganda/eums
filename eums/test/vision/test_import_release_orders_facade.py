@@ -119,7 +119,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                           'Express Logistics Group Ltd.', '2014-07-08', 'C', '2014-08-20', '0', '0', 'ZLO', 'CAR',
                           '59.44', '5617', 'Uganda', 'Kampala W1-Prog', '', '', 'L438000181', '', 'PRAKASH LAMSAL',
                           20, 20, '', '2', '2', '2', '2300027179', '4900086015', '2', '100314', '2016-03-31',
-                          '2014-07-08', '2014-07-08', '', '2014-07-08', '2014-07-08', '2014-07-08', '2014-07-08', '',
+                          '2014-07-08', '2014-07-08', '', '2014-07-08', '2014-07-08', '2014-07-08', '1900-02-29', '',
                           '13', '', '', '', '', '', '', '', '', 'UAN 853F', 'EXPRESS LOGISTICS', '2MT', 'SAMUEL', '']
 
         rows = [self.header, self.first_row, self.second_row, self.third_row]

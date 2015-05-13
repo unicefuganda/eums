@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from decimal import Decimal
 from datetime import date, datetime
 import re
+from xlrd.xldate import XLDateAmbiguous
 
 from xlutils.view import View
 
@@ -10,12 +11,12 @@ from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrde
 
 
 def _clean_input(value):
-    parseStr = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
-                         re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$', x) and float(x) or x
+    parse_string = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
+                             re.match('(?i)^-?(\d+\.?e\d+|\d+\.\d*|\.\d+)$', x) and float(x) or x
 
     if type(value) == unicode:
         encoded_value = value.encode('ascii', 'ignore')
-        value = parseStr(encoded_value)
+        value = parse_string(encoded_value)
     if type(value) == int:
         return value
     elif type(value) == str:
@@ -63,15 +64,18 @@ class Facade():
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         order_list = []
         for row in sheet:
-            item_dict = self._filter_relevant_data(relevant_data, row)
-            if not self._is_summary_row(item_dict):
-                order_number = item_dict['order_number']
-                order_index = self._index_in_list(order_number, order_list, 'order_number')
-                if order_index > -1:
-                    self._remove_order_level_data_from(item_dict)
-                    order_list[order_index].get('items').append(item_dict)
-                else:
-                    self._append_new_order(item_dict, order_list, order_number)
+            try:
+                item_dict = self._filter_relevant_data(relevant_data, row)
+                if not self._is_summary_row(item_dict):
+                    order_number = item_dict['order_number']
+                    order_index = self._index_in_list(order_number, order_list, 'order_number')
+                    if order_index > -1:
+                        self._remove_order_level_data_from(item_dict)
+                        order_list[order_index].get('items').append(item_dict)
+                    else:
+                        self._append_new_order(item_dict, order_list, order_number)
+            except XLDateAmbiguous:
+                pass
 
         return order_list
 
