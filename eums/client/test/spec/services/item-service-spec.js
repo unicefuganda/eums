@@ -22,7 +22,7 @@ describe('Item Service', function() {
         };
 
         mockBackend.whenGET(itemEndpointUrl).respond([stubItem]);
-        itemService.fetchItems().then(function (response) {
+        itemService.all().then(function (response) {
             expect(response).toEqual([stubItem]);
             done();
         });
@@ -49,14 +49,14 @@ describe('Item Service', function() {
         mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(stubItemUnit);
         mockBackend.whenGET(itemEndpointUrl + itemId + '/').respond(stubItem);
 
-        itemService.getItemDetails(itemId).then(function(item) {
+        itemService.get(itemId, ['unit']).then(function(item) {
             expect(item).toEqual(expectedItem);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should default item unit to Each of item has no item unit', function(done) {
+    it("should default item unit name to 'Each' if item has no item unit", function(done) {
         var itemId = 1;
         var itemUnitId = null;
 
@@ -72,10 +72,10 @@ describe('Item Service', function() {
             unit: {id: 0, name: 'Each'}
         };
 
-        mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(404, {});
+        //mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(404, {});
         mockBackend.whenGET(itemEndpointUrl + itemId + '/').respond(stubItem);
 
-        itemService.getItemDetails(itemId).then(function(item) {
+        itemService.get(itemId, ['unit']).then(function(item) {
             expect(item).toEqual(expectedItem);
             done();
         });

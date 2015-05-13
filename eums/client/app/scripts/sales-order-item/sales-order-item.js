@@ -5,7 +5,7 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
         var sales_order_item;
 
         var fillOutItem = function (lineItem) {
-            return ItemService.getItemDetails(lineItem.item).then(function (itemDetails) {
+            return ItemService.get(lineItem.item, ['unit']).then(function (itemDetails) {
                 lineItem.item = itemDetails;
                 return lineItem;
             });

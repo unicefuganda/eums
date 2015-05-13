@@ -27,7 +27,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                 $scope.purchaseOrders = $scope.purchaseOrders.concat(purchaseOrders);
             });
 
-            ItemService.fetchItems().then(function (items) {
+            ItemService.all().then(function (items) {
                 $scope.items = $scope.items.concat(items);
             });
 
