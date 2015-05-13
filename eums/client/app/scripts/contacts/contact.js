@@ -95,9 +95,15 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         return ServiceFactory({
             uri: EumsConfig.CONTACT_SERVICE_URL,
             changeCase: false,
+            idField: '_id',
             methods: {
                 getContactsBySearchQuery: function (searchString) {
                     return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString).then(function (response) {
+                        return response.data;
+                    });
+                },
+                update: function (contact) {
+                    return $http.put(EumsConfig.CONTACT_SERVICE_URL, contact).then(function (response) {
                         return response.data;
                     });
                 }
