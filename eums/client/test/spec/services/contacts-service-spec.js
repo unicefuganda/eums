@@ -14,6 +14,24 @@ describe('Contacts Service', function () {
             contactService = ContactService;
             config = EumsConfig;
         });
+        mockContactsBackend.whenPOST(config.CONTACT_SERVICE_URL, stubContact).respond(expectedContact);
+    });
+
+    it('should add contact to', function (done) {
+        contactService.create(stubContact).then(function (response) {
+            expect(response.data).toEqual(expectedContact);
+            done();
+        });
+        mockContactsBackend.flush();
+    });
+
+    it('should get contact from contacts backend by id', function (done) {
+        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + expectedContact._id + '/').respond(expectedContact);
+        contactService.get(expectedContact._id).then(function (contact) {
+            expect(contact).toEqual(expectedContact);
+            done();
+        });
+        mockContactsBackend.flush();
     });
 
     it('should search for contact by search string', function (done) {
