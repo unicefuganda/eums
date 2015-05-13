@@ -1,5 +1,5 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService, serviceFactory;
+    var mockBackend, q, levelOneService, levelTwoService, modelService;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
@@ -7,17 +7,25 @@ describe('Service Factory', function () {
     const nestedOne = {id: 1, properties: {}};
     const nestedTwo = {id: 2, properties: []};
     const fakeObjects = [fakeOne, fakeTwo];
+    var Model = function (json) {
+        this.firstName = json.firstName.toUpperCase();
+    };
 
     beforeEach(function () {
         module('eums.service-factory');
         inject(function (ServiceFactory, $httpBackend, $q) {
             q = $q;
-            serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
+
+            modelService = ServiceFactory({
+                uri: levelTwoEndpoint,
+                model: Model
+            });
+
             levelOneService = ServiceFactory({
                 uri: levelOneEndpoint,
-                propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService},
+                propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
             });
         });
     });
@@ -228,21 +236,16 @@ describe('Service Factory', function () {
     });
 
     it('should channel returned json through model if model option is provided, converting the object to camelCase', function (done) {
-        var Model = function(json) {
-            this.firstName = json.firstName.toUpperCase();
-        };
-        var service = serviceFactory({
-            uri: levelOneEndpoint,
-            model: Model
-        });
         var plainObject = {id: 1, first_name: 'Job'};
-        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, plainObject.id)).respond(plainObject);
-        service.get(plainObject.id).then(function (modelObject) {
+        mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, plainObject.id)).respond(plainObject);
+        modelService.get(plainObject.id).then(function (modelObject) {
             expect(modelObject).toEqual(new Model({id: 1, firstName: 'Job'}));
             done();
         });
         mockBackend.flush();
     });
+
+
 });
 
 
