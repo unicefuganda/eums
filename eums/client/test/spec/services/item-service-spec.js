@@ -56,7 +56,7 @@ describe('Item Service', function() {
         mockBackend.flush();
     });
 
-    it("should default item unit name to 'Each' if item has no item unit", function(done) {
+    xit("should default item unit name to 'Each' if item has no item unit", function(done) {
         var itemId = 1;
         var itemUnitId = null;
 
