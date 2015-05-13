@@ -29,7 +29,7 @@ describe('DistributionPlanController', function () {
 
     beforeEach(function () {
         module('DistributionPlan');
-        mockContactService = jasmine.createSpyObj('mockContactService', ['addContact']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails', 'getSalesOrders']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme', 'fetchProgrammes']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrders']);
@@ -38,7 +38,7 @@ describe('DistributionPlanController', function () {
             deferred = $q.defer();
             deferredPlan = $q.defer();
             deferredSalesOrder = $q.defer();
-            mockContactService.addContact.and.returnValue(deferred.promise);
+            mockContactService.create.and.returnValue(deferred.promise);
             mockProgrammeService.getProgramme.and.returnValue(deferred.promise);
             mockProgrammeService.fetchProgrammes.and.returnValue(deferred.promise);
             mockPlanService.getSalesOrders.and.returnValue(deferredPlan.promise);
@@ -144,14 +144,14 @@ describe('DistributionPlanController', function () {
 
     xit('should save contact and return contact with an id', function () {
         deferred.resolve(stubResponse);
-        scope.addContact();
+        scope.create();
         scope.$apply();
         expect(location.path()).toEqual('/');
     });
 
     xit('should add an error message to the scope when the contact is NOT saved', function () {
         deferred.reject(stubError);
-        scope.addContact();
+        scope.create();
         scope.$apply();
         expect(scope.errorMessage).toBe('Phone number is not valid');
     });

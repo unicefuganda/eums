@@ -88,7 +88,7 @@ describe('Distribution Plan Node Service', function () {
         module('DistributionPlanNode');
 
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
-        mockContactService = jasmine.createSpyObj('mockContactService', ['getContactById']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
 
         module(function ($provide) {
             $provide.value('ConsigneeService', mockConsigneeService);
@@ -104,7 +104,7 @@ describe('Distribution Plan Node Service', function () {
 
             var deferredContactRequest = q.defer();
             deferredContactRequest.resolve(fullContact);
-            mockContactService.getContactById.and.returnValue(deferredContactRequest.promise);
+            mockContactService.get.and.returnValue(deferredContactRequest.promise);
 
             mockBackend = $httpBackend;
             planNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;

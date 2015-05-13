@@ -3,7 +3,7 @@
 angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee'])
     .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService) {
         var fillOutContactPerson = function (planNode) {
-            return ContactService.getContactById(planNode.contact_person_id).then(function (contact) {
+            return ContactService.get(planNode.contact_person_id).then(function (contact) {
                 planNode.contact_person = contact;
                 return planNode;
             }, function () {

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
+angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
     .controller('ContactController', function (ContactService, $scope, $sorter, ngToast) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
@@ -8,7 +8,7 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
         $scope.contact = {};
 
         function loadContacts() {
-            ContactService.getAllContacts().then(function (allContacts) {
+            ContactService.all().then(function (allContacts) {
                 $scope.contacts = allContacts.sort();
             });
         }
@@ -59,13 +59,13 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
         };
 
         $scope.saveContact = function () {
-            ContactService.addContact($scope.contact).then(function () {
+            ContactService.create($scope.contact).then(function () {
                 angular.element('#add-contact-modal').modal('hide');
                 loadContacts();
                 $scope.contact = {};
 
             }, function (response) {
-                if(response.status === 0){
+                if (response.status === 0) {
                     createToast('Contact service down', 'danger');
                 }
                 else {
@@ -75,7 +75,7 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
         };
 
         $scope.deleteSelectedContact = function () {
-            ContactService.deleteContact($scope.currentContact).then(function () {
+            ContactService.del($scope.currentContact).then(function () {
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
@@ -83,20 +83,30 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
             });
         };
 
-        $scope.editContact = function (contact) {
-            ContactService.editContact(contact).then(function () {
+        $scope.update = function (contact) {
+            ContactService.update(contact).then(function () {
                 angular.element('#edit-contact-modal').modal('hide');
                 loadContacts();
                 $scope.currentContact = {};
             });
         };
     })
-    .factory('ContactService', function ($http, EumsConfig) {
+    .factory('ContactService', function ($http, EumsConfig, ServiceFactory) {
+        //return ServiceFactory({
+        //    uri: EumsConfig.CONTACT_SERVICE_URL,
+        //    methods: {
+        //        getContactsBySearchQuery: function (searchString) {
+        //            return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString).then(function (response) {
+        //                return response.data;
+        //            });
+        //        }
+        //    }
+        //});
         return {
-            addContact: function (contact) {
+            create: function (contact) {
                 return $http.post(EumsConfig.CONTACT_SERVICE_URL, contact);
             },
-            getContactById: function (id) {
+            get: function (id) {
                 return $http.get(EumsConfig.CONTACT_SERVICE_URL + id + '/').then(function (response) {
                     return response.data;
                 });
@@ -106,21 +116,20 @@ angular.module('Contact', ['eums.config', 'ngTable', 'siTable', 'ui.bootstrap', 
                     return response.data;
                 });
             },
-            getAllContacts: function () {
+            all: function () {
                 return $http.get(EumsConfig.CONTACT_SERVICE_URL).then(function (response) {
                     return response.data;
                 });
             },
-            deleteContact: function (contact) {
+            del: function (contact) {
                 return $http.delete(EumsConfig.CONTACT_SERVICE_URL + contact._id + '/').then(function (response) {
                     return response.data;
                 });
             },
-            editContact: function (contact) {
+            update: function (contact) {
                 return $http.put(EumsConfig.CONTACT_SERVICE_URL, contact).then(function (response) {
                     return response.data;
                 });
-
             }
         };
     })
