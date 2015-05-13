@@ -35,12 +35,10 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             var buildMap = nestedFieldsToBuildMap(nestedFields);
 
             Object.each(buildMap, function (property, service) {
-                if (Object.isArray(object[property])) {
+                if (Object.isArray(object[property]))
                     arrayPropertyBuildPromises.push(buildArrayProperty(object, property, service));
-                }
-                else {
+                else
                     object[property] && objectPropertyBuildPromises.push(service.get(object[property]));
-                }
             });
 
             allObjectPropertiesBuilt = attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap);
@@ -67,24 +65,20 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
 
         function changeCase(obj, converter) {
             return Object.keys(obj).reduce(function (acc, current) {
-                if (Object.isArray(obj[current])) {
+                if (Object.isArray(obj[current]))
                     acc[converter(current)] = obj[current].map(function (element) {
                         return changeCase(element, converter);
                     });
-                }
-                else if (Object.isObject(obj[current])) {
+                else if (Object.isObject(obj[current]))
                     acc[converter(current)] = changeCase(obj[current], converter);
-                }
-                else {
-                    acc[converter(current)] = obj[current];
-                }
+                else acc[converter(current)] = obj[current];
                 return acc;
             }, {});
         }
 
         return function (options) {
             serviceOptions = options;
-            return {
+            var service = {
                 all: function (nestedFields) {
                     return $http.get(options.uri).then(function (response) {
                         var buildPromises = response.data.map(function (flatObject) {
@@ -124,6 +118,10 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                     });
                 }
             };
+            options.methods && Object.each(options.methods, function(name, impl) {
+                service[name] = impl;
+            });
+            return service;
         };
     });
 

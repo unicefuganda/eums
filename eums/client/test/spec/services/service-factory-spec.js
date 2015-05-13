@@ -1,5 +1,5 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService, modelService;
+    var mockBackend, q, levelOneService, levelTwoService, modelService, serviceFactory;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
@@ -15,6 +15,7 @@ describe('Service Factory', function () {
         module('eums.service-factory');
         inject(function (ServiceFactory, $httpBackend, $q) {
             q = $q;
+            serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
 
@@ -175,7 +176,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should change object keys to snake case when creating object', function (done) {
+    it("should change object keys to snake case when creating object", function (done) {
         var obj = {someProperty: 1};
         var expected = {some_property: 1};
         mockBackend.expectPOST(levelOneEndpoint, expected).respond(201, {id: 5, some_property: 1});
@@ -245,7 +246,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should return json through model when getting all if model option is provided, the object is converted to camelCase', function(done) {
+    it('should return json through model when getting all if model option is provided, the object is converted to camelCase', function (done) {
         var plainObjects = [{id: 1, first_name: 'Job'}, {id: 2, first_name: 'Nim'}];
         mockBackend.whenGET(levelTwoEndpoint).respond(plainObjects);
         modelService.all().then(function (modelObjects) {
@@ -255,6 +256,17 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should add specified methods to service', function () {
+        var service = serviceFactory({
+            uri: levelOneEndpoint,
+            methods: {
+                testMethod: function () {
+                    return 10
+                }
+            }
+        });
+        expect(service.testMethod()).toBe(10);
+    });
 });
 
 
