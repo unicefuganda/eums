@@ -92,46 +92,17 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory) {
-        //return ServiceFactory({
-        //    uri: EumsConfig.CONTACT_SERVICE_URL,
-        //    methods: {
-        //        getContactsBySearchQuery: function (searchString) {
-        //            return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString).then(function (response) {
-        //                return response.data;
-        //            });
-        //        }
-        //    }
-        //});
-        return {
-            create: function (contact) {
-                return $http.post(EumsConfig.CONTACT_SERVICE_URL, contact);
-            },
-            get: function (id) {
-                return $http.get(EumsConfig.CONTACT_SERVICE_URL + id + '/').then(function (response) {
-                    return response.data;
-                });
-            },
-            getContactsBySearchQuery: function (searchString) {
-                return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString).then(function (response) {
-                    return response.data;
-                });
-            },
-            all: function () {
-                return $http.get(EumsConfig.CONTACT_SERVICE_URL).then(function (response) {
-                    return response.data;
-                });
-            },
-            del: function (contact) {
-                return $http.delete(EumsConfig.CONTACT_SERVICE_URL + contact._id + '/').then(function (response) {
-                    return response.data;
-                });
-            },
-            update: function (contact) {
-                return $http.put(EumsConfig.CONTACT_SERVICE_URL, contact).then(function (response) {
-                    return response.data;
-                });
+        return ServiceFactory({
+            uri: EumsConfig.CONTACT_SERVICE_URL,
+            changeCase: false,
+            methods: {
+                getContactsBySearchQuery: function (searchString) {
+                    return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString).then(function (response) {
+                        return response.data;
+                    });
+                }
             }
-        };
+        });
     })
     .filter('contactsFilter', function ($filter) {
         return function (contacts, query) {
