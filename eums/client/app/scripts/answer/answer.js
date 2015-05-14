@@ -1,42 +1,24 @@
 'use strict';
 
-angular.module('Answer', ['eums.config'])
-    .factory('AnswerService', function ($http, EumsConfig) {
+angular.module('Answer', ['eums.config', 'eums.service-factory'])
+    .factory('AnswerService', function ($http, EumsConfig, ServiceFactory) {
+        var multipleChoiceAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.MULTIPLE_CHOICE_ANSWERS});
+        var textAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.TEXT_ANSWERS});
+        var numericAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.NUMERIC_ANSWERS});
+        var method = 'PATCH';
+
         return {
-            createMultipleChoiceAnswer: function (answerDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.MULTIPLE_CHOICE_ANSWERS, answerDetails).then(function (response) {
-                    return response.data;
-                });
-            },
+            createMultipleChoiceAnswer: multipleChoiceAnswerService.create,
             updateMultipleChoiceAnswer: function (answerId, answerDetails) {
-                return $http({ method: 'PATCH', url: EumsConfig.BACKEND_URLS.MULTIPLE_CHOICE_ANSWERS + answerId + '/', data: answerDetails})
-                    .then(function (response) {
-                        return response.data;
-                    });
+                return multipleChoiceAnswerService.update(Object.merge({id: answerId}, answerDetails), method);
             },
-            createTextAnswer: function (answerDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.TEXT_ANSWERS, answerDetails).then(function (response) {
-                    return response.data;
-                });
-            },
+            createTextAnswer: textAnswerService.create,
             updateTextAnswer: function (answerId, answerDetails) {
-                return $http({ method: 'PATCH', url: EumsConfig.BACKEND_URLS.TEXT_ANSWERS + answerId + '/', data: answerDetails})
-                    .then(function (response) {
-                        return response.data;
-                    });
+                return textAnswerService.update(Object.merge({id: answerId}, answerDetails), method);
             },
-            createNumericAnswer: function (answerDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.NUMERIC_ANSWERS, answerDetails).then(function (response) {
-                    return response.data;
-                });
-            },
+            createNumericAnswer: numericAnswerService.create,
             updateNumericAnswer: function (answerId, answerDetails) {
-                return $http({ method: 'PATCH', url: EumsConfig.BACKEND_URLS.NUMERIC_ANSWERS + answerId + '/', data: answerDetails})
-                    .then(function (response) {
-                        return response.data;
-                    });
+                return numericAnswerService.update(Object.merge({id: answerId}, answerDetails), method);
             }
         };
     });
-
-
