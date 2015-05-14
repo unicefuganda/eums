@@ -10,7 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('eums', '0029_auto_20150414_1137'),
-    ]
+        ]
 
     operations = [
         migrations.AddField(
@@ -42,4 +42,4 @@ class Migration(migrations.Migration):
             name='item',
             field=models.ForeignKey(SalesOrderItem, null=True),
         ),
-    ]
+        ]
