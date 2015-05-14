@@ -227,7 +227,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         $scope.selectedSalesOrderItem = {
                             display: result.item.description,
                             materialCode: result.item.material_code,
-                            quantity: lineItem.targeted_quantity,
+                            quantity: result.targeted_quantity,
                             unit: result.item.unit.name,
                             information: result
                         };
@@ -240,7 +240,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.selectSalesOrderItem = function () {
             $scope.track = false;
-            $scope.invalidLineItems = NaN;
+            $scope.invalidNodes = NaN;
             $scope.distributionPlan = NaN;
 
             showLoadingModal(true);
@@ -284,7 +284,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.trackSalesOrderItem = function () {
-            $scope.invalidLineItems = anyInvalidFields($scope.distributionPlanNodes);
+            $scope.invalidNodes = anyInvalidFields($scope.distributionPlanNodes);
             savePlanTracking();
         };
 
@@ -292,15 +292,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
         };
 
-        var formatDateForDisplay = function (date) {
-            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-        };
+        //var formatDateForDisplay = function (date) {
+        //    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+        //};
 
         var setDistributionPlanNode = function (selectedSalesOrderItem, nodes) {
             if (nodes.length) {
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
                 quantityLeft = quantityLeft - parseInt(nodes.targetQuantity);
                 $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
+                $scope.distributionPlanNodes = nodes;
             }
             else {
                 $scope.distributionPlanNodes = [];
@@ -309,8 +310,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             setDatePickers();
         };
 
-        $scope.addDistributionPlanItem = function () {
-            var distributionPlanLineItem = {
+        $scope.addDistributionPlanNode = function () {
+            var distributionPlanNode = {
                 item: $scope.selectedSalesOrderItem.information.id,
                 plannedDistributionDate: '',
                 targetQuantity: 0,
@@ -323,7 +324,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 flowTriggered: false
             };
 
-            $scope.distributionPlanNodes.push(distributionPlanLineItem);
+            $scope.distributionPlanNodes.push(distributionPlanNode);
 
             setDatePickers();
         };
@@ -347,16 +348,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             return itemsWithInvalidFields.length > 0;
         }
 
-        $scope.$watch('distributionPlanNodes', function (newPlanItems) {
+        $scope.$watch('distributionPlanNodes', function (newPlanNodes) {
 
-            if (isNaN($scope.invalidLineItems) && $scope.distributionPlanNodes.length) {
-                $scope.invalidLineItems = true;
+            if (isNaN($scope.invalidNodes) && $scope.distributionPlanNodes.length) {
+                $scope.invalidNodes = true;
                 return;
             }
 
-            if (newPlanItems.length) {
+            if (newPlanNodes.length) {
                 $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
-                $scope.invalidLineItems = anyInvalidFields(newPlanItems);
+                $scope.invalidNodes = anyInvalidFields(newPlanNodes);
             }
         }, true);
 
@@ -403,22 +404,20 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     node.id = nodeId;
                     node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
-                    return DistributionPlanNodeService.updateNode(node).then(function () {
-                        createToast('Report Saved', 'success');
-                    });
+                    return DistributionPlanNodeService.updateNode(node);
                 }
                 else {
-                    return DistributionPlanNodeService.createNode(node).then(function() {
-                        createToast('Plan Saved', 'success');
-                    });
+                    return DistributionPlanNodeService.createNode(node);
                 }
             });
         }
 
         function saveDistributionPlanNodes() {
+            var message  = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
                 saveNode(node);
             });
+            createToast(message, 'success');
         }
 
         $scope.saveDistributionPlanNodes = function () {

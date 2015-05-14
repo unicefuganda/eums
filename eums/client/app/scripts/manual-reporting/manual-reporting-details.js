@@ -224,7 +224,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             responseNodes.forEach(function (responseNode) {
                 setDistributionPlan(responseNode);
                 var responseDetails = {
-                    lineItemRunId: responseNode.line_item_run_id,
+                    nodeRunId: responseNode.node_run_id,
                     consignee: responseNode.node.consignee,
                     endUser: responseNode.node.contact_person_id,
                     location: responseNode.node.location,
@@ -255,7 +255,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         $scope.addResponse = function () {
             var newResponseItem = {
-                lineItemRunId: '',
+                nodeRunId: '',
                 consignee: '',
                 endUser: '',
                 location: '',

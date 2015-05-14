@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode', 'Consignee'])
-    .factory('SalesOrderItemService', function ($http, $q, EumsConfig, ItemService, DistributionPlanNodeService, ConsigneeService) {
+angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode'])
+    .factory('SalesOrderItemService', function ($http, $q, EumsConfig, ItemService, DistributionPlanNodeService) {
         var sales_order_item;
 
         var fillOutItem = function (lineItem) {
@@ -32,12 +32,8 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                     planNodes = [];
 
                 allDistributionPlanNodes.forEach(function (nodeId) {
-                    var planNodePromise = DistributionPlanNodeService.getPlanNodeById(nodeId).then(function (planNodeResponse) {
-                            var planNode = planNodeResponse.data;
-                            return ConsigneeService.getConsigneeById(planNode.consignee).then(function (consigneeResponse) {
-                                planNode.consignee_name = consigneeResponse.name;
-                                return planNode;
-                            });
+                    var planNodePromise = DistributionPlanNodeService.getPlanNodeDetails(nodeId).then(function (planNodeResponse) {
+                           return planNodeResponse;
                         });
                     planNodePromises.push(planNodePromise);
                 });

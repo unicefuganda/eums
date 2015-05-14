@@ -2,7 +2,7 @@ describe('Sales Order Item Service', function () {
 
     var salesOrderItemEndpointUrl, itemEndpointUrl, itemUnitEndpointUrl,
         distributionPlanNodeEndpointUrl,
-        consigneeEndpointUrl, poItemForSalesOrderItemEndpointUrl;
+        consigneeEndpointUrl, poItemForSalesOrderItemEndpointUrl, contactEndpointUrl;
     var mockBackend;
     var salesOrderItemService;
 
@@ -45,6 +45,7 @@ describe('Sales Order Item Service', function () {
             poItemForSalesOrderItemEndpointUrl = EumsConfig.BACKEND_URLS.PO_ITEM_FOR_SO_ITEM;
             distributionPlanNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
             consigneeEndpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;
+            contactEndpointUrl = EumsConfig.CONTACT_SERVICE_URL;
         });
 
         mockBackend.whenGET(itemUnitEndpointUrl + itemUnitId + '/').respond(stubItemUnit);
@@ -97,12 +98,25 @@ describe('Sales Order Item Service', function () {
     });
 
     it('should return top level distribution plan nodes', function (done) {
-        var stubPlanNodeWithParent = {id: 41, parent: 40, consignee: 3 };
-        var stubPlanNodeWithoutParent = {id: 55, parent: null, consignee: 3 };
-        var stubPlanNodeWithoutParentConsignee = {id: 3, name: 'Stub Consignee' };
+        var stubContact = {
+            _id: 3,
+            firstName: 'Andrew',
+            lastName: 'Mukiza',
+            phone: '+234778945674'
+        };
+
+        var stubPlanNodeWithoutParent = {id: 55, parent: null, consignee: 3, contact_person_id: 3};
+        var stubPlanNodeWithParent = {id: 41, parent: stubPlanNodeWithoutParent.id, consignee: 3, contact_person_id: 3};
+        var stubConsignee = {id: stubContact._id, name: 'Stub Consignee'};
         stubSalesOrderItem.distributionplannode_set = [41, 55];
 
-        var expectedPlanNodeSet = [{id: 55, parent: null, consignee: 3, consignee_name: 'Stub Consignee' }];
+        var expectedPlanNodeSet = [{
+            id: 55,
+            parent: null,
+            consignee: stubConsignee,
+            contact_person: stubContact,
+            contact_person_id: stubContact._id
+        }];
 
         mockBackend
             .whenGET(distributionPlanNodeEndpointUrl + stubPlanNodeWithParent.id + '/')
@@ -114,7 +128,11 @@ describe('Sales Order Item Service', function () {
 
         mockBackend
             .whenGET(consigneeEndpointUrl + stubPlanNodeWithoutParent.consignee + '/')
-            .respond(stubPlanNodeWithoutParentConsignee);
+            .respond(stubConsignee);
+
+        mockBackend
+            .whenGET(contactEndpointUrl + stubContact._id + '/')
+            .respond(stubContact);
 
         salesOrderItemService
             .getTopLevelDistributionPlanNodes(stubSalesOrderItem)
