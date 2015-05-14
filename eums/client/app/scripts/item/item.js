@@ -8,8 +8,9 @@ angular.module('Item', ['eums.config', 'eums.service-factory'])
             this.description = json.description || '';
             this.unit = json.unit || {name: 'Each'};
         };
-    }).factory('ItemService', function ($http, EumsConfig, ServiceFactory, Item) {
-        var ItemUnitService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});
+    }).factory('ItemUnitService', function(ServiceFactory, EumsConfig) {
+        return ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});
+    }).factory('ItemService', function ($http, EumsConfig, ServiceFactory, Item, ItemUnitService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.ITEM,
             propertyServiceMap: {unit: ItemUnitService},
