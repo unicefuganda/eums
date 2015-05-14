@@ -27,11 +27,8 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         }
 
         var buildObject = function (object, nestedFields) {
-            var deferred = $q.defer();
-            deferred.resolve();
             var objectPropertyBuildPromises = [];
             var arrayPropertyBuildPromises = [];
-            var allObjectPropertiesBuilt = deferred.promise;
             var buildMap = nestedFieldsToBuildMap(nestedFields);
 
             Object.each(buildMap, function (property, service) {
@@ -43,7 +40,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                 }
             });
 
-            allObjectPropertiesBuilt = attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap);
+            var allObjectPropertiesBuilt = attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap);
 
             return $q.all(arrayPropertyBuildPromises).then(function () {
                 return allObjectPropertiesBuilt;
