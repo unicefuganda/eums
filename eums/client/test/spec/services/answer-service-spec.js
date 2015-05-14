@@ -1,47 +1,37 @@
 describe('Answer Service', function () {
-    var answerService, mockBackend, textAnswerEndpointUrl, numericAnswerEndpointUrl, multipleChoiceAnswerEndpointUrl;
+    var answerService, mockServiceFactory, mockService;
 
     var answerId = 1;
+    var answer = {value: 'Edited'};
+    var data = {id: answerId, value: answer.value};
 
     beforeEach(function () {
         module('Answer');
+        mockServiceFactory = jasmine.createSpyObj('mockServiceFactory', ['create']);
+        mockService = jasmine.createSpyObj('mockService', ['update', 'create']);
+        mockServiceFactory.create.and.returnValue(mockService);
 
-        inject(function (AnswerService, $httpBackend, EumsConfig) {
-            mockBackend = $httpBackend;
-            textAnswerEndpointUrl = EumsConfig.BACKEND_URLS.TEXT_ANSWERS;
-            numericAnswerEndpointUrl = EumsConfig.BACKEND_URLS.NUMERIC_ANSWERS;
-            multipleChoiceAnswerEndpointUrl = EumsConfig.BACKEND_URLS.MULTIPLE_CHOICE_ANSWERS;
+        module(function ($provide) {
+            $provide.value('ServiceFactory', mockServiceFactory);
+        });
+
+        inject(function (AnswerService) {
             answerService = AnswerService;
         });
     });
 
-    it('Text Answers should know how to update a text answer', function (done) {
-        var answer = {value: 'Edited'};
-        var data = {id: answerId, value: answer.value};
-        mockBackend.expectPATCH(textAnswerEndpointUrl + answerId + '/', data).respond(200);
-        answerService.updateTextAnswer(answerId, answer).then(function () {
-            done();
-        });
-        mockBackend.flush();
+    it('should know how to update text answer', function () {
+        answerService.updateTextAnswer(answerId, answer);
+        expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
 
-    it('Numeric Answers should know how to update text answer', function (done) {
-        var answer = {value: 3};
-        var data = {id: answerId, value: answer.value};
-        mockBackend.expectPATCH(numericAnswerEndpointUrl + answerId + '/', data).respond(200);
-        answerService.updateNumericAnswer(answerId, answer).then(function () {
-            done();
-        });
-        mockBackend.flush();
+    it('Numeric Answers should know how to update text answer', function () {
+        answerService.updateNumericAnswer(answerId, answer);
+        expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
 
-    it('Multiple Choice Answers should know how to update multiple choice answer', function (done) {
-        var answer = {value: 3};
-        var data = {id: answerId, value: answer.value};
-        mockBackend.expectPATCH(multipleChoiceAnswerEndpointUrl + answerId + '/', data).respond(200);
-        answerService.updateMultipleChoiceAnswer(answerId, answer).then(function () {
-            done();
-        });
-        mockBackend.flush();
+    it('Multiple Choice Answers should know how to update multiple choice answer', function () {
+        answerService.updateNumericAnswer(answerId, answer);
+        expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
 });
