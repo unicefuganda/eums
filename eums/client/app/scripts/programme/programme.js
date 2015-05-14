@@ -1,15 +1,6 @@
 'use strict';
 
-angular.module('Programme', ['eums.config'])
-    .factory('ProgrammeService', function ($http, EumsConfig) {
-        return {
-            getProgrammeDetails: function(programmeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.PROGRAMME + programmeId + '/').then(function(response) {
-                    return response.data;
-                });
-            },
-            fetchProgrammes: function() {
-                return $http.get(EumsConfig.BACKEND_URLS.PROGRAMME);
-            }
-        };
+angular.module('Programme', ['eums.config', 'eums.service-factory'])
+    .factory('ProgrammeService', function ($http, EumsConfig, ServiceFactory) {
+        return ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.PROGRAMME});
     });

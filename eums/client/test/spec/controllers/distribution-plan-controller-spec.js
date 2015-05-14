@@ -31,7 +31,7 @@ describe('DistributionPlanController', function () {
         module('DistributionPlan');
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails', 'getSalesOrders']);
-        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['getProgramme', 'fetchProgrammes']);
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrders']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
@@ -39,8 +39,8 @@ describe('DistributionPlanController', function () {
             deferredPlan = $q.defer();
             deferredSalesOrder = $q.defer();
             mockContactService.create.and.returnValue(deferred.promise);
-            mockProgrammeService.getProgramme.and.returnValue(deferred.promise);
-            mockProgrammeService.fetchProgrammes.and.returnValue(deferred.promise);
+            mockProgrammeService.get.and.returnValue(deferred.promise);
+            mockProgrammeService.all.and.returnValue(deferred.promise);
             mockPlanService.getSalesOrders.and.returnValue(deferredPlan.promise);
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
             mockSalesOrderService.getSalesOrders.and.returnValue(deferredSalesOrder.promise);

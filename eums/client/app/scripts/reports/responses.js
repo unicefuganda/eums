@@ -10,9 +10,8 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
         $scope.salesOrderItemConsignees = [];
 
         $scope.initialize = function () {
-            ProgrammeService.fetchProgrammes().then(function (result) {
-                var programmes = result.data;
-                $scope.programmes = programmes;
+            ProgrammeService.all().then(function (result) {
+                $scope.programmes = result;
             });
 
             SalesOrderService.getSalesOrders().then(function (salesOrders) {
