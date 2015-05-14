@@ -1,8 +1,9 @@
 #!/bin/bash
 
-imageFile=$1
-imageVersion=$2
-imageName=$1
+imageFile="$GO_PIPELINE_NAME.tar"
+imageVersion=$GO_PIPELINE_COUNTER
+imageName="unicef/$GO_PIPELINE_NAME"
+
 
 sudo su
 
