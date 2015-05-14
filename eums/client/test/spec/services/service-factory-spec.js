@@ -14,9 +14,9 @@ describe('Service Factory', function () {
             q = $q;
             serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
-            levelTwoService = ServiceFactory({uri: levelTwoEndpoint});
+            levelTwoService = ServiceFactory.create({uri: levelTwoEndpoint});
 
-            levelOneService = ServiceFactory({
+            levelOneService = ServiceFactory.create({
                 uri: levelOneEndpoint,
                 propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
             });
@@ -234,7 +234,7 @@ describe('Service Factory', function () {
             this.firstName = json.firstName.toUpperCase();
         };
         beforeEach(function () {
-            service = serviceFactory({
+            service = serviceFactory.create({
                 uri: levelTwoEndpoint,
                 model: Model
             });
@@ -265,7 +265,7 @@ describe('Service Factory', function () {
     });
 
     it('should add specified methods to service', function () {
-        var service = serviceFactory({
+        var service = serviceFactory.create({
             uri: levelOneEndpoint,
             methods: {
                 testMethod: function () {
@@ -279,7 +279,7 @@ describe('Service Factory', function () {
     describe('with "changeCase" option set to false', function () {
         var service;
         beforeEach(function () {
-            service = serviceFactory({
+            service = serviceFactory.create({
                 uri: levelOneEndpoint,
                 changeCase: false
             });
@@ -329,7 +329,7 @@ describe('Service Factory', function () {
     describe('with "idField" option set', function () {
         var service;
         beforeEach(function () {
-            service = serviceFactory({
+            service = serviceFactory.create({
                 uri: levelOneEndpoint,
                 idField: '_id'
             });

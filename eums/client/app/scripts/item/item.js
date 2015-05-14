@@ -9,8 +9,8 @@ angular.module('Item', ['eums.config', 'eums.service-factory'])
             this.unit = json.unit || {name: 'Each'};
         };
     }).factory('ItemService', function ($http, EumsConfig, ServiceFactory, Item) {
-        var ItemUnitService = ServiceFactory({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});
-        return ServiceFactory({
+        var ItemUnitService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});
+        return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.ITEM,
             propertyServiceMap: {unit: ItemUnitService},
             model: Item
