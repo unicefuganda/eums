@@ -1,9 +1,9 @@
 #!/bin/bash
 
 #push the image install script and fig.yml and image to the target box
-scp -t -t -i ${KEY_LOCATION} ${USER}@${HOST_IP} << EOF
+scp -t -t -i ${DEP LOY_MACHINE_KEY_LOCATION} ${DEPLOY_USER}@${DEPLOY_HOST} << EOF
 #push the deployment script to the target box
-scp -t -t -i ${KEY_LOCATION} ${USER}@${HOST_IP} << EOF
+scp -t -t -i ${DEP LOY_MACHINE_KEY_LOCATION} ${DEPLOY_USER}@${DEPLOY_HOST} << EOF
 #run the deployment script via ssh on the server
-ssh -t -t -i ${KEY_LOCATION} ${USER}@${HOST_IP} << EOF
+scp -t -t -i ${DEP LOY_MACHINE_KEY_LOCATION} ${DEPLOY_USER}@${DEPLOY_HOST} << EOF
 
