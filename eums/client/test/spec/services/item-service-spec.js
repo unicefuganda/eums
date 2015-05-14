@@ -7,7 +7,7 @@ describe('Item Service', function () {
         module(function ($provide) {
             $provide.value('ServiceFactory', mockServiceFactory);
             $provide.value('Item', mockItemModel);
-            $provide.value('ItemUnitService', mockItemUnitService)
+            $provide.value('ItemUnitService', mockItemUnitService);
         });
 
         inject(function (ItemService, EumsConfig) {
