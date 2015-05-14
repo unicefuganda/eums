@@ -7,7 +7,6 @@ gitRevision=$GO_REVISION
 echo "Packaging for Artifact=$artifactName BuildCounter=$artifactCounter GitRevision=$gitRevision"
 
 #Build and save the image
-mkdir -p /opt/app/staging/$artifactName/$artifactCounter
 sudo docker build -t unicef/$artifactName:$artifactCounter .
 mkdir build
 sudo docker save -o build/$artifactName"_docker_image.tar" unicef/$artifactName:$artifactCounter
