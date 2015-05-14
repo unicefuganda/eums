@@ -103,7 +103,7 @@ describe('ManualReportingDetailsController', function () {
 
     var setUp = function (routeParams) {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['fetchConsignees']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
         mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'qualityOptions', 'satisfiedOptions']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrder']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrderItem']);
@@ -127,7 +127,7 @@ describe('ManualReportingDetailsController', function () {
             deferredDistributionPlanPromise = $q.defer();
             deferredDistributionPlanNodePromise = $q.defer();
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
-            mockConsigneeService.fetchConsignees.and.returnValue(deferredConsigneePromise.promise);
+            mockConsigneeService.all.and.returnValue(deferredConsigneePromise.promise);
             mockOptionService.receivedOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.qualityOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.satisfiedOptions.and.returnValue(deferredOptionPromise.promise);

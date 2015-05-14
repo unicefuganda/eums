@@ -98,7 +98,7 @@ describe('Distribution Plan Node Service', function () {
         module('DistributionPlanNode');
 
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'updateLineItemField']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
 
         module(function ($provide) {
@@ -113,7 +113,7 @@ describe('Distribution Plan Node Service', function () {
 
             var deferredConsigneeRequest = q.defer();
             deferredConsigneeRequest.resolve(fullConsignee);
-            mockConsigneeService.getConsigneeById.and.returnValue(deferredConsigneeRequest.promise);
+            mockConsigneeService.get.and.returnValue(deferredConsigneeRequest.promise);
 
             var deferredContactRequest = q.defer();
             deferredContactRequest.resolve(fullContact);

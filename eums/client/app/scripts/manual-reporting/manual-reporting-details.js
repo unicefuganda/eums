@@ -42,7 +42,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }
 
         function loadConsignees(){
-            ConsigneeService.fetchConsignees().then(function (consignees) {
+            ConsigneeService.all().then(function (consignees) {
                 $scope.consignees = consignees;
             });
         }

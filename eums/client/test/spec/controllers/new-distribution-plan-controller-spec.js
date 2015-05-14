@@ -107,7 +107,7 @@ describe('NewDistributionPlanController', function () {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan', 'updatePlanTracking']);
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'createLineItem', 'updateLineItem']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById', 'fetchConsignees']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanLineItems']);
@@ -129,8 +129,8 @@ describe('NewDistributionPlanController', function () {
             mockLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockNodeService.createNode.and.returnValue(deferredPlanNode.promise);
-            mockConsigneeService.getConsigneeById.and.returnValue(deferred.promise);
-            mockConsigneeService.fetchConsignees.and.returnValue(deferred.promise);
+            mockConsigneeService.get.and.returnValue(deferred.promise);
+            mockConsigneeService.all.and.returnValue(deferred.promise);
             mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanLineItems.and.returnValue(deferredTopLevelLineItems.promise);

@@ -69,7 +69,7 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                     var planNodePromise = DistributionPlanLineItemService.getLineItem(lineItemId).then(function (lineItem) {
                         return DistributionPlanNodeService.getPlanNodeById(lineItem.distribution_plan_node).then(function (planNodeResponse) {
                             var planNode = planNodeResponse.data;
-                            return ConsigneeService.getConsigneeById(planNode.consignee).then(function (consigneeResponse) {
+                            return ConsigneeService.get(planNode.consignee).then(function (consigneeResponse) {
                                 planNode.consignee_name = consigneeResponse.name;
                                 return planNode;
                             });
