@@ -209,6 +209,15 @@ describe('Service Factory', function () {
         });
         mockBackend.flush();
     });
+    
+    it('should use "PATCH" when updating if specified', function(done) {
+        var objectToUpdate = {id: fakeOne.id, property_one: 1};
+        mockBackend.expectPATCH('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), objectToUpdate).respond(200);
+        levelOneService.update(objectToUpdate, 'PATCH').then(function () {
+            done();
+        });
+        mockBackend.flush();
+    });
 
     it('should delete object by id', function (done) {
         mockBackend.whenDELETE('{1}{2}/'.assign(levelOneEndpoint, fakeTwo.id)).respond(200);

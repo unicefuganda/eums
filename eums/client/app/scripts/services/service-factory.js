@@ -114,10 +114,15 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                             return response.data;
                         });
                     },
-                    update: function (object) {
+                    update: function (object, verb) {
+                        !verb && (verb = 'PUT');
                         var flatObject = nestedObjectsToIds(object);
                         var objectToPut = options.changeCase ? changeCase(flatObject, toSnakeCase) : flatObject;
-                        return $http.put('{1}{2}/'.assign(options.uri, object[idField]), objectToPut).then(function (response) {
+                        return $http({
+                            method: verb.toUpperCase(),
+                            url: '{1}{2}/'.assign(options.uri, object[idField]),
+                            data: objectToPut
+                        }).then(function (response) {
                             return response.status;
                         });
                     },
