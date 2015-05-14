@@ -22,20 +22,6 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 RUN apt-get install git -y
 
 ##############################################################################
-## Install NGINX
-##############################################################################
-#RUN apt-get -y install software-properties-common
-#RUN apt-get install python3-software-properties
-#RUN apt-get -y install python-software-properties
-#RUN add-apt-repository ppa:guardianproject/ppa
-#RUN apt-get -y update
-#RUN apt-get -y install nginx
-#ADD scripts/nginx.config /etc/nginx/nginx.conf
-#ADD scripts/eums.nginx.config /etc/nginx/conf.d/eums-server.conf
-
-#RUN apt-get -y install vim
-
-##############################################################################
 ## Python 2.7.9 Pre-requisites
 ##############################################################################
 # remove several traces of debian python
@@ -113,15 +99,20 @@ RUN curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x
 	&& npm install -g grunt-cli@0.1.13 \
 	&& npm cache clear
 
+##############################################################################
+# Install UWSGI
+##############################################################################
+RUN pip install uwsgi
 
 ##############################################################################
 # Install APP NPM and bower dependencies
 ##############################################################################
-RUN cd /opt/app/eums/eums/client
-RUN npm install
-RUN npm install -g bower
-RUN bower install
-RUN npm install -g grunt-cli
+#RUN cd /opt/app/eums/eums/client
+#RUN npm install
+#RUN npm install -g bower
+#RUN bower install
+#RUN npm install -g grunt-cli
+
 
 EXPOSE 22 8000
 
