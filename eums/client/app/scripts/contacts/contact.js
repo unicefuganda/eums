@@ -92,7 +92,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
     })
     .factory('ContactService', function ($http, EumsConfig, ServiceFactory) {
-        return ServiceFactory({
+        return ServiceFactory.create({
             uri: EumsConfig.CONTACT_SERVICE_URL,
             changeCase: false,
             idField: '_id',

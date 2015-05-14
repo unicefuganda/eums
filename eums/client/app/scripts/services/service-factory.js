@@ -82,57 +82,59 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             }, {});
         }
 
-        return function (options) {
-            serviceOptions = options;
-            options.changeCase === undefined && (options.changeCase = true);
-            var idField = options.idField || 'id';
+        return {
+            create: function (options) {
+                serviceOptions = options;
+                options.changeCase === undefined && (options.changeCase = true);
+                var idField = options.idField || 'id';
 
-            var service = {
-                all: function (nestedFields) {
-                    return $http.get(options.uri).then(function (response) {
-                        var buildPromises = response.data.map(function (flatObject) {
-                            return buildObject(flatObject, nestedFields || []);
+                var service = {
+                    all: function (nestedFields) {
+                        return $http.get(options.uri).then(function (response) {
+                            var buildPromises = response.data.map(function (flatObject) {
+                                return buildObject(flatObject, nestedFields || []);
+                            });
+                            return $q.all(buildPromises).then(function (builtObjects) {
+                                return builtObjects.map(function (object) {
+                                    var objectToReturn = options.changeCase ? changeCase(object, toCamelCase) : object;
+                                    return options.model ? new options.model(objectToReturn) : objectToReturn;
+                                });
+                            });
                         });
-                        return $q.all(buildPromises).then(function (builtObjects) {
-                            return builtObjects.map(function (object) {
-                                var objectToReturn = options.changeCase ? changeCase(object, toCamelCase) : object;
+                    },
+                    get: function (id, nestedFields) {
+                        return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
+                            return buildObject(response.data, nestedFields || []).then(function (builtObject) {
+                                var objectToReturn = options.changeCase ? changeCase(builtObject, toCamelCase) : builtObject;
                                 return options.model ? new options.model(objectToReturn) : objectToReturn;
                             });
                         });
-                    });
-                },
-                get: function (id, nestedFields) {
-                    return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                        return buildObject(response.data, nestedFields || []).then(function (builtObject) {
-                            var objectToReturn = options.changeCase ? changeCase(builtObject, toCamelCase) : builtObject;
-                            return options.model ? new options.model(objectToReturn) : objectToReturn;
+                    },
+                    create: function (object) {
+                        var flatObject = nestedObjectsToIds(object);
+                        var objectToPost = options.changeCase ? changeCase(flatObject, toSnakeCase) : flatObject;
+                        return $http.post(options.uri, objectToPost).then(function (response) {
+                            return response.data;
                         });
-                    });
-                },
-                create: function (object) {
-                    var flatObject = nestedObjectsToIds(object);
-                    var objectToPost = options.changeCase ? changeCase(flatObject, toSnakeCase): flatObject;
-                    return $http.post(options.uri, objectToPost).then(function (response) {
-                        return response.data;
-                    });
-                },
-                update: function (object) {
-                    var flatObject = nestedObjectsToIds(object);
-                    var objectToPut = options.changeCase ? changeCase(flatObject, toSnakeCase): flatObject;
-                    return $http.put('{1}{2}/'.assign(options.uri, object[idField]), objectToPut).then(function (response) {
-                        return response.status;
-                    });
-                },
-                del: function (object) {
-                    return $http.delete('{1}{2}/'.assign(options.uri, object[idField]), object).then(function (response) {
-                        return response.status;
-                    });
-                }
-            };
-            options.methods && Object.each(options.methods, function(name, impl) {
-                service[name] = impl;
-            });
-            return service;
+                    },
+                    update: function (object) {
+                        var flatObject = nestedObjectsToIds(object);
+                        var objectToPut = options.changeCase ? changeCase(flatObject, toSnakeCase) : flatObject;
+                        return $http.put('{1}{2}/'.assign(options.uri, object[idField]), objectToPut).then(function (response) {
+                            return response.status;
+                        });
+                    },
+                    del: function (object) {
+                        return $http.delete('{1}{2}/'.assign(options.uri, object[idField]), object).then(function (response) {
+                            return response.status;
+                        });
+                    }
+                };
+                options.methods && Object.each(options.methods, function (name, impl) {
+                    service[name] = impl;
+                });
+                return service;
+            }
         };
     });
 
