@@ -1,13 +1,13 @@
 'use strict';
 
-angular.module('Consignee', ['eums.config', 'Contact'])
+angular.module('Consignee', ['eums.config', 'eums.service-factory'])
     .directive('searchConsignees', function (ConsigneeService) {
         return {
             restrict: 'A',
             scope: false,
             require: 'ngModel',
             link: function (scope, element, _, ngModel) {
-                ConsigneeService.getConsigneesByType('implementing_partner').then(function (allIps) {
+                ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
                     element.select2({
                         width: '100%',
                         query: function (query) {
@@ -35,40 +35,23 @@ angular.module('Consignee', ['eums.config', 'Contact'])
             }
         };
     })
-    .factory('ConsigneeService', function ($http, EumsConfig) {
-        return {
-            fetchConsignees: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE).then(function (response) {
-                    return response.data;
-                });
-            },
-            getConsigneesByType: function (type) {
-                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?search=' + type).then(function (response) {
-                    return response.data;
-                });
-            },
-            getConsigneeById: function (consigneeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + consigneeId + '/').then(function (response) {
-                    return { id: response.data.id, name: response.data.name};
-                });
-            },
-            createConsignee: function (consigneeDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.CONSIGNEE, consigneeDetails).then(function (response) {
-                    if (response.status === 201) {
+    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory) {
+        return ServiceFactory.create({
+            uri: EumsConfig.BACKEND_URLS.CONSIGNEE,
+            methods: {
+                getByTopLevelNode: function () {
+                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?node=top')
+                        .then(function (response) {
+                            return response.data;
+                        });
+                },
+                filterByType: function (type) {
+                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?search=' + type).then(function (response) {
                         return response.data;
-                    }
-                    else {
-                        return response;
-                    }
-                });
-            },
-            getByTopLevelNode: function(){
-                return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE+ '?node=top')
-                    .then(function(response){
-                       return response.data;
                     });
+                }
             }
-        };
+        });
     });
 
 

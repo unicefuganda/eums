@@ -13,7 +13,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee'])
         };
 
         var fillOutConsignee = function (planNode) {
-            return ConsigneeService.getConsigneeById(planNode.consignee).then(function (consignee) {
+            return ConsigneeService.get(planNode.consignee).then(function (consignee) {
                 planNode.consignee = consignee;
                 return planNode;
             });

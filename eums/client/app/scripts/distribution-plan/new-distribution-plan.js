@@ -92,7 +92,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         });
 
-        ConsigneeService.fetchConsignees().then(function (consignees) {
+        ConsigneeService.all().then(function (consignees) {
             $scope.consignees = consignees;
         });
 

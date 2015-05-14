@@ -124,7 +124,7 @@ describe('EndUserResponsesController', function () {
 
         mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['getAllEndUserResponses']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['fetchConsignees']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['all']);
 
@@ -137,7 +137,7 @@ describe('EndUserResponsesController', function () {
             deferredPurchaseOrderPromise = $q.defer();
             mockDistributionPlanService.getAllEndUserResponses.and.returnValue(deferredDistributionPlanPromise.promise);
             mockProgrammeService.all.and.returnValue(deferredProgrammePromise.promise);
-            mockConsigneeService.fetchConsignees.and.returnValue(deferredConsigneePromise.promise);
+            mockConsigneeService.all.and.returnValue(deferredConsigneePromise.promise);
             mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockItemService.all.and.returnValue(deferredItemPromise.promise);
 

@@ -1,5 +1,5 @@
 describe('Item Service', function () {
-    var mockServiceFactory, mockItemModel, itemService, config, mockItemUnitService;
+    var mockServiceFactory, mockItemModel, config, mockItemUnitService;
 
     beforeEach(function () {
         module('Item');
@@ -11,7 +11,6 @@ describe('Item Service', function () {
         });
 
         inject(function (ItemService, EumsConfig) {
-            itemService = ItemService;
             mockServiceFactory.create.and.returnValue({});
             config = EumsConfig;
         });
