@@ -1,23 +1,23 @@
 describe('EndUserResponsesController', function () {
     var mockDistributionPlanService, mockProgrammeService, mockConsigneeService, mockPurchaseOrderService, mockItemService;
 
-    var deferredDistributionPlanPromise,  deferredProgrammePromise, deferredConsigneePromise, deferredPurchaseOrderPromise, deferredItemPromise;
+    var deferredDistributionPlanPromise, deferredProgrammePromise, deferredConsigneePromise, deferredPurchaseOrderPromise, deferredItemPromise;
 
     var scope, q, location;
 
-    var stubProgrammes = { data: [
-            {
-                'programme': {
-                    id: 3,
-                    name: 'Alive'
-                },
-                'salesorder_set': ['1']
-            }
-        ]
-    };
+    var stubProgrammes = [
+        {
+            'programme': {
+                id: 3,
+                name: 'Alive'
+            },
+            'salesorder_set': ['1']
+        }
+    ];
 
     var stubConsignees = [
-        {   children: [],
+        {
+            children: [],
             consignee: 10,
             consignee_name: 'PADER DHO',
             contact_person_id: '5420508290cc38715b1af928',
@@ -31,7 +31,7 @@ describe('EndUserResponsesController', function () {
         }
     ];
 
-    var stubPurchaseOrders =  [
+    var stubPurchaseOrders = [
         {
             id: 1,
             order_number: 25565,
@@ -42,7 +42,8 @@ describe('EndUserResponsesController', function () {
     ];
 
     var stubItems = [
-        {   id: 1,
+        {
+            id: 1,
             description: 'Computer',
             material_code: '12345AS',
             unit: {
@@ -51,77 +52,78 @@ describe('EndUserResponsesController', function () {
         }
     ];
 
-    var stubResponses = { data: [
-        {
-            amountReceived: '30',
-            amountSent: 30,
-            consignee: {
+    var stubResponses = {
+        data: [
+            {
+                amountReceived: '30',
+                amountSent: 30,
+                consignee: {
                     id: 5,
                     name: 'PADER DHO'
                 },
-            dateOfReceipt: '19/11/2014',
-            feedbackAboutDissatisfaction: 'We are enjoying',
-            ip: {
+                dateOfReceipt: '19/11/2014',
+                feedbackAboutDissatisfaction: 'We are enjoying',
+                ip: {
                     id: 5,
                     name: 'PADER DHO'
                 },
-            item: 'Computer',
-            productReceived: 'Yes',
-            programme: {
+                item: 'Computer',
+                productReceived: 'Yes',
+                programme: {
                     id: 3,
                     name: 'Alive'
                 },
-            qualityOfProduct: 'Good',
-            satisfiedWithProduct: 'Yes',
-            purchase_order: {
-                id: 1,
-                order_number: 25565
+                qualityOfProduct: 'Good',
+                satisfiedWithProduct: 'Yes',
+                purchase_order: {
+                    id: 1,
+                    order_number: 25565
+                },
+                contact_person: {
+                    firstName: 'John',
+                    secondName: 'Doe',
+                    phone: '+234778945674'
+                }
             },
-            contact_person:{
-                firstName: 'John',
-                secondName: 'Doe',
-                phone: '+234778945674'
-            }
-        },
-        {
-            amountReceived: '10',
-            amountSent: 10,
-            consignee: {
+            {
+                amountReceived: '10',
+                amountSent: 10,
+                consignee: {
                     id: 6,
                     name: 'Kitgum DHO'
                 },
-            dateOfReceipt: '19/11/2014',
-            feedbackAboutDissatisfaction: 'Satisfactory',
-            ip: {
+                dateOfReceipt: '19/11/2014',
+                feedbackAboutDissatisfaction: 'Satisfactory',
+                ip: {
                     id: 6,
                     name: 'Kitgum DHO'
                 },
-            item: 'Generator',
-            productReceived: 'Yes',
-            programme: {
+                item: 'Generator',
+                productReceived: 'Yes',
+                programme: {
                     id: 4,
                     name: 'Malaria Consortium'
                 },
-            qualityOfProduct: 'Good',
-            satisfiedWithProduct: 'No',
-            purchase_order: {
-                id: 2,
-                order_number: 25567
-            },
-            contact_person:{
-                firstName: 'Jane',
-                secondName: 'Doe',
-                phone: '+234778345674'
+                qualityOfProduct: 'Good',
+                satisfiedWithProduct: 'No',
+                purchase_order: {
+                    id: 2,
+                    order_number: 25567
+                },
+                contact_person: {
+                    firstName: 'Jane',
+                    secondName: 'Doe',
+                    phone: '+234778345674'
+                }
             }
-        }
-      ]
+        ]
     };
 
     beforeEach(function () {
         module('EndUserResponses');
 
         mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['getAllEndUserResponses']);
-        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['fetchConsignees']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['all']);
@@ -134,7 +136,7 @@ describe('EndUserResponsesController', function () {
             deferredItemPromise = $q.defer();
             deferredPurchaseOrderPromise = $q.defer();
             mockDistributionPlanService.getAllEndUserResponses.and.returnValue(deferredDistributionPlanPromise.promise);
-            mockProgrammeService.fetchProgrammes.and.returnValue(deferredProgrammePromise.promise);
+            mockProgrammeService.all.and.returnValue(deferredProgrammePromise.promise);
             mockConsigneeService.fetchConsignees.and.returnValue(deferredConsigneePromise.promise);
             mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockItemService.all.and.returnValue(deferredItemPromise.promise);
@@ -159,7 +161,7 @@ describe('EndUserResponsesController', function () {
         scope.initialize();
         scope.$apply();
 
-        expect(scope.programmes).toEqual([{ id : 0, name : 'All Outcomes' }].concat(stubProgrammes.data));
+        expect(scope.programmes).toEqual([{id: 0, name: 'All Outcomes'}].concat(stubProgrammes));
     });
 
     it('should fetch all consignees when controller is initialized', function () {
@@ -167,7 +169,7 @@ describe('EndUserResponsesController', function () {
         scope.initialize();
         scope.$apply();
 
-        expect(scope.consignees).toEqual([{ id : 0, name : 'All Implementing Partners' }].concat(stubConsignees));
+        expect(scope.consignees).toEqual([{id: 0, name: 'All Implementing Partners'}].concat(stubConsignees));
     });
 
     it('should fetch all purchase orders when controller is initialized', function () {
@@ -175,7 +177,7 @@ describe('EndUserResponsesController', function () {
         scope.initialize();
         scope.$apply();
 
-        expect(scope.purchaseOrders).toEqual([{ id : 0, order_number : 'All Purchase Orders' }].concat(stubPurchaseOrders));
+        expect(scope.purchaseOrders).toEqual([{id: 0, order_number: 'All Purchase Orders'}].concat(stubPurchaseOrders));
     });
 
     it('should fetch all items when controller is initialized', function () {
@@ -183,7 +185,7 @@ describe('EndUserResponsesController', function () {
         scope.initialize();
         scope.$apply();
 
-        expect(scope.items).toEqual([{ id : 0, description : 'All Items' }].concat(stubItems));
+        expect(scope.items).toEqual([{id: 0, description: 'All Items'}].concat(stubItems));
     });
 
     it('should fetch all responses when controller is initialized', function () {
@@ -196,7 +198,7 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch filtered responses for programme when programme is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedProgramme = stubProgrammes.data[0].programme;
+        scope.selectedProgramme = stubProgrammes[0].programme;
 
         scope.initialize();
         scope.$apply();
@@ -209,7 +211,7 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch all responses for programme when All Programmes is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedProgramme = {id:0, name:'All Programmes'};
+        scope.selectedProgramme = {id: 0, name: 'All Programmes'};
 
         scope.initialize();
         scope.$apply();
@@ -235,7 +237,7 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch all responses for consignees when All Consignees is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedConsignee = {id:0, name:'All Consignees'};
+        scope.selectedConsignee = {id: 0, name: 'All Consignees'};
 
         scope.initialize();
         scope.$apply();
@@ -261,7 +263,7 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch all responses for purchase orders when All Purchase Orders is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedPurchaseOrder = {id:0, order_number:'All Purchase Orders'};
+        scope.selectedPurchaseOrder = {id: 0, order_number: 'All Purchase Orders'};
 
         scope.initialize();
         scope.$apply();
@@ -287,7 +289,7 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch all items for items when All Items is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedItem = {id:0, description:'All Items'};
+        scope.selectedItem = {id: 0, description: 'All Items'};
 
         scope.initialize();
         scope.$apply();
@@ -300,8 +302,8 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch filtered responses for programme when programme is first selected and then All Consignees is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedProgramme = stubProgrammes.data[0].programme;
-        scope.selectedConsignee = {id:0, name:'All Consignees'};
+        scope.selectedProgramme = stubProgrammes[0].programme;
+        scope.selectedConsignee = {id: 0, name: 'All Consignees'};
 
         scope.initialize();
         scope.$apply();
@@ -316,8 +318,8 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch filtered responses for programme when All Consignees is selected first and then program is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedProgramme = stubProgrammes.data[0].programme;
-        scope.selectedConsignee = {id:0, name:'All Consignees'};
+        scope.selectedProgramme = stubProgrammes[0].programme;
+        scope.selectedConsignee = {id: 0, name: 'All Consignees'};
 
         scope.initialize();
         scope.$apply();
@@ -332,7 +334,7 @@ describe('EndUserResponsesController', function () {
 
     it('should fetch filtered responses when programme is first selected and then consignee is selected', function () {
         deferredDistributionPlanPromise.resolve(stubResponses);
-        scope.selectedProgramme = stubProgrammes.data[0].programme;
+        scope.selectedProgramme = stubProgrammes[0].programme;
         scope.selectedConsignee = stubConsignees[0].consignee;
 
         scope.initialize();

@@ -6,16 +6,15 @@ describe('ResponsesController', function () {
 
     var scope, q;
 
-    var stubProgrammes = { data: [
-            {
-                'programme': {
-                    id: 3,
-                    name: 'Alive'
-                },
-                'salesorder_set': ['1']
-            }
-        ]
-    };
+    var stubProgrammes = [
+        {
+            'programme': {
+                id: 3,
+                name: 'Alive'
+            },
+            'salesorder_set': ['1']
+        }
+    ];
 
     var stubSalesOrders = [
         {
@@ -76,7 +75,8 @@ describe('ResponsesController', function () {
     ];
 
     var stubConsignees = [
-        {   children: [],
+        {
+            children: [],
             consignee: 10,
             consignee_name: 'PADER DHO',
             contact_person_id: '5420508290cc38715b1af928',
@@ -92,29 +92,32 @@ describe('ResponsesController', function () {
 
 
     var stubResponses = {
-        answers: { amountReceived: '50',
+        answers: {
+            amountReceived: '50',
             dateOfReceipt: '6/10/2014',
             feedbackAboutDissatisfaction: 'they were damaged',
             informedOfDelay: 'No',
             productReceived: 'Yes',
             qualityOfProduct: 'Good',
             revisedDeliveryDate: 'didnt not specify',
-            satisfiedWithProduct: 'Yes'},
+            satisfiedWithProduct: 'Yes'
+        },
         children: [2],
         node: 'PADER DHO'
     };
 
     var formattedStubResponses = [
-        { Consignee: 'PADER DHO',
-          amountReceived: '50',
-          dateOfReceipt: '6/10/2014',
-          feedbackAboutDissatisfaction: 'they were damaged',
-          informedOfDelay: 'No',
-          productReceived: 'Yes',
-          qualityOfProduct: 'Good',
-          revisedDeliveryDate: 'didnt not specify',
-          satisfiedWithProduct: 'Yes',
-          children: [  ]
+        {
+            Consignee: 'PADER DHO',
+            amountReceived: '50',
+            dateOfReceipt: '6/10/2014',
+            feedbackAboutDissatisfaction: 'they were damaged',
+            informedOfDelay: 'No',
+            productReceived: 'Yes',
+            qualityOfProduct: 'Good',
+            revisedDeliveryDate: 'didnt not specify',
+            satisfiedWithProduct: 'Yes',
+            children: []
         }
     ];
 
@@ -122,7 +125,7 @@ describe('ResponsesController', function () {
         module('Responses');
 
         mockResponsesService = jasmine.createSpyObj('mockResponsesService', ['fetchResponses']);
-        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['fetchProgrammes']);
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrders', 'getSalesOrder']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanNodes']);
 
@@ -134,7 +137,7 @@ describe('ResponsesController', function () {
             deferredSalesOrderItemPromise = $q.defer();
             deferredSalesOrderItemConsigneePromise = $q.defer();
             mockResponsesService.fetchResponses.and.returnValue(deferredResponsesPromise.promise);
-            mockProgrammeService.fetchProgrammes.and.returnValue(deferredProgrammePromise.promise);
+            mockProgrammeService.all.and.returnValue(deferredProgrammePromise.promise);
             mockSalesOrderService.getSalesOrders.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferredSalesOrderItemPromise.promise);
@@ -157,7 +160,7 @@ describe('ResponsesController', function () {
         scope.initialize();
         scope.$apply();
 
-        expect(scope.programmes).toEqual(stubProgrammes.data);
+        expect(scope.programmes).toEqual(stubProgrammes);
     });
 
     it('should fetch all sales orders when controller is initialized', function () {
@@ -170,7 +173,7 @@ describe('ResponsesController', function () {
 
     it('should fetch sales order when programme is selected', function () {
         deferredSalesOrderPromise.resolve(stubSalesOrders[0]);
-        scope.selectedProgramme = stubProgrammes.data[0];
+        scope.selectedProgramme = stubProgrammes[0];
 
         scope.selectProgramme();
         scope.$apply();
@@ -225,7 +228,7 @@ describe('ResponsesController', function () {
         expect(scope.responses).toEqual(formattedStubResponses);
     });
 
-     it('should set no responses if a plan has no reponses for a sales order line item and consignee', function () {
+    it('should set no responses if a plan has no reponses for a sales order line item and consignee', function () {
         deferredResponsesPromise.resolve({answers: {}});
         scope.selectedSalesOrderItem = formattedSalesOrderItem[0];
         scope.selectedSalesOrderItemConsignee = stubConsignees[0];

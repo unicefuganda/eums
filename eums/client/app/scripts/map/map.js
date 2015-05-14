@@ -475,8 +475,8 @@
                 restrict: 'A',
                 scope: false,
                 link: function (scope, elem) {
-                    ProgrammeService.fetchProgrammes().then(function (response) {
-                        return response.data.map(function (programe) {
+                    ProgrammeService.all().then(function (response) {
+                        return response.map(function (programe) {
                             return {id: programe.id, text: programe.name}
                         });
 

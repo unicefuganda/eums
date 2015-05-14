@@ -14,8 +14,8 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
         $scope.items = [{id: 0, description: 'All Items'}];
 
         $scope.initialize = function () {
-            ProgrammeService.fetchProgrammes().then(function (result) {
-                var programmes = result.data;
+            ProgrammeService.all().then(function (result) {
+                var programmes = result;
                 $scope.programmes = $scope.programmes.concat(programmes);
             });
 
