@@ -70,10 +70,7 @@ ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 RUN pg_createcluster 9.4 main --start
-ADD scripts/pg_hba.conf /pg_hba.conf
-ADD scripts/initdb.sh /opt/scripts/initdb.sh
-RUN chmod a+x /opt/scripts/initdb.sh
-RUN /opt/scripts/initdb.sh 9.4
+RUN /opt/app/eums/scripts/packaging/initdb.sh 9.4
 
 
 ##############################################################################
@@ -119,8 +116,6 @@ EXPOSE 22 8000
 ##############################################################################
 ## Entrypoint and command parameters
 ##############################################################################
-ADD scripts/startPostgresql.sh /opt/scripts/startPostgresql.sh
-RUN chmod a+x /opt/scripts/startPostgresql.sh
 #ENTRYPOINT ["/usr/bin/supervisord"]
 #default options to pass to the entrypoint
 CMD ["/usr/bin/supervisord"]
