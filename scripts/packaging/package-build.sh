@@ -12,7 +12,7 @@ sudo docker build -t unicef/$artifactName:$artifactCounter .
 sudo docker save -o $artifactName_docker_image.tar unicef/$artifactName:$artifactCounter
 
 #Prepare the script that will install the image
-sed -i bak -e 's/%IMAGEFILE%/$artifactName_docker_image\.tar/g' scripts/packaging/install_image.sh
-sed -i bak -e 's/%IMAGENAME%/unicef\/$artifactName/g' scripts/packaging/install_image.sh
-sed -i bak -e 's/%IMAGEVERSION%/$artifactCounter/g' scripts/packaging/install_image.sh
+sed -i -e 's/%IMAGEFILE%/$artifactName_docker_image\.tar/g' scripts/packaging/install-image-eums.sh
+sed -i -e 's/%IMAGENAME%/unicef\/$artifactName/g' scripts/packaging/install-image-eums.sh
+sed -i -e 's/%IMAGEVERSION%/$artifactCounter/g' scripts/packaging/install-image-eums.sh
 
