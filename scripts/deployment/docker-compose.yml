@@ -1,0 +1,22 @@
+#########################################
+# Configuration for the EUMS environment
+#########################################
+nginx:
+  image: unicef/nginx:latest
+  ports:
+  - "127.0.0.1:2122:22"
+  - "8080:8080"
+  links:
+  - eums
+  - contacts
+eums:
+  image: unicef/eums:latest
+  ports:
+  - "127.0.0.1:2230:22"
+  - "8186:80"
+  eums.environment: qa
+contacts:
+  image: unicef/contacts:latest
+  ports:
+  - "127.0.0.1:2231:22"
+  - "8186:8001"
