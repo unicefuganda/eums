@@ -31,6 +31,8 @@ RUN apt-get purge -y python.*
 # > At the moment, setting "LANG=C" on a Linux system *fundamentally breaks Python 3*, and that's not OK.
 ENV LANG C.UTF-8
 
+#The properties below are not used as parameters to facilitate docker caching and faster builds
+#They have been left here more as doc so be sure to update them if you change the version
 ENV PYTHON_VERSION 2.7.9
 
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
@@ -38,8 +40,8 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E35
 
 RUN set -x \
 	&& mkdir -p /usr/src/python \
-	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz" -o python.tar.xz \
-	&& curl -SL "https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz.asc" -o python.tar.xz.asc
+	&& curl -SL "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz" -o python.tar.xz \
+	&& curl -SL "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz.asc" -o python.tar.xz.asc
 RUN	gpg --verify python.tar.xz.asc \
 	&& tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz \
 	&& rm python.tar.xz* \
@@ -81,18 +83,20 @@ RUN /opt/app/eums/scripts/packaging/initdb.sh 9.4
 # gpg: aka "Julien Gilli <jgilli@fastmail.fm>"
 RUN gpg --keyserver pool.sks-keyservers.net --recv-keys 7937DFD2AB06298B2293C3187D33FF9D0246406D 114F43EE0176B71C7BC219DD50A3051F888C628D
 
-ENV NODE_VERSION 0.10.21
-ENV NPM_VERSION 1.3.11
+#The properties below are not used as parameters to facilitate docker caching and faster builds
+#They have been left here more as doc so be sure to update them if you change the version
+#ENV NODE_VERSION 0.10.21
+#ENV NPM_VERSION 1.3.11
 
-RUN curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz" \
-    && curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
+RUN curl -SLO "http://nodejs.org/dist/v0.10.21/node-v0.10.21-linux-x64.tar.gz" \
+    && curl -SLO "http://nodejs.org/dist/v0.10.21/SHASUMS256.txt.asc" \
     && gpg --verify SHASUMS256.txt.asc \
-    && grep " node-v$NODE_VERSION-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
-    && tar -xzf "node-v$NODE_VERSION-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
-    && curl -SLO "http://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt.asc" \
-	&& rm "node-v$NODE_VERSION-linux-x64.tar.gz" SHASUMS256.txt.asc \
+    && grep " node-v0.10.21-linux-x64.tar.gz\$" SHASUMS256.txt.asc | sha256sum -c - \
+    && tar -xzf "node-v0.10.21-linux-x64.tar.gz" -C /usr/local --strip-components=1 \
+    && curl -SLO "http://nodejs.org/dist/v0.10.21/SHASUMS256.txt.asc" \
+	&& rm "node-v0.10.21-linux-x64.tar.gz" SHASUMS256.txt.asc \
 	&& npm install -g npm@1.4.28 \
-	&& npm install -g npm@"$NPM_VERSION" \
+	&& npm install -g npm@"1.3.11" \
 	&& npm install -g grunt-cli@0.1.13 \
 	&& npm cache clear
 
