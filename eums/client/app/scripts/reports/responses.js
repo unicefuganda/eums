@@ -14,7 +14,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
                 $scope.programmes = result;
             });
 
-            SalesOrderService.getSalesOrders().then(function (salesOrders) {
+            SalesOrderService.all().then(function (salesOrders) {
                 var sortedSalesOrder = salesOrders.sort();
                 $scope.salesOrders = sortedSalesOrder;
             });
@@ -43,7 +43,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
 
             if ($scope.selectedProgramme) {
                 $scope.selectedProgramme.salesorder_set.forEach(function (salesOrderId) {
-                    SalesOrderService.getSalesOrder(salesOrderId).then(function (salesOrder) {
+                    SalesOrderService.get(salesOrderId, ['programme']).then(function (salesOrder) {
                         $scope.salesOrders.push(salesOrder);
                     });
                 });

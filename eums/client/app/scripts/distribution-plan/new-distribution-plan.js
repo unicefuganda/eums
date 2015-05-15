@@ -100,7 +100,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.salesOrderItems = [];
 
         if ($scope.distributionPlanReport) {
-            SalesOrderService.getSalesOrder($routeParams.salesOrderId).then(function (response) {
+            SalesOrderService.get($routeParams.salesOrderId, ['programme']).then(function (response) {
                 $scope.selectedSalesOrder = response;
 
                 var salesOrderItemSetPromises = [];

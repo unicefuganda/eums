@@ -57,7 +57,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 });
             }
             else {
-                SalesOrderService.getSalesOrders().then(function (salesOrders) {
+                SalesOrderService.all().then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
                     $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
                     angular.element('#loading').modal('hide');
@@ -192,7 +192,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, {cache: true});
             },
-            getSalesOrders: function () {
+            all: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER, {cache: true});
 
             },

@@ -128,7 +128,7 @@ describe('NewDistributionPlanController', function () {
             mockNodeService.createNode.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
-            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
+            mockSalesOrderService.get.and.returnValue(deferredSalesOrder.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredTopLevelNodes.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
