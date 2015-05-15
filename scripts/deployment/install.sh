@@ -6,7 +6,7 @@ imageName="unicef/$GO_PIPELINE_NAME"
 deployFolder=$1
 
 
-sudo su
+
 
 #Ensure that Docker is installed
 if [ ! -f /usr/local/bin/docker ]; then
@@ -29,7 +29,6 @@ if [ -f /opt/app/eums/docker-compose.yml ]; then
 fi
 
 #install the images
-cd $deployFolder
 scripts/install-image-eums.sh
 scripts/install-image-contacts.sh
 
