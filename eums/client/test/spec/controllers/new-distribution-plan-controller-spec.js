@@ -108,7 +108,7 @@ describe('NewDistributionPlanController', function () {
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
-        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanNodes']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);

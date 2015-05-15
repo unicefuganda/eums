@@ -87,7 +87,7 @@ describe('Distribution Plan Node Service', function () {
     beforeEach(function () {
         module('DistributionPlanNode');
 
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['getConsigneeById']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
 
         module(function ($provide) {
