@@ -15,8 +15,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             });
 
             SalesOrderService.all().then(function (salesOrders) {
-                var sortedSalesOrder = salesOrders.sort();
-                $scope.salesOrders = sortedSalesOrder;
+                $scope.salesOrders = salesOrders.sort();
             });
         };
 
@@ -140,7 +139,8 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             }
         };
 
-    }).factory('ResponsesService',function ($http, EumsConfig) {
+    })
+    .factory('ResponsesService',function ($http, EumsConfig) {
         return {
             fetchResponses: function (consigneeId, salesOrderItemId) {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_RESPONSES + consigneeId + '/sales_order_item/' + salesOrderItemId).then(function (response) {
