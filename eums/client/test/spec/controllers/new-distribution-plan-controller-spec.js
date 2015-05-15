@@ -104,12 +104,12 @@ describe('NewDistributionPlanController', function () {
     };
 
     var setUp = function (routeParams) {
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan', 'updatePlanTracking']);
+        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'all', 'createPlan', 'updatePlanTracking']);
         mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'createLineItem', 'updateLineItem']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
-        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['getSalesOrder']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanLineItems']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
@@ -131,7 +131,7 @@ describe('NewDistributionPlanController', function () {
             mockNodeService.createNode.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
-            mockSalesOrderService.getSalesOrder.and.returnValue(deferredSalesOrder.promise);
+            mockSalesOrderService.get.and.returnValue(deferredSalesOrder.promise);
             mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanLineItems.and.returnValue(deferredTopLevelLineItems.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);

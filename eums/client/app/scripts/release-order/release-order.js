@@ -10,7 +10,7 @@ angular.module('ReleaseOrder', ['eums.config', 'PurchaseOrder'])
         };
 
         var fillOutSalesOrder = function (releaseOrder) {
-            return SalesOrderService.getSalesOrder(releaseOrder.sales_order).then(function (sales_order) {
+            return SalesOrderService.get(releaseOrder.sales_order, ['programme']).then(function (sales_order) {
                 releaseOrder.sales_order = sales_order;
                 return releaseOrder;
             });

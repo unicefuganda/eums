@@ -121,7 +121,7 @@ describe('Distribution Plan Service', function () {
 
     it('should fetch all sales orders', function (done) {
         mockBackend.whenGET(salesOrdersEndpointUrl).respond(sales_order_details);
-        distributionPlanService.getSalesOrders().then(function (response) {
+        distributionPlanService.all().then(function (response) {
             expect(response.data).toEqual(sales_order_details);
             done();
         });
