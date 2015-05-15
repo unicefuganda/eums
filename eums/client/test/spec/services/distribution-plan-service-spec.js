@@ -78,14 +78,6 @@ describe('Distribution Plan Service', function () {
         nodeTree: expectedNodeTree
     };
 
-    var sales_order_details = {
-        'sales_document': '00001',
-        'materialCode': '1234', 'order_quantity': '100',
-        'date_created': '2014-09-10',
-        'net_value': '1000', 'net_price': '10', 'description': 'Test'
-    };
-
-
     beforeEach(function () {
         module('DistributionPlan');
 
@@ -114,15 +106,6 @@ describe('Distribution Plan Service', function () {
         mockBackend.whenPOST(distPlanEndpointUrl).respond(201, stubCreatedPlan);
         distributionPlanService.createPlan({programme: programmeId}).then(function (createdPlan) {
             expect(stubCreatedPlan).toEqual(createdPlan);
-            done();
-        });
-        mockBackend.flush();
-    });
-
-    it('should fetch all sales orders', function (done) {
-        mockBackend.whenGET(salesOrdersEndpointUrl).respond(sales_order_details);
-        distributionPlanService.all().then(function (response) {
-            expect(response.data).toEqual(sales_order_details);
             done();
         });
         mockBackend.flush();

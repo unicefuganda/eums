@@ -30,7 +30,7 @@ describe('DistributionPlanController', function () {
     beforeEach(function () {
         module('DistributionPlan');
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails', 'all']);
+        mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['all']);
 
@@ -41,7 +41,6 @@ describe('DistributionPlanController', function () {
             mockContactService.create.and.returnValue(deferred.promise);
             mockProgrammeService.get.and.returnValue(deferred.promise);
             mockProgrammeService.all.and.returnValue(deferred.promise);
-            mockPlanService.all.and.returnValue(deferredPlan.promise);
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
             mockSalesOrderService.all.and.returnValue(deferredSalesOrder.promise);
 
