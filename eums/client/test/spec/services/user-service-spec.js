@@ -2,22 +2,6 @@ describe('User Service', function () {
 
     var userService, mockBackend, userEndpointUrl, permissionEndpointUrl;
 
-    var userId = 1;
-
-    var stubUser = {
-        id: userId,
-        username: 'Save the Children',
-        first_name: 'Musoke',
-        last_name: 'Stephen',
-        email: 'sms@thw.com'
-    };
-
-    var expectedUser = {
-        id: userId,
-        firstName: 'Musoke',
-        lastName: 'Stephen'
-    };
-
     beforeEach(function () {
         module('User');
 
@@ -27,15 +11,6 @@ describe('User Service', function () {
             permissionEndpointUrl = EumsConfig.BACKEND_URLS.PERMISSION;
             userService = UserService;
         });
-    });
-
-    it('should get user by id', function (done) {
-        mockBackend.whenGET(userEndpointUrl + userId + '/').respond(stubUser);
-        userService.getUserById(userId).then(function (returnedUser) {
-            expect(returnedUser).toEqual(expectedUser);
-            done();
-        });
-        mockBackend.flush();
     });
 
     it('should be true if user permission exists', function (done) {
