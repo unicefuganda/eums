@@ -40,8 +40,10 @@ RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E35
 
 RUN set -x
 RUN mkdir -p /usr/src/python
-RUN curl -SL "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz" -o python.tar.xz
-RUN curl -SL "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz.asc" -o python.tar.xz.asc
+RUN curl -SLO "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz"
+RUN curl -SLO "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz.asc"
+RUN mv Python-2.7.9.tar.xz python.tar.xz
+RUN mv Python-2.7.9.tar.xz.asc python.tar.xz.asc
 RUN	gpg --verify python.tar.xz.asc
 RUN tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz
 RUN rm python.tar.xz*
@@ -50,7 +52,8 @@ RUN ./configure --enable-shared --enable-unicode=ucs4
 RUN make -j$(nproc)
 RUN make install
 RUN ldconfig
-RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
+RUN curl -SLO 'https://bootstrap.pypa.io/get-pip.py'
+RUN python2 get-pip.py
 RUN find /usr/local \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' +
 RUN rm -rf /usr/src/python
 
