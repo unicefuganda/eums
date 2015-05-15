@@ -25,12 +25,12 @@ describe('Answer Service', function () {
         expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
 
-    it('Numeric Answers should know how to update text answer', function () {
+    it('should know how to update numeric answer', function () {
         answerService.updateNumericAnswer(answerId, answer);
         expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
 
-    it('Multiple Choice Answers should know how to update multiple choice answer', function () {
+    it('should know how to update multiple choice answer', function () {
         answerService.updateNumericAnswer(answerId, answer);
         expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
