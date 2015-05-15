@@ -9,5 +9,5 @@ scp -o StrictHostKeyChecking=no -r -i ${DEPLOY_MACHINE_KEY_FILE} eums/build/depl
 scp -o StrictHostKeyChecking=no -r -i ${DEPLOY_MACHINE_KEY_FILE} eums/*.tar ${DEPLOY_USER}@${DEPLOY_HOST}:~/deploy_$today/
 
 #run the deployment script via ssh on the server
-ssh -o StrictHostKeyChecking=no -i ${DEPLOY_MACHINE_KEY_FILE} ${DEPLOY_USER}@${DEPLOY_HOST} "/deploy_$today/scripts/install-image.sh ~/deploy_$today"
+ssh -o StrictHostKeyChecking=no -i ${DEPLOY_MACHINE_KEY_FILE} ${DEPLOY_USER}@${DEPLOY_HOST} "~/deploy_$today/scripts/install-image.sh ~/deploy_$today"
 
