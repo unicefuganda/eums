@@ -17,4 +17,5 @@ sed -i -e 's/%IMAGENAME%/unicef\/$artifactName/g' scripts/packaging/install-imag
 sed -i -e 's/%IMAGEVERSION%/$artifactCounter/g' scripts/packaging/install-image-eums.sh
 
 cp scripts/packaging/install-image-eums.sh build/install-image-eums.sh
+cp scripts/deployment build/deployment
 
