@@ -325,10 +325,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             };
 
             $scope.distributionPlanNodes.push(distributionPlanNode);
-<<<<<<< HEAD
-=======
-
->>>>>>> @francikas @oloo rebased with master and fixed unit tests
             setDatePickers();
         };
 
