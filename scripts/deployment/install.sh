@@ -20,7 +20,10 @@ if [ ! -f /usr/local/bin/docker ]; then
     #install DOCKER-COMPOSE
     curl -L https://github.com/docker/compose/releases/download/1.2.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
+
 fi
+
+mkdir /opt/app/eums
 
 #stop the docker composition
 if [ -f /opt/app/eums/docker-compose.yml ]; then
@@ -33,7 +36,7 @@ scripts/install-image-eums.sh
 scripts/install-image-contacts.sh
 
 #deploy updates to the docker-compose file
-cp scripts/docker-compose.yml /opt/app/eums/docker-compose.yml
+cp scripts/deployment/docker-compose.yml /opt/app/eums/docker-compose.yml
 
 #start the docker compositon
 cd /opt/app/eums
