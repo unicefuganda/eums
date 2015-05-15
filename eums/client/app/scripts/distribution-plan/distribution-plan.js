@@ -88,7 +88,8 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         $scope.showDistributionPlan = function (planId) {
             $scope.planId = planId;
         };
-    }).factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService) {
+    })
+    .factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService) {
         var fillOutNode = function (nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
                 .then(function (nodeDetails) {
@@ -133,7 +134,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             });
         };
 
-        function aggregateAllResponse(data, location) {
+        function aggregateAllResponses(data, location) {
             var totalYes = 0;
             var totalSent = data.length;
             data.forEach(function (response) {
@@ -154,7 +155,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             var aggregates = {};
             responsesWithLocation.forEach(function (responseWithLocation) {
                 if (district.toLowerCase() === responseWithLocation.location.toLowerCase()) {
-                    aggregates = aggregateAllResponse(responseWithLocation.consigneeResponses, district);
+                    aggregates = aggregateAllResponses(responseWithLocation.consigneeResponses, district);
                 }
             });
             return aggregates;
@@ -187,14 +188,10 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
 
         return {
             aggregateStats: function (data, location) {
-                return aggregateAllResponse(getResponseFor(data, location), location);
+                return aggregateAllResponses(getResponseFor(data, location), location);
             },
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, {cache: true});
-            },
-            all: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER, {cache: true});
-
             },
             getNodes: function (plan) {
                 var distributionPlanNodesPromises = plan.distributionplannode_set.map(function (nodeId) {
@@ -220,7 +217,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             },
             aggregateResponses: function () {
                 return this.getAllEndUserResponses().then(function (responseFromServer) {
-                    return aggregateAllResponse(responseFromServer.data);
+                    return aggregateAllResponses(responseFromServer.data);
                 });
             },
             aggregateResponsesForDistrict: function (district) {

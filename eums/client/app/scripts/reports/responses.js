@@ -149,6 +149,3 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             }
         };
     });
-
-
-
