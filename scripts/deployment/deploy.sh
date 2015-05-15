@@ -6,8 +6,7 @@ today=`date +%Y-%m-%d.%H:%M:%S`
 chmod 600 ${DEPLOY_MACHINE_KEY_FILE}
 scp -o StrictHostKeyChecking=no -r -i ${DEPLOY_MACHINE_KEY_FILE} eums/build/deployment ${DEPLOY_USER}@${DEPLOY_HOST}:~/deploy_$today/scripts
 scp -o StrictHostKeyChecking=no -r -i ${DEPLOY_MACHINE_KEY_FILE} eums/*.tar ${DEPLOY_USER}@${DEPLOY_HOST}:~/deploy_$today/
-scp -o StrictHostKeyChecking=no -r -i ${DEPLOY_MACHINE_KEY_FILE} eums/docker-compose.yml ${DEPLOY_USER}@${DEPLOY_HOST}:~/deploy_$today/
 
 #run the deployment script via ssh on the server
-ssh -o StrictHostKeyChecking=no -i ${DEPLOY_MACHINE_KEY_FILE} "/deploy_$today/scripts/deployment/install-image.sh ~/deploy_$today"
+ssh -o StrictHostKeyChecking=no -i ${DEPLOY_MACHINE_KEY_FILE} "/deploy_$today/scripts/install-image.sh ~/deploy_$today"
 

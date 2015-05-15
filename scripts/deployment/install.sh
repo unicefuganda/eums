@@ -23,7 +23,7 @@ if [ ! -f /usr/local/bin/docker ]; then
 fi
 
 #stop the docker composition
-if [ -d /opt/app/eums/docker-compose.yml ]; then
+if [ -f /opt/app/eums/docker-compose.yml ]; then
     cd /opt/app/eums
     docker-compose stop
 fi
@@ -34,7 +34,7 @@ scripts/install-image-eums.sh
 scripts/install-image-contacts.sh
 
 #deploy updates to the docker-compose file
-cp docker-compose.yml /opt/app/eums/docker-compose.yml
+cp scripts/docker-compose.yml /opt/app/eums/docker-compose.yml
 
 #start the docker compositon
 cd /opt/app/eums
