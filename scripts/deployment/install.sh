@@ -23,7 +23,7 @@ if [ ! -f /usr/local/bin/docker ]; then
 
 fi
 
-mkdir /opt/app/eums
+mkdir -p /opt/app/eums
 
 #stop the docker composition
 if [ -f /opt/app/eums/docker-compose.yml ]; then
