@@ -64,7 +64,7 @@ describe('Sales Order Item Service', function () {
             distributionplanlineitem_set: []
         };
 
-        salesOrderItemService.getSalesOrderItem(salesOrderItemId).then(function (salesOrderItem) {
+        salesOrderItemService.get(salesOrderItemId).then(function (salesOrderItem) {
             expect(salesOrderItem).toEqual(expectedSalesOrderItem);
             done();
         });

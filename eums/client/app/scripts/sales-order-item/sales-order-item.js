@@ -12,7 +12,7 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
         };
 
         return {
-            getSalesOrderItem: function (salesOrderItemID) {
+            get: function (salesOrderItemID) {
                 var getSalesOrderItemPromise = $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER_ITEM + salesOrderItemID + '/');
                 return getSalesOrderItemPromise.then(function (response) {
                     sales_order_item = response.data;

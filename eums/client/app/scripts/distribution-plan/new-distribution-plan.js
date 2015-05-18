@@ -106,7 +106,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 var salesOrderItemSetPromises = [];
                 $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
                     salesOrderItemSetPromises.push(
-                        SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
+                        SalesOrderItemService.get(salesOrderItem).then(function (result) {
                         var formattedSalesOrderItem = {
                             display: result.item.description,
                             materialCode: result.item.material_code,
@@ -226,7 +226,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     DistributionPlanLineItemService.getLineItem(nodeLineItemId).then(function (lineItem) {
                         $scope.track = lineItem.track;
 
-                        SalesOrderItemService.getSalesOrderItem($routeParams.salesOrderItemId).then(function (result) {
+                        SalesOrderItemService.get($routeParams.salesOrderItemId).then(function (result) {
                             $scope.selectedSalesOrderItem = {
                                 display: result.item.description,
                                 materialCode: result.item.material_code,
@@ -272,7 +272,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
                     var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
                     SalesOrderItemService
-                        .getSalesOrderItem(selectedSalesOrderItem.information.id)
+                        .get(selectedSalesOrderItem.information.id)
                         .then(function (salesOrderItem) {
                             SalesOrderItemService
                                 .getTopLevelDistributionPlanLineItems(salesOrderItem)

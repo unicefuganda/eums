@@ -59,7 +59,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
 
             if ($scope.selectedSalesOrder) {
                 $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
-                    SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
+                    SalesOrderItemService.get(salesOrderItem).then(function (result) {
                         var formattedSalesOrderItem = {
                             id: result.item.id,
                             display: result.item.description,
@@ -101,7 +101,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
             $scope.selectedSalesOrderItemConsignee = {};
 
             if ($scope.selectedSalesOrderItem) {
-                SalesOrderItemService.getSalesOrderItem($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {
+                SalesOrderItemService.get($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {
                     SalesOrderItemService.getTopLevelDistributionPlanNodes(salesOrderItem).then(function (topLevelNodes) {
                         $scope.salesOrderItemConsignees = topLevelNodes;
 

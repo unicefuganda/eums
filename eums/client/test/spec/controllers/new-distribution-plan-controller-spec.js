@@ -110,7 +110,7 @@ describe('NewDistributionPlanController', function () {
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
-        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanLineItems']);
+        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get', 'getTopLevelDistributionPlanLineItems']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
@@ -132,7 +132,7 @@ describe('NewDistributionPlanController', function () {
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrder.promise);
-            mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
+            mockSalesOrderItemService.get.and.returnValue(deferred.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanLineItems.and.returnValue(deferredTopLevelLineItems.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);

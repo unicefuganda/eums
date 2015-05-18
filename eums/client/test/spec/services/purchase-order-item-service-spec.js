@@ -43,7 +43,7 @@ describe('Purchase Order Item Service', function () {
     beforeEach(function () {
         module('PurchaseOrderItem');
 
-        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem']);
+        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
 
         module(function ($provide) {
             $provide.value('SalesOrderItemService', mockSalesOrderItemService);
@@ -53,7 +53,7 @@ describe('Purchase Order Item Service', function () {
             var deferred = $q.defer();
             scope = $rootScope.$new();
             deferred.resolve(stubSalesOrderItem);
-            mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
+            mockSalesOrderItemService.get.and.returnValue(deferred.promise);
 
             mockBackend = $httpBackend;
             endpointUrl = EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM;
