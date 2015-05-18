@@ -144,7 +144,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         var purchaseOrderItemSetPromises = [];
                         $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
                             purchaseOrderItemSetPromises.push(
-                                PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                                PurchaseOrderItemService.get(purchaseOrderItem).then(function (result) {
                                 var formattedSalesOrderItem = {
                                     display: result.sales_order_item.item.description,
                                     materialCode: result.sales_order_item.item.material_code,
@@ -179,7 +179,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
                         var purchaseOrderItemSetPromises = [];
                         $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
-                            purchaseOrderItemSetPromises.push(PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                            purchaseOrderItemSetPromises.push(PurchaseOrderItemService.get(purchaseOrderItem).then(function (result) {
                                 var formattedSalesOrderItem = {
                                     display: result.sales_order_item.item.description,
                                     materialCode: result.sales_order_item.item.material_code,

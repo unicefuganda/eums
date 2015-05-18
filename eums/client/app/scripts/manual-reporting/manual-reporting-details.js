@@ -97,7 +97,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 var purchaseOrderItemSetPromises = [];
                 response.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
                     purchaseOrderItemSetPromises.push(
-                        PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                        PurchaseOrderItemService.get(purchaseOrderItem).then(function (result) {
                         var formattedDocumentItem = {
                             description: result.sales_order_item.item.description,
                             materialCode: result.sales_order_item.item.material_code,

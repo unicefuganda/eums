@@ -5,7 +5,7 @@ angular.module('ReleaseOrderItem', ['eums.config', 'PurchaseOrderItem'])
         var release_order_item;
 
         var fillOutPurchaseOrderItem = function (releaseOrderItem) {
-            return PurchaseOrderItemService.getPurchaseOrderItem(releaseOrderItem.purchase_order_item).then(function (purchaseOrderItemDetails) {
+            return PurchaseOrderItemService.get(releaseOrderItem.purchase_order_item).then(function (purchaseOrderItemDetails) {
                 releaseOrderItem.purchase_order_item = purchaseOrderItemDetails;
                 return releaseOrderItem;
             });
