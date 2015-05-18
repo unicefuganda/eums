@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 artifactName=$GO_PIPELINE_NAME
 artifactCounter=$GO_PIPELINE_COUNTER
 gitRevision=$GO_REVISION
