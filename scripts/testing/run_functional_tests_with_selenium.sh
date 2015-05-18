@@ -4,7 +4,7 @@ set -e
 
 #build the code TODO: not sure this is needed
 virtualenv ~/.virtualenvs/eums
-source ~/.virtualenvs/eums/bin/activate
+ source ~/.virtualenvs/eums/bin/activate
 pip install -r requirements.txt
 
 #Start the server
