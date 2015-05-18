@@ -38,24 +38,24 @@ ENV PYTHON_VERSION 2.7.9
 # gpg: key 18ADD4FF: public key "Benjamin Peterson <benjamin@python.org>" imported
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys C01E1CAD5EA2C4F0B8E3571504C367C218ADD4FF
 
-RUN set -x
-RUN mkdir -p /usr/src/python
-RUN curl -SLO "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz"
-RUN curl -SLO "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz.asc"
-RUN mv Python-2.7.9.tar.xz python.tar.xz
-RUN mv Python-2.7.9.tar.xz.asc python.tar.xz.asc
-RUN	gpg --verify python.tar.xz.asc
-RUN tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz
-RUN rm python.tar.xz*
-RUN cd /usr/src/python
-RUN ./configure --enable-shared --enable-unicode=ucs4
-RUN make -j$(nproc)
-RUN make install
-RUN ldconfig
-RUN curl -SLO 'https://bootstrap.pypa.io/get-pip.py'
-RUN python2 get-pip.py
-RUN find /usr/local \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' +
-RUN rm -rf /usr/src/python
+RUN set -x \
+	&& mkdir -p /usr/src/python \
+	&& curl -SLO "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz" \
+	&& curl -SLO "https://www.python.org/ftp/python/2.7.9/Python-2.7.9.tar.xz.asc"
+RUN	gpg --verify Python-2.7.9.tar.xz.asc \
+	&& tar -xJC /usr/src/python --strip-components=1 -f Python-2.7.9.tar.xz \
+	&& rm Python-2.7.9.tar.xz* \
+	&& cd /usr/src/python \
+	&& ./configure --enable-shared --enable-unicode=ucs4 \
+	&& make -j$(nproc) \
+	&& make install \
+	&& ldconfig
+RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
+	&& find /usr/local \
+		\( -type d -a -name test -o -name tests \) \
+		-o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) \
+		-exec rm -rf '{}' + \
+	&& rm -rf /usr/src/python
 
 RUN pip install virtualenv
 
