@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 cd eums/client
 sudo npm install -g grunt-cli
 npm install

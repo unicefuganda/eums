@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 pip install -r requirements.txt
 pip install python-coveralls
 python manage.py migrate --settings=eums.snap_settings
