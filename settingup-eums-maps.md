@@ -70,7 +70,10 @@ Configuration is necessary for the following:
 	},
 	"DISTRICT_NAME_LOCATOR": "DNAME_2010"
 	```
+#### 6. Run gunt to rebuild static files
 
-#### 6. Bounce the server
+* `grunt build-staging`
+
+#### 7. Bounce the server
 
 Once the configuration is done, make sure the application is bounced, in order to pick up these new settings.
