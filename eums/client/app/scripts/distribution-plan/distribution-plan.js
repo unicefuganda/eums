@@ -40,15 +40,15 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            if($scope.deliveryReportPage){
-                UserService.getCurrentUser().then(function (user){
-                    if(user.consignee_id){
+            if ($scope.deliveryReportPage) {
+                UserService.getCurrentUser().then(function (user) {
+                    if (user.consignee_id) {
                         PurchaseOrderService.getConsigneePurchaseOrders(user.consignee_id).then(function (purchaseOrders) {
                             $scope.salesOrders = purchaseOrders.sort();
                             angular.element('#loading').modal('hide');
                         });
                     }
-                    else{
+                    else {
                         PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
                             $scope.salesOrders = purchaseOrders.sort();
                             angular.element('#loading').modal('hide');

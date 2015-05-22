@@ -18,9 +18,9 @@ describe('Home Page', function () {
         it('should get global stats on map', function () {
             browser.sleep(5000);
             expect(homePage.mapLocation.getText()).toEqual('');
-            expect(homePage.numberSent.getText()).toEqual('11');
-            expect(homePage.numberDelivered.getText()).toEqual('8');
-            expect(homePage.numberNotDelivered.getText()).toEqual('3');
+            expect(homePage.numberSent.getText()).toEqual('17');
+            expect(homePage.numberDelivered.getText()).toEqual('13');
+            expect(homePage.numberNotDelivered.getText()).toEqual('4');
         });
 
         it('should click on wakiso district', function () {
@@ -29,9 +29,9 @@ describe('Home Page', function () {
             browser.sleep(5000);
             expect(homePage.mapLocation.getText()).toEqual('Responses for WAKISO');
             expect(homePage.getMapZoomLevel()).toBe(10);
-            expect(homePage.numberSent.getText()).toEqual('2');
-            expect(homePage.numberDelivered.getText()).toEqual('1');
-            expect(homePage.numberNotDelivered.getText()).toEqual('1');
+            expect(homePage.numberSent.getText()).toEqual('3');
+            expect(homePage.numberDelivered.getText()).toEqual('3');
+            expect(homePage.numberNotDelivered.getText()).toEqual('0');
         });
 
         it('when I click on district number of responses should be 10 or less', function () {
@@ -67,7 +67,7 @@ describe('Home Page', function () {
 
             expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
             responsePage.numberOfResponses.then(function (rows) {
-                expect(rows.length).toEqual(2);
+                expect(rows.length).toEqual(3);
             })
         });
 
@@ -79,8 +79,7 @@ describe('Home Page', function () {
             browser.sleep(5000);
             responsePage.searchResponsesFor('no');
             responsePage.numberOfResponses.then(function (rows) {
-                expect(rows.length).toEqual(1);
-                expect(rows[0].getText()).toEqual('IEHK2006,kit,suppl.1-drugs');
+                expect(rows.length).toEqual(0);
             })
         });
 
@@ -92,8 +91,8 @@ describe('Home Page', function () {
             browser.sleep(5000);
             responsePage.searchResponsesFor('yes');
             responsePage.numberOfResponses.then(function (rows) {
-                expect(rows.length).toEqual(1);
-                expect(rows[0].getText()).toEqual('Safety box f.used syrgs/ndls 5lt/BOX-25');
+                expect(rows.length).toEqual(3);
+                expect(rows[0].getText()).toEqual('IEHK2006,kit,suppl.1-drugs');
             })
         });
     });
@@ -113,9 +112,9 @@ describe('Home Page', function () {
         it('should get global stats on map only for IP', function () {
             browser.sleep(5000);
             expect(homePage.mapLocation.getText()).toEqual('');
-            expect(homePage.numberSent.getText()).toEqual('2');
-            expect(homePage.numberDelivered.getText()).toEqual('1');
-            expect(homePage.numberNotDelivered.getText()).toEqual('1');
+            expect(homePage.numberSent.getText()).toEqual('3');
+            expect(homePage.numberDelivered.getText()).toEqual('3');
+            expect(homePage.numberNotDelivered.getText()).toEqual('0');
         });
     });
 });

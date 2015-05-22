@@ -1,7 +1,8 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService, serviceFactory;
+    var mockBackend, q, levelOneService, levelTwoService, serviceFactory, levelThreeService;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
+    const levelThreeEndpoint = '/third-endpoint/';
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
     const fakeTwo = {id: 2, propertyOne: 'one', propertyTwo: 'two', nested: 2};
     const nestedOne = {id: 1, properties: {}};
@@ -15,11 +16,12 @@ describe('Service Factory', function () {
             serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
             levelTwoService = ServiceFactory.create({uri: levelTwoEndpoint});
-
             levelOneService = ServiceFactory.create({
                 uri: levelOneEndpoint,
                 propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
             });
+            levelThreeService = ServiceFactory.create({uri: levelThreeEndpoint, propertyServiceMap: {child: levelOneService}});
+
         });
     });
 
@@ -33,9 +35,15 @@ describe('Service Factory', function () {
     });
 
     it('should convert objects to camelCase after fetching all them from api', function (done) {
-        mockBackend.whenGET(levelOneEndpoint).respond([{id: 1, first_property: 3}, {id: 2, first_property: 4}]);
+        mockBackend.whenGET(levelOneEndpoint).respond([
+            {id: 1, first_property: 3},
+            {id: 2, first_property: 4}
+        ]);
         levelOneService.all().then(function (object) {
-            expect(object).toEqual([{id: 1, firstProperty: 3}, {id: 2, firstProperty: 4}]);
+            expect(object).toEqual([
+                {id: 1, firstProperty: 3},
+                {id: 2, firstProperty: 4}
+            ]);
             done();
         });
         mockBackend.flush();
@@ -90,10 +98,14 @@ describe('Service Factory', function () {
     it('should convert arrays to camelCase after fetching from the api', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({
             id: 1,
-            first_property: [{inner_property: 2}]
+            first_property: [
+                {inner_property: 2}
+            ]
         });
         levelOneService.get(1).then(function (object) {
-            expect(object).toEqual({id: 1, firstProperty: [{innerProperty: 2}]});
+            expect(object).toEqual({id: 1, firstProperty: [
+                {innerProperty: 2}
+            ]});
             done();
         });
         mockBackend.flush();
@@ -209,8 +221,8 @@ describe('Service Factory', function () {
         });
         mockBackend.flush();
     });
-    
-    it('should use "PATCH" when updating if specified', function(done) {
+
+    it('should use "PATCH" when updating if specified', function (done) {
         var objectToUpdate = {id: fakeOne.id, property_one: 1};
         mockBackend.expectPATCH('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), objectToUpdate).respond(200);
         levelOneService.update(objectToUpdate, 'PATCH').then(function () {
@@ -260,7 +272,10 @@ describe('Service Factory', function () {
         });
 
         it('should return json through model when getting all, converting objects to camelCase', function (done) {
-            var plainObjects = [{id: 1, first_name: 'Job'}, {id: 2, first_name: 'Nim'}];
+            var plainObjects = [
+                {id: 1, first_name: 'Job'},
+                {id: 2, first_name: 'Nim'}
+            ];
             mockBackend.whenGET(levelTwoEndpoint).respond(plainObjects);
             service.all().then(function (modelObjects) {
                 expect(modelObjects).toEqual([new Model({id: 1, firstName: 'Job'}), new Model({
@@ -325,7 +340,10 @@ describe('Service Factory', function () {
         });
 
         it('should not change case on .all', function (done) {
-            var objects = [{id: 1, some_property: 1}, {id: 2, some_property: 2}];
+            var objects = [
+                {id: 1, some_property: 1},
+                {id: 2, some_property: 2}
+            ];
             mockBackend.whenGET(levelOneEndpoint).respond(200, objects);
             service.all().then(function (list) {
                 expect(list).toEqual(objects);

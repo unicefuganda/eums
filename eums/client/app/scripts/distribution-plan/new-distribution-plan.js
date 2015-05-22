@@ -13,6 +13,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.isReport = false;
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
+        console.log($location.path());
+        console.log($scope.distributionPlanReport);
         $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
         $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
@@ -26,6 +28,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function showLoadingModal(show) {
+            console.log('showing loading modal');
             if (show && !angular.element('#loading').hasClass('in')) {
                 angular.element('#loading').modal();
             }
@@ -37,11 +40,14 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         function getUser() {
             if (!$scope.user) {
+                console.log('on the get current user');
                 return UserService.getCurrentUser().then(function (user) {
+                    console.log('got current user', user);
                     return user;
                 });
             }
             else {
+                console.log('current user already exists', $scope.user);
                 var deferred = $q.defer();
                 deferred.resolve($scope.user);
                 return deferred.promise;
@@ -100,9 +106,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.salesOrderItems = [];
 
         if ($scope.distributionPlanReport) {
+            console.log('route param', $routeParams.salesOrderId);
             SalesOrderService.get($routeParams.salesOrderId, ['programme']).then(function (response) {
                 $scope.selectedSalesOrder = response;
-
+                console.log('sales order service', response);
                 var salesOrderItemSetPromises = [];
                 $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
                     salesOrderItemSetPromises.push(
@@ -123,14 +130,16 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
                             $scope.salesOrderItems.push(formattedSalesOrderItem);
                         }));
-                });
+                } );
 
                 $q.all(salesOrderItemSetPromises).then(function () {
                     if (!$routeParams.salesOrderItemId) {
                         showLoadingModal(false);
                     }
                 });
-            });
+            },function(error) {
+                    console.log(error);
+                });
         }
         else {
             $scope.isReport = true;
@@ -412,7 +421,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function saveDistributionPlanNodes() {
-            var message  = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
+            var message = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
                 saveNode(node);
             });
