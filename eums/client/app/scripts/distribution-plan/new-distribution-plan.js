@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'User'])
-    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, PurchaseOrderService, PurchaseOrderItemService, SalesOrderItemService, IPService, UserService, ngToast, ContactService) {
+angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'User', 'Item'])
+    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, PurchaseOrderService, PurchaseOrderItemService, SalesOrderItemService, IPService, UserService, ItemService, ngToast, ContactService) {
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.consignee_button_text = 'Add Consignee';
@@ -13,8 +13,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.isReport = false;
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
-        console.log($location.path());
-        console.log($scope.distributionPlanReport);
         $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
         $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
@@ -28,7 +26,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function showLoadingModal(show) {
-            console.log('showing loading modal');
             if (show && !angular.element('#loading').hasClass('in')) {
                 angular.element('#loading').modal();
             }
@@ -40,14 +37,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         function getUser() {
             if (!$scope.user) {
-                console.log('on the get current user');
                 return UserService.getCurrentUser().then(function (user) {
-                    console.log('got current user', user);
                     return user;
                 });
             }
             else {
-                console.log('current user already exists', $scope.user);
                 var deferred = $q.defer();
                 deferred.resolve($scope.user);
                 return deferred.promise;
@@ -106,40 +100,35 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.salesOrderItems = [];
 
         if ($scope.distributionPlanReport) {
-            console.log('route param', $routeParams.salesOrderId);
-            SalesOrderService.get($routeParams.salesOrderId, ['programme']).then(function (response) {
+            SalesOrderService.get($routeParams.salesOrderId, ['programme', 'salesorderitem_set']).then(function (response) {
                 $scope.selectedSalesOrder = response;
-                console.log('sales order service', response);
                 var salesOrderItemSetPromises = [];
-                $scope.selectedSalesOrder.salesorderitem_set.forEach(function (salesOrderItem) {
-                    salesOrderItemSetPromises.push(
-                        SalesOrderItemService.getSalesOrderItem(salesOrderItem).then(function (result) {
-                            var formattedSalesOrderItem = {
-                                display: result.item.description,
-                                materialCode: result.item.material_code,
-                                quantity: result.quantity,
-                                unit: result.item.unit.name,
-                                information: result
-                            };
-                            formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+                $scope.selectedSalesOrder.salesorderitemSet.forEach(function (salesOrderItem) {
+                    ItemService.get(salesOrderItem.item, ['unit']).then(function (item) {
+                        var formattedSalesOrderItem = {
+                            display: item.description,
+                            materialCode: item.materialCode,
+                            quantity: salesOrderItem.quantity,
+                            unit: item.unit.name,
+                            information: salesOrderItem
+                        };
+                        formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
-                            if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                                $scope.selectedSalesOrderItem = formattedSalesOrderItem;
-                                $scope.selectSalesOrderItem();
-                            }
+                        if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                            $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                            $scope.selectSalesOrderItem();
+                        }
 
-                            $scope.salesOrderItems.push(formattedSalesOrderItem);
-                        }));
-                } );
+                        $scope.salesOrderItems.push(formattedSalesOrderItem);
+                    });
 
-                $q.all(salesOrderItemSetPromises).then(function () {
-                    if (!$routeParams.salesOrderItemId) {
-                        showLoadingModal(false);
-                    }
+                    $q.all(salesOrderItemSetPromises).then(function () {
+                        if (!$routeParams.salesOrderItemId) {
+                            showLoadingModal(false);
+                        }
+                    });
                 });
-            },function(error) {
-                    console.log(error);
-                });
+            });
         }
         else {
             $scope.isReport = true;
@@ -229,19 +218,21 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         $scope.consigneeLevel = $scope.planNode.parent ? false : true;
                     }
 
-                    $scope.distributionPlan = planNode.distribution_plan;
+                    $scope.distributionPlan = planNode.distributionPlan;
                     $scope.track = planNode.track;
 
-                    SalesOrderItemService.getSalesOrderItem($routeParams.salesOrderItemId).then(function (result) {
-                        $scope.selectedSalesOrderItem = {
-                            display: result.item.description,
-                            materialCode: result.item.material_code,
-                            quantity: result.targeted_quantity,
-                            unit: result.item.unit.name,
-                            information: result
-                        };
-                        $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
-                        setDistributionPlanNode($scope.selectedSalesOrderItem, $scope.planNode.children);
+                    SalesOrderItemService.get($routeParams.salesOrderItemId).then(function (result) {
+                        ItemService.get(result.item, ['unit']).then(function (item) {
+                            $scope.selectedSalesOrderItem = {
+                                display: item.description,
+                                materialCode: item.materialCode,
+                                quantity: result.quantity,
+                                unit: item.unit.name,
+                                information: result
+                            };
+                            $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
+                            setDistributionPlanNode($scope.selectedSalesOrderItem, $scope.planNode.children);
+                        });
                     });
                 });
             });
@@ -274,7 +265,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
                     var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
                     SalesOrderItemService
-                        .getSalesOrderItem(selectedSalesOrderItem.information.id)
+                        .get(selectedSalesOrderItem.information.id, ['distributionplannode_set'])
                         .then(function (salesOrderItem) {
                             SalesOrderItemService
                                 .getTopLevelDistributionPlanNodes(salesOrderItem)
@@ -308,7 +299,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         var setDistributionPlanNode = function (selectedSalesOrderItem, nodes) {
             if (nodes.length) {
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
-                quantityLeft = quantityLeft - parseInt(nodes.targetQuantity);
+                quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function(total, val) {
+                    return total + val;
+                });
                 $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
                 $scope.distributionPlanNodes = nodes;
             }
@@ -393,16 +386,17 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
 
             getUser().then(function (user) {
+                console.log('UI PLAN NODE to save', uiPlanNode);
                 var node = {
                     consignee: uiPlanNode.consignee,
-                    location: uiPlanNode.destinationLocation,
-                    contact_person_id: uiPlanNode.contactPerson,
+                    location: uiPlanNode.location,
+                    contact_person_id: uiPlanNode.contactPersonId,
                     distribution_plan: $scope.distributionPlan,
                     tree_position: uiPlanNode.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
                     mode_of_delivery: uiPlanNode.modeOfDelivery ? uiPlanNode.modeOfDelivery : 'WAREHOUSE',
                     parent: parentNodeId(),
                     item: uiPlanNode.item,
-                    targeted_quantity: uiPlanNode.targetQuantity,
+                    targeted_quantity: uiPlanNode.targetedQuantity,
                     planned_distribution_date: formatDateForSave(plannedDate),
                     remark: uiPlanNode.remark,
                     track: user.consignee_id ? true : $scope.track
@@ -412,10 +406,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     node.id = nodeId;
                     node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
-                    return DistributionPlanNodeService.updateNode(node);
+                    return DistributionPlanNodeService.update(node);
                 }
                 else {
-                    return DistributionPlanNodeService.createNode(node);
+                    return DistributionPlanNodeService.create(node);
                 }
             });
         }
@@ -480,7 +474,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 );
             }
         };
-    }).directive('searchContacts', function (ContactService, $timeout) {
+    }
+).
+    directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function (contact) {
                 return {

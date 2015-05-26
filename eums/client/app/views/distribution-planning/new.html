@@ -3,13 +3,13 @@
         <ng-toast></ng-toast>
 
         <h4 class="page-header" ng-show="distributionPlanReport">Create A Distribution Plan for Sales Order:
-            <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
+            <span class="text-primary">{{ selectedSalesOrder.orderNumber }}</span>
             <span class="pull-right">PCR:
                 <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
             </span>
         </h4>
         <h4 class="page-header" ng-show="!distributionPlanReport">Report Delivery for Purchase Order:
-            <span class="text-primary">{{ selectedPurchaseOrder.order_number }}</span>
+            <span class="text-primary">{{ selectedPurchaseOrder.orderNumber }}</span>
             <span class="pull-right">PCR:
                 <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
             </span>
@@ -107,7 +107,7 @@
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
                                 <input type="text" id="input-quantity" class="form-control" ng-disabled="item.flowTriggered"
-                                       ng-model="item.targetQuantity" only-digits>
+                                       ng-model="item.targetedQuantity" only-digits>
                             </td>
                             <td>
                                 <p class="table-date-width input-group" eums-date-picker>
@@ -131,18 +131,18 @@
                             </td>
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ consignees }}"
-                                       ng-model="item.consignee"
+                                       ng-model="item.consignee.name"
                                        ng-disabled="item.flowTriggered"
-                                       value="{{ item.consignee }}">
+                                       value="{{ item.consignee.name }}">
                             </td>
 
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts
-                                               value="{{ item.contactPerson }}"
+                                               value="{{ item.contactPerson.id }}"
                                                required="required"
-                                               ng-model="item.contactPerson"
+                                               ng-model="item.contactPerson.id"
                                                ng-attr-id="{{ 'contact-select-' + $index}}"
                                                ng-disabled="item.flowTriggered">
                                     </div>
@@ -159,9 +159,9 @@
 
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="item.destinationLocation"
+                                       ng-model="item.location"
                                        ng-disabled="item.flowTriggered"
-                                       value="{{ item.destinationLocation }}">
+                                       value="{{ item.location }}">
                             </td>
                             <td id="input-mode-of-delivery" ng-show="distributionPlanReport">
                                 <input type="hidden" search-from-list

@@ -29,7 +29,6 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             var objectPropertyBuildPromises = [];
             var arrayPropertyBuildPromises = [];
             var buildMap = nestedFieldsToBuildMap(nestedFields, propertyServiceMap);
-            console.log('buildmap', propertyServiceMap);
 
             Object.each(buildMap, function (property, service) {
                 if (Object.isArray(object[property])) {
@@ -56,9 +55,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         };
 
         var nestedFieldsToBuildMap = function (fields, buildMap) {
-            console.log('fields', fields);
             return fields.reduce(function (previous, current) {
-                console.log('service map', buildMap);
                 previous[current] = buildMap[current];
                 return previous;
             }, {});
@@ -75,7 +72,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                     acc[converter(current)] = changeCase(obj[current], converter);
                 }
                 else {
-                    acc[converter(current)] = obj[current];
+                     acc[converter(current)] = obj[current];
                 }
                 return acc;
             }, {});
@@ -140,4 +137,3 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             }
         };
     });
-

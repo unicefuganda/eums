@@ -1,60 +1,24 @@
 'use strict';
 
-angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee'])
-    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService) {
-        var fillOutContactPerson = function (planNode) {
-            return ContactService.get(planNode.contact_person_id).then(function (contact) {
-                planNode.contact_person = contact;
-                return planNode;
-            }, function () {
-                planNode.contact_person = {firstName: 'No Contact Found'};
-                return planNode;
-            });
-        };
+angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', 'eums.service-factory'])
+    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory) {
 
-        var fillOutConsignee = function (planNode) {
-            return ConsigneeService.get(planNode.consignee).then(function (consignee) {
-                planNode.consignee = consignee;
-                return planNode;
-            });
-        };
-
-        return {
-            getPlanNodeById: function (planNodeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeId + '/');
-            },
-            getPlanNodeDetails: function (planNodeId) {
-                var getPlanNodePromise = this.getPlanNodeById(planNodeId);
-                return getPlanNodePromise.then(function (response) {
-                    var planNode = response.data;
-                    var fillOutPromises = [];
-                    fillOutPromises.push(fillOutContactPerson(planNode));
-                    fillOutPromises.push(fillOutConsignee(planNode));
-                    return $q.all(fillOutPromises).then(function () {
+        return ServiceFactory.create({
+            uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
+            propertyServiceMap: {consignee: ConsigneeService, contact_person_id: ContactService},
+            methods: {
+                getNodeResponse: function (nodeId) {
+                    return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
+                        return response.data;
+                    });
+                },
+                getPlanNodeDetails: function (planNodeId) {
+                    var getPlanNodePromise = this.get(planNodeId, ['consignee', 'contact_person_id']);
+                    return getPlanNodePromise.then(function (planNode) {
+                        planNode.contactPerson = planNode.contactPersonId;
                         return planNode;
                     });
-                });
-            },
-            createNode: function (nodeDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE, nodeDetails).then(function (response) {
-                    if (response.status === 201) {
-                        return response.data;
-                    }
-                    else {
-                        return response;
-                    }
-                });
-            },
-            updateNode: function (node) {
-                return $http.put(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + node.id + '/', node).then(function (response) {
-                    return response.data;
-                });
-            },
-
-            getNodeResponse: function (nodeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
-                    return response.data;
-                });
+                }
             }
-        };
+        });
     });
