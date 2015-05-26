@@ -46,7 +46,7 @@
                             chosen
                             ng-model="selectedPurchaseOrder"
                             ng-change="selectPurchaseOrder()"
-                            ng-options="purchaseOrder.order_number for purchaseOrder in purchaseOrders track by purchaseOrder.id">
+                            ng-options="purchaseOrder.orderNumber for purchaseOrder in purchaseOrders track by purchaseOrder.id">
                         <option value=""></option>
                     </select>
                 </div>
@@ -92,7 +92,7 @@
                     <td class="table-body">{{ response.item }}</td>
                     <td class="table-body">{{ response.programme.name }}</td>
                     <td class="table-body">{{ response.consignee.name }}</td>
-                    <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchase_order)">{{ response.purchase_order.order_number }}</a></td>
+                    <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchase_order)">{{ response.purchase_order.orderNumber }}</a></td>
                     <td class="table-body">
                         <span class="table-body-end-user">{{ response.contact_person.firstName }} {{ response.contact_person.lastName }}</span>
                         <a custom-popover class="btn btn-default btn-xs glyphicon glyphicon-earphone pull-right"

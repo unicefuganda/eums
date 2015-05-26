@@ -39,7 +39,7 @@
                                 chosen
                                 ng-model="selectedSalesOrder"
                                 ng-change="selectSalesOrder()"
-                                ng-options="salesOrder.order_number for salesOrder in salesOrders | orderBy: 'order_number' track by salesOrder.id ">
+                                ng-options="salesOrder.orderNumber for salesOrder in salesOrders | orderBy: 'orderNumber' track by salesOrder.id ">
                             <option value=""></option>
                         </select>
                     </div>

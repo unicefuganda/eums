@@ -237,7 +237,6 @@ describe('Service Factory', function () {
         });
         mockBackend.flush();
     });
-    
     it('should use "PATCH" when updating if specified', function (done) {
         var objectToUpdate = {id: fakeOne.id, property_one: 1};
         mockBackend.expectPATCH('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), objectToUpdate).respond(200);
@@ -356,7 +355,10 @@ describe('Service Factory', function () {
         });
 
         it('should not change case on .all', function (done) {
-            var objects = [{id: 1, some_property: 1}, {id: 2, some_property: 2}];
+            var objects = [
+                {id: 1, some_property: 1},
+                {id: 2, some_property: 2}
+            ];
             mockBackend.whenGET(levelOneEndpoint).respond(200, objects);
             service.all().then(function (list) {
                 expect(list).toEqual(objects);
