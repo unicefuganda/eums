@@ -298,7 +298,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         var setDistributionPlanNode = function (selectedSalesOrderItem, nodes) {
             if (nodes.length) {
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
-                quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function(total, val) {
+                quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function (total, val) {
                     return total + val;
                 });
                 $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
@@ -306,9 +306,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
             else {
                 $scope.distributionPlanNodes = [];
-                showLoadingModal(false);
             }
             setDatePickers();
+            showLoadingModal(false);
         };
 
         $scope.addDistributionPlanNode = function () {
