@@ -14,7 +14,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
         $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
-        $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
+        $scope.deliverNewDistributionPlanyDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
         function createToast(message, klass) {
             ngToast.create({
@@ -63,10 +63,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.saveContact = function () {
             ContactService
                 .create($scope.contact)
-                .then(function (response) {
+                .then(function (contact) {
                     $('#add-contact-modal').modal('hide');
 
-                    var contact = response.data;
                     var contactInput = $('#contact-select-' + $scope.itemIndex);
                     var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
                     contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
@@ -316,7 +315,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             var distributionPlanNode = {
                 item: $scope.selectedSalesOrderItem.information.id,
                 plannedDistributionDate: '',
-                targetQuantity: 0,
+                targetedQuantity: 0,
                 destinationLocation: '',
                 contactPerson: '',
                 modeOfDelivery: '',
@@ -332,14 +331,14 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         function computeQuantityLeft(salesOrderItem) {
             var reduced = $scope.distributionPlanNodes.reduce(function (previous, current) {
-                return {targetQuantity: isNaN(current.targetQuantity) ? previous.targetQuantity : (previous.targetQuantity + current.targetQuantity)};
-            }, {targetQuantity: 0});
+                return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
+            }, {targetedQuantity: 0});
 
-            return salesOrderItem.quantity - reduced.targetQuantity;
+            return salesOrderItem.quantity - reduced.targetedQuantity;
         }
 
         function invalidFields(item) {
-            return item.targetQuantity <= 0 || isNaN(item.targetQuantity) || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.plannedDistributionDate;
+            return item.targetedQuantity <= 0 || isNaN(item.targetedQuantity) || !item.consignee || !item.destinationLocation || !item.contactPerson || !item.plannedDistributionDate;
         }
 
         function anyInvalidFields(lineItems) {
@@ -377,7 +376,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function saveNode(uiPlanNode) {
-            var nodeId = uiPlanNode.nodeId;
+            console.log('node to save', uiPlanNode);
+            var nodeId = uiPlanNode.id;
             var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
 
             if (plannedDate.toString() === 'Invalid Date') {
@@ -386,11 +386,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
 
             getUser().then(function (user) {
-                console.log('UI PLAN NODE to save', uiPlanNode);
                 var node = {
-                    consignee: uiPlanNode.consignee,
+                    consignee: uiPlanNode.consignee.id,
                     location: uiPlanNode.location,
-                    contact_person_id: uiPlanNode.contactPersonId,
+                    contact_person_id: uiPlanNode.contactPerson.id,
                     distribution_plan: $scope.distributionPlan,
                     tree_position: uiPlanNode.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
                     mode_of_delivery: uiPlanNode.modeOfDelivery ? uiPlanNode.modeOfDelivery : 'WAREHOUSE',
@@ -451,8 +450,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             );
         };
 
-        $scope.showSubConsigneeButton = function (item) {
-            return item.lineItemId && !item.forEndUser;
+        $scope.showSubConsigneeButton = function (node) {
+            return node.id && !node.forEndUser;
         };
 
         $scope.previousConsignee = function (planNode) {

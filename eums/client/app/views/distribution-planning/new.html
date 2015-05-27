@@ -131,9 +131,9 @@
                             </td>
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ consignees }}"
-                                       ng-model="item.consignee.name"
+                                       ng-model="item.consignee.id"
                                        ng-disabled="item.flowTriggered"
-                                       value="{{ item.consignee.name }}">
+                                       value="{{ item.consignee.id }}">
                             </td>
 
                             <td class="table-select-max-width">
@@ -202,7 +202,7 @@
             </div>
             <div class="pad-20 row">
                 <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
-                        type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()">
+                        type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
                     <i class="glyphicon glyphicon-plus"> </i>
                     {{ consignee_button_text }}
                 </button>
