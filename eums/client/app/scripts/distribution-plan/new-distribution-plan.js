@@ -439,18 +439,19 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
         };
 
-        $scope.addSubConsignee = function (lineItem) {
+        $scope.addSubConsignee = function (node) {
             var locPath = $location.path().split('/')[1];
             var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
             $location.path(
                     '/' + locPath + '/new/' +
                     documentId + '-' +
                     $scope.selectedSalesOrderItem.information.id + '-' +
-                    lineItem.nodeId
+                    node.id
             );
         };
 
         $scope.showSubConsigneeButton = function (node) {
+            console.log('show sub consignee', node);
             return node.id && !node.forEndUser;
         };
 
