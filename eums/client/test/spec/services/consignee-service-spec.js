@@ -44,8 +44,7 @@ describe('Consignee Service', function () {
             var type = 'implementing_partner';
 
             consigneeService.filterByType(type).then(function (consignees) {
-                //expect(consignees).toEqual(consigneeList);
-                expect(consignees).toEqual(null);
+                expect(consignees).toEqual(consigneeList);
                 done();
             });
             mockBackend.flush();
