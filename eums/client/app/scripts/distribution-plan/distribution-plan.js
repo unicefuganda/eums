@@ -341,6 +341,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             }
         };
     })
+
     .directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',

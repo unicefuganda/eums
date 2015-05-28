@@ -78,7 +78,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should build nested objects of from the same service', function (done) {
+    it('should build nested objects from the same service', function (done) {
         mockBackend.whenGET(levelFourEndpoint).respond([fakeThree]);
         mockBackend.whenGET('{1}{2}/'.assign(levelFourEndpoint, nestedThree.id)).respond(nestedThree);
 

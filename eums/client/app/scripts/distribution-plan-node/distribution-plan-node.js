@@ -5,7 +5,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
 
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
-            propertyServiceMap: {consignee: ConsigneeService, contact_person_id: ContactService},
+            propertyServiceMap: {consignee: ConsigneeService, contact_person_id: ContactService, children: 'self'},
             methods: {
                 getNodeResponse: function (nodeId) {
                     return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
@@ -13,7 +13,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                     });
                 },
                 getPlanNodeDetails: function (planNodeId) {
-                    var getPlanNodePromise = this.get(planNodeId, ['consignee', 'contact_person_id']);
+                    var getPlanNodePromise = this.get(planNodeId, ['consignee', 'contact_person_id', 'children']);
                     return getPlanNodePromise.then(function (planNode) {
                         planNode.contactPerson = planNode.contactPersonId;
                         return planNode;

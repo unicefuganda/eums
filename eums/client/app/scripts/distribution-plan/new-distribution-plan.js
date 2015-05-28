@@ -230,7 +230,13 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                                 information: result
                             };
                             $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
-                            setDistributionPlanNode($scope.selectedSalesOrderItem, $scope.planNode.children);
+                            var childNodePromises = [];
+                            $scope.planNode.children.forEach(function (child) {
+                                childNodePromises.push(DistributionPlanNodeService.getPlanNodeDetails(child.id));
+                            });
+                            $q.all(childNodePromises).then(function (children) {
+                                setDistributionPlanNode($scope.selectedSalesOrderItem, children);
+                            });
                         });
                     });
                 });
@@ -451,7 +457,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
 
         $scope.showSubConsigneeButton = function (node) {
-            console.log('show sub consignee', node);
             return node.id && !node.forEndUser;
         };
 

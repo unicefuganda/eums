@@ -19,8 +19,10 @@
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 20%">
-                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
+                    <a ng-click="sortBy('orderNumber')" ng-show="!deliveryReportPage">{{ documentColumnTitle }} <i
                             ng-class="sortArrowClass('orderNumber');"></i></a>
+                    <a ng-click="sortBy('orderNumber')" ng-show="deliveryReportPage">{{ documentColumnTitle }} <i
+                            ng-class="sortArrowClass('order_number');"></i></a>
                 </th>
                 <th style="width: 30%">
                     <a ng-click="sortBy('date')">Date Created
