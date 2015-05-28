@@ -28,7 +28,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         var buildObject = function (object, nestedFields, propertyServiceMap) {
             var objectPropertyBuildPromises = [];
             var arrayPropertyBuildPromises = [];
-            var buildMap = nestedFieldsToBuildMap(nestedFields, propertyServiceMap);
+            var buildMap = nestedFieldsToBuildMap.call(this, nestedFields, propertyServiceMap);
 
             Object.each(buildMap, function (property, service) {
                 if (Object.isArray(object[property])) {
@@ -56,9 +56,10 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
 
         var nestedFieldsToBuildMap = function (fields, buildMap) {
             return fields.reduce(function (previous, current) {
-                previous[current] = buildMap[current];
+                var service = buildMap[current];
+                previous[current] = service === 'self' ? this : service;
                 return previous;
-            }, {});
+            }.bind(this), {});
         };
 
         function changeCase(obj, converter) {
@@ -85,9 +86,10 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
 
                 var service = {
                     all: function (nestedFields) {
+                        var self = this;
                         return $http.get(options.uri).then(function (response) {
                             var buildPromises = response.data.map(function (flatObject) {
-                                return buildObject(flatObject, nestedFields || [], options.propertyServiceMap);
+                                return buildObject.call(self, flatObject, nestedFields || [], options.propertyServiceMap);
                             });
                             return $q.all(buildPromises).then(function (builtObjects) {
                                 return builtObjects.map(function (object) {
@@ -98,8 +100,9 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         });
                     },
                     get: function (id, nestedFields) {
+                        var self = this;
                         return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                            return buildObject(response.data, nestedFields || [], options.propertyServiceMap).then(function (builtObject) {
+                            return buildObject.call(self, response.data, nestedFields || [], options.propertyServiceMap).then(function (builtObject) {
                                 var objectToReturn = options.changeCase ? changeCase(builtObject, toCamelCase) : builtObject;
                                 return options.model ? new options.model(objectToReturn) : objectToReturn;
                             });

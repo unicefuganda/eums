@@ -1,12 +1,15 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService, serviceFactory, levelThreeService;
+    var mockBackend, q, levelOneService, levelTwoService, serviceFactory, levelThreeService, levelFourService;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
     const levelThreeEndpoint = '/third-endpoint/';
+    const levelFourEndpoint = '/fourth-endpoint/';
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
     const fakeTwo = {id: 2, propertyOne: 'one', propertyTwo: 'two', nested: 2};
+    const fakeThree = {id: 3, propertyOne: 'one', propertyTwo: 'two', nested: 2};
     const nestedOne = {id: 1, properties: {}};
     const nestedTwo = {id: 2, properties: []};
+    const nestedThree = {id: 3, properties: []};
     const fakeObjects = [fakeOne, fakeTwo];
 
     beforeEach(function () {
@@ -21,6 +24,7 @@ describe('Service Factory', function () {
                 propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
             });
             levelThreeService = ServiceFactory.create({uri: levelThreeEndpoint, propertyServiceMap: {child: levelOneService}});
+            levelFourService = ServiceFactory.create({uri: levelFourEndpoint, propertyServiceMap: {child: 'self'}});
 
         });
     });
@@ -69,6 +73,18 @@ describe('Service Factory', function () {
 
         levelOneService.all(['nested']).then(function (objects) {
             expect(objects).toEqual([expectedFakeOne, expectedFakeTwo]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should build nested objects of from the same service', function (done) {
+        mockBackend.whenGET(levelFourEndpoint).respond([fakeThree]);
+        mockBackend.whenGET('{1}{2}/'.assign(levelFourEndpoint, nestedThree.id)).respond(nestedThree);
+
+        var expectedFake = Object.clone(fakeThree);
+        levelFourService.all(['child']).then(function (objects) {
+            expect(objects).toEqual([expectedFake]);
             done();
         });
         mockBackend.flush();
@@ -381,5 +397,3 @@ describe('Service Factory', function () {
         });
     });
 });
-
-
