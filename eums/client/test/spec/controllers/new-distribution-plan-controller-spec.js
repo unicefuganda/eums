@@ -233,11 +233,12 @@ describe('NewDistributionPlanController', function () {
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
             scope.$apply();
 
-            scope.distributionPlanNodes.push({targetQuantity: 50});
+            scope.distributionPlanNodes.push({targetedQuantity: 50});
             scope.$apply();
+            console.log(scope.distributionPlanNodes);
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(50);
 
-            scope.distributionPlanNodes[0].targetQuantity = 25;
+            scope.distributionPlanNodes[0].targetedQuantity = 25;
             scope.$apply();
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(75);
         });
