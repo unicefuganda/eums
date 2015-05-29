@@ -141,7 +141,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         var purchaseOrderItemSetPromises = [];
                         $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
                             purchaseOrderItemSetPromises.push(
-                                PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                                PurchaseOrderItemService.get(purchaseOrderItem).then(function (result) {
                                     var formattedSalesOrderItem = {
                                         display: result.sales_order_item.item.description,
                                         materialCode: result.sales_order_item.item.material_code,
@@ -170,19 +170,19 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     });
                 }
                 else {
-                    PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
+                    PurchaseOrderService.get($routeParams.purchaseOrderId, ['sales_order', 'purchaseorderitem_set']).then(function (response) {
                         $scope.selectedPurchaseOrder = response;
-                        $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
+                        $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.salesOrder;
 
-                        var purchaseOrderItemSetPromises = [];
-                        $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
-                            purchaseOrderItemSetPromises.push(PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
+                        var salesOrderItemSetPromises = [];
+                        $scope.selectedPurchaseOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
+                            salesOrderItemSetPromises.push(SalesOrderItemService.get(purchaseOrderItem.salesOrderItem, ['item']).then(function (salesOrderItem) {
                                 var formattedSalesOrderItem = {
-                                    display: result.sales_order_item.item.description,
-                                    materialCode: result.sales_order_item.item.material_code,
-                                    quantity: result.quantity ? result.quantity : result.sales_order_item.quantity,
-                                    unit: result.sales_order_item.item.unit.name,
-                                    information: result.sales_order_item
+                                    display: salesOrderItem.item.description,
+                                    materialCode: salesOrderItem.item.materialCode,
+                                    quantity: purchaseOrderItem.quantity ? purchaseOrderItem.quantity : salesOrderItem.quantity,
+                                    unit: salesOrderItem.item.unit, // add name to unit
+                                    information: salesOrderItem
                                 };
                                 formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
 
@@ -195,7 +195,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                             }));
                         });
 
-                        $q.all(purchaseOrderItemSetPromises).then(function () {
+                        $q.all(salesOrderItemSetPromises).then(function () {
                             if (!$routeParams.salesOrderItemId) {
                                 showLoadingModal(false);
                             }
