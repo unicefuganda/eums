@@ -19,7 +19,7 @@ describe('NewDistributionPlanController', function () {
             },
             'order_number': orderNumber,
             'date': '2014-10-05',
-            'salesorderitem_set': ['1']
+            'salesorderitemSet': [1]
         },
         {
             id: 2,
@@ -29,7 +29,7 @@ describe('NewDistributionPlanController', function () {
             },
             'order_number': '22221',
             'date': '2014-10-05',
-            'salesorderitem_set': [3, 4]
+            'salesorderitemSet': [3, 4]
         }
     ];
 
@@ -235,7 +235,6 @@ describe('NewDistributionPlanController', function () {
 
             scope.distributionPlanNodes.push({targetedQuantity: 50});
             scope.$apply();
-            console.log(scope.distributionPlanNodes);
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(50);
 
             scope.distributionPlanNodes[0].targetedQuantity = 25;
@@ -248,7 +247,7 @@ describe('NewDistributionPlanController', function () {
             var validNode = {
                 item: 1,
                 plannedDistributionDate: '2014-11-31',
-                targetQuantity: 42,
+                targetedQuantity: 42,
                 consignee: 4,
                 destinationLocation: 'Adjumani',
                 contactPerson: '5444d433ec8e8257ae48dc73',
@@ -277,7 +276,7 @@ describe('NewDistributionPlanController', function () {
 
             it('sets the invalidNodes field to true when there are nodes with invalid target Quantities', function () {
                 invalidNode = angular.copy(validNode);
-                invalidNode.targetQuantity = -1;
+                invalidNode.targetedQuantity = -1;
                 scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
@@ -322,7 +321,7 @@ describe('NewDistributionPlanController', function () {
 
             it('sets the invalidNodes field to true when the quantity left of salesitems is less than 0', function () {
                 invalidNode = angular.copy(validNode);
-                invalidNode.targetQuantity = 101;
+                invalidNode.targetedQuantity = 101;
                 scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
@@ -605,7 +604,7 @@ describe('NewDistributionPlanController', function () {
             var expectedPlanNode = {
                 item: stubSalesOrderItem.information.item.id,
                 plannedDistributionDate: '',
-                targetQuantity: 0,
+                targetedQuantity: 0,
                 destinationLocation: '',
                 modeOfDelivery: '',
                 remark: '',
@@ -693,7 +692,7 @@ describe('NewDistributionPlanController', function () {
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
                     item: 1,
-                    targetQuantity: 10,
+                    targetedQuantity: 10,
                     plannedDistributionDate: '02/03/2014',
                     remark: 'Remark',
                     track: false
@@ -726,7 +725,7 @@ describe('NewDistributionPlanController', function () {
                         mode_of_delivery: 'WAREHOUSE',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetQuantity,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: scope.track
@@ -748,7 +747,7 @@ describe('NewDistributionPlanController', function () {
                         mode_of_delivery: 'WAREHOUSE',
                         parent: 1,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetQuantity,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: scope.track
@@ -770,7 +769,7 @@ describe('NewDistributionPlanController', function () {
                         mode_of_delivery: 'WAREHOUSE',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetQuantity,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: scope.track
@@ -790,7 +789,7 @@ describe('NewDistributionPlanController', function () {
                         mode_of_delivery: 'WAREHOUSE',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetQuantity,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: scope.track
@@ -817,7 +816,7 @@ describe('NewDistributionPlanController', function () {
                     mode_of_delivery: 'WAREHOUSE',
                     parent: null,
                     item: uiPlanNode.item,
-                    targeted_quantity: uiPlanNode.targetQuantity,
+                    targeted_quantity: uiPlanNode.targetedQuantity,
                     planned_distribution_date: distributionDateFormattedForSave,
                     remark: uiPlanNode.remark,
                     track: true
@@ -854,7 +853,7 @@ describe('NewDistributionPlanController', function () {
                         parent: null,
                         children: [],
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetQuantity,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: true
@@ -876,7 +875,7 @@ describe('NewDistributionPlanController', function () {
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
                     item: 1,
-                    targetQuantity: 10,
+                    targetedQuantity: 10,
                     plannedDistributionDate: '2014-02-03',
                     remark: 'Remark',
                     parent: 42,

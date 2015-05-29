@@ -14,7 +14,6 @@ angular.module('SalesOrderItem', ['eums.config', 'Item', 'DistributionPlanNode',
                     });
                 },
                 getTopLevelDistributionPlanNodes: function (salesOrderItem) {
-                    console.log('sales order item plan node set', salesOrderItem.distributionplannodeSet);
                     var allDistributionPlanNodes = salesOrderItem.distributionplannodeSet;
 
                     var planNodePromises = [],

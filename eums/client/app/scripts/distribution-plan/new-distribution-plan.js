@@ -355,7 +355,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.$watch('distributionPlanNodes', function (newPlanNodes) {
-
             if (isNaN($scope.invalidNodes) && $scope.distributionPlanNodes.length) {
                 $scope.invalidNodes = true;
                 return;
@@ -382,7 +381,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function saveNode(uiPlanNode) {
-            console.log('node to save', uiPlanNode);
             var nodeId = uiPlanNode.id;
             var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
 
