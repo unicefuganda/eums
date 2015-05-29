@@ -15,16 +15,16 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
             var documentPromises = [];
 
             documentPromises.push(
-                PurchaseOrderService.getPurchaseOrders().then(function (responses) {
+                PurchaseOrderService.all().then(function (responses) {
                     purchaseOrders = responses;
                 })
             );
 
             documentPromises.push(
-                ReleaseOrderService.getReleaseOrders().then(function (responses) {
+                ReleaseOrderService.all().then(function (responses) {
                     responses.forEach(function (response) {
-                        response.date = response.delivery_date;
-                        response.order_number = response.waybill;
+                        response.date = response.deliveryDate;
+                        response.orderNumber = response.waybill;
                     });
                     waybills = responses;
                 })

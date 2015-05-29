@@ -2,8 +2,8 @@
 
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
     'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
-    'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'NodeRun'])
-    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanService, DistributionPlanNodeService, AnswerService, QuestionService, NodeRunService) {
+    'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'NodeRun', 'SalesOrder'])
+    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanService, DistributionPlanNodeService, AnswerService, QuestionService, NodeRunService, SalesOrderItemService) {
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.responseIndex = '';
@@ -38,7 +38,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
         }
 
-        function loadConsignees(){
+        function loadConsignees() {
             ConsigneeService.all().then(function (consignees) {
                 $scope.consignees = consignees;
             });
@@ -86,28 +86,27 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         function loadPurchaseOrderItems() {
             $scope.reportingDetailsTitle = 'Report By PO:';
 
-            PurchaseOrderService.getPurchaseOrder($routeParams.purchaseOrderId).then(function (response) {
-                $scope.orderNumber = response.order_number;
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['sales_order', 'purchaseorderitem_set']).then(function (response) {
+                $scope.orderNumber = response.orderNumber;
                 $scope.orderProgramme = response.programme;
-                $scope.salesOrder = response.sales_order;
+                $scope.salesOrder = response.salesOrder;
 
-                var purchaseOrderItemSetPromises = [];
-                response.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
-                    purchaseOrderItemSetPromises.push(
-                        PurchaseOrderItemService.getPurchaseOrderItem(purchaseOrderItem).then(function (result) {
-                            var formattedDocumentItem = {
-                                description: result.sales_order_item.item.description,
-                                materialCode: result.sales_order_item.item.material_code,
-                                quantity: result.quantity ? result.quantity : result.sales_order_item.quantity,
-                                unit: result.sales_order_item.item.unit.name,
-                                sales_order_item: result.sales_order_item,
-                                distributionplannodes: result.sales_order_item.distributionplannode_set
-                            };
-                            $scope.documentItems.push(formattedDocumentItem);
-                        }));
+                var salesOrderItemSetPromises = [];
+                response.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
+                    salesOrderItemSetPromises.push(SalesOrderItemService.get(purchaseOrderItem.salesOrderItem, ['item', 'distributionplannode_set']).then(function (salesOrderItem) {
+                        var formattedDocumentItem = {
+                            description: salesOrderItem.item.description,
+                            materialCode: salesOrderItem.item.materialCode,
+                            quantity: purchaseOrderItem.quantity ? purchaseOrderItem.quantity : salesOrderItem.quantity,
+                            unit: salesOrderItem.item.unit,
+                            sales_order_item: salesOrderItem,
+                            distributionplannodes: salesOrderItem.distributionplannodeSet
+                        };
+                        $scope.documentItems.push(formattedDocumentItem);
+                    }));
                 });
 
-                $q.all(purchaseOrderItemSetPromises).then(function () {
+                $q.all(salesOrderItemSetPromises).then(function () {
                     showLoadingModal(false);
                 });
             });
@@ -116,7 +115,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         function loadReleaseOrderItems() {
             $scope.reportingDetailsTitle = 'Report By Waybill:';
 
-            ReleaseOrderService.getReleaseOrder($routeParams.releaseOrderId).then(function (response) {
+            ReleaseOrderService.get($routeParams.releaseOrderId).then(function (response) {
                 $scope.orderNumber = response.waybill;
                 $scope.orderProgramme = response.programme;
                 $scope.salesOrder = response.sales_order;
@@ -124,7 +123,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 var releaseOrderItemSetPromises = [];
                 response.releaseorderitem_set.forEach(function (releaseOrderItem) {
                     releaseOrderItemSetPromises.push(
-                        ReleaseOrderItemService.getReleaseOrderItem(releaseOrderItem).then(function (result) {
+                        ReleaseOrderItemService.get(releaseOrderItem).then(function (result) {
                             var formattedDocumentItem = {
                                 description: result.purchase_order_item.sales_order_item.item.description,
                                 materialCode: result.purchase_order_item.sales_order_item.item.material_code,
@@ -194,12 +193,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         $scope.selectDocumentItem = function () {
             showLoadingModal(true);
             var responses = [];
-
             var distributionPlanNodes = $scope.selectedDocumentItem.distributionplannodes;
             var responsePromises = [];
-            distributionPlanNodes.forEach(function (nodeId) {
+            distributionPlanNodes.forEach(function (node) {
                 responsePromises.push(
-                    DistributionPlanNodeService.getNodeResponse(nodeId).then(function (response) {
+                    DistributionPlanNodeService.getNodeResponse(node.id).then(function (response) {
                         if (!_.isEmpty(response)) {
                             responses.push(response);
                         }
@@ -335,7 +333,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 track: false
             };
 
-            return DistributionPlanNodeService.createNode(node);
+            return DistributionPlanNodeService.create(node);
         }
 
         function saveNewResponse(response) {
@@ -528,7 +526,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         };
 
         function createDistributionPlan() {
-            return DistributionPlanService.createPlan({programme: $scope.salesOrder.programme.id})
+            return DistributionPlanService.createPlan({programme: 1})
                 .then(function (createdPlan) {
                     return createdPlan;
                 });
