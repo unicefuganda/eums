@@ -25,19 +25,5 @@ fi
 
 mkdir -p /opt/app/eums
 
-#stop the docker composition
-if [ -f /opt/app/eums/docker-compose.yml ]; then
-    cd /opt/app/eums
-    docker-compose stop
-fi
-
-#install the images
+#install the image
 scripts/install-image-eums.sh
-scripts/install-image-contacts.sh
-
-#deploy updates to the docker-compose file
-cp scripts/deployment/docker-compose.yml /opt/app/eums/docker-compose.yml
-
-#start the docker compositon
-cd /opt/app/eums
-docker-compose start

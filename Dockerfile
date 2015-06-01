@@ -2,24 +2,17 @@
 #eums.environment => name corresponding with the different settings files e.g. qa, snap, staging, test
 
 #  Base OS
-FROM mdillon/postgis:9.4
+FROM ubuntu:14.04
 MAINTAINER eums <eums@thoughtworks.com>
 
 ##############################################################################
 ## install and configure supervisor
 ##############################################################################
+RUN echo exit 0 > /usr/sbin/policy-rc.d
+RUN chmod +x /usr/sbin/policy-rc.d
+
 RUN export DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y openssh-server supervisor wget curl build-essential postgresql postgresql-contrib libpq-dev nodejs
-RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd /var/log/supervisor
-COPY scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-RUN echo "root:password" | chpasswd  # need a password for ssh
-RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-
-# SSH login fix. Otherwise user is kicked off after login
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-
-RUN apt-get install git -y
+RUN apt-get update && apt-get install -y wget curl build-essential libpq-dev
 
 ##############################################################################
 ## Python 2.7.9 Pre-requisites
@@ -59,21 +52,15 @@ RUN curl -SL 'https://bootstrap.pypa.io/get-pip.py' | python2 \
 
 RUN pip install virtualenv
 
-##############################################################################
-## Add the codebase to the image
-##############################################################################
-# Add the code and dependencies
-ADD . /opt/app/eums
+RUN apt-get update && apt-get install -y supervisor openssh-server postgresql postgresql-contrib nodejs nginx redis-server git
+RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd /var/log/supervisor
+COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-##############################################################################
-## Set up and initialise PostgresSQL DB
-##############################################################################
-ENV LANGUAGE en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
-RUN pg_createcluster 9.4 main --start
-RUN /opt/app/eums/scripts/packaging/initdb.sh 9.4
+RUN echo "root:password" | chpasswd  # need a password for ssh
+RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
 ##############################################################################
 ## install NodeJS
@@ -101,26 +88,54 @@ RUN npm install -g grunt-cli@0.1.13
 RUN npm cache clear
 
 ##############################################################################
+## Set up and initialise PostgresSQL DB
+##############################################################################
+#ENV LANGUAGE en_US.UTF-8
+#ENV LANG en_US.UTF-8
+#ENV LC_ALL en_US.UTF-8
+#RUN dpkg-reconfigure locales
+#RUN pg_createcluster 9.3 main --start
+
+##############################################################################
+## install MongoDB
+##############################################################################
+ENV MONGO_VERSION 2.6.5
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+RUN echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" | tee /etc/apt/sources.list.d/mongodb.list
+RUN apt-get update && apt-get install -y mongodb-org=$MONGO_VERSION mongodb-org-server=$MONGO_VERSION mongodb-org-shell=$MONGO_VERSION mongodb-org-mongos=$MONGO_VERSION mongodb-org-tools=$MONGO_VERSION
+
+##############################################################################
 # Install UWSGI
 ##############################################################################
+RUN apt-get install -y python-dev
 RUN pip install uwsgi
+ADD ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
+
+##############################################################################
+## Add the codebase to the image
+##############################################################################
+# Add the code and dependencies
+ADD ./eums /opt/app/eums
+
+ADD ./contacts /opt/app/contacts
+ADD ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
+ADD ./contacts/scripts/initContacts.sh /opt/scripts/initContacts.sh
+RUN chmod a+x /opt/scripts/*.sh
+RUN /opt/scripts/initContacts.sh
+RUN /opt/app/eums/scripts/packaging/initdb.sh 9.3
+
 
 ##############################################################################
 # Install APP NPM and bower dependencies
 ##############################################################################
-#RUN cd /opt/app/eums/eums/client
-#RUN npm install
-#RUN npm install -g bower
-#RUN bower install
-#RUN npm install -g grunt-cli
+RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
 
-
-EXPOSE 22 8000
+EXPOSE 22 80
 
 ##############################################################################
 ## Entrypoint and command parameters
 ##############################################################################
-#ENTRYPOINT ["/usr/bin/supervisord"]
+#ENTRYPOINT ["/usr/bin/supervisor"]
 #default options to pass to the entrypoint
 CMD ["/usr/bin/supervisord"]
-
+#CMD ["/usr/sbin/sshd",	 "-D"]
