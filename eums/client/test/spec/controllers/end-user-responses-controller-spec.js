@@ -125,7 +125,7 @@ describe('EndUserResponsesController', function () {
         mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['getAllEndUserResponses']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['all']);
 
         inject(function ($controller, $q, $location, $rootScope) {
@@ -138,7 +138,7 @@ describe('EndUserResponsesController', function () {
             mockDistributionPlanService.getAllEndUserResponses.and.returnValue(deferredDistributionPlanPromise.promise);
             mockProgrammeService.all.and.returnValue(deferredProgrammePromise.promise);
             mockConsigneeService.all.and.returnValue(deferredConsigneePromise.promise);
-            mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
+            mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockItemService.all.and.returnValue(deferredItemPromise.promise);
 
             scope = $rootScope.$new();

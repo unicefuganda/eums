@@ -381,6 +381,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function saveNode(uiPlanNode) {
+            console.log('plan node', uiPlanNode);
             var nodeId = uiPlanNode.id;
             var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
 

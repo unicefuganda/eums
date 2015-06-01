@@ -22,17 +22,17 @@ describe('ManualReportingDetailsController', function () {
                 id: 3,
                 name: 'Alive'
             },
-            'order_number': 10,
+            'orderNumber': 10,
             'date': '2014-10-05',
-            'salesorderitem_set': ['1']
+            'salesorderitemSet': ['1']
         };
 
         stubPurchaseOrder = {
             id: 1,
-            order_number: orderId,
-            sales_order: stubSalesOrder,
+            orderNumber: orderId,
+            salesOrder: stubSalesOrder,
             date: '2014-10-06',
-            purchaseorderitem_set: [1],
+            purchaseorderitemSet: [1],
             programme: programmeName
         };
 
@@ -105,11 +105,11 @@ describe('ManualReportingDetailsController', function () {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
         mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'qualityOptions', 'satisfiedOptions']);
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrder']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrderItem']);
-        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrder']);
-        mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrderItem']);
-        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
+        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
+        mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
+        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['create']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getNodeResponse']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
@@ -131,11 +131,11 @@ describe('ManualReportingDetailsController', function () {
             mockOptionService.receivedOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.qualityOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.satisfiedOptions.and.returnValue(deferredOptionPromise.promise);
-            mockPurchaseOrderService.getPurchaseOrder.and.returnValue(deferredPurchaseOrderPromise.promise);
+            mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockPurchaseOrderItemService.getPurchaseOrderItem.and.returnValue(deferredPurchaseOrderItemPromise.promise);
-            mockReleaseOrderService.getReleaseOrder.and.returnValue(deferredReleaseOrderPromise.promise);
-            mockReleaseOrderItemService.getReleaseOrderItem.and.returnValue(deferredReleaseOrderItemPromise.promise);
-            mockDistributionPlanService.createPlan.and.returnValue(deferredDistributionPlanPromise.promise);
+            mockReleaseOrderService.get.and.returnValue(deferredReleaseOrderPromise.promise);
+            mockReleaseOrderItemService.get.and.returnValue(deferredReleaseOrderItemPromise.promise);
+            mockDistributionPlanService.create.and.returnValue(deferredDistributionPlanPromise.promise);
             mockDistributionPlanNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
             location = $location;
             scope = $rootScope.$new();
@@ -243,7 +243,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.$apply();
 
                 expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
-                expect(scope.orderNumber).toEqual(stubPurchaseOrder.order_number);
+                expect(scope.orderNumber).toEqual(stubPurchaseOrder.orderNumber);
                 expect(scope.orderProgramme).toEqual(stubPurchaseOrder.programme);
                 expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
@@ -254,7 +254,7 @@ describe('ManualReportingDetailsController', function () {
                     materialCode: stubSalesOrderItem.item.material_code,
                     quantity: stubPurchaseOrderItem.quantity,
                     unit: stubSalesOrderItem.item.unit.name,
-                    sales_order_item: stubSalesOrderItem,
+                    salesOrderItem: stubSalesOrderItem,
                     distributionplannodes: stubSalesOrderItem.distributionplannode_set
                 };
 
@@ -492,7 +492,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.saveResponses();
                 scope.$apply();
 
-                expect(mockDistributionPlanService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+                expect(mockDistributionPlanService.create).toHaveBeenCalledWith({programme: programmeId});
             });
 
             it('the created distribution plan should be put on the scope', function () {
@@ -511,7 +511,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.saveResponses();
                 scope.$apply();
 
-                expect(mockDistributionPlanService.createPlan).not.toHaveBeenCalled();
+                expect(mockDistributionPlanService.create).not.toHaveBeenCalled();
             });
         });
 

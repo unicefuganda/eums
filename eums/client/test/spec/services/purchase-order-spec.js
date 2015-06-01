@@ -78,7 +78,7 @@ describe('Purchase Order Service', function () {
     it('should get all purchase orders', function (done) {
         mockBackend.whenGET(endpointUrl).respond(stubPurchaseOrders);
 
-        purchaseOrderService.getPurchaseOrders().then(function (orders) {
+        purchaseOrderService.all().then(function (orders) {
             expect(orders).toEqual(stubPurchaseOrders);
             done();
         });
@@ -87,7 +87,7 @@ describe('Purchase Order Service', function () {
 
     it('should get purchase order by its id', function (done) {
         mockBackend.whenGET(endpointUrl + stubPurchaseOrder.id).respond(stubPurchaseOrder);
-        purchaseOrderService.getPurchaseOrder(stubPurchaseOrder.id).then(function (purchaseOrderDetails) {
+        purchaseOrderService.get(stubPurchaseOrder.id).then(function (purchaseOrderDetails) {
             expect(purchaseOrderDetails).toEqual(fullPurchaseOrder);
             done();
         });

@@ -124,7 +124,7 @@ describe('Distribution Plan Node Service', function () {
             track: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
-        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
+        planNodeService.create({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
             quantity: 10, plannedDistributionDate: '2014-02-23', remark: 'In bad condition',
             track: true})
             .then(function (createdNode) {
@@ -144,7 +144,7 @@ describe('Distribution Plan Node Service', function () {
             track: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(202, stubCreatedNode);
-        planNodeService.createNode({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER',
+        planNodeService.create({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER',
             item: itemId,
             quantity: 10, under_current_supply_plan: false,
             plannedDistributionDate: '2014-02-23',

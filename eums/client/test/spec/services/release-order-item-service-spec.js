@@ -82,7 +82,7 @@ describe('Release Order Item Service', function () {
         };
 
         mockBackend.whenGET(endpointUrl + releaseOrderItemId + '/').respond(stubReleaseOrderItem);
-        releaseOrderItemService.getReleaseOrderItem(releaseOrderItemId).then(function (releaseOrderItem) {
+        releaseOrderItemService.get(releaseOrderItemId).then(function (releaseOrderItem) {
             expect(releaseOrderItem).toEqual(expectedReleaseOrderItem);
             done();
         });

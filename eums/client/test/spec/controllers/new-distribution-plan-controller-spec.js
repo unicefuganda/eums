@@ -17,7 +17,7 @@ describe('NewDistributionPlanController', function () {
                 id: 3,
                 name: 'Alive'
             },
-            'order_number': orderNumber,
+            'orderNumber': orderNumber,
             'date': '2014-10-05',
             'salesorderitemSet': [1]
         },
@@ -27,7 +27,7 @@ describe('NewDistributionPlanController', function () {
                 id: 4,
                 name: 'Alive'
             },
-            'order_number': '22221',
+            'orderNumber': '22221',
             'date': '2014-10-05',
             'salesorderitemSet': [3, 4]
         }
@@ -105,11 +105,11 @@ describe('NewDistributionPlanController', function () {
 
     var setUp = function (routeParams) {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'getSalesOrders', 'createPlan', 'updatePlanTracking']);
-        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
+        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
-        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getSalesOrderItem', 'getTopLevelDistributionPlanNodes']);
+        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get', 'getTopLevelDistributionPlanNodes']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
@@ -125,11 +125,11 @@ describe('NewDistributionPlanController', function () {
             deferredUserPromise = $q.defer();
             mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
-            mockNodeService.createNode.and.returnValue(deferredPlanNode.promise);
+            mockNodeService.create.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrder.promise);
-            mockSalesOrderItemService.getSalesOrderItem.and.returnValue(deferred.promise);
+            mockSalesOrderItemService.get.and.returnValue(deferred.promise);
             mockSalesOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredTopLevelNodes.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
@@ -415,7 +415,7 @@ describe('NewDistributionPlanController', function () {
 
             deferredUserPromise.resolve(stubUser);
             deferredNode.resolve({});
-            deferredPlanNode.resolve({distribution_plan: 2, distributionplannode_set: [1]});
+            deferredPlanNode.resolve({distributionPlan: 2, distributionplannode_set: [1]});
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual(2);
@@ -426,7 +426,7 @@ describe('NewDistributionPlanController', function () {
 
             deferredUserPromise.resolve(stubUser);
             deferredNode.resolve({});
-            deferredPlanNode.resolve({distribution_plan: 2, distributionplannode_set: [1]});
+            deferredPlanNode.resolve({distributionPlan: 2, distributionplannode_set: [1]});
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual(2);
@@ -716,7 +716,7 @@ describe('NewDistributionPlanController', function () {
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
@@ -738,7 +738,7 @@ describe('NewDistributionPlanController', function () {
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
@@ -760,7 +760,7 @@ describe('NewDistributionPlanController', function () {
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
@@ -780,7 +780,7 @@ describe('NewDistributionPlanController', function () {
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
@@ -807,7 +807,7 @@ describe('NewDistributionPlanController', function () {
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                expect(mockNodeService.create).toHaveBeenCalledWith({
                     consignee: 1,
                     location: 'Kampala',
                     contact_person_id: '0489284',
@@ -833,7 +833,7 @@ describe('NewDistributionPlanController', function () {
 
                     deferred = $q.defer();
                     deferred.resolve({});
-                    mockNodeService.updateNode.and.returnValue(deferred.promise);
+                    mockNodeService.update.and.returnValue(deferred.promise);
                 }));
 
                 it('the node for the ui plan node should be updated and not saved', function () {
@@ -842,7 +842,7 @@ describe('NewDistributionPlanController', function () {
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.updateNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.update).toHaveBeenCalledWith({
                         id: nodeId,
                         consignee: 1,
                         location: 'Kampala',
@@ -858,7 +858,7 @@ describe('NewDistributionPlanController', function () {
                         remark: uiPlanNode.remark,
                         track: true
                     });
-                    expect(mockNodeService.createNode).not.toHaveBeenCalled();
+                    expect(mockNodeService.create).not.toHaveBeenCalled();
                 });
 
             });
@@ -893,7 +893,7 @@ describe('NewDistributionPlanController', function () {
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                expect(mockNodeService.create).toHaveBeenCalledWith({
                     consignee: 1,
                     location: 'Kampala',
                     contact_person_id: '0489284',

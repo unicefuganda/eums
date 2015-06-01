@@ -17,7 +17,7 @@ describe('Release Order Service', function () {
     beforeEach(function () {
         module('ReleaseOrder');
 
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrder']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
 
         module(function ($provide) {
@@ -62,9 +62,9 @@ describe('Release Order Service', function () {
             description: 'Midwife Supplies',
             consignee: 1,
             waybill: 1,
-            sales_order: 1,
-            purchase_order: 1,
-            releaseorderitem_set: [1, 2],
+            salesOrder: 1,
+            purchaseOrder: 1,
+            releaseorderitemSet: [1, 2],
             programme: programmeName
         };
 
@@ -93,7 +93,7 @@ describe('Release Order Service', function () {
             scope = $rootScope.$new();
             deferred.resolve(fullPurchaseOrder);
             deferredSalesOrderPromise.resolve(stubSalesOrder);
-            mockPurchaseOrderService.getPurchaseOrder.and.returnValue(deferred.promise);
+            mockPurchaseOrderService.get.and.returnValue(deferred.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
 
             mockBackend = $httpBackend;
@@ -105,7 +105,7 @@ describe('Release Order Service', function () {
     it('should get all release orders', function (done) {
         mockBackend.whenGET(endpointUrl).respond(stubReleaseOrders);
 
-        releaseOrderService.getReleaseOrders().then(function (orders) {
+        releaseOrderService.all().then(function (orders) {
             expect(orders).toEqual(stubReleaseOrders);
             done();
         });
@@ -115,7 +115,7 @@ describe('Release Order Service', function () {
     it('should get release order by its id', function (done) {
         mockBackend.whenGET(endpointUrl + stubReleaseOrder.id).respond(fullReleaseOrder);
 
-        releaseOrderService.getReleaseOrder(stubReleaseOrder.id).then(function (releaseOrderDetails) {
+        releaseOrderService.get(stubReleaseOrder.id).then(function (releaseOrderDetails) {
             expect(releaseOrderDetails).toEqual(fullReleaseOrder);
             done();
         });

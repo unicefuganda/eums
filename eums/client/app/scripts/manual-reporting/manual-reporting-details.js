@@ -212,8 +212,10 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         };
 
         function setDistributionPlan(responseNode) {
+            console.log('initializing ', responseNode);
             if (_.isEmpty($scope.distributionPlanId)) {
                 $scope.distributionPlanId = responseNode.plan_id;
+                console.log('initialized distributionPlanId', $scope.distributionPlanId);
             }
         }
 
@@ -352,9 +354,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             if (received) {
                 if (typeof(receivedDetails) === 'undefined') {
                     return QuestionService.getQuestionByLabel('productReceived').then(function (question) {
-                        var answerDetails = {question: question.id,
+                        var answerDetails = {
+                            question: question.id,
                             value: received,
-                            node_run: nodeRunId};
+                            node_run: nodeRunId
+                        };
                         return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer) {
                             response.received_answer = response_answer;
                         });
@@ -374,9 +378,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             if (quantity) {
                 if (typeof(quantityDetails) === 'undefined') {
                     return QuestionService.getQuestionByLabel('amountReceived').then(function (question) {
-                        var answerDetails = {question: question.id,
+                        var answerDetails = {
+                            question: question.id,
                             value: quantity,
-                            node_run: nodeRunId};
+                            node_run: nodeRunId
+                        };
                         return AnswerService.createNumericAnswer(answerDetails).then(function (response_answer) {
                             response.quantity_answer = response_answer;
                         });
@@ -407,9 +413,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
                 if (typeof(dateReceivedDetails) === 'undefined') {
                     return QuestionService.getQuestionByLabel('dateOfReceipt').then(function (question) {
-                        var answerDetails = {question: question.id,
+                        var answerDetails = {
+                            question: question.id,
                             value: formatReceivedDate(plannedDate),
-                            line_item_run: nodeRunId};
+                            line_item_run: nodeRunId
+                        };
                         return AnswerService.createTextAnswer(answerDetails).then(function (response_answer) {
                             response.dateReceived_answer = response_answer;
                         });
@@ -429,9 +437,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             if (quality) {
                 if (typeof(qualityDetails) === 'undefined') {
                     return QuestionService.getQuestionByLabel('qualityOfProduct').then(function (question) {
-                        var answerDetails = {question: question.id,
+                        var answerDetails = {
+                            question: question.id,
                             value: quality,
-                            node_run: nodeRunId};
+                            node_run: nodeRunId
+                        };
                         return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer) {
                             response.quality_answer = response_answer;
                         });
@@ -452,9 +462,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             if (satisfied) {
                 if (typeof(satisfiedDetails) === 'undefined') {
                     return QuestionService.getQuestionByLabel('satisfiedWithProduct').then(function (question) {
-                        var answerDetails = {question: question.id,
+                        var answerDetails = {
+                            question: question.id,
                             value: satisfied,
-                            node_run: nodeRunId};
+                            node_run: nodeRunId
+                        };
                         return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer) {
                             response.satisfied_answer = response_answer;
                         });
@@ -475,9 +487,11 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             if (remark) {
                 if (typeof(remarkDetails) === 'undefined') {
                     return QuestionService.getQuestionByLabel('feedbackAboutDissatisfaction').then(function (question) {
-                        var answerDetails = {question: question.id,
+                        var answerDetails = {
+                            question: question.id,
                             value: remark,
-                            node_run: nodeRunId};
+                            node_run: nodeRunId
+                        };
                         return AnswerService.createTextAnswer(answerDetails).then(function (response_answer) {
                             response.remark_answer = response_answer;
                         });
@@ -526,7 +540,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         };
 
         function createDistributionPlan() {
-            return DistributionPlanService.createPlan({programme: 1})
+            return DistributionPlanService.create({programme: 1})
                 .then(function (createdPlan) {
                     return createdPlan;
                 });
@@ -537,6 +551,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 saveWithToast();
             }
             else {
+                console.log('we are here 333');
                 createDistributionPlan().then(function (createdPlan) {
                     $scope.distributionPlanId = createdPlan.id;
                     saveWithToast();

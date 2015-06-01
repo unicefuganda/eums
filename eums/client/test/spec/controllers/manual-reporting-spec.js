@@ -31,16 +31,16 @@ describe('ManualReportingController', function () {
             programme: programmeName
         }];
 
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrders']);
-        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrders']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all']);
+        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
 
         inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
             q = $q;
             deferred = $q.defer();
             deferredPurchaseOrderPromise = $q.defer();
             deferredReleaseOrderPromise = $q.defer();
-            mockPurchaseOrderService.getPurchaseOrders.and.returnValue(deferredPurchaseOrderPromise.promise);
-            mockReleaseOrderService.getReleaseOrders.and.returnValue(deferredReleaseOrderPromise.promise);
+            mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrderPromise.promise);
+            mockReleaseOrderService.all.and.returnValue(deferredReleaseOrderPromise.promise);
             location = $location;
             scope = $rootScope.$new();
             sorter = $sorter;
