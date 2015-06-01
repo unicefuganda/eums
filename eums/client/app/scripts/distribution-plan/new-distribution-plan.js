@@ -383,6 +383,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         function saveNode(uiPlanNode) {
             console.log('plan node', uiPlanNode);
             var nodeId = uiPlanNode.id;
+            console.log('node id', nodeId);
             var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
 
             if (plannedDate.toString() === 'Invalid Date') {

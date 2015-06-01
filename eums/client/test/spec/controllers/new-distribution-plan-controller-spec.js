@@ -685,9 +685,10 @@ describe('NewDistributionPlanController', function () {
 
             beforeEach(function () {
                 uiPlanNode = {
-                    consignee: 1,
+                    consignee: {id: 1},
+                    location: 'Kampala',
                     destinationLocation: 'Kampala',
-                    contactPerson: '0489284',
+                    contactPerson: {id: '0489284'},
                     distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
@@ -868,9 +869,10 @@ describe('NewDistributionPlanController', function () {
             var uiPlanNodes;
             beforeEach(function () {
                 uiPlanNodes = {
-                    consignee: 1,
+                    consignee: {id: 1},
                     destinationLocation: 'Kampala',
-                    contactPerson: '0489284',
+                    location: 'Kampala',
+                    contactPerson: {id: '0489284'},
                     distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
