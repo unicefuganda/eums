@@ -2,11 +2,12 @@ describe('ManualReportingDetailsController', function () {
     beforeEach(module('ManualReportingDetails'));
 
     var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
-        mockReleaseOrderService, mockReleaseOrderItemService,
-        mockDistributionPlanService, mockDistributionPlanNodeService;
+        mockReleaseOrderService, mockReleaseOrderItemService, mockSalesOrderService,
+        mockDistributionPlanService, mockDistributionPlanNodeService, mockSalesOrderItemService;
     var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
         deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
-        deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredNodeResponsePromise;
+        deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredNodeResponsePromise,
+        deferredSalesOrderItemPromise, deferredSalesOrderPromise;
     var scope, q, mockToastProvider, location;
     var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
     var orderId = 1,
@@ -24,7 +25,7 @@ describe('ManualReportingDetailsController', function () {
             },
             'orderNumber': 10,
             'date': '2014-10-05',
-            'salesorderitemSet': ['1']
+            'salesorderitemSet': [1]
         };
 
         stubPurchaseOrder = {
@@ -38,56 +39,56 @@ describe('ManualReportingDetailsController', function () {
 
         stubReleaseOrder = {
             id: 1,
-            order_number: orderId,
-            delivery_date: '2014-10-06',
+            orderNumber: orderId,
+            deliveryDate: '2014-10-06',
             description: 'Midwife Supplies',
             consignee: 1,
             waybill: 12,
-            sales_order: stubSalesOrder,
-            purchase_order: stubPurchaseOrder,
-            releaseorderitem_set: [1],
+            salesOrder: stubSalesOrder,
+            purchaseOrder: stubPurchaseOrder,
+            releaseorderitemSet: [1],
             programme: programmeName
         };
 
         stubSalesOrderItem = {
             id: 1,
-            sales_order: '1',
+            salesOrder: '1',
             information: {
                 id: 1,
                 item: {
                     id: 1,
                     description: 'Test Item',
-                    material_code: '12345AS',
+                    materialCode: '12345AS',
                     unit: {
                         name: 'EA'
                     }
                 },
                 quantity: 100,
-                quantity_left: 100
+                quantityLeft: 100
             },
             item: {
                 id: 1,
                 description: 'Test Item',
-                material_code: '12345AS',
+                materialCode: '12345AS',
                 unit: {
                     name: 'EA'
                 }
             },
             quantity: 100,
-            net_price: 10.00,
-            net_value: 1000.00,
-            issue_date: '2014-10-02',
-            delivery_date: '2014-10-02',
-            distributionplannode_set: [1]
+            netPrice: 10.00,
+            netValue: 1000.00,
+            issueDate: '2014-10-02',
+            deliveryDate: '2014-10-02',
+            distributionplannodeSet: [{id: 1}]
         };
 
         stubPurchaseOrderItem = {
             id: 1,
-            purchase_order: stubPurchaseOrder.id,
-            item_number: 10,
+            purchaseOrder: stubPurchaseOrder.id,
+            itemNumber: 10,
             quantity: '700.00',
             value: '3436.82',
-            sales_order_item: stubSalesOrderItem
+            salesOrderItem: stubSalesOrderItem
         };
 
         stubReleaseOrderItem = {
@@ -97,7 +98,7 @@ describe('ManualReportingDetailsController', function () {
             item_number: 10,
             quantity: '700.00',
             value: '3436.82',
-            purchase_order_item: stubPurchaseOrderItem
+            purchaseOrderItem: stubPurchaseOrderItem
         };
     });
 
@@ -111,6 +112,8 @@ describe('ManualReportingDetailsController', function () {
         mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
         mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['create']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getNodeResponse']);
+        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
@@ -126,6 +129,8 @@ describe('ManualReportingDetailsController', function () {
             deferredDistributionPlanPromise = $q.defer();
             deferredDistributionPlanNodePromise = $q.defer();
             deferredNodeResponsePromise = $q.defer();
+            deferredSalesOrderItemPromise = $q.defer();
+            deferredSalesOrderPromise = $q.defer();
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockConsigneeService.all.and.returnValue(deferredConsigneePromise.promise);
             mockOptionService.receivedOptions.and.returnValue(deferredOptionPromise.promise);
@@ -137,6 +142,8 @@ describe('ManualReportingDetailsController', function () {
             mockReleaseOrderItemService.get.and.returnValue(deferredReleaseOrderItemPromise.promise);
             mockDistributionPlanService.create.and.returnValue(deferredDistributionPlanPromise.promise);
             mockDistributionPlanNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
+            mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
+            mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemPromise.promise);
             location = $location;
             scope = $rootScope.$new();
 
@@ -169,7 +176,9 @@ describe('ManualReportingDetailsController', function () {
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     ngToast: mockToastProvider,
                     DistributionPlanService: mockDistributionPlanService,
-                    DistributionPlanNodeService: mockDistributionPlanNodeService
+                    DistributionPlanNodeService: mockDistributionPlanNodeService,
+                    SalesOrderItemService: mockSalesOrderItemService,
+                    SalesOrderService: mockSalesOrderService
                 });
         });
     };
@@ -233,33 +242,65 @@ describe('ManualReportingDetailsController', function () {
         });
 
         describe('with purchase order', function () {
+
+            var stubPO = {
+                id: 1,
+                orderNumber: orderId,
+                salesOrder: 1,
+                date: '2014-10-06',
+                purchaseorderitemSet: [{id: 1, salesOrderItem: 1}],
+                programme: programmeName
+            };
+
+            var stubSOItem = {
+                id: 1,
+                salesOrder: '1',
+                item: {
+                    id: 1,
+                    description: 'Test Item',
+                    materialCode: '12345AS',
+                    unit: {
+                        name: 'EA'
+                    }
+                },
+                quantity: 100,
+                netPrice: 10.00,
+                netValue: 1000.00,
+                issueDate: '2014-10-02',
+                deliveryDate: '2014-10-02',
+                distributionplannodeSet: [{id: 1}]
+            };
+
             beforeEach(function () {
                 setUp({purchaseOrderId: 1});
             });
 
             it('should set purchase order details on the scope', function () {
-                deferredPurchaseOrderPromise.resolve(stubPurchaseOrder);
+
+                deferredPurchaseOrderPromise.resolve(stubPO);
+                deferredSalesOrderPromise.resolve(stubSalesOrder);
+                deferredSalesOrderItemPromise.resolve(stubSOItem);
                 scope.initialize();
                 scope.$apply();
 
                 expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
-                expect(scope.orderNumber).toEqual(stubPurchaseOrder.orderNumber);
-                expect(scope.orderProgramme).toEqual(stubPurchaseOrder.programme);
-                expect(scope.salesOrder).toEqual(stubSalesOrder);
+                expect(scope.orderNumber).toEqual(stubPO.orderNumber);
+                expect(scope.orderProgramme).toEqual(stubPO.programme);
+                expect(scope.salesOrder).toEqual(stubPO.salesOrder);
             });
 
             it('should set documentItems on the scope', function () {
                 var expectedDocumentItem = {
-                    description: stubSalesOrderItem.item.description,
-                    materialCode: stubSalesOrderItem.item.material_code,
-                    quantity: stubPurchaseOrderItem.quantity,
-                    unit: stubSalesOrderItem.item.unit.name,
-                    salesOrderItem: stubSalesOrderItem,
-                    distributionplannodes: stubSalesOrderItem.distributionplannode_set
+                    description: stubSOItem.item.description,
+                    materialCode: stubSOItem.item.materialCode,
+                    quantity: stubSOItem.quantity,
+                    unit: stubSOItem.item.unit,
+                    salesOrderItem: stubSOItem,
+                    distributionplannodes: stubSOItem.distributionplannodeSet
                 };
 
-                deferredPurchaseOrderPromise.resolve(stubPurchaseOrder);
-                deferredPurchaseOrderItemPromise.resolve(stubPurchaseOrderItem);
+                deferredPurchaseOrderPromise.resolve(stubPO);
+                deferredSalesOrderItemPromise.resolve(stubSOItem);
                 scope.initialize();
                 scope.$apply();
 
@@ -274,6 +315,8 @@ describe('ManualReportingDetailsController', function () {
 
             it('should set release order details on the scope', function () {
                 deferredReleaseOrderPromise.resolve(stubReleaseOrder);
+                deferredReleaseOrderItemPromise.resolve(stubReleaseOrderItem);
+                deferredSalesOrderPromise.resolve(stubSalesOrder);
                 scope.initialize();
                 scope.$apply();
 
@@ -286,11 +329,11 @@ describe('ManualReportingDetailsController', function () {
             it('should set documentItems on the scope', function () {
                 var expectedDocumentItem = {
                     description: stubSalesOrderItem.item.description,
-                    materialCode: stubSalesOrderItem.item.material_code,
+                    materialCode: stubSalesOrderItem.item.materialCode,
                     quantity: stubReleaseOrderItem.quantity,
                     unit: stubSalesOrderItem.item.unit.name,
-                    sales_order_item: stubSalesOrderItem,
-                    distributionplannodes: stubSalesOrderItem.distributionplannode_set
+                    salesOrderItem: stubSalesOrderItem,
+                    distributionplannodes: stubSalesOrderItem.distributionplannodeSet
                 };
 
                 deferredReleaseOrderPromise.resolve(stubReleaseOrder);
@@ -308,11 +351,11 @@ describe('ManualReportingDetailsController', function () {
             setUp({});
             scope.selectedDocumentItem = {
                 description: stubSalesOrderItem.item.description,
-                materialCode: stubSalesOrderItem.item.material_code,
+                materialCode: stubSalesOrderItem.item.materialCode,
                 quantity: stubReleaseOrderItem.quantity,
                 unit: stubSalesOrderItem.item.unit.name,
-                sales_order_item: stubSalesOrderItem,
-                distributionplannodes: stubSalesOrderItem.distributionplannode_set
+                salesOrderItem: stubSalesOrderItem,
+                distributionplannodes: stubSalesOrderItem.distributionplannodeSet
             };
 
             nodeResponse = {

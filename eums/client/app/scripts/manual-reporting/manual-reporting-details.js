@@ -3,7 +3,11 @@
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
     'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
     'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'NodeRun', 'SalesOrder'])
-    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService, OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService, ReleaseOrderItemService, ngToast, ContactService, DistributionPlanService, DistributionPlanNodeService, AnswerService, QuestionService, NodeRunService, SalesOrderItemService) {
+    .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService,
+                                                              OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
+                                                              ReleaseOrderItemService, ngToast, ContactService, DistributionPlanService,
+                                                              DistributionPlanNodeService, AnswerService, QuestionService, NodeRunService,
+                                                              SalesOrderService, SalesOrderItemService) {
         $scope.datepicker = {};
         $scope.contact = {};
         $scope.responseIndex = '';
@@ -86,10 +90,12 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         function loadPurchaseOrderItems() {
             $scope.reportingDetailsTitle = 'Report By PO:';
 
-            PurchaseOrderService.get($routeParams.purchaseOrderId, ['sales_order', 'purchaseorderitem_set']).then(function (response) {
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set']).then(function (response) {
                 $scope.orderNumber = response.orderNumber;
                 $scope.orderProgramme = response.programme;
-                $scope.salesOrder = response.salesOrder;
+                SalesOrderService.get(response.salesOrder, ['programme']).then(function (salesOrder) {
+                    $scope.salesOrder = response.salesOrder;
+                });
 
                 var salesOrderItemSetPromises = [];
                 response.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
@@ -99,7 +105,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                             materialCode: salesOrderItem.item.materialCode,
                             quantity: purchaseOrderItem.quantity ? purchaseOrderItem.quantity : salesOrderItem.quantity,
                             unit: salesOrderItem.item.unit,
-                            sales_order_item: salesOrderItem,
+                            salesOrderItem: salesOrderItem,
                             distributionplannodes: salesOrderItem.distributionplannodeSet
                         };
                         $scope.documentItems.push(formattedDocumentItem);
@@ -118,19 +124,21 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             ReleaseOrderService.get($routeParams.releaseOrderId).then(function (response) {
                 $scope.orderNumber = response.waybill;
                 $scope.orderProgramme = response.programme;
-                $scope.salesOrder = response.sales_order;
+                SalesOrderService.get(response.salesOrder, ['programme']).then(function (salesOrder) {
+                    $scope.salesOrder = response.salesOrder;
+                });
 
                 var releaseOrderItemSetPromises = [];
-                response.releaseorderitem_set.forEach(function (releaseOrderItem) {
+                response.releaseorderitemSet.forEach(function (releaseOrderItem) {
                     releaseOrderItemSetPromises.push(
                         ReleaseOrderItemService.get(releaseOrderItem).then(function (result) {
                             var formattedDocumentItem = {
-                                description: result.purchase_order_item.sales_order_item.item.description,
-                                materialCode: result.purchase_order_item.sales_order_item.item.material_code,
-                                quantity: result.quantity ? result.quantity : result.purchase_order_item.sales_order_item.quantity,
-                                unit: result.purchase_order_item.sales_order_item.item.unit.name,
-                                sales_order_item: result.purchase_order_item.sales_order_item,
-                                distributionplannodes: result.purchase_order_item.sales_order_item.distributionplannode_set
+                                description: result.purchaseOrderItem.salesOrderItem.item.description,
+                                materialCode: result.purchaseOrderItem.salesOrderItem.item.materialCode,
+                                quantity: result.quantity ? result.quantity : result.purchaseOrderItem.salesOrderItem.quantity,
+                                unit: result.purchaseOrderItem.salesOrderItem.item.unit.name,
+                                salesOrderItem: result.purchaseOrderItem.salesOrderItem,
+                                distributionplannodes: result.purchaseOrderItem.salesOrderItem.distributionplannodeSet
                             };
                             $scope.documentItems.push(formattedDocumentItem);
                         }));
@@ -540,7 +548,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         };
 
         function createDistributionPlan() {
-            return DistributionPlanService.create({programme: 1})
+            return DistributionPlanService.create({programme: $scope.salesOrder.programme.id})
                 .then(function (createdPlan) {
                     return createdPlan;
                 });
@@ -551,7 +559,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 saveWithToast();
             }
             else {
-                console.log('we are here 333');
                 createDistributionPlan().then(function (createdPlan) {
                     $scope.distributionPlanId = createdPlan.id;
                     saveWithToast();

@@ -2,9 +2,9 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var mockNodeService, mockIPService, mockPlanService, mockSalesOrderItemService,
-        mockConsigneeService, mockSalesOrderService, mockUserService;
+        mockConsigneeService, mockSalesOrderService, mockUserService, mockItemService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
-        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise;
+        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise, deferredItemPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
@@ -19,7 +19,7 @@ describe('NewDistributionPlanController', function () {
             },
             'orderNumber': orderNumber,
             'date': '2014-10-05',
-            'salesorderitemSet': [1]
+            'salesorderitemSet': [{id: 1}]
         },
         {
             id: 2,
@@ -29,7 +29,7 @@ describe('NewDistributionPlanController', function () {
             },
             'orderNumber': '22221',
             'date': '2014-10-05',
-            'salesorderitemSet': [3, 4]
+            'salesorderitemSet': [{id: 3}, {id: 4}]
         }
     ];
 
@@ -111,6 +111,7 @@ describe('NewDistributionPlanController', function () {
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get', 'getTopLevelDistributionPlanNodes']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+        mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $q, $location) {
@@ -123,6 +124,7 @@ describe('NewDistributionPlanController', function () {
             deferredTopLevelNodes = $q.defer();
             deferredSalesOrder = $q.defer();
             deferredUserPromise = $q.defer();
+            deferredItemPromise = $q.defer();
             mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockNodeService.create.and.returnValue(deferredPlanNode.promise);
@@ -133,6 +135,7 @@ describe('NewDistributionPlanController', function () {
             mockSalesOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredTopLevelNodes.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
+            mockItemService.get.and.returnValue(deferredItemPromise.promise);
 
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
@@ -168,6 +171,7 @@ describe('NewDistributionPlanController', function () {
                     SalesOrderService: mockSalesOrderService,
                     IPService: mockIPService,
                     UserService: mockUserService,
+                    ItemService: mockItemService,
                     ngToast: mockToastProvider
                 });
         });
