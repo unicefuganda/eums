@@ -2,9 +2,9 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var mockNodeService, mockIPService, mockPlanService, mockSalesOrderItemService,
-        mockConsigneeService, mockSalesOrderService, mockUserService, mockItemService, mockItemUnitService;
+        mockConsigneeService, mockSalesOrderService, mockUserService, mockItemService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
-        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise, deferredItemPromise, deferredItemUnitPromise;
+        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise, deferredItemPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';

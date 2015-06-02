@@ -94,7 +94,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 $scope.orderNumber = response.orderNumber;
                 $scope.orderProgramme = response.programme;
                 SalesOrderService.get(response.salesOrder, ['programme']).then(function (salesOrder) {
-                    $scope.salesOrder = response.salesOrder;
+                    $scope.salesOrder = salesOrder;
                 });
 
                 var salesOrderItemSetPromises = [];
@@ -125,7 +125,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 $scope.orderNumber = response.waybill;
                 $scope.orderProgramme = response.programme;
                 SalesOrderService.get(response.salesOrder, ['programme']).then(function (salesOrder) {
-                    $scope.salesOrder = response.salesOrder;
+                    $scope.salesOrder = salesOrder;
                 });
 
                 var releaseOrderItemSetPromises = [];

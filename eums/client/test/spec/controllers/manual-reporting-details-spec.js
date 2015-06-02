@@ -254,7 +254,7 @@ describe('ManualReportingDetailsController', function () {
 
             var stubSOItem = {
                 id: 1,
-                salesOrder: '1',
+                salesOrder: 1,
                 item: {
                     id: 1,
                     description: 'Test Item',
@@ -286,7 +286,7 @@ describe('ManualReportingDetailsController', function () {
                 expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
                 expect(scope.orderNumber).toEqual(stubPO.orderNumber);
                 expect(scope.orderProgramme).toEqual(stubPO.programme);
-                expect(scope.salesOrder).toEqual(stubPO.salesOrder);
+                expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
 
             it('should set documentItems on the scope', function () {
