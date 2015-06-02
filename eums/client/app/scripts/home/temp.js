@@ -1,2 +1,0 @@
-[ { id : 55, parent : null, consignee : { id : 3, name : 'Stub Consignee' }, contactPersonId : { id : 3, firstName : 'Andrew', lastName : 'Mukiza', phone : '+234778945674' }, contactPerson : { id : 3, firstName : 'Andrew', lastName : 'Mukiza', phone : '+234778945674' } } ]
-[ { id : 55, parent : null, consignee : { id : 3, name : 'Stub Consignee' }, contactPersonId : { _id : 3, firstName : 'Andrew', lastName : 'Mukiza', phone : '+234778945674' } } ]
