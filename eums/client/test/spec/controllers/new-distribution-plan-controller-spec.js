@@ -2,9 +2,9 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var mockNodeService, mockIPService, mockPlanService, mockSalesOrderItemService,
-        mockConsigneeService, mockSalesOrderService, mockUserService, mockItemService;
+        mockConsigneeService, mockSalesOrderService, mockUserService, mockItemService, mockItemUnitService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
-        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise, deferredItemPromise;
+        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise, deferredItemPromise, deferredItemUnitPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
@@ -19,7 +19,19 @@ describe('NewDistributionPlanController', function () {
             },
             'orderNumber': orderNumber,
             'date': '2014-10-05',
-            'salesorderitemSet': [{id: 1}]
+            'salesorderitemSet': [{
+                id: 1,
+                item: {
+                    id: 1,
+                    description: 'Test Item',
+                    materialCode: '12345AS',
+                    unit: {
+                        name: 'EA'
+                    }
+                },
+                quantity: 100,
+                quantityLeft: 100
+            }]
         },
         {
             id: 2,
@@ -57,20 +69,20 @@ describe('NewDistributionPlanController', function () {
             item: {
                 id: 1,
                 description: 'Test Item',
-                material_code: '12345AS',
+                materialCode: '12345AS',
                 unit: {
                     name: 'EA'
                 }
             },
             quantity: 100,
-            quantity_left: 100
+            quantityLeft: 100
         },
         quantity: 100,
-        net_price: 10.00,
-        net_value: 1000.00,
-        issue_date: '2014-10-02',
-        delivery_date: '2014-10-02',
-        distributionplannode_set: [1, 2]
+        netPrice: 10.00,
+        netValue: 1000.00,
+        issueDate: '2014-10-02',
+        deliveryDate: '2014-10-02',
+        distributionplannodeSet: [1, 2]
     };
 
     var stubSalesOrderItemNodistributionPlanNodes = {
@@ -96,9 +108,9 @@ describe('NewDistributionPlanController', function () {
 
     var expectedFormattedSalesOrderItem = {
         display: stubSalesOrderItem.information.item.description,
-        materialCode: stubSalesOrderItem.information.item.material_code,
+        materialCode: stubSalesOrderItem.information.item.materialCode,
         quantity: stubSalesOrderItem.quantity,
-        quantityLeft: stubSalesOrderItem.information.quantity_left,
+        quantityLeft: stubSalesOrderItem.information.quantityLeft,
         unit: stubSalesOrderItem.information.item.unit.name,
         information: stubSalesOrderItem.information
     };
@@ -369,19 +381,15 @@ describe('NewDistributionPlanController', function () {
         it('should format the selected sales order appropriately for the view', function () {
             var stubItem = {
                 id: 1,
-                item: {
-                    id: 1,
-                    description: 'Test Item',
-                    material_code: '12345AS',
-                    unit: {
-                        name: 'EA'
-                    }
-                },
-                quantity: 100,
-                quantity_left: 100
+                description: 'Test Item',
+                materialCode: '12345AS',
+                unit: {
+                    name: 'EA'
+                }
             };
-            deferred.resolve(stubItem);
+
             deferredSalesOrder.resolve(salesOrders[0]);
+            deferredItemPromise.resolve(stubItem);
             scope.$apply();
 
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);
@@ -842,7 +850,7 @@ describe('NewDistributionPlanController', function () {
                 }));
 
                 it('the node for the ui plan node should be updated and not saved', function () {
-                    uiPlanNode.nodeId = nodeId;
+                    uiPlanNode.id = nodeId;
 
                     scope.saveDistributionPlanNodes();
                     scope.$apply();

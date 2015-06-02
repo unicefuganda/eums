@@ -52,15 +52,5 @@
 //:
 //    'In good condition', track
 //:
-//    true, contactPerson
-//:
-//    {
-//        id : 1, firstName
-//    :
-//        'Andrew', lastName
-//    :
-//        'Mukiza', phone
-//    :
-//        '+234778945674'
-//    }
+//    true
 //}

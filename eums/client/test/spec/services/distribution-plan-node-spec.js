@@ -5,12 +5,12 @@ describe('Distribution Plan Node Service', function () {
     var planNodeEndpointUrl;
     var nodeResponsesEndpointUrl;
 
-    var planNodeId = 1, consigneeId = 1, contactId = 1, itemId = 1;
+    var planNodeId = 1, childPlanNodeId = 2, consigneeId = 1, contactId = 1, itemId = 1;
 
     var stubPlanNode = {
         id: planNodeId,
         parent: null,
-        distribution_plan: 1,
+        distributionPlan: 1,
         location: 'Kampala',
         modeOfDelivery: 'Warehouse',
         contact_person_id: contactId,
@@ -18,7 +18,24 @@ describe('Distribution Plan Node Service', function () {
         consignee: consigneeId,
         item: itemId,
         quantity: 10,
-        under_current_supply_plan: false,
+        underCurrentSupplyPlan: false,
+        plannedDistributionDate: '2014-02-23',
+        remark: 'In good condition',
+        track: true
+    };
+
+    var stubChildPlanNode = {
+        id: childPlanNodeId,
+        parent: null,
+        distributionPlan: 1,
+        location: 'Kampala',
+        modeOfDelivery: 'Warehouse',
+        contactPersonId: contactId,
+        children: null,
+        consignee: consigneeId,
+        item: itemId,
+        quantity: 10,
+        underCurrentSupplyPlan: false,
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
         track: true
@@ -37,19 +54,19 @@ describe('Distribution Plan Node Service', function () {
     var expectedPlanNode = {
         id: planNodeId,
         parent: null,
-        distribution_plan: 1,
+        distributionPlan: 1,
         location: 'Kampala',
         modeOfDelivery: 'Warehouse',
-        children: [2],
+        contactPersonId: fullContact,
+        children: [stubChildPlanNode],
         consignee: fullConsignee,
-        contact_person_id: fullContact.id,
-        contact_person: fullContact,
         item: itemId,
         quantity: 10,
-        under_current_supply_plan: false,
+        underCurrentSupplyPlan: false,
         plannedDistributionDate: '2014-02-23',
         remark: 'In good condition',
-        track: true
+        track: true,
+        contactPerson: fullContact
     };
 
     var expectedNodeResponse = {
@@ -124,40 +141,56 @@ describe('Distribution Plan Node Service', function () {
             track: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
-        planNodeService.create({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
+        planNodeService.create({
+            distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
             quantity: 10, plannedDistributionDate: '2014-02-23', remark: 'In bad condition',
-            track: true})
-            .then(function (createdNode) {
-                expect(createdNode).toEqual(stubCreatedNode);
-                done();
-            });
+            track: true
+        }).then(function (createdNode) {
+            expect(createdNode).toEqual(stubCreatedNode);
+            done();
+        });
         mockBackend.flush();
     });
 
     it('should only return a response when the status is not 201', function () {
         var planId = 1, consigneeId = 1;
-        var stubCreatedNode = {id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
+        var stubCreatedNode = {
+            id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
             children: [], tree_position: 'END_USER', item: itemId,
             quantity: 10, under_current_supply_plan: false,
             plannedDistributionDate: '2014-02-23',
             remark: 'In bad condition',
             track: true
         };
-        mockBackend.whenPOST(planNodeEndpointUrl).respond(202, stubCreatedNode);
-        planNodeService.create({distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER',
+        var stubNewNode = {
+            distributionPlan: planId, consignee: consigneeId, tree_position: 'END_USER',
             item: itemId,
-            quantity: 10, under_current_supply_plan: false,
+            quantity: 10,
+            underCurrentSupplyPlan: false,
             plannedDistributionDate: '2014-02-23',
             remark: 'In bad condition',
-            track: true})
-            .then(function (createdNode) {
-                expect(createdNode.status).toEqual(202);
-            });
+            track: true
+        };
+
+        var stubExpectedNode = {
+            distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER',
+            item: itemId,
+            quantity: 10,
+            under_current_supply_plan: false,
+            planned_distribution_date: '2014-02-23',
+            remark: 'In bad condition',
+            track: true
+        };
+        mockBackend.expectPOST(planNodeEndpointUrl, stubExpectedNode).respond(201, stubCreatedNode);
+        planNodeService.create(stubNewNode).then(function (createdNode) {
+            expect(createdNode).toEqual(stubCreatedNode);
+        });
         mockBackend.flush();
     });
 
-    it('should get node with full details', function (done) {
+    iit('should get node with full details', function (done) {
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
+        mockBackend.whenGET(planNodeEndpointUrl + childPlanNodeId + '/').respond(stubChildPlanNode);
         planNodeService.getPlanNodeDetails(planNodeId).then(function (returnedPlanNode) {
             expect(returnedPlanNode).toEqual(expectedPlanNode);
             done();
@@ -176,6 +209,7 @@ describe('Distribution Plan Node Service', function () {
     });
 
     it('should get node response', function (done) {
+        mockBackend.whenGET(nodeResponsesEndpointUrl + planNodeId + '/').respond(expectedNodeResponse);
         mockBackend.whenGET(nodeResponsesEndpointUrl + planNodeId + '/').respond(expectedNodeResponse);
         planNodeService.getNodeResponse(planNodeId).then(function (returnedNodeResponse) {
             expect(returnedNodeResponse).toEqual(expectedNodeResponse);

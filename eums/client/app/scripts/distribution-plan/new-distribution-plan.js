@@ -100,10 +100,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         if ($scope.distributionPlanReport) {
             SalesOrderService.get($routeParams.salesOrderId, ['programme', 'salesorderitem_set']).then(function (response) {
+
                 $scope.selectedSalesOrder = response;
                 var salesOrderItemSetPromises = [];
                 $scope.selectedSalesOrder.salesorderitemSet.forEach(function (salesOrderItem) {
-                    ItemService.get(salesOrderItem.item, ['unit']).then(function (item) {
+                    ItemService.get(salesOrderItem.item.id, ['unit']).then(function (item) {
                         var formattedSalesOrderItem = {
                             display: item.description,
                             materialCode: item.materialCode,
@@ -135,6 +136,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 $scope.user = user;
                 if ($scope.user.consignee_id) {
                     PurchaseOrderService.getConsigneePurchaseOrder($routeParams.purchaseOrderId, $scope.user.consignee_id).then(function (response) {
+
                         $scope.selectedPurchaseOrder = response;
                         $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
 
@@ -171,6 +173,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 }
                 else {
                     PurchaseOrderService.get($routeParams.purchaseOrderId, ['sales_order', 'purchaseorderitem_set']).then(function (response) {
+
                         $scope.selectedPurchaseOrder = response;
                         $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.salesOrder;
 
@@ -190,7 +193,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                                     $scope.selectedSalesOrderItem = formattedSalesOrderItem;
                                     $scope.selectSalesOrderItem();
                                 }
-
                                 $scope.salesOrderItems.push(formattedSalesOrderItem);
                             }));
                         });
@@ -381,9 +383,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         function saveNode(uiPlanNode) {
-            console.log('plan node', uiPlanNode);
             var nodeId = uiPlanNode.id;
-            console.log('node id', nodeId);
             var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
 
             if (plannedDate.toString() === 'Invalid Date') {
