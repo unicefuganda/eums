@@ -100,6 +100,7 @@ describe('Dashboard', function () {
             console.log("test running at: " + new Date().getTime());
             var results = [];
 
+            //FIXME: need to handle situation where the page is rendered so fast that the wait for the windmill to display times out
             timeWaitingForPredicate(homePage.windmill.isDisplayed, function (duration, timestamp) {
                 console.log("executing after predicate ");
                 var resStr = generateSampleResultXml("Dashboard showing", duration, timestamp);
