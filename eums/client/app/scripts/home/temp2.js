@@ -1,56 +1,39 @@
 //{
-//    id : 1, parent
+//    id : 1, itemNumber
 //:
-//    null, distributionPlan
-//:
-//    1, location
-//:
-//    'Kampala', modeOfDelivery
-//:
-//    'Warehouse', contactPersonId
+//    1, salesOrderItem
 //:
 //    {
-//        id : 1, firstName
+//        id : 1, sales_order
 //    :
-//        'Andrew', lastName
+//        '1', item
 //    :
-//        'Mukiza', phone
+//        {
+//            id : 1, description
+//        :
+//            'item description', unit
+//        :
+//            1
+//        }
+//    ,
+//        quantity : 100, netPrice
 //    :
-//        '+234778945674'
+//        10, netValue
+//    :
+//        1000, issueDate
+//    :
+//        '2014-10-02', deliveryDate
+//    :
+//        '2014-10-02', information
+//    :
+//        {
+//            distributionplanlineitemSet : []
+//        }
+//    ,
+//        distributionplanlineitemSet : []
 //    }
 //,
-//    children : [{
-//        id: 2,
-//        parent: null,
-//        distributionPlan: 1,
-//        location: 'Kampala',
-//        modeOfDelivery: 'Warehouse',
-//        contactPersonId: 1,
-//        children: null,
-//        consignee: 1,
-//        item: 1,
-//        quantity: 10,
-//        underCurrentSupplyPlan: false,
-//        plannedDistributionDate: '2014-02-23',
-//        remark: 'In good condition',
-//        track: true
-//    }], consignee
+//    quantity : 100, value
 //:
-//    {
-//        id : 1, name
-//    :
-//        'Save the Children'
-//    }
-//,
-//    item : 1, quantity
-//:
-//    10, underCurrentSupplyPlan
-//:
-//    false, plannedDistributionDate
-//:
-//    '2014-02-23', remark
-//:
-//    'In good condition', track
-//:
-//    true
+//    1000
 //}

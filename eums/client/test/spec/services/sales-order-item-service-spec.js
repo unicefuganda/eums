@@ -65,7 +65,7 @@ describe('Sales Order Item Service', function () {
             distributionplannode_set: []
         };
 
-        salesOrderItemService.getSalesOrderItem(salesOrderItemId).then(function (salesOrderItem) {
+        salesOrderItemService.get(salesOrderItemId).then(function (salesOrderItem) {
             expect(salesOrderItem).toEqual(expectedSalesOrderItem);
             done();
         });
@@ -100,7 +100,7 @@ describe('Sales Order Item Service', function () {
 
     it('should return top level distribution plan nodes', function (done) {
         var stubContact = {
-            _id: 3,
+            id: 3,
             firstName: 'Andrew',
             lastName: 'Mukiza',
             phone: '+234778945674'
@@ -108,15 +108,15 @@ describe('Sales Order Item Service', function () {
 
         var stubPlanNodeWithoutParent = {id: 55, parent: null, consignee: 3, contact_person_id: 3};
         var stubPlanNodeWithParent = {id: 41, parent: stubPlanNodeWithoutParent.id, consignee: 3, contact_person_id: 3};
-        var stubConsignee = {id: stubContact._id, name: 'Stub Consignee'};
-        stubSalesOrderItem.distributionplannode_set = [41, 55];
+        var stubConsignee = {id: stubContact.id, name: 'Stub Consignee'};
+        stubSalesOrderItem.distributionplannodeSet = [{id: 41}, {id: 55}];
 
         var expectedPlanNodeSet = [{
             id: 55,
             parent: null,
             consignee: stubConsignee,
-            contact_person: stubContact,
-            contact_person_id: stubContact._id
+            contactPersonId: stubContact,
+            contactPerson: stubContact
         }];
 
         mockBackend
@@ -132,7 +132,7 @@ describe('Sales Order Item Service', function () {
             .respond(stubConsignee);
 
         mockBackend
-            .whenGET(contactEndpointUrl + stubContact._id + '/')
+            .whenGET(contactEndpointUrl + stubContact.id + '/')
             .respond(stubContact);
 
         salesOrderItemService

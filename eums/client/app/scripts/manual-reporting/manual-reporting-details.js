@@ -220,10 +220,8 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         };
 
         function setDistributionPlan(responseNode) {
-            console.log('initializing ', responseNode);
             if (_.isEmpty($scope.distributionPlanId)) {
                 $scope.distributionPlanId = responseNode.plan_id;
-                console.log('initialized distributionPlanId', $scope.distributionPlanId);
             }
         }
 

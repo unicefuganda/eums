@@ -188,7 +188,7 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.flush();
     });
 
-    iit('should get node with full details', function (done) {
+    it('should get node with full details', function (done) {
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
         mockBackend.whenGET(planNodeEndpointUrl + childPlanNodeId + '/').respond(stubChildPlanNode);
         planNodeService.getPlanNodeDetails(planNodeId).then(function (returnedPlanNode) {
@@ -200,9 +200,9 @@ describe('Distribution Plan Node Service', function () {
 
     it('should update node', function (done) {
         var updatedNode = {id: 1};
-        mockBackend.whenPUT(planNodeEndpointUrl + planNodeId + '/').respond(updatedNode);
-        planNodeService.updateNode(updatedNode).then(function (returnedNode) {
-            expect(returnedNode).toEqual(updatedNode);
+        mockBackend.expectPUT(planNodeEndpointUrl + planNodeId + '/', updatedNode).respond(200);
+        planNodeService.update(updatedNode).then(function (status) {
+            expect(status).toEqual(200);
             done();
         });
         mockBackend.flush();
