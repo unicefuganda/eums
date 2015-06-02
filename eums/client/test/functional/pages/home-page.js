@@ -8,6 +8,7 @@ var HomePage = function () {
     this.numberNotDelivered = element(by.binding('totalStats.totalNotReceived'));
     this.numberOfResponses = element.all(by.repeater('response in responses'));
     this.responsesPageLink = element(by.id('response-page-btn'));
+    this.windmill = element(by.id('loading'));
 
     this.pageTitle = function () {
         return this.homePageTitle.getText();
