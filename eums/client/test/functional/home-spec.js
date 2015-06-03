@@ -6,6 +6,7 @@ describe('Home Page', function () {
     describe('Admin User', function() {
         beforeEach(function () {
             loginPage = require('./pages/login-page');
+            browser.get('/');//needed because login page does not contain angularjs
             homePage = loginPage.loginWithCredentials('admin', 'admin');
 
         });
