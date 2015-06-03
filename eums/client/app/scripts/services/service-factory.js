@@ -106,6 +106,9 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                                 var objectToReturn = options.changeCase ? changeCase(builtObject, toCamelCase) : builtObject;
                                 return options.model ? new options.model(objectToReturn) : objectToReturn;
                             });
+                        }, function (err) {
+                            console.log('Error getting entity: ' + err);
+                            return {};
                         });
                     },
                     create: function (object) {

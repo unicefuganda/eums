@@ -59,7 +59,7 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
         getAllResponsesByDate().then(function (allResponses) {
             $scope.allResponses = allResponses;
         }, function(err){
-            console.log("Failed to retrieve response data: " + JSON.stringify(err));
+            console.log('Failed to retrieve response data: ' + JSON.stringify(err));
         });
     })
     .directive('customPopover', function () {
