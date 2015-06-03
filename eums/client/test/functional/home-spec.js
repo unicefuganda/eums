@@ -5,6 +5,7 @@ describe('Home Page', function () {
 
     describe('Admin User', function() {
         beforeEach(function () {
+            //TODO: make tests faster by loging in once and browser.get('/') in the beforeEach
             loginPage = require('./pages/login-page');
             browser.get('/');//needed because login page does not contain angularjs
             homePage = loginPage.loginWithCredentials('admin', 'admin');
@@ -84,7 +85,7 @@ describe('Home Page', function () {
             })
         });
 
-        it('should search for "no" product received in Wakiso district', function () {
+        it('should search for "yes" product received in Wakiso district', function () {
             browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
             browser.sleep(5000);
