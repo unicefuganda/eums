@@ -10,10 +10,10 @@ echo "Packaging for Artifact=$artifactName BuildCounter=$artifactCounter GitRevi
 
 cp eums/Dockerfile .
 #Build and save the image
-docker build -t unicef/$artifactName:$artifactCounter .
+sudo docker build -t unicef/$artifactName:$artifactCounter .
 
 mkdir build
-docker save -o build/$artifactName"_docker_image.tar" unicef/$artifactName:$artifactCounter
+sudo docker save -o build/$artifactName"_docker_image.tar" unicef/$artifactName:$artifactCounter
 
 cp eums/scripts/packaging/install-image-eums.sh build/install-image-eums.sh
 chmod +x build/install-image-eums.sh
