@@ -6,7 +6,7 @@ FROM ubuntu:14.04
 MAINTAINER eums <eums@thoughtworks.com>
 
 ##############################################################################
-## install and configure supervisor
+## Change policy
 ##############################################################################
 RUN echo exit 0 > /usr/sbin/policy-rc.d
 RUN chmod +x /usr/sbin/policy-rc.d
@@ -111,6 +111,10 @@ RUN apt-get install -y python-dev
 RUN pip install uwsgi
 ADD ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
 
+# copy nginx config files
+ADD ./eums/scripts/packaging/nginx.config /etc/nginx/nginx.conf
+ADD ./eums/scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums.nginx.conf
+
 ##############################################################################
 ## Add the codebase to the image
 ##############################################################################
@@ -138,4 +142,3 @@ EXPOSE 22 80
 #ENTRYPOINT ["/usr/bin/supervisor"]
 #default options to pass to the entrypoint
 CMD ["/usr/bin/supervisord"]
-#CMD ["/usr/sbin/sshd",	 "-D"]
