@@ -237,7 +237,7 @@ describe('Service Factory', function () {
         });
         mockBackend.flush();
     });
-
+    
     it('should use "PATCH" when updating if specified', function (done) {
         var objectToUpdate = {id: fakeOne.id, property_one: 1};
         mockBackend.expectPATCH('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id), objectToUpdate).respond(200);
@@ -314,6 +314,84 @@ describe('Service Factory', function () {
             }
         });
         expect(service.testMethod()).toBe(10);
+    });
+
+    describe('with "changeCase" option set to false', function () {
+        var service;
+        beforeEach(function () {
+            service = serviceFactory.create({
+                uri: levelOneEndpoint,
+                changeCase: false
+            });
+        });
+
+        it('should not change case on .create', function (done) {
+            var obj = {someProperty: 1};
+            var expected = {id: 5, someProperty: 1};
+            mockBackend.expectPOST(levelOneEndpoint, obj).respond(201, expected);
+            service.create(obj).then(function (created) {
+                expect(created).toEqual(expected);
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should not change case on .get', function (done) {
+            var obj = {id: 1, some_property: 1};
+            mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, obj.id)).respond(200, obj);
+            service.get(obj.id).then(function (object) {
+                expect(object).toEqual(obj);
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should not change case on .update', function (done) {
+            var obj = {id: 1, someProperty: 1};
+            mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, obj.id), obj).respond(200);
+            service.update(obj).then(function () {
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should not change case on .all', function (done) {
+            var objects = [{id: 1, some_property: 1}, {id: 2, some_property: 2}];
+            mockBackend.whenGET(levelOneEndpoint).respond(200, objects);
+            service.all().then(function (list) {
+                expect(list).toEqual(objects);
+                done();
+            });
+            mockBackend.flush();
+        });
+    });
+
+    describe('with "idField" option set', function () {
+        var service;
+        beforeEach(function () {
+            service = serviceFactory.create({
+                uri: levelOneEndpoint,
+                idField: '_id'
+            });
+        });
+
+        it('should use specified id field on .update', function (done) {
+            var obj = {_id: 1, some_property: 1};
+            mockBackend.expectPUT('{1}{2}/'.assign(levelOneEndpoint, obj._id), obj).respond(200);
+            service.update(obj).then(function () {
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should use specified id field on .delete', function (done) {
+            var obj = {_id: 1, some_property: 1};
+            mockBackend.expectDELETE('{1}{2}/'.assign(levelOneEndpoint, obj._id)).respond(200);
+            service.del(obj).then(function () {
+                done();
+            });
+            mockBackend.flush();
+        });
     });
 
     describe('with "changeCase" option set to false', function () {

@@ -1,79 +1,30 @@
 describe('Purchase Order Item Service', function () {
 
     var purchaseOrderItemService,
-        mockBackend, q,
         endpointUrl,
-        mockSalesOrderItemService,
-        purchaseOrderItemId = 1,
-        salesOrderItemId = 1,
-        itemId = 1,
-        quantity = 100,
-        value = 1000.00;
-
-    var stubItem = {
-        id: itemId,
-        description: 'item description',
-        unit: 1
-    };
-
-    var stubSalesOrderItem = {
-        id: salesOrderItemId,
-        salesOrder: '1',
-        item: stubItem,
-        quantity: 100,
-        netPrice: 10.00,
-        netValue: 1000.00,
-        issueDate: '2014-10-02',
-        deliveryDate: '2014-10-02',
-        information: {
-            distributionplanlineitemSet: []
-        },
-        distributionplanlineitemSet: []
-    };
-
-    var stubPurchaseOrderItem = {
-        id: purchaseOrderItemId,
-        itemNumber: itemId,
-        sales_order_item: salesOrderItemId,
-        quantity: quantity,
-        value: value
-    };
+        salesOrderItemService,
+        mockServiceFactory;
 
     beforeEach(function () {
         module('PurchaseOrderItem');
 
-        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
+        mockServiceFactory = jasmine.createSpyObj('mockFactoryService', ['create']);
 
         module(function ($provide) {
-            $provide.value('SalesOrderItemService', mockSalesOrderItemService);
+            $provide.value('ServiceFactory', mockServiceFactory);
         });
 
-        inject(function (PurchaseOrderItemService, $httpBackend, EumsConfig, $q) {
-            q = $q;
-            var deferredSalesOrderItemRequest = q.defer();
-            deferredSalesOrderItemRequest.resolve(stubSalesOrderItem);
-            mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemRequest.promise);
-
-            mockBackend = $httpBackend;
-            endpointUrl = EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM;
+        inject(function (PurchaseOrderItemService, EumsConfig, SalesOrderItemService) {
             purchaseOrderItemService = PurchaseOrderItemService;
+            salesOrderItemService = SalesOrderItemService;
+            endpointUrl = EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM;
         });
     });
 
-    it('should get purchase order item details', function (done) {
-        var expectedPurchaseOrderItem = {
-            id: purchaseOrderItemId,
-            itemNumber: itemId,
-            salesOrderItem: stubSalesOrderItem,
-            quantity: quantity,
-            value: value
-        };
-
-        mockBackend.whenGET(endpointUrl + purchaseOrderItemId + '/').respond(stubPurchaseOrderItem);
-        purchaseOrderItemService.get(purchaseOrderItemId, ['sales_order_item']).then(function (purchaseOrderItem) {
-            expect(purchaseOrderItem).toEqual(expectedPurchaseOrderItem);
-            done();
+    it('should invoke create on Factory Service with right params', function () {
+        expect(mockServiceFactory.create).toHaveBeenCalledWith({
+            uri: endpointUrl,
+            propertyServiceMap: {sales_order_item: salesOrderItemService}
         });
-        mockBackend.flush();
     });
 });

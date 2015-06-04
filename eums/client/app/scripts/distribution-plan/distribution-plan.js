@@ -90,6 +90,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         };
     })
     .factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService) {
+        //TODO remove this
         var fillOutNode = function (nodeId, plan) {
             return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
                 .then(function (nodeDetails) {
@@ -135,13 +136,10 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         };
 
         function aggregateAllResponses(data, location) {
-            var totalYes = 0;
             var totalSent = data.length;
-            data.forEach(function (response) {
-                if (response.productReceived && response.productReceived.toLowerCase() === 'yes') {
-                    totalYes += 1;
-                }
-            });
+            var totalYes = data.reduce(function (total, current) {
+                return current.productReceived && current.productReceived.toLowerCase() === 'yes' ? total + 1 : total;
+            },0);
 
             return {
                 location: location,
@@ -160,7 +158,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             });
             return aggregates;
         }
-
 
         function compareReceiptDate(firstResponse, secondResponse) {
             return moment(firstResponse.dateOfReceipt, 'DD/MM/YYY') - moment(secondResponse.dateOfReceipt, 'DD/MM/YYY');
@@ -188,11 +185,14 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
 
         return {
             aggregateStats: function (data, location) {
+                //TODO Remove. This should happen at the backend
                 return aggregateAllResponses(getResponseFor(data, location), location);
             },
+            //TODO This should be all:
             fetchPlans: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, {cache: true});
             },
+            //TODO Remove. Clients should get nodes when they get the plan
             getNodes: function (plan) {
                 var distributionPlanNodesPromises = plan.distributionplannode_set.map(function (nodeId) {
                     return DistributionPlanNodeService.getPlanNodeById(nodeId);
@@ -200,16 +200,16 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 return $q.all(distributionPlanNodesPromises);
             },
             getAllPlansNodes: function () {
-                var self = this, mergedPromises = [];
-                return self.fetchPlans().then(function (response) {
+                var mergedPromises = [];
+                return this.fetchPlans().then(function (response) {
                     var nodePlanPromises = response.data.map(function (plan) {
-                        return self.getNodes(plan);
-                    });
+                        return this.getNodes(plan);
+                    }.bind(this));
 
                     return $q.all(nodePlanPromises).then(function (nodePlans) {
                         return mergedPromises.concat.apply(mergedPromises, nodePlans);
                     });
-                });
+                }.bind(this));
             },
 
             getConsigneeDetails: function (consigneeId) {
@@ -237,7 +237,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                     return getResponseFor(responsesWithLocation, district);
                 });
             },
-
             orderAllResponsesByDate: function (district) {
                 return this.getResponsesByLocation(district).then(function (responses) {
                     return orderResponsesByDateReceived(responses);
@@ -277,12 +276,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                     });
                 });
             },
-            getDistributionPlanNodeById: function (id) {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + id + '/', {cache: true});
-            },
-            getImplementingPartners: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER', {cache: true});
-            },
             getMiddleMen: function () {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=MIDDLE_MAN', {cache: true}).then(function (response) {
                     return response.data;
@@ -295,12 +288,12 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                     });
                 });
             },
-            getPlanById: function (planId) {
+            get: function (planId) {
                 return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/', {cache: true});
             },
-
+            //TODO Remove. Make clients ask to build node_set
             getPlanDetails: function (planId) {
-                var getPlanPromise = this.getPlanById(planId);
+                var getPlanPromise = this.get(planId);
                 return getPlanPromise.then(function (response) {
                     var plan = response.data;
                     var nodeFillOutPromises = [];
@@ -316,6 +309,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                     });
                 });
             },
+            //TODO Remove
             createPlan: function (planDetails) {
                 return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function (response) {
                     if (response.status === 201) {
@@ -327,12 +321,13 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 });
             },
             updatePlanTracking: function (planId, tracking) {
-                var getPlanPromise = this.getPlanById(planId);
+                var getPlanPromise = this.get(planId);
                 return getPlanPromise.then(function (response) {
                     var plan = response.data;
                     var nodeUpdatePromises = [];
 
                     plan.distributionplannode_set.forEach(function (nodeId) {
+                        //TODO Simplified in node service by removal of line item
                         nodeUpdatePromises.push(DistributionPlanNodeService.updateNodeTracking(nodeId, tracking));
                     });
 
@@ -353,7 +348,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
         };
     }]).filter('salesOrderFilter', function ($filter) {
-        return  function (salesOrders, query) {
+        return function (salesOrders, query) {
             var results = $filter('filter')(salesOrders, {order_number: query});
             results = _.union(results, $filter('filter')(salesOrders, {date: query}));
             results = _.union(results, $filter('filter')(salesOrders, {description: query}));

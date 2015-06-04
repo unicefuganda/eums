@@ -423,13 +423,6 @@ describe('UNICEF IP', function () {
             httpBackend.flush();
         });
 
-        it('should get distribution plan node by id', function () {
-            distributionPlanService.getDistributionPlanNodeById(planNodeOne).then(function (responses) {
-                expect(responses.data).toEqual(stubDistributionPlanNodes[0]);
-            });
-            httpBackend.flush();
-        });
-
         it('should map all consignee responses to node location', function (done) {
             distributionPlanService.mapConsigneesResponsesToNodeLocation().then(function (consigneesWithLocation) {
                 expect(consigneesWithLocation[0].location).toBe(stubDistributionPlanNodes[0].location);
@@ -466,6 +459,7 @@ describe('UNICEF IP', function () {
             httpBackend.flush();
         });
 
+        //TODO un-x this
         xit('should group responses for a given location', function (done) {
             var district = 'Gulu';
             distributionPlanService.getResponsesByLocation(district).then(function (responses) {
@@ -598,16 +592,6 @@ describe('UNICEF IP', function () {
             });
             httpBackend.flush();
         });
-
-        it('should get all implementing partners', function (done) {
-            distributionPlanService.getImplementingPartners().then(function (ips) {
-                expect(ips.data).toEqual([stubDistributionPlanNodes[2]]);
-                done();
-            });
-            httpBackend.flush();
-        });
-
-
     });
 
 });

@@ -84,6 +84,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                 options.changeCase === undefined && (options.changeCase = true);
                 var idField = options.idField || 'id';
 
+
                 var service = {
                     all: function (nestedFields) {
                         var self = this;

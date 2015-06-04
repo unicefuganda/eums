@@ -107,7 +107,7 @@ describe('ManualReportingDetailsController', function () {
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
         mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'qualityOptions', 'satisfiedOptions']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
-        mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrderItem']);
+        mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
         mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
         mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['create']);
@@ -137,7 +137,7 @@ describe('ManualReportingDetailsController', function () {
             mockOptionService.qualityOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.satisfiedOptions.and.returnValue(deferredOptionPromise.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrderPromise.promise);
-            mockPurchaseOrderItemService.getPurchaseOrderItem.and.returnValue(deferredPurchaseOrderItemPromise.promise);
+            mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
             mockReleaseOrderService.get.and.returnValue(deferredReleaseOrderPromise.promise);
             mockReleaseOrderItemService.get.and.returnValue(deferredReleaseOrderItemPromise.promise);
             mockDistributionPlanService.create.and.returnValue(deferredDistributionPlanPromise.promise);
