@@ -94,7 +94,7 @@ describe('Home Page', function () {
             responsePage.searchResponsesFor('yes');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(3);
-                expect(rows[0].getText()).toEqual('IEHK2006,kit,suppl.1-drugs');
+                expect(rows[0].getText()).toEqual('Safety box f.used syrgs/ndls 5lt/BOX-25');
             })
         });
     });
