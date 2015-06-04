@@ -6,5 +6,4 @@ angular.module('PurchaseOrderItem', ['eums.config', 'SalesOrderItem', 'eums.serv
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM,
             propertyServiceMap: {sales_order_item: SalesOrderItemService}
         });
-
     });

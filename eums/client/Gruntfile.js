@@ -107,7 +107,8 @@ module.exports = function (grunt) {
                     'dist/app.min.js': ['app/scripts/**/*.js']
                 },
                 options: {
-                    mangle: false
+                    mangle: false,
+                    beautify: true
                 }
             }
         },
@@ -161,6 +162,16 @@ module.exports = function (grunt) {
         },
 
         protractor: {
+            performance: {
+                options: {
+                    configFile: 'test/performance_conf.js',
+                    keepAlive: false,
+                    args: {
+                        specs: ['test/performance/*-spec.js'],
+                        browser: 'chrome'
+                    }
+                }
+            },
             headless: {
                 options: {
                     configFile: 'test/functional_conf.js',
@@ -236,7 +247,7 @@ module.exports = function (grunt) {
                 }
             },
             seedData: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings',
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings && python manage.py loaddata eums/client/test/functional/fixtures/staging_datadump.json --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -356,7 +367,7 @@ module.exports = function (grunt) {
     grunt.registerTask('prepare-for-server-start', [
         'build',
         'clean:server',
-        'shell:sourceEnv',
+//        'shell:sourceEnv',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
@@ -368,6 +379,13 @@ module.exports = function (grunt) {
         'prepare-for-server-start',
         'run:djangoServer',
         'protractor:headless',
+        'shell:stopServer'
+    ]);
+
+    grunt.registerTask('performance', [
+        'prepare-for-server-start',
+        'run:djangoServer',
+        'protractor:performance',
         'shell:stopServer'
     ]);
 

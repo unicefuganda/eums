@@ -10,7 +10,9 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = DistributionPlanNode
         fields = ('id', 'parent', 'distribution_plan', 'children', 'location', 'mode_of_delivery',
-                  'distributionplanlineitem_set', 'consignee', 'tree_position', 'contact_person_id')
+                  'consignee', 'tree_position', 'contact_person_id', 'item',
+                  'targeted_quantity', 'planned_distribution_date',
+                  'remark', 'track')
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):
@@ -18,6 +20,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     serializer_class = DistributionPlanNodeSerialiser
     filter_backends = (filters.SearchFilter,)
     search_fields = ('tree_position',)
+
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)

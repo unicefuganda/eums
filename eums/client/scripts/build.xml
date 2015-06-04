@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="eums-performance" default="default" basedir=".">
+
+	<target name="default" depends="run-jchav"
+		description="Generate Eums Performance reports" />
+
+	<target name="init">
+
+		<echo>Loading properties from build.properties</echo>
+		<property file="build.properties" />
+
+		<property description="The directory containing the jchav jars"
+			name="jchav.libs.dir" value="lib" />
+
+		<property description="The location to generate the html and charts to. " 
+			name="jchav.result.dir" value="/testResults/html" />
+		
+
+	</target>
+
+			
+	
+	<target name="run-jchav" depends="init"
+			description="Produce JChav report from the JMeter results">
+		
+		<mkdir dir="/jchavResults"/>
+		
+		 <taskdef name="jchav" classname="com.googlecode.jchav.ant.JChavTask">
+			<classpath>
+				<fileset dir="${jchav.libs.dir}/">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+		 </taskdef>
+		
+		<jchav destdir="${jchav.result.dir}"
+			reporttitle="Abe report"
+			uniformyaxis="true">
+			<fileset dir="/testResults" includes="*.xml" />
+		</jchav>
+		
+		<echo>Now open ${jchav.result.dir}/index.html</echo>
+	
+	</target>
+	
+</project>
+
+

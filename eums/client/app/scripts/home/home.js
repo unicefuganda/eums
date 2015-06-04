@@ -15,7 +15,7 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
         $scope.isFiltered = false;
         $scope.notDeliveryStatus = false;
 
-        UserService.getCurrentUser().then(function (user){
+        UserService.getCurrentUser().then(function (user) {
             $scope.user = user;
         });
         $scope.showDetailedResponses = function () {
@@ -23,32 +23,32 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
         };
 
     }).controller('ResponseController', function ($scope, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, SalesOrderItemService) {
-        function getAllResponsesByDate(){
+        function getAllResponsesByDate() {
             return DistributionPlanService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
                 var nodePromises = [];
                 var poItemPromises = [];
 
                 allResponses.forEach(function (response) {
-                    if(response.node){
+                    if (response.node) {
                         nodePromises.push(
                             DistributionPlanNodeService.getPlanNodeDetails(response.node).then(function (planNode) {
                                 response.contact_person = planNode.contact_person;
 
-                                if(planNode.lineItems.length > 0){
-                                    var sales_order_item_id = planNode.lineItems[0].item;
-                                    poItemPromises.push(
-                                        SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem){
-                                            response.purchase_order = poItem.purchase_order;
-                                        })
-                                    );
-                                }
+
+                                var sales_order_item_id = planNode.item;
+                                poItemPromises.push(
+                                    SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem) {
+                                        response.purchase_order = poItem.purchase_order;
+                                    })
+                                );
+
                             })
                         );
                     }
                 });
 
-                return $q.all(nodePromises).then( function(){
-                    return $q.all(poItemPromises).then( function(){
+                return $q.all(nodePromises).then(function () {
+                    return $q.all(poItemPromises).then(function () {
                         return allResponses;
                     });
                 });
@@ -56,19 +56,19 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
             });
         }
 
-        getAllResponsesByDate().then(function (allResponses){
+        getAllResponsesByDate().then(function (allResponses) {
             $scope.allResponses = allResponses;
         });
     })
     .directive('customPopover', function () {
-            return {
-                restrict: 'A',
-                link: function (scope, el, attrs) {
-                    $(el).popover({
-                        trigger: 'hover',
-                        html: true,
-                        content: attrs.popoverHtml
-                    });
-                }
-            };
+        return {
+            restrict: 'A',
+            link: function (scope, el, attrs) {
+                $(el).popover({
+                    trigger: 'hover',
+                    html: true,
+                    content: attrs.popoverHtml
+                });
+            }
+        };
     });

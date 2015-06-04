@@ -49,7 +49,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                         });
                     }
                     else {
-                        PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
+                        PurchaseOrderService.all().then(function (purchaseOrders) {
                             $scope.salesOrders = purchaseOrders.sort();
                             angular.element('#loading').modal('hide');
                         });
@@ -336,6 +336,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             }
         };
     })
+
     .directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',

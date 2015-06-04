@@ -2,12 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from eums.models import DistributionPlanLineItem, SalesOrderItem, PurchaseOrder
+from eums.models import DistributionPlanNode, SalesOrderItem, PurchaseOrder
 
 
 class ConsigneePurchaseOrders(APIView):
     def get(self, _, consignee_id):
-        sales_order_items_ids = DistributionPlanLineItem.objects.filter(distribution_plan_node__consignee_id=consignee_id, distribution_plan_node__parent_id__isnull=True).values('item_id')
+        sales_order_items_ids = DistributionPlanNode.objects.filter(consignee_id=consignee_id,
+                                                                    parent_id__isnull=True).values('item_id')
         responses = self._get_purchase_orders_for_(sales_order_items_ids) if sales_order_items_ids else []
         return Response(responses, status=status.HTTP_200_OK)
 

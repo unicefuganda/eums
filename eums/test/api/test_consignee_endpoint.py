@@ -1,6 +1,7 @@
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
-from eums.test.api.api_test_helpers import create_consignee, create_distribution_plan, create_distribution_plan_node
+from eums.test.api.api_test_helpers import create_consignee, create_distribution_plan, create_distribution_plan_node, \
+    create_sales_order_item
 from eums.test.config import BACKEND_URL
 
 
@@ -55,8 +56,12 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         implementing_partner_details = create_consignee(self, implementing_partner)
         create_consignee(self, middle_man)
         plan_id = create_distribution_plan(self)
-        node_details = {'distribution_plan': plan_id, 'consignee': implementing_partner_details['id'], 'tree_position': 'END_USER',
-                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234'}
+        item = create_sales_order_item(self)
+        node_details = {'item': item['id'], 'targeted_quantity': 1, 'distribution_plan': plan_id,
+                        'planned_distribution_date': '2015-04-23', 'consignee': implementing_partner_details['id'],
+                        'tree_position': 'END_USER',
+                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234', }
+
         create_distribution_plan_node(self, node_details)
 
         get_response = self.client.get(ENDPOINT_URL + '?node=top')

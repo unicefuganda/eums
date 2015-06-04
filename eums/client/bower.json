@@ -20,7 +20,7 @@
     "angular-chosen-localytics": "~1.0.6",
     "sugar": "~1.4.1",
     "angular-gs-to-snake-case": "~0.1.1",
-    "angular-gs-to-camel-case": "~0.1.2",
+    "angular-gs-to-camel-case": "https://github.com/oloo/angular-gs-to-camel-case.git",
     "angular-gs-capitalize": "~0.1.3"
   },
   "devDependencies": {

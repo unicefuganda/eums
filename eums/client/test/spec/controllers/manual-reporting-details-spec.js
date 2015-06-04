@@ -1,93 +1,94 @@
 describe('ManualReportingDetailsController', function () {
     beforeEach(module('ManualReportingDetails'));
 
-     var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
-         mockReleaseOrderService, mockReleaseOrderItemService, mockDistributionPlanLineItemService,
-         mockDistributionPlanService, mockDistributionPlanNodeService;
-     var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
-         deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
-         deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise;
-     var scope, q, mockToastProvider, location;
-     var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
-     var orderId = 1,
-         salesOrderId = 1,
-         programmeName = 'Test Programme';
-     var responseItem;
+    var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
+        mockReleaseOrderService, mockReleaseOrderItemService, mockSalesOrderService,
+        mockDistributionPlanService, mockDistributionPlanNodeService, mockSalesOrderItemService;
+    var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
+        deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
+        deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredNodeResponsePromise,
+        deferredSalesOrderItemPromise, deferredSalesOrderPromise;
+    var scope, q, mockToastProvider, location;
+    var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
+    var orderId = 1,
+        salesOrderId = 1,
+        programmeName = 'Test Programme';
+    var nodeResponse;
 
 
     beforeEach(function () {
-        stubSalesOrder =  {
+        stubSalesOrder = {
             id: salesOrderId,
             'programme': {
                 id: 3,
                 name: 'Alive'
             },
-            'order_number': 10,
+            'orderNumber': 10,
             'date': '2014-10-05',
-            'salesorderitem_set': ['1']
+            'salesorderitemSet': [1]
         };
 
         stubPurchaseOrder = {
             id: 1,
-            order_number: orderId,
-            sales_order: stubSalesOrder,
+            orderNumber: orderId,
+            salesOrder: stubSalesOrder,
             date: '2014-10-06',
-            purchaseorderitem_set: [1],
+            purchaseorderitemSet: [1],
             programme: programmeName
         };
 
         stubReleaseOrder = {
             id: 1,
-            order_number: orderId,
-            delivery_date: '2014-10-06',
+            orderNumber: orderId,
+            deliveryDate: '2014-10-06',
             description: 'Midwife Supplies',
             consignee: 1,
             waybill: 12,
-            sales_order: stubSalesOrder,
-            purchase_order: stubPurchaseOrder,
-            releaseorderitem_set: [1],
+            salesOrder: stubSalesOrder,
+            purchaseOrder: stubPurchaseOrder,
+            releaseorderitemSet: [1],
             programme: programmeName
         };
 
         stubSalesOrderItem = {
             id: 1,
-            sales_order: '1',
+            salesOrder: '1',
             information: {
                 id: 1,
                 item: {
                     id: 1,
                     description: 'Test Item',
-                    material_code: '12345AS',
+                    materialCode: '12345AS',
                     unit: {
                         name: 'EA'
                     }
                 },
                 quantity: 100,
-                quantity_left: 100
+                quantityLeft: 100
             },
             item: {
                 id: 1,
                 description: 'Test Item',
-                material_code: '12345AS',
+                materialCode: '12345AS',
                 unit: {
                     name: 'EA'
                 }
             },
             quantity: 100,
-            net_price: 10.00,
-            net_value: 1000.00,
-            issue_date: '2014-10-02',
-            delivery_date: '2014-10-02',
-            distributionplanlineitem_set: [1]
+            netPrice: 10.00,
+            netValue: 1000.00,
+            issueDate: '2014-10-02',
+            deliveryDate: '2014-10-02',
+            distributionplannodeSet: [{id: 1}]
         };
 
         stubPurchaseOrderItem = {
             id: 1,
-            purchase_order: stubPurchaseOrder.id,
-            item_number: 10,
+            purchaseOrder: stubPurchaseOrder.id,
+            itemNumber: 10,
             quantity: '700.00',
             value: '3436.82',
-            sales_order_item: stubSalesOrderItem
+            salesOrderItem: stubSalesOrderItem
         };
 
         stubReleaseOrderItem = {
@@ -97,7 +98,7 @@ describe('ManualReportingDetailsController', function () {
             item_number: 10,
             quantity: '700.00',
             value: '3436.82',
-            purchase_order_item: stubPurchaseOrderItem
+            purchaseOrderItem: stubPurchaseOrderItem
         };
     });
 
@@ -105,13 +106,14 @@ describe('ManualReportingDetailsController', function () {
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all']);
         mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'qualityOptions', 'satisfiedOptions']);
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getPurchaseOrder']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
-        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrder']);
-        mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['getReleaseOrderItem']);
-        mockDistributionPlanLineItemService = jasmine.createSpyObj('mockDistributionPlanLineItemService', ['getLineItemResponse']);
-        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
-        mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['']);
+        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
+        mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
+        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['create']);
+        mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getNodeResponse']);
+        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
+        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $location, $sorter, $timeout, $q) {
@@ -119,36 +121,41 @@ describe('ManualReportingDetailsController', function () {
             deferredDistrictPromise = $q.defer();
             deferredConsigneePromise = $q.defer();
             deferredOptionPromise = $q.defer();
-            deferredPurchaseOrderPromise  = $q.defer();
+            deferredPurchaseOrderPromise = $q.defer();
             deferredPurchaseOrderItemPromise = $q.defer();
             deferredReleaseOrderPromise = $q.defer();
             deferredReleaseOrderItemPromise = $q.defer();
             deferredLineItemPromise = $q.defer();
             deferredDistributionPlanPromise = $q.defer();
             deferredDistributionPlanNodePromise = $q.defer();
+            deferredNodeResponsePromise = $q.defer();
+            deferredSalesOrderItemPromise = $q.defer();
+            deferredSalesOrderPromise = $q.defer();
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockConsigneeService.all.and.returnValue(deferredConsigneePromise.promise);
             mockOptionService.receivedOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.qualityOptions.and.returnValue(deferredOptionPromise.promise);
             mockOptionService.satisfiedOptions.and.returnValue(deferredOptionPromise.promise);
-            mockPurchaseOrderService.getPurchaseOrder.and.returnValue(deferredPurchaseOrderPromise.promise);
+            mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrderPromise.promise);
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
-            mockReleaseOrderService.getReleaseOrder.and.returnValue(deferredReleaseOrderPromise.promise);
-            mockReleaseOrderItemService.getReleaseOrderItem.and.returnValue(deferredReleaseOrderItemPromise.promise);
-            mockDistributionPlanLineItemService.getLineItemResponse.and.returnValue(deferredLineItemPromise.promise);
-            mockDistributionPlanService.createPlan.and.returnValue(deferredDistributionPlanPromise.promise);
+            mockReleaseOrderService.get.and.returnValue(deferredReleaseOrderPromise.promise);
+            mockReleaseOrderItemService.get.and.returnValue(deferredReleaseOrderItemPromise.promise);
+            mockDistributionPlanService.create.and.returnValue(deferredDistributionPlanPromise.promise);
+            mockDistributionPlanNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
+            mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
+            mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemPromise.promise);
             location = $location;
             scope = $rootScope.$new();
 
             spyOn(angular, 'element').and.callFake(function () {
                 return {
-                    modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                    modal: jasmine.createSpy('modal').and.callFake(function (status) {
                         return status;
                     }),
-                    hasClass : jasmine.createSpy('hasClass').and.callFake(function (status) {
+                    hasClass: jasmine.createSpy('hasClass').and.callFake(function (status) {
                         return status;
                     }),
-                    removeClass : jasmine.createSpy('removeClass').and.callFake(function (status) {
+                    removeClass: jasmine.createSpy('removeClass').and.callFake(function (status) {
                         return status;
                     })
                 };
@@ -168,16 +175,17 @@ describe('ManualReportingDetailsController', function () {
                     ReleaseOrderService: mockReleaseOrderService,
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     ngToast: mockToastProvider,
-                    DistributionPlanLineItemService: mockDistributionPlanLineItemService,
                     DistributionPlanService: mockDistributionPlanService,
-                    DistributionPlanNodeService: mockDistributionPlanNodeService
+                    DistributionPlanNodeService: mockDistributionPlanNodeService,
+                    SalesOrderItemService: mockSalesOrderItemService,
+                    SalesOrderService: mockSalesOrderService
                 });
         });
     };
 
 
     describe('when initialized', function () {
-        describe('loading initial lists', function (){
+        describe('loading initial lists', function () {
             beforeEach(function () {
                 setUp({});
             });
@@ -234,37 +242,69 @@ describe('ManualReportingDetailsController', function () {
         });
 
         describe('with purchase order', function () {
+
+            var stubPO = {
+                id: 1,
+                orderNumber: orderId,
+                salesOrder: 1,
+                date: '2014-10-06',
+                purchaseorderitemSet: [{id: 1, salesOrderItem: 1}],
+                programme: programmeName
+            };
+
+            var stubSOItem = {
+                id: 1,
+                salesOrder: 1,
+                item: {
+                    id: 1,
+                    description: 'Test Item',
+                    materialCode: '12345AS',
+                    unit: {
+                        name: 'EA'
+                    }
+                },
+                quantity: 100,
+                netPrice: 10.00,
+                netValue: 1000.00,
+                issueDate: '2014-10-02',
+                deliveryDate: '2014-10-02',
+                distributionplannodeSet: [{id: 1}]
+            };
+
             beforeEach(function () {
                 setUp({purchaseOrderId: 1});
             });
 
             it('should set purchase order details on the scope', function () {
-                  deferredPurchaseOrderPromise.resolve(stubPurchaseOrder);
-                  scope.initialize();
-                  scope.$apply();
 
-                  expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
-                  expect(scope.orderNumber).toEqual(stubPurchaseOrder.order_number);
-                  expect(scope.orderProgramme).toEqual(stubPurchaseOrder.programme);
-                  expect(scope.salesOrder).toEqual(stubSalesOrder);
+                deferredPurchaseOrderPromise.resolve(stubPO);
+                deferredSalesOrderPromise.resolve(stubSalesOrder);
+                deferredSalesOrderItemPromise.resolve(stubSOItem);
+                scope.initialize();
+                scope.$apply();
+
+                expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
+                expect(scope.orderNumber).toEqual(stubPO.orderNumber);
+                expect(scope.orderProgramme).toEqual(stubPO.programme);
+                expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
 
             it('should set documentItems on the scope', function () {
-                 var expectedDocumentItem = {
-                    description: stubSalesOrderItem.item.description,
-                    materialCode: stubSalesOrderItem.item.material_code,
-                    quantity: stubPurchaseOrderItem.quantity,
-                    unit: stubSalesOrderItem.item.unit.name,
-                    sales_order_item: stubSalesOrderItem,
-                    distributionplanlineitems: stubSalesOrderItem.distributionplanlineitem_set
-                 };
+                var expectedDocumentItem = {
+                    description: stubSOItem.item.description,
+                    materialCode: stubSOItem.item.materialCode,
+                    quantity: stubSOItem.quantity,
+                    unit: stubSOItem.item.unit,
+                    salesOrderItem: stubSOItem,
+                    distributionplannodes: stubSOItem.distributionplannodeSet
+                };
 
-                 deferredPurchaseOrderPromise.resolve(stubPurchaseOrder);
-                 deferredPurchaseOrderItemPromise.resolve(stubPurchaseOrderItem);
-                 scope.initialize();
-                 scope.$apply();
+                deferredPurchaseOrderPromise.resolve(stubPO);
+                deferredSalesOrderItemPromise.resolve(stubSOItem);
+                scope.initialize();
+                scope.$apply();
 
-                 expect(scope.documentItems).toEqual([expectedDocumentItem]);
+                expect(scope.documentItems).toEqual([expectedDocumentItem]);
             });
         });
 
@@ -274,117 +314,119 @@ describe('ManualReportingDetailsController', function () {
             });
 
             it('should set release order details on the scope', function () {
-                  deferredReleaseOrderPromise.resolve(stubReleaseOrder);
-                  scope.initialize();
-                  scope.$apply();
+                deferredReleaseOrderPromise.resolve(stubReleaseOrder);
+                deferredReleaseOrderItemPromise.resolve(stubReleaseOrderItem);
+                deferredSalesOrderPromise.resolve(stubSalesOrder);
+                scope.initialize();
+                scope.$apply();
 
-                  expect(scope.reportingDetailsTitle).toEqual('Report By Waybill:');
-                  expect(scope.orderNumber).toEqual(stubReleaseOrder.waybill);
-                  expect(scope.orderProgramme).toEqual(stubReleaseOrder.programme);
-                  expect(scope.salesOrder).toEqual(stubSalesOrder);
+                expect(scope.reportingDetailsTitle).toEqual('Report By Waybill:');
+                expect(scope.orderNumber).toEqual(stubReleaseOrder.waybill);
+                expect(scope.orderProgramme).toEqual(stubReleaseOrder.programme);
+                expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
 
             it('should set documentItems on the scope', function () {
-                 var expectedDocumentItem = {
+                var expectedDocumentItem = {
                     description: stubSalesOrderItem.item.description,
-                    materialCode: stubSalesOrderItem.item.material_code,
+                    materialCode: stubSalesOrderItem.item.materialCode,
                     quantity: stubReleaseOrderItem.quantity,
                     unit: stubSalesOrderItem.item.unit.name,
-                    sales_order_item: stubSalesOrderItem,
-                    distributionplanlineitems: stubSalesOrderItem.distributionplanlineitem_set
-                 };
+                    salesOrderItem: stubSalesOrderItem,
+                    distributionplannodes: stubSalesOrderItem.distributionplannodeSet
+                };
 
-                 deferredReleaseOrderPromise.resolve(stubReleaseOrder);
-                 deferredReleaseOrderItemPromise.resolve(stubReleaseOrderItem);
-                 scope.initialize();
-                 scope.$apply();
+                deferredReleaseOrderPromise.resolve(stubReleaseOrder);
+                deferredReleaseOrderItemPromise.resolve(stubReleaseOrderItem);
+                scope.initialize();
+                scope.$apply();
 
-                 expect(scope.documentItems).toEqual([expectedDocumentItem]);
+                expect(scope.documentItems).toEqual([expectedDocumentItem]);
             });
         });
     });
 
     describe('when selecting document item', function () {
-          beforeEach(function () {
-              setUp({});
-              scope.selectedDocumentItem = {
-                    description: stubSalesOrderItem.item.description,
-                    materialCode: stubSalesOrderItem.item.material_code,
-                    quantity: stubReleaseOrderItem.quantity,
-                    unit: stubSalesOrderItem.item.unit.name,
-                    sales_order_item: stubSalesOrderItem,
-                    distributionplanlineitems: stubSalesOrderItem.distributionplanlineitem_set
-              };
+        beforeEach(function () {
+            setUp({});
+            scope.selectedDocumentItem = {
+                description: stubSalesOrderItem.item.description,
+                materialCode: stubSalesOrderItem.item.materialCode,
+                quantity: stubReleaseOrderItem.quantity,
+                unit: stubSalesOrderItem.item.unit.name,
+                salesOrderItem: stubSalesOrderItem,
+                distributionplannodes: stubSalesOrderItem.distributionplannodeSet
+            };
 
-              responseItem = {
-                    node: {
-                        plan_id: 1,
-                        contact_person_id: 1,
-                        consignee: 1,
+            nodeResponse = {
+                node: {
+                    plan_id: 1,
+                    contact_person_id: 1,
+                    consignee: 1,
+                    id: 1,
+                    location: 'Kampala'
+                },
+                node_run_id: 1,
+                responses: {
+                    amountReceived: {
                         id: 1,
-                        location: 'Kampala'
+                        value: 80,
+                        formatted_value: '80'
                     },
-                    line_item_run_id: 1,
-                    responses: {
-                        amountReceived: {
-                            id: 1,
-                            value: 80,
-                            formatted_value: '80'
-                        },
-                        satisfiedWithProduct: {
-                            id: 2,
-                            value: 1,
-                            formatted_value: 'Yes'
-                        },
-                        productReceived: {
-                            id: 3,
-                            value: 3,
-                            formatted_value: 'Yes'
-                        },
-                        dateOfReceipt: {
-                            id: 4,
-                            value:'04/10/2014',
-                            formatted_value: '04/10/2014'
-                        }
+                    satisfiedWithProduct: {
+                        id: 2,
+                        value: 1,
+                        formatted_value: 'Yes'
+                    },
+                    productReceived: {
+                        id: 3,
+                        value: 3,
+                        formatted_value: 'Yes'
+                    },
+                    dateOfReceipt: {
+                        id: 4,
+                        value: '04/10/2014',
+                        formatted_value: '04/10/2014'
                     }
-              };
-          });
+                }
+            };
+        });
 
-          it('should set responses on the scope', function () {
-              var expectedResponseDetails = [{
-                    lineItemRunId: responseItem.line_item_run_id,
-                    consignee: responseItem.node.consignee,
-                    endUser: responseItem.node.contact_person_id,
-                    location: responseItem.node.location,
-                    received: responseItem.responses.productReceived.value,
-                    received_answer: responseItem.responses.productReceived,
-                    quantity: responseItem.responses.amountReceived.formatted_value,
-                    quantity_answer: responseItem.responses.amountReceived,
-                    dateReceived: responseItem.responses.dateOfReceipt.formatted_value,
-                    dateReceived_answer: responseItem.responses.dateOfReceipt,
-                    quality: '',
-                    quality_answer: undefined,
-                    satisfied: responseItem.responses.satisfiedWithProduct.value,
-                    satisfied_answer: responseItem.responses.satisfiedWithProduct,
-                    remark: '',
-                    remark_answer: undefined
-              }];
+        it('should set responses on the scope', function () {
+            var expectedResponseDetails = [{
+                nodeRunId: nodeResponse.node_run_id,
+                consignee: nodeResponse.node.consignee,
+                endUser: nodeResponse.node.contact_person_id,
+                location: nodeResponse.node.location,
+                received: nodeResponse.responses.productReceived.value,
+                received_answer: nodeResponse.responses.productReceived,
+                quantity: nodeResponse.responses.amountReceived.formatted_value,
+                quantity_answer: nodeResponse.responses.amountReceived,
+                dateReceived: nodeResponse.responses.dateOfReceipt.formatted_value,
+                dateReceived_answer: nodeResponse.responses.dateOfReceipt,
+                quality: '',
+                quality_answer: undefined,
+                satisfied: nodeResponse.responses.satisfiedWithProduct.value,
+                satisfied_answer: nodeResponse.responses.satisfiedWithProduct,
+                remark: '',
+                remark_answer: undefined
+            }];
 
-              deferredLineItemPromise.resolve(responseItem);
-              scope.selectDocumentItem();
-              scope.$apply();
+            deferredNodeResponsePromise.resolve(nodeResponse);
+            scope.selectDocumentItem();
+            scope.$apply();
 
-              expect(scope.distributionPlanId).toEqual(responseItem.node.plan_id);
-              expect(scope.responses).toEqual(expectedResponseDetails);
-          });
+            expect(scope.distributionPlanId).toEqual(nodeResponse.plan_id);
+            expect(scope.responses).toEqual(expectedResponseDetails);
+        });
 
-          it('should set a distribution plan on the scope if responses exists', function () {
-              deferredLineItemPromise.resolve(responseItem);
-              scope.selectDocumentItem();
-              scope.$apply();
+        it('should set a distribution plan on the scope if responses exists', function () {
+            deferredNodeResponsePromise.resolve(nodeResponse);
+            scope.selectDocumentItem();
+            scope.$apply();
 
-              expect(scope.distributionPlanId).toEqual(responseItem.node.plan_id);
-          });
+            expect(scope.distributionPlanId).toEqual(nodeResponse.plan_id);
+        });
     });
 
     describe('when responses list on scope changes, ', function () {
@@ -493,7 +535,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.saveResponses();
                 scope.$apply();
 
-                expect(mockDistributionPlanService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+                expect(mockDistributionPlanService.create).toHaveBeenCalledWith({programme: programmeId});
             });
 
             it('the created distribution plan should be put on the scope', function () {
@@ -512,7 +554,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.saveResponses();
                 scope.$apply();
 
-                expect(mockDistributionPlanService.createPlan).not.toHaveBeenCalled();
+                expect(mockDistributionPlanService.create).not.toHaveBeenCalled();
             });
         });
 
@@ -553,7 +595,7 @@ describe('ManualReportingDetailsController', function () {
 
         it('should have document selected with default values', function () {
             var expectedResponse = [{
-                lineItemRunId: '',
+                nodeRunId: '',
                 consignee: '',
                 endUser: '',
                 location: '',
@@ -586,38 +628,38 @@ describe('ManualReportingDetailsController', function () {
 
     describe('adding a contact', function () {
         describe('with invalid fields', function () {
-           it('should be invalid when no number is supplied', function () {
-               scope.contact = {
-                   firstName: 'Dude',
-                   lastName: 'Awesome',
-                   phone: ''
-               };
-               scope.$apply();
+            it('should be invalid when no number is supplied', function () {
+                scope.contact = {
+                    firstName: 'Dude',
+                    lastName: 'Awesome',
+                    phone: ''
+                };
+                scope.$apply();
 
-               expect(scope.invalidContact(scope.contact)).toBeTruthy();
-           });
+                expect(scope.invalidContact(scope.contact)).toBeTruthy();
+            });
 
-           it('should be invalid when no first name is supplied', function () {
-               scope.contact = {
-                   firstName: '',
-                   lastName: 'Awesome',
-                   phone: '+256782555444'
-               };
-               scope.$apply();
+            it('should be invalid when no first name is supplied', function () {
+                scope.contact = {
+                    firstName: '',
+                    lastName: 'Awesome',
+                    phone: '+256782555444'
+                };
+                scope.$apply();
 
-               expect(scope.invalidContact(scope.contact)).toBeTruthy();
-           });
+                expect(scope.invalidContact(scope.contact)).toBeTruthy();
+            });
 
-           it('should be invalid when no last name is supplied', function () {
-               scope.contact = {
-                   firstName: 'Dudette',
-                   lastName: '',
-                   phone: '+256782555444'
-               };
-               scope.$apply();
+            it('should be invalid when no last name is supplied', function () {
+                scope.contact = {
+                    firstName: 'Dudette',
+                    lastName: '',
+                    phone: '+256782555444'
+                };
+                scope.$apply();
 
-               expect(scope.invalidContact(scope.contact)).toBeTruthy();
-           });
+                expect(scope.invalidContact(scope.contact)).toBeTruthy();
+            });
         });
 
         describe('with valid fields', function () {

@@ -1,17 +1,25 @@
 'use strict';
 
 angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programme', 'Consignee', 'PurchaseOrder', 'Item', 'DistributionPlanNode', 'SalesOrderItem'])
-    .controller('EndUserResponsesController',function ($scope, $q, $location, DistributionPlanService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
+    .controller('EndUserResponsesController', function ($scope, $q, $location, DistributionPlanService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
         $scope.allResponses = [];
         $scope.filteredResponses = [];
         $scope.programmeResponses = [];
         $scope.consigneeResponses = [];
         $scope.purchaseOrderResponses = [];
         $scope.itemResponses = [];
-        $scope.programmes = [{id: 0, name: 'All Outcomes'}];
-        $scope.consignees = [{id: 0, name: 'All Implementing Partners'}];
-        $scope.purchaseOrders = [{id: 0, order_number: 'All Purchase Orders'}];
-        $scope.items = [{id: 0, description: 'All Items'}];
+        $scope.programmes = [
+            {id: 0, name: 'All Outcomes'}
+        ];
+        $scope.consignees = [
+            {id: 0, name: 'All Implementing Partners'}
+        ];
+        $scope.purchaseOrders = [
+            {id: 0, order_number: 'All Purchase Orders'}
+        ];
+        $scope.items = [
+            {id: 0, description: 'All Items'}
+        ];
 
         $scope.initialize = function () {
             ProgrammeService.all().then(function (result) {
@@ -23,7 +31,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                 $scope.consignees = $scope.consignees.concat(consignees);
             });
 
-            PurchaseOrderService.getPurchaseOrders().then(function (purchaseOrders) {
+            PurchaseOrderService.all().then(function (purchaseOrders) {
                 $scope.purchaseOrders = $scope.purchaseOrders.concat(purchaseOrders);
             });
 
@@ -31,7 +39,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                 $scope.items = $scope.items.concat(items);
             });
 
-            getAllEndUserResponses().then(function (allResponses){
+            getAllEndUserResponses().then(function (allResponses) {
                 $scope.allResponses = allResponses;
                 $scope.programmeResponses = allResponses;
                 $scope.consigneeResponses = allResponses;
@@ -40,32 +48,30 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
             });
         };
 
-        function getAllEndUserResponses(){
-            return DistributionPlanService.getAllEndUserResponses().then(function (allResponses){
+        function getAllEndUserResponses() {
+            return DistributionPlanService.getAllEndUserResponses().then(function (allResponses) {
                 var nodePromises = [];
                 var poItemPromises = [];
 
                 allResponses.data.forEach(function (response) {
-                    if(response.node){
+                    if (response.node) {
                         nodePromises.push(
                             DistributionPlanNodeService.getPlanNodeDetails(response.node).then(function (planNode) {
                                 response.contact_person = planNode.contact_person;
 
-                                if(planNode.lineItems.length > 0){
-                                    var sales_order_item_id = planNode.lineItems[0].item;
-                                    poItemPromises.push(
-                                        SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem){
-                                            response.purchase_order = poItem.purchase_order;
-                                        })
-                                    );
-                                }
+                                var sales_order_item_id = planNode.item;
+                                poItemPromises.push(
+                                    SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem) {
+                                        response.purchase_order = poItem.purchase_order;
+                                    })
+                                );
                             })
                         );
                     }
                 });
 
-                return $q.all(nodePromises).then( function(){
-                    return $q.all(poItemPromises).then( function(){
+                return $q.all(nodePromises).then(function () {
+                    return $q.all(poItemPromises).then(function () {
                         return allResponses.data;
                     });
                 });
@@ -73,7 +79,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
             });
         }
 
-        function setFilteredResponses(){
+        function setFilteredResponses() {
             $scope.filteredResponses = _.intersection($scope.programmeResponses, $scope.consigneeResponses, $scope.purchaseOrderResponses, $scope.itemResponses);
         }
 

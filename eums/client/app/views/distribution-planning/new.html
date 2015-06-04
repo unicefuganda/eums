@@ -3,13 +3,13 @@
         <ng-toast></ng-toast>
 
         <h4 class="page-header" ng-show="distributionPlanReport">Create A Distribution Plan for Sales Order:
-            <span class="text-primary">{{ selectedSalesOrder.order_number }}</span>
+            <span class="text-primary">{{ selectedSalesOrder.orderNumber }}</span>
             <span class="pull-right">PCR:
                 <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
             </span>
         </h4>
         <h4 class="page-header" ng-show="!distributionPlanReport">Report Delivery for Purchase Order:
-            <span class="text-primary">{{ selectedPurchaseOrder.order_number }}</span>
+            <span class="text-primary">{{ selectedPurchaseOrder.orderNumber }}</span>
             <span class="pull-right">PCR:
                 <span class="text-primary">{{ selectedSalesOrder.programme.name }}</span>
             </span>
@@ -36,7 +36,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem && distributionPlanLineItems.length && !user.consignee_id && isReport">
+                    <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem && distributionPlanNodes.length && !user.consignee_id && isReport">
                         <label for="select-sales-order" class="col-lg-4 control-label description-label">
                             Track Item:
                         </label>
@@ -85,10 +85,9 @@
                 </div>
             </div>
         </div>
-        <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default"
-             cg-busy="{promise: savePlanPromise, message: 'Saving Plan'}">
+        <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default">
             <div class="panel-body">
-                <div ng-show="distributionPlanLineItems.length">
+                <div ng-show="distributionPlanNodes.length">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover table-condensed">
                         <th class="table-header-width" id="input-available-quantity-header">Avail. Qty</th>
@@ -103,12 +102,12 @@
                         <th class="table-header-width">End User</th>
                         <th class="table-sub-consignee-header-width"></th>
 
-                        <tr ng-repeat="(itemIndex, item) in distributionPlanLineItems">
+                        <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
                             <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
                             <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
                             <td>
                                 <input type="text" id="input-quantity" class="form-control" ng-disabled="item.flowTriggered"
-                                       ng-model="item.targetQuantity" only-digits>
+                                       ng-model="item.targetedQuantity" only-digits>
                             </td>
                             <td>
                                 <p class="table-date-width input-group" eums-date-picker>
@@ -132,18 +131,18 @@
                             </td>
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ consignees }}"
-                                       ng-model="item.consignee"
+                                       ng-model="item.consignee.id"
                                        ng-disabled="item.flowTriggered"
-                                       value="{{ item.consignee }}">
+                                       value="{{ item.consignee.id }}">
                             </td>
 
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts
-                                               value="{{ item.contactPerson }}"
+                                               value="{{ item.contactPerson.id }}"
                                                required="required"
-                                               ng-model="item.contactPerson"
+                                               ng-model="item.contactPerson.id"
                                                ng-attr-id="{{ 'contact-select-' + $index}}"
                                                ng-disabled="item.flowTriggered">
                                     </div>
@@ -160,9 +159,9 @@
 
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ districts }}"
-                                       ng-model="item.destinationLocation"
+                                       ng-model="item.location"
                                        ng-disabled="item.flowTriggered"
-                                       value="{{ item.destinationLocation }}">
+                                       value="{{ item.location }}">
                             </td>
                             <td id="input-mode-of-delivery" ng-show="distributionPlanReport">
                                 <input type="hidden" search-from-list
@@ -203,13 +202,13 @@
             </div>
             <div class="pad-20 row">
                 <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
-                        type="button" class="btn btn-primary" ng-click="addDistributionPlanItem()">
+                        type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
                     <i class="glyphicon glyphicon-plus"> </i>
                     {{ consignee_button_text }}
                 </button>
-                <div ng-show="distributionPlanLineItems.length" class="pull-right">
+                <div ng-show="distributionPlanNodes.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
-                            ng-click="saveDistributionPlanLineItems()"
+                            ng-click="saveDistributionPlanNodes()"
                             ng-disabled="invalidLineItems">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save

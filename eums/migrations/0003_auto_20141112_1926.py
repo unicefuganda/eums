@@ -30,9 +30,4 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
-        migrations.AlterField(
-            model_name='distributionplanlineitem',
-            name='track',
-            field=models.BooleanField(default=False),
-        ),
     ]

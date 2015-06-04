@@ -97,6 +97,13 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             changeCase: false,
             idField: '_id',
             methods: {
+                get: function(id) {
+                    return $http.get(EumsConfig.CONTACT_SERVICE_URL + id + '/').then(function (response) {
+                        return response.data;
+                    }).catch(function() {
+                        return undefined;
+                    });
+                },
                 filter: function (searchString) {
                     return $http.get(EumsConfig.CONTACT_SERVICE_URL + '?searchfield=' + searchString).then(function (response) {
                         return response.data;

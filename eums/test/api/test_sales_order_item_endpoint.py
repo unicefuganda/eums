@@ -20,7 +20,8 @@ class SalesOrderItemEndPointTest(AuthenticatedAPITestCase):
         created_sales_order_item = create_sales_order_item(self, sales_order_item_details)
 
         self.assertDictContainsSubset(sales_order_item_details, created_sales_order_item)
-        self.assertDictContainsSubset({'distributionplanlineitem_set': []}, created_sales_order_item)
+        self.assertDictContainsSubset({'distributionplannode_set': []}, created_sales_order_item)
+
 
 class POItemForSOItemEndPointTest(AuthenticatedAPITestCase):
     def test_should_get_po_item_for_so_item(self):

@@ -3,8 +3,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import TextAnswerFactory
 from eums.test.factories.question_factory import TextQuestionFactory
-from eums.test.factories.node_line_item_run_factory import NodeLineItemRunFactory
-
+from eums.test.factories.node_run_factory import NodeRunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'text-answers/'
 
@@ -17,7 +16,7 @@ class TextAnswerEndpointTest(AuthenticatedAPITestCase):
             "id": text_answer.id,
             "value": text_answer.value,
             "question": text_answer.question_id,
-            "line_item_run": text_answer.line_item_run_id
+            "node_run": text_answer.node_run_id
         }
         response = self.client.get(ENDPOINT_URL)
 
@@ -26,11 +25,12 @@ class TextAnswerEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_create_text_answers(self):
         text_question = TextQuestionFactory(label='dateOfReceipt')
-        line_item_run = NodeLineItemRunFactory()
+        node_run = NodeRunFactory()
+
         text_answer_details = {
             "value": "1",
             "question": text_question.id,
-            "line_item_run": line_item_run.id
+            "node_run": node_run.id
         }
         response = self.client.post(ENDPOINT_URL, text_answer_details, format='json')
 

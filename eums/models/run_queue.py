@@ -3,12 +3,12 @@ from django.db.models import Q
 from model_utils.fields import StatusField
 from model_utils import Choices
 
-from eums.models import DistributionPlanLineItem
+from eums.models import DistributionPlanNode
 
 
 class RunQueue(models.Model):
     STATUS = Choices('not_started', 'started')
-    node_line_item = models.ForeignKey(DistributionPlanLineItem)
+    node = models.ForeignKey(DistributionPlanNode)
     contact_person_id = models.CharField(max_length=255)
     status = StatusField()
     run_delay = models.DecimalField(decimal_places=1, max_digits=12)
@@ -17,9 +17,9 @@ class RunQueue(models.Model):
         app_label = 'eums'
 
     @classmethod
-    def enqueue(cls, node_line_item, run_delay):
-        cls.objects.create(node_line_item=node_line_item, status=RunQueue.STATUS.not_started,
-                           contact_person_id=node_line_item.distribution_plan_node.contact_person_id,
+    def enqueue(cls, node, run_delay):
+        cls.objects.create(node=node, status=RunQueue.STATUS.not_started,
+                           contact_person_id=node.contact_person_id,
                            run_delay=run_delay)
 
     @classmethod

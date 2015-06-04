@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, PlanItemResponses
+from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, NodeResponses
 from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
@@ -11,11 +11,10 @@ from eums.api.consignee.consignee import consigneeRouter
 from eums.api.consignee_purchase_order.consignee_purchase_order_endpoint import ConsigneePurchaseOrders
 from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, ConsigneePurchaseOrderItemNode
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
-from eums.api.distribution_plan_line_item.distribution_plan_line_item import distributionPlanLineItemRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.item.item_endpoint import itemRouter
 from eums.api.item_unit.item_unit_endpoint import itemUnitRouter
-from eums.api.node_line_item_run.node_line_item_run import nodeLineItemRunRouter
+from eums.api.node_run.node_run import nodeRunRouter
 from eums.api.programme.programme_endpoint import programmeRouter
 from eums.api.release_order.release_order_endpoint import releaseOrderRouter
 from eums.api.release_order_item.release_order_item_endpoint import releaseOrderItemRouter
@@ -62,7 +61,7 @@ urlpatterns = patterns(
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
     url(r'^api/stock-report/(?P<consignee_id>\d+)/$', StockReport.as_view(), name='stock_report'),
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
-    url(r'^api/plan-item-responses/(?P<plan_item_id>\d+)/$', PlanItemResponses.as_view(), name='plan_item_responses'),
+    url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
@@ -72,8 +71,7 @@ urlpatterns = patterns(
     url('', include('django.contrib.auth.urls')),
     url(r'^api/', include(distributionPlanRouter.urls)),
     url(r'^api/', include(distributionPlanNodeRouter.urls)),
-    url(r'^api/', include(distributionPlanLineItemRouter.urls)),
-    url(r'^api/', include(nodeLineItemRunRouter.urls)),
+    url(r'^api/', include(nodeRunRouter.urls)),
     url(r'^api/', include(itemUnitRouter.urls)),
     url(r'^api/', include(itemRouter.urls)),
     url(r'^api/', include(programmeRouter.urls)),

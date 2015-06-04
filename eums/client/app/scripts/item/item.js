@@ -7,6 +7,7 @@ angular.module('Item', ['eums.config', 'eums.service-factory'])
             this.id = json.id || '';
             this.description = json.description || '';
             this.unit = json.unit || {name: 'Each'};
+            this.materialCode = json.materialCode;
         };
     }).factory('ItemUnitService', function(ServiceFactory, EumsConfig) {
         return ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.ITEM_UNIT});

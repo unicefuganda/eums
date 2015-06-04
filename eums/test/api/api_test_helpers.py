@@ -10,7 +10,6 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 
 DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
-DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-line-item/'
 CONSIGNEE_ENDPOINT_URL = BACKEND_URL + 'consignee/'
 ITEM_UNIT_ENDPOINT_URL = BACKEND_URL + 'item-unit/'
 ITEM_ENDPOINT_URL = BACKEND_URL + 'item/'
@@ -23,7 +22,7 @@ RELEASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'release-order/'
 RELEASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'release-order-item/'
 PROGRAMME_ENDPOINT_URL = BACKEND_URL + 'programme/'
 OPTION_ENDPOINT_URL = BACKEND_URL + 'option/'
-NODE_LINE_ITEM_RUN_ENDPOINT_URL = BACKEND_URL + 'node-line-item-run/'
+NODE_LINE_ITEM_RUN_ENDPOINT_URL = BACKEND_URL + 'node-run/'
 
 
 def create_distribution_plan(test_case, plan_details=None):
@@ -51,16 +50,17 @@ def create_consignee(test_case, consignee_details=None):
 def create_distribution_plan_node(test_case, node_details=None):
     if not node_details:
         plan_id = create_distribution_plan(test_case)
-        consignee = create_consignee(test_case)
-        node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER',
-                        'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234'}
+        node_details = make_node_details(test_case, plan_id)
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
     test_case.assertEqual(response.status_code, 201)
-    return response.data
+
+    formatted_data = response.data
+    formatted_data['planned_distribution_date'] = str(formatted_data['planned_distribution_date'])
+    return formatted_data
 
 
-def make_line_item_details(test_case, node_id=None):
+def make_node_details(test_case, plan_id=None):
     item_unit = ItemUnit.objects.create(name='EA')
     item = Item.objects.create(description='Item 1', unit=item_unit)
 
@@ -71,30 +71,17 @@ def make_line_item_details(test_case, node_id=None):
                            'delivery_date': '2014-01-21', 'item_number': 10}
 
     sales_item_id = create_sales_order_item(test_case, sales_order_details)['id']
-
     consignee_id = create_consignee(test_case)['id']
 
-    if not node_id:
-        node_id = create_distribution_plan_node(test_case)['id']
+    if not plan_id:
+        plan_id = create_distribution_plan(test_case)['id']
 
-    line_item = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
-                 'destination_location': 'GULU', 'consignee': consignee_id,
-                 'contact_person': 'Test', 'contact_phone_number': '0110110111', 'mode_of_delivery': 'Road',
-                 'tracked': True, 'remark': "Dispatched", 'distribution_plan_node': node_id}
+    node = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
+            'location': 'GULU', 'consignee': consignee_id, 'distribution_plan': plan_id,
+            'contact_person_id': u'1223', 'mode_of_delivery': 'WAREHOUSE',
+            'tracked': True, 'remark': 'Dispatched', 'tree_position': 'END_USER'}
 
-    return line_item
-
-
-def create_distribution_plan_line_item(test_case, item_details=None):
-    if not item_details:
-        item_details = make_line_item_details(test_case)
-    response = test_case.client.post(DISTRIBUTION_PLAN_LINE_ITEM_ENDPOINT_URL, item_details, format='json')
-
-    test_case.assertEqual(response.status_code, 201)
-
-    formatted_data = response.data
-    formatted_data['planned_distribution_date'] = str(formatted_data['planned_distribution_date'])
-    return formatted_data
+    return node
 
 
 def create_sales_order(test_case, sales_order_details=None):
@@ -133,7 +120,7 @@ def create_purchase_order(test_case, purchase_order_details=None):
         programme = create_programme()
         sales_order = create_sales_order()
         purchase_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5),
-                               'programme': programme.id, 'description': 'test', "sales_order": sales_order['id']}
+                                  'programme': programme.id, 'description': 'test', "sales_order": sales_order['id']}
 
     response = test_case.client.post(PURCHASE_ORDER_ENDPOINT_URL, purchase_order_details, format='json')
     test_case.assertEqual(response.status_code, 201)
@@ -141,7 +128,20 @@ def create_purchase_order(test_case, purchase_order_details=None):
     return response.data
 
 
+def make_sales_order_item_details(test_case):
+    item_unit = ItemUnit.objects.create(name='EA')
+    item = Item.objects.create(description='Item 1', unit=item_unit)
+
+    sales_order = create_sales_order(test_case)
+
+    return {'sales_order': sales_order['id'], 'item': item.id, 'quantity': 23,
+            'net_price': 12000.0, 'net_value': 100.0, 'issue_date': '2014-01-21',
+            'delivery_date': '2014-01-21', 'item_number': 10}
+
+
 def create_sales_order_item(test_case, sales_order_item_details=None):
+    if not sales_order_item_details:
+        sales_order_item_details = make_sales_order_item_details(test_case)
     response = test_case.client.post(SALES_ORDER_ITEM_ENDPOINT_URL, sales_order_item_details, format='json')
 
     test_case.assertEqual(response.status_code, 201)
@@ -198,7 +198,7 @@ def create_user(test_case, user_details=None):
     return response.data
 
 
-def create_option(test_case,option_details=None):
+def create_option(test_case, option_details=None):
     if not option_details:
         multiple_choice_question = MultipleChoiceQuestionFactory()
         option_details = {'text': "Option text", 'question': multiple_choice_question.id}
@@ -206,8 +206,9 @@ def create_option(test_case,option_details=None):
     response = test_case.client.post(OPTION_ENDPOINT_URL, option_details, format='json')
     return response.data
 
-def create_node_line_item_run(test_case, node_line_item_run_details=None):
-    response = test_case.client.post(NODE_LINE_ITEM_RUN_ENDPOINT_URL, node_line_item_run_details, format='json')
+
+def create_node_run(test_case, node_run_details=None):
+    response = test_case.client.post(NODE_LINE_ITEM_RUN_ENDPOINT_URL, node_run_details, format='json')
 
     test_case.assertEqual(response.status_code, 201)
 

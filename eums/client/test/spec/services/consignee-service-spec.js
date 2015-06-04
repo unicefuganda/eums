@@ -33,9 +33,10 @@ describe('Consignee Service', function () {
         var consigneeService, mockBackend;
 
         beforeEach(function () {
-            inject(function (ConsigneeService, $httpBackend) {
+            inject(function (ConsigneeService, $httpBackend, EumsConfig) {
                 mockBackend = $httpBackend;
                 consigneeService = ConsigneeService;
+                endpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;
             });
         });
 

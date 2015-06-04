@@ -20,23 +20,23 @@ describe('Release Order Item Service', function () {
 
     var stubSalesOrderItem = {
         id: salesOrderItemId,
-        sales_order: '1',
+        salesOrder: '1',
         item: stubItem,
         quantity: 100,
-        net_price: 10.00,
-        net_value: 1000.00,
-        issue_date: '2014-10-02',
-        delivery_date: '2014-10-02',
+        netPrice: 10.00,
+        netValue: 1000.00,
+        issueDate: '2014-10-02',
+        deliveryDate: '2014-10-02',
         information: {
-            distributionplanlineitem_set: []
+            distributionplanlineitemSet: []
         },
-        distributionplanlineitem_set: []
+        distributionplanlineitemSet: []
     };
 
     var stubPurchaseOrderItem = {
         id: purchaseOrderItemId,
-        item_number: itemId,
-        sales_order_item: stubSalesOrderItem,
+        itemNumber: itemId,
+        salesOrderItem: stubSalesOrderItem,
         quantity: quantity,
         value: value
     };
@@ -74,15 +74,15 @@ describe('Release Order Item Service', function () {
     it('should get release order item details', function (done) {
         var expectedReleaseOrderItem = {
             id: releaseOrderItemId,
-            item_id: itemId,
-            item_number: 10,
-            purchase_order_item: stubPurchaseOrderItem,
+            itemId: itemId,
+            itemNumber: 10,
+            purchaseOrderItem: stubPurchaseOrderItem,
             quantity: quantity,
             value: value
         };
 
         mockBackend.whenGET(endpointUrl + releaseOrderItemId + '/').respond(stubReleaseOrderItem);
-        releaseOrderItemService.getReleaseOrderItem(releaseOrderItemId).then(function (releaseOrderItem) {
+        releaseOrderItemService.get(releaseOrderItemId, ['purchase_order_item']).then(function (releaseOrderItem) {
             expect(releaseOrderItem).toEqual(expectedReleaseOrderItem);
             done();
         });

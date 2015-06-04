@@ -2,9 +2,9 @@ describe('NewDistributionPlanController', function () {
 
     beforeEach(module('NewDistributionPlan'));
     var mockNodeService, mockIPService, mockPlanService, mockSalesOrderItemService,
-        mockLineItemService, mockConsigneeService, mockSalesOrderService, mockUserService;
-    var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelLineItems,
-        deferredPlanNode, deferredSalesOrder, deferredLineItem, deferredUserPromise;
+        mockConsigneeService, mockSalesOrderService, mockUserService, mockItemService;
+    var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
+        deferredPlanNode, deferredSalesOrder, deferredNode, deferredUserPromise, deferredItemPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
@@ -17,9 +17,21 @@ describe('NewDistributionPlanController', function () {
                 id: 3,
                 name: 'Alive'
             },
-            'order_number': orderNumber,
+            'orderNumber': orderNumber,
             'date': '2014-10-05',
-            'salesorderitem_set': ['1']
+            'salesorderitemSet': [{
+                id: 1,
+                item: {
+                    id: 1,
+                    description: 'Test Item',
+                    materialCode: '12345AS',
+                    unit: {
+                        name: 'EA'
+                    }
+                },
+                quantity: 100,
+                quantityLeft: 100
+            }]
         },
         {
             id: 2,
@@ -27,9 +39,9 @@ describe('NewDistributionPlanController', function () {
                 id: 4,
                 name: 'Alive'
             },
-            'order_number': '22221',
+            'orderNumber': '22221',
             'date': '2014-10-05',
-            'salesorderitem_set': [3, 4]
+            'salesorderitemSet': [{id: 3}, {id: 4}]
         }
     ];
 
@@ -57,23 +69,23 @@ describe('NewDistributionPlanController', function () {
             item: {
                 id: 1,
                 description: 'Test Item',
-                material_code: '12345AS',
+                materialCode: '12345AS',
                 unit: {
                     name: 'EA'
                 }
             },
             quantity: 100,
-            quantity_left: 100
+            quantityLeft: 100
         },
         quantity: 100,
-        net_price: 10.00,
-        net_value: 1000.00,
-        issue_date: '2014-10-02',
-        delivery_date: '2014-10-02',
-        distributionplanlineitem_set: [1, 2]
+        netPrice: 10.00,
+        netValue: 1000.00,
+        issueDate: '2014-10-02',
+        deliveryDate: '2014-10-02',
+        distributionplannodeSet: [1, 2]
     };
 
-    var stubSalesOrderItemNoDistributionPlanLineItems = {
+    var stubSalesOrderItemNodistributionPlanNodes = {
         id: 1,
         sales_order: '1',
         information: {
@@ -91,27 +103,27 @@ describe('NewDistributionPlanController', function () {
         net_value: 1000.00,
         issue_date: '2014-10-02',
         delivery_date: '2014-10-02',
-        distributionplanlineitem_set: []
+        distributionplannode_set: []
     };
 
     var expectedFormattedSalesOrderItem = {
         display: stubSalesOrderItem.information.item.description,
-        materialCode: stubSalesOrderItem.information.item.material_code,
+        materialCode: stubSalesOrderItem.information.item.materialCode,
         quantity: stubSalesOrderItem.quantity,
-        quantityLeft: stubSalesOrderItem.information.quantity_left,
+        quantityLeft: stubSalesOrderItem.information.quantityLeft,
         unit: stubSalesOrderItem.information.item.unit.name,
         information: stubSalesOrderItem.information
     };
 
     var setUp = function (routeParams) {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'all', 'createPlan', 'updatePlanTracking']);
-        mockLineItemService = jasmine.createSpyObj('mockLineItemService', ['getLineItem', 'createLineItem', 'updateLineItem']);
-        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'createNode', 'updateNode']);
+        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
-        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get', 'getTopLevelDistributionPlanLineItems']);
+        mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get', 'getTopLevelDistributionPlanNodes']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+        mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($controller, $rootScope, $q, $location) {
@@ -120,37 +132,38 @@ describe('NewDistributionPlanController', function () {
             deferredPlan = $q.defer();
             deferredDistrictPromise = $q.defer();
             deferredPlanNode = $q.defer();
-            deferredLineItem = $q.defer();
-            deferredTopLevelLineItems = $q.defer();
+            deferredNode = $q.defer();
+            deferredTopLevelNodes = $q.defer();
             deferredSalesOrder = $q.defer();
             deferredUserPromise = $q.defer();
+            deferredItemPromise = $q.defer();
             mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
-            mockLineItemService.getLineItem.and.returnValue(deferredLineItem.promise);
-            mockLineItemService.createLineItem.and.returnValue(deferred.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
-            mockNodeService.createNode.and.returnValue(deferredPlanNode.promise);
+            mockNodeService.create.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrder.promise);
             mockSalesOrderItemService.get.and.returnValue(deferred.promise);
-            mockSalesOrderItemService.getTopLevelDistributionPlanLineItems.and.returnValue(deferredTopLevelLineItems.promise);
+            mockSalesOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredTopLevelNodes.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
+            mockItemService.get.and.returnValue(deferredItemPromise.promise);
 
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
-            if(!routeParams.distributionPlanNodeId){
+            if (!routeParams.distributionPlanNodeId) {
                 spyOn(angular, 'element').and.callFake(function () {
                     return {
-                        modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                        modal: jasmine.createSpy('modal').and.callFake(function (status) {
                             return status;
                         }),
-                        hasClass : jasmine.createSpy('hasClass').and.callFake(function (status) {
+                        hasClass: jasmine.createSpy('hasClass').and.callFake(function (status) {
                             return status;
                         }),
-                        removeClass : jasmine.createSpy('removeClass').and.callFake(function (status) {
+                        removeClass: jasmine.createSpy('removeClass').and.callFake(function (status) {
                             return status;
-                        })};
+                        })
+                    };
                 });
             }
 
@@ -164,13 +177,13 @@ describe('NewDistributionPlanController', function () {
                     $q: q,
                     $routeParams: routeParams,
                     SalesOrderItemService: mockSalesOrderItemService,
-                    DistributionPlanLineItemService: mockLineItemService,
                     DistributionPlanService: mockPlanService,
                     DistributionPlanNodeService: mockNodeService,
                     ConsigneeService: mockConsigneeService,
                     SalesOrderService: mockSalesOrderService,
                     IPService: mockIPService,
                     UserService: mockUserService,
+                    ItemService: mockItemService,
                     ngToast: mockToastProvider
                 });
         });
@@ -182,38 +195,38 @@ describe('NewDistributionPlanController', function () {
 
     describe('adding a contact', function () {
         describe('with invalid fields', function () {
-           it('should be invalid when no number is supplied', function () {
-               scope.contact = {
-                   firstName: 'Dude',
-                   lastName: 'Awesome',
-                   phone: ''
-               };
-               scope.$apply();
+            it('should be invalid when no number is supplied', function () {
+                scope.contact = {
+                    firstName: 'Dude',
+                    lastName: 'Awesome',
+                    phone: ''
+                };
+                scope.$apply();
 
-               expect(scope.invalidContact(scope.contact)).toBeTruthy();
-           });
+                expect(scope.invalidContact(scope.contact)).toBeTruthy();
+            });
 
-           it('should be invalid when no first name is supplied', function () {
-               scope.contact = {
-                   firstName: '',
-                   lastName: 'Awesome',
-                   phone: '+256782555444'
-               };
-               scope.$apply();
+            it('should be invalid when no first name is supplied', function () {
+                scope.contact = {
+                    firstName: '',
+                    lastName: 'Awesome',
+                    phone: '+256782555444'
+                };
+                scope.$apply();
 
-               expect(scope.invalidContact(scope.contact)).toBeTruthy();
-           });
+                expect(scope.invalidContact(scope.contact)).toBeTruthy();
+            });
 
-           it('should be invalid when no last name is supplied', function () {
-               scope.contact = {
-                   firstName: 'Dudette',
-                   lastName: '',
-                   phone: '+256782555444'
-               };
-               scope.$apply();
+            it('should be invalid when no last name is supplied', function () {
+                scope.contact = {
+                    firstName: 'Dudette',
+                    lastName: '',
+                    phone: '+256782555444'
+                };
+                scope.$apply();
 
-               expect(scope.invalidContact(scope.contact)).toBeTruthy();
-           });
+                expect(scope.invalidContact(scope.contact)).toBeTruthy();
+            });
         });
 
         describe('with valid fields', function () {
@@ -230,27 +243,27 @@ describe('NewDistributionPlanController', function () {
         });
     });
 
-    describe('when distributionPlanLineItems list on scope changes, ', function () {
+    describe('when distributionPlanNodes list on scope changes, ', function () {
         it('the selected sales order item quantityLeft attribute should be updated', function () {
-            scope.invalidLineItems = false;
+            scope.invalidNodes = false;
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
             scope.$apply();
 
-            scope.distributionPlanLineItems.push({targetQuantity: 50});
+            scope.distributionPlanNodes.push({targetedQuantity: 50});
             scope.$apply();
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(50);
 
-            scope.distributionPlanLineItems[0].targetQuantity = 25;
+            scope.distributionPlanNodes[0].targetedQuantity = 25;
             scope.$apply();
             expect(scope.selectedSalesOrderItem.quantityLeft).toBe(75);
         });
 
-        describe('disabling save with invalidLineItems field', function () {
-            var invalidLineItem;
-            var validLineItem = {
+        describe('disabling save with invalidNodes field', function () {
+            var invalidNode;
+            var validNode = {
                 item: 1,
                 plannedDistributionDate: '2014-11-31',
-                targetQuantity: 42,
+                targetedQuantity: 42,
                 consignee: 4,
                 destinationLocation: 'Adjumani',
                 contactPerson: '5444d433ec8e8257ae48dc73',
@@ -265,70 +278,70 @@ describe('NewDistributionPlanController', function () {
                     quantity: 100,
                     information: {id: 1}
                 };
-                scope.distributionPlanLineItems = [];
+                scope.distributionPlanNodes = [];
                 scope.$apply();
             });
 
-            it('sets the invalidLineItems field to false when there are no invalid line items', function () {
-                scope.invalidLineItems = false;
-                scope.distributionPlanLineItems.push(validLineItem);
+            it('sets the invalidNodes field to false when there are no invalid nodes', function () {
+                scope.invalidNodes = false;
+                scope.distributionPlanNodes.push(validNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeFalsy();
+                expect(scope.invalidNodes).toBeFalsy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with invalid target Quantities', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                invalidLineItem.targetQuantity = -1;
-                scope.distributionPlanLineItems.push(invalidLineItem);
+            it('sets the invalidNodes field to true when there are nodes with invalid target Quantities', function () {
+                invalidNode = angular.copy(validNode);
+                invalidNode.targetedQuantity = -1;
+                scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeTruthy();
+                expect(scope.invalidNodes).toBeTruthy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with no consignee', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                delete invalidLineItem.consignee;
-                scope.distributionPlanLineItems.push(invalidLineItem);
+            it('sets the invalidNodes field to true when there are nodes with no consignee', function () {
+                invalidNode = angular.copy(validNode);
+                delete invalidNode.consignee;
+                scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeTruthy();
+                expect(scope.invalidNodes).toBeTruthy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with no destinationLocation', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                invalidLineItem.destinationLocation = '';
-                scope.distributionPlanLineItems.push(invalidLineItem);
+            it('sets the invalidNodes field to true when there are nodes with no destinationLocation', function () {
+                invalidNode = angular.copy(validNode);
+                invalidNode.destinationLocation = '';
+                scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeTruthy();
+                expect(scope.invalidNodes).toBeTruthy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with no contactPerson', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                invalidLineItem.contactPerson = '';
-                scope.distributionPlanLineItems.push(invalidLineItem);
+            it('sets the invalidNodes field to true when there are nodes with no contactPerson', function () {
+                invalidNode = angular.copy(validNode);
+                invalidNode.contactPerson = '';
+                scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeTruthy();
+                expect(scope.invalidNodes).toBeTruthy();
             });
 
-            it('sets the invalidLineItems field to true when there are line items with no plannedDistributionDate', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                invalidLineItem.plannedDistributionDate = '';
-                scope.distributionPlanLineItems.push(invalidLineItem);
+            it('sets the invalidNodes field to true when there are nodes with no plannedDistributionDate', function () {
+                invalidNode = angular.copy(validNode);
+                invalidNode.plannedDistributionDate = '';
+                scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeTruthy();
+                expect(scope.invalidNodes).toBeTruthy();
             });
 
-            it('sets the invalidLineItems field to true when the quantity left of salesitems is less than 0', function () {
-                invalidLineItem = angular.copy(validLineItem);
-                invalidLineItem.targetQuantity = 101;
-                scope.distributionPlanLineItems.push(invalidLineItem);
+            it('sets the invalidNodes field to true when the quantity left of salesitems is less than 0', function () {
+                invalidNode = angular.copy(validNode);
+                invalidNode.targetedQuantity = 101;
+                scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
-                expect(scope.invalidLineItems).toBeTruthy();
+                expect(scope.invalidNodes).toBeTruthy();
             });
         });
     });
@@ -338,8 +351,8 @@ describe('NewDistributionPlanController', function () {
             deferredDistrictPromise.resolve({data: plainDistricts});
         });
 
-        it('should have the distributionPlanLineItems defaulted to an empty list', function () {
-            expect(scope.distributionPlanLineItems).toEqual([]);
+        it('should have the distributionPlanNodes defaulted to an empty list', function () {
+            expect(scope.distributionPlanNodes).toEqual([]);
         });
 
         it('should set districts in the scope variable', function () {
@@ -368,19 +381,15 @@ describe('NewDistributionPlanController', function () {
         it('should format the selected sales order appropriately for the view', function () {
             var stubItem = {
                 id: 1,
-                item: {
-                    id: 1,
-                    description: 'Test Item',
-                    material_code: '12345AS',
-                    unit: {
-                        name: 'EA'
-                    }
-                },
-                quantity: 100,
-                quantity_left: 100
+                description: 'Test Item',
+                materialCode: '12345AS',
+                unit: {
+                    name: 'EA'
+                }
             };
-            deferred.resolve(stubItem);
+
             deferredSalesOrder.resolve(salesOrders[0]);
+            deferredItemPromise.resolve(stubItem);
             scope.$apply();
 
             expect(scope.salesOrderItems).toEqual([expectedFormattedSalesOrderItem]);
@@ -396,19 +405,19 @@ describe('NewDistributionPlanController', function () {
             expect(scope.selectedSalesOrderItem).toEqual(expectedFormattedSalesOrderItem);
         });
 
-        xit('should put a distribution plan on the scope if sales order item has associated distribution plan line items', function () {
+        xit('should put a distribution plan on the scope if sales order item has associated distribution plan nodes', function () {
             deferred.resolve({distribution_plan_node: 1});
-            scope.selectedSalesOrderItem = {information: {distributionplanlineitem_set: ['1']}};
+            scope.selectedSalesOrderItem = {information: {distributionplannode_set: ['1']}};
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual({id: 1, programme: 1});
         });
 
-        it('should get distribution plan nodes for line items if line items exist', function () {
+        it('should get distribution plan nodes for nodes if nodes exist', function () {
             setUp({salesOrderId: 1, distributionPlanNodeId: 1});
 
             deferred.resolve({distribution_plan_node: 1});
-            scope.selectedSalesOrderItem = {information: {distributionplanlineitem_set: ['1']}};
+            scope.selectedSalesOrderItem = {information: {distributionplannode_set: ['1']}};
             scope.$apply();
             expect(mockNodeService.getPlanNodeDetails).toHaveBeenCalledWith(1);
         });
@@ -417,8 +426,8 @@ describe('NewDistributionPlanController', function () {
             setUp({salesOrderId: 1, distributionPlanNodeId: 1});
 
             deferredUserPromise.resolve(stubUser);
-            deferredLineItem.resolve({});
-            deferredPlanNode.resolve({distribution_plan: 2, distributionplanlineitem_set: [1]});
+            deferredNode.resolve({});
+            deferredPlanNode.resolve({distributionPlan: 2, distributionplannode_set: [1]});
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual(2);
@@ -428,33 +437,14 @@ describe('NewDistributionPlanController', function () {
             setUp({salesOrderId: 1, distributionPlanNodeId: 1});
 
             deferredUserPromise.resolve(stubUser);
-            deferredLineItem.resolve({});
-            deferredPlanNode.resolve({distribution_plan: 2, distributionplanlineitem_set: [1]});
+            deferredNode.resolve({});
+            deferredPlanNode.resolve({distributionPlan: 2, distributionplannode_set: [1]});
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual(2);
         });
 
-        it('should call the get distribution plan items service linked to the particular sales order item', function () {
-            deferredUserPromise.resolve(stubUser);
-            scope.$apply();
-
-            deferred.resolve(stubSalesOrderItem);
-            deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
-
-            scope.selectedSalesOrderItem = {
-                display: stubSalesOrderItem.information.item.description,
-                materialCode: stubSalesOrderItem.information.item.materialCode, quantity: stubSalesOrderItem.quantity,
-                unit: stubSalesOrderItem.information.item.unit.name, information: stubSalesOrderItem
-            };
-            scope.selectSalesOrderItem();
-            scope.$apply();
-
-            expect(mockLineItemService.getLineItem).toHaveBeenCalledWith(1);
-            expect(mockLineItemService.getLineItem).toHaveBeenCalledWith(2);
-        });
-
-        it('should put the distribution plan items linked to the particular sales order item on the scope', function () {
+        it('should call the get distribution plan node service linked to the particular sales order item', function () {
             deferredUserPromise.resolve(stubUser);
             scope.$apply();
 
@@ -465,10 +455,40 @@ describe('NewDistributionPlanController', function () {
                 location: 'Kampala',
                 contact_person: {_id: 1}
             });
-            var stubLineItem = {id: 1};
+
+            var stubNode = {id: 1};
+            var stubNode2 = {id: 2};
             deferred.resolve(stubSalesOrderItem);
-            deferredLineItem.resolve(stubLineItem);
-            deferredTopLevelLineItems.resolve(stubSalesOrderItem.distributionplanlineitem_set);
+            deferredTopLevelNodes.resolve([stubNode, stubNode2]);
+            deferredNode.resolve(stubNode);
+
+            scope.selectedSalesOrderItem = {
+                display: stubSalesOrderItem.information.item.description,
+                materialCode: stubSalesOrderItem.information.item.materialCode, quantity: stubSalesOrderItem.quantity,
+                unit: stubSalesOrderItem.information.item.unit.name, information: stubSalesOrderItem
+            };
+            scope.selectSalesOrderItem();
+            scope.$apply();
+
+            expect(mockSalesOrderItemService.getTopLevelDistributionPlanNodes).toHaveBeenCalledWith(stubSalesOrderItem);
+        });
+
+        it('should put the distribution plan nodes linked to the particular sales order item on the scope', function () {
+            deferredUserPromise.resolve(stubUser);
+            scope.$apply();
+
+            deferredPlanNode.resolve({
+                consignee: {
+                    name: 'Save the Children'
+                },
+                location: 'Kampala',
+                contact_person: {_id: 1}
+            });
+            var stubNode = {id: 1};
+            var stubNode2 = {id: 2};
+            deferred.resolve(stubSalesOrderItem);
+            deferredNode.resolve(stubNode);
+            deferredTopLevelNodes.resolve([stubNode, stubNode2]);
 
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.information.item.description,
@@ -480,24 +500,24 @@ describe('NewDistributionPlanController', function () {
             scope.selectSalesOrderItem();
             scope.$apply();
 
-            expect(scope.distributionPlanLineItems).toEqual([stubLineItem, stubLineItem]);
+            expect(scope.distributionPlanNodes).toEqual([stubNode, stubNode2]);
         });
 
-        it('should not get distribution plan line items if there are no ui line items', function () {
+        it('should not get distribution plan nodes if there are no ui nodes', function () {
 
             scope.selectedSalesOrderItem = {
-                display: stubSalesOrderItemNoDistributionPlanLineItems.information.item.description,
-                material_code: stubSalesOrderItemNoDistributionPlanLineItems.information.item.material_code,
-                quantity: stubSalesOrderItemNoDistributionPlanLineItems.quantity,
-                unit: stubSalesOrderItemNoDistributionPlanLineItems.information.item.unit.name,
-                information: stubSalesOrderItemNoDistributionPlanLineItems
+                display: stubSalesOrderItemNodistributionPlanNodes.information.item.description,
+                material_code: stubSalesOrderItemNodistributionPlanNodes.information.item.material_code,
+                quantity: stubSalesOrderItemNodistributionPlanNodes.quantity,
+                unit: stubSalesOrderItemNodistributionPlanNodes.information.item.unit.name,
+                information: stubSalesOrderItemNodistributionPlanNodes
             };
             scope.$apply();
 
-            expect(scope.distributionPlanLineItems).toEqual([]);
+            expect(scope.distributionPlanNodes).toEqual([]);
         });
 
-        it('should not get distribution plan items service linked to the particular sales order item with undefined line item set', function () {
+        it('should not get distribution plan nodes service linked to the particular sales order item with undefined line item set', function () {
 
             scope.selectedSalesOrderItem = {
                 display: stubSalesOrderItem.information.item.description,
@@ -508,19 +528,19 @@ describe('NewDistributionPlanController', function () {
             };
             scope.$apply();
 
-            expect(scope.distributionPlanLineItems).toEqual([]);
+            expect(scope.distributionPlanNodes).toEqual([]);
         });
 
-        it('should reset track, inavalidLine items and distribution plan if newly selected item has no items', function () {
+        it('should reset track, invalid nodes and distribution plan if newly selected item has no items', function () {
             scope.track = true;
-            scope.invalidLineItems = false;
+            scope.invalidNodes = false;
             scope.distributionPlan = 1;
 
             scope.selectSalesOrderItem();
             scope.$apply();
 
             expect(scope.track).toEqual(false);
-            expect(scope.invalidLineItems).toEqual(NaN);
+            expect(scope.invalidNodes).toEqual(NaN);
             expect(scope.distributionPlan).toEqual(NaN);
         });
     });
@@ -531,13 +551,13 @@ describe('NewDistributionPlanController', function () {
             scope.distributionPlan = 1;
         });
 
-        it('should set the invalidLineItems value', function () {
+        it('should set the invalidNodes value', function () {
             scope.$apply();
             scope.trackSalesOrderItem();
-            expect(scope.invalidLineItems).toEqual(false);
+            expect(scope.invalidNodes).toEqual(false);
         });
 
-        it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function() {
+        it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function () {
             scope.planNode = 1;
 
             scope.trackSalesOrderItem();
@@ -546,7 +566,7 @@ describe('NewDistributionPlanController', function () {
             expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalled();
         });
 
-        it('should call updatePlanTracking if track is set to true and on first Level', function() {
+        it('should call updatePlanTracking if track is set to true and on first Level', function () {
             scope.consigneeLevel = true;
 
             scope.trackSalesOrderItem();
@@ -558,7 +578,7 @@ describe('NewDistributionPlanController', function () {
             );
         });
 
-        it('should not call updatePlanTracking if track is set to true and not on first Level', function() {
+        it('should not call updatePlanTracking if track is set to true and not on first Level', function () {
             scope.consigneeLevel = false;
 
             scope.trackSalesOrderItem();
@@ -567,7 +587,7 @@ describe('NewDistributionPlanController', function () {
             expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalledWith();
         });
 
-        it('should call updatePlanTracking if track is set to true and no plan Node', function() {
+        it('should call updatePlanTracking if track is set to true and no plan Node', function () {
             scope.planNode = NaN;
 
             scope.trackSalesOrderItem();
@@ -589,27 +609,27 @@ describe('NewDistributionPlanController', function () {
                 quantityLeft: stubSalesOrderItem.quantity,
                 item: stubSalesOrderItem.information.item,
                 information: stubSalesOrderItem,
-                distributionplanlineitem_set: stubSalesOrderItem.information.distributionplanlineitem_set
+                distributionplannode_set: stubSalesOrderItem.information.distributionplannode_set
             };
             scope.$apply();
 
-            var expectedPlanItem = {
+            var expectedPlanNode = {
                 item: stubSalesOrderItem.information.item.id,
                 plannedDistributionDate: '',
-                targetQuantity: 0,
+                targetedQuantity: 0,
                 destinationLocation: '',
                 modeOfDelivery: '',
                 remark: '',
                 contactPerson: '',
                 track: false,
                 forEndUser: false,
-                flowTriggered : false
+                flowTriggered: false
             };
 
-            scope.addDistributionPlanItem();
+            scope.addDistributionPlanNode();
             scope.$apply();
 
-            expect(scope.distributionPlanLineItems).toEqual([expectedPlanItem]);
+            expect(scope.distributionPlanNodes).toEqual([expectedPlanNode]);
         });
     });
 
@@ -630,7 +650,7 @@ describe('NewDistributionPlanController', function () {
 
         describe('and the plan is successfully saved, ', function () {
             it('a toast confirming the save action should be created', function () {
-                scope.saveDistributionPlanLineItems();
+                scope.saveDistributionPlanNodes();
                 scope.$apply();
 
                 var expectedToastArguments = {
@@ -642,23 +662,17 @@ describe('NewDistributionPlanController', function () {
                 expect(mockToastProvider.create).toHaveBeenCalledWith(expectedToastArguments);
             });
 
-            it('puts a promise on the scope to notify the ui that saving is done', function () {
-                scope.saveDistributionPlanLineItems();
-                scope.$apply();
-
-                expect(scope.savePlanPromise).toBeTruthy();
-            });
         });
 
         describe('and a plan for the sales order item has not been saved, ', function () {
             it('a distribution plan should be created', function () {
-                scope.saveDistributionPlanLineItems();
+                scope.saveDistributionPlanNodes();
                 scope.$apply();
 
                 expect(mockPlanService.createPlan).toHaveBeenCalledWith({programme: programmeId});
             });
             it('the created distribution plan should be put on the scope', function () {
-                scope.saveDistributionPlanLineItems();
+                scope.saveDistributionPlanNodes();
                 scope.$apply();
 
                 expect(scope.distributionPlan).toEqual(distributionPlan.id);
@@ -670,7 +684,7 @@ describe('NewDistributionPlanController', function () {
                 scope.distributionPlan = {programme: 1};
                 scope.$apply();
 
-                scope.saveDistributionPlanLineItems();
+                scope.saveDistributionPlanNodes();
                 scope.$apply();
 
                 expect(mockPlanService.createPlan).not.toHaveBeenCalled();
@@ -678,31 +692,32 @@ describe('NewDistributionPlanController', function () {
         });
 
         describe('when saving a node and plan item, ', function () {
-            var uiPlanItem;
-            var distributionDateFormatedForSave = '2014-2-3';
+            var uiPlanNode;
+            var distributionDateFormattedForSave = '2014-2-3';
 
             beforeEach(function () {
-                uiPlanItem = {
-                    consignee: 1,
+                uiPlanNode = {
+                    consignee: {id: 1},
+                    location: 'Kampala',
                     destinationLocation: 'Kampala',
-                    contactPerson: '0489284',
+                    contactPerson: {id: '0489284'},
                     distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
                     item: 1,
-                    targetQuantity: 10,
+                    targetedQuantity: 10,
                     plannedDistributionDate: '02/03/2014',
                     remark: 'Remark',
                     track: false
                 };
 
-                scope.distributionPlanLineItems = [uiPlanItem];
+                scope.distributionPlanNodes = [uiPlanNode];
                 scope.track = true;
                 scope.$apply();
             });
 
 
-            describe(' and a distribution plan item has not been saved before, ', function () {
+            describe(' and a distribution plan node has not been saved before, ', function () {
                 var nodeId;
                 beforeEach(function () {
                     nodeId = 1;
@@ -710,109 +725,118 @@ describe('NewDistributionPlanController', function () {
                     deferredUserPromise.resolve(stubUser);
                 });
 
-                it('a node for the plan item should be saved with no parent id as implementing partner', function () {
-                    scope.saveDistributionPlanLineItems();
+                it('a node should be saved with no parent id as implementing partner', function () {
+                    scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
                         distribution_plan: 1,
                         tree_position: 'IMPLEMENTING_PARTNER',
                         mode_of_delivery: 'WAREHOUSE',
-                        parent: null
+                        parent: null,
+                        item: uiPlanNode.item,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        planned_distribution_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
+                        track: scope.track
                     });
                 });
 
                 it('should save node with middle man user tree position', function () {
-                    uiPlanItem.forEndUser = false;
+                    uiPlanNode.forEndUser = false;
                     scope.planNode = {id: 1};
-                    scope.saveDistributionPlanLineItems();
+                    scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
                         distribution_plan: 1,
                         tree_position: 'MIDDLE_MAN',
                         mode_of_delivery: 'WAREHOUSE',
-                        parent: 1
+                        parent: 1,
+                        item: uiPlanNode.item,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        planned_distribution_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
+                        track: scope.track
                     });
                 });
 
                 it('should save node with end user tree position', function () {
-                    uiPlanItem.forEndUser = true;
+                    uiPlanNode.forEndUser = true;
 
-                    scope.saveDistributionPlanLineItems();
+                    scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
                         distribution_plan: 1,
                         tree_position: 'END_USER',
                         mode_of_delivery: 'WAREHOUSE',
-                        parent: null
-                    });
-                });
-
-                it(' the saved node id should be put on the ui plan item', function () {
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(uiPlanItem.nodeId).toBe(nodeId);
-                });
-
-                it('a distribution plan line item linked to a saved node should be saved, with it\'s track property picked from the scope', function () {
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(mockLineItemService.createLineItem).toHaveBeenCalledWith({
-                        item: uiPlanItem.item,
-                        targeted_quantity: uiPlanItem.targetQuantity,
-                        distribution_plan_node: nodeId,
-                        planned_distribution_date: distributionDateFormatedForSave,
-                        remark: uiPlanItem.remark,
+                        parent: null,
+                        item: uiPlanNode.item,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        planned_distribution_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
                         track: scope.track
                     });
                 });
 
-                it(' the saved line item id should be put on the ui plan item', function () {
-                    var lineItemId = 1;
-                    var createLineItemPromise = q.defer();
-                    createLineItemPromise.resolve({id: lineItemId});
-                    mockLineItemService.createLineItem.and.returnValue(createLineItemPromise.promise);
-
-                    scope.saveDistributionPlanLineItems();
+                it('a distribution plan node should be saved, with it\'s track property picked from the scope', function () {
+                    scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(uiPlanItem.lineItemId).toBe(lineItemId);
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
+                        consignee: 1,
+                        location: 'Kampala',
+                        contact_person_id: '0489284',
+                        distribution_plan: 1,
+                        tree_position: 'IMPLEMENTING_PARTNER',
+                        mode_of_delivery: 'WAREHOUSE',
+                        parent: null,
+                        item: uiPlanNode.item,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        planned_distribution_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
+                        track: scope.track
+                    });
                 });
+
             });
 
-            it('should setting track to true if user is an IP user', function() {
+            it('should setting track to true if user is an IP user', function () {
                 var nodeId = 1;
                 deferredPlanNode.resolve({id: nodeId});
                 deferredUserPromise.resolve(stubIPUser);
                 scope.track = false;
 
-                scope.saveDistributionPlanLineItems();
+                scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockLineItemService.createLineItem).toHaveBeenCalledWith({
-                    item: uiPlanItem.item,
-                    targeted_quantity: uiPlanItem.targetQuantity,
-                    distribution_plan_node: nodeId,
-                    planned_distribution_date: distributionDateFormatedForSave,
-                    remark: uiPlanItem.remark,
+                expect(mockNodeService.create).toHaveBeenCalledWith({
+                    consignee: 1,
+                    location: 'Kampala',
+                    contact_person_id: '0489284',
+                    distribution_plan: 1,
+                    tree_position: 'IMPLEMENTING_PARTNER',
+                    mode_of_delivery: 'WAREHOUSE',
+                    parent: null,
+                    item: uiPlanNode.item,
+                    targeted_quantity: uiPlanNode.targetedQuantity,
+                    planned_distribution_date: distributionDateFormattedForSave,
+                    remark: uiPlanNode.remark,
                     track: true
                 });
             });
 
-            describe(' and a distribution plan item has already been saved, ', function () {
+            describe(' and a distribution plan node has already been saved, ', function () {
                 var nodeId, deferred;
 
                 beforeEach(inject(function ($q) {
@@ -822,16 +846,16 @@ describe('NewDistributionPlanController', function () {
 
                     deferred = $q.defer();
                     deferred.resolve({});
-                    mockNodeService.updateNode.and.returnValue(deferred.promise);
+                    mockNodeService.update.and.returnValue(deferred.promise);
                 }));
 
-                it('the node for the ui plan item should be updated and not saved', function () {
-                    uiPlanItem.nodeId = nodeId;
+                it('the node for the ui plan node should be updated and not saved', function () {
+                    uiPlanNode.id = nodeId;
 
-                    scope.saveDistributionPlanLineItems();
+                    scope.saveDistributionPlanNodes();
                     scope.$apply();
 
-                    expect(mockNodeService.updateNode).toHaveBeenCalledWith({
+                    expect(mockNodeService.update).toHaveBeenCalledWith({
                         id: nodeId,
                         consignee: 1,
                         location: 'Kampala',
@@ -840,67 +864,64 @@ describe('NewDistributionPlanController', function () {
                         tree_position: 'IMPLEMENTING_PARTNER',
                         mode_of_delivery: 'WAREHOUSE',
                         parent: null,
-                        children: []
+                        children: [],
+                        item: uiPlanNode.item,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        planned_distribution_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
+                        track: true
                     });
-                    expect(mockNodeService.createNode).not.toHaveBeenCalled();
+                    expect(mockNodeService.create).not.toHaveBeenCalled();
                 });
 
-                it('the distribution plan line item should be updated and not saved', function () {
-                    var lineItemId = 1;
-
-                    uiPlanItem.lineItemId = lineItemId;
-                    scope.saveDistributionPlanLineItems();
-                    scope.$apply();
-
-                    expect(mockLineItemService.createLineItem).not.toHaveBeenCalled();
-
-                    expect(mockLineItemService.updateLineItem).toHaveBeenCalledWith({
-                        id: lineItemId,
-                        item: uiPlanItem.item,
-                        targeted_quantity: uiPlanItem.targetQuantity,
-                        distribution_plan_node: nodeId,
-                        planned_distribution_date: distributionDateFormatedForSave,
-                        remark: uiPlanItem.remark,
-                        track: scope.track
-                    });
-                });
             });
         });
 
         describe('for sub-consignees', function () {
-            var uiPlanItem;
+            var uiPlanNodes;
             beforeEach(function () {
-                uiPlanItem = {
-                    consignee: 1,
+                uiPlanNodes = {
+                    consignee: {id: 1},
                     destinationLocation: 'Kampala',
-                    contactPerson: '0489284',
+                    location: 'Kampala',
+                    contactPerson: {id: '0489284'},
                     distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     modeOfDelivery: 'WAREHOUSE',
                     item: 1,
-                    targetQuantity: 10,
+                    targetedQuantity: 10,
                     plannedDistributionDate: '2014-02-03',
-                    remark: 'Remark'
+                    remark: 'Remark',
+                    parent: 42,
+                    track: true
                 };
 
-                scope.distributionPlanLineItems = [uiPlanItem];
+                scope.distributionPlanNodes = [uiPlanNodes];
                 scope.planNode = {id: 42};
+                deferredUserPromise.resolve(stubUser);
+                scope.track = true;
                 scope.$apply();
             });
 
-            it('a node for the plan item should be saved with parent node set', function () {
-                scope.saveDistributionPlanLineItems();
+            it('a node be saved with parent node', function () {
+                scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockNodeService.createNode).toHaveBeenCalledWith({
+                expect(mockNodeService.create).toHaveBeenCalledWith({
                     consignee: 1,
                     location: 'Kampala',
                     contact_person_id: '0489284',
                     distribution_plan: 1,
                     tree_position: 'MIDDLE_MAN',
                     mode_of_delivery: 'WAREHOUSE',
-                    parent: scope.planNode.id
+                    parent: scope.planNode.id,
+                    item: 1,
+                    targeted_quantity: 10,
+                    planned_distribution_date: '2014-2-3',
+                    remark: 'Remark',
+                    track: true
                 });
+
             });
         });
     });
