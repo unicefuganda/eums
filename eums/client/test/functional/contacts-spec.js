@@ -16,10 +16,10 @@ describe('contacts page', function () {
     });
 
     it('should go to the contacts page', function () {
-        browser.sleep(5000);
+        browser.sleep(2000);
         element(by.id('admin-nav')).click();
         element(by.id('contact-nav')).click();
-        browser.sleep(2000);
+        browser.sleep(1000);
         expect(element(by.css('.page-header')).getText()).toEqual('Contacts');
         expect(element(by.id('add-contact')).getText()).toEqual('Add Contact');
     });
