@@ -35,19 +35,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
         }
 
-        function getUser() {
-            if (!$scope.user) {
-                return UserService.getCurrentUser().then(function (user) {
-                    return user;
-                });
-            }
-            else {
-                var deferred = $q.defer();
-                deferred.resolve($scope.user);
-                return deferred.promise;
-            }
-        }
-
         $scope.addContact = function (itemIndex, lineItem) {
             $scope.$parent.itemIndex = itemIndex;
             $scope.$parent.lineItem = lineItem;
@@ -132,7 +119,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
         else {
             $scope.isReport = true;
-            getUser().then(function (user) {
+            UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
                 if ($scope.user.consignee_id) {
                     PurchaseOrderService.getConsigneePurchaseOrder($routeParams.purchaseOrderId, $scope.user.consignee_id).then(function (response) {
@@ -213,7 +200,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             DistributionPlanNodeService.getPlanNodeDetails($routeParams.distributionPlanNodeId).then(function (planNode) {
                 $scope.planNode = planNode;
 
-                getUser().then(function (user) {
+                UserService.getCurrentUser().then(function (user) {
                     $scope.user = user;
                     if ($scope.user.consignee_id) {
                         $scope.consigneeLevel = $scope.planNode.parent ? false : true;
@@ -252,7 +239,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
             showLoadingModal(true);
 
-            getUser().then(function (user) {
+            UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
                 if ($scope.user.consignee_id) {
                     PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedSalesOrderItem.information.id).then(function (response) {
@@ -391,7 +378,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 plannedDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
 
-            getUser().then(function (user) {
+            UserService.getCurrentUser().then(function (user) {
                 var node = {
                     consignee: uiPlanNode.consignee.id,
                     location: uiPlanNode.location,
@@ -428,19 +415,14 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         }
 
         $scope.saveDistributionPlanNodes = function () {
-            var saveWithToast = function () {
-                saveDistributionPlanNodes();
-            };
-
             if ($scope.distributionPlan) {
-                saveWithToast();
+                saveDistributionPlanNodes();
             }
             else {
-                DistributionPlanService
-                    .createPlan({programme: $scope.selectedSalesOrder.programme.id})
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id})
                     .then(function (createdPlan) {
                         $scope.distributionPlan = createdPlan.id;
-                        saveWithToast();
+                        saveDistributionPlanNodes();
                     });
             }
         };
