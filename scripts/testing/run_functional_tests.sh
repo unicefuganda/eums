@@ -11,4 +11,4 @@ cd eums/client
 sudo npm install -g grunt-cli
 npm install
 bower install
-grunt functional-staging
+grunt functional
