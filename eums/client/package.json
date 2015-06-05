@@ -28,7 +28,9 @@
     "time-grunt": "^0.3.1",
     "grunt-watchify": "~0.1.0",
     "grunt-shell": "^1.1.1",
-    "underscore": "1.8.3"
+    "underscore": "1.8.3",
+    "q": "^1.4.1",
+    "jasmine-collection-matchers": "0.0.8"
   },
   "engines": {
     "node": ">=0.10.0"

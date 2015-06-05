@@ -9,6 +9,7 @@ module.exports = function (config) {
         frameworks: ['jasmine'],
 
         files: [
+            'node_modules/jasmine-collection-matchers/lib/pack.js',
             'bower_components/jquery/dist/jquery.min.js',
             'bower_components/sugar/release/sugar.min.js',
             'bower_components/angular/angular.min.js',
