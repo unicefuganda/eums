@@ -21,7 +21,7 @@ grunt build
 #Start the server
 cd ../../
 dropdb --if-exists app_test
-create app_test
+createdb app_test
 python manage.py migrate --settings=eums.snap_settings
 python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.snap_settings
 python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json --settings=eums.snap_settings
