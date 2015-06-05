@@ -91,7 +91,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 $scope.selectedSalesOrder = response;
                 var salesOrderItemSetPromises = [];
                 $scope.selectedSalesOrder.salesorderitemSet.forEach(function (salesOrderItem) {
-                    ItemService.get(salesOrderItem.item.id, ['unit']).then(function (item) {
+                    ItemService.get(salesOrderItem.item, ['unit']).then(function (item) {
                         var formattedSalesOrderItem = {
                             display: item.description,
                             materialCode: item.materialCode,
