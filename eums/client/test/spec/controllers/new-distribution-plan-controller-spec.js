@@ -85,7 +85,7 @@ describe('NewDistributionPlanController', function () {
         distributionplannodeSet: [1, 2]
     };
 
-    var stubSalesOrderItemNodistributionPlanNodes = {
+    var stubSalesOrderItemNoDistributionPlanNodes = {
         id: 1,
         sales_order: '1',
         information: {
@@ -506,11 +506,11 @@ describe('NewDistributionPlanController', function () {
         it('should not get distribution plan nodes if there are no ui nodes', function () {
 
             scope.selectedSalesOrderItem = {
-                display: stubSalesOrderItemNodistributionPlanNodes.information.item.description,
-                material_code: stubSalesOrderItemNodistributionPlanNodes.information.item.material_code,
-                quantity: stubSalesOrderItemNodistributionPlanNodes.quantity,
-                unit: stubSalesOrderItemNodistributionPlanNodes.information.item.unit.name,
-                information: stubSalesOrderItemNodistributionPlanNodes
+                display: stubSalesOrderItemNoDistributionPlanNodes.information.item.description,
+                material_code: stubSalesOrderItemNoDistributionPlanNodes.information.item.material_code,
+                quantity: stubSalesOrderItemNoDistributionPlanNodes.quantity,
+                unit: stubSalesOrderItemNoDistributionPlanNodes.information.item.unit.name,
+                information: stubSalesOrderItemNoDistributionPlanNodes
             };
             scope.$apply();
 

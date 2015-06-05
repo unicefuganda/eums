@@ -3,7 +3,7 @@
 describe('Home Page', function () {
     var loginPage, homePage, responsePage;
 
-    describe('Admin User', function() {
+    describe('Admin User', function () {
         beforeEach(function () {
             //TODO: make tests faster by loging in once and browser.get('/') in the beforeEach
             loginPage = require('./pages/login-page');
@@ -86,6 +86,7 @@ describe('Home Page', function () {
         });
 
         it('should search for "yes" product received in Wakiso district', function () {
+            var expectedItems = ['IEHK2006,kit,suppl.1-drugs', 'Safety box f.used syrgs/ndls 5lt/BOX-25'];
             browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
             browser.sleep(5000);
@@ -94,12 +95,16 @@ describe('Home Page', function () {
             responsePage.searchResponsesFor('yes');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(3);
-                expect(rows[0].getText()).toEqual('Safety box f.used syrgs/ndls 5lt/BOX-25');
-            })
+                rows.forEach(function (row) {
+                    row.getText().then(function (text) {
+                        expect(expectedItems).toContain(text);
+                    });
+                });
+            });
         });
     });
 
-    describe('IP User', function() {
+    describe('IP User', function () {
         beforeEach(function () {
             loginPage = require('./pages/login-page');
             homePage = loginPage.loginWithCredentials('wakiso', 'wakiso');

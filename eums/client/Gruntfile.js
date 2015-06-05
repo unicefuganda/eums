@@ -367,7 +367,7 @@ module.exports = function (grunt) {
     grunt.registerTask('prepare-for-server-start', [
         'build',
         'clean:server',
-//        'shell:sourceEnv',
+        'shell:sourceEnv',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
