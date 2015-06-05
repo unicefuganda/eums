@@ -4,7 +4,7 @@ set -e
 
 pip install -r requirements.txt
 pip install python-coveralls
-dropdb app_test
+dropdb --if-exists app_test
 createdb app_test
 python manage.py migrate --settings=eums.snap_settings
 echo repo_token: $COVERALLS_REPO_TOKEN >> .coveralls.yml
