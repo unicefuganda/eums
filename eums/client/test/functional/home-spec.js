@@ -18,7 +18,7 @@ describe('Home Page', function () {
 
 
         it('should get global stats on map', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             expect(homePage.mapLocation.getText()).toEqual('');
             expect(homePage.numberSent.getText()).toEqual('17');
             expect(homePage.numberDelivered.getText()).toEqual('13');
@@ -26,9 +26,9 @@ describe('Home Page', function () {
         });
 
         it('should click on wakiso district', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             expect(homePage.mapLocation.getText()).toEqual('Responses for WAKISO');
             expect(homePage.getMapZoomLevel()).toBe(10);
             expect(homePage.numberSent.getText()).toEqual('3');
@@ -37,35 +37,35 @@ describe('Home Page', function () {
         });
 
         it('when I click on district number of responses should be 10 or less', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toBeLessThan(6);
             })
         });
 
         it('should highlight a layer', function () {
-            browser.sleep(1000)
+            browser.sleep(5000)
             homePage.highLightMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
             expect(homePage.getHighlightedStyle('wakiso')).toEqual({ fillColor: '#FDAE61', fillOpacity: 0.6, weight: 1 });
         });
 
         it('responses panel should have a link to more details', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             expect(homePage.responsesPageLink.getText()).toEqual('View All Responses');
         });
 
         it('should navigate to detail responses page when page link is clicked', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             responsePage = homePage.goToResponseDetailsPage();
-            browser.sleep(1000);
+            browser.sleep(5000);
 
             expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
             responsePage.numberOfResponses.then(function (rows) {
@@ -74,11 +74,11 @@ describe('Home Page', function () {
         });
 
         it('should search for "no" product received in Wakiso district', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             responsePage = homePage.goToResponseDetailsPage();
-            browser.sleep(1000);
+            browser.sleep(5000);
             responsePage.searchResponsesFor('no');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(0);
@@ -87,11 +87,11 @@ describe('Home Page', function () {
 
         it('should search for "yes" product received in Wakiso district', function () {
             var expectedItems = ['IEHK2006,kit,suppl.1-drugs', 'Safety box f.used syrgs/ndls 5lt/BOX-25'];
-            browser.sleep(1000);
+            browser.sleep(5000);
             homePage.clickMapLayer('wakiso');
-            browser.sleep(1000);
+            browser.sleep(5000);
             responsePage = homePage.goToResponseDetailsPage();
-            browser.sleep(1000);
+            browser.sleep(5000);
             responsePage.searchResponsesFor('yes');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(3);
@@ -117,7 +117,7 @@ describe('Home Page', function () {
 
 
         it('should get global stats on map only for IP', function () {
-            browser.sleep(1000);
+            browser.sleep(5000);
             expect(homePage.mapLocation.getText()).toEqual('');
             expect(homePage.numberSent.getText()).toEqual('3');
             expect(homePage.numberDelivered.getText()).toEqual('3');
