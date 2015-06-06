@@ -15,7 +15,7 @@ describe('Distribution Planning', function () {
         loginPage.logout();
     });
 
-    it('should go to the distribution plan page and show all sales orders', function () {
+    xit('should go to the distribution plan page and show all sales orders', function () {
         distributionPlanPage.go();
         expect(distributionPlanPage.title()).toEqual('Sales Orders');
         browser.sleep(2000);
@@ -31,7 +31,7 @@ describe('Distribution Planning', function () {
         });
     });
 
-    it('should go to new distribution plan page', function () {
+    xit('should go to new distribution plan page', function () {
         distributionPlanPage.go();
         browser.sleep(2000);
         distributionPlanPage.selectSalesOrder('20151491');
