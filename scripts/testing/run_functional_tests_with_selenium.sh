@@ -2,6 +2,12 @@
 
 set -e
 
+#Make sure any hanging instances of eums are dead
+if [ $(lsof -t -i:8000) ]; then
+   kill -9 $(lsof -t -i:8000)
+fi
+
+
 #build the code TODO: not sure this is needed
 if [ ! -d ~/.virtualenvs/eums ]; then
    virtualenv ~/.virtualenvs/eums

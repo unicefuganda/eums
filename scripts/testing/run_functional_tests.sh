@@ -4,7 +4,6 @@ set -e
 
 #Make sure any hanging instances of eums are dead
 if [ $(lsof -t -i:8000) ]; then
-echo "kiling it maaaan"
    kill -9 $(lsof -t -i:8000)
 fi
 

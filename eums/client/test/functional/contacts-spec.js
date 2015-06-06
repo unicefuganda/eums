@@ -16,10 +16,11 @@ describe('contacts page', function () {
     });
 
     it('should go to the contacts page', function () {
-        browser.sleep(2000);
+        //FIXME need to remove these arbitrary waits. They make tests either flaky or unnecessarily long
+        browser.sleep(5000);
         element(by.id('admin-nav')).click();
         element(by.id('contact-nav')).click();
-        browser.sleep(1000);
+        browser.sleep(5000);
         expect(element(by.css('.page-header')).getText()).toEqual('Contacts');
         expect(element(by.id('add-contact')).getText()).toEqual('Add Contact');
     });
