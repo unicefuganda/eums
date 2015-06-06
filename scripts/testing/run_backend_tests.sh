@@ -2,6 +2,13 @@
 
 set -e
 
+#Make sure any hanging instances of eums are dead
+if [ $(lsof -t -i:8000) ]; then
+echo "kiling it maaaan"
+   kill -9 $(lsof -t -i:8000)
+fi
+
+
 pip install -r requirements.txt
 pip install python-coveralls
 dropdb --if-exists app_test
