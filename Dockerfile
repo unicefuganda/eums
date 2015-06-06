@@ -125,6 +125,7 @@ ADD ./contacts /opt/app/contacts
 ADD ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
 ADD ./contacts/scripts/initContacts.sh /opt/scripts/initContacts.sh
 RUN chmod a+x /opt/scripts/*.sh
+RUN chmod a+x /opt/app/eums/scripts/**/*.sh
 RUN /opt/scripts/initContacts.sh
 RUN /opt/app/eums/scripts/packaging/initdb.sh 9.3
 
