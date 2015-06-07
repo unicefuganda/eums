@@ -109,25 +109,23 @@ RUN apt-get update && apt-get install -y mongodb-org=$MONGO_VERSION mongodb-org-
 ##############################################################################
 RUN apt-get install -y python-dev
 RUN pip install uwsgi
-ADD ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
+COPY ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
 
 # copy nginx config files
-ADD ./eums/scripts/packaging/nginx.config /etc/nginx/nginx.conf
-ADD ./eums/scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums.nginx.conf
+COPY ./eums/scripts/packaging/nginx.config /etc/nginx/nginx.conf
+COPY ./eums/scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums
 
 ##############################################################################
 ## Add the codebase to the image
 ##############################################################################
 # Add the code and dependencies
-ADD ./eums /opt/app/eums
+COPY ./eums /opt/app/eums
 
-ADD ./contacts /opt/app/contacts
-ADD ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
-ADD ./contacts/scripts/initContacts.sh /opt/scripts/initContacts.sh
+COPY ./contacts /opt/app/contacts
+COPY ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
 RUN chmod a+x /opt/scripts/*.sh
 RUN chmod a+x /opt/app/eums/scripts/**/*.sh
-RUN /opt/scripts/initContacts.sh
-RUN /opt/app/eums/scripts/packaging/initdb.sh 9.3
+RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
 
 
 ##############################################################################

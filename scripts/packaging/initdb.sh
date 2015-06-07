@@ -8,9 +8,6 @@ pgVersion=$1
 cd /opt/app/eums
 
 #Replace pg config file to allow postgres to log in locally
-#hbaLoc=$(psql -U postgres -t -P format=unaligned -c 'show hba_file';)
-#echo $hbaLoc
-#ßcp scripts/pg_hba.conf $hbaLoc
 cp scripts/packaging/pg_hba.conf /etc/postgresql/$pgVersion/main/pg_hba.conf
 su - postgres -c "/etc/init.d/postgresql start"
 
