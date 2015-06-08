@@ -59,6 +59,44 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                                         'purchase_order': 45132639.0,
                                                         'po_item_number': 20,
                                                         'so_item_number': 20}]}]
+        self.updated_imported_release_order_data = [{'order_number': 54101099.0,
+                                                     'so_number': 20148031.0,
+                                                     'purchase_order': 81018523.0,
+                                                     'consignee': 'L438000393',
+                                                     'consignee_name': 'OYAM DISTRICT ADMIN',
+                                                     'waybill': 72081598.0,
+                                                     'recommended_delivery_date': '2014-01-08',
+                                                     'items': [{'ro_item_number': 10,
+                                                                'material_code': 'SL005144',
+                                                                'description': 'Laptop Lenovo ThinkPad T510',
+                                                                'quantity': 2,
+                                                                'value': 2335.32,
+                                                                'purchase_order': 81018523.0,
+                                                                'po_item_number': 10,
+                                                                'so_item_number': 10},
+                                                               {'ro_item_number': 20,
+                                                                'material_code': 'SL002248',
+                                                                'description': 'Laptop bag',
+                                                                'quantity': 1,
+                                                                'value': 26.81,
+                                                                'purchase_order': 81018523.0,
+                                                                'po_item_number': 20,
+                                                                'so_item_number': 20}]},
+                                                    {'order_number': 54101128.0,
+                                                     'so_number': 20147537.0,
+                                                     'purchase_order': 45132639.0,
+                                                     'consignee': 'L438000181',
+                                                     'consignee_name': 'GULU HOSPITAL',
+                                                     'waybill': 72081746.0,
+                                                     'recommended_delivery_date': '2014-04-08',
+                                                     'items': [{'ro_item_number': 10,
+                                                                'material_code': 'S0000208',
+                                                                'description': 'F-75 therap.diet sachet 102.5g/CAR-120',
+                                                                'quantity': 20,
+                                                                'value': 1188.79,
+                                                                'purchase_order': 45132639.0,
+                                                                'po_item_number': 20,
+                                                                'so_item_number': 20}]}]
 
         self.facade = ReleaseOrderFacade(self.release_order_file_location)
 
@@ -94,22 +132,30 @@ class TestReleaseOrdersVisionFacade(TestCase):
                        'WB User Reference 1', 'WB User Reference 2', 'WB User Reference 3', 'WB User Reference 4',
                        'WB User Reference 5']
 
-        self.first_row = [u'54101099', u'10', u'2014-01-08', u'2014-01-08', u'SL005144', u'Laptop Lenovo ThinkPad T510', u'1',
+        self.first_row = [u'54101099', u'10', u'2014-01-08', u'2014-01-08', u'SL005144', u'Laptop Lenovo ThinkPad T510',
+                          u'1',
                           u'1167.66', u'2611', u'261', u'Kampala W1', u'L438000393', u'OYAM DISTRICT ADMIN',
-                          u'Nuhoddin Maarij', u'20148031', u'81018523', u'56162712', u'SC130003', u'4380/A0/04/107/002/012',
+                          u'Nuhoddin Maarij', u'20148031', u'81018523', u'56162712', u'SC130003',
+                          u'4380/A0/04/107/002/012',
                           u'C', u'7732', u'C', u'72081598', u'UNICEF - Kampala Uganda Kampala Country Office Uganda',
                           u'08/05/2014', u'C', u'8/20/2014', u'0', u'0', u'ZLO', u'EA', u'1167.67', u'5617', u'Uganda',
-                          u'Kampala W1-Prog', u'', u'', u'L438000393', u'', u'Silvia Pasti', u'10', u'10', u'', u'1', u'1', u'1',
-                          u'F43801', u'4900086016', u'1', u'SYS0084421', u'', u'2014-05-08', u'2014-05-08', u'', u'2014-05-08',
-                          u'2014-05-08', u'2014-05-08', u'2014-05-08', u'', u'15', u'', u'', u'', u'', u'', u'', u'', u'',
+                          u'Kampala W1-Prog', u'', u'', u'L438000393', u'', u'Silvia Pasti', u'10', u'10', u'', u'1',
+                          u'1', u'1',
+                          u'F43801', u'4900086016', u'1', u'SYS0084421', u'', u'2014-05-08', u'2014-05-08', u'',
+                          u'2014-05-08',
+                          u'2014-05-08', u'2014-05-08', u'2014-05-08', u'', u'15', u'', u'', u'', u'', u'', u'', u'',
+                          u'',
                           u'CD 96-50U', u'UNICEF', u'Bongomin', u'', u'']
-        self.second_row = [u'54101099', u'20', '2014-01-08', '2014-01-08', 'SL002248', 'Laptop bag', '1', '26.81', '2611',
+        self.second_row = [u'54101099', u'20', '2014-01-08', '2014-01-08', 'SL002248', 'Laptop bag', '1', '26.81',
+                           '2611',
                            '261', 'Kampala W1', 'L438000393', 'OYAM DISTRICT ADMIN', 'Nuhoddin Maarij', u'20148031',
-                           u'81018523', u'56162712', 'SC130003', '4380/A0/04/107/002/012', 'C', '7732', 'C', u'72081598',
+                           u'81018523', u'56162712', 'SC130003', '4380/A0/04/107/002/012', 'C', '7732', 'C',
+                           u'72081598',
                            'UNICEF - Kampala Uganda Kampala Country Office Uganda', '2014-01-08', 'C', '2014-08-20',
                            '0',
                            '0', 'ZLO', 'EA', '26.81', '5617', 'Uganda', 'Kampala W1-Prog', '', '', 'L438000393', '',
-                           'Silvia Pasti', u'20', u'20', '', '2', '2', '2', 'F43801', '4900086016', '2', 'SYS0084422', '',
+                           'Silvia Pasti', u'20', u'20', '', '2', '2', '2', 'F43801', '4900086016', '2', 'SYS0084422',
+                           '',
                            '2014-05-08', '2014-05-08', '', '2014-05-08', '2014-05-08', '2014-05-08', '2014-05-08', '',
                            '15', '', '', '', '', '', '', '', '', 'CD 96-50U', 'UNICEF', 'Bongomin', '', '']
         self.third_row = [54101128, 10, '2014-08-01', '2014-04-08', 'S0000208',
@@ -146,14 +192,17 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                                             item_number=20)
 
     def create_purchase_orders(self):
-        self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order = self.sales_order_one)
-        self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order = self.sales_order_two)
-        self.purchase_order_item_one = PurchaseOrderItemFactory(purchase_order=self.purchase_order_one, sales_order_item=self.sales_order_item_one,
-                                                          item_number=10)
-        self.purchase_order_item_two = PurchaseOrderItemFactory(purchase_order=self.purchase_order_one, sales_order_item=self.sales_order_item_two,
-                                                          item_number=20)
-        self.purchase_order_item_three = PurchaseOrderItemFactory(purchase_order=self.purchase_order_two, sales_order_item=self.sales_order_item_three,
-                                                            item_number=20)
+        self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order=self.sales_order_one)
+        self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order=self.sales_order_two)
+        self.purchase_order_item_one = PurchaseOrderItemFactory(purchase_order=self.purchase_order_one,
+                                                                sales_order_item=self.sales_order_item_one,
+                                                                item_number=10)
+        self.purchase_order_item_two = PurchaseOrderItemFactory(purchase_order=self.purchase_order_one,
+                                                                sales_order_item=self.sales_order_item_two,
+                                                                item_number=20)
+        self.purchase_order_item_three = PurchaseOrderItemFactory(purchase_order=self.purchase_order_two,
+                                                                  sales_order_item=self.sales_order_item_three,
+                                                                  item_number=20)
 
     def create_consignees(self):
         self.consignee_one = ConsigneeFactory(customer_id='L438000393', name='OYAM DISTRICT ADMIN')
@@ -180,7 +229,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def test_should_create_consignee_when_saving_release_order_data_if_there_is_no_matching_consignee(self):
         Consignee.objects.all().delete()
-        
+
         self.create_items()
         self.create_sales_orders()
         self.create_purchase_orders()
@@ -235,13 +284,13 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_items()
         self.create_sales_orders()
 
-        self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order = self.sales_order_one)
-        self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order = self.sales_order_two)
+        self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order=self.sales_order_one)
+        self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order=self.sales_order_two)
 
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 0)
 
-    def test_should_not_recreate_existing_release_order_items_when_saving_only_matching_by_order_number(self):
+    def test_should_update_existing_release_order_items_when_saving_only_matching_by_order_number(self):
         self.create_consignees()
         self.create_items()
         self.create_sales_orders()
@@ -250,12 +299,14 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
 
-        first_release_order_item = ReleaseOrderItem.objects.all().first()
-        first_release_order_item.quantity = -1
-        first_release_order_item.save()
-
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_order_data(self.updated_imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
+
+        updated_release_order_item = ReleaseOrderItem.objects.all().first()
+        expected_ro_item = ReleaseOrderItem(release_order=ReleaseOrder.objects.all()[0], item=Item.objects.all()[0],
+                                            purchase_order_item=self.purchase_order_item_one, quantity=Decimal('2'),
+                                            value=Decimal('2335.32'), item_number=10)
+        self.assert_release_order_items_are_equal(expected_ro_item, updated_release_order_item)
 
     def test_should_load_release_orders_from_excel_and_save(self):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
