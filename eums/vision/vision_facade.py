@@ -274,16 +274,21 @@ class PurchaseOrderFacade(Facade):
                                                 sales_order=matching_sales_orders[0],
                                                 date=po_date)
 
+    def _save_item(self, po_item, quantity, value):
+        po_item.quantity = quantity
+        po_item.value = value
+        po_item.save()
+
     def _create_new_item(self, item_dict, order):
         matching_sales_order_items = order.sales_order.salesorderitem_set.filter(
             item_number=item_dict['so_item_number'])
 
         if len(matching_sales_order_items):
-            matching_po_item = PurchaseOrderItem.objects.filter(purchase_order__order_number=order.order_number,
-                                                                item_number=item_dict['po_item_number'],
-                                                                sales_order_item=matching_sales_order_items[0])
+            matching_po_items = PurchaseOrderItem.objects.filter(purchase_order__order_number=order.order_number,
+                                                                 item_number=item_dict['po_item_number'],
+                                                                 sales_order_item=matching_sales_order_items[0])
 
-            if not len(matching_po_item):
+            if not len(matching_po_items):
                 item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
                                                      description=item_dict['material_description'])
                 PurchaseOrderItem.objects.get_or_create(purchase_order=order,
@@ -291,6 +296,9 @@ class PurchaseOrderFacade(Facade):
                                                         sales_order_item=matching_sales_order_items[0],
                                                         quantity=float(item_dict['quantity']),
                                                         value=float(item_dict['value']))
+            else:
+                po_item = matching_po_items[0]
+                self._save_item(po_item, float(item_dict['quantity']), float(item_dict['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']
