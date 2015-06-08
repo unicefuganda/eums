@@ -22,7 +22,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             $scope.descriptionColumnOrder = 'programme';
         }
         else {
-            $scope.pageTitle = 'Purchase Orders';
+            $scope.pageTitle = 'Sales Orders';
             $scope.searchPromptText = 'Search by document number, date or description';
             $scope.documentColumnTitle = 'Document Number';
             $scope.descriptionColumnTitle = 'Description';
@@ -57,8 +57,9 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 });
             }
             else {
-                PurchaseOrderService.all().then(function (purchaseOrders) {
-                    $scope.salesOrders = purchaseOrders.sort();
+                SalesOrderService.all().then(function (salesOrders) {
+                    var sortedSalesOrder = salesOrders.sort();
+                    $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
                     angular.element('#loading').modal('hide');
                 });
             }
