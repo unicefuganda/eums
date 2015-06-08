@@ -102,9 +102,8 @@ LOGIN_REDIRECT_URL = "/"
 LOGIN_URL = "/login"
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    )
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',)
 }
 
 EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
