@@ -1,34 +1,6 @@
 describe('Sales Order Service', function () {
 
     var mockProgrammeService, mockSalesOrderItemService, mockDistributionPlanNodeService, mockServiceFactory, config;
-    var mockBackend;
-    var salesOrderEndpoint, salesOrderService;
-
-    var stubSalesOrdersWithNoReleaseOrders = [{
-        "id": 1,
-        "order_number": 20143123,
-        "date": "2014-01-01",
-        "programme": 1,
-        "description": "sample sales order",
-        "salesorderitem_set": [
-            1,
-            2
-        ],
-        "release_orders": []
-    }];
-
-    var stubSalesOrdersWithReleaseOrders = [{
-        "id": 1,
-        "order_number": 20143123,
-        "date": "2014-01-01",
-        "programme": 1,
-        "description": "sample sales order",
-        "salesorderitem_set": [
-            1,
-            2
-        ],
-        "release_orders": [1,2,3]
-    }];
 
     beforeEach(function () {
         module('SalesOrder');
@@ -40,28 +12,52 @@ describe('Sales Order Service', function () {
             $provide.value('DistributionPlanNodeService', mockDistributionPlanNodeService);
         });
 
-        inject(function (SalesOrderService, EumsConfig, $httpBackend) {
+        inject(function (SalesOrderService, EumsConfig) {
             mockServiceFactory.create.and.returnValue({});
             config = EumsConfig;
-            mockBackend = $httpBackend;
-            salesOrderEndpoint = EumsConfig.BACKEND_URLS.SALES_ORDER;
-            salesOrderService = SalesOrderService;
         });
-
-        mockBackend.whenGET(salesOrderEndpoint + '?has_release_orders=false').respond(stubSalesOrdersWithNoReleaseOrders);
-        mockBackend.whenGET(salesOrderEndpoint + '?has_release_orders=true').respond(stubSalesOrdersWithReleaseOrders);
     });
 
     it('should create itself with the right parameters', function () {
         expect(mockServiceFactory.create).toHaveBeenCalledWith({
             uri: config.BACKEND_URLS.SALES_ORDER,
-            propertyServiceMap: {programme: mockProgrammeService, salesorderitem_set: mockSalesOrderItemService, distributionplannode_set: mockDistributionPlanNodeService}
+            propertyServiceMap: {
+                programme: mockProgrammeService,
+                salesorderitem_set: mockSalesOrderItemService,
+                distributionplannode_set: mockDistributionPlanNodeService
+            },
+            methods: jasmine.any(Object)
+        });
+    });
+});
+
+describe('Sales Order Service when instantiated', function () {
+
+    var salesOrderService, salesOrderEndpoint, mockBackend;
+
+    beforeEach(function () {
+        module('SalesOrder');
+
+        inject(function (SalesOrderService, EumsConfig, $httpBackend) {
+            mockBackend = $httpBackend;
+            salesOrderService = SalesOrderService;
+            salesOrderEndpoint = EumsConfig.BACKEND_URLS.SALES_ORDER;
         });
     });
 
-    it('should return sales orders which do not have release orders ', function () {
+    it('should return sales orders which do not have release orders ', function (done) {
+        mockBackend.whenGET(salesOrderEndpoint + '?has_release_orders=false').respond([{id: 1}]);
         salesOrderService.getByHasReleaseOrders(false).then(function (objects) {
-            expect(objects).toEqual(stubSalesOrdersWithNoReleaseOrders);
+            expect(objects).toEqual([{id: 1}]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should return sales orders which have release orders ', function (done) {
+        mockBackend.whenGET(salesOrderEndpoint + '?has_release_orders=true').respond([{id: 1, release_orders: [1,2]}]);
+        salesOrderService.getByHasReleaseOrders(true).then(function (objects) {
+            expect(objects).toEqual([{id: 1, release_orders: [1,2]}]);
             done();
         });
         mockBackend.flush();
