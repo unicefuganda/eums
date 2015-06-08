@@ -204,6 +204,11 @@ class ReleaseOrderFacade(Facade):
                                                sales_order=matching_sales_orders[0],
                                                purchase_order=matching_purchase_orders[0])
 
+    def _update_item(self, ro_item, quantity, value):
+        ro_item.quantity = quantity
+        ro_item.value = value
+        ro_item.save()
+
     def _create_new_item(self, item_dict, order):
         matching_purchase_orders = self._get_matching_purchase_order(item_dict)
 
@@ -212,9 +217,9 @@ class ReleaseOrderFacade(Facade):
                                                                              item_number=item_dict['po_item_number'])
 
             if len(matching_purchase_order_items):
-                matching_ro_item = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
-                                                                   purchase_order_item=matching_purchase_order_items[0])
-                if not len(matching_ro_item):
+                matching_ro_items = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
+                                                                    purchase_order_item=matching_purchase_order_items[0])
+                if not len(matching_ro_items):
                     item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
                                                          description=item_dict['description'])
                     ReleaseOrderItem.objects.create(release_order=order,
@@ -223,6 +228,9 @@ class ReleaseOrderFacade(Facade):
                                                     item_number=item_dict['ro_item_number'],
                                                     quantity=float(item_dict['quantity']),
                                                     value=float(item_dict['value']))
+                else:
+                    ro_item = matching_ro_items[0]
+                    self._update_item(ro_item, float(item_dict['quantity']), float(item_dict['value']))
 
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']
