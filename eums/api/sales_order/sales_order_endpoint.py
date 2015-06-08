@@ -16,14 +16,10 @@ class SalesOrderSerialiser(serializers.ModelSerializer):
 class SalesOrderViewSet(ModelViewSet):
     queryset = SalesOrder.objects.all()
     serializer_class = SalesOrderSerialiser
-    filter_fields = ('release_orders', 'order_number')
 
     def list(self, request, *args, **kwargs):
-
         has_release_orders = request.GET.get('has_release_orders', True)
-
         annotated = SalesOrder.objects.annotate(release_order_count=Count('release_orders'))
-
         if has_release_orders == 'false':
             sales_orders = annotated.filter(release_order_count=0)
         elif has_release_orders == 'true':
