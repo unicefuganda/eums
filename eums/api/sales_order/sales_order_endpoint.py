@@ -1,4 +1,6 @@
+from django.db.models import Count
 from rest_framework import serializers
+from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 
@@ -8,12 +10,26 @@ from eums.models import SalesOrder
 class SalesOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = SalesOrder
-        fields = ('id', 'order_number', 'date', 'programme', 'description', 'salesorderitem_set')
+        fields = ('id', 'order_number', 'date', 'programme', 'description', 'salesorderitem_set', 'release_orders')
 
 
 class SalesOrderViewSet(ModelViewSet):
     queryset = SalesOrder.objects.all()
     serializer_class = SalesOrderSerialiser
+    filter_fields = ('release_orders', 'order_number')
+
+    def list(self, request, *args, **kwargs):
+        with_release_orders = request.GET.get('with_release_orders', True)
+        if with_release_orders == 'false':
+            sales_orders = SalesOrder.objects.annotate(release_order_count=Count('release_orders')) \
+                .filter(release_order_count=0)
+        elif with_release_orders == 'true':
+            sales_orders = SalesOrder.objects.annotate(release_order_count=Count('release_orders')) \
+                .filter(release_order_count__gte=1)
+        else:
+            sales_orders = SalesOrder.objects.all()
+
+        return Response(SalesOrderSerialiser(sales_orders, many=True).data)
 
 
 salesOrderRouter = DefaultRouter()
