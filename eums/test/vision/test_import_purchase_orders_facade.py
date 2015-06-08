@@ -6,7 +6,7 @@ from decimal import Decimal
 from mock import MagicMock
 from xlwt import Workbook
 
-from eums.models import Item, PurchaseOrder, PurchaseOrderItem, SalesOrder
+from eums.models import Item, PurchaseOrder, PurchaseOrderItem, SalesOrder, SalesOrderItem
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
@@ -41,6 +41,30 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                                          'value': 4850.19,
                                                          'po_item_number': 20,
                                                          'so_item_number': 20}]}]
+        self.updated_imported_purchase_order_data = [{'order_number': 54101099,
+                                                      'so_number': 20153976,
+                                                      'po_date': '2015-01-15',
+                                                      'items': [{'material_code': 'SL005144',
+                                                                 'material_description': 'Laptop Lenovo ThinkPad T510',
+                                                                 'quantity': 16000,
+                                                                 'value': 6873.64,
+                                                                 'po_item_number': 10,
+                                                                 'so_item_number': 10},
+                                                                {'material_code': 'SL002248',
+                                                                 'material_description': 'Laptop bag',
+                                                                 'quantity': 1000,
+                                                                 'value': 2000.01,
+                                                                 'po_item_number': 20,
+                                                                 'so_item_number': 20}]},
+                                                     {'order_number': 54101128,
+                                                      'so_number': 20143982,
+                                                      'po_date': '',
+                                                      'items': [{'material_code': 'S0000208',
+                                                                 'material_description': 'F-75 therap.diet sachet 102.5g/CAR-120',
+                                                                 'quantity': 5000,
+                                                                 'value': 4850.19,
+                                                                 'po_item_number': 20,
+                                                                 'so_item_number': 20}]}]
 
         self.facade = PurchaseOrderFacade(self.purchase_order_file_location)
 
@@ -186,19 +210,23 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.facade.save_order_data(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 0)
 
-    def test_should_not_recreate_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
+    def test_should_update_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
         self.create_items()
         self.create_sales_orders()
 
         self.facade.save_order_data(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
 
-        first_purchase_order_item = PurchaseOrderItem.objects.all().first()
-        first_purchase_order_item.quantity = -1
-        first_purchase_order_item.save()
-
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_order_data(self.updated_imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
+
+        first_purchase_order_item = PurchaseOrderItem.objects.all().first()
+
+        expected_po_item = PurchaseOrderItem(purchase_order=PurchaseOrder.objects.all()[0], item_number=10,
+                                             sales_order_item=SalesOrderItem.objects.all()[0], quantity=16000,
+                                             value=Decimal('6873.64'))
+
+        self.assert_purchase_order_items_are_equal(expected_po_item, first_purchase_order_item)
 
     def test_should_load_purchase_orders_from_excel_and_save(self):
         self.assertEqual(PurchaseOrder.objects.count(), 0)
@@ -248,3 +276,5 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.assertEqual(order_item_one.purchase_order.order_number, order_item_two.purchase_order.order_number)
         self.assertEqual(order_item_one.item_number, order_item_two.item_number)
         self.assertEqual(order_item_one.sales_order_item.id, order_item_two.sales_order_item.id)
+        self.assertEqual(order_item_one.value, order_item_two.value)
+        self.assertEqual(order_item_one.quantity, order_item_two.quantity)
