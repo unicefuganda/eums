@@ -4,6 +4,17 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
     .factory('SalesOrderService', function ($http, EumsConfig, ProgrammeService, SalesOrderItemService, DistributionPlanNodeService, ServiceFactory) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.SALES_ORDER,
-            propertyServiceMap: {programme: ProgrammeService, salesorderitem_set: SalesOrderItemService, distributionplannode_set: DistributionPlanNodeService}
+            propertyServiceMap: {
+                programme: ProgrammeService,
+                salesorderitem_set: SalesOrderItemService,
+                distributionplannode_set: DistributionPlanNodeService
+            },
+            methods: {
+                getByHasReleaseOrders: function (hasReleaseOrders) {
+                    return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER + '?has_release_orders=' + hasReleaseOrders).then(function (response) {
+                        return response.data;
+                    });
+                }
+            }
         });
     });
