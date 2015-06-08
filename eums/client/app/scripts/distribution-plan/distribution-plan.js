@@ -57,7 +57,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 });
             }
             else {
-                SalesOrderService.all().then(function (salesOrders) {
+                SalesOrderService.getByHasReleaseOrders(false).then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
                     $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
                     angular.element('#loading').modal('hide');
