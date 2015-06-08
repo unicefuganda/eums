@@ -8,8 +8,15 @@ gitRevision=$GO_REVISION
 
 echo "Packaging for Artifact=$artifactName BuildCounter=$artifactCounter GitRevision=$gitRevision"
 
-rm Dockerfile
-rm -rf build
+if [ -f Dockerfile ]; then
+    echo "Removing docker file ..."
+    rm Dockerfile
+fi
+
+if [ -d build ]; then
+    echo "Removing old build directory ..."
+    rm -rf build
+fi
 
 cp eums/Dockerfile .
 #Build and save the image
@@ -26,4 +33,5 @@ sed -i -e "s/%IMAGENAME%/unicef\/${artifactName}/g" build/install-image-eums.sh
 sed -i -e "s/%IMAGEVERSION%/${artifactCounter}/g" build/install-image-eums.sh
 
 cp -r eums/scripts/deployment build/deployment
+chmod +x build/deployment/*.sh
 
