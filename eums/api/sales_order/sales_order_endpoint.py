@@ -19,13 +19,15 @@ class SalesOrderViewSet(ModelViewSet):
     filter_fields = ('release_orders', 'order_number')
 
     def list(self, request, *args, **kwargs):
-        with_release_orders = request.GET.get('with_release_orders', True)
-        if with_release_orders == 'false':
-            sales_orders = SalesOrder.objects.annotate(release_order_count=Count('release_orders')) \
-                .filter(release_order_count=0)
-        elif with_release_orders == 'true':
-            sales_orders = SalesOrder.objects.annotate(release_order_count=Count('release_orders')) \
-                .filter(release_order_count__gte=1)
+
+        has_release_orders = request.GET.get('has_release_orders', True)
+
+        annotated = SalesOrder.objects.annotate(release_order_count=Count('release_orders'))
+
+        if has_release_orders == 'false':
+            sales_orders = annotated.filter(release_order_count=0)
+        elif has_release_orders == 'true':
+            sales_orders = annotated.filter(release_order_count__gte=1)
         else:
             sales_orders = SalesOrder.objects.all()
 
