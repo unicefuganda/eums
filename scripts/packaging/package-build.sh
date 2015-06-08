@@ -34,4 +34,3 @@ sed -i -e "s/%IMAGEVERSION%/${artifactCounter}/g" build/install-image-eums.sh
 
 cp -r eums/scripts/deployment build/deployment
 chmod +x build/deployment/*.sh
-
