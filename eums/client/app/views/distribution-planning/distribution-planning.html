@@ -1,12 +1,8 @@
 <div class="container-fluid">
     <div class="content">
         <ul class="nav nav-pills" style="margin-top: 1em;" ng-controller="NavigationTabsController">
-            <li role="presentation"  ng-class="{active : isActive('/direct-delivery')}"><a href="#/direct-delivery">Direct</a></li>
+            <li role="presentation"  ng-class="{active : isActive('/direct-delivery')}"><a href="#/direct-delivery">Direct Delivery</a></li>
             <li role="presentation" ng-class="{active : isActive('/warehouse-delivery')}" ><a href="#/warehouse-delivery">Warehouse Delivery</a></li>
-        <ul class="nav nav-pills" style="margin-top: 1em;" ng-controller="NavigationTabsController">
-            <li role="presentation"  ng-class="{active : isActive('/distribution-plans')}"><a href="#/distribution-plans">Direct</a></li>
-            <li role="presentation" ng-class="{active : isActive('/warehouse-delivery')}" ><a href="#/warehouse-delivery">Warehouse</a></li>
-
         </ul>
 
         <h4 class="page-header">{{ pageTitle }}</h4>
