@@ -5,17 +5,14 @@ from eums.models import Programme
 
 
 class SalesOrderManager(models.Manager):
-    # def __init__(self):
-    #     self.annotated = SaleOrder.objects.annotate(release_order_count=Count('release_orders'))
-        # self.annotated = []
+    def annotation(self):
+        return self.model.objects.annotate(release_order_count=Count('release_orders'))
 
     def without_release_orders(self):
-        return SalesOrder.objects.annotate(release_order_count=Count('release_orders')) \
-            .filter(release_order_count=0)
+        return self.annotation().filter(release_order_count=0)
 
     def with_release_orders(self):
-        return SalesOrder.objects.annotate(release_order_count=Count('release_orders')) \
-            .filter(release_order_count__gte=1)
+        return self.annotation().filter(release_order_count__gte=1)
 
 
 class SalesOrder(models.Model):
