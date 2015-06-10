@@ -99,7 +99,7 @@ def create_sales_order(test_case, sales_order_details=None):
 def create_release_order(test_case, release_order_details=None):
     if not release_order_details:
         sales_order = SalesOrderFactory()
-        purchase_order = PurchaseOrderFactory()
+        purchase_order = PurchaseOrderFactory(sales_order=sales_order)
         consignee = ConsigneeFactory()
 
         release_order_details = {'order_number': 232345434, 'delivery_date': datetime.date(2014, 10, 5),
@@ -112,7 +112,7 @@ def create_release_order(test_case, release_order_details=None):
     formatted_data['delivery_date'] = str(formatted_data['delivery_date'])
     test_case.assertEqual(response.status_code, 201)
 
-    return formatted_data
+    return formatted_data, formatted_data['sales_order']
 
 
 def create_purchase_order(test_case, purchase_order_details=None):
