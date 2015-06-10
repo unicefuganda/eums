@@ -22,7 +22,7 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
         function filterSalesOrders(hasReleaseOrders, nestedFields) {
             var url = EumsConfig.BACKEND_URLS.SALES_ORDER + '?has_release_orders=' + hasReleaseOrders;
             return $http.get(url).then(function (response) {
-                return ServiceFactory.buildListResponse(response, this, nestedFields, serviceOptions);
+                return ServiceFactory.buildListResponse.call(this, response, nestedFields, serviceOptions);
             }.bind(this));
         }
 

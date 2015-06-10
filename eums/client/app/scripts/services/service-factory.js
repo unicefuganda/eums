@@ -82,10 +82,10 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             }, {});
         }
 
-        function buildListResponse(response, serviceInstance, nestedFields, options) {
+        function buildListResponse(response, nestedFields, options) {
             var buildPromises = response.data.map(function (flatObject) {
-                return buildObject.call(serviceInstance, flatObject, nestedFields || [], options.propertyServiceMap);
-            });
+                return buildObject.call(this, flatObject, nestedFields || [], options.propertyServiceMap);
+            }.bind(this));
             return $q.all(buildPromises).then(function (builtObjects) {
                 return builtObjects.map(function (object) {
                     var objectToReturn = options.changeCase ? changeCase(object, toCamelCase) : object;
@@ -102,10 +102,9 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
 
                 var service = {
                     all: function (nestedFields) {
-                        var self = this;
                         return $http.get(options.uri).then(function (response) {
-                            return buildListResponse(response, self, nestedFields, options);
-                        });
+                            return buildListResponse.call(this, response, nestedFields, options);
+                        }.bind(this));
                     },
                     get: function (id, nestedFields) {
                         var self = this;
