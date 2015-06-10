@@ -206,7 +206,8 @@ module.exports = function (grunt) {
 
         run: {
             options: {
-                wait: false
+                wait: false,
+                quiet: Infinity
             },
             djangoServer: {
                 cmd: './start-server.sh',
@@ -281,9 +282,6 @@ module.exports = function (grunt) {
                         cwd: '../..'
                     }
                 }
-            },
-            stopServer: {
-                command: 'kill -9 $(lsof -t -i:8000)'
             },
             dropDb: {
                 command: 'dropdb eums_test --if-exists'
@@ -379,14 +377,14 @@ module.exports = function (grunt) {
         'prepare-for-server-start',
         'run:djangoServer',
         'protractor:headless',
-        'shell:stopServer'
+        'stop:djangoServer'
     ]);
 
     grunt.registerTask('performance', [
         'prepare-for-server-start',
         'run:djangoServer',
         'protractor:performance',
-        'shell:stopServer'
+        'stop:djangoServer'
     ]);
 
     grunt.registerTask('functional-staging', [
@@ -399,7 +397,7 @@ module.exports = function (grunt) {
         'shell:mapDataStaging',
         'run:djangoServerStaging',
         'protractor:headless',
-        'shell:stopServer'
+        'stop:djangoServerStaging'
     ]);
 
     grunt.registerTask('default', [

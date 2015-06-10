@@ -30,7 +30,8 @@
     "grunt-shell": "^1.1.1",
     "underscore": "1.8.3",
     "q": "^1.4.1",
-    "jasmine-collection-matchers": "0.0.8"
+    "jasmine-collection-matchers": "0.0.8",
+    "jasmine-spec-reporter": "~1.2.0"
   },
   "engines": {
     "node": ">=0.10.0"

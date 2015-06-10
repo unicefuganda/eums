@@ -1,5 +1,5 @@
 var HomePage = function () {
-    this.homePageTitle = element(by.css('.white'));
+    this.homePageTitle = element(by.css('.white.navbar-brand'));
     this.ipElement = element(by.model('filter.programme'));
     this.map = element(by.id('map'));
     this.mapLocation = element(by.binding('totalStats.location'));
