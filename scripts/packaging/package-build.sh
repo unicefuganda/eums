@@ -2,7 +2,7 @@
 
 set -e
 
-artifactName=$GO_PIPELINE_NAME
+artifactName="eums"
 artifactCounter=$GO_PIPELINE_COUNTER
 gitRevision=$GO_REVISION
 
@@ -27,10 +27,11 @@ sudo docker save -o build/$artifactName"_docker_image.tar" unicef/$artifactName:
 
 cp eums/scripts/packaging/install-image-eums.sh build/install-image-eums.sh
 chmod +x build/install-image-eums.sh
-#Prepare the script that will install the image
-sed -i -e "s/%IMAGEFILE%/${artifactName}_docker_image\.tar/g" build/install-image-eums.sh
-sed -i -e "s/%IMAGENAME%/unicef\/${artifactName}/g" build/install-image-eums.sh
-sed -i -e "s/%IMAGEVERSION%/${artifactCounter}/g" build/install-image-eums.sh
+
+echo "Preparing the script that will install the image ..."
+sudo sed -i -e "s/%IMAGEFILE%/${artifactName}_docker_image\.tar/g" build/install-image-eums.sh
+sudo sed -i -e "s/%IMAGENAME%/unicef\/${artifactName}/g" build/install-image-eums.sh
+sudo sed -i -e "s/%IMAGEVERSION%/${artifactCounter}/g" build/install-image-eums.sh
 
 cp -r eums/scripts/deployment build/deployment
 chmod +x build/deployment/*.sh
