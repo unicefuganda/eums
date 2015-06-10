@@ -1,16 +1,12 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User'])
+angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User', 'Directives'])
     .controller('WarehouseDeliveryController', function ($scope, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
-        $scope.isActive = function(){
-            return true;
-        }
-
 
         $scope.salesOrders = [];
         $scope.programmes = [];
@@ -340,18 +336,7 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
             }
         };
     })
-
-    .directive('ordersTable', [function () {
-        return {
-            controller: 'DistributionPlanController',
-            restrict: 'E',
-            scope: {
-                onSelect: '&',
-                actionable: '@'
-            },
-            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
-        };
-    }]).filter('salesOrderFilter', function ($filter) {
+    .filter('salesOrderFilter', function ($filter) {
         return function (salesOrders, query) {
             var results = $filter('filter')(salesOrders, {order_number: query});
             results = _.union(results, $filter('filter')(salesOrders, {date: query}));

@@ -1,7 +1,7 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User'])
+angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User', 'Directives'])
     .controller('DistributionPlanController', function ($scope, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
@@ -336,18 +336,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             }
         };
     })
-
-    .directive('ordersTable', [function () {
-        return {
-            controller: 'DistributionPlanController',
-            restrict: 'E',
-            scope: {
-                onSelect: '&',
-                actionable: '@'
-            },
-            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
-        };
-    }]).filter('salesOrderFilter', function ($filter) {
+    .filter('salesOrderFilter', function ($filter) {
         return function (salesOrders, query) {
             var results = $filter('filter')(salesOrders, {order_number: query});
             results = _.union(results, $filter('filter')(salesOrders, {date: query}));
