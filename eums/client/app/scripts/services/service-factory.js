@@ -66,7 +66,10 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             return Object.keys(obj).reduce(function (acc, current) {
                 if (Object.isArray(obj[current])) {
                     acc[converter(current)] = obj[current].map(function (element) {
-                        return changeCase(element, converter);
+                        if(typeof element === 'object') {
+                            return changeCase(element, converter);
+                        }
+                        return element;
                     });
                 }
                 else if (Object.isObject(obj[current])) {
@@ -79,25 +82,29 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             }, {});
         }
 
+        function buildListResponse(response, serviceInstance, nestedFields, options) {
+            var buildPromises = response.data.map(function (flatObject) {
+                return buildObject.call(serviceInstance, flatObject, nestedFields || [], options.propertyServiceMap);
+            });
+            return $q.all(buildPromises).then(function (builtObjects) {
+                return builtObjects.map(function (object) {
+                    var objectToReturn = options.changeCase ? changeCase(object, toCamelCase) : object;
+                    return options.model ? new options.model(objectToReturn) : objectToReturn;
+                });
+            });
+        }
+
         return {
+            buildListResponse: buildListResponse,
             create: function (options) {
                 options.changeCase === undefined && (options.changeCase = true);
                 var idField = options.idField || 'id';
-
 
                 var service = {
                     all: function (nestedFields) {
                         var self = this;
                         return $http.get(options.uri).then(function (response) {
-                            var buildPromises = response.data.map(function (flatObject) {
-                                return buildObject.call(self, flatObject, nestedFields || [], options.propertyServiceMap);
-                            });
-                            return $q.all(buildPromises).then(function (builtObjects) {
-                                return builtObjects.map(function (object) {
-                                    var objectToReturn = options.changeCase ? changeCase(object, toCamelCase) : object;
-                                    return options.model ? new options.model(objectToReturn) : objectToReturn;
-                                });
-                            });
+                            return buildListResponse(response, self, nestedFields, options);
                         });
                     },
                     get: function (id, nestedFields) {
@@ -135,7 +142,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                     }
                 };
                 options.methods && Object.each(options.methods, function (name, impl) {
-                    service[name] = impl;
+                    service[name] = impl.bind(service);
                 });
                 return service;
             }
