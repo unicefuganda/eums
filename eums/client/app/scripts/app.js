@@ -34,6 +34,15 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'NewDistributionP
                     }
                 }
             })
+            .when('/warehouse-delivery', {
+                templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
+                controller: 'WarehouseDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
             .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
