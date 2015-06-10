@@ -33,12 +33,12 @@ echo "Tagging new image as latest ..."
 sudo docker tag -f %IMAGENAME%:%IMAGEVERSION% %IMAGENAME%:latest
 echo "Done!"
 
-echo "Running image"
+echo "Running image ..."
 sudo docker run -p ${DEPLOY_MACHINE_SSH_PORT}:22 -p ${DEPLOY_MACHINE_HTTP_PORT}:80 -d %IMAGENAME%:latest
 echo "Done!"
 
-echo "Editing host name"
-sshpass -p 'password' ssh -p ${DEPLOY_MACHINE_SSH_PORT} -o StrictHostKeyChecking=no root@0.0.0.0 'sed -i -e "s/%EUMS_CONTAINER_HOST_NAME%/${EUMS_CONTAINER_HOST_NAME}/g" /etc/nginx/sites-available/eums.nginx.conf && ln -s /etc/nginx/sites-available /etc/nginx/sites-enabled && supervisorctl restart nginx'
+echo "Editing host name ..."
+sshpass -p 'password' ssh -o StrictHostKeyChecking=no -p ${DEPLOY_MACHINE_SSH_PORT} root@0.0.0.0 'sed -i -e "s/%EUMS_CONTAINER_HOST_NAME%/${EUMS_CONTAINER_HOST_NAME}/g" /etc/nginx/sites-available/eums.nginx.conf && ln -s /etc/nginx/sites-available /etc/nginx/sites-enabled && supervisorctl restart nginx'
 
 # uninstall ssh-pass
 apt-get -y --purge remove sshpass
