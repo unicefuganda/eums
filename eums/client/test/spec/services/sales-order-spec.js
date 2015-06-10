@@ -45,18 +45,18 @@ describe('Sales Order Service when instantiated', function () {
         });
     });
 
-    it('should return sales orders which do not have release orders ', function (done) {
+    it('should return sales orders for warehouse delivery', function (done) {
         mockBackend.whenGET(salesOrderEndpoint + '?has_release_orders=false').respond([{id: 1}]);
-        salesOrderService.getByHasReleaseOrders(false).then(function (objects) {
+        salesOrderService.forWarehouseDelivery().then(function (objects) {
             expect(objects).toEqual([{id: 1}]);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should return sales orders which have release orders ', function (done) {
+    it('should return sales orders for direct deliveries', function (done) {
         mockBackend.whenGET(salesOrderEndpoint + '?has_release_orders=true').respond([{id: 1, release_orders: [1,2]}]);
-        salesOrderService.getByHasReleaseOrders(true).then(function (objects) {
+        salesOrderService.forDirectDelivery().then(function (objects) {
             expect(objects).toEqual([{id: 1, release_orders: [1,2]}]);
             done();
         });
