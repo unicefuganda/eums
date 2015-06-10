@@ -11,10 +11,10 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
             },
             methods: {
                 forDirectDelivery: function () {
-                    return filterSalesOrders.call(this, 'true');
+                    return filterSalesOrders.call(this, 'false');
                 },
                 forWarehouseDelivery: function () {
-                    return filterSalesOrders.call(this, 'false');
+                    return filterSalesOrders.call(this, 'true');
                 }
             }
         };
