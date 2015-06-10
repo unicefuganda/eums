@@ -23,7 +23,7 @@ echo "Loading docker image ..."
 sudo docker load -i %IMAGEFILE%
 echo "Done!"
 
-if  [ ! -z $(sudo docker images | awk '/^%IMAGENAME%[[:blank:]]+latest/ { print $3 }') ]; then
+if  [ ! -z $(sudo docker images | awk '/^unicef.%ARTIFACTNAME%[[:blank:]]+latest/ { print $3 }') ]; then
  echo "Tagging latest image as rollback ..."
  sudo docker tag -f %IMAGENAME%:latest %IMAGENAME%:rollback
  echo "Done!"
@@ -34,7 +34,7 @@ sudo docker tag -f %IMAGENAME%:%IMAGEVERSION% %IMAGENAME%:latest
 echo "Done!"
 
 echo "Running image"
-sudo docker run -p ${DEPLOY_MACHINE_SSH_PORT}:22 -p ${DEPLOY_MACHINE_HTTP_PORT}:80 -d  %IMAGENAME%:%IMAGEVERSION% %IMAGENAME%:latest
+sudo docker run -p ${DEPLOY_MACHINE_SSH_PORT}:22 -p ${DEPLOY_MACHINE_HTTP_PORT}:80 -d %IMAGENAME%:latest
 echo "Done!"
 
 echo "Editing host name"

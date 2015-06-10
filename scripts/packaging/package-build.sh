@@ -30,6 +30,7 @@ chmod +x build/install-image-eums.sh
 
 echo "Preparing the script that will install the image ..."
 sudo sed -i -e "s/%IMAGEFILE%/${artifactName}_docker_image\.tar/g" build/install-image-eums.sh
+sudo sed -i -e "s/%ARTIFACTNAME%/${artifactName}/g" build/install-image-eums.sh
 sudo sed -i -e "s/%IMAGENAME%/unicef\/${artifactName}/g" build/install-image-eums.sh
 sudo sed -i -e "s/%IMAGEVERSION%/${artifactCounter}/g" build/install-image-eums.sh
 
