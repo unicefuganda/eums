@@ -1,10 +1,9 @@
 #!/bin/bash
 
 pgVersion=$1
-#/etc/init.d/postgresql start
-#sleep 10
-#hbaLoc=$(psql -U postgres -t -P format=unaligned -c 'show hba_file';)
-#cp /home/user/pg_hba.conf $hbaLoc
+
+set -e
+
 cd /opt/app/eums
 
 #Replace pg config file to allow postgres to log in locally
@@ -12,7 +11,7 @@ cp scripts/packaging/pg_hba.conf /etc/postgresql/$pgVersion/main/pg_hba.conf
 su - postgres -c "/etc/init.d/postgresql start"
 
 #Give pg time to start up
-sleep 10s
+sleep 15s
 
 #setup the database
 #psql -U postgres -t -P format=unaligned -c "create extension postgis;"
