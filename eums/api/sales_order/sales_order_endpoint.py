@@ -1,4 +1,3 @@
-from django.db.models import Count
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
@@ -19,11 +18,10 @@ class SalesOrderViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         has_release_orders = request.GET.get('has_release_orders', True)
-        annotated = SalesOrder.objects.annotate(release_order_count=Count('release_orders'))
         if has_release_orders == 'false':
-            sales_orders = annotated.filter(release_order_count=0)
+            sales_orders = SalesOrder.objects.without_release_orders()
         elif has_release_orders == 'true':
-            sales_orders = annotated.filter(release_order_count__gte=1)
+            sales_orders = SalesOrder.objects.with_release_orders()
         else:
             sales_orders = SalesOrder.objects.all()
 
