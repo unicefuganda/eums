@@ -2,13 +2,7 @@
 
 angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'eums.service-factory'])
     .factory('SalesOrderService', function ($http, EumsConfig, ProgrammeService, SalesOrderItemService, DistributionPlanNodeService, ServiceFactory) {
-        function filterSalesOrders(hasReleaseOrders) {
-            return $http.get(EumsConfig.BACKEND_URLS.SALES_ORDER + '?has_release_orders=' + hasReleaseOrders).then(function (response) {
-                return response.data;
-            });
-        }
-
-        return ServiceFactory.create({
+        var serviceOptions = {
             uri: EumsConfig.BACKEND_URLS.SALES_ORDER,
             propertyServiceMap: {
                 programme: ProgrammeService,
@@ -17,11 +11,20 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
             },
             methods: {
                 forDirectDelivery: function () {
-                    return filterSalesOrders('true');
+                    return filterSalesOrders.call(this, 'true');
                 },
                 forWarehouseDelivery: function () {
-                    return filterSalesOrders('false');
+                    return filterSalesOrders.call(this, 'false');
                 }
             }
-        });
+        };
+
+        function filterSalesOrders(hasReleaseOrders, nestedFields) {
+            var url = EumsConfig.BACKEND_URLS.SALES_ORDER + '?has_release_orders=' + hasReleaseOrders;
+            return $http.get(url).then(function (response) {
+                return ServiceFactory.buildListResponse(response, this, nestedFields, serviceOptions);
+            }.bind(this));
+        }
+
+        return ServiceFactory.create(serviceOptions);
     });
