@@ -59,7 +59,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             else {
                 SalesOrderService.forDirectDelivery(false).then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
-                    $scope.salesOrders = $location.path() === '/distribution-plans' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
+                    $scope.salesOrders = $location.path() === '/direct-delivery' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
                     angular.element('#loading').modal('hide');
                 });
             }

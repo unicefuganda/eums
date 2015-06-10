@@ -3,8 +3,8 @@
 {% block nav %}
     {% if perms.auth.can_view_distribution_plans %}
         <li id="distribution-plan-nav"
-            ng-class="{ active: isActive('/distribution-plans,/delivery-report/new/')} ">
-            <a href="#/distribution-plans">Delivery</a>
+            ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
+            <a href="#/direct-delivery">Delivery</a>
         </li>
         <li class="dropdown"
             ng-class="{ active: isActive('/field-verification-reports,/delivery-reports')}">

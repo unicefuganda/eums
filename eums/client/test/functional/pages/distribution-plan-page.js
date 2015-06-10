@@ -8,7 +8,7 @@ var DistributionPlanPage = function () {
     };
 
     this.go = function() {
-      browser.get('/#/distribution-plans');
+      browser.get('/#/direct-delivery');
     };
 
     this.title = function() {

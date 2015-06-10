@@ -25,7 +25,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'WarehouseDeliver
                     }
                 }
             })
-            .when('/distribution-plans', {
+            .when('/direct-delivery', {
                 templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
                 controller: 'DistributionPlanController',
                 resolve: {
