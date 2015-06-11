@@ -1,8 +1,10 @@
 from unittest import TestCase
-from django.db import IntegrityError
 
+from django.db import IntegrityError
 from eums.models import SalesOrder
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
+from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
 class SalesOrderTest(TestCase):
@@ -18,5 +20,12 @@ class SalesOrderTest(TestCase):
         self.create_sales_order()
         self.assertRaises(IntegrityError, self.create_sales_order)
 
-    def create_sales_order(self):
-        SalesOrderFactory(order_number=123)
+    def test_should_know_if_it_has_a_distribution_plan_or_not(self):
+        sales_order = self.create_sales_order(order_number=21)
+        sales_order_item = SalesOrderItemFactory(sales_order=sales_order)
+        self.assertFalse(sales_order.has_plan())
+        DistributionPlanNodeFactory(item=sales_order_item)
+        self.assertTrue(sales_order.has_plan())
+
+    def create_sales_order(self, order_number=123):
+        return SalesOrderFactory(order_number=order_number)

@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Count
 
-from eums.models import Programme
+from eums.models import Programme, DistributionPlanNode
 
 
 class SalesOrderManager(models.Manager):
@@ -21,6 +21,9 @@ class SalesOrder(models.Model):
     date = models.DateField(auto_now=False)
     description = models.CharField(max_length=255, null=True)
     objects = SalesOrderManager()
+
+    def has_plan(self):
+        return DistributionPlanNode.objects.filter(item__in=self.salesorderitem_set.all()).exists()
 
     class Meta:
         app_label = 'eums'
