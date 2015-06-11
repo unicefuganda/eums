@@ -1,5 +1,5 @@
 #!/bin/sh
 echo "changing directory"
 cd ../../
-echo "Going to run the django server using settings " $1
-python manage.py runserver 0.0.0.0:8000 --settings=$1
+echo "Going to run the Django server on port" $1 "using settings " $2
+python manage.py runserver 0.0.0.0:$1 --settings=$2

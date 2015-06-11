@@ -211,11 +211,11 @@ module.exports = function (grunt) {
             },
             djangoServer: {
                 cmd: './start-server.sh',
-                args: ['eums.test_settings', 'eums_test']
+                args: [9000, 'eums.test_settings', 'eums_test']
             },
             djangoServerStaging: {
                 cmd: './start-server.sh',
-                args: ['eums.snap_settings', 'app_test']
+                args: [9000, 'eums.snap_settings', 'app_test']
             }
         },
 
