@@ -339,7 +339,7 @@ describe('Service Factory', function () {
             service = serviceFactory.create({
                 methods: {
                     special: function () {
-                        return this.get
+                        return this.get;
                     },
                     compute: function() {
                         return 10;
