@@ -66,7 +66,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             return Object.keys(obj).reduce(function (acc, current) {
                 if (Object.isArray(obj[current])) {
                     acc[converter(current)] = obj[current].map(function (element) {
-                        if(typeof element === 'object') {
+                        if (typeof element === 'object') {
                             return changeCase(element, converter);
                         }
                         return element;
@@ -76,7 +76,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                     acc[converter(current)] = changeCase(obj[current], converter);
                 }
                 else {
-                     acc[converter(current)] = obj[current];
+                    acc[converter(current)] = obj[current];
                 }
                 return acc;
             }, {});
@@ -92,6 +92,14 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                     return options.model ? new options.model(objectToReturn) : objectToReturn;
                 });
             });
+        }
+
+        function queryStringFrom(filterParams) {
+            var queryString = '?';
+            Object.each(filterParams, function (key, value) {
+                queryString += key + '=' + value + '&';
+            });
+            return queryString.to(queryString.length - 1);
         }
 
         return {
@@ -138,6 +146,11 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         return $http.delete('{1}{2}/'.assign(options.uri, object[idField]), object).then(function (response) {
                             return response.status;
                         });
+                    },
+                    filter: function (filterParams, nestedFields) {
+                        return $http.get(options.uri + queryStringFrom(filterParams)).then(function (response) {
+                            return buildListResponse.call(this, response, nestedFields, options);
+                        }.bind(this));
                     }
                 };
                 options.methods && Object.each(options.methods, function (name, impl) {
