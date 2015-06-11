@@ -138,6 +138,4 @@ EXPOSE 22 80
 ##############################################################################
 ## Entrypoint and command parameters
 ##############################################################################
-#ENTRYPOINT ["/usr/bin/supervisor"]
-#default options to pass to the entrypoint
 CMD ["/usr/bin/supervisord"]
