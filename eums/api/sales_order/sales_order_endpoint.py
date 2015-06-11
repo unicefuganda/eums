@@ -7,9 +7,11 @@ from eums.models import SalesOrder
 
 
 class SalesOrderSerialiser(serializers.ModelSerializer):
+    has_plan = serializers.BooleanField(read_only=True, source='has_plan')
     class Meta:
         model = SalesOrder
-        fields = ('id', 'order_number', 'date', 'programme', 'description', 'salesorderitem_set', 'release_orders')
+        fields = ('id', 'order_number', 'date', 'programme', 'description', 'salesorderitem_set', 'release_orders',
+                  'has_plan')
 
 
 class SalesOrderViewSet(ModelViewSet):
