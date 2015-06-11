@@ -59,9 +59,11 @@ Installation
 		
 * Populate the database.
 
-        $ cd to/the/project/root
-        $ python manage.py syncdb --noinput
-        $ python manage.py migrate
+	```
+	$ cd to/the/project/root
+	$ python manage.py syncdb --noinput
+	$ python manage.py migrate
+	```
         
 * Load seed data
 
@@ -93,15 +95,18 @@ Installation
 	**Note:** Grunt Karma:Unit tests run on port 8080. If you need these to run on a different port adjust the port value on eums/eums/client/test/karma.conf.js accordingly.
 
 * Start the redis server
-        
-        $ brew install redis
-        $ redis-server
+
+	```
+	$ brew install redis
+	$ redis-server
+	```
 
 * Start the application server
 
-        $ cd to/the/project/root
-        $ python manage.py runserver
-        
+	```
+	$ cd to/the/project/root
+	$ python manage.py runserver
+	```     
 
 
 Troubleshooting
