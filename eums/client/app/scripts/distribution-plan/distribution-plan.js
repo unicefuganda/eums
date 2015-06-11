@@ -24,7 +24,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         else {
             $scope.pageTitle = 'Delivery';
             $scope.searchPromptText = 'Search by document number, date or description';
-            $scope.documentColumnTitle = 'Document Number';
+            $scope.documentColumnTitle = 'Sales Order';
             $scope.descriptionColumnTitle = 'Description';
             $scope.descriptionColumnOrder = 'description';
         }
