@@ -18,7 +18,7 @@ describe('DistributionPlanController', function () {
         }
     };
 
-    var salesOrderOne = {id: 1, 'order_number': '00001', 'date': '2014-10-02', programme: programmeOne.id, description: 'sale'};
+    var salesOrderOne = {id: 1, 'order_number': '00001', 'date': '2014-10-02', programme: programmeOne.id, description: 'sale', hasPlan: 'true'};
     var salesOrderDetails = [salesOrderOne];
 
     var stubError = {
@@ -53,20 +53,22 @@ describe('DistributionPlanController', function () {
 
             spyOn(angular, 'element').and.callFake(function () {
                 return {
-                    modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                    modal: jasmine.createSpy('modal').and.callFake(function (status) {
                         return status;
                     })
                 };
             });
 
             $controller('DistributionPlanController',
-                {$scope: scope, ContactService: mockContactService,
+                {
+                    $scope: scope, ContactService: mockContactService,
                     DistributionPlanService: mockPlanService,
                     ProgrammeService: mockProgrammeService,
                     SalesOrderService: mockSalesOrderService,
                     $sorter: sorter,
                     $filter: filter,
-                    $location: location});
+                    $location: location
+                });
         });
     });
 
@@ -129,6 +131,13 @@ describe('DistributionPlanController', function () {
             scope.sort.descending = true;
             scope.$apply();
             expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-up');
+        });
+
+        it ('should set has plan', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(scope.hasDistributionPlanClass(salesOrderOne.hasPlan)).toEqual('glyphicon glyphicon-ok-sign');
+            expect(scope.hasDistributionPlanClass(false)).toEqual('glyphicon glyphicon-exclamation-sign');
         });
 
     });

@@ -77,6 +77,10 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             return output;
         };
 
+        $scope.hasDistributionPlanClass = function (hasPlan) {
+            return hasPlan ? 'glyphicon glyphicon-ok-sign' : 'glyphicon glyphicon-exclamation-sign';
+        };
+
         $scope.selectSalesOrder = function (selectedSalesOrder) {
             if ($location.path() === '/delivery-reports') {
                 $location.path('/delivery-report/new/' + selectedSalesOrder.id);
@@ -139,7 +143,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             var totalSent = data.length;
             var totalYes = data.reduce(function (total, current) {
                 return current.productReceived && current.productReceived.toLowerCase() === 'yes' ? total + 1 : total;
-            },0);
+            }, 0);
 
             return {
                 location: location,

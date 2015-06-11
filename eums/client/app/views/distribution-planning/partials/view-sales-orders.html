@@ -12,12 +12,16 @@
             </div>
         </div>
     </div>
-    <span class="well-sm"></span>
+    <span class="well-sm text-muted" >
+        <span style="color:green; margin: 0em 0.4em 0.2em 0em;" class="glyphicon glyphicon-ok-sign"></span>Delivery set
+        <span style="color:darkorange; margin: 0em 0.4em 0.2em 0.4em;" class="glyphicon glyphicon-exclamation-sign"></span>Delivery not set
+    </span>
 
     <div class="table-wrapper">
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead ng-init="initialize()">
             <tr>
+                <th>&nbsp;</th>
                 <th style="width: 20%">
                     <a ng-click="sortBy('orderNumber')" ng-show="!deliveryReportPage">{{ documentColumnTitle }} <i
                             ng-class="sortArrowClass('orderNumber');"></i></a>
@@ -42,14 +46,19 @@
 
             <tbody>
             <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+                <td>
+                    <span ng-show="salesOrder.hasPlan" style="color:green" class="glyphicon glyphicon-ok-sign"></span>
+                    <span ng-show="!salesOrder.hasPlan" style="color:darkorange" class="glyphicon glyphicon-exclamation-sign"></span>
+                </td>
                 <td data-header="Document Number">
                     <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.orderNumber }}</a>
                 </td>
                 <td data-header="Date Created">
                     {{ salesOrder.date }}
                 </td>
-                <td data-header={{ deliveryReportPage ? "Programme" : "Description" }}>
-                    {{ deliveryReportPage ? salesOrder.programme : salesOrder.description }}
+                <td data-header={{ deliveryReportPage ?
+                "Programme" : "Description" }}>
+                {{ deliveryReportPage ? salesOrder.programme : salesOrder.description }}
                 </td>
             </tr>
             </tbody>

@@ -57,7 +57,7 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
                 });
             }
             else {
-                SalesOrderService.getByHasReleaseOrders(false).then(function (salesOrders) {
+                SalesOrderService.forWarehouseDelivery().then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
                     $scope.salesOrders = $location.path() === '/direct-delivery' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
                     angular.element('#loading').modal('hide');
