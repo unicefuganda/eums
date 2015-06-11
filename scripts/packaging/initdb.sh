@@ -11,7 +11,7 @@ cp scripts/packaging/pg_hba.conf /etc/postgresql/$pgVersion/main/pg_hba.conf
 su - postgres -c "/etc/init.d/postgresql start"
 
 #Give pg time to start up
-sleep 15s
+sleep 30s
 
 #setup the database
 #psql -U postgres -t -P format=unaligned -c "create extension postgis;"
