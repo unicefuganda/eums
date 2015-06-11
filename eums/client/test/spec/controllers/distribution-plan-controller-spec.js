@@ -9,23 +9,8 @@ describe('DistributionPlanController', function () {
         id: 1, name: 'Test Programme'
     };
 
-    var stubResponse = {
-        data: {
-            _id: 'xxxxxxxx',
-            firstname: 'Tunji',
-            lastname: 'Sunmonu',
-            phone: '+256778945363'
-        }
-    };
-
     var salesOrderOne = {id: 1, 'order_number': '00001', 'date': '2014-10-02', programme: programmeOne.id, description: 'sale', hasPlan: 'true'};
     var salesOrderDetails = [salesOrderOne];
-
-    var stubError = {
-        data: {
-            error: 'Phone number is not valid'
-        }
-    };
 
     beforeEach(function () {
         module('DistributionPlan');
