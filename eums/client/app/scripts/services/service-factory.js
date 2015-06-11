@@ -103,7 +103,6 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         }
 
         return {
-            buildListResponse: buildListResponse,
             create: function (options) {
                 options.changeCase === undefined && (options.changeCase = true);
                 var idField = options.idField || 'id';

@@ -11,20 +11,12 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
             },
             methods: {
                 forDirectDelivery: function () {
-                    return filterSalesOrders.call(this, 'false');
+                    return this.filter({has_release_orders: 'false'});
                 },
                 forWarehouseDelivery: function () {
-                    return filterSalesOrders.call(this, 'true');
+                    return this.filter({has_release_orders: 'true'});
                 }
             }
         };
-
-        function filterSalesOrders(hasReleaseOrders, nestedFields) {
-            var url = EumsConfig.BACKEND_URLS.SALES_ORDER + '?has_release_orders=' + hasReleaseOrders;
-            return $http.get(url).then(function (response) {
-                return ServiceFactory.buildListResponse.call(this, response, nestedFields, serviceOptions);
-            }.bind(this));
-        }
-
         return ServiceFactory.create(serviceOptions);
     });
