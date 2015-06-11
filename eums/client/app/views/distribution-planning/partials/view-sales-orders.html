@@ -12,10 +12,16 @@
             </div>
         </div>
     </div>
-    <span class="well-sm text-muted" >
-        <span style="color:green; margin: 0em 0.4em 0.2em 0em;" class="glyphicon glyphicon-ok-sign"></span>Delivery set
-        <span style="color:darkorange; margin: 0em 0.4em 0.2em 0.4em;" class="glyphicon glyphicon-exclamation-sign"></span>Delivery not set
-    </span>
+    <div class="text-muted">
+        <ul class="list-inline">
+            <li>
+                <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivery set
+            </li>
+            <li>
+                <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Delivery not set
+            </li>
+        </ul>
+    </div>
 
     <div class="table-wrapper">
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
@@ -47,8 +53,8 @@
             <tbody>
             <tr ng-repeat="salesOrder in salesOrders | salesOrderFilter: query | orderBy: sort.criteria:!sort.descending">
                 <td>
-                    <span ng-show="salesOrder.hasPlan" style="color:green" class="glyphicon glyphicon-ok-sign"></span>
-                    <span ng-show="!salesOrder.hasPlan" style="color:darkorange" class="glyphicon glyphicon-exclamation-sign"></span>
+                    <span ng-class="salesOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
+                     'glyphicon glyphicon-exclamation-sign text-warning';"></span>
                 </td>
                 <td data-header="Document Number">
                     <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.orderNumber }}</a>

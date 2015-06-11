@@ -133,13 +133,6 @@ describe('DistributionPlanController', function () {
             expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-up');
         });
 
-        it ('should set has plan', function () {
-            scope.initialize();
-            scope.$apply();
-            expect(scope.hasDistributionPlanClass(salesOrderOne.hasPlan)).toEqual('glyphicon glyphicon-ok-sign');
-            expect(scope.hasDistributionPlanClass(false)).toEqual('glyphicon glyphicon-exclamation-sign');
-        });
-
     });
 
     describe('when sales order is selected', function () {
@@ -149,19 +142,5 @@ describe('DistributionPlanController', function () {
             scope.$apply();
             expect(location.path()).toEqual('/distribution-plan/new/1');
         });
-    });
-
-    xit('should save contact and return contact with an id', function () {
-        deferred.resolve(stubResponse);
-        scope.create();
-        scope.$apply();
-        expect(location.path()).toEqual('/');
-    });
-
-    xit('should add an error message to the scope when the contact is NOT saved', function () {
-        deferred.reject(stubError);
-        scope.create();
-        scope.$apply();
-        expect(scope.errorMessage).toBe('Phone number is not valid');
     });
 });
