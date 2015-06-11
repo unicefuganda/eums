@@ -23,7 +23,10 @@ describe('Service Factory', function () {
                 uri: levelOneEndpoint,
                 propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
             });
-            levelThreeService = ServiceFactory.create({uri: levelThreeEndpoint, propertyServiceMap: {child: levelOneService}});
+            levelThreeService = ServiceFactory.create({
+                uri: levelThreeEndpoint,
+                propertyServiceMap: {child: levelOneService}
+            });
             levelFourService = ServiceFactory.create({uri: levelFourEndpoint, propertyServiceMap: {child: 'self'}});
 
         });
@@ -90,6 +93,31 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should make api filter calls on filter', function(done) {
+        mockBackend.whenGET(levelOneEndpoint + '?param=value').respond(fakeObjects);
+        levelOneService.filter({param: 'value'}).then(function(objects) {
+            expect(objects).toEqual(fakeObjects);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should build nested objects when filtering', function(done) {
+        mockBackend.whenGET(levelOneEndpoint + '?param=value').respond(fakeObjects);
+        mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedOne.id)).respond(nestedOne);
+        mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedTwo.id)).respond(nestedTwo);
+        var expectedFakeOne = Object.clone(fakeOne);
+        var expectedFakeTwo = Object.clone(fakeTwo);
+        expectedFakeOne.nested = nestedOne;
+        expectedFakeTwo.nested = nestedTwo;
+
+        levelOneService.filter({param: 'value'}, ['nested']).then(function (objects) {
+            expect(objects).toEqual([expectedFakeOne, expectedFakeTwo]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should get object by id', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond(fakeOne);
         levelOneService.get(fakeOne.id).then(function (object) {
@@ -119,9 +147,11 @@ describe('Service Factory', function () {
             ]
         });
         levelOneService.get(1).then(function (object) {
-            expect(object).toEqual({id: 1, firstProperty: [
-                {innerProperty: 2}
-            ]});
+            expect(object).toEqual({
+                id: 1, firstProperty: [
+                    {innerProperty: 2}
+                ]
+            });
             done();
         });
         mockBackend.flush();
@@ -303,16 +333,28 @@ describe('Service Factory', function () {
         });
     });
 
-    it('should add specified methods to service', function () {
-        var service = serviceFactory.create({
-            uri: levelOneEndpoint,
-            methods: {
-                testMethod: function () {
-                    return 10;
+    describe('when additional methods are specified', function () {
+        var service;
+        beforeEach(function () {
+            service = serviceFactory.create({
+                methods: {
+                    special: function () {
+                        return this.get
+                    },
+                    compute: function() {
+                        return 10;
+                    }
                 }
-            }
+            });
         });
-        expect(service.testMethod()).toBe(10);
+
+        it('should add specified methods to service', function () {
+            expect(service.compute()).toBe(10);
+        });
+
+        it('should make the service the context of added methods', function () {
+            expect(service.special()).toEqual(service.get);
+        });
     });
 
     describe('with "changeCase" option set to false', function () {
