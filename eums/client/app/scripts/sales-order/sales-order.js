@@ -2,7 +2,7 @@
 
 angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'DistributionPlanNode', 'eums.service-factory'])
     .factory('SalesOrderService', function ($http, EumsConfig, ProgrammeService, SalesOrderItemService, DistributionPlanNodeService, ServiceFactory) {
-        var serviceOptions = {
+        return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.SALES_ORDER,
             propertyServiceMap: {
                 programme: ProgrammeService,
@@ -17,6 +17,5 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
                     return this.filter({has_release_orders: 'true'});
                 }
             }
-        };
-        return ServiceFactory.create(serviceOptions);
+        });
     });
