@@ -94,8 +94,8 @@ describe('Service Factory', function () {
     });
 
     it('should make api filter calls on filter', function(done) {
-        mockBackend.whenGET(levelOneEndpoint + '?param=value').respond(fakeObjects);
-        levelOneService.filter({param: 'value'}).then(function(objects) {
+        mockBackend.whenGET(levelOneEndpoint + '?param=value&other=1').respond(fakeObjects);
+        levelOneService.filter({param: 'value', other: 1}).then(function(objects) {
             expect(objects).toEqual(fakeObjects);
             done();
         });
