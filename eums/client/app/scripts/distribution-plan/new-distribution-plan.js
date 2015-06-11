@@ -484,7 +484,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     width: '150px',
                     query: function (query) {
                         var data = {results: []};
-                        ContactService.filter(query.term).then(function (foundContacts) {
+                        ContactService.search(query.term).then(function (foundContacts) {
                             data.results = formatResponse(foundContacts);
                             query.callback(data);
                         });

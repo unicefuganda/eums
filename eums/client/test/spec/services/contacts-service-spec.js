@@ -18,9 +18,9 @@ describe('Contacts Service', function () {
 
     it('should search for contact by search string', function (done) {
         var searchString = expectedContact.firstName;
-        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + '?searchfield=' + searchString).respond(expectedContact);
-        contactService.filter(searchString).then(function (contact) {
-            expect(contact).toEqual(expectedContact);
+        mockContactsBackend.whenGET(config.CONTACT_SERVICE_URL + '?searchfield=' + searchString).respond([expectedContact]);
+        contactService.search(searchString).then(function (contact) {
+            expect(contact).toEqual([expectedContact]);
             done();
         });
         mockContactsBackend.flush();
