@@ -100,6 +100,8 @@ RUN npm cache clear
 ## install MongoDB
 ##############################################################################
 RUN apt-get install -y mongodb-org=2.6.5 mongodb-org-server=2.6.5 mongodb-org-shell=2.6.5 mongodb-org-mongos=2.6.5 mongodb-org-tools=2.6.5
+ENV LC_ALL C
+VOLUME /data/db
 
 ##############################################################################
 # Install UWSGI
