@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'WarehouseDelivery', 'NewDistributionPlan', 'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case',
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports', 'WarehouseDelivery', 'NewDistributionPlan', 'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case',
         'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker',
         'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData', 'EndUserResponses', 'Directives'])
     .config(function ($routeProvider, $httpProvider) {
@@ -17,8 +17,8 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'WarehouseDeliver
                 }
             })
             .when('/delivery-reports', {
-                templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
-                controller: 'DistributionPlanController',
+                templateUrl: '/static/app/views/distribution-planning/delivery-reports.html',
+                controller: 'DeliveryReportsController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_delivery_reports');

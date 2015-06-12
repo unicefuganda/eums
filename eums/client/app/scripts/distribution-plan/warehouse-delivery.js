@@ -21,10 +21,10 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
             $scope.descriptionColumnOrder = 'programme';
         }
         else {
-            $scope.pageTitle = 'Sales Orders';
+            $scope.pageTitle = 'Delivery';
             $scope.searchPromptText = 'Search by document number, date or description';
-            $scope.documentColumnTitle = 'Document Number';
-            $scope.descriptionColumnTitle = 'Description';
+            $scope.documentColumnTitle = 'Waybill #';
+            $scope.descriptionColumnTitle = 'Programme Name';
             $scope.descriptionColumnOrder = 'description';
         }
 

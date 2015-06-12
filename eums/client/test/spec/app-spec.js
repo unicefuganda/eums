@@ -18,8 +18,8 @@ describe('Route Provider', function () {
 
     it('should know distribution plan route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/delivery-reports');
-        expect(routes.routes['/delivery-reports'].controller).toBe('DistributionPlanController');
-        expect(routes.routes['/delivery-reports'].templateUrl).toBe('/static/app/views/distribution-planning/distribution-planning.html');
+        expect(routes.routes['/delivery-reports'].controller).toBe('DeliveryReportsController');
+        expect(routes.routes['/delivery-reports'].templateUrl).toBe('/static/app/views/distribution-planning/delivery-reports.html');
     });
 
     it('should know responses page route exists', function () {
