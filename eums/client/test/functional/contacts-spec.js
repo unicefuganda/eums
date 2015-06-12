@@ -1,26 +1,17 @@
 'use strict';
 
-describe('contacts page', function () {
+describe('Contacts Page', function () {
     var loginPage;
 
-    beforeEach(function () {
-        loginPage = require('./pages/login-page');
-        browser.ignoreSynchronization = true;
-        browser.get('/');
-        loginPage.loginWithCredentials('admin', 'admin');
-
-    });
-
-    afterEach(function () {
-        loginPage.logout();
-    });
-
     it('should go to the contacts page', function () {
-        //FIXME need to remove these arbitrary waits. They make tests either flaky or unnecessarily long
-        browser.sleep(5000);
+        loginPage = require('./pages/login-page');
+
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+
         element(by.id('admin-nav')).click();
         element(by.id('contact-nav')).click();
-        browser.sleep(5000);
+
         expect(element(by.css('.page-header')).getText()).toEqual('Contacts');
         expect(element(by.id('add-contact')).getText()).toEqual('Add Contact');
     });

@@ -1,24 +1,24 @@
 'use strict';
 
-describe('Login', function () {
+describe('Login Page', function () {
     var loginPage;
-
+    var homePage;
 
     beforeEach(function () {
-        loginPage = require('./pages/login-page');
+        browser.ignoreSynchronization = true;
+        loginPage = require('./pages/login-page.js');
+        homePage = require('./pages/home-page.js')
     });
 
-    afterEach(function () {
-        loginPage.logout();
+    it('should show the login form', function () {
+        loginPage.visit();
+        expect(loginPage.welcomeMessage.isPresent()).toBeTruthy();
     });
 
-    it('should go to login page', function () {
-        browser.get('/');
-        expect(loginPage.welcomeMessageIsPresent()).toBeTruthy();
-    });
+    it('should redirect to home page after login with valid credentials', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
 
-    it('should redirect to home page after login with correct credentials', function () {
-        var homePage = loginPage.loginWithCredentials('admin', 'admin');
         expect(homePage.pageTitle()).toEqual('Supply End User Monitoring System');
     });
 });

@@ -18,6 +18,7 @@ var HomePage = function () {
         browser.executeScript(function (district) {
             window.map.clickLayer(district);
         }, district);
+        browser.sleep(5000);
     };
 
     this.highLightMapLayer = function (district) {
