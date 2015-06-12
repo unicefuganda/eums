@@ -11,57 +11,21 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
-        $scope.deliveryReportPage = $location.path() === '/delivery-reports';
-
-        if ($scope.deliveryReportPage) {
-            $scope.pageTitle = 'Reported By IP';
-            $scope.searchPromptText = 'Search by PO number, date or programme';
-            $scope.documentColumnTitle = 'Purchase Order Number';
-            $scope.descriptionColumnTitle = 'Programme';
-            $scope.descriptionColumnOrder = 'programme';
-        }
-        else {
-            $scope.pageTitle = 'Delivery';
-            $scope.searchPromptText = 'Search by document number, date or description';
-            $scope.documentColumnTitle = 'Waybill #';
-            $scope.descriptionColumnTitle = 'Programme Name';
-            $scope.descriptionColumnOrder = 'description';
-        }
-
-        function reduceSalesOrder(salesOrders) {
-            return _.remove(salesOrders, function (salesOrder, index) {
-                return index > 80;
-            });
-        }
+        $scope.pageTitle = 'Delivery';
+        $scope.searchPromptText = 'Search by document number, date or description';
+        $scope.documentColumnTitle = 'Waybill #';
+        $scope.descriptionColumnTitle = 'Programme Name';
+        $scope.descriptionColumnOrder = 'description';
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            if ($scope.deliveryReportPage) {
-                UserService.getCurrentUser().then(function (user) {
-                    if (user.consignee_id) {
-                        PurchaseOrderService.getConsigneePurchaseOrders(user.consignee_id).then(function (purchaseOrders) {
-                            $scope.salesOrders = purchaseOrders.sort();
-                            angular.element('#loading').modal('hide');
-                        });
-                    }
-                    else {
-                        PurchaseOrderService.all().then(function (purchaseOrders) {
-                            $scope.salesOrders = purchaseOrders.sort();
-                            angular.element('#loading').modal('hide');
-                        });
-                    }
-                });
-            }
-            else {
-                SalesOrderService.forWarehouseDelivery().then(function (salesOrders) {
-                    var sortedSalesOrder = salesOrders.sort();
-                    $scope.salesOrders = $location.path() === '/warehouse-delivery' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
-                    angular.element('#loading').modal('hide');
-                });
-            }
+            SalesOrderService.forWarehouseDelivery().then(function (salesOrders) {
+                $scope.salesOrders = salesOrders.sort();
+                angular.element('#loading').modal('hide');
+            });
         };
 
         $scope.sortArrowClass = function (criteria) {
