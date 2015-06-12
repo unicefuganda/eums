@@ -43,9 +43,5 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
         $scope.selectSalesOrder = function (selectedSalesOrder) {
             $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
         };
-
-        $scope.showDistributionPlan = function (planId) {
-            $scope.planId = planId;
-        };
     });
 

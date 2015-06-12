@@ -45,9 +45,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
         };
 
-        $scope.showDistributionPlan = function (planId) {
-            $scope.planId = planId;
-        };
     })
     .factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService) {
         //TODO remove this
