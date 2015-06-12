@@ -3,7 +3,7 @@
 angular.module('Directives', [])
     .directive('ordersTable', [function () {
         return {
-            controller: 'WarehouseDeliveryController',
+            controller: 'DistributionPlanController',
             restrict: 'E',
             scope: {
                 onSelect: '&',

@@ -463,7 +463,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         };
     }
 ).
-    directive('searchContacts', function (ContactService, $timeout) {
+directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function (contact) {
                 return {
