@@ -16,8 +16,8 @@ sleep 30s
 #setup the database
 createuser -U postgres -s -r -w root
 createdb -U postgres -O postgres eums 
-virtualenv ~/.virtualenvs/eums
-source ~/.virtualenvs/eums/bin/activate
+virtualenv /opt/app/eums/.virtualenvs/eums
+source /opt/app/eums/.virtualenvs/eums/bin/activate
 pip install -r requirements.txt
 python manage.py syncdb --noinput
 python manage.py migrate
