@@ -116,7 +116,6 @@ COPY ./eums/scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
 # copy nginx config files
 COPY ./eums/scripts/packaging/nginx.config /etc/nginx/nginx.conf
 RUN rm /etc/nginx/sites-enabled/default
-COPY ./eums/scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums
 
 ##############################################################################
 ## Add the codebase to the image

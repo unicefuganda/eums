@@ -35,4 +35,5 @@ sudo sed -i -e "s/%IMAGENAME%/unicef\/${artifactName}/g" build/install-image-eum
 sudo sed -i -e "s/%IMAGEVERSION%/${artifactCounter}/g" build/install-image-eums.sh
 
 cp -r eums/scripts/deployment build/deployment
+cp eums/scripts/packaging/eums.nginx.config build/deployment
 chmod +x build/deployment/*.sh
