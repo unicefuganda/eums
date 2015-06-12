@@ -18,7 +18,6 @@ var HomePage = function () {
         browser.executeScript(function (district) {
             window.map.clickLayer(district);
         }, district);
-        browser.sleep(5000);
     };
 
     this.highLightMapLayer = function (district) {
@@ -55,6 +54,7 @@ var HomePage = function () {
     };
 
     this.getMapZoomLevel = function () {
+        browser.sleep(5000);
         return browser.executeScript(function () {
             return window.map.getZoom();
         }).then(function (zoomLevel) {

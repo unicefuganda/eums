@@ -5,7 +5,6 @@ describe('Login Page', function () {
     var homePage;
 
     beforeEach(function () {
-        browser.ignoreSynchronization = true;
         loginPage = require('./pages/login-page.js');
         homePage = require('./pages/home-page.js')
     });

@@ -14,7 +14,6 @@ var LoginPage = function () {
     this.loginAs = function (username, password) {
         this.username.sendKeys(username);
         this.password.sendKeys(password);
-
         this.loginButton.click();
 
         browser.ignoreSynchronization = false;
@@ -24,7 +23,7 @@ var LoginPage = function () {
         var fadingModal = element(by.css('.modal-backdrop.fade'));
         var mapHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
 
-        browser.wait(mapHasLoaded, 5000);
+        browser.wait(mapHasLoaded, 5000, "Timeout exceeded while loading map");
     };
 };
 
