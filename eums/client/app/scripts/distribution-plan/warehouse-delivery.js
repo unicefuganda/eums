@@ -58,7 +58,7 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
             else {
                 SalesOrderService.forWarehouseDelivery().then(function (salesOrders) {
                     var sortedSalesOrder = salesOrders.sort();
-                    $scope.salesOrders = $location.path() === '/direct-delivery' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
+                    $scope.salesOrders = $location.path() === '/warehouse-delivery' ? sortedSalesOrder : reduceSalesOrder(sortedSalesOrder);
                     angular.element('#loading').modal('hide');
                 });
             }
