@@ -8,7 +8,7 @@
                        class="form-control"
                        name="filter"
                        ng-model="query"
-                       placeholder="{{ searchPromptText }}"/>
+                       placeholder="Search by document number, date or description"/>
             </div>
         </div>
     </div>
@@ -32,7 +32,7 @@
                     <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
                 <th style="width: 30%">
-                    <a ng-click="sortBy('date')">Date Created
+                    <a ng-click="sortBy('date')">{{dateColumnTitle}}
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
@@ -51,13 +51,13 @@
                      'glyphicon glyphicon-exclamation-sign text-warning';"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
-                    <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.orderNumber }}</a>
+                    <a ng-click="selectSalesOrder(salesOrder)">{{ warehouseDelivery ? salesOrder.waybill : salesOrder.orderNumber }}</a>
                 </td>
                 <td data-header="Date Created">
-                    {{ salesOrder.date }}
+                    {{ warehouseDelivery ? salesOrder.deliveryDate : salesOrder.date }}
                 </td>
                 <td data-header="{{ descriptionColumnTitle }}">
-                {{ salesOrder.description }}
+                {{ warehouseDelivery ? salesOrder.programme : salesOrder.description }}
                 </td>
             </tr>
             </tbody>
@@ -72,7 +72,7 @@
                       ng-show="salesOrders.length > 0 && (salesOrders | salesOrderFilter: query).length == 0">
                 There are no matches to your search criteria.
                 </span>
-            <span class="information message" ng-show="salesOrders.length == 0">There are no {{ deliveryReportPage ? 'purchase orders' : 'sales orders' }} available right now.</span>
+            <span class="information message" ng-show="salesOrders.length == 0">There are no deliveries available right now.</span>
         </table>
     </div>
 </div>

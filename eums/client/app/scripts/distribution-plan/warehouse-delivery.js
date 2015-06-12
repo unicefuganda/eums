@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User', 'Directives'])
-    .controller('WarehouseDeliveryController', function ($scope, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
+angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'ReleaseOrder'])
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -11,9 +11,9 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
-        $scope.pageTitle = 'Delivery';
-        $scope.searchPromptText = 'Search by document number, date or description';
+        $scope.warehouseDelivery = true;
         $scope.documentColumnTitle = 'Waybill #';
+        $scope.dateColumnTitle = 'Date Delivered';
         $scope.descriptionColumnTitle = 'Programme Name';
         $scope.descriptionColumnOrder = 'description';
 
@@ -22,8 +22,8 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            SalesOrderService.forWarehouseDelivery().then(function (salesOrders) {
-                $scope.salesOrders = salesOrders.sort();
+            ReleaseOrderService.all().then(function (releaseOrders) {
+                $scope.salesOrders = releaseOrders.sort();
                 angular.element('#loading').modal('hide');
             });
         };
