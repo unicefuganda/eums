@@ -29,10 +29,7 @@
             <tr>
                 <th>&nbsp;</th>
                 <th style="width: 20%">
-                    <a ng-click="sortBy('orderNumber')" ng-show="!deliveryReportPage">{{ documentColumnTitle }} <i
-                            ng-class="sortArrowClass('orderNumber');"></i></a>
-                    <a ng-click="sortBy('orderNumber')" ng-show="deliveryReportPage">{{ documentColumnTitle }} <i
-                            ng-class="sortArrowClass('order_number');"></i></a>
+                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
                 <th style="width: 30%">
                     <a ng-click="sortBy('date')">Date Created
@@ -40,11 +37,8 @@
                     </a>
                 </th>
                 <th style="width: 50%">
-                    <a ng-click="sortBy('description')" ng-show="!deliveryReportPage">{{ descriptionColumnTitle }}
+                    <a ng-click="sortBy('description')" >{{ descriptionColumnTitle }}
                         <i ng-class="sortArrowClass('description');"></i>
-                    </a>
-                    <a ng-click="sortBy('programme')" ng-show="deliveryReportPage">{{ descriptionColumnTitle }}
-                        <i ng-class="sortArrowClass('programme');"></i>
                     </a>
                 </th>
             </tr>
@@ -56,15 +50,14 @@
                     <span ng-class="salesOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
                      'glyphicon glyphicon-exclamation-sign text-warning';"></span>
                 </td>
-                <td data-header="Sales Order">
+                <td data-header="{{ documentColumnTitle }}">
                     <a ng-click="selectSalesOrder(salesOrder)">{{ salesOrder.orderNumber }}</a>
                 </td>
                 <td data-header="Date Created">
                     {{ salesOrder.date }}
                 </td>
-                <td data-header={{ deliveryReportPage ?
-                "Programme" : "Description" }}>
-                {{ deliveryReportPage ? salesOrder.programme : salesOrder.description }}
+                <td data-header="{{ descriptionColumnTitle }}">
+                {{ salesOrder.description }}
                 </td>
             </tr>
             </tbody>

@@ -42,11 +42,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         };
 
         $scope.selectSalesOrder = function (selectedSalesOrder) {
-            if ($location.path() === '/delivery-reports') {
-                $location.path('/delivery-report/new/' + selectedSalesOrder.id);
-            } else {
-                $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
-            }
+            $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
         };
 
         $scope.showDistributionPlan = function (planId) {
