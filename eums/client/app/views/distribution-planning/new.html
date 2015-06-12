@@ -52,7 +52,7 @@
 
                 <div class="form-group col-lg-4" ng-show="planNode && !consigneeLevel">
                     <div class="sub_header_padding">
-                        <span class="sub-header">Add Sub-Consignee to Consignee:</span> <span class="text-muted">Abim District Health Office</span>
+                        <span class="sub-header">Add Sub-Consignee to Consignee:</span> <span class="text-muted">{{ planNode.consignee.name }}</span>
                     </div>
                     <div class="sub_header_padding">
                         <button type="button" class="btn btn-default btn-sm blue-border-button" ng-click="previousConsignee(planNode)">
