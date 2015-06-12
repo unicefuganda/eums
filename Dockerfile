@@ -99,6 +99,9 @@ RUN npm cache clear
 ##############################################################################
 ## install MongoDB
 ##############################################################################
+RUN sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
+RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+RUN sudo apt-get update
 RUN apt-get install -y mongodb-org=2.6.5 mongodb-org-server=2.6.5 mongodb-org-shell=2.6.5 mongodb-org-mongos=2.6.5 mongodb-org-tools=2.6.5
 ENV LC_ALL C
 VOLUME /data/db
