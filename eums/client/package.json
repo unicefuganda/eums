@@ -1,6 +1,6 @@
 {
-  "name": "client",
-  "version": "0.0.0",
+  "name": "EUMS",
+  "version": "1.0.0",
   "devDependencies": {
     "grunt": "^0.4.1",
     "grunt-concurrent": "^0.5.0",
@@ -45,5 +45,22 @@
   "dependencies": {
     "less": "^1.7.5",
     "moment-range": "~1.0.5"
-  }
+  },
+  "description": "End User Monitoring System",
+  "main": "Gruntfile.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/unicefuganda/eums"
+  },
+  "author": "ThoughtWorks",
+  "bugs": {
+    "url": "https://github.com/unicefuganda/eums/issues"
+  },
+  "homepage": "https://github.com/unicefuganda/eums",
+  "keywords": [
+    "EUMS"
+  ]
 }
