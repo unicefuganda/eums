@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 today = $1
 
 echo "Creating deployment directory ..."
@@ -12,8 +16,13 @@ cp build/*.sh deploy_$today/scripts
 echo "Copying image ..."
 cp build/*.tar deploy_$today/
 
-echo "Zipping and compressing deployment directory ..."
-tar -czvf deploy_$today.tar.gz deploy_$today
+if [ -f deploy_latest.tar.gz ]; then
+   rm deploy_latest.tar.gz
+fi
 
-ech "Cleaning deployment directory ..."
+echo "Zipping and compressing deployment directory ..."
+tar --force-local -czvf deploy_latest.tar.gz deploy_$today
+
+echo "Cleaning deployment directory ..."
 rm -rf deploy_$today
+
