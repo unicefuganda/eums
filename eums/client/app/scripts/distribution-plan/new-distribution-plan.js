@@ -419,7 +419,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 saveDistributionPlanNodes();
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme.id})
+                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme})
                     .then(function (createdPlan) {
                         $scope.distributionPlan = createdPlan.id;
                         saveDistributionPlanNodes();

@@ -643,7 +643,7 @@ describe('NewDistributionPlanController', function () {
             mockPlanService.createPlan.and.returnValue(createPlanPromise.promise);
 
             programmeId = 42;
-            scope.selectedSalesOrder = {programme: {id: programmeId}};
+            scope.selectedSalesOrder = {programme: programmeId};
             scope.selectedSalesOrderItem = {quantity: 100, information: stubSalesOrderItem};
             scope.$apply();
         });
