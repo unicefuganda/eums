@@ -7,10 +7,8 @@ if [ ! -f /usr/local/bin/docker ] || [ ! -f /usr/bin/sshpass ]; then
     apt-get update
 
     if [ ! -f /usr/local/bin/docker ]; then
-    apt-get -y install docker.io;
-    ln -sf /usr/bin/docker.io /usr/local/bin/docker
-    sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
-    update-rc.d docker.io defaults
+            apt-get -y install wget
+            wget -qO- https://get.docker.com/ | sh
     fi
 
     if [ ! -f /usr/bin/sshpass ]; then

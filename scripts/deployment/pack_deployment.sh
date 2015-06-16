@@ -2,7 +2,7 @@
 
 set -e
 
-today = $1
+today=$1
 
 echo "Creating deployment directory ..."
 mkdir -p deploy_$today/scripts

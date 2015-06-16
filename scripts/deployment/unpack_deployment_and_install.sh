@@ -2,7 +2,7 @@
 
 set -e
 
-today = $1
+today=$1
 
 echo "Un packing deployment directory ..."
 tar --force-local -xzvf deploy_latest.tar.gz
