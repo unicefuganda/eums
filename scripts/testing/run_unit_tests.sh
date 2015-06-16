@@ -2,6 +2,8 @@
 
 set -e
 
+export PHANTOMJS_BIN=$(which phantomjs)
+
 cd eums/client
 sudo npm install -g grunt-cli
 npm install
