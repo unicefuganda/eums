@@ -118,7 +118,7 @@ def create_release_order(test_case, release_order_details=None):
 def create_purchase_order(test_case, purchase_order_details=None):
     if not purchase_order_details:
         programme = create_programme()
-        sales_order = create_sales_order()
+        sales_order = create_sales_order(test_case)
         purchase_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5),
                                   'programme': programme.id, 'description': 'test', "sales_order": sales_order['id']}
 
