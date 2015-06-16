@@ -7,11 +7,13 @@ if [ $(lsof -t -i:8000) ]; then
    kill -9 $(lsof -t -i:8000)
 fi
 
-virtualenv eums_env
-source eums_env/bin/activate
+virtualenv eums
+source eums/bin/activate
+
 pip install -r requirements.txt
-dropdb eums_test
+dropdb --if-exists eums_test
 createdb eums_test
+
 cd eums/client
 sudo npm install -g grunt-cli
 npm install
