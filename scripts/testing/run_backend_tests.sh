@@ -8,6 +8,9 @@ if [ $(lsof -t -i:8000) ]; then
 fi
 
 
+virtualenv eums
+source eums/bin/activate
+
 pip install -r requirements.txt
 pip install python-coveralls
 dropdb --if-exists app_test
