@@ -48,9 +48,14 @@ class Facade():
     @classmethod
     def _filter_relevant_data(cls, relevant_data, row):
         item_dict = {}
-        for col_index, value in enumerate(row):
-            if relevant_data.get(col_index):
-                item_dict[relevant_data.get(col_index)] = _clean_input(value)
+        coll_being_enumerated = 0
+        try:
+            for col_index, value in enumerate(row):
+                if relevant_data.get(col_index):
+                    item_dict[relevant_data.get(col_index)] = _clean_input(value)
+                coll_being_enumerated = col_index
+        except Exception, e:
+            raise Exception("coll {0}: {1}".format(str(coll_being_enumerated), e.message))
 
         return item_dict
 
@@ -63,6 +68,7 @@ class Facade():
 
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         order_list = []
+        row_num = 1;
         for row in sheet:
             try:
                 item_dict = self._filter_relevant_data(relevant_data, row)
@@ -75,8 +81,12 @@ class Facade():
                     else:
                         self._append_new_order(item_dict, order_list, order_number)
             except XLDateAmbiguous:
+                raise Exception("Ambiguous excel date")
                 pass
-
+            except Exception, e:
+                raise Exception("Failed to read row {0} {1}".format(str(row_num), e.message))
+                pass
+            row_num += 1
         return order_list
 
     def _is_summary_row(self, row):
