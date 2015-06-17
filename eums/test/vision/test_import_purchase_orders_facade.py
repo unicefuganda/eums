@@ -165,7 +165,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                                             item_number=20)
 
     def test_should_load_purchase_order_data(self):
-        purchase_order_data = self.facade.load_order_data()
+        purchase_order_data = self.facade.load_records()
 
         self.assertEqual(purchase_order_data, self.imported_purchase_order_data)
 
@@ -176,7 +176,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.create_items()
         self.create_sales_orders()
 
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_records(self.imported_purchase_order_data)
 
         self.assert_purchase_orders_were_created()
         self.assert_purchase_order_items_were_created()
@@ -184,21 +184,21 @@ class TestPurchaseOrdersVisionFacade(TestCase):
     def test_should_not_save_a_purchase_order_with_no_matching_sales_order(self):
         self.create_items()
 
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrder.objects.count(), 0)
 
     def test_should_not_recreate_existing_purchase_orders_when_saving_only_matching_by_order_number(self):
         self.create_items()
         self.create_sales_orders()
 
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrder.objects.count(), 2)
 
         first_release_order = PurchaseOrder.objects.all().first()
         first_release_order.delivery_date = datetime.date(2100, 01, 13)
         first_release_order.save()
 
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrder.objects.count(), 2)
 
     def test_should_not_create_existing_purchase_order_items_when_there_is_matching_sales_order_item(self):
@@ -207,17 +207,17 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.sales_order_one = SalesOrderFactory(order_number=20148031)
         self.sales_order_two = SalesOrderFactory(order_number=20147537)
 
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 0)
 
     def test_should_update_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
         self.create_items()
         self.create_sales_orders()
 
-        self.facade.save_order_data(self.imported_purchase_order_data)
+        self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
 
-        self.facade.save_order_data(self.updated_imported_purchase_order_data)
+        self.facade.save_records(self.updated_imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
 
         first_purchase_order_item = PurchaseOrderItem.objects.all().first()
@@ -231,13 +231,13 @@ class TestPurchaseOrdersVisionFacade(TestCase):
     def test_should_load_purchase_orders_from_excel_and_save(self):
         self.assertEqual(PurchaseOrder.objects.count(), 0)
 
-        self.facade.load_order_data = MagicMock(return_value=self.imported_purchase_order_data)
-        self.facade.save_order_data = MagicMock()
+        self.facade.load_records = MagicMock(return_value=self.imported_purchase_order_data)
+        self.facade.save_records = MagicMock()
 
-        self.facade.import_orders()
+        self.facade.import_records()
 
-        self.facade.load_order_data.assert_called()
-        self.facade.save_order_data.assert_called_with(self.imported_purchase_order_data)
+        self.facade.load_records.assert_called()
+        self.facade.save_records.assert_called_with(self.imported_purchase_order_data)
 
     def assert_purchase_orders_were_created(self):
         self.purchase_order_one = PurchaseOrder(order_number=54101099, sales_order=self.sales_order_one,

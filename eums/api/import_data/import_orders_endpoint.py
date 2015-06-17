@@ -36,11 +36,10 @@ def _import_orders(request, order_facade):
             temp_file.close()
 
             order_facade = order_facade(temp_file.name)
-            order_facade.import_orders()
+            order_facade.import_records()
             os.remove(temp_file.name)
             return JsonResponse({'error': ''})
         except Exception, e:
             return JsonResponse({'error': e.message})
     else:
         return JsonResponse({'error': 'File data not supplied'})
-

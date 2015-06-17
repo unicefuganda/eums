@@ -82,7 +82,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         User.objects.all().delete()
 
     def test_should_load_sales_order_data_excluding_summary_rows(self):
-        sales_order_data = self.facade.load_order_data()
+        sales_order_data = self.facade.load_records()
         self.assertEqual(sales_order_data, self.imported_sales_order_data)
 
     def create_items(self):
@@ -101,7 +101,7 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.create_programmes()
         self.create_items()
 
-        self.facade.save_order_data(self.imported_sales_order_data)
+        self.facade.save_records(self.imported_sales_order_data)
 
         self.assert_sales_orders_were_created(self.programme_one, self.programme_two)
         self.assert_sales_order_items_were_created(self.item_one, self.item_three, self.item_two)
@@ -109,26 +109,26 @@ class TestSalesOrdersVisionFacade(TestCase):
     def test_should_load_sales_orders_from_excel_and_save(self):
         self.assertEqual(SalesOrder.objects.count(), 0)
 
-        self.facade.load_order_data = MagicMock(return_value=self.imported_sales_order_data)
-        self.facade.save_order_data = MagicMock()
+        self.facade.load_records = MagicMock(return_value=self.imported_sales_order_data)
+        self.facade.save_records = MagicMock()
 
-        self.facade.import_orders()
+        self.facade.import_records()
 
-        self.facade.load_order_data.assert_called()
-        self.facade.save_order_data.assert_called_with(self.imported_sales_order_data)
+        self.facade.load_records.assert_called()
+        self.facade.save_records.assert_called_with(self.imported_sales_order_data)
 
     def test_should_update_existing_sales_orders_when_saving_only_matching_by_order_number(self):
         self.create_programmes()
         self.create_items()
 
-        self.facade.save_order_data(self.imported_sales_order_data)
+        self.facade.save_records(self.imported_sales_order_data)
         self.assertEqual(SalesOrder.objects.count(), 2)
 
         first_sales_order = SalesOrder.objects.all().first()
         first_sales_order.date = datetime.date(2100, 01, 13)
         first_sales_order.save()
 
-        self.facade.save_order_data(self.updated_imported_sales_order_data)
+        self.facade.save_records(self.updated_imported_sales_order_data)
         self.assertEqual(SalesOrder.objects.count(), 2)
         self.assertEqual(SalesOrderItem.objects.count(), 3)
 
@@ -169,21 +169,21 @@ class TestSalesOrdersVisionFacade(TestCase):
         self.create_programmes()
         self.create_items()
 
-        self.facade.save_order_data(self.imported_sales_order_data)
+        self.facade.save_records(self.imported_sales_order_data)
         self.assertEqual(SalesOrderItem.objects.count(), 3)
 
         first_sales_order_item = SalesOrderItem.objects.all().first()
         first_sales_order_item.item_number = -13
         first_sales_order_item.save()
 
-        self.facade.save_order_data(self.imported_sales_order_data)
+        self.facade.save_records(self.imported_sales_order_data)
         self.assertEqual(SalesOrderItem.objects.count(), 4)
 
     def test_should_set_net_price_to_zero_if_quantity_of_an_item_is_zero(self):
         ProgrammeFactory(wbs_element_ex='4380/A0/04/105/007')
         item_one = ItemFactory(material_code='S0009113', description='SQFlex 3-10 Pump C/W 1.4KW')
 
-        self.facade.save_order_data([{'order_number': 20146879,
+        self.facade.save_records([{'order_number': 20146879,
                                       'programme_wbs_element': '4380/A0/04/105/007',
                                       'items': [
                                           {'material_code': u'S0009113',

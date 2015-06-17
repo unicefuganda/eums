@@ -209,7 +209,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.consignee_two = ConsigneeFactory(customer_id='L438000181', name='GULU HOSPITAL')
 
     def test_should_load_release_order_data(self):
-        release_order_data = self.facade.load_order_data()
+        release_order_data = self.facade.load_records()
 
         self.assertEqual(release_order_data, self.imported_release_order_data)
 
@@ -222,7 +222,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_sales_orders()
         self.create_purchase_orders()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
 
         self.assert_release_orders_were_created()
         self.assert_release_order_items_were_created()
@@ -234,7 +234,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_sales_orders()
         self.create_purchase_orders()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
 
         self.assert_consignees_were_created()
 
@@ -242,7 +242,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_consignees()
         self.create_items()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 0)
 
     def test_should_not_save_a_release_order_with_no_matching_purchase_order(self):
@@ -250,7 +250,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_items()
         self.create_sales_orders()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 0)
 
     def test_should_not_recreate_existing_release_orders_when_saving_only_matching_by_order_number(self):
@@ -259,14 +259,14 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_sales_orders()
         self.create_purchase_orders()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 2)
 
         first_release_order = ReleaseOrder.objects.all().first()
         first_release_order.delivery_date = datetime.date(2100, 01, 13)
         first_release_order.save()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrder.objects.count(), 2)
 
     def test_should_not_create_existing_release_order_items_when_there_is_no_matching_sales_order_item(self):
@@ -276,7 +276,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.sales_order_one = SalesOrderFactory(order_number=20148031)
         self.sales_order_two = SalesOrderFactory(order_number=20147537)
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 0)
 
     def test_should_not_create_existing_release_order_items_when_there_is_no_matching_purchase_order_item(self):
@@ -287,7 +287,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.purchase_order_one = PurchaseOrderFactory(order_number=81018523, sales_order=self.sales_order_one)
         self.purchase_order_two = PurchaseOrderFactory(order_number=45132639, sales_order=self.sales_order_two)
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 0)
 
     def test_should_update_existing_release_order_items_when_saving_only_matching_by_order_number(self):
@@ -296,10 +296,10 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_sales_orders()
         self.create_purchase_orders()
 
-        self.facade.save_order_data(self.imported_release_order_data)
+        self.facade.save_records(self.imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
 
-        self.facade.save_order_data(self.updated_imported_release_order_data)
+        self.facade.save_records(self.updated_imported_release_order_data)
         self.assertEqual(ReleaseOrderItem.objects.count(), 3)
 
         updated_release_order_item = ReleaseOrderItem.objects.all().first()
@@ -311,13 +311,13 @@ class TestReleaseOrdersVisionFacade(TestCase):
     def test_should_load_release_orders_from_excel_and_save(self):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
 
-        self.facade.load_order_data = MagicMock(return_value=self.imported_release_order_data)
-        self.facade.save_order_data = MagicMock()
+        self.facade.load_records = MagicMock(return_value=self.imported_release_order_data)
+        self.facade.save_records = MagicMock()
 
-        self.facade.import_orders()
+        self.facade.import_records()
 
-        self.facade.load_order_data.assert_called()
-        self.facade.save_order_data.assert_called_with(self.imported_release_order_data)
+        self.facade.load_records.assert_called()
+        self.facade.save_records.assert_called_with(self.imported_release_order_data)
 
     def assert_consignees_were_created(self):
         consignee_one = Consignee(name='OYAM DISTRICT ADMIN', customer_id='L438000393',

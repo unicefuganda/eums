@@ -35,17 +35,35 @@ class Facade():
     def __init__(self, location):
         self.location = location
 
-    def import_orders(self):
-        order_data = self.load_order_data()
-        self.save_order_data(order_data)
+    def import_records(self):
+        records = self.load_records()
+        self.save_records(records)
 
-    def load_order_data(self):
+    def load_records(self):
         view = View(self.location)
         return self._convert_view_to_list_of_dicts(view[0][1:, :], self.RELEVANT_DATA)
 
-    def save_order_data(self, orders):
-        for order in orders:
-            self._create_order_from_dict(order)
+    def save_records(self, records):
+        for record in records:
+            self._create_record_from_dict(record)
+
+    def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
+        records_list = []
+        for row in sheet:
+            try:
+                records_list.append(self._filter_relevant_data(relevant_data, row))
+            except XLDateAmbiguous:
+                pass
+
+        return records_list
+
+    @abstractmethod
+    def _create_record_from_dict(self, record_dict):
+        pass
+
+
+class OrderFacade(Facade):
+    __metaclass__ = ABCMeta
 
     @classmethod
     def _filter_relevant_data(cls, relevant_data, row):
@@ -97,10 +115,10 @@ class Facade():
                 return True
         return False
 
-    def _create_order_from_dict(self, order):
-        new_order = self._create_new_order(order)
+    def _create_record_from_dict(self, record_dict):
+        new_order = self._create_new_order(record_dict)
         if new_order:
-            for item in order['items']:
+            for item in record_dict['items']:
                 self._create_new_item(item, new_order)
 
     @staticmethod
@@ -129,7 +147,7 @@ class Facade():
         pass
 
 
-class SalesOrderFacade(Facade):
+class SalesOrderFacade(OrderFacade):
     RELEVANT_DATA = {
         0: 'order_number', 2: 'material_code', 10: 'item_description', 3: 'quantity', 9: 'date', 5: 'net_value',
         13: 'programme_wbs_element', 1: 'item_number'
@@ -193,7 +211,7 @@ class SalesOrderFacade(Facade):
         return '/'.join(wbs_element_list)
 
 
-class ReleaseOrderFacade(Facade):
+class ReleaseOrderFacade(OrderFacade):
     RELEVANT_DATA = {0: 'order_number', 1: 'ro_item_number', 3: 'recommended_delivery_date', 4: 'material_code',
                      5: 'description',
                      6: 'quantity', 7: 'value', 11: 'consignee', 14: 'so_number', 15: 'purchase_order', 22: 'waybill',
@@ -278,7 +296,7 @@ class ReleaseOrderFacade(Facade):
         return []
 
 
-class PurchaseOrderFacade(Facade):
+class PurchaseOrderFacade(OrderFacade):
     RELEVANT_DATA = {6: 'order_number', 7: 'po_item_number', 9: 'material_code', 10: 'material_description',
                      16: 'value', 18: 'quantity', 20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
 
