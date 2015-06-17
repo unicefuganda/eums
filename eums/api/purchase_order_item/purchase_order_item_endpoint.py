@@ -8,7 +8,7 @@ from eums.models import PurchaseOrderItem
 class PurchaseOrderItemSerialiser(serializers.ModelSerializer):
     class Meta:
         model = PurchaseOrderItem
-        fields = ('id', 'purchase_order', 'item_number', 'quantity', 'value', 'sales_order_item')
+        fields = ('id', 'purchase_order', 'item_number', 'quantity', 'value', 'sales_order_item', 'item')
 
 
 class PurchaseOrderItemViewSet(ModelViewSet):

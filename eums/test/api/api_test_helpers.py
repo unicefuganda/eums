@@ -155,17 +155,13 @@ def create_sales_order_item(test_case, sales_order_item_details=None):
 
 def create_purchase_order_item(test_case, purchase_order_item_details=None):
     response = test_case.client.post(PURCHASE_ORDER_ITEM_ENDPOINT_URL, purchase_order_item_details, format='json')
-
     test_case.assertEqual(response.status_code, 201)
-
     return response.data
 
 
 def create_release_order_item(test_case, release_order_item_details=None):
     response = test_case.client.post(RELEASE_ORDER_ITEM_ENDPOINT_URL, release_order_item_details, format='json')
-
     test_case.assertEqual(response.status_code, 201)
-
     return response.data
 
 
