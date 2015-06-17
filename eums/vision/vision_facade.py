@@ -367,5 +367,7 @@ class ConsigneeOrderFacade(Facade):
     RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
 
     def _create_record_from_dict(self, record_dict):
-        pass
+        consignee, _ = Consignee.objects.get_or_create(customer_id=record_dict['customer_id'],
+                                                       name=record_dict['name'])
+        return consignee
 
