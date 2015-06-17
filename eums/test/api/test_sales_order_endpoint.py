@@ -22,21 +22,3 @@ class SalesOrderEndPointTest(AuthenticatedAPITestCase):
         get_response = self.client.get(ENDPOINT_URL)
         self.assertEqual(get_response.status_code, 200)
         self.assertDictContainsSubset(created_sales_order, get_response.data[0])
-
-    def test_should_get_sales_orders_without_release_orders(self):
-        created_sales_order = create_sales_order(self)
-        response = self.client.get(ENDPOINT_URL+'?has_release_orders=false')
-        self.assertEqual(response.status_code, 200)
-        self.assertDictContainsSubset(created_sales_order, response.data[0])
-
-        response = self.client.get(ENDPOINT_URL+'?has_release_orders=true')
-        self.assertEqual(response.data, [])
-
-    def test_should_get_sales_orders_with_release_orders(self):
-        release_order, sales_order = create_release_order(self)
-        response = self.client.get(ENDPOINT_URL+'?has_release_orders=true')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(sales_order, response.data[0]['id'])
-
-        response = self.client.get(ENDPOINT_URL+'?has_release_orders=false')
-        self.assertEqual(response.data, [])
