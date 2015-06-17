@@ -300,6 +300,7 @@ class PurchaseOrderFacade(Facade):
                 item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
                                                      description=item_dict['material_description'])
                 PurchaseOrderItem.objects.get_or_create(purchase_order=order,
+                                                        item=item,
                                                         item_number=item_dict['po_item_number'],
                                                         sales_order_item=matching_sales_order_items[0],
                                                         quantity=float(item_dict['quantity']),

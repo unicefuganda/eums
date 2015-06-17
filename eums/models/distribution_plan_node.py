@@ -21,7 +21,8 @@ class DistributionPlanNode(models.Model):
     contact_person_id = models.CharField(max_length=255)
     tree_position = models.CharField(max_length=255, choices=((MIDDLE_MAN, 'Middleman'), (END_USER, 'End User'),
                                                               (IMPLEMENTING_PARTNER, 'Implementing Partner')))
-    item = models.ForeignKey('SalesOrderItem')
+    purchase_order_item = models.ForeignKey('PurchaseOrderItem', blank=True, null=True)
+    release_order_item = models.ForeignKey('ReleaseOrderItem', blank=True, null=True)
     targeted_quantity = models.IntegerField()
     track = models.BooleanField(default=False)
     planned_distribution_date = models.DateField(null=False)
