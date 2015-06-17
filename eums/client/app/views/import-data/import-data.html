@@ -31,11 +31,12 @@
                         <div ng-show="salesOrdersUploader.isHTML5" class="progress-bar" role="progressbar"
                              ng-style="{ 'width': salesOrdersUploader.queue[0].progress + '%' }"></div>
                     </div>
+                    <div class="text-danger">{{ errorMessage }}</div>
                 </div>
                 <div class="col-lg-2">
-                    <span ng-show=" salesOrdersUploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok">{{ errorMessage }}</i></span>
-                    <span ng-show=" salesOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle">{{ errorMessage }}</i></span>
-                    <span ng-show=" salesOrdersUploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i>{{ errorMessage }}</span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isSuccess && !errorMessage"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isError || errorMessage"><i class="glyphicon glyphicon-remove"></i></span>
                 </div>
 
             </div>

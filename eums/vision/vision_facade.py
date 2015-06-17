@@ -53,9 +53,9 @@ class Facade():
             for col_index, value in enumerate(row):
                 if relevant_data.get(col_index):
                     item_dict[relevant_data.get(col_index)] = _clean_input(value)
-                coll_being_enumerated = col_index
+                coll_being_enumerated = col_index + 1
         except Exception, e:
-            raise Exception("coll {0}: {1}".format(str(coll_being_enumerated), e.message))
+            raise Exception("column {0}".format(str(coll_being_enumerated)))
 
         return item_dict
 
