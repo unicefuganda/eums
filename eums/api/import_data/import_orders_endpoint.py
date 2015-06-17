@@ -1,7 +1,7 @@
 import os
 from tempfile import NamedTemporaryFile
 
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import parser_classes
 from rest_framework.parsers import MultiPartParser
@@ -29,13 +29,18 @@ def import_purchase_orders(request):
 
 def _import_orders(request, order_facade):
     if 'file' in request.FILES:
-        file_contents = request.FILES['file'].file.getvalue()
-        temp_file = NamedTemporaryFile(mode='w+b', delete=False, suffix='.xlsx')
-        temp_file.write(file_contents)
-        temp_file.close()
+        try:
+            file_contents = request.FILES['file'].file.getvalue()
+            temp_file = NamedTemporaryFile(mode='w+b', delete=False, suffix='.xlsx')
+            temp_file.write(file_contents)
+            temp_file.close()
 
-        order_facade = order_facade(temp_file.name)
-        order_facade.import_orders()
-        os.remove(temp_file.name)
+            order_facade = order_facade(temp_file.name)
+            order_facade.import_orders()
+            os.remove(temp_file.name)
+            return JsonResponse({'error': ''})
+        except Exception, e:
+            return JsonResponse({'error': e.message})
+    else:
+        return JsonResponse({'error': 'File data not supplied'})
 
-    return HttpResponse(status=200)
