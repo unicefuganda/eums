@@ -16,6 +16,7 @@ from eums.models.option import Option
 from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
 from eums.models.run_queue import RunQueue
 from eums.models.flow import Flow
+from eums.models.order_item import OrderItem
 from eums.models.purchase_order import PurchaseOrder
 from eums.models.purchase_order_item import PurchaseOrderItem
 from eums.models.release_order import ReleaseOrder
@@ -44,6 +45,7 @@ __all__ = [
     'NumericQuestion',
     'Flow',
     'ReleaseOrder',
+    'OrderItem',
     'ReleaseOrderItem',
     'DistributionReport',
     'UserProfile',

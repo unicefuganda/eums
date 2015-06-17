@@ -1,4 +1,5 @@
 import factory
+from eums.test.factories.order_item_factory import OrderItemFactory
 
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
@@ -19,8 +20,7 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     location = "Kampala"
     contact_person_id = factory.Sequence(lambda n: "{0}".format(n))
     mode_of_delivery = DistributionPlanNode.THROUGH_WAREHOUSE
-    purchase_order_item = factory.SubFactory(PurchaseOrderItemFactory)
-    release_order_item = factory.SubFactory(ReleaseOrderItemFactory)
+    item = factory.SubFactory(OrderItemFactory)
     track = False
     targeted_quantity = 10
     planned_distribution_date = FakeDate.today()

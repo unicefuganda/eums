@@ -36,7 +36,7 @@ class NodeRun(models.Model):
         return answer_collection
 
     def __unicode__(self):
-        return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node.item.description,
+        return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node.item.item.description,
                                                                self.node.tree_position,
                                                                self.phone, self.status)
 
