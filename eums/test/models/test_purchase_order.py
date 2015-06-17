@@ -3,7 +3,9 @@ from unittest import TestCase
 from django.db import IntegrityError
 
 from eums.models.purchase_order import PurchaseOrder
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
 
 class PurchaseOrderTest(TestCase):
@@ -19,3 +21,10 @@ class PurchaseOrderTest(TestCase):
         create_purchase_order = lambda: PurchaseOrderFactory(order_number=1234)
         create_purchase_order()
         self.assertRaises(IntegrityError, create_purchase_order)
+
+    def test_should_know_if_it_has_a_distribution_plan_or_not(self):
+        purchase_order = PurchaseOrderFactory()
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        self.assertFalse(purchase_order.has_plan())
+        DistributionPlanNodeFactory(item=purchase_order_item)
+        self.assertTrue(purchase_order.has_plan())

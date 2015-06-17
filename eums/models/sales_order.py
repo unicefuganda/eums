@@ -22,9 +22,6 @@ class SalesOrder(models.Model):
     description = models.CharField(max_length=255, null=True)
     objects = SalesOrderManager()
 
-    def has_plan(self):
-        return DistributionPlanNode.objects.filter(item__in=self.salesorderitem_set.all()).exists()
-
     class Meta:
         app_label = 'eums'
 

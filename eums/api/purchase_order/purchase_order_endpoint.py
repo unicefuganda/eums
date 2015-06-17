@@ -25,7 +25,7 @@ class PurchaseOrderViewSet(ModelViewSet):
     serializer_class = PurchaseOrderSerialiser
 
     @list_route()
-    def for_direct_delivery(self, request):
+    def for_direct_delivery(self, _):
         purchase_orders = PurchaseOrder.objects.for_direct_delivery()
         return Response(self.get_serializer(purchase_orders, many=True).data)
 

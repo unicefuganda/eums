@@ -20,12 +20,5 @@ class SalesOrderTest(TestCase):
         self.create_sales_order()
         self.assertRaises(IntegrityError, self.create_sales_order)
 
-    def test_should_know_if_it_has_a_distribution_plan_or_not(self):
-        sales_order = self.create_sales_order(order_number=21)
-        sales_order_item = SalesOrderItemFactory(sales_order=sales_order)
-        self.assertFalse(sales_order.has_plan())
-        DistributionPlanNodeFactory(item=sales_order_item)
-        self.assertTrue(sales_order.has_plan())
-
     def create_sales_order(self, order_number=123):
         return SalesOrderFactory(order_number=order_number)

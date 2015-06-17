@@ -137,7 +137,6 @@ class FlowSchedulerTest(TestCase):
 
         mock_run_queue_enqueue.assert_called_with(node_two, ANY)
 
-
     @patch('eums.models.NodeRun.overdue_runs')
     def test_should_expire_overdue_runs(self, mock_get_overdue_runs):
         node_run = NodeRunFactory()
@@ -155,7 +154,7 @@ class FlowSchedulerTest(TestCase):
                                                                                       mock_schedule_run_for,
                                                                                       mock_deque):
         overdue_node_run = NodeRunFactory(node=self. node)
-        node= DistributionPlanNodeFactory()
+        node = DistributionPlanNodeFactory()
         run_queue_item = RunQueueFactory(node=node,
                                          contact_person_id=self.node.contact_person_id)
 

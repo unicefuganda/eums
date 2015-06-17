@@ -19,8 +19,7 @@ class RunQueueTest(TestCase):
     def test_can_deque_next_run_for_a_particular_contact_person(self):
         contact_person_id = 'id'
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started)
-        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started,
-                        run_delay=1000.0)
+        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started, run_delay=1000.0)
         run_queue = RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.not_started,
                                     run_delay=1500.0)
 
@@ -29,8 +28,7 @@ class RunQueueTest(TestCase):
     def test_deque_returns_none_when_contact_person_no_pending_runs(self):
         contact_person_id = 'id'
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started)
-        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started,
-                        run_delay=1000.0)
+        RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started, run_delay=1000.0)
 
         self.assertEqual(RunQueue.dequeue(contact_person_id), None)
 
