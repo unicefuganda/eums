@@ -30,7 +30,7 @@ def _schedule_run(node_id):
     flow = _select_flow_for(node)
     start_delivery_run(
         sender=_get_sender_name(node),
-        item_description=node.item.description,
+        item_description=node.item.item.description,
         contact_person=node.build_contact(),
         flow=flow.rapid_pro_id
     )
