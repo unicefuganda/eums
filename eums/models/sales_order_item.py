@@ -1,12 +1,10 @@
 from django.db import models
-from eums.models import SalesOrder, Item
+from eums.models import SalesOrder
+from eums.models.order_item import OrderItem
 
 
-class SalesOrderItem(models.Model):
+class SalesOrderItem(OrderItem):
     sales_order = models.ForeignKey(SalesOrder)
-    item = models.ForeignKey(Item)
-    item_number = models.IntegerField(default=0)
-    quantity = models.IntegerField()
     net_price = models.DecimalField(max_digits=20, decimal_places=4)
     net_value = models.DecimalField(max_digits=20, decimal_places=4)
     issue_date = models.DateField()
