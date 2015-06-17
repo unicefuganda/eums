@@ -9,6 +9,8 @@ from xlutils.view import View
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem, \
     PurchaseOrder, PurchaseOrderItem
 
+class ImportException(Exception):
+    pass
 
 def _clean_input(value):
     parse_string = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
@@ -55,7 +57,7 @@ class Facade():
                     item_dict[relevant_data.get(col_index)] = _clean_input(value)
                 coll_being_enumerated = col_index + 1
         except Exception, e:
-            raise Exception("column {0}".format(str(coll_being_enumerated)))
+            raise ImportException(str(coll_being_enumerated))
 
         return item_dict
 
@@ -83,8 +85,8 @@ class Facade():
             except XLDateAmbiguous:
                 raise Exception("Ambiguous excel date")
                 pass
-            except Exception, e:
-                raise Exception("Failed to read row {0} {1}".format(str(row_num), e.message))
+            except ImportException, e:
+                raise Exception("Import has failed due to an error in row [{0}] column [{1}] please correct the error then try the upload again".format(str(row_num), e.message))
                 pass
             row_num += 1
         return order_list
