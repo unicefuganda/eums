@@ -35,6 +35,20 @@ class Facade():
     def __init__(self, location):
         self.location = location
 
+    @classmethod
+    def _filter_relevant_data(cls, relevant_data, row):
+        item_dict = {}
+        coll_being_enumerated = 0
+        try:
+            for col_index, value in enumerate(row):
+                if relevant_data.get(col_index):
+                    item_dict[relevant_data.get(col_index)] = _clean_input(value)
+                coll_being_enumerated = col_index + 1
+        except Exception, e:
+            raise ImportException(str(coll_being_enumerated))
+
+        return item_dict
+
     def import_records(self):
         records = self.load_records()
         self.save_records(records)
@@ -64,20 +78,6 @@ class Facade():
 
 class OrderFacade(Facade):
     __metaclass__ = ABCMeta
-
-    @classmethod
-    def _filter_relevant_data(cls, relevant_data, row):
-        item_dict = {}
-        coll_being_enumerated = 0
-        try:
-            for col_index, value in enumerate(row):
-                if relevant_data.get(col_index):
-                    item_dict[relevant_data.get(col_index)] = _clean_input(value)
-                coll_being_enumerated = col_index + 1
-        except Exception, e:
-            raise ImportException(str(coll_being_enumerated))
-
-        return item_dict
 
     @classmethod
     def _index_in_list(cls, number, order_list, label):
@@ -361,3 +361,11 @@ class PurchaseOrderFacade(OrderFacade):
             if column != 'po_date' and row[column] is '':
                 return True
         return False
+
+
+class ConsigneeOrderFacade(Facade):
+    RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
+
+    def _create_record_from_dict(self, record_dict):
+        pass
+
