@@ -33,9 +33,9 @@
                     </div>
                 </div>
                 <div class="col-lg-2">
-                    <span ng-show=" salesOrdersUploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                    <span ng-show=" salesOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                    <span ng-show=" salesOrdersUploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isSuccess"><i class="glyphicon glyphicon-ok">{{ errorMessage }}</i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isCancel"><i class="glyphicon glyphicon-ban-circle">{{ errorMessage }}</i></span>
+                    <span ng-show=" salesOrdersUploader.queue[0].isError"><i class="glyphicon glyphicon-remove"></i>{{ errorMessage }}</span>
                 </div>
 
             </div>
