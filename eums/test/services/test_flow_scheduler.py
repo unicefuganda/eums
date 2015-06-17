@@ -75,7 +75,7 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(self.node)
 
         mock_start_delivery_run.assert_called_with(sender='UNICEF', contact_person=self.contact, flow=ANY,
-                                                   item_description=self.node.item.description)
+                                                   item_description=self.node.item.item.description)
 
     def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
@@ -90,7 +90,7 @@ class FlowSchedulerTest(TestCase):
         schedule_run_for(node)
 
         mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=ANY, sender=sender_org_name,
-                                                   item_description=node.item.description)
+                                                   item_description=node.item.item.description)
 
     def test_should_save_a_node_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
         schedule_run_for(self.node)
