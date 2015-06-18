@@ -32,6 +32,7 @@
         "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
         "IMPORT_RELEASE_ORDERS": "/api/import-release-orders/",
         "IMPORT_PURCHASE_ORDERS": "/api/import-purchase-orders/",
+        "IMPORT_CONSIGNEES": "/api/import-consignees/",
         "RECEIVED_OPTIONS": "api/received-options/",
         "QUALITY_OPTIONS": "api/quality-options/",
         "SATISFIED_OPTIONS": "api/satisfied-options/",
