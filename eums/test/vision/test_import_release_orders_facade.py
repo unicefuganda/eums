@@ -7,7 +7,8 @@ from django.contrib.auth.models import User
 from mock import MagicMock
 from xlwt import Workbook
 
-from eums.models import Item, Programme, ReleaseOrder, ReleaseOrderItem, Consignee
+from eums.models import Item, Programme, ReleaseOrder, ReleaseOrderItem, Consignee, OrderItem, SalesOrderItem, \
+    PurchaseOrderItem
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -102,10 +103,12 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def tearDown(self):
         os.remove(self.release_order_file_location)
+        SalesOrderItem.objects.all().delete()
+        ReleaseOrderItem.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
         Item.objects.all().delete()
         Consignee.objects.all().delete()
         ReleaseOrder.objects.all().delete()
-        ReleaseOrderItem.objects.all().delete()
         Programme.objects.all().delete()
         User.objects.all().delete()
 
@@ -229,7 +232,6 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def test_should_create_consignee_when_saving_release_order_data_if_there_is_no_matching_consignee(self):
         Consignee.objects.all().delete()
-
         self.create_items()
         self.create_sales_orders()
         self.create_purchase_orders()
