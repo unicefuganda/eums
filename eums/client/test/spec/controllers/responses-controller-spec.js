@@ -84,7 +84,6 @@ describe('ResponsesController', function () {
             distributionplanlineitem_set: [1],
             id: 5,
             location: 'PADER',
-            mode_of_delivery: 'WAREHOUSE',
             parent: null,
             tree_position: 'MIDDLE_MAN'
         }

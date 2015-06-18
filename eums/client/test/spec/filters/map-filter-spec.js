@@ -57,7 +57,6 @@ describe('Map Filter Service', function () {
         'distribution_plan': 6,
         'children': [],
         'location': 'Bukomansimbi',
-        'mode_of_delivery': 'DIRECT_DELIVERY',
         'distributionplanlineitem_set': [
             21
         ],
@@ -70,7 +69,6 @@ describe('Map Filter Service', function () {
         'distribution_plan': 6,
         'children': [],
         'location': 'Kalungu',
-        'mode_of_delivery': 'DIRECT_DELIVERY',
         'distributionplanlineitem_set': [
             23
         ],

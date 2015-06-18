@@ -19,7 +19,6 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     tree_position = DistributionPlanNode.END_USER
     location = "Kampala"
     contact_person_id = factory.Sequence(lambda n: "{0}".format(n))
-    mode_of_delivery = DistributionPlanNode.THROUGH_WAREHOUSE
     item = factory.SubFactory(OrderItemFactory)
     track = False
     targeted_quantity = 10

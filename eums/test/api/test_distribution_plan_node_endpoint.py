@@ -22,7 +22,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
                         'planned_distribution_date': '2014-01-21', 'distribution_plan': plan_id,
                         'tree_position': self.MIDDLEMAN_POSITION,
                         'contact_person_id': u'1234',
-                        'consignee': consignee_id, 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE'}
+                        'consignee': consignee_id, 'location': 'Kampala'}
 
         created_node_data = create_distribution_plan_node(self, node_details)
 
@@ -35,7 +35,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
                               'planned_distribution_date': parent_node['planned_distribution_date'],
                               'distribution_plan': parent_node['distribution_plan'], 'consignee': consignee_id,
                               'tree_position': self.MIDDLEMAN_POSITION, 'parent': parent_node['id'],
-                              'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234'}
+                              'location': 'Kampala', 'contact_person_id': u'1234'}
 
         created_child_node_details = create_distribution_plan_node(self, child_node_details)
 
@@ -71,7 +71,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
                         'planned_distribution_date': '2014-01-21',
                         'distribution_plan': plan_id, 'consignee': consignee['id'],
                         'tree_position': self.MIDDLEMAN_POSITION, 'location': 'Kampala',
-                        'mode_of_delivery': 'WAREHOUSE', 'contact_person_id': u'1234'}
+                        'contact_person_id': u'1234'}
 
         node = create_distribution_plan_node(self, node_details=node_details)
 
@@ -85,7 +85,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         node_details = {'item': sales_order_item['id'], 'targeted_quantity': 10,
                         'planned_distribution_date': '2014-01-21',
                         'distribution_plan': plan_id, 'consignee': consignee['id'],
-                        'tree_position': self.END_USER_POSITION, 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE',
+                        'tree_position': self.END_USER_POSITION, 'location': 'Kampala',
                         'contact_person_id': u'1234'}
 
         node = create_distribution_plan_node(self, node_details=node_details)
@@ -97,7 +97,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         plan_id = create_distribution_plan(self)
         consignee = create_consignee(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
-                        'tree_position': 'UNKNOWN POSITION', 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE',
+                        'tree_position': 'UNKNOWN POSITION', 'location': 'Kampala',
                         'contact_person_id': u'1234'}
 
         response = self.client.post(ENDPOINT_URL, node_details, format='json')
@@ -112,7 +112,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
                              'targeted_quantity': created_parent_details['targeted_quantity'],
                              'planned_distribution_date': created_parent_details['planned_distribution_date'],
                              'distribution_plan': created_parent_details['distribution_plan'],
-                             'consignee': consignee_id, 'location': 'Kampala', 'mode_of_delivery': 'WAREHOUSE',
+                             'consignee': consignee_id, 'location': 'Kampala',
                              'contact_person_id': u'1234',
                              'tree_position': self.MIDDLEMAN_POSITION, 'parent': created_parent_details['id']}
         created_child_details = create_distribution_plan_node(self, child_details)
