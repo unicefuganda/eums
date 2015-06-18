@@ -332,7 +332,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 contact_person_id: response.endUser,
                 distribution_plan: $scope.distributionPlanId,
                 tree_position: 'END_USER',
-                mode_of_delivery: 'WAREHOUSE',
                 parent: null,
                 item: $scope.selectedDocumentItem.sales_order_item.id,
                 targeted_quantity: response.quantity,

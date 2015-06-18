@@ -62,7 +62,6 @@ describe('Module: Home', function () {
             parent: null,
             distribution_plan: 1,
             location: 'Kampala',
-            modeOfDelivery: 'Warehouse',
             children: [2],
             consignee: {},
             contact_person_id: 1,

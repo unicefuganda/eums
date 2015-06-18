@@ -78,7 +78,7 @@ def make_node_details(test_case, plan_id=None):
 
     node = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
             'location': 'GULU', 'consignee': consignee_id, 'distribution_plan': plan_id,
-            'contact_person_id': u'1223', 'mode_of_delivery': 'WAREHOUSE',
+            'contact_person_id': u'1223',
             'tracked': True, 'remark': 'Dispatched', 'tree_position': 'END_USER'}
 
     return node

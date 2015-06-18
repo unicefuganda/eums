@@ -3323,7 +3323,6 @@
             "distribution_plan": 1,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "",
             "consignee": 1,
             "location": "Amuru",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3336,7 +3335,6 @@
             "distribution_plan": 1,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "",
             "consignee": 2,
             "location": "Amuru",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3349,7 +3347,6 @@
             "distribution_plan": 1,
             "tree_position": "END_USER",
             "parent": 3,
-            "mode_of_delivery": "",
             "consignee": 3,
             "location": "Amuru",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3362,7 +3359,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 10,
             "location": "PADER",
             "contact_person_id": "5420508290cc38715b1af928"
@@ -3375,7 +3371,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 4,
             "location": "ARUA",
             "contact_person_id": "5420525490cc38715b1af92b"
@@ -3388,7 +3383,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 6,
             "location": "KAABONG",
             "contact_person_id": "542126831a8a4f1e4337edb2"
@@ -3401,7 +3395,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 5,
             "location": "WAKISO",
             "contact_person_id": "542126831a8a4f1e4337edb2"
@@ -3414,7 +3407,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 7,
             "location": "Ntungamo",
             "contact_person_id": "542126831a8a4f1e4337edb2"
@@ -3427,7 +3419,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 8,
             "location": "Agago",
             "contact_person_id": "542126831a8a4f1e4337edb2"
@@ -3440,7 +3431,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 9,
             "location": "AMURU",
             "contact_person_id": "54212a70797221e84ac993fc"
@@ -3453,7 +3443,6 @@
             "distribution_plan": 2,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 11,
             "location": "kitgum",
             "contact_person_id": "54212a70797221e84ac993fc"
@@ -3466,7 +3455,6 @@
             "distribution_plan": 3,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 21,
             "location": "bundibugyo",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3479,7 +3467,6 @@
             "distribution_plan": 3,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 15,
             "location": "buikwe",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3492,7 +3479,6 @@
             "distribution_plan": 3,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 17,
             "location": "kalungu",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3505,7 +3491,6 @@
             "distribution_plan": 3,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 5,
             "location": "Wakiso",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3518,7 +3503,6 @@
             "distribution_plan": 3,
             "tree_position": "MIDDLE_MAN",
             "parent": 2,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 19,
             "location": "mubende",
             "contact_person_id": "54213ccc797221e84ac993fe"
@@ -3531,7 +3515,6 @@
             "distribution_plan": 5,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 33,
             "location": "Bukomansimbi",
             "contact_person_id": "542bfa5108453c32ffd4cade"
@@ -3544,7 +3527,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 32,
             "location": "Bukomansimbi",
             "contact_person_id": "542bfa5108453c32ffd4cade"
@@ -3557,7 +3539,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 32,
             "location": "Bukomansimbi",
             "contact_person_id": "542bfa5108453c32ffd4cade"
@@ -3570,7 +3551,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 36,
             "location": "Kalungu",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3583,7 +3563,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 33,
             "location": "Bukomansimbi",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3596,7 +3575,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 33,
             "location": "Bukomansimbi",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3609,7 +3587,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 33,
             "location": "Bukomansimbi",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3622,7 +3599,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Kalungu",
             "contact_person_id": "542bfa5108453c32ffd4cade"
@@ -3635,7 +3611,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 37,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3648,7 +3623,6 @@
             "distribution_plan": 7,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 38,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3661,7 +3635,6 @@
             "distribution_plan": 7,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 38,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3674,7 +3647,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 37,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3687,7 +3659,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "WAREHOUSE",
             "consignee": 37,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3700,7 +3671,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3713,7 +3683,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3726,7 +3695,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3739,7 +3707,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3752,7 +3719,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Kalungu",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"
@@ -3765,7 +3731,6 @@
             "distribution_plan": 6,
             "tree_position": "MIDDLE_MAN",
             "parent": null,
-            "mode_of_delivery": "DIRECT_DELIVERY",
             "consignee": 35,
             "location": "Oyam",
             "contact_person_id": "5422bf5999f3eb0000a46ae6"

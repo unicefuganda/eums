@@ -174,7 +174,6 @@ describe('UNICEF IP', function () {
             'distribution_plan': planId,
             'children': [],
             'location': 'Mbarara',
-            'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
                 5,
                 6
@@ -189,7 +188,6 @@ describe('UNICEF IP', function () {
             'distribution_plan': planId,
             'children': [],
             'location': 'Gulu',
-            'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
                 7,
                 8
@@ -206,7 +204,6 @@ describe('UNICEF IP', function () {
                 3, 4
             ],
             'location': 'Lira',
-            'modeOfDelivery': 'DIRECT_DELIVERY',
             'distributionplanlineitem_set': [
                 3,
                 4

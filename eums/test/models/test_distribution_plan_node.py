@@ -25,8 +25,8 @@ class DistributionPlanNodeTest(TestCase):
     def test_should_have_all_expected_fields(self):
         fields = self.node._meta._name_map
 
-        self.assertEqual(len(self.node._meta.fields), 13)
-        for field in ['parent', 'distribution_plan', 'consignee', 'tree_position', 'location', 'mode_of_delivery',
+        self.assertEqual(len(self.node._meta.fields), 12)
+        for field in ['parent', 'distribution_plan', 'consignee', 'tree_position', 'location',
                       'contact_person_id', 'item_id', 'targeted_quantity', 'planned_distribution_date', 'remark',
                       'id', 'track']:
             self.assertIn(field, fields)
