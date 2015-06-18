@@ -123,7 +123,7 @@
                         <div ng-show="consigneesUploader.isHTML5" class="progress-bar" role="progressbar"
                              ng-style="{ 'width': consigneesUploader.queue[consigneesUploader.queue.length-1].progress + '%' }"></div>
                     </div>
-                    <div class="text-danger">{{ errorMessageRO }}</div>
+                    <div class="text-danger">{{ errorMessageCO }}</div>
                 </div>
                 <div class="col-lg-2">
                     <span ng-show=" consigneesUploader.queue[consigneesUploader.queue.length-1].isSuccess && !errorMessageRO"><i class="glyphicon glyphicon-ok"></i></span>
@@ -154,7 +154,7 @@
                         <div ng-show="programmesUploader.isHTML5" class="progress-bar" role="progressbar"
                              ng-style="{ 'width': programmesUploader.queue[programmesUploader.queue.length-1].progress + '%' }"></div>
                     </div>
-                    <div class="text-danger">{{ errorMessageRO }}</div>
+                    <div class="text-danger">{{ errorMessagePGO }}</div>
                 </div>
                 <div class="col-lg-2">
                     <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isSuccess && !errorMessageRO"><i class="glyphicon glyphicon-ok"></i></span>
