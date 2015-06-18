@@ -363,7 +363,7 @@ class PurchaseOrderFacade(OrderFacade):
         return False
 
 
-class ConsigneeOrderFacade(Facade):
+class ConsigneeFacade(Facade):
     RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
 
     def _create_record_from_dict(self, record_dict):

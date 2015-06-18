@@ -1,9 +1,9 @@
 import os
 from unittest import TestCase
+from mock import MagicMock
 from xlwt import Workbook
 from eums.models import Consignee
-from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.vision.vision_facade import ConsigneeOrderFacade
+from eums.vision.vision_facade import ConsigneeFacade
 
 
 class TestReleaseOrdersVisionFacade(TestCase):
@@ -15,7 +15,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                         {'name': 'KALAS GIRLS PRIMARY SCHOO', 'customer_id': 'L438000532'}
                                         ]
 
-        self.facade = ConsigneeOrderFacade(self.consignee_file_location)
+        self.facade = ConsigneeFacade(self.consignee_file_location)
 
     def tearDown(self):
         os.remove(self.consignee_file_location)
@@ -48,6 +48,17 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_records(self.imported_consignee_data)
 
         self.assert_consignees_were_created()
+
+    def test_should_load_consignee_from_excel_and_save(self):
+        self.assertEqual(Consignee.objects.count(), 0)
+
+        self.facade.load_records = MagicMock(return_value=self.imported_consignee_data)
+        self.facade.save_records = MagicMock()
+
+        self.facade.import_records()
+
+        self.facade.load_records.assert_called()
+        self.facade.save_records.assert_called_with(self.imported_consignee_data)
 
     def assert_consignees_were_created(self):
         consignee_one = Consignee(name='ADVOCATE COALITION FOR DE', customer_id='L438000582',
