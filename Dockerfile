@@ -135,6 +135,9 @@ RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
 ##############################################################################
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
 
+# Fix postgres certificate issues
+RUN mkdir /etc/ssl/private-copy; mv /etc/ssl/private/* /etc/ssl/private-copy/; rm -r /etc/ssl/private; mv /etc/ssl/private-copy /etc/ssl/private; chmod -R 0700 /etc/ssl/private; chown -R postgres /etc/ssl/private
+
 EXPOSE 22 80
 
 ##############################################################################
