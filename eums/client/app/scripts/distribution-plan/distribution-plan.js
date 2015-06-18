@@ -267,7 +267,9 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             },
             //TODO Remove
             createPlan: function (planDetails) {
-                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function (response) {
+                var flattenedPlanDetails = Object.clone(planDetails);
+                flattenedPlanDetails.programme = flattenedPlanDetails.programme.id;
+                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, flattenedPlanDetails).then(function (response) {
                     if (response.status === 201) {
                         return response.data;
                     }
