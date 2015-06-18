@@ -70,9 +70,10 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
     def tearDown(self):
         os.remove(self.purchase_order_file_location)
+        SalesOrderItem.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
         Item.objects.all().delete()
         PurchaseOrder.objects.all().delete()
-        PurchaseOrderItem.objects.all().delete()
         SalesOrder.objects.all().delete()
 
     def create_purchase_order_workbook(self):

@@ -12,7 +12,9 @@ from eums.test.factories.distribution_plan_node_factory import DistributionPlanN
     DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
+from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
@@ -59,7 +61,7 @@ class DistributionPlanNodeTest(TestCase):
 
         sugar_item = SalesOrderItemFactory(item=sugar, description='10 bags of sugar')
         sugar_node = DistributionPlanNodeFactory(targeted_quantity=100,
-                                                     item=sugar_item)
+                                                 item=sugar_item)
         sugar_node_run = NodeRunFactory(node=sugar_node, status='completed')
 
         multiple_answer_one = MultipleChoiceAnswerFactory(node_run=node_run, question=multichoice_question,
@@ -98,18 +100,22 @@ class DistributionPlanNodeTest(TestCase):
 
     def test_should_get_the_completed_node_run(self):
         self.assertIsNone(self.node.completed_run())
-
-        node_run = NodeRunFactory(node=self.node,
-                                  status=NodeRun.STATUS.completed)
-
+        node_run = NodeRunFactory(node=self.node, status=NodeRun.STATUS.completed)
         self.assertEqual(self.node.completed_run(), node_run)
 
     def test_should_get_latest_run(self):
         first_run = NodeRunFactory(node=self.node)
-
         self.assertEqual(self.node.latest_run(), first_run)
-
         second_run = NodeRunFactory(node=self.node)
-
         self.assertEqual(self.node.latest_run(), second_run)
 
+    def test_should_create_itself_with_any_type_of_order_item(self):
+        sales_order_item = SalesOrderItemFactory()
+        purchase_order_item = PurchaseOrderItemFactory()
+        release_order_item = ReleaseOrderItemFactory()
+        node_with_so_item = NodeFactory(item=sales_order_item)
+        node_with_po_item = NodeFactory(item=purchase_order_item)
+        node_with_ro_item = NodeFactory(item=release_order_item)
+        self.assertEqual(DistributionPlanNode.objects.get(item=sales_order_item), node_with_so_item)
+        self.assertEqual(DistributionPlanNode.objects.get(item=purchase_order_item), node_with_po_item)
+        self.assertEqual(DistributionPlanNode.objects.get(item=release_order_item), node_with_ro_item)
