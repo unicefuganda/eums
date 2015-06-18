@@ -13,6 +13,7 @@ local_settings.py
 eums/bin/
 eums/include/
 eums/lib/
+eums/pip-selfcheck.json
 
 initaluser.json
 celerybeat-schedule.db
