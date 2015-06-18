@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User', 'Directives'])
-    .controller('DistributionPlanController', function ($scope, $location, DistributionPlanService, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
+angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
+    .controller('DistributionPlanController', function ($scope, $location, DistributionPlanService, ProgrammeService, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
@@ -22,7 +22,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            SalesOrderService.forDirectDelivery().then(function (salesOrders) {
+            PurchaseOrderService.forDirectDelivery().then(function (salesOrders) {
                 $scope.salesOrders = salesOrders.sort();
                 angular.element('#loading').modal('hide');
             });

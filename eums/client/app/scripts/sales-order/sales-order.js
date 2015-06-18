@@ -8,14 +8,6 @@ angular.module('SalesOrder', ['eums.config', 'Programme', 'SalesOrderItem', 'Dis
                 programme: ProgrammeService,
                 salesorderitem_set: SalesOrderItemService,
                 distributionplannode_set: DistributionPlanNodeService
-            },
-            methods: {
-                forDirectDelivery: function () {
-                    return this.filter({has_release_orders: 'false'});
-                },
-                forWarehouseDelivery: function () {
-                    return this.filter({has_release_orders: 'true'});
-                }
             }
         });
     });

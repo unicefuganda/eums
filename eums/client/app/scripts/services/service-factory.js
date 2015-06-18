@@ -150,6 +150,11 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         return $http.get(options.uri + queryStringFrom(filterParams)).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
+                    },
+                    list: function(url, nestedFields) {
+                        return $http.get(options.uri + url).then(function (response) {
+                            return buildListResponse.call(this, response, nestedFields, options);
+                        }.bind(this));
                     }
                 };
                 options.methods && Object.each(options.methods, function (name, impl) {
