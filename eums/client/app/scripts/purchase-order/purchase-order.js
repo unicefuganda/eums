@@ -6,6 +6,9 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER,
             propertyServiceMap: {sales_order: SalesOrderService, purchaseorderitem_set: PurchaseOrderItemService},
             methods: {
+                forDirectDelivery: function(nestedFields){
+                   return this.list('for_direct_delivery/', nestedFields);
+                },
                 getConsigneePurchaseOrders: function (consigneeId) {
                     return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE_PURCHASE_ORDERS + consigneeId).then(function (response) {
                         return response.data;

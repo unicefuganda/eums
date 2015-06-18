@@ -2,8 +2,8 @@ describe('DistributionPlanController', function () {
 
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
-    var mockContactService, mockPlanService, mockProgrammeService, mockSalesOrderService;
-    var deferred, deferredPlan, deferredSalesOrder;
+    var mockContactService, mockPlanService, mockProgrammeService, mockPurchaseOrderService;
+    var deferred, deferredPlan, deferredPurchaseOrder;
 
     var programmeOne = {
         id: 1, name: 'Test Programme'
@@ -17,18 +17,18 @@ describe('DistributionPlanController', function () {
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
-        mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['all', 'forDirectDelivery']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
             deferred = $q.defer();
             deferredPlan = $q.defer();
-            deferredSalesOrder = $q.defer();
+            deferredPurchaseOrder = $q.defer();
             mockContactService.create.and.returnValue(deferred.promise);
             mockProgrammeService.get.and.returnValue(deferred.promise);
             mockProgrammeService.all.and.returnValue(deferred.promise);
             mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
-            mockSalesOrderService.all.and.returnValue(deferredSalesOrder.promise);
-            mockSalesOrderService.forDirectDelivery.and.returnValue(deferredSalesOrder.promise);
+            mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrder.promise);
+            mockPurchaseOrderService.forDirectDelivery.and.returnValue(deferredPurchaseOrder.promise);
 
             location = $location;
             scope = $rootScope.$new();
@@ -49,7 +49,7 @@ describe('DistributionPlanController', function () {
                     $scope: scope, ContactService: mockContactService,
                     DistributionPlanService: mockPlanService,
                     ProgrammeService: mockProgrammeService,
-                    SalesOrderService: mockSalesOrderService,
+                    PurchaseOrderService: mockPurchaseOrderService,
                     $sorter: sorter,
                     $filter: filter,
                     $location: location
@@ -75,7 +75,7 @@ describe('DistributionPlanController', function () {
 
     describe('when initialized', function () {
         xit('should set all sales orders on initialize to the scope', function () {
-            deferredSalesOrder.resolve(salesOrderDetails);
+            deferredPurchaseOrder.resolve(salesOrderDetails);
             scope.initialize();
             scope.$apply();
             expect(scope.salesOrders).toEqual(salesOrderDetails);
@@ -122,7 +122,7 @@ describe('DistributionPlanController', function () {
 
     describe('when sales order is selected', function () {
         it('should change location to create distribution plan path', function () {
-            deferredSalesOrder.resolve(salesOrderOne);
+            deferredPurchaseOrder.resolve(salesOrderOne);
             scope.selectSalesOrder(salesOrderOne);
             scope.$apply();
             expect(location.path()).toEqual('/distribution-plan/new/1');
