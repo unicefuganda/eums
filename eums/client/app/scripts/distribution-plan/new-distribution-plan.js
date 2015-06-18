@@ -86,27 +86,26 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         $scope.salesOrderItems = [];
 
         if ($scope.distributionPlanReport) {
-            SalesOrderService.get($routeParams.salesOrderId, ['programme', 'salesorderitem_set']).then(function (response) {
-
+            PurchaseOrderService.get($routeParams.salesOrderId, ['purchaseorderitem_set']).then(function (response) {
                 $scope.selectedSalesOrder = response;
                 var salesOrderItemSetPromises = [];
-                $scope.selectedSalesOrder.salesorderitemSet.forEach(function (salesOrderItem) {
-                    ItemService.get(salesOrderItem.item, ['unit']).then(function (item) {
-                        var formattedSalesOrderItem = {
+                $scope.selectedSalesOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
+                    ItemService.get(purchaseOrderItem.item, ['unit']).then(function (item) {
+                        var formattedPurchaseOrderItem = {
                             display: item.description,
                             materialCode: item.materialCode,
-                            quantity: salesOrderItem.quantity,
+                            quantity: purchaseOrderItem.quantity,
                             unit: item.unit.name,
-                            information: salesOrderItem
+                            information: purchaseOrderItem
                         };
-                        formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
+                        formattedPurchaseOrderItem.quantityLeft = computeQuantityLeft(formattedPurchaseOrderItem);
 
-                        if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                            $scope.selectedSalesOrderItem = formattedSalesOrderItem;
+                        if (formattedPurchaseOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                            $scope.selectedSalesOrderItem = formattedPurchaseOrderItem;
                             $scope.selectSalesOrderItem();
                         }
 
-                        $scope.salesOrderItems.push(formattedSalesOrderItem);
+                        $scope.salesOrderItems.push(formattedPurchaseOrderItem);
                     });
 
                     $q.all(salesOrderItemSetPromises).then(function () {
@@ -247,10 +246,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                         var locPath = $location.path().split('/')[1];
                         var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
                         $location.path(
-                                '/' + locPath + '/new/' +
-                                documentId + '-' +
-                                $scope.selectedSalesOrderItem.information.id + '-' +
-                                node
+                            '/' + locPath + '/new/' +
+                            documentId + '-' +
+                            $scope.selectedSalesOrderItem.information.id + '-' +
+                            node
                         );
                     });
                 }
@@ -258,11 +257,9 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     $scope.distributionPlanNodes = [];
 
                     var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
-                    SalesOrderItemService
-                        .get(selectedSalesOrderItem.information.id, ['distributionplannode_set'])
-                        .then(function (salesOrderItem) {
-                            SalesOrderItemService
-                                .getTopLevelDistributionPlanNodes(salesOrderItem)
+                    PurchaseOrderItemService.get(selectedSalesOrderItem.information.id, ['distributionplannode_set'])
+                        .then(function (purchaseOrderItem) {
+                            PurchaseOrderItemService.getTopLevelDistributionPlanNodes(purchaseOrderItem)
                                 .then(function (topLevelNodes) {
                                     setDistributionPlanNode(selectedSalesOrderItem, topLevelNodes);
                                 });
@@ -294,8 +291,8 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             if (nodes.length) {
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
                 quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function (total, val) {
-                    return total + val;
-                });
+                        return total + val;
+                    });
                 $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
                 $scope.distributionPlanNodes = nodes;
             }
@@ -431,10 +428,10 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             var locPath = $location.path().split('/')[1];
             var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
             $location.path(
-                    '/' + locPath + '/new/' +
-                    documentId + '-' +
-                    $scope.selectedSalesOrderItem.information.id + '-' +
-                    node.id
+                '/' + locPath + '/new/' +
+                documentId + '-' +
+                $scope.selectedSalesOrderItem.information.id + '-' +
+                node.id
             );
         };
 
@@ -447,23 +444,23 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
             if (planNode.parent) {
                 $location.path(
-                        '/' + locPath + '/new/' +
-                        documentId + '-' +
-                        $scope.selectedSalesOrderItem.information.id + '-' +
-                        planNode.parent
+                    '/' + locPath + '/new/' +
+                    documentId + '-' +
+                    $scope.selectedSalesOrderItem.information.id + '-' +
+                    planNode.parent
                 );
             }
             else {
                 $location.path(
-                        '/' + locPath + '/new/' +
-                        documentId + '-' +
-                        $scope.selectedSalesOrderItem.information.id
+                    '/' + locPath + '/new/' +
+                    documentId + '-' +
+                    $scope.selectedSalesOrderItem.information.id
                 );
             }
         };
     }
 ).
-directive('searchContacts', function (ContactService, $timeout) {
+    directive('searchContacts', function (ContactService, $timeout) {
         function formatResponse(data) {
             return data.map(function (contact) {
                 return {

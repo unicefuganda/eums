@@ -34,10 +34,12 @@ class Facade():
         self.location = location
 
     def import_orders(self):
+        print '*' * 50, 'import orders run', '*' * 50
         order_data = self.load_order_data()
         self.save_order_data(order_data)
 
     def load_order_data(self):
+        print '*' * 50, 'load order data called', '*' * 50
         view = View(self.location)
         return self._convert_view_to_list_of_dicts(view[0][1:, :], self.RELEVANT_DATA)
 
@@ -62,11 +64,13 @@ class Facade():
         return -1
 
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
+        print '*' * 50, 'convert view to list of dicts called with sheet', len([row for row in sheet]), '*' * 50
         order_list = []
         for row in sheet:
             try:
                 item_dict = self._filter_relevant_data(relevant_data, row)
                 if not self._is_summary_row(item_dict):
+                    print '*' * 50, 'not summary row', item_dict, '*' * 50
                     order_number = item_dict['order_number']
                     order_index = self._index_in_list(order_number, order_list, 'order_number')
                     if order_index > -1:
@@ -76,7 +80,7 @@ class Facade():
                         self._append_new_order(item_dict, order_list, order_number)
             except XLDateAmbiguous:
                 pass
-
+        print '*' * 50, 'order list', len(order_list), order_list[:5],'*' * 50
         return order_list
 
     def _is_summary_row(self, row):
@@ -271,6 +275,7 @@ class PurchaseOrderFacade(Facade):
                      16: 'value', 18: 'quantity', 20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
 
     def _create_new_order(self, order_dict):
+        print '*' * 50, 'create new order in po facade with dict', order_dict, '*' * 50
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=order_dict['order_number'])
         if len(matching_purchase_orders):
             return matching_purchase_orders[0]
@@ -278,6 +283,7 @@ class PurchaseOrderFacade(Facade):
         matching_sales_orders = self._get_matching_sales_order(order_dict)
         po_date = None if order_dict['po_date'] == '' else self._get_as_date(order_dict['po_date'])
         if len(matching_sales_orders):
+            print '*' * 50, 'sales order matching purchase order exists', '*' * 50
             return PurchaseOrder.objects.create(order_number=order_dict['order_number'],
                                                 sales_order=matching_sales_orders[0],
                                                 date=po_date)
@@ -328,6 +334,7 @@ class PurchaseOrderFacade(Facade):
         return []
 
     def _is_summary_row(self, row):
+        print '*' * 50, 'row = ', row, 'relevant data', self.RELEVANT_DATA.values(), '*' * 50
         for column in self.RELEVANT_DATA.values():
             if column != 'po_date' and row[column] is '':
                 return True
