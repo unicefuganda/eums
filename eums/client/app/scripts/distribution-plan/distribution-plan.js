@@ -12,18 +12,16 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
-        $scope.documentColumnTitle = 'Sales Order';
+        $scope.documentColumnTitle = 'Purchase Order';
         $scope.dateColumnTitle = 'Date Created';
-        $scope.descriptionColumnTitle = 'Description';
-        $scope.descriptionColumnOrder = 'description';
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
             this.sortBy('order_number');
             this.sort.descending = false;
 
-            PurchaseOrderService.forDirectDelivery().then(function (salesOrders) {
-                $scope.salesOrders = salesOrders.sort();
+            PurchaseOrderService.forDirectDelivery().then(function (purchaseOrders) {
+                $scope.salesOrders = purchaseOrders.sort();
                 angular.element('#loading').modal('hide');
             });
         };
@@ -267,9 +265,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             },
             //TODO Remove
             createPlan: function (planDetails) {
-                var flattenedPlanDetails = Object.clone(planDetails);
-                flattenedPlanDetails.programme = flattenedPlanDetails.programme.id;
-                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, flattenedPlanDetails).then(function (response) {
+                return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function (response) {
                     if (response.status === 201) {
                         return response.data;
                     }
@@ -298,7 +294,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
         return function (salesOrders, query) {
             var results = $filter('filter')(salesOrders, {order_number: query});
             results = _.union(results, $filter('filter')(salesOrders, {date: query}));
-            results = _.union(results, $filter('filter')(salesOrders, {description: query}));
             return results;
         };
     }).factory('$sorter', function () {

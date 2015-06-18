@@ -9,15 +9,13 @@ from eums.models import PurchaseOrder
 
 
 class PurchaseOrderSerialiser(serializers.ModelSerializer):
-    programme = serializers.SerializerMethodField('get_programme')
+    programme_name = serializers.CharField(read_only=True, source='sales_order.programme.name')
+    programme = serializers.IntegerField(read_only=True, source='sales_order.programme.id')
 
     class Meta:
         model = PurchaseOrder
-        fields = ('id', 'order_number', 'date', 'sales_order', 'programme', 'purchaseorderitem_set', 'release_orders')
-
-    @staticmethod
-    def get_programme(purchase_order):
-        return purchase_order.sales_order.programme.name
+        fields = ('id', 'order_number', 'date', 'sales_order', 'programme_name',
+                  'purchaseorderitem_set', 'release_orders', 'programme')
 
 
 class PurchaseOrderViewSet(ModelViewSet):

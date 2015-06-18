@@ -15,7 +15,6 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
         $scope.documentColumnTitle = 'Waybill #';
         $scope.dateColumnTitle = 'Date Delivered';
         $scope.descriptionColumnTitle = 'Programme Name';
-        $scope.descriptionColumnOrder = 'description';
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
