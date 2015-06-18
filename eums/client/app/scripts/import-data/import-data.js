@@ -10,12 +10,12 @@ angular.module('ImportData', ['eums.config', 'angularFileUpload'])
                 url: apiUrl
             });
             theUploader.onErrorItem = function () {
-                $scope[errProp] = "Failed to submit file to backend. Please ensure its not too big";
+                $scope[errProp] = 'Failed to submit file to backend. Please ensure its not too big';
             };
-            theUploader.onSuccessItem = function (item, response, status, headers) {
+            theUploader.onSuccessItem = function (item, response) {
                 $scope[errProp] = response.error;
             };
-            theUploader.onAfterAddingFile = function (item, response, status, headers) {
+            theUploader.onAfterAddingFile = function () {
                 $scope[errProp] = undefined;
             };
             return theUploader;
