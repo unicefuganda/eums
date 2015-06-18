@@ -9,17 +9,25 @@ from eums.vision.vision_facade import ProgrammeFacade
 class TestProgrammeVisionFacade(TestCase):
     def setUp(self):
         self.programme_file_location = 'programmes.xlsx'
+        self.programme_file_with_missing_data_location = 'programmes_with_missing_data.xlsx'
         self.create_programme_workbook()
+        self.create_programme_workbook_with_missing_data()
         self.imported_programme_data = [{'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE', 'wbs_element_ex': '4380/A0/04/107'},
                                         {'name': 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS', 'wbs_element_ex': '4380/A0/04/105'},
                                         {'name': 'Y108 - PCR 4 CROSS SECTORAL', 'wbs_element_ex': '4380/A0/04/108'},
                                         {'name': 'YP109 - PCR 5 SUPPORT', 'wbs_element_ex': '4380/A0/04/800'}
                                         ]
 
+        self.imported_missing_programme_data = [
+                                        {'name': 'Y108 - PCR 4 CROSS SECTORAL', 'wbs_element_ex': '4380/A0/04/108'}
+                                        ]
+
         self.facade = ProgrammeFacade(self.programme_file_location)
+        self.facade_for_missing  = ProgrammeFacade(self.programme_file_with_missing_data_location)
 
     def tearDown(self):
         os.remove(self.programme_file_location)
+        os.remove(self.programme_file_with_missing_data_location)
         Programme.objects.all().delete()
 
     def create_programme_workbook(self):
@@ -40,10 +48,33 @@ class TestProgrammeVisionFacade(TestCase):
 
         work_book.save(self.programme_file_location)
 
+    def create_programme_workbook_with_missing_data(self):
+        work_book = Workbook()
+        sheet = work_book.add_sheet('Sheet 1')
+
+        self.header = ['BUSINESS_AREA_NAME', 'PCR_NO', 'PCR_NAME', 'WBS_ELEMENT_EX']
+        self.first_row = [u'Uganda', u'107', u' ', u'4380/A0/04/107']
+        self.second_row = [u'Uganda', u'105', u'', u' ']
+        self.third_row = [u'Uganda', u'108', u'Y108 - PCR 4 CROSS SECTORAL', u'4380/A0/04/108']
+        self.fourth_row = [u'Uganda', u'800', u'YP109 - PCR 5 SUPPORT', u'']
+
+        rows = [self.header, self.first_row, self.second_row, self.third_row, self.fourth_row]
+
+        for row_index, row in enumerate(rows):
+            for col_index, item in enumerate(row):
+                sheet.write(row_index, col_index, item)
+
+        work_book.save(self.programme_file_with_missing_data_location)
+
     def test_should_load_programme_data(self):
         programme_data = self.facade.load_records()
 
         self.assertEqual(programme_data, self.imported_programme_data)
+
+    def test_should_not_load_programme_with_missing_data(self):
+        programme_data = self.facade_for_missing.load_records()
+
+        self.assertEqual(programme_data, self.imported_missing_programme_data)
 
     def test_should_save_programme_data(self):
         self.assertEqual(Programme.objects.count(), 0)

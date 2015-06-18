@@ -25,6 +25,7 @@ class TestConsigneeVisionFacade(TestCase):
 
     def tearDown(self):
         os.remove(self.consignee_file_location)
+        os.remove(self.consignee_missing_data_file_location)
         Consignee.objects.all().delete()
 
     def create_consignee_workbook(self):
