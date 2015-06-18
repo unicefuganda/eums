@@ -25,6 +25,7 @@ angular.module('ImportData', ['eums.config', 'angularFileUpload'])
         $scope.releaseOrdersUploader = getUploader(EumsConfig.BACKEND_URLS.IMPORT_RELEASE_ORDERS, 'errorMessageRO');
         $scope.purchaseOrdersUploader = getUploader(EumsConfig.BACKEND_URLS.IMPORT_PURCHASE_ORDERS, 'errorMessagePO');
         $scope.consigneesUploader = getUploader(EumsConfig.BACKEND_URLS.IMPORT_CONSIGNEES, 'errorMessagePO');
+        $scope.programmesUploader = getUploader(EumsConfig.BACKEND_URLS.IMPORT_PROGRAMMES, 'errorMessagePO');
 
 
     });

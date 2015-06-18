@@ -49,6 +49,12 @@ class Facade():
 
         return item_dict
 
+    def _has_all_relevant_data(self, row):
+        for column in self.RELEVANT_DATA.values():
+            if not str(row[column]).strip():
+                return False
+        return True
+
     def import_records(self):
         records = self.load_records()
         self.save_records(records)
@@ -65,7 +71,9 @@ class Facade():
         records_list = []
         for row in sheet:
             try:
-                records_list.append(self._filter_relevant_data(relevant_data, row))
+                item_dict = self._filter_relevant_data(relevant_data, row)
+                if self._has_all_relevant_data(item_dict):
+                    records_list.append(item_dict)
             except XLDateAmbiguous:
                 pass
 

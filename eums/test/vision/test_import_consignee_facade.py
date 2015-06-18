@@ -9,13 +9,19 @@ from eums.vision.vision_facade import ConsigneeFacade
 class TestConsigneeVisionFacade(TestCase):
     def setUp(self):
         self.consignee_file_location = 'consignees.xlsx'
+        self.consignee_missing_data_file_location = 'missing_data_consignees.xlsx'
         self.create_consignee_workbook()
+        self.create_consignee_workbook_with_missing_data()
         self.imported_consignee_data = [{'name': 'ADVOCATE COALITION FOR DE', 'customer_id': 'L438000582'},
                                         {'name': 'AGAGO DISTRICT PROBATION', 'customer_id': 'L438000025'},
                                         {'name': 'KALAS GIRLS PRIMARY SCHOO', 'customer_id': 'L438000532'}
                                         ]
+        self.imported_missing_consignee_data = [{'name': 'ADVOCATE COALITION FOR DE', 'customer_id': 'L438000582'},
+                                        {'name': 'AGAGO DISTRICT PROBATION', 'customer_id': 'L438000025'}
+                                        ]
 
         self.facade = ConsigneeFacade(self.consignee_file_location)
+        self.facade_for_missing = ConsigneeFacade(self.consignee_missing_data_file_location)
 
     def tearDown(self):
         os.remove(self.consignee_file_location)
@@ -38,10 +44,35 @@ class TestConsigneeVisionFacade(TestCase):
 
         work_book.save(self.consignee_file_location)
 
+    def create_consignee_workbook_with_missing_data(self):
+        work_book = Workbook()
+        sheet = work_book.add_sheet('Sheet 1')
+
+        self.header = ['SearchTerm', 'Name 1', 'City', 'Customer']
+        self.first_row = [u'ACODE', u'ADVOCATE COALITION FOR DE', u'KAMPALA', u'L438000582']
+        self.second_row = [u'AGAGO', u'AGAGO DISTRICT PROBATION', u'AGAGO', u'L438000025']
+        self.third_row = [u'   ', u'', u' ', u'    ']
+        self.fourth_row = [u'KOTIDO DIS', u'', u'KOTIDO', u'']
+        self.fifth_row = [u'AMUDAT DIS', u' ', u'AMUDAT', u'L438000532']
+        self.sixth_row = [u'JINJA DIS', u'JINJA DISTRICT PROBATION', u'AMUDAT', u' ']
+
+        rows = [self.header, self.first_row, self.second_row, self.third_row, self.fourth_row, self.fifth_row, self.sixth_row]
+
+        for row_index, row in enumerate(rows):
+            for col_index, item in enumerate(row):
+                sheet.write(row_index, col_index, item)
+
+        work_book.save(self.consignee_missing_data_file_location)
+
     def test_should_load_consignee_data(self):
         consignee_data = self.facade.load_records()
 
         self.assertEqual(consignee_data, self.imported_consignee_data)
+
+    def test_should_not_load_consignee_with_missing_data(self):
+        consignee_data = self.facade_for_missing.load_records()
+
+        self.assertEqual(consignee_data, self.imported_missing_consignee_data)
 
     def test_should_save_consignee_data(self):
         self.assertEqual(Consignee.objects.count(), 0)

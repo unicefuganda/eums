@@ -133,6 +133,37 @@
 
             </div>
         </div>
+        <div class="panel panel-default" uploader="programmesUploader" filters="queueLimit, customFilter">
+            <div class="row pad-20">
+                <h4 class="underline">Import Programmes</h4>
+            </div>
+            <div class="row pad-20">
+                <label class="col-lg-3" >Import Programmes (in excel format):</label>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="programmesUploader"/>
+                <span class="col-lg-1" ng-show="programmesUploader.isHTML5"
+                      nowrap>{{ programmesUploader.queue[programmesUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
+
+
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="programmesUploader.queue[programmesUploader.queue.length-1].upload()"
+                        ng-disabled="programmesUploader.queue[programmesUploader.queue.length-1].isReady || programmesUploader.queue[programmesUploader.queue.length-1].isUploading">
+                    <span class="glyphicon glyphicon-upload"></span> Upload
+                </button>
+                <div class="col-lg-1"></div>
+                <div class="col-lg-2">
+                    <div class="progress">
+                        <div ng-show="programmesUploader.isHTML5" class="progress-bar" role="progressbar"
+                             ng-style="{ 'width': programmesUploader.queue[programmesUploader.queue.length-1].progress + '%' }"></div>
+                    </div>
+                    <div class="text-danger">{{ errorMessageRO }}</div>
+                </div>
+                <div class="col-lg-2">
+                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isSuccess && !errorMessageRO"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isError || errorMessageRO"><i class="glyphicon glyphicon-remove"></i></span>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 

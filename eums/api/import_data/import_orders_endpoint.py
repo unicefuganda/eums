@@ -6,7 +6,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import parser_classes
 from rest_framework.parsers import MultiPartParser
 
-from eums.vision.vision_facade import SalesOrderFacade, ReleaseOrderFacade, PurchaseOrderFacade, ConsigneeFacade
+from eums.vision.vision_facade import SalesOrderFacade, ReleaseOrderFacade, PurchaseOrderFacade, ConsigneeFacade, \
+    ProgrammeFacade
 
 
 @csrf_exempt
@@ -30,6 +31,12 @@ def import_purchase_orders(request):
 @parser_classes((MultiPartParser,))
 def import_consignees(request):
     return _import_records(request, ConsigneeFacade)
+
+@csrf_exempt
+@parser_classes((MultiPartParser,))
+def import_programmes(request):
+    return _import_records(request, ProgrammeFacade)
+
 
 def _import_records(request, facade):
     if 'file' in request.FILES:
