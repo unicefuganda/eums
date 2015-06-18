@@ -2,7 +2,7 @@
 #eums.environment => name corresponding with the different settings files e.g. qa, snap, staging, test
 
 #  Base OS
-FROM phusion/baseimage:0.9.15
+FROM ubuntu:14.04
 MAINTAINER eums <eums@thoughtworks.com>
 
 ##############################################################################
