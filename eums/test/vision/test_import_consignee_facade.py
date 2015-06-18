@@ -6,7 +6,7 @@ from eums.models import Consignee
 from eums.vision.vision_facade import ConsigneeFacade
 
 
-class TestReleaseOrdersVisionFacade(TestCase):
+class TestConsigneeVisionFacade(TestCase):
     def setUp(self):
         self.consignee_file_location = 'consignees.xlsx'
         self.create_consignee_workbook()
