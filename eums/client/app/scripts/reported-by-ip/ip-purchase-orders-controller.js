@@ -1,9 +1,7 @@
 'use strict';
 
-
-angular.module('ReportedByIP', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives'])
+angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives'])
     .controller('IPPurchaseOrdersController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
-
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
