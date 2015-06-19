@@ -96,8 +96,8 @@ class NodeResponses(APIView):
         result = {}
         if planNode and planNode.tree_position == 'END_USER':
             node_responses = planNode.responses()
-            node_run = node_responses.keys()[0]
             if node_responses:
+                node_run = node_responses.keys()[0]
                 result = {
                     'node': self._get_node(planNode),
                     'node_run_id': node_run.id,
