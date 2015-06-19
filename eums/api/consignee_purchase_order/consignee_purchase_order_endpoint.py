@@ -6,6 +6,7 @@ from eums.models import DistributionPlanNode, SalesOrderItem, PurchaseOrder
 
 
 class ConsigneePurchaseOrders(APIView):
+    # TODO FIX This logic is false
     def get(self, _, consignee_id):
         sales_order_items_ids = DistributionPlanNode.objects.filter(consignee_id=consignee_id,
                                                                     parent_id__isnull=True).values('item_id')

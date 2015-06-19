@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports', 'WarehouseDelivery', 'NewDistributionPlan', 'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case',
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan', 'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case',
         'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker',
         'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData', 'EndUserResponses', 'Directives'])
     .config(function ($routeProvider, $httpProvider) {
@@ -13,15 +13,6 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports'
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');
-                    }
-                }
-            })
-            .when('/delivery-reports', {
-                templateUrl: '/static/app/views/distribution-planning/delivery-reports.html',
-                controller: 'DeliveryReportsController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
                     }
                 }
             })
@@ -43,7 +34,16 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports'
                     }
                 }
             })
-            .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId-:distributionPlanNodeId', {
+            .when('/reported-by-ip', {
+                templateUrl: '/static/app/views/distribution-planning/delivery-reports.html',
+                controller: 'IPPurchaseOrdersController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
@@ -52,7 +52,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports'
                     }
                 }
             })
-            .when('/delivery-report/new/:purchaseOrderId-:salesOrderItemId', {
+            .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
@@ -70,7 +70,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports'
                     }
                 }
             })
-            .when('/distribution-plan/new/:salesOrderId-:salesOrderItemId-:distributionPlanNodeId', {
+            .when('/distribution-plan/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
@@ -79,7 +79,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports'
                     }
                 }
             })
-            .when('/distribution-plan/new/:salesOrderId-:salesOrderItemId', {
+            .when('/distribution-plan/new/:purchaseOrderId-:purchaseOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
@@ -88,7 +88,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DeliveryReports'
                     }
                 }
             })
-            .when('/distribution-plan/new/:salesOrderId', {
+            .when('/distribution-plan/new/:purchaseOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {

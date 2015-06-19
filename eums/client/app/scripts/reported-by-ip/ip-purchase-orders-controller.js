@@ -1,22 +1,16 @@
 'use strict';
 
 
-angular.module('DeliveryReports', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'SalesOrder', 'PurchaseOrder', 'User', 'Directives'])
-    .controller('DeliveryReportsController', function ($scope, $location, ProgrammeService, SalesOrderService, PurchaseOrderService, UserService, $sorter) {
+angular.module('ReportedByIP', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives'])
+    .controller('IPPurchaseOrdersController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
 
-        $scope.salesOrders = [];
+        $scope.purchaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
-
-        $scope.pageTitle = 'Reported By IP';
-        $scope.searchPromptText = 'Search by PO number, date or programme';
-        $scope.documentColumnTitle = 'Purchase Order Number';
-        $scope.descriptionColumnTitle = 'Programme';
-        $scope.descriptionColumnOrder = 'programme';
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
@@ -26,13 +20,13 @@ angular.module('DeliveryReports', ['eums.config', 'DistributionPlanNode', 'ngTab
             UserService.getCurrentUser().then(function (user) {
                 if (user.consignee_id) {
                     PurchaseOrderService.getConsigneePurchaseOrders(user.consignee_id).then(function (purchaseOrders) {
-                        $scope.salesOrders = purchaseOrders.sort();
+                        $scope.purchaseOrders = purchaseOrders.sort();
                         angular.element('#loading').modal('hide');
                     });
                 }
                 else {
                     PurchaseOrderService.all().then(function (purchaseOrders) {
-                        $scope.salesOrders = purchaseOrders.sort();
+                        $scope.purchaseOrders = purchaseOrders.sort();
                         angular.element('#loading').modal('hide');
                     });
                 }
@@ -51,8 +45,8 @@ angular.module('DeliveryReports', ['eums.config', 'DistributionPlanNode', 'ngTab
             return output;
         };
 
-        $scope.selectSalesOrder = function (selectedSalesOrder) {
-            $location.path('/delivery-report/new/' + selectedSalesOrder.id);
+        $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
+            $location.path('/delivery-report/new/' + selectedPurchaseOrder.id);
         };
     });
 

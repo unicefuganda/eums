@@ -1,8 +1,75 @@
 <div class="container-fluid">
-    <div class="eums page-header">{{ pageTitle }}</div>
+    <div class="eums page-header">Reported By IP</div>
     <div class="content">
 
-        <ng-include src="'/static/app/views/distribution-planning/partials/view-delivery-reports.html'"></ng-include>
+        <div>
+            <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"
+                               id="filter"
+                               class="form-control"
+                               name="filter"
+                               ng-model="query"
+                               placeholder="Search by PO number, date or programme"/>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table si-table class="table table-bordered table-hover table-striped table-condensed">
+                    <thead ng-init="initialize()">
+                    <tr>
+                        <th style="width: 20%">
+                            <a ng-click="sortBy('orderNumber')">Purchase Order Number
+                                <i
+                                        ng-class="sortArrowClass('orderNumber');"></i></a>
+                            <a ng-click="sortBy('orderNumber')">Purchase Order Number
+                                <i ng-class="sortArrowClass('order_number');"></i></a>
+                        </th>
+                        <th style="width: 30%">
+                            <a ng-click="sortBy('date')">Date Created
+                                <i ng-class="sortArrowClass('date');"></i>
+                            </a>
+                        </th>
+                        <th style="width: 50%">
+                            <a ng-click="sortBy('description')">Programme
+                                <i ng-class="sortArrowClass('description');"></i>
+                            </a>
+                            <a ng-click="sortBy('programme')">Programme
+                                <i ng-class="sortArrowClass('programme');"></i>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr ng-repeat="purchaseOrder in purchaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+                        <td data-header="Sales Order">
+                            <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
+                        </td>
+                        <td data-header="Date Created">
+                            {{ purchaseOrder.date }}
+                        </td>
+                        <td data-header="Programme">{{ purchaseOrder.programme }}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="15" indices="3"/>
+                        </td>
+                    </tr>
+                    </tfoot>
+                <span class="information message"
+                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | purchaseOrderFilter: query).length == 0">
+                There are no matches to your search criteria.
+                </span>
+                    <span class="information message"
+                          ng-show="purchaseOrders.length == 0">There are no 'purchase orders' available right now.</span>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 
