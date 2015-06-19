@@ -158,12 +158,9 @@ class TestPurchaseOrdersVisionFacade(TestCase):
     def create_sales_orders(self):
         self.sales_order_one = SalesOrderFactory(order_number=20153976)
         self.sales_order_two = SalesOrderFactory(order_number=20143982)
-        self.sales_order_item_one = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_one,
-                                                          item_number=10)
-        self.sales_order_item_two = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_two,
-                                                          item_number=20)
-        self.sales_order_item_three = SalesOrderItemFactory(sales_order=self.sales_order_two, item=self.item_three,
-                                                            item_number=20)
+        self.sales_order_item_one = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_one, item_number=10)
+        self.sales_order_item_two = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_two, item_number=20)
+        self.sales_order_item_three = SalesOrderItemFactory(sales_order=self.sales_order_two, item=self.item_three, item_number=20)
 
     def test_should_load_purchase_order_data(self):
         purchase_order_data = self.facade.load_records()
@@ -249,19 +246,21 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.assert_purchase_orders_are_equal(self.purchase_order_two, PurchaseOrder.objects.all()[1])
 
     def assert_purchase_order_items_were_created(self):
-        order_item_one = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=10,
-                                           sales_order_item=self.sales_order_item_one, quantity=8000,
-                                           value=Decimal('3436.82'))
-        order_item_two = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=20,
+        order_item_one = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=20,
                                            sales_order_item=self.sales_order_item_two, quantity=1000,
                                            value=Decimal('2000.01'))
+        order_item_two = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=10,
+                                           sales_order_item=self.sales_order_item_one, quantity=8000,
+                                           value=Decimal('3436.82'))
         order_item_three = PurchaseOrderItem(purchase_order=self.purchase_order_two, item_number=20,
                                              sales_order_item=self.sales_order_item_three, quantity=5000,
                                              value=Decimal('4850.19'))
 
-        self.assert_purchase_order_items_are_equal(order_item_one, PurchaseOrderItem.objects.all()[0])
-        self.assert_purchase_order_items_are_equal(order_item_two, PurchaseOrderItem.objects.all()[1])
-        self.assert_purchase_order_items_are_equal(order_item_three, PurchaseOrderItem.objects.all()[2])
+        purchase_order_items = PurchaseOrderItem.objects.all().order_by('purchase_order__order_number')
+
+        self.assert_purchase_order_items_are_equal(order_item_one, purchase_order_items[0])
+        self.assert_purchase_order_items_are_equal(order_item_two, purchase_order_items[1])
+        self.assert_purchase_order_items_are_equal(order_item_three, purchase_order_items[2])
 
     def assert_consignees_are_equal(self, consignee_one, consignee_two):
         self.assertEqual(consignee_one.name, consignee_two.name)
