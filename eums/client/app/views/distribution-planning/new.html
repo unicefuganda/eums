@@ -29,14 +29,14 @@
                         </label>
 
                         <div class="col-lg-8">
-                            <select id="select-sales-order" ng-model="selectedSalesOrderItem" required="required"
+                            <select id="select-sales-order" ng-model="selectedPurchaseOrderItem" required="required"
                                     class="form-control" ng-change="selectSalesOrderItem()"
                                     ng-options="salesOrderItem.display for salesOrderItem in salesOrderItems | orderBy: 'display'">
                                 <option value="">Select Item</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-lg-12 pad-top-20" ng-show="selectedSalesOrderItem && distributionPlanNodes.length && !user.consignee_id && isReport">
+                    <div class="col-lg-12 pad-top-20" ng-show="selectedPurchaseOrderItem && distributionPlanNodes.length && !user.consignee_id && isReport">
                         <label for="select-sales-order" class="col-lg-4 control-label description-label">
                             Track Item:
                         </label>
@@ -63,15 +63,15 @@
                 </div>
             </div>
 
-            <div ng-show="selectedSalesOrderItem" class="material-items well col-lg-7 pull-right">
+            <div ng-show="selectedPurchaseOrderItem" class="material-items well col-lg-7 pull-right">
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedSalesOrderItem.materialCode }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.materialCode }}</span>
                             Material Code
                         </li>
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedSalesOrderItem.display }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.display }}</span>
                             Item Description
                         </li>
                     </ul>
@@ -79,18 +79,18 @@
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedSalesOrderItem.quantity | number }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.quantity | number }}</span>
                             Total Quantity
                         </li>
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedSalesOrderItem.unit }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.unit }}</span>
                             Unit
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <div ng-show="salesOrderItems.length && selectedSalesOrderItem" class="panel panel-default">
+        <div ng-show="salesOrderItems.length && selectedPurchaseOrderItem" class="panel panel-default">
             <div class="panel-body">
                 <div ng-show="distributionPlanNodes.length">
                     <table id="distributionPlanTable"
@@ -107,8 +107,8 @@
                         <th class="table-sub-consignee-header-width"></th>
 
                         <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
-                            <td id="input-available-quantity">{{ selectedSalesOrderItem.quantityLeft }}</td>
-                            <td id="input-unit">{{ selectedSalesOrderItem.unit }}</td>
+                            <td id="input-available-quantity">{{ selectedPurchaseOrderItem.quantityLeft }}</td>
+                            <td id="input-unit">{{ selectedPurchaseOrderItem.unit }}</td>
                             <td>
                                 <input type="text" id="input-quantity" class="form-control" ng-disabled="item.flowTriggered"
                                        ng-model="item.targetedQuantity" only-digits>
@@ -197,7 +197,7 @@
 
             </div>
             <div class="pad-20 row">
-                <button ng-show="selectedSalesOrderItem.quantityLeft > 0"
+                <button ng-show="selectedPurchaseOrderItem.quantityLeft > 0"
                         type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
                     <i class="glyphicon glyphicon-plus"> </i>
                     {{ consignee_button_text }}

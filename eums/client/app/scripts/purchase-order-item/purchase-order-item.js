@@ -1,11 +1,10 @@
 'use strict';
 
-angular.module('PurchaseOrderItem', ['eums.config', 'SalesOrderItem', 'eums.service-factory', 'DistributionPlanNode'])
-    .factory('PurchaseOrderItemService', function (EumsConfig, SalesOrderItemService, ServiceFactory, DistributionPlanNodeService, $q) {
+angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'DistributionPlanNode'])
+    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, DistributionPlanNodeService, $q) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM,
             propertyServiceMap: {
-                sales_order_item: SalesOrderItemService,
                 distributionplannode_set: DistributionPlanNodeService
             },
             methods: {

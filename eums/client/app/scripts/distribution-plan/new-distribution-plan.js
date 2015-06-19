@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'SalesOrderItem', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'SalesOrder', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'User', 'Item'])
-    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, SalesOrderService, PurchaseOrderService, PurchaseOrderItemService, SalesOrderItemService, IPService, UserService, ItemService, ngToast, ContactService) {
+angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap', 'Consignee', 'PurchaseOrder', 'PurchaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'User', 'Item'])
+    .controller('NewDistributionPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, ConsigneeService, PurchaseOrderService, PurchaseOrderItemService, IPService, UserService, ItemService, ngToast, ContactService) {
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.consignee_button_text = 'Add Consignee';
@@ -83,115 +83,30 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
         });
 
         $scope.distributionPlanNodes = [];
-        $scope.salesOrderItems = [];
+        $scope.purchaseOrderItems = [];
 
-        if ($scope.distributionPlanReport) {
-            PurchaseOrderService.get($routeParams.salesOrderId, ['purchaseorderitem_set']).then(function (response) {
-                $scope.selectedSalesOrder = response;
-                var salesOrderItemSetPromises = [];
-                $scope.selectedSalesOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
-                    ItemService.get(purchaseOrderItem.item, ['unit']).then(function (item) {
-                        var formattedPurchaseOrderItem = {
-                            display: item.description,
-                            materialCode: item.materialCode,
-                            quantity: purchaseOrderItem.quantity,
-                            unit: item.unit.name,
-                            information: purchaseOrderItem
-                        };
-                        formattedPurchaseOrderItem.quantityLeft = computeQuantityLeft(formattedPurchaseOrderItem);
+        PurchaseOrderService.get($routeParams.salesOrderId, ['purchaseorderitem_set']).then(function (response) {
+            $scope.selectedPurchaseOrder = response;
+            $scope.selectedPurchaseOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
+                ItemService.get(purchaseOrderItem.item, ['unit']).then(function (item) {
+                    var formattedPurchaseOrderItem = {
+                        display: item.description,
+                        materialCode: item.materialCode,
+                        quantity: purchaseOrderItem.quantity,
+                        unit: item.unit.name,
+                        information: purchaseOrderItem
+                    };
+                    formattedPurchaseOrderItem.quantityLeft = computeQuantityLeft(formattedPurchaseOrderItem);
 
-                        if (formattedPurchaseOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                            $scope.selectedSalesOrderItem = formattedPurchaseOrderItem;
-                            $scope.selectSalesOrderItem();
-                        }
+                    if (formattedPurchaseOrderItem.information.id === Number($routeParams.purchaseOrderItemId) && !$routeParams.distributionPlanNodeId) {
+                        $scope.selectedPurchaseOrderItem = formattedPurchaseOrderItem;
+                        $scope.selectPurchaseOrderItem();
+                    }
 
-                        $scope.salesOrderItems.push(formattedPurchaseOrderItem);
-                    });
-
-                    $q.all(salesOrderItemSetPromises).then(function () {
-                        if (!$routeParams.salesOrderItemId) {
-                            showLoadingModal(false);
-                        }
-                    });
+                    $scope.purchaseOrderItems.push(formattedPurchaseOrderItem);
                 });
             });
-        }
-        else {
-            $scope.isReport = true;
-            UserService.getCurrentUser().then(function (user) {
-                $scope.user = user;
-                if ($scope.user.consignee_id) {
-                    PurchaseOrderService.getConsigneePurchaseOrder($routeParams.purchaseOrderId, $scope.user.consignee_id).then(function (response) {
-
-                        $scope.selectedPurchaseOrder = response;
-                        $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.sales_order;
-
-                        var purchaseOrderItemSetPromises = [];
-                        $scope.selectedPurchaseOrder.purchaseorderitem_set.forEach(function (purchaseOrderItem) {
-                            purchaseOrderItemSetPromises.push(
-                                PurchaseOrderItemService.get(purchaseOrderItem).then(function (result) {
-                                    var formattedSalesOrderItem = {
-                                        display: result.sales_order_item.item.description,
-                                        materialCode: result.sales_order_item.item.material_code,
-                                        quantity: $scope.selectedSalesOrderItem ? $scope.selectedSalesOrderItem.quantity : result.sales_order_item.quantity,
-                                        unit: result.sales_order_item.item.unit.name,
-                                        information: result.sales_order_item
-                                    };
-                                    formattedSalesOrderItem.quantityLeft = $scope.selectedSalesOrderItem ? computeQuantityLeft($scope.selectedSalesOrderItem) : computeQuantityLeft(formattedSalesOrderItem);
-
-                                    if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId)) {
-                                        $scope.selectedSalesOrderItem = formattedSalesOrderItem;
-                                        if (!$routeParams.distributionPlanNodeId) {
-                                            $scope.selectSalesOrderItem();
-                                        }
-                                    }
-
-                                    $scope.salesOrderItems.push(formattedSalesOrderItem);
-                                }));
-                        });
-
-                        $q.all(purchaseOrderItemSetPromises).then(function () {
-                            if (!$routeParams.salesOrderItemId) {
-                                showLoadingModal(false);
-                            }
-                        });
-                    });
-                }
-                else {
-                    PurchaseOrderService.get($routeParams.purchaseOrderId, ['sales_order', 'purchaseorderitem_set']).then(function (response) {
-
-                        $scope.selectedPurchaseOrder = response;
-                        $scope.selectedSalesOrder = $scope.selectedPurchaseOrder.salesOrder;
-
-                        var salesOrderItemSetPromises = [];
-                        $scope.selectedPurchaseOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
-                            salesOrderItemSetPromises.push(SalesOrderItemService.get(purchaseOrderItem.salesOrderItem, ['item']).then(function (salesOrderItem) {
-                                var formattedSalesOrderItem = {
-                                    display: salesOrderItem.item.description,
-                                    materialCode: salesOrderItem.item.materialCode,
-                                    quantity: purchaseOrderItem.quantity ? purchaseOrderItem.quantity : salesOrderItem.quantity,
-                                    unit: salesOrderItem.item.unit, // add name to unit
-                                    information: salesOrderItem
-                                };
-                                formattedSalesOrderItem.quantityLeft = computeQuantityLeft(formattedSalesOrderItem);
-
-                                if (formattedSalesOrderItem.information.id === Number($routeParams.salesOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                                    $scope.selectedSalesOrderItem = formattedSalesOrderItem;
-                                    $scope.selectSalesOrderItem();
-                                }
-                                $scope.salesOrderItems.push(formattedSalesOrderItem);
-                            }));
-                        });
-
-                        $q.all(salesOrderItemSetPromises).then(function () {
-                            if (!$routeParams.salesOrderItemId) {
-                                showLoadingModal(false);
-                            }
-                        });
-                    });
-                }
-            });
-        }
+        });
 
         if ($routeParams.distributionPlanNodeId) {
             $scope.consignee_button_text = 'Add Sub-Consignee';
@@ -208,22 +123,22 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                     $scope.distributionPlan = planNode.distributionPlan;
                     $scope.track = planNode.track;
 
-                    SalesOrderItemService.get($routeParams.salesOrderItemId).then(function (result) {
+                    PurchaseOrderItemService.get($routeParams.purchaseOrderItemId).then(function (result) {
                         ItemService.get(result.item, ['unit']).then(function (item) {
-                            $scope.selectedSalesOrderItem = {
+                            $scope.selectedPurchaseOrderItem = {
                                 display: item.description,
                                 materialCode: item.materialCode,
                                 quantity: result.quantity,
                                 unit: item.unit.name,
                                 information: result
                             };
-                            $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
+                            $scope.selectedPurchaseOrderItem.quantityLeft = computeQuantityLeft($scope.selectedPurchaseOrderItem);
                             var childNodePromises = [];
                             $scope.planNode.children.forEach(function (child) {
                                 childNodePromises.push(DistributionPlanNodeService.getPlanNodeDetails(child.id));
                             });
                             $q.all(childNodePromises).then(function (children) {
-                                setDistributionPlanNode($scope.selectedSalesOrderItem, children);
+                                setDistributionPlanNode($scope.selectedPurchaseOrderItem, children);
                             });
                         });
                     });
@@ -231,7 +146,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         }
 
-        $scope.selectSalesOrderItem = function () {
+        $scope.selectPurchaseOrderItem = function () {
             $scope.track = false;
             $scope.invalidNodes = NaN;
             $scope.distributionPlan = NaN;
@@ -241,14 +156,14 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
                 if ($scope.user.consignee_id) {
-                    PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedSalesOrderItem.information.id).then(function (response) {
+                    PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedPurchaseOrderItem.information.id).then(function (response) {
                         var node = response;
                         var locPath = $location.path().split('/')[1];
-                        var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
+                        var documentId = $scope.distributionPlanReport ? $scope.selectedPurchaseOrder.id : $scope.selectedPurchaseOrder.id;
                         $location.path(
                             '/' + locPath + '/new/' +
                             documentId + '-' +
-                            $scope.selectedSalesOrderItem.information.id + '-' +
+                            $scope.selectedPurchaseOrderItem.information.id + '-' +
                             node
                         );
                     });
@@ -256,7 +171,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 else {
                     $scope.distributionPlanNodes = [];
 
-                    var selectedSalesOrderItem = $scope.selectedSalesOrderItem;
+                    var selectedSalesOrderItem = $scope.selectedPurchaseOrderItem;
                     PurchaseOrderItemService.get(selectedSalesOrderItem.information.id, ['distributionplannode_set'])
                         .then(function (purchaseOrderItem) {
                             PurchaseOrderItemService.getTopLevelDistributionPlanNodes(purchaseOrderItem)
@@ -274,7 +189,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
         }
 
-        $scope.trackSalesOrderItem = function () {
+        $scope.trackPurchaseOrderItem = function () {
             $scope.invalidNodes = anyInvalidFields($scope.distributionPlanNodes);
             savePlanTracking();
         };
@@ -283,17 +198,13 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
         };
 
-        //var formatDateForDisplay = function (date) {
-        //    return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
-        //};
-
         var setDistributionPlanNode = function (selectedSalesOrderItem, nodes) {
             if (nodes.length) {
                 var quantityLeft = parseInt(selectedSalesOrderItem.quantity);
                 quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function (total, val) {
                         return total + val;
                     });
-                $scope.selectedSalesOrderItem.quantityLeft = quantityLeft.toString();
+                $scope.selectedPurchaseOrderItem.quantityLeft = quantityLeft.toString();
                 $scope.distributionPlanNodes = nodes;
             }
             else {
@@ -305,7 +216,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.addDistributionPlanNode = function () {
             var distributionPlanNode = {
-                item: $scope.selectedSalesOrderItem.information.id,
+                item: $scope.selectedPurchaseOrderItem.information.id,
                 plannedDistributionDate: '',
                 targetedQuantity: 0,
                 destinationLocation: '',
@@ -320,12 +231,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             setDatePickers();
         };
 
-        function computeQuantityLeft(salesOrderItem) {
+        function computeQuantityLeft(purchaseOrderItem) {
             var reduced = $scope.distributionPlanNodes.reduce(function (previous, current) {
                 return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
             }, {targetedQuantity: 0});
 
-            return salesOrderItem.quantity - reduced.targetedQuantity;
+            return purchaseOrderItem.quantity - reduced.targetedQuantity;
         }
 
         function invalidFields(item) {
@@ -334,7 +245,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         function anyInvalidFields(lineItems) {
             var itemsWithInvalidFields = lineItems.filter(function (item) {
-                return $scope.selectedSalesOrderItem.quantityLeft < 0 || invalidFields(item);
+                return $scope.selectedPurchaseOrderItem.quantityLeft < 0 || invalidFields(item);
             });
             return itemsWithInvalidFields.length > 0;
         }
@@ -346,7 +257,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             }
 
             if (newPlanNodes.length) {
-                $scope.selectedSalesOrderItem.quantityLeft = computeQuantityLeft($scope.selectedSalesOrderItem);
+                $scope.selectedPurchaseOrderItem.quantityLeft = computeQuantityLeft($scope.selectedPurchaseOrderItem);
                 $scope.invalidNodes = anyInvalidFields(newPlanNodes);
             }
         }, true);
@@ -414,7 +325,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 saveDistributionPlanNodes();
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedSalesOrder.programme})
+                DistributionPlanService.createPlan({programme: $scope.selectedPurchaseOrder.programme})
                     .then(function (createdPlan) {
                         $scope.distributionPlan = createdPlan.id;
                         saveDistributionPlanNodes();
@@ -424,11 +335,11 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.addSubConsignee = function (node) {
             var locPath = $location.path().split('/')[1];
-            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
+            var documentId = $scope.distributionPlanReport ? $scope.selectedPurchaseOrder.id : $scope.selectedPurchaseOrder.id;
             $location.path(
                 '/' + locPath + '/new/' +
                 documentId + '-' +
-                $scope.selectedSalesOrderItem.information.id + '-' +
+                $scope.selectedPurchaseOrderItem.information.id + '-' +
                 node.id
             );
         };
@@ -439,12 +350,12 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
 
         $scope.previousConsignee = function (planNode) {
             var locPath = $location.path().split('/')[1];
-            var documentId = $scope.distributionPlanReport ? $scope.selectedSalesOrder.id : $scope.selectedPurchaseOrder.id;
+            var documentId = $scope.distributionPlanReport ? $scope.selectedPurchaseOrder.id : $scope.selectedPurchaseOrder.id;
             if (planNode.parent) {
                 $location.path(
                     '/' + locPath + '/new/' +
                     documentId + '-' +
-                    $scope.selectedSalesOrderItem.information.id + '-' +
+                    $scope.selectedPurchaseOrderItem.information.id + '-' +
                     planNode.parent
                 );
             }
@@ -452,7 +363,7 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
                 $location.path(
                     '/' + locPath + '/new/' +
                     documentId + '-' +
-                    $scope.selectedSalesOrderItem.information.id
+                    $scope.selectedPurchaseOrderItem.information.id
                 );
             }
         };

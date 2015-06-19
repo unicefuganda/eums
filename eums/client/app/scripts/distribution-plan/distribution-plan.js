@@ -290,7 +290,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
             }
         };
     })
-    .filter('salesOrderFilter', function ($filter) {
+    .filter('purchaseOrderFilter', function ($filter) {
         return function (salesOrders, query) {
             var results = $filter('filter')(salesOrders, {order_number: query});
             results = _.union(results, $filter('filter')(salesOrders, {date: query}));
