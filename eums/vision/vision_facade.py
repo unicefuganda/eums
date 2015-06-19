@@ -9,8 +9,10 @@ from xlutils.view import View
 from eums.models import SalesOrder, Item, SalesOrderItem, Programme, ReleaseOrder, Consignee, ReleaseOrderItem, \
     PurchaseOrder, PurchaseOrderItem
 
+
 class ImportException(Exception):
     pass
+
 
 def _clean_input(value):
     parse_string = lambda x: x.isalpha() and x or x.isdigit() and int(x) or \
@@ -52,7 +54,7 @@ class Facade():
     def _has_all_relevant_data(self, row):
         for column in self.RELEVANT_DATA.values():
             if not str(row[column]).strip():
-                return False
+                raise ImportException(str(column))
         return True
 
     def import_records(self):
@@ -69,11 +71,18 @@ class Facade():
 
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         records_list = []
+        row_number = 1
         for row in sheet:
+            row_number += 1
             try:
                 item_dict = self._filter_relevant_data(relevant_data, row)
                 if self._has_all_relevant_data(item_dict):
                     records_list.append(item_dict)
+            except ImportException as e:
+                raise ImportException(
+                    "Import has failed due to missing [{0}] in row [{1}]. "
+                    "Please correct the error then try the upload again"
+                    .format(e.message, str(row_number)))
             except XLDateAmbiguous:
                 pass
 
@@ -96,7 +105,7 @@ class OrderFacade(Facade):
 
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         order_list = []
-        row_num = 1;
+        row_num = 1
         for row in sheet:
             try:
                 item_dict = self._filter_relevant_data(relevant_data, row)
@@ -112,7 +121,10 @@ class OrderFacade(Facade):
                 raise Exception("Ambiguous excel date")
                 pass
             except ImportException, e:
-                raise Exception("Import has failed due to an error in row [{0}] column [{1}] please correct the error then try the upload again".format(str(row_num), e.message))
+                raise Exception(
+                    "Import has failed due to an error in row [{0}] column [{1}]. "
+                    "Please correct the error then try the upload again"
+                    .format(str(row_num), e.message))
                 pass
             row_num += 1
         return order_list
@@ -256,7 +268,8 @@ class ReleaseOrderFacade(OrderFacade):
 
             if len(matching_purchase_order_items):
                 matching_ro_items = ReleaseOrderItem.objects.filter(release_order__order_number=order.order_number,
-                                                                    purchase_order_item=matching_purchase_order_items[0])
+                                                                    purchase_order_item=matching_purchase_order_items[
+                                                                        0])
                 if not len(matching_ro_items):
                     item, _ = Item.objects.get_or_create(material_code=item_dict['material_code'],
                                                          description=item_dict['description'])

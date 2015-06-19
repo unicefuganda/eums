@@ -126,9 +126,9 @@
                     <div class="text-danger">{{ errorMessageCO }}</div>
                 </div>
                 <div class="col-lg-2">
-                    <span ng-show=" consigneesUploader.queue[consigneesUploader.queue.length-1].isSuccess && !errorMessageRO"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" consigneesUploader.queue[consigneesUploader.queue.length-1].isSuccess && !errorMessageCO"><i class="glyphicon glyphicon-ok"></i></span>
                     <span ng-show=" consigneesUploader.queue[consigneesUploader.queue.length-1].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                    <span ng-show=" consigneesUploader.queue[consigneesUploader.queue.length-1].isError || errorMessageRO"><i class="glyphicon glyphicon-remove"></i></span>
+                    <span ng-show=" consigneesUploader.queue[consigneesUploader.queue.length-1].isError || errorMessageCO"><i class="glyphicon glyphicon-remove"></i></span>
                 </div>
 
             </div>
@@ -157,9 +157,9 @@
                     <div class="text-danger">{{ errorMessagePGO }}</div>
                 </div>
                 <div class="col-lg-2">
-                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isSuccess && !errorMessageRO"><i class="glyphicon glyphicon-ok"></i></span>
+                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isSuccess && !errorMessagePGO"><i class="glyphicon glyphicon-ok"></i></span>
                     <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isError || errorMessageRO"><i class="glyphicon glyphicon-remove"></i></span>
+                    <span ng-show=" programmesUploader.queue[programmesUploader.queue.length-1].isError || errorMessagePGO"><i class="glyphicon glyphicon-remove"></i></span>
                 </div>
 
             </div>

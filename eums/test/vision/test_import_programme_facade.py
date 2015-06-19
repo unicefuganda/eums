@@ -3,7 +3,7 @@ from unittest import TestCase
 from mock import MagicMock
 from xlwt import Workbook
 from eums.models import Programme
-from eums.vision.vision_facade import ProgrammeFacade
+from eums.vision.vision_facade import ProgrammeFacade, ImportException
 
 
 class TestProgrammeVisionFacade(TestCase):
@@ -72,9 +72,8 @@ class TestProgrammeVisionFacade(TestCase):
         self.assertEqual(programme_data, self.imported_programme_data)
 
     def test_should_not_load_programme_with_missing_data(self):
-        programme_data = self.facade_for_missing.load_records()
-
-        self.assertEqual(programme_data, self.imported_missing_programme_data)
+        with self.assertRaises(ImportException):
+            self.facade_for_missing.load_records()
 
     def test_should_save_programme_data(self):
         self.assertEqual(Programme.objects.count(), 0)

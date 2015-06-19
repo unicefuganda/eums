@@ -3,7 +3,7 @@ from unittest import TestCase
 from mock import MagicMock
 from xlwt import Workbook
 from eums.models import Consignee
-from eums.vision.vision_facade import ConsigneeFacade
+from eums.vision.vision_facade import ConsigneeFacade, ImportException
 
 
 class TestConsigneeVisionFacade(TestCase):
@@ -71,9 +71,8 @@ class TestConsigneeVisionFacade(TestCase):
         self.assertEqual(consignee_data, self.imported_consignee_data)
 
     def test_should_not_load_consignee_with_missing_data(self):
-        consignee_data = self.facade_for_missing.load_records()
-
-        self.assertEqual(consignee_data, self.imported_missing_consignee_data)
+        with self.assertRaises(ImportException):
+            self.facade_for_missing.load_records()
 
     def test_should_save_consignee_data(self):
         self.assertEqual(Consignee.objects.count(), 0)
