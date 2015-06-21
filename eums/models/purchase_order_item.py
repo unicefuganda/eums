@@ -1,12 +1,11 @@
 from django.db import models
 
-from eums.models import PurchaseOrder, SalesOrderItem
 from eums.models.order_item import OrderItem
 
 
 class PurchaseOrderItem(OrderItem):
-    purchase_order = models.ForeignKey(PurchaseOrder)
-    sales_order_item = models.ForeignKey(SalesOrderItem)
+    purchase_order = models.ForeignKey('PurchaseOrder')
+    sales_order_item = models.ForeignKey('SalesOrderItem')
     value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 
     class Meta:

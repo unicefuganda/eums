@@ -1,14 +1,19 @@
 from django.db import models
 from django.db.models import Count
-from eums.models import SalesOrder, DistributionPlanNode
+
+from eums.models import SalesOrder, DistributionPlanNode, PurchaseOrderItem
 
 
 class PurchaseOrderManager(models.Manager):
-    def annotation(self):
-        return self.model.objects.annotate(release_order_count=Count('release_orders'))
-
     def for_direct_delivery(self):
-        return self.annotation().filter(release_order_count=0)
+        return self.model.objects.annotate(release_order_count=Count('release_orders')).filter(release_order_count=0)
+
+    @staticmethod
+    def for_consignee(consignee_id):
+        order_item_ids = DistributionPlanNode.objects.filter(consignee__id=consignee_id) \
+            .select_related('item_set__purchase_order').values_list('item__id', flat=True)
+        order_items = PurchaseOrderItem.objects.filter(id__in=order_item_ids).select_related('purchase_order')
+        return [item.purchase_order for item in order_items]
 
 
 class PurchaseOrder(models.Model):
@@ -24,4 +29,5 @@ class PurchaseOrder(models.Model):
         app_label = 'eums'
 
     def __unicode__(self):
-        return "%s - %s, %s %s" % (self.sales_order.programme.name, self.sales_order.description, self.order_number, str(self.date))
+        return "%s - %s, %s %s" % (
+            self.sales_order.programme.name, self.sales_order.description, self.order_number, str(self.date))
