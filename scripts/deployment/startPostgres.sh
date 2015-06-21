@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Workaround for the  postgres certificate 'permission denied' issues
 mkdir /etc/ssl/private-copy
