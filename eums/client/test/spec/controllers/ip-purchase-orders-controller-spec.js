@@ -1,7 +1,4 @@
 describe('IP Purchase Orders Controller', function () {
-
-    beforeEach(module('ReportedByIP'));
-
     var mockPurchaseOrderService, mockUserService, location, scope, deferredPurchaseOrders, deferredUser;
     var allPurchaseOrders = [{order_number: 10}, {order_number: 2}, {order_number: 8}];
     var fakeElement = {
@@ -10,6 +7,7 @@ describe('IP Purchase Orders Controller', function () {
     };
 
     beforeEach(function () {
+        module('ReportedByIP');
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getConsigneePurchaseOrders', 'all']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
 
