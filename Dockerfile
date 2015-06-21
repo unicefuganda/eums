@@ -104,7 +104,6 @@ RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
 RUN sudo apt-get update
 RUN apt-get install -y mongodb-org=2.6.5 mongodb-org-server=2.6.5 mongodb-org-shell=2.6.5 mongodb-org-mongos=2.6.5 mongodb-org-tools=2.6.5
 ENV LC_ALL C
-VOLUME /data/db
 
 ##############################################################################
 # Install UWSGI
@@ -135,6 +134,9 @@ RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
 # Install APP NPM and bower dependencies
 ##############################################################################
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
+
+VOLUME /var/lib/postgresql
+VOLUME /data
 
 EXPOSE 22 80
 

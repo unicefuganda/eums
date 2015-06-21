@@ -43,7 +43,13 @@ DEPLOY_MACHINE_HTTP_PORT=80
 DEPLOY_MACHINE_SSH_PORT=50000
 EUMS_CONTAINER_HOST_NAME=127.0.0.1
 
-sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 -e "LC_ALL=C" -d --name=eums %IMAGENAME%:latest
+sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 \
+-e "LC_ALL=C" \
+-d --name=eums \
+-v /opt/app/mongodb:/data \
+-v /opt/app/postgresql:/var/lib/postgresql \
+%IMAGENAME%:latest
+
 echo "Done!"
 
 sleep 10s
