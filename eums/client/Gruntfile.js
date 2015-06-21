@@ -381,10 +381,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('performance', [
-        'prepare-for-server-start',
-        'run:djangoServer',
-        'protractor:performance',
-        'stop:djangoServer'
+        'protractor:performance'
     ]);
 
     grunt.registerTask('functional-staging', [
