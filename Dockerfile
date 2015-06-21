@@ -54,7 +54,6 @@ RUN pip install virtualenv
 
 RUN apt-get update && apt-get install -y supervisor openssh-server postgresql postgresql-contrib nodejs nginx redis-server git
 RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd /var/log/supervisor
-COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN echo "root:password" | chpasswd  # need a password for ssh
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -136,6 +135,8 @@ RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
 # Install APP NPM and bower dependencies
 ##############################################################################
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
+
+COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 VOLUME /var/lib/postgresql
 VOLUME /data
