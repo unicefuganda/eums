@@ -31,6 +31,13 @@ echo "Tagging new image as latest ..."
 sudo docker tag -f %IMAGENAME%:%IMAGEVERSION% %IMAGENAME%:latest
 echo "Done!"
 
+echo "Stopping and remove the existing eums container"
+#!/bin/bash
+if [ $(sudo docker ps | grep eums | awk '{print$1}') ]; then
+  sudo docker rm -f $(sudo docker ps | grep eums | awk '{print$1}')
+fi
+
+
 echo "Running image ..."
 DEPLOY_MACHINE_HTTP_PORT=80
 DEPLOY_MACHINE_SSH_PORT=50000
