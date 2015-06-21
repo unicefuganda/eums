@@ -41,7 +41,7 @@ describe('IP Purchase Orders Controller', function () {
             deferredUser.resolve(nonIPUser);
             scope.initialize();
             scope.$apply();
-            expect(mockPurchaseOrderService.all).toHaveBeenCalledWith(['programme']);
+            expect(mockPurchaseOrderService.all).toHaveBeenCalled();
             expect(scope.purchaseOrders).toEqual(allPurchaseOrders);
         });
     });
