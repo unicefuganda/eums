@@ -1,10 +1,14 @@
 'use strict';
 
-angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem', 'eums.service-factory'])
-    .factory('PurchaseOrderService', function ($http, EumsConfig, SalesOrderService, PurchaseOrderItemService, ServiceFactory) {
+angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem', 'eums.service-factory', 'Programme'])
+    .factory('PurchaseOrderService', function ($http, EumsConfig, SalesOrderService, PurchaseOrderItemService, ServiceFactory, ProgrammeService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER,
-            propertyServiceMap: {sales_order: SalesOrderService, purchaseorderitem_set: PurchaseOrderItemService},
+            propertyServiceMap: {
+                sales_order: SalesOrderService,
+                purchaseorderitem_set: PurchaseOrderItemService,
+                programme: ProgrammeService
+            },
             methods: {
                 forDirectDelivery: function(nestedFields){
                    return this.list('for_direct_delivery/', nestedFields);
