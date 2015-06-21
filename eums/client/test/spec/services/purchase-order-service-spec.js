@@ -1,6 +1,6 @@
 describe('Purchase Order Service', function () {
 
-    var mockSalesOrderService, mockPurchaseOrderItemService, mockServiceFactory, config, mockProgrammeService;
+    var mockSalesOrderService, mockPurchaseOrderItemService, mockServiceFactory, config;
 
     beforeEach(function () {
         module('PurchaseOrder');
@@ -9,7 +9,6 @@ describe('Purchase Order Service', function () {
             $provide.value('ServiceFactory', mockServiceFactory);
             $provide.value('SalesOrderService', mockSalesOrderService);
             $provide.value('PurchaseOrderItemService', mockPurchaseOrderItemService);
-            $provide.value('ProgrammeService', mockProgrammeService);
         });
 
         inject(function (PurchaseOrderService, EumsConfig) {
@@ -23,8 +22,7 @@ describe('Purchase Order Service', function () {
             uri: config.BACKEND_URLS.PURCHASE_ORDER,
             propertyServiceMap: {
                 sales_order: mockSalesOrderService,
-                purchaseorderitem_set: mockPurchaseOrderItemService,
-                programme: mockProgrammeService
+                purchaseorderitem_set: mockPurchaseOrderItemService
             },
             methods: jasmine.any(Object)
         });
