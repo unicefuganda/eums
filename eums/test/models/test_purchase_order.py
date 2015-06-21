@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from django.db import IntegrityError
 
+from eums.models import Consignee, DistributionPlanNode, SalesOrder
 from eums.models.purchase_order import PurchaseOrder
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
@@ -10,11 +11,14 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 
 
 class PurchaseOrderTest(TestCase):
+    def tearDown(self):
+        SalesOrder.objects.all().delete()
+        Consignee.objects.all().delete()
+        DistributionPlanNode.objects.all().delete()
+
     def test_should_have_all_expected_fields(self):
         fields_in_order = [field for field in PurchaseOrder._meta._name_map]
-
         self.assertEquals(len(PurchaseOrder._meta.fields), 4)
-
         for field in ['order_number', 'sales_order', 'date']:
             self.assertIn(field, fields_in_order)
 
@@ -30,7 +34,7 @@ class PurchaseOrderTest(TestCase):
         NodeFactory(item=purchase_order_item)
         self.assertTrue(purchase_order.has_plan())
 
-    def test_should_get_orders_whose_items_have_been_delivered_to_a_specific_consignee(self):
+    def test_should_get_orders__as_a_queryset__whose_items_have_been_delivered_to_a_specific_consignee(self):
         consignee = ConsigneeFactory()
         order_one = PurchaseOrderFactory()
         order_two = PurchaseOrderFactory()
@@ -40,7 +44,7 @@ class PurchaseOrderTest(TestCase):
         NodeFactory(item=order_item_one, consignee=consignee)
         NodeFactory(item=order_item_two, consignee=consignee)
 
-        consignee_orders = PurchaseOrder.objects.for_consignee(consignee.id)
+        consignee_orders = PurchaseOrder.objects.for_consignee(consignee.id).order_by('id')
 
-        self.assertListEqual(consignee_orders, [order_one, order_two])
+        self.assertListEqual(list(consignee_orders), [order_one, order_two])
         self.assertNotIn(order_three, consignee_orders)
