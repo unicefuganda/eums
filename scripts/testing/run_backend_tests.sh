@@ -18,6 +18,7 @@ dropdb --if-exists test_app_test
 createdb app_test
 #createdb test_app_test
 python manage.py migrate --settings=eums.snap_settings
-echo repo_token: $COVERALLS_REPO_TOKEN >> .coveralls.yml
-coverage run --source=eums ./manage.py test --settings=eums.snap_settings -v 2
-coveralls
+#echo repo_token: $COVERALLS_REPO_TOKEN >> .coveralls.yml
+#coverage run --source=eums ./manage.py test --settings=eums.snap_settings -v 2
+#coveralls
+python manage.py test --settings=eums.snap_settings -v 2
