@@ -33,7 +33,6 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
 
         $scope.sortArrowClass = function (criteria) {
             var output = '';
-
             if (this.sort.criteria === criteria) {
                 output = 'active glyphicon glyphicon-arrow-down';
                 if (this.sort.descending) {
