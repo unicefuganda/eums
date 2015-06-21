@@ -10,8 +10,7 @@ class PurchaseOrderManager(models.Manager):
 
     @staticmethod
     def for_consignee(consignee_id):
-        order_item_ids = DistributionPlanNode.objects.filter(consignee__id=consignee_id) \
-            .select_related('item_set').values_list('item__id', flat=True)
+        order_item_ids = DistributionPlanNode.objects.filter(consignee__id=consignee_id).values_list('item', flat=True)
         order_ids = PurchaseOrderItem.objects.filter(id__in=order_item_ids).values_list('purchase_order')
         return PurchaseOrder.objects.filter(id__in=order_ids)
 
