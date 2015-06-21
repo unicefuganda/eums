@@ -23,7 +23,7 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
                     });
                 }
                 else {
-                    PurchaseOrderService.all().then(function (purchaseOrders) {
+                    PurchaseOrderService.all(['programme']).then(function (purchaseOrders) {
                         $scope.purchaseOrders = purchaseOrders.sort();
                         angular.element('#loading').modal('hide');
                     });
