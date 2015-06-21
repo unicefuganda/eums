@@ -125,6 +125,7 @@ COPY ./eums /opt/app/eums
 
 COPY ./contacts /opt/app/contacts
 COPY ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
+COPY ./eums/scripts/deployment/startPostgres.sh /opt/scripts/startPostgres.sh
 RUN chmod a+x /opt/scripts/*.sh
 RUN chmod a+x /opt/app/eums/scripts/**/*.sh
 RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
@@ -134,9 +135,6 @@ RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
 # Install APP NPM and bower dependencies
 ##############################################################################
 RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
-
-# Fix postgres certificate issues
-RUN mkdir /etc/ssl/private-copy; mv /etc/ssl/private/* /etc/ssl/private-copy/; rm -r /etc/ssl/private; mv /etc/ssl/private-copy /etc/ssl/private; chmod -R 0700 /etc/ssl/private; chown -R postgres /etc/ssl/private
 
 EXPOSE 22 80
 
