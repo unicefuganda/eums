@@ -17,7 +17,7 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
 
             UserService.getCurrentUser().then(function (user) {
                 if (user.consignee_id) {
-                    PurchaseOrderService.getConsigneePurchaseOrders(user.consignee_id).then(function (purchaseOrders) {
+                    PurchaseOrderService.filter({consignee: user.consignee_id}).then(function (purchaseOrders) {
                         $scope.purchaseOrders = purchaseOrders.sort();
                         angular.element('#loading').modal('hide');
                     });
@@ -43,7 +43,7 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
-            $location.path('/delivery-report/new/' + selectedPurchaseOrder.id);
+            $location.path('/ip-delivery-report/new/' + selectedPurchaseOrder.id);
         };
     });
 

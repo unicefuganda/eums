@@ -8,14 +8,14 @@ describe('IP Purchase Orders Controller', function () {
 
     beforeEach(function () {
         module('ReportedByIP');
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['getConsigneePurchaseOrders', 'all']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['filter', 'all']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
 
         inject(function ($controller, $rootScope, $location, $q, $sorter) {
             deferredPurchaseOrders = $q.defer();
             deferredUser = $q.defer();
             mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrders.promise);
-            mockPurchaseOrderService.getConsigneePurchaseOrders.and.returnValue(deferredPurchaseOrders.promise);
+            mockPurchaseOrderService.filter.and.returnValue(deferredPurchaseOrders.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUser.promise);
 
             location = $location;
@@ -55,8 +55,14 @@ describe('IP Purchase Orders Controller', function () {
             deferredUser.resolve(ipUser);
             scope.initialize();
             scope.$apply();
-            expect(mockPurchaseOrderService.getConsigneePurchaseOrders).toHaveBeenCalledWith(ipUser.consignee_id);
+            expect(mockPurchaseOrderService.filter).toHaveBeenCalledWith({consignee: ipUser.consignee_id});
             expect(scope.purchaseOrders).toEqual(ipPurchaseOrders);
         });
+    });
+
+    it('should redirect to new report page', function() {
+        scope.selectPurchaseOrder({id: 10});
+        scope.$apply();
+        expect(location.path()).toBe('/ip-delivery-report/new/10');
     });
 });
