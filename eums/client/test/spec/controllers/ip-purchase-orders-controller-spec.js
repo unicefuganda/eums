@@ -43,7 +43,7 @@ describe('IP Purchase Orders Controller', function () {
         expect(scope.purchaseOrders).toEqual(purchaseOrders);
     });
 
-    it('should redirect to new report page', function () {
+    it('should redirect to new report page when purchase order is selected', function () {
         scope.selectPurchaseOrder({id: 10});
         scope.$apply();
         expect(location.path()).toBe('/ip-delivery-report/new/10');
