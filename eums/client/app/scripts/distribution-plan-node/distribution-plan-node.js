@@ -13,8 +13,8 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                     });
                 },
                 getPlanNodeDetails: function (planNodeId) {
-                    var getPlanNodePromise = this.get(planNodeId, ['consignee', 'contact_person_id', 'children']);
-                    return getPlanNodePromise.then(function (planNode) {
+                    var fieldsToBuild = ['consignee', 'contact_person_id', 'children'];
+                    return this.get(planNodeId, fieldsToBuild).then(function (planNode) {
                         planNode.contactPerson = planNode.contactPersonId;
                         return planNode;
                     });

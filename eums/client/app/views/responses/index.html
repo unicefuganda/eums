@@ -41,7 +41,7 @@
                 <td class="table-body">
                     <span class="table-body-end-user">{{ response.contact_person ? (response.contact_person.firstName +' '+ response.contact_person.lastName) : 'Not Found' }}</span>
                     <a custom-popover class="btn btn-default btn-xs glyphicon glyphicon-earphone pull-right"
-                       ng-show="response.contact_person.phone" popover-html="{{ response.contact_person.phone }}"></a>
+                       ng-show="response.contactPerson.phone" popover-html="{{ response.contact_person.phone }}"></a>
                 </td>
                 <td class="table-body">{{ response.productReceived }}</td>
                 <td class="table-body">{{ response.dateOfReceipt }}</td>

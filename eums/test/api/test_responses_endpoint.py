@@ -63,7 +63,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                                                                question=self.numeric_question)
 
     def expected_response_data(self, node, consignee, programme, type):
-        expected_data = {u'item': u'10 bags of salt', u'amountSent': 100, u'node': node.id,
+        expected_data = {u'item': u'Salt', u'amountSent': 100, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name,
                                         u'type': type},
                          u'ip': node.get_ip(),
@@ -125,7 +125,6 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
 
         expected_data_node = self.expected_response_data(self.end_user_node, consignee, programme,
                                                          DistributionPlanNode.END_USER)
-
         self.assertEqual(response.status_code, 200)
         self.assertEquals(len(response.data), 1)
         self.assertEquals(expected_data_node, response.data[0])
