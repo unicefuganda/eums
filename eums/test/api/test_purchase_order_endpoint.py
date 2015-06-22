@@ -12,6 +12,7 @@ ENDPOINT_URL = BACKEND_URL + 'purchase-order/'
 
 class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
     def setUp(self):
+        super(PurchaseOrderEndPointTest, self).setUp()
         PurchaseOrder.objects.all().delete()
 
     def tearDown(self):
