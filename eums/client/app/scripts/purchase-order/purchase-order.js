@@ -10,12 +10,7 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem
             },
             methods: {
                 forDirectDelivery: function(nestedFields){
-                   return this.list('for_direct_delivery/', nestedFields);
-                },
-                getConsigneePurchaseOrders: function (consigneeId) {
-                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE_PURCHASE_ORDERS + consigneeId).then(function (response) {
-                        return response.data;
-                    });
+                   return this._listEndpointMethod('for_direct_delivery/', nestedFields);
                 },
                 getConsigneePurchaseOrder: function (id, consigneeId) {
                     return $http.get(EumsConfig.BACKEND_URLS.PURCHASE_ORDER + id).then(function (response) {

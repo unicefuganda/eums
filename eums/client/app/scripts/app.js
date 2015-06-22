@@ -43,7 +43,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', '
                     }
                 }
             })
-            .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
+            .when('/ip-delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
