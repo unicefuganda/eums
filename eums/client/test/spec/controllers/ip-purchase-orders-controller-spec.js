@@ -48,5 +48,4 @@ describe('IP Purchase Orders Controller', function () {
         scope.$apply();
         expect(location.path()).toBe('/ip-delivery-report/new/10');
     });
-})
-;
+});
