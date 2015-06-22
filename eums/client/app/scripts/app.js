@@ -1,8 +1,9 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan', 'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case',
-        'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker',
-        'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'ImportData', 'EndUserResponses', 'Directives'])
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
+    'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
+    'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
+    'ImportData', 'EndUserResponses', 'Directives'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -43,7 +44,17 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', '
                     }
                 }
             })
-            .when('/ip-delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
+            .when('/ip-delivery-report/new/:purchaseOrderId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
+                controller: 'NewIpDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            //TODO these are too many duplicate routes for the distribution plan route. Remove
+            .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
@@ -97,6 +108,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', '
                     }
                 }
             })
+            //new distribution plan routes end here
             .when('/delivery-report/proceed/', {
                 templateUrl: '/static/app/views/distribution-planning/select-items.html',
                 controller: 'NewDistributionPlanController',
