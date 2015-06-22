@@ -19,8 +19,8 @@ describe('Dashboard', function () {
         }
 
         beforeEach(function () {
-            browser.get('/');
             browser.ignoreSynchronization = true;
+            browser.get('/');
             loginPage = require('../functional/pages/login-page');
             homePage = require('../functional/pages/home-page');
             started = new Date().getTime();
