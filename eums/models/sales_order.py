@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Count
 
-from eums.models import Programme, DistributionPlanNode
+from eums.models import Programme
 
 
 class SalesOrderManager(models.Manager):
