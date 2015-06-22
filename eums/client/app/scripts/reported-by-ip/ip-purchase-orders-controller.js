@@ -34,15 +34,22 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
     });
 
-angular.module('NewIpReport', ['PurchaseOrder'])
-    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService) {
-        $scope.selectedPurchaseOrderItem = {};
-
+angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode'])
+    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, DistributionPlanNodeService) {
         PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item.unit']).then(function (purchaseOrder) {
+            $scope.selectedPurchaseOrder = purchaseOrder;
             $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
         });
 
-        $scope.selectPurchaseOrderItem = function () {
-
+        $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
+            UserService.getCurrentUser().then(function (user) {
+                var filterParams = {
+                    consignee: user.consignee_id,
+                    item: purchaseOrderItem.id
+                };
+                DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (node) {
+                    $scope.planNode = node;
+                });
+            });
         }
     });
