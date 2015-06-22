@@ -4,8 +4,6 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
     .controller('IPPurchaseOrdersController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
         $scope.sortBy = $sorter;
         $scope.purchaseOrders = [];
-        $scope.programmes = [];
-        $scope.programmeSelected = null;
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
