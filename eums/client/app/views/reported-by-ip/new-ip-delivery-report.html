@@ -1,17 +1,10 @@
 <div class="container-fluid">
     <div class="content">
         <ng-toast></ng-toast>
-
-        <h4 class="page-header">Create A Direct Delivery for Purchase Order:
-            <span class="text-primary">{{ selectedPurchaseOrder.orderNumber }}</span>
-            <span class="pull-right">PCR:
-                <span class="text-primary">{{ selectedPurchaseOrder.programme.name }}</span>
-            </span>
-        </h4>
         <h4 class="page-header" ng-show="!distributionPlanReport">Report Delivery for Purchase Order:
             <span class="text-primary">{{ selectedPurchaseOrder.orderNumber }}</span>
             <span class="pull-right">PCR:
-                <span class="text-primary">{{ selectedPurchaseOrder.programme.name }}</span>
+                <span class="text-primary">{{ selectedPurchaseOrder.programmeName }}</span>
             </span>
         </h4>
 
@@ -30,7 +23,7 @@
 
                         <div class="col-lg-8">
                             <select id="select-purchase-order" ng-model="selectedPurchaseOrderItem" required="required"
-                                    class="form-control" ng-change="selectPurchaseOrderItem()"
+                                    class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                     ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
                                 <option value="">Select Item</option>
                             </select>
@@ -68,11 +61,11 @@
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.materialCode }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.materialCode }}</span>
                             Material Code
                         </li>
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.display }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.description }}</span>
                             Item Description
                         </li>
                     </ul>
@@ -84,7 +77,7 @@
                             Total Quantity
                         </li>
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.unit }}</span>
+                            <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.unit.name }}</span>
                             Unit
                         </li>
                     </ul>
