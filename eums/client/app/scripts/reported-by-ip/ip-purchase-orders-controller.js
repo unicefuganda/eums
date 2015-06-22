@@ -7,7 +7,7 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
-            this.sortBy('order_number');
+            this.sortBy('orderNumber');
             this.sort.descending = false;
 
             UserService.getCurrentUser().then(function (user) {
