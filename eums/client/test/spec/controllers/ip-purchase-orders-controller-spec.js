@@ -1,6 +1,7 @@
 describe('IP Purchase Orders Controller', function () {
     var mockPurchaseOrderService, mockUserService, location, scope, deferredPurchaseOrders, deferredUser;
-    var allPurchaseOrders = [{order_number: 10}, {order_number: 2}, {order_number: 8}];
+    var purchaseOrders = [{order_number: 10}, {order_number: 2}, {order_number: 8}];
+    var user = {consignee_id: 1};
     var fakeElement = {
         modal: function () {
         }
@@ -8,14 +9,14 @@ describe('IP Purchase Orders Controller', function () {
 
     beforeEach(function () {
         module('ReportedByIP');
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['filter', 'all']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['forUser', 'all']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
 
         inject(function ($controller, $rootScope, $location, $q, $sorter) {
             deferredPurchaseOrders = $q.defer();
             deferredUser = $q.defer();
             mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrders.promise);
-            mockPurchaseOrderService.filter.and.returnValue(deferredPurchaseOrders.promise);
+            mockPurchaseOrderService.forUser.and.returnValue(deferredPurchaseOrders.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUser.promise);
 
             location = $location;
@@ -33,36 +34,19 @@ describe('IP Purchase Orders Controller', function () {
         });
     });
 
-    describe('when current user is not an IP', function () {
-        var nonIPUser = {};
-
-        it('should fetch all purchase orders and put them on scope', function () {
-            deferredPurchaseOrders.resolve(allPurchaseOrders);
-            deferredUser.resolve(nonIPUser);
-            scope.initialize();
-            scope.$apply();
-            expect(mockPurchaseOrderService.all).toHaveBeenCalled();
-            expect(scope.purchaseOrders).toEqual(allPurchaseOrders);
-        });
+    it('should fetch purchase orders for the logged in user and put them on the scope.', function () {
+        deferredPurchaseOrders.resolve(purchaseOrders);
+        deferredUser.resolve(user);
+        scope.initialize();
+        scope.$apply();
+        expect(mockPurchaseOrderService.forUser).toHaveBeenCalledWith(user);
+        expect(scope.purchaseOrders).toEqual(purchaseOrders);
     });
 
-    describe('when current user is an IP', function () {
-        var ipUser = {consignee_id: 1};
-        var ipPurchaseOrders = [allPurchaseOrders[0]];
-
-        it('should fetch purchase orders with which the IP is involved and put them on the scope.', function () {
-            deferredPurchaseOrders.resolve(ipPurchaseOrders);
-            deferredUser.resolve(ipUser);
-            scope.initialize();
-            scope.$apply();
-            expect(mockPurchaseOrderService.filter).toHaveBeenCalledWith({consignee: ipUser.consignee_id});
-            expect(scope.purchaseOrders).toEqual(ipPurchaseOrders);
-        });
-    });
-
-    it('should redirect to new report page', function() {
+    it('should redirect to new report page', function () {
         scope.selectPurchaseOrder({id: 10});
         scope.$apply();
         expect(location.path()).toBe('/ip-delivery-report/new/10');
     });
-});
+})
+;
