@@ -3,9 +3,6 @@
 angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives'])
     .controller('IPPurchaseOrdersController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
         $scope.sortBy = $sorter;
-        $scope.errorMessage = '';
-        $scope.planId = '';
-
         $scope.purchaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
