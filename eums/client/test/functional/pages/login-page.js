@@ -25,6 +25,11 @@ var LoginPage = function () {
 
         browser.wait(mapHasLoaded, 5000, "Timeout exceeded while loading map");
     };
+    this.loginWithNoWaitAs = function (username, password) {
+        this.username.sendKeys(username);
+        this.password.sendKeys(password);
+        this.loginButton.click();
+    };
 };
 
 module.exports = new LoginPage;

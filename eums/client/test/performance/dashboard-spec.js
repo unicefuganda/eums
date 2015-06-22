@@ -19,16 +19,13 @@ describe('Dashboard', function () {
         }
 
         beforeEach(function () {
-            browser.ignoreSynchronization = true;
             browser.get('/');
+            browser.ignoreSynchronization = true;
             loginPage = require('../functional/pages/login-page');
+            homePage = require('../functional/pages/home-page');
             started = new Date().getTime();
             console.log("Started at: " + started);
-            homePage = loginPage.loginWithCredentials('admin', 'admin');
-        });
-
-        afterEach(function () {
-            loginPage.logout();
+            loginPage.loginWithNoWaitAs('admin', 'admin');
         });
 
 
