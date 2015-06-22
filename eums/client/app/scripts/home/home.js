@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode', 'SalesOrderItem'])
+angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode', 'PurchaseOrderItem', 'PurchaseOrder'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService) {
         $scope.filter = {programme: '', ip: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
@@ -22,7 +22,9 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
             $location.path('/response-details/' + $scope.data.district);
         };
 
-    }).controller('ResponseController', function ($scope, $q, $routeParams, DistributionPlanService, DistributionPlanNodeService, SalesOrderItemService) {
+    })
+    .controller('ResponseController', function ($scope, $q, $routeParams, DistributionPlanService, PurchaseOrderService,
+                                                DistributionPlanNodeService, PurchaseOrderItemService) {
         function getAllResponsesByDate() {
             return DistributionPlanService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
                 var nodePromises = [];
@@ -32,16 +34,15 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
                     if (response.node) {
                         nodePromises.push(
                             DistributionPlanNodeService.getPlanNodeDetails(response.node).then(function (planNode) {
-                                response.contact_person = planNode.contact_person;
-
-
-                                var sales_order_item_id = planNode.item;
+                                response.contactPerson = planNode.contact_person;
+                                var purchaseOrderItemId = planNode.item;
                                 poItemPromises.push(
-                                    SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem) {
-                                        response.purchase_order = poItem.purchase_order;
+                                    PurchaseOrderItemService.get(purchaseOrderItemId).then(function (purchaseOrderItem) {
+                                        return PurchaseOrderService.get(purchaseOrderItem.purchaseOrder).then(function(order) {
+                                            response.purchaseOrder = order;
+                                        });
                                     })
                                 );
-
                             })
                         );
                     }

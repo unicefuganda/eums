@@ -14,7 +14,8 @@ describe('Module: Home', function () {
             deferred = $q.defer();
             mockUserService.getCurrentUser.and.returnValue(deferred.promise);
             $controller('HomeController', {
-                $scope: scope, UserService: mockUserService});
+                $scope: scope, UserService: mockUserService
+            });
         }));
 
         it('should redirect to detailed responses page', function () {
@@ -26,8 +27,10 @@ describe('Module: Home', function () {
     });
 
     describe('Controller:Response', function () {
-        var params, mockDistributionPlanService, mockDistributionPlanNodeService, mockSalesOrderItemService;
-        var deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredSalesOrderItemPromise;
+        var params, mockDistributionPlanService, mockDistributionPlanNodeService, mockPurchaseOrderItemService,
+            mockPurchaseOrderService;
+        var deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredPurchaseOrderItemPromise,
+            deferredPurchaseOrder;
 
         var stubResponse = [{
             node: 3,
@@ -50,7 +53,7 @@ describe('Module: Home', function () {
                 id: 1,
                 order_number: 25565
             },
-            contact_person:{
+            contact_person: {
                 firstName: 'John',
                 secondName: 'Doe',
                 phone: '+234778945674'
@@ -69,43 +72,50 @@ describe('Module: Home', function () {
 
         };
 
-        var stubPOItemForSOItemDetails = {
-            purchase_order: {
-                id: 2,
-                order_number: 25567
-            }
+        var stubPurchaseOrder = {
+            id: 2,
+            order_number: 25567
+        };
+
+        var stubPurchaseOrderItem = {
+            purchase_order: stubPurchaseOrder.id
         };
 
         module(function ($provide) {
             $provide.value('DistributionPlanService', mockDistributionPlanService);
         });
 
-
         beforeEach(inject(function ($controller, $rootScope, $q) {
             q = $q;
             mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['orderAllResponsesByDate']);
             mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails']);
-            mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['getPOItemforSOItem']);
+            mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
+            mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
             params = {district: 'Gulu'};
             deferredDistributionPlanPromise = $q.defer();
             deferredDistributionPlanNodePromise = $q.defer();
-            deferredSalesOrderItemPromise = $q.defer();
+            deferredPurchaseOrderItemPromise = $q.defer();
+            deferredPurchaseOrder = $q.defer();
             scope = $rootScope.$new();
             mockDistributionPlanService.orderAllResponsesByDate.and.returnValue(deferredDistributionPlanPromise.promise);
             mockDistributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredDistributionPlanNodePromise.promise);
-            mockSalesOrderItemService.getPOItemforSOItem.and.returnValue(deferredSalesOrderItemPromise.promise);
+            mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
+            mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
             $controller('ResponseController', {
                 $scope: scope,
                 $routeParams: params,
                 DistributionPlanService: mockDistributionPlanService,
                 DistributionPlanNodeService: mockDistributionPlanNodeService,
-                SalesOrderItemService: mockSalesOrderItemService});
+                PurchaseOrderItemService: mockPurchaseOrderItemService,
+                PurchaseOrderService: mockPurchaseOrderService
+            });
         }));
 
         it('should have params object with district', function () {
             deferredDistributionPlanPromise.resolve(stubResponse);
             deferredDistributionPlanNodePromise.resolve(stubNodeDetails);
-            deferredSalesOrderItemPromise.resolve(stubPOItemForSOItemDetails);
+            deferredPurchaseOrderItemPromise.resolve(stubPurchaseOrderItem);
+            deferredPurchaseOrder.resolve(stubPurchaseOrder);
 
             scope.$apply();
             expect(scope.allResponses).toEqual(stubResponse);
