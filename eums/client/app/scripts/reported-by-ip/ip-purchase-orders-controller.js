@@ -51,5 +51,5 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode'])
                     $scope.planNode = node;
                 });
             });
-        }
+        };
     });
