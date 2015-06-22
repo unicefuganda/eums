@@ -3,7 +3,7 @@
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
-    'ImportData', 'EndUserResponses', 'Directives'])
+    'ImportData', 'EndUserResponses', 'Directives', 'NewIpReport'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
