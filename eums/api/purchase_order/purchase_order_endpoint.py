@@ -22,6 +22,14 @@ class PurchaseOrderViewSet(ModelViewSet):
     queryset = PurchaseOrder.objects.all().order_by('order_number')
     serializer_class = PurchaseOrderSerialiser
 
+    def list(self, request, *args, **kwargs):
+        consignee_id = request.GET.get('consignee', None)
+        if consignee_id:
+            orders = PurchaseOrder.objects.for_consignee(consignee_id)
+        else:
+            orders = self.get_queryset()
+        return Response(self.get_serializer(orders, many=True).data)
+
     @list_route()
     def for_direct_delivery(self, _):
         purchase_orders = PurchaseOrder.objects.for_direct_delivery()
