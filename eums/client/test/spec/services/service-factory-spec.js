@@ -1,13 +1,15 @@
 describe('Service Factory', function () {
-    var mockBackend, q, levelOneService, levelTwoService, serviceFactory, levelThreeService, levelFourService;
+    var mockBackend, q, levelOneService, levelTwoService, serviceFactory, levelThreeService, levelFourService, grandChildService;
     const levelOneEndpoint = '/some-endpoint/';
     const levelTwoEndpoint = '/nested-endpoint/';
     const levelThreeEndpoint = '/third-endpoint/';
     const levelFourEndpoint = '/fourth-endpoint/';
+    const grandChildEndpoint = '/grand-child-endpoint';
+    const grandChild = {id: 11, name: 'Job'};
     const fakeOne = {id: 1, propertyOne: 'one', propertyTwo: 'two', nested: 1};
     const fakeTwo = {id: 2, propertyOne: 'one', propertyTwo: 'two', nested: 2};
     const fakeThree = {id: 3, propertyOne: 'one', propertyTwo: 'two', nested: 2};
-    const nestedOne = {id: 1, properties: {}};
+    const nestedOne = {id: 1, properties: {}, child: grandChild.id};
     const nestedTwo = {id: 2, properties: []};
     const nestedThree = {id: 3, properties: []};
     const fakeObjects = [fakeOne, fakeTwo];
@@ -18,7 +20,11 @@ describe('Service Factory', function () {
             q = $q;
             serviceFactory = ServiceFactory;
             mockBackend = $httpBackend;
-            levelTwoService = ServiceFactory.create({uri: levelTwoEndpoint});
+            grandChildService = ServiceFactory.create({uri: grandChildEndpoint});
+            levelTwoService = ServiceFactory.create({
+                uri: levelTwoEndpoint,
+                propertyServiceMap: {child: grandChildService}
+            });
             levelOneService = ServiceFactory.create({
                 uri: levelOneEndpoint,
                 propertyServiceMap: {nested: levelTwoService, children: levelTwoService, relatives: levelTwoService}
@@ -164,6 +170,22 @@ describe('Service Factory', function () {
         expectedFakeOne.nested = nestedOne;
 
         levelOneService.get(fakeOne.id, ['nested']).then(function (object) {
+            expect(object).toEqual(expectedFakeOne);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should fetch deep nested objects', function(done) {
+        mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond(fakeOne);
+        mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedOne.id)).respond(nestedOne);
+        mockBackend.whenGET('{1}{2}/'.assign(grandChildEndpoint, grandChild.id)).respond(grandChild);
+        var expectedFakeOne = Object.clone(fakeOne);
+        var expectedNestedOne = Object.clone(nestedOne);
+        expectedNestedOne.child = grandChild;
+        expectedFakeOne.nested = expectedNestedOne;
+
+        levelOneService.get(fakeOne.id, ['nested.child']).then(function (object) {
             expect(object).toEqual(expectedFakeOne);
             done();
         });

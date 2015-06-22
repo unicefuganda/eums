@@ -3,11 +3,11 @@
 angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
     .factory('ServiceFactory', function ($http, $q, toCamelCase, toSnakeCase) {
 
-        var buildArrayProperty = function (object, property, service) {
+        var buildArrayProperty = function (object, property, fetchParams) {
             var buildPromises = [];
             object[property].forEach(function (objectId) {
-                buildPromises.push(service.get(objectId));
-            });
+                buildPromises.push(fetchParams.service.get(objectId));
+            }.bind(this));
             return $q.all(buildPromises).then(function (builtListObjects) {
                 builtListObjects.each(function (builtObject, index) {
                     object[property][index] = builtObject;
@@ -30,14 +30,14 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             var arrayPropertyBuildPromises = [];
             var buildMap = nestedFieldsToBuildMap.call(this, nestedFields, propertyServiceMap);
 
-            Object.each(buildMap, function (property, service) {
+            Object.each(buildMap, function (property, fetchParams) {
                 if (Object.isArray(object[property])) {
-                    arrayPropertyBuildPromises.push(buildArrayProperty(object, property, service));
+                    arrayPropertyBuildPromises.push(buildArrayProperty.call(this, object, property, fetchParams));
                 }
                 else {
-                    object[property] && objectPropertyBuildPromises.push(service.get(object[property]));
+                    object[property] && objectPropertyBuildPromises.push(fetchParams.service.get(object[property], fetchParams.deepFields));
                 }
-            });
+            }.bind(this));
 
             var allObjectPropertiesBuilt = attachBuiltPropertiesToObject(objectPropertyBuildPromises, object, buildMap);
 
@@ -55,11 +55,21 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         };
 
         var nestedFieldsToBuildMap = function (fields, buildMap) {
-            return fields.reduce(function (previous, current) {
-                var service = buildMap[current];
-                previous[current] = service === 'self' ? this : service;
-                return previous;
+            return fields.reduce(function (map, current) {
+                var fieldNames = current.split('.');
+                var immediateFieldName = fieldNames.shift();
+                var deepFields = fieldNames.length ? deepFieldNamesToArray(fieldNames) : [];
+                var service = buildMap[immediateFieldName] === 'self' ? this : buildMap[immediateFieldName];
+                map[immediateFieldName] = {service: service, deepFields: deepFields};
+                return map;
             }.bind(this), {});
+        };
+
+        var deepFieldNamesToArray = function (fieldsArray) {
+            var fieldNamesString = fieldsArray.reduce(function (acc, current) {
+                return acc.length ? acc + '.' + current : current;
+            }, '');
+            return [fieldNamesString];
         };
 
         function changeCase(obj, converter) {
@@ -151,7 +161,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
                     },
-                    _listEndpointMethod: function(url, nestedFields) {
+                    _listEndpointMethod: function (url, nestedFields) {
                         return $http.get(options.uri + url).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
