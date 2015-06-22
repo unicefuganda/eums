@@ -2,14 +2,15 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, NodeResponses
+from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
+    NodeResponses
 from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee import consigneeRouter
-from eums.api.consignee_purchase_order.consignee_purchase_order_endpoint import ConsigneePurchaseOrders
-from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, ConsigneePurchaseOrderItemNode
+from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, \
+    ConsigneePurchaseOrderItemNode
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.item.item_endpoint import itemRouter
@@ -29,8 +30,6 @@ from eums.api.user.user_endpoint import userRouter
 from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
 from eums.api.option.option_endpoint import optionRouter
-from eums.views.password_management import ChangePasswordView, RecoverEmailSent
-
 
 urlpatterns = patterns(
     '',
@@ -91,4 +90,3 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 )
-

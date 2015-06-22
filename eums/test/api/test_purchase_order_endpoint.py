@@ -23,7 +23,6 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         create_release_order(self)
 
         response = self.client.get(ENDPOINT_URL+'for_direct_delivery/')
-
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data, [created_purchase_order])
