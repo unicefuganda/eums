@@ -13,12 +13,9 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem
                     return this._listEndpointMethod('for_direct_delivery/', nestedFields);
                 },
                 forUser: function (user, nestedFields) {
-                    if (user.consignee_id) {
-                        return this.filter({consignee: user.consignee_id}, nestedFields);
-                    }
-                    else {
-                        return this.all(nestedFields);
-                    }
+                    return user.consignee_id ?
+                        this.filter({consignee: user.consignee_id}, nestedFields)
+                        : this.all(nestedFields);
                 },
                 getConsigneePurchaseOrder: function (id, consigneeId) {
                     return $http.get(EumsConfig.BACKEND_URLS.PURCHASE_ORDER + id).then(function (response) {
