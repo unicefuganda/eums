@@ -6,7 +6,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         var buildArrayProperty = function (object, property, fetchParams) {
             var buildPromises = [];
             object[property].forEach(function (objectId) {
-                buildPromises.push(fetchParams.service.get(objectId));
+                buildPromises.push(fetchParams.service.get(objectId, fetchParams.deepFields));
             }.bind(this));
             return $q.all(buildPromises).then(function (builtListObjects) {
                 builtListObjects.each(function (builtObject, index) {
