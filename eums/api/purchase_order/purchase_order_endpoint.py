@@ -25,7 +25,7 @@ class PurchaseOrderViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         consignee_id = request.GET.get('consignee', None)
         if consignee_id:
-            orders = PurchaseOrder.objects.for_consignee(consignee_id)
+            orders = PurchaseOrder.objects.for_consignee(consignee_id).order_by('order_number')
         else:
             orders = self.get_queryset()
         return Response(self.get_serializer(orders, many=True).data)
