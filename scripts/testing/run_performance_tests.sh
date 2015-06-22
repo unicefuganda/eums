@@ -2,11 +2,10 @@
 
 set -e
 
-MYDIR="$(dirname "$(which "$0")")"
+ABSOLUTE_PATH=$(cd `dirname "${BASH_SOURCE[0]}"` && pwd)/`basename "${BASH_SOURCE[0]}"`
 
-cd ${MYDIR}/../../eums/client
+cd $(dirname "${ABSOLUTE_PATH}")/../../eums/client
 
 grunt performance
 cd scripts
 ant
-

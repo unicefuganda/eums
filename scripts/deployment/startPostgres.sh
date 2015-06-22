@@ -8,5 +8,9 @@ mv /etc/ssl/private-copy /etc/ssl/private
 chmod -R 0700 /etc/ssl/private
 chown -R postgres /etc/ssl/private
 
+
+chown -Rf postgres:postgres /var/lib/postgresql
+chmod -R 700 /var/lib/postgresql
+
 #start the server
 su - postgres -c "/etc/init.d/postgresql start"
