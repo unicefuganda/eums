@@ -384,7 +384,6 @@ class PurchaseOrderFacade(OrderFacade):
                 return True
         return False
 
-
 class ConsigneeFacade(Facade):
     RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
 
