@@ -13,18 +13,10 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
             this.sort.descending = false;
 
             UserService.getCurrentUser().then(function (user) {
-                if (user.consignee_id) {
-                    PurchaseOrderService.filter({consignee: user.consignee_id}).then(function (purchaseOrders) {
-                        $scope.purchaseOrders = purchaseOrders.sort();
-                        angular.element('#loading').modal('hide');
-                    });
-                }
-                else {
-                    PurchaseOrderService.all().then(function (purchaseOrders) {
-                        $scope.purchaseOrders = purchaseOrders.sort();
-                        angular.element('#loading').modal('hide');
-                    });
-                }
+                PurchaseOrderService.forUser(user).then(function (purchaseOrders) {
+                    $scope.purchaseOrders = purchaseOrders.sort();
+                    angular.element('#loading').modal('hide');
+                });
             });
         };
 

@@ -52,10 +52,30 @@ describe('Purchase Order Service when instantiated', function () {
         mockBackend.flush();
     });
 
-    it('should convert object keys to camel case when returning purchase orders', function(done) {
-        mockBackend.whenGET(purchaseOrderEndpoint + 'for_direct_delivery/').respond([{id: 1, release_orders: [1,2]}]);
+    it('should return purchase orders for a user who is an IP', function (done) {
+        var ipUser = {consignee_id: 10};
+        mockBackend.whenGET(purchaseOrderEndpoint + '?consignee=10').respond([{id: 11}]);
+        purchaseOrderService.forUser(ipUser).then(function (orders) {
+            expect(orders).toEqual([{id: 11}]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should return all purchase orders for a user who is not an IP', function (done) {
+        var nonIpUser = {};
+        mockBackend.whenGET(purchaseOrderEndpoint).respond([{id: 31}]);
+        purchaseOrderService.forUser(nonIpUser).then(function (orders) {
+            expect(orders).toEqual([{id: 31}]);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should convert object keys to camel case when returning purchase orders', function (done) {
+        mockBackend.whenGET(purchaseOrderEndpoint + 'for_direct_delivery/').respond([{id: 1, release_orders: [1, 2]}]);
         purchaseOrderService.forDirectDelivery().then(function (objects) {
-            expect(objects).toEqual([{id: 1, releaseOrders: [1,2]}]);
+            expect(objects).toEqual([{id: 1, releaseOrders: [1, 2]}]);
             done();
         });
         mockBackend.flush();
