@@ -50,8 +50,6 @@ urlpatterns = patterns(
         name='permissions'),
     url(r'^api/current-user', 'eums.api.current_user.current_user_endpoint.current_user',
         name='current-user'),
-    url(r'^api/consignee-purchase-orders/(?P<consignee_id>\d+)/$',
-        ConsigneePurchaseOrders.as_view(), name='consignee_purchase_orders'),
     url(r'^api/consignee-purchase-order-items/(?P<consignee_id>\d+)/purchase-order/(?P<purchase_order_id>\d+)/$',
         ConsigneePurchaseOrderItems.as_view(), name='consignee_purchase_order_items'),
     url(r'^api/consignee-purchase-order-items/(?P<consignee_id>\d+)/sales-order-item/(?P<sales_order_item_id>\d+)/$',
