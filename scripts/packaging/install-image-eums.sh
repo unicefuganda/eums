@@ -3,18 +3,16 @@
 set -e
 
 #Ensure that Docker and sshpass are installed
-if [[ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]] || [ ! -f /usr/bin/sshpass ]; then
+if [ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]; then
     apt-get update
 
-    if [ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]; then
-            apt-get -y install wget
-            wget -qO- https://get.docker.com/ | sh
-    fi
+    apt-get -y install wget
+    wget -qO- https://get.docker.com/ | sh
 
-    if [ ! -f /usr/bin/sshpass ]; then
+fi
+
+if [ ! -f /usr/bin/sshpass ] && [ ! -f /usr/local/bin/sshpass ]; then
     apt-get -y install sshpass
-    fi
-
 fi
 
 echo "Loading docker image ..."
