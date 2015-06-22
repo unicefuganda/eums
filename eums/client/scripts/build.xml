@@ -35,7 +35,7 @@
 		 </taskdef>
 		
 		<jchav destdir="${jchav.result.dir}"
-			reporttitle="Abe report"
+			reporttitle="EUMS Performance Test Graph"
 			uniformyaxis="true">
 			<fileset dir="/testResults" includes="*.xml" />
 		</jchav>
