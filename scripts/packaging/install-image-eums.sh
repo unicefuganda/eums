@@ -3,10 +3,10 @@
 set -e
 
 #Ensure that Docker and sshpass are installed
-if [ ! -f /usr/local/bin/docker ] || [ ! -f /usr/bin/sshpass ]; then
+if [[ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]] || [ ! -f /usr/bin/sshpass ]; then
     apt-get update
 
-    if [ ! -f /usr/local/bin/docker ]; then
+    if [ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]; then
             apt-get -y install wget
             wget -qO- https://get.docker.com/ | sh
     fi
