@@ -205,6 +205,15 @@
     },
     {
         "fields": {
+            "customer_id": "L438000581",
+            "type": "implementing_partner",
+            "name": "DUMMY"
+        },
+        "model": "eums.consignee",
+        "pk": 5
+    },
+    {
+        "fields": {
             "customer_id": "L438000215",
             "type": "implementing_partner",
             "name": "KAABONG DHO"
