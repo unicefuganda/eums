@@ -34,3 +34,15 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
     });
 
+angular.module('NewIpReport', ['PurchaseOrder'])
+    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService) {
+        $scope.selectedPurchaseOrderItem = {};
+
+        PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item.unit']).then(function (purchaseOrder) {
+            $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
+        });
+
+        $scope.selectPurchaseOrderItem = function () {
+
+        }
+    });
