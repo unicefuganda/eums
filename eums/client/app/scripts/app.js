@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDelivery', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
+angular.module('eums', ['ngRoute', 'Home', 'DirectDelivery', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'NewIpReport'])

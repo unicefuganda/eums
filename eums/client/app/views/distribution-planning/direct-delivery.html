@@ -1,6 +1,6 @@
 <ng-include src="'/static/app/views/distribution-planning/partials/delivery-header.html'"></ng-include>
 
-<div>
+<div class="container-fluid">
     <div class="row">
         <div class="col-xs-4 pull-right">
             <div class="inner-addon left-addon">
@@ -45,19 +45,19 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="salesOrder in salesOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+            <tr ng-repeat="purchaseOrder in purchaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
                 <td>
-                    <span ng-class="salesOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
+                    <span ng-class="purchaseOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
                      'glyphicon glyphicon-exclamation-sign text-warning';"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
-                    <a ng-click="selectSalesOrder(salesOrder)">{{ warehouseDelivery ? salesOrder.waybill : salesOrder.orderNumber }}</a>
+                    <a ng-click="selectSalesOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
                 </td>
                 <td data-header="Date Created">
-                    {{ warehouseDelivery ? salesOrder.deliveryDate : salesOrder.date }}
+                    {{ purchaseOrder.date }}
                 </td>
                 <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
-                    {{ warehouseDelivery ? salesOrder.programme : salesOrder.description }}
+                    {{ purchaseOrder.description }}
                 </td>
             </tr>
             </tbody>
