@@ -39,7 +39,7 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
         };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
-            $location.path('/distribution-plan/new/' + selectedPurchaseOrder.id);
+            $location.path('/direct-delivery/' + selectedPurchaseOrder.id);
         };
 
     })
