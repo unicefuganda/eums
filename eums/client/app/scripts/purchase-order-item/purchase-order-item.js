@@ -12,7 +12,7 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             this.salesOrderItem = json.salesOrderItem;
             this.item = json.item;
             this.distributionplannodeSet = json.distributionplannodeSet || [];
-            
+
             this.quantityLeft = function (deliveryNodes) {
                 var reduced = deliveryNodes.reduce(function (previous, current) {
                     return {
