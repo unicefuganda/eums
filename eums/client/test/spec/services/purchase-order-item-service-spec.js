@@ -1,10 +1,7 @@
 describe('Purchase Order Item Service', function () {
 
-    var purchaseOrderItemService,
-        endpointUrl,
-        distributionPlanNodeService,
-        itemService,
-        mockServiceFactory;
+    var purchaseOrderItemService, endpointUrl, distributionPlanNodeService, itemService, mockServiceFactory,
+        mockPurchaseOrderItemModel;
 
     beforeEach(function () {
         module('PurchaseOrderItem');
@@ -13,6 +10,7 @@ describe('Purchase Order Item Service', function () {
 
         module(function ($provide) {
             $provide.value('ServiceFactory', mockServiceFactory);
+            $provide.value('PurchaseOrderItem', mockPurchaseOrderItemModel);
         });
 
         inject(function (PurchaseOrderItemService, EumsConfig, DistributionPlanNodeService, ItemService) {
@@ -27,6 +25,7 @@ describe('Purchase Order Item Service', function () {
         expect(mockServiceFactory.create).toHaveBeenCalledWith({
             uri: endpointUrl,
             propertyServiceMap: {distributionplannode_set: distributionPlanNodeService, item: itemService},
+            model: mockPurchaseOrderItemModel,
             methods: jasmine.any(Object)
         });
     });

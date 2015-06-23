@@ -1,14 +1,37 @@
 'use strict';
 
 angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'DistributionPlanNode', 'Item'])
-    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, DistributionPlanNodeService, $q, ItemService) {
+    .factory('PurchaseOrderItem', function () {
+        return function (json) {
+            !json && (json = {});
+            this.id = json.id;
+            this.purchaseOrder = json.purchaseOrder;
+            this.itemNumber = json.itemNumber;
+            this.quantity = json.quantity || 0;
+            this.value = json.value || 0;
+            this.salesOrderItem = json.salesOrderItem;
+            this.item = json.item;
+            this.distributionplannodeSet = json.distributionplannodeSet || [];
+            
+            this.quantityLeft = function (deliveryNodes) {
+                var reduced = deliveryNodes.reduce(function (previous, current) {
+                    return {
+                        targetedQuantity: isNaN(current.targetedQuantity)
+                            ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)
+                    };
+                }, {targetedQuantity: 0});
+                return this.quantity - reduced.targetedQuantity;
+            }.bind(this);
+        };
+    })
+    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, DistributionPlanNodeService, $q,
+                                                   ItemService, PurchaseOrderItem) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM,
-            propertyServiceMap: {
-                distributionplannode_set: DistributionPlanNodeService,
-                item: ItemService
-            },
+            propertyServiceMap: {distributionplannode_set: DistributionPlanNodeService, item: ItemService},
+            model: PurchaseOrderItem,
             methods: {
+                //TODO Remove this and replace with a backend filter on the delivery node endpoint by parent and item.
                 getTopLevelDistributionPlanNodes: function (purchaseOrderItem) {
                     var allDistributionPlanNodes = purchaseOrderItem.distributionplannodeSet;
 
@@ -16,9 +39,10 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
                         planNodes = [];
 
                     allDistributionPlanNodes.forEach(function (node) {
-                        var planNodePromise = DistributionPlanNodeService.getPlanNodeDetails(node.id).then(function (planNodeResponse) {
-                            return planNodeResponse;
-                        });
+                        var planNodePromise = DistributionPlanNodeService.getPlanNodeDetails(node.id)
+                            .then(function (planNodeResponse) {
+                                return planNodeResponse;
+                            });
                         planNodePromises.push(planNodePromise);
                     });
 
@@ -28,14 +52,11 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
                         });
                     });
 
-                    function hasNoParent(planNode) {
-                        return !planNode.parent;
-                    }
-
                     return $q.all(planNodePromises).then(function () {
-                        return planNodes.filter(hasNoParent);
+                        return planNodes.filter(function (planNode) {
+                            return !planNode.parent;
+                        });
                     });
-
                 }
             }
         });
