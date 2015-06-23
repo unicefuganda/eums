@@ -224,7 +224,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                              sales_order_item=SalesOrderItem.objects.all()[0], quantity=16000,
                                              value=Decimal('6873.64'))
 
-        self.assert_purchase_order_items_are_equal(expected_po_item, first_purchase_order_item)
+        self.assertEqual(expected_po_item, first_purchase_order_item)
 
     def test_should_load_purchase_orders_from_excel_and_save(self):
         self.assertEqual(PurchaseOrder.objects.count(), 0)
@@ -258,9 +258,9 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         purchase_order_items = PurchaseOrderItem.objects.all().order_by('purchase_order__order_number')
 
-        self.assert_purchase_order_items_are_equal(order_item_one, purchase_order_items[0])
-        self.assert_purchase_order_items_are_equal(order_item_two, purchase_order_items[1])
-        self.assert_purchase_order_items_are_equal(order_item_three, purchase_order_items[2])
+        self.assertIn(order_item_one, purchase_order_items)
+        self.assertIn(order_item_two, purchase_order_items)
+        self.assertIn(order_item_three, purchase_order_items)
 
     def assert_consignees_are_equal(self, consignee_one, consignee_two):
         self.assertEqual(consignee_one.name, consignee_two.name)
@@ -271,10 +271,3 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.assertEqual(order_one.order_number, order_two.order_number)
         self.assertEqual(order_one.sales_order_id, order_two.sales_order_id)
         self.assertEqual(order_one.date, order_two.date)
-
-    def assert_purchase_order_items_are_equal(self, order_item_one, order_item_two):
-        self.assertEqual(order_item_one.purchase_order.order_number, order_item_two.purchase_order.order_number)
-        self.assertEqual(order_item_one.item_number, order_item_two.item_number)
-        self.assertEqual(order_item_one.sales_order_item.id, order_item_two.sales_order_item.id)
-        self.assertEqual(order_item_one.value, order_item_two.value)
-        self.assertEqual(order_item_one.quantity, order_item_two.quantity)
