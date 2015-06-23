@@ -14,13 +14,9 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             this.distributionplannodeSet = json.distributionplannodeSet || [];
 
             this.quantityLeft = function (deliveryNodes) {
-                var reduced = deliveryNodes.reduce(function (previous, current) {
-                    return {
-                        targetedQuantity: isNaN(current.targetedQuantity)
-                            ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)
-                    };
-                }, {targetedQuantity: 0});
-                return this.quantity - reduced.targetedQuantity;
+                return this.quantity - deliveryNodes.sum(function(node) {
+                    return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
+                });
             }.bind(this);
         };
     })
