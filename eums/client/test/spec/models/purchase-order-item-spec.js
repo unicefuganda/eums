@@ -34,9 +34,9 @@ describe('Purchase Order Item Model', function () {
         expect(purchaseOrderItem.distributionplannodeSet).toEqual([1, 2]);
     });
 
-    it('should calculate quantity left from a list of delivery nodes', function () {
+    it('should calculate quantity left from a list of delivery nodes filtering out NaNs', function () {
         var purchaseOrderItem = new PurchaseOrderItemModel(itemJson);
-        var nodes = [{targetedQuantity: 10}, {targetedQuantity: 30}];
+        var nodes = [{targetedQuantity: 10}, {targetedQuantity: 30}, {targetedQuantity: NaN}];
         expect(purchaseOrderItem.quantityLeft(nodes)).toBe(60);
     });
 });
