@@ -1,28 +1,27 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'ReleaseOrder'])
+angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact'])
     .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
 
-        $scope.salesOrders = [];
+        $scope.releaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
-        $scope.warehouseDelivery = true;
         $scope.documentColumnTitle = 'Waybill #';
         $scope.dateColumnTitle = 'Date Delivered';
         $scope.descriptionColumnTitle = 'Programme Name';
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
-            this.sortBy('order_number');
+            this.sortBy('orderNumber');
             this.sort.descending = false;
 
             ReleaseOrderService.all().then(function (releaseOrders) {
-                $scope.salesOrders = releaseOrders.sort();
+                $scope.releaseOrders = releaseOrders.sort();
                 angular.element('#loading').modal('hide');
             });
         };
@@ -39,8 +38,8 @@ angular.module('WarehouseDelivery', ['eums.config', 'DistributionPlanNode', 'ngT
             return output;
         };
 
-        $scope.selectSalesOrder = function (selectedSalesOrder) {
-            $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
+        $scope.selectReleaseOrder = function (selectedReleaseOrderId) {
+            //$location.path('/warehouse-delivery/new/' + selectedReleaseOrderId);
         };
     });
 

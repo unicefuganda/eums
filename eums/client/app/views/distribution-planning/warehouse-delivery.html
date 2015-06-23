@@ -1,0 +1,80 @@
+<ng-include src="'/static/app/views/distribution-planning/partials/delivery-header.html'"></ng-include>
+
+
+<div>
+    <div class="row">
+        <div class="col-xs-4 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon glyphicon-search"></i>
+                <input type="text"
+                       id="filter"
+                       class="form-control"
+                       name="filter"
+                       ng-model="query"
+                       placeholder="Search by document number, date or description"/>
+            </div>
+        </div>
+    </div>
+    <div class="text-muted pad-top-10">
+        <ul class="list-inline">
+            <li>
+                <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivery set
+            </li>
+            <li>
+                <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Delivery not set
+            </li>
+        </ul>
+    </div>
+
+    <div class="table-wrapper">
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <thead ng-init="initialize()">
+            <tr>
+                <th style="width: 2%;">&nbsp;</th>
+                <th style="width: 18%">
+                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
+                </th>
+                <th style="width: 30%">
+                    <a ng-click="sortBy('date')">{{dateColumnTitle}}
+                        <i ng-class="sortArrowClass('date');"></i>
+                    </a>
+                </th>
+                <th style="width: 50%" ng-if="descriptionColumnTitle">
+                    {{ descriptionColumnTitle }}
+                </th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="releaseOrder in releaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+                <td>
+                    <span ng-class="releaseOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
+                     'glyphicon glyphicon-exclamation-sign text-warning';"></span>
+                </td>
+                <td data-header="{{ documentColumnTitle }}">
+                    <a ng-click="selectReleaseOrder(releaseOrder.id)">{{ releaseOrder.waybill }}</a>
+                </td>
+                <td data-header="Date Created">
+                    {{ releaseOrder.deliveryDate }}
+                </td>
+                <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
+                    {{ releaseOrder.programme }}
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5">
+                    <si-table-pagination limit="15" indices="3"/>
+                </td>
+            </tr>
+            </tfoot>
+                <span class="information message"
+                      ng-show="releaseOrders.length > 0 && (releaseOrders | purchaseOrderFilter: query).length == 0">
+                There are no matches to your search criteria.
+                </span>
+            <span class="information message" ng-show="releaseOrders.length == 0">There are no deliveries available right now.</span>
+        </table>
+    </div>
+</div>
+

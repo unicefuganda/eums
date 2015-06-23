@@ -54,7 +54,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/warehouse-delivery', {
-                templateUrl: '/static/app/views/distribution-planning/distribution-planning.html',
+                templateUrl: '/static/app/views/distribution-planning/warehouse-delivery.html',
                 controller: 'WarehouseDeliveryController',
                 resolve: {
                     permission: function (UserService) {
@@ -144,6 +144,15 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/distribution-plan/new/:purchaseOrderId', {
+                templateUrl: '/static/app/views/distribution-planning/new.html',
+                controller: 'NewDistributionPlanController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                    }
+                }
+            })
+            .when('/warehouse-delivery/new/:releaseOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',
                 resolve: {
