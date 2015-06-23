@@ -1,5 +1,5 @@
 describe('Purchase Order Filter', function () {
-    beforeEach(module('DistributionPlan'));
+    beforeEach(module('DirectDelivery'));
 
     describe('when called', function () {
         var filter, purchaseOrders;

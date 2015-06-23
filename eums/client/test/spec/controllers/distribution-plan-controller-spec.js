@@ -1,4 +1,4 @@
-describe('DistributionPlanController', function () {
+describe('DirectDeliveryController', function () {
 
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
@@ -9,11 +9,11 @@ describe('DistributionPlanController', function () {
         id: 1, name: 'Test Programme'
     };
 
-    var salesOrderOne = {id: 1, 'order_number': '00001', 'date': '2014-10-02', programme: programmeOne.id, description: 'sale', hasPlan: 'true'};
-    var salesOrderDetails = [salesOrderOne];
+    var purchaseOrderOne = {id: 1, 'order_number': '00001', 'date': '2014-10-02', programme: programmeOne.id, description: 'sale', hasPlan: 'true'};
+    var purchaseOrderDetails = [purchaseOrderOne];
 
     beforeEach(function () {
-        module('DistributionPlan');
+        module('DirectDelivery');
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
@@ -44,7 +44,7 @@ describe('DistributionPlanController', function () {
                 };
             });
 
-            $controller('DistributionPlanController',
+            $controller('DirectDeliveryController',
                 {
                     $scope: scope, ContactService: mockContactService,
                     DistributionPlanService: mockPlanService,
@@ -75,10 +75,10 @@ describe('DistributionPlanController', function () {
 
     describe('when initialized', function () {
         xit('should set all sales orders on initialize to the scope', function () {
-            deferredPurchaseOrder.resolve(salesOrderDetails);
+            deferredPurchaseOrder.resolve(purchaseOrderDetails);
             scope.initialize();
             scope.$apply();
-            expect(scope.salesOrders).toEqual(salesOrderDetails);
+            expect(scope.salesOrders).toEqual(purchaseOrderDetails);
         });
 
         it('should set the sorter', function () {
@@ -122,8 +122,8 @@ describe('DistributionPlanController', function () {
 
     describe('when sales order is selected', function () {
         it('should change location to create distribution plan path', function () {
-            deferredPurchaseOrder.resolve(salesOrderOne);
-            scope.selectSalesOrder(salesOrderOne);
+            deferredPurchaseOrder.resolve(purchaseOrderOne);
+            scope.selectPurchaseOrder(purchaseOrderOne);
             scope.$apply();
             expect(location.path()).toEqual('/distribution-plan/new/1');
         });
