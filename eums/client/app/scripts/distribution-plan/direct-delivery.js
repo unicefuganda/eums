@@ -8,7 +8,7 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
         $scope.errorMessage = '';
         $scope.planId = '';
 
-        $scope.salesOrders = [];
+        $scope.purchaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
 
@@ -21,7 +21,7 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
             this.sort.descending = false;
 
             PurchaseOrderService.forDirectDelivery().then(function (purchaseOrders) {
-                $scope.salesOrders = purchaseOrders.sort();
+                $scope.purchaseOrders = purchaseOrders.sort();
                 angular.element('#loading').modal('hide');
             });
         };
@@ -38,8 +38,8 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
             return output;
         };
 
-        $scope.selectSalesOrder = function (selectedSalesOrder) {
-            $location.path('/distribution-plan/new/' + selectedSalesOrder.id);
+        $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
+            $location.path('/distribution-plan/new/' + selectedPurchaseOrder.id);
         };
 
     })
