@@ -62,14 +62,12 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         };
 
         $scope.addContact = function (node) {
-            $scope.$broadcast('add-contact-to', node, 'contactPersonId')
+            $scope.$broadcast('add-contact', node)
         };
 
         $scope.$on('contact-saved', function (event, contact, node) {
-            var contactInput = $('#contact-select-for-node-' + node.id);
-            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-            contactInput.val(contact._id);
+            node.contactPersonId = contact;
+            $scope.$broadcast('set-contact-for-node', node.id, contact);
             event.stopPropagation();
         });
 

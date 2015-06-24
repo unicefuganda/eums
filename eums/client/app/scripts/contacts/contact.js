@@ -132,15 +132,13 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
     .controller('AddContactController', function ($scope, ContactService, ngToast) {
         $scope.contact = {};
 
-        $scope.$on('add-contact-to', function (_, object, contactKeyPath) {
+        $scope.$on('add-contact', function (_, object) {
             $scope.object = object;
-            $scope.contactKeyPath = contactKeyPath;
             $('#add-contact-modal').modal();
         });
 
         $scope.saveContact = function () {
             ContactService.create($scope.contact).then(function (createdContact) {
-                $scope.object[$scope.contactKeyPath] = createdContact;
                 $scope.$emit('contact-saved', createdContact, $scope.object);
                 $('#add-contact-modal').modal('hide');
             }).catch(function (response) {
