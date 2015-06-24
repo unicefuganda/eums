@@ -10,7 +10,7 @@ describe('Warehouse Delivery Controller', function () {
     beforeEach(function () {
         module('WarehouseDelivery');
 
-        mockReleaseOrderService = jasmine.createSpyObj("mockReleaseOrderService", ["all"]);
+        mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         inject(function ($controller, $rootScope, $location, $q, $sorter) {
             deferredReleaseOrders = $q.defer();
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
@@ -40,6 +40,6 @@ describe('Warehouse Delivery Controller', function () {
         var id = 39;
         scope.selectReleaseOrder(id);
         scope.$apply();
-        expect(location.path()).toBe('warehouse-delivery/new/' + id);
+        expect(location.path()).toBe('/warehouse-delivery/new/' + id);
     });
 });

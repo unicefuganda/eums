@@ -39,7 +39,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         };
 
         $scope.selectReleaseOrder = function (selectedReleaseOrderId) {
-            //$location.path('/warehouse-delivery/new/' + selectedReleaseOrderId);
+            $location.path('/warehouse-delivery/new/' + selectedReleaseOrderId);
         };
     });
 
