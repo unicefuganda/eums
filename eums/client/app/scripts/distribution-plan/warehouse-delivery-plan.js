@@ -188,8 +188,8 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                         handleErrors(response, releaseOrderItem.item.materialCode);
                     });
 
-            }
 
+            }
         };
 
         var handleErrors = function (response, materialCode) {
