@@ -34,11 +34,10 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
     });
 
-angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip'])
+angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact'])
     .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService,
                                                      DistributionPlanNodeService, IPService, ConsigneeService) {
-        $scope.districts = [];
-        $scope.consignees = [];
+        $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
@@ -57,19 +56,27 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         });
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
-            loadDeliveryNodes(purchaseOrderItem);
+            loadDeliveryNodes(purchaseOrderItem).then(function (deliveryNodes) {
+                $scope.deliveryNodes = deliveryNodes;
+            });
         };
 
+        $scope.addContact = function (node) {
+            $scope.$broadcast('add-contact-to', node, 'contactPersonId')
+        };
+
+        $scope.$on('contact-saved', function (event, contact, node) {
+            var contactInput = $('#contact-select-for-node-' + node.id);
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+            contactInput.val(contact._id);
+            event.stopPropagation();
+        });
+
         function loadDeliveryNodes(purchaseOrderItem) {
-            UserService.getCurrentUser().then(function (user) {
-                var filterParams = {
-                    consignee: user.consignee_id,
-                    item: purchaseOrderItem.id
-                };
-                var fieldsToBuild = ['consignee', 'contact_person_id', 'children'];
-                DistributionPlanNodeService.filter(filterParams, fieldsToBuild).then(function (nodes) {
-                    $scope.deliveryNodes = nodes;
-                });
+            return UserService.getCurrentUser().then(function (user) {
+                var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
+                return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']);
             });
         }
     });

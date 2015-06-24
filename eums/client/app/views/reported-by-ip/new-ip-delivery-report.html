@@ -149,15 +149,14 @@
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
-                                        <input type="hidden" search-contacts
-                                               value="{{ node.contactPersonId.id }}" required="required"
-                                               ng-model="node.contactPersonId.id"
-                                               ng-attr-id="{{ 'contact-select-' + $index}}"
+                                        <input type="hidden" search-contacts required="required"
+                                               value="{{ node.contactPersonId.id }}" ng-model="node.contactPersonId.id"
+                                               ng-attr-id="{{ 'contact-select-for-node-' + node.id}}"
                                                ng-disabled="node.flowTriggered">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button" class="btn btn-default "
-                                                ng-click="addContact($index, node)" ng-disabled="node.flowTriggered">
+                                                ng-click="addContact(node)" ng-disabled="node.flowTriggered">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
                                     </div>
@@ -192,13 +191,13 @@
                 </div>
 
             </div>
+            {{deliveryNodes}}
             <div class="pad-20 row">
-                <button ng-show="selectedPurchaseOrderItem.quantityLeft > 0"
+                <button ng-show="selectedPurchaseOrderItem.quantityLeft(deliveryNodes) > 0"
                         type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
-                    <i class="glyphicon glyphicon-plus"> </i>
-                    {{ consigneeButtonText }}
+                    <i class="glyphicon glyphicon-plus"> </i>Add Sub-Consignee
                 </button>
-                <div ng-show="distributionPlanNodes.length" class="pull-right">
+                <div ng-show="deliveryNodes.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
                             ng-click="saveDistributionPlanNodes()"
                             ng-disabled="invalidLineItems">
@@ -209,6 +208,8 @@
             </div>
         </div>
     </div>
-    <ng-include src="'/static/app/views/contacts/partials/add-contact-modal.html'"></ng-include>
+    <div ng-controller="AddContactController">
+        <ng-include src="'/static/app/views/contacts/partials/add-contact-modal.html'"></ng-include>
+    </div>
     <ng-include src="'/static/app/views/distribution-planning/partials/add-remark-modal.html'"></ng-include>
 </div>
