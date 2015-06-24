@@ -29,7 +29,7 @@ class DistributionPlanNode(models.Model):
         return result
 
     def __unicode__(self):
-        return "%s %s %s " % (self.consignee.name, self.tree_position, str(self.distribution_plan))
+        return "%s %s %s %s" % (self.consignee.name, self.tree_position, str(self.distribution_plan), self.item)
 
     def get_ip(self):
         if not self.parent:

@@ -20,6 +20,7 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 class DistributionPlanNodeTest(TestCase):
     def setUp(self):
+        print('nodes found - ', DistributionPlanNode.objects.count())
         self.node = DistributionPlanNodeFactory()
 
     def tearDown(self):
@@ -119,6 +120,9 @@ class DistributionPlanNodeTest(TestCase):
         node_with_so_item = NodeFactory(item=sales_order_item)
         node_with_po_item = NodeFactory(item=purchase_order_item)
         node_with_ro_item = NodeFactory(item=release_order_item)
+        nodes = DistributionPlanNode.objects.all()
+        print('nodes in-memory   - ', node_with_so_item, ' ', node_with_po_item, ' ', node_with_ro_item)
+        print('nodes in-database - ', len(nodes), " ", nodes)
         self.assertEqual(DistributionPlanNode.objects.get(item=sales_order_item), node_with_so_item)
         self.assertEqual(DistributionPlanNode.objects.get(item=purchase_order_item), node_with_po_item)
         self.assertEqual(DistributionPlanNode.objects.get(item=release_order_item), node_with_ro_item)
