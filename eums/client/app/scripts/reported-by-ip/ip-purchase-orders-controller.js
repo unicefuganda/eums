@@ -38,6 +38,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
     .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location,
                                                      DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
         $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
+        var rootPath = '/ip-delivery-report/new/';
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
@@ -56,7 +57,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         });
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
-            $location.path('/ip-delivery-report/new/' + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
+            $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
             $scope.selectedPurchaseOrderItem = purchaseOrderItem;
             loadDeliveryNodes(purchaseOrderItem).then(function (deliveryNodes) {
                 $scope.deliveryNodes = deliveryNodes;
@@ -64,18 +65,22 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         };
 
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
-        purchaseOrderItemId && PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit'])
-            .then($scope.selectPurchaseOrderItem);
+        purchaseOrderItemId
+        && PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then($scope.selectPurchaseOrderItem);
 
         $scope.addContact = function (node) {
             $scope.$broadcast('add-contact', node)
         };
 
         $scope.$on('contact-saved', function (event, contact, node) {
-            node.contactPersonId = contact;
+            node.contactPerson = contact;
             $scope.$broadcast('set-contact-for-node', node.id, contact);
             event.stopPropagation();
         });
+
+        $scope.toSubConsigneeView = function (node) {
+            $location.path(rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/' + node.id)
+        };
 
         function loadDeliveryNodes(purchaseOrderItem) {
             return UserService.getCurrentUser().then(function (user) {
