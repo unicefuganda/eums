@@ -149,7 +149,7 @@
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts required="required"
-                                               value="{{ node.contactPersonId.id }}" ng-model="node.contactPersonId.id"
+                                               value="{{ node.contactPerson.id }}" ng-model="node.contactPerson.id"
                                                ng-attr-id="{{ 'contact-select-for-node-' + node.id}}"
                                                ng-disabled="node.flowTriggered">
                                     </div>
@@ -178,8 +178,9 @@
                             </td>
                             <td>
                                 <div class="text-center">
-                                    <button class="btn btn-primary" title="Consignees"
-                                            ng-click="addSubConsignee(node)">Sub-Consignees
+                                    <button class="btn {{ node.canReceiveSubConsignees() ? 'btn-primary' : 'btn-default'}}"
+                                            ng-disabled="!node.canReceiveSubConsignees()" title="Consignees"
+                                            ng-click="toSubConsigneeView(node)">Sub-Consignees
                                     </button>
                                 </div>
                             </td>
