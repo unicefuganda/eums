@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDelivery', 'DirectDeliveryManagement', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'NewIpReport'])
@@ -27,6 +27,15 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDelivery',
                 }
             })
             .when('/direct-delivery/:purchaseOrderId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
