@@ -128,7 +128,6 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
                         saveDeliveryNodes();
-
                         var message = 'Warehouse Delivery Saved!';
                         createToast(message, 'success');
                     });
