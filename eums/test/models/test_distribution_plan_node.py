@@ -22,6 +22,9 @@ class DistributionPlanNodeTest(TestCase):
     def setUp(self):
         self.node = DistributionPlanNodeFactory()
 
+    def tearDown(self):
+        DistributionPlanNode.objects.all().delete()
+
     def test_should_have_all_expected_fields(self):
         fields = self.node._meta._name_map
 
