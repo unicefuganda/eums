@@ -64,7 +64,8 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         };
 
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
-        purchaseOrderItemId && PurchaseOrderItemService.get(purchaseOrderItemId).then($scope.selectPurchaseOrderItem);
+        purchaseOrderItemId && PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit'])
+            .then($scope.selectPurchaseOrderItem);
 
         $scope.addContact = function (node) {
             $scope.$broadcast('add-contact', node)
