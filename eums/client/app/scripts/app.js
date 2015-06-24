@@ -71,7 +71,15 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            //TODO these are too many duplicate routes for the distribution plan route. Remove
+            .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
+                controller: 'NewIpDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
             .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',

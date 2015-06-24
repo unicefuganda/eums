@@ -34,9 +34,9 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
     });
 
-angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact'])
-    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService,
-                                                     DistributionPlanNodeService, IPService, ConsigneeService) {
+angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem'])
+    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location,
+                                                     DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
         $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
 
         IPService.loadAllDistricts().then(function (response) {
@@ -56,10 +56,15 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         });
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
+            $location.path('/ip-delivery-report/new/' + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
+            $scope.selectedPurchaseOrderItem = purchaseOrderItem;
             loadDeliveryNodes(purchaseOrderItem).then(function (deliveryNodes) {
                 $scope.deliveryNodes = deliveryNodes;
             });
         };
+
+        var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
+        purchaseOrderItemId && PurchaseOrderItemService.get(purchaseOrderItemId).then($scope.selectPurchaseOrderItem);
 
         $scope.addContact = function (node) {
             $scope.$broadcast('add-contact', node)
