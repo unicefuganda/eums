@@ -3,7 +3,7 @@
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
-    'ImportData', 'EndUserResponses', 'Directives', 'NewIpReport'])
+    'ImportData', 'EndUserResponses', 'Directives', 'NewIpReport', 'WarehouseDeliveryPlan'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -153,8 +153,8 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/warehouse-delivery/new/:releaseOrderId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
+                templateUrl: '/static/app/views/distribution-planning/warehouse-delivery-plan.html',
+                controller: 'WarehouseDeliveryPlanController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_distribution_plans');
