@@ -126,7 +126,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         $scope.toSubConsigneeView = function (node) {
             var path = rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/' + node.id;
-            $location.path(path)
+            $location.path(path);
         };
 
         $scope.addDeliveryNode = function () {
