@@ -125,14 +125,10 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             showLoader();
             var savePromises = [];
             nodes.forEach(function (node) {
-                if (node.id) {
-                    savePromises.push(DistributionPlanNodeService.update(node));
-                }
-                else {
-                    savePromises.push(DistributionPlanNodeService.create(node).then(function (created) {
-                        node = created;
-                    }));
-                }
+                node.id && savePromises.push(DistributionPlanNodeService.update(node));
+                !node.id && savePromises.push(DistributionPlanNodeService.create(node).then(function (created) {
+                    node = created;
+                }));
             });
             $q.all(savePromises).then(hideLoader);
         };

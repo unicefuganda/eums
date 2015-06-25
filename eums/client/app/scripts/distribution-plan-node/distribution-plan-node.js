@@ -14,6 +14,20 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                 }.bind(this)
             });
 
+            Object.defineProperty(this, 'isEndUser', {
+                set: function (isEndUser) {
+                    if(isEndUser) {
+                        this.treePosition = 'END_USER'
+                    }
+                    else {
+                        this.treePosition = 'MIDDLE_MAN';
+                    }
+                }.bind(this),
+                get: function () {
+                    return this.treePosition === 'END_USER';
+                }.bind(this)
+            });
+
             this.id = json.id;
             this.item = json.item;
             this.plannedDistributionDate = json.plannedDistributionDate || '';
@@ -22,7 +36,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.contactPersonId = json.contactPersonId || json.contactPerson;
             this.remark = json.remark || '';
             this.track = json.track || false;
-            this.forEndUser = json.forEndUser || false;
+            this.isEndUser = json.isEndUser || false;
             this.treePosition = json.treePosition || 'MIDDLE_MAN';
             this.flowTriggered = json.flowTriggered || false;
             this.consignee = json.consignee;
@@ -32,7 +46,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.distributionPlan = json.distributionPlan;
 
             this.canReceiveSubConsignees = function () {
-                return this.id && !this.forEndUser;
+                return this.id && !this.isEndUser;
             }.bind(this);
         };
     })
