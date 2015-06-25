@@ -120,14 +120,13 @@
                                 <p class="table-date-width input-group" eums-date-picker>
                                     <input type="text"
                                            class="form-control"
-                                           readonly="true"
                                            datepicker-popup="dd/MM/yyyy"
                                            ng-model="node.plannedDistributionDate"
                                            ng-disabled="node.flowTriggered"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            ng-required="true"
-                                           value="{{ node.plannedDistributionDate | date : 'dd/MM/yyyy' }}"
+                                           value="{{ node.plannedDistributionDate = (node.plannedDistributionDate | date: 'yyyy-MM-dd') }}"
                                            required="required"/>
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-default" ng-click="open($event, $index)"
@@ -198,7 +197,7 @@
                 </button>
                 <div ng-show="deliveryNodes.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
-                            ng-click="saveDistributionPlanNodes()"
+                            ng-click="saveDeliveryNodes(deliveryNodes)"
                             ng-disabled="invalidLineItems">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save
