@@ -153,11 +153,9 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             });
             $q.all(savePromises).then(function() {
                 createToast('Report Saved!', 'success');
-            }).catch(function(error) {
+            }).catch(function() {
                 createToast('Report not saved!', 'danger');
-            }).finally(function() {
-                hideLoader();
-            });
+            }).finally(hideLoader);
         };
 
         function loadDeliveryDataFor(purchaseOrderItem) {
