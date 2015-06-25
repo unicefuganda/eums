@@ -2,7 +2,18 @@
 
 
 angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DistributionPlanNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
-    .controller('DirectDeliveryManagementController', function ($scope, $location, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast, ItemService, ContactService) {
+    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast, ItemService, ContactService) {
+
+        function showLoadingModal(show) {
+            if (show && !angular.element('#loading').hasClass('in')) {
+                angular.element('#loading').modal();
+            }
+            else if (!show) {
+                angular.element('#loading').modal('hide');
+                angular.element('#loading.modal').removeClass('in');
+            }
+        }
+
         showLoadingModal(true);
 
         $scope.datepicker = {};
@@ -17,7 +28,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
         $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
-        $scope.deliverNewDistributionPlanyDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
+        $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
         function createToast(message, klass) {
             ngToast.create({
@@ -28,15 +39,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             });
         }
 
-        function showLoadingModal(show) {
-            if (show && !angular.element('#loading').hasClass('in')) {
-                angular.element('#loading').modal();
-            }
-            else if (!show) {
-                angular.element('#loading').modal('hide');
-                angular.element('#loading.modal').removeClass('in');
-            }
-        }
 
         $scope.addContact = function (itemIndex, lineItem) {
             $scope.$parent.itemIndex = itemIndex;
@@ -94,10 +96,29 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             return purchaseOrderItem.quantity - reduced.targetedQuantity;
         }
 
+        function updateIpMode(purchaseOrder) {
+            if (purchaseOrder.isSingleIp === null) {
+                $scope.inSingleIpMode = false;
+                $scope.inMultipleIpMode = false;
+            } else {
+                if (purchaseOrder.isSingleIp) {
+                    $scope.inSingleIpMode = true;
+                    $scope.inMultipleIpMode = false;
+                    $scope.showSingleIpMode();
+                } else {
+                    $scope.inSingleIpMode = false;
+                    $scope.inMultipleIpMode = true;
+                    $scope.showMultipleIpMode();
+                }
+            }
+        }
 
 
         PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set']).then(function (purchaseOrder) {
             $scope.selectedPurchaseOrder = purchaseOrder;
+
+            updateIpMode(purchaseOrder);
+
             $scope.selectedPurchaseOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
                 ItemService.get(purchaseOrderItem.item, ['unit']).then(function (item) {
                     var formattedPurchaseOrderItem = {
@@ -159,15 +180,15 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
 
-        $scope.showSingleIpMode = function() {
+        $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
             $scope.inMultipleIpMode = false;
-        }
+        };
 
-        $scope.showMultipleIpMode = function() {
+        $scope.showMultipleIpMode = function () {
             $scope.inMultipleIpMode = true;
             $scope.inSingleIpMode = false;
-        }
+        };
 
         $scope.selectPurchaseOrderItem = function () {
             $scope.track = false;
@@ -236,8 +257,8 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             if (nodes.length) {
                 var quantityLeft = parseInt(selectedPurchaseOrderItem.quantity);
                 quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function (total, val) {
-                    return total + val;
-                });
+                        return total + val;
+                    });
                 $scope.selectedPurchaseOrderItem.quantityLeft = quantityLeft.toString();
                 $scope.distributionPlanNodes = nodes;
             }
@@ -314,6 +335,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     remark: uiPlanNode.remark,
                     track: user.consignee_id ? true : $scope.track
                 };
+                if ($scope.selectedPurchaseOrder.isSingleIp === null) {
+                    savePurchaseOrderIPMode();
+                }
 
                 if (nodeId) {
                     node.id = nodeId;
@@ -327,9 +351,29 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             });
         }
 
+        function savePurchaseOrderIPMode() {
+            var purchaseOrder = $scope.selectedPurchaseOrder;
+            if ($scope.inSingleIpMode) {
+                purchaseOrder.isSingleIp = true;
+            } else if ($scope.inMultipleIpMode) {
+                purchaseOrder.isSingleIp = false;
+            }
+            var items = [];
+            for (var item in $scope.selectedPurchaseOrder.purchaseorderitem_set) {
+                items.push(item.id);
+            }
+            purchaseOrder.purchaseorderitem_set = items;
+            PurchaseOrderService.update(purchaseOrder);
+        }
+
         function saveDistributionPlanNodes() {
             var message = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
+                var children = [];
+                for (var child in node.children) {
+                    children.push(child.id);
+                }
+                node.children = children;
                 saveNode(node);
             });
             createToast(message, 'success');
@@ -368,7 +412,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             var documentId = $scope.distributionPlanReport ? $scope.selectedPurchaseOrder.id : $scope.selectedPurchaseOrder.id;
             if (planNode.parent) {
                 $location.path(
-                    '/' + locPath + '/new/' +
+                    '/' + locPath + '/' +
                     documentId + '-' +
                     $scope.selectedPurchaseOrderItem.information.id + '-' +
                     planNode.parent
@@ -376,7 +420,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             }
             else {
                 $location.path(
-                    '/' + locPath + '/new/' +
+                    '/' + locPath + '/' +
                     documentId + '-' +
                     $scope.selectedPurchaseOrderItem.information.id
                 );
