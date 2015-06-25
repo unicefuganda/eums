@@ -141,7 +141,7 @@ COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/superviso
 VOLUME /var/lib/postgresql
 VOLUME /data
 
-EXPOSE 22 80
+EXPOSE 22 80 8005
 
 ##############################################################################
 ## Entrypoint and command parameters
