@@ -99,7 +99,7 @@ angular.module('Directives', [])
                     scope.$apply();
                 });
 
-                scope.$on('set-contact-for-node', function (_, nodeId, contact) {
+                scope.$on('set-contact-for-node', function (_, contact, nodeId) {
                     var myNodeId = element[0].getAttribute('id').split('-').last();
                     if (nodeId == myNodeId) {
                         var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
