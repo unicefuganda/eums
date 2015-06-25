@@ -37,9 +37,16 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
 angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap'])
     .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q,
                                                      DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
+        function showLoader() {
+            angular.element('#loading').modal();
+        }
 
-        angular.element('#loading').modal();
+        function hideLoader() {
+            angular.element('#loading').modal('hide');
+            angular.element('#loading.modal').removeClass('in');
+        }
 
+        showLoader();
         var rootPath = '/ip-delivery-report/new/';
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
@@ -115,12 +122,19 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         };
 
         $scope.saveDeliveryNodes = function (nodes) {
+            showLoader();
+            var savePromises = [];
             nodes.forEach(function (node) {
-                !node.id && DistributionPlanNodeService.create(node).then(function (created) {
-                    node = created;
-                });
-                node.id && DistributionPlanNodeService.update(node);
+                if (node.id) {
+                    savePromises.push(DistributionPlanNodeService.update(node));
+                }
+                else {
+                    savePromises.push(DistributionPlanNodeService.create(node).then(function (created) {
+                        node = created;
+                    }));
+                }
             });
+            $q.all(savePromises).then(hideLoader);
         };
 
         function loadDeliveryDataFor(purchaseOrderItem) {
@@ -145,8 +159,5 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             loadPromises.add([getUser, getParentNode, getChildNodes]);
         }
 
-        $q.all(loadPromises).then(function() {
-            angular.element('#loading').modal('hide');
-            angular.element('#loading.modal').removeClass('in');
-        });
+        $q.all(loadPromises).then(hideLoader);
     });
