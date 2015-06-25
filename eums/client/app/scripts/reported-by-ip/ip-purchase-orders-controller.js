@@ -106,7 +106,6 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             loadPromises.add([getParentNode, getChildNodes]);
         }
 
-
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
