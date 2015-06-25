@@ -6,10 +6,8 @@
             <span class="label label-success label-as-step-badge">Step 1: Is this Purchase order for a single or multiple Implementing Partners(IP)?</span>
         </div>
         <div ng-hide="inSingleIpMode || inMultipleIpMode" class="row pad-left-5">
-            <span><input id="single-ip" type="radio" name="ip-group" ng-click="showSingleIpMode()"><label
-                    for="single-ip">Single IP</label></span>
-            <span><input id="multiple-ip" type="radio" name="ip-group" ng-click="showMultipleIpMode()"><label
-                    for="multiple-ip">Multiple IPs</label></span>
+            <label class="radio-inline"><input id="single-ip" type="radio" name="ip-group" ng-click="showSingleIpMode()">Single IP</label>
+            <label class="radio-inline"><input id="multiple-ip" type="radio" name="ip-group" ng-click="showMultipleIpMode()">Multiple IPs</label>
         </div>
         <div id="single-ip" ng-show="inSingleIpMode">
             <div class="row pad-left-5 pad-top-10">
