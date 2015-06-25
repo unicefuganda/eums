@@ -40,21 +40,41 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
 
-        $scope.addContact = function (node, nodeIndex) {
-            $scope.$broadcast('add-contact', node, nodeIndex);
+        $scope.addContact = function (itemIndex, lineItem) {
+            $scope.$parent.itemIndex = itemIndex;
+            $scope.$parent.lineItem = lineItem;
+            $('#add-contact-modal').modal();
         };
-
-        $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
-            node.contactPerson = {id: contact._id};
-            $scope.$broadcast('set-contact-for-node', contact, nodeIndex);
-            event.stopPropagation();
-        });
 
         $scope.addRemark = function (itemIndex, lineItem) {
             $scope.$parent.itemIndex = itemIndex;
             $scope.$parent.lineItem = lineItem;
             $('#add-remark-modal').modal();
         };
+
+        $scope.saveContact = function () {
+            ContactService
+                .create($scope.contact)
+                .then(function (contact) {
+                    $('#add-contact-modal').modal('hide');
+
+                    var contactInput = $('#contact-select-' + $scope.itemIndex);
+                    var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+                    contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+                    contactInput.val(contact._id);
+                    $scope.lineItem.contactPerson = contact._id;
+
+                    $scope.contact = {};
+                }, function (response) {
+                    createToast(response.data.error, 'danger');
+                });
+        };
+
+        $scope.invalidContact = function (contact) {
+            return !(contact.firstName && contact.lastName && contact.phone);
+        };
+
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
@@ -68,12 +88,12 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.distributionPlanNodes = [];
         $scope.purchaseOrderItems = [];
-        function computeQuantityLeft() {
+        function computeQuantityLeft(purchaseOrderItem) {
             var reduced = $scope.distributionPlanNodes.reduce(function (previous, current) {
                 return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
             }, {targetedQuantity: 0});
 
-            return $scope.totalQuantity - reduced.targetedQuantity;
+            return purchaseOrderItem.quantity - reduced.targetedQuantity;
         }
 
         function updateIpMode(purchaseOrder) {
@@ -108,7 +128,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                         unit: item.unit.name,
                         information: purchaseOrderItem
                     };
-                    $scope.quantityLeft = computeQuantityLeft();
+                    formattedPurchaseOrderItem.quantityLeft = computeQuantityLeft(formattedPurchaseOrderItem);
 
                     if (formattedPurchaseOrderItem.information.id === Number($routeParams.purchaseOrderItemId) && !$routeParams.distributionPlanNodeId) {
                         $scope.selectedPurchaseOrderItem = formattedPurchaseOrderItem;
@@ -120,12 +140,12 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             });
         });
 
+
         if ($routeParams.distributionPlanNodeId) {
             $scope.consigneeButtonText = 'Add Sub-Consignee';
 
             DistributionPlanNodeService.getPlanNodeDetails($routeParams.distributionPlanNodeId).then(function (planNode) {
                 $scope.planNode = planNode;
-                $scope.totalQuantity = planNode.targetedQuantity;
 
                 UserService.getCurrentUser().then(function (user) {
                     $scope.user = user;
@@ -145,19 +165,20 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                                 unit: item.unit.name,
                                 information: result
                             };
-                            $scope.quantityLeft = computeQuantityLeft();
+                            $scope.selectedPurchaseOrderItem.quantityLeft = computeQuantityLeft($scope.selectedPurchaseOrderItem);
                             var childNodePromises = [];
                             $scope.planNode.children.forEach(function (child) {
                                 childNodePromises.push(DistributionPlanNodeService.getPlanNodeDetails(child.id));
                             });
                             $q.all(childNodePromises).then(function (children) {
-                                setDistributionPlanNode(planNode.targetedQuantity, children);
+                                setDistributionPlanNode($scope.selectedPurchaseOrderItem, children);
                             });
                         });
                     });
                 });
             });
         }
+
 
         $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
@@ -195,15 +216,11 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     $scope.distributionPlanNodes = [];
 
                     var selectedPurchaseOrderItem = $scope.selectedPurchaseOrderItem;
-
-                    $scope.totalQuantity = $scope.selectedPurchaseOrderItem.quantity;
-                    $scope.quantityLeft = computeQuantityLeft($scope.totalQuantity);
-
                     PurchaseOrderItemService.get(selectedPurchaseOrderItem.information.id, ['distributionplannode_set'])
                         .then(function (purchaseOrderItem) {
                             PurchaseOrderItemService.getTopLevelDistributionPlanNodes(purchaseOrderItem)
                                 .then(function (topLevelNodes) {
-                                    setDistributionPlanNode($scope.selectedPurchaseOrderItem.quantity, topLevelNodes);
+                                    setDistributionPlanNode(selectedPurchaseOrderItem, topLevelNodes);
                                 });
                         });
                 }
@@ -227,7 +244,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         function anyInvalidFields(lineItems) {
             var itemsWithInvalidFields = lineItems.filter(function (item) {
-                return $scope.quantityLeft < 0 || invalidFields(item);
+                return $scope.selectedPurchaseOrderItem.quantityLeft < 0 || invalidFields(item);
             });
             return itemsWithInvalidFields.length > 0;
         }
@@ -236,13 +253,13 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
         };
 
-        var setDistributionPlanNode = function (totalQuantity, nodes) {
+        var setDistributionPlanNode = function (selectedPurchaseOrderItem, nodes) {
             if (nodes.length) {
-                var quantityLeft = parseInt(totalQuantity);
+                var quantityLeft = parseInt(selectedPurchaseOrderItem.quantity);
                 quantityLeft = quantityLeft - _.reduce(_.pluck(nodes, 'targetedQuantity'), function (total, val) {
                         return total + val;
                     });
-                $scope.quantityLeft = quantityLeft.toString();
+                $scope.selectedPurchaseOrderItem.quantityLeft = quantityLeft.toString();
                 $scope.distributionPlanNodes = nodes;
             }
             else {
@@ -276,7 +293,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             }
 
             if (newPlanNodes.length) {
-                $scope.quantityLeft = computeQuantityLeft();
+                $scope.selectedPurchaseOrderItem.quantityLeft = computeQuantityLeft($scope.selectedPurchaseOrderItem);
                 $scope.invalidNodes = anyInvalidFields(newPlanNodes);
             }
         }, true);
@@ -350,7 +367,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         function saveDistributionPlanNodes() {
-            var message = $scope.distributionPlanReport ? 'Delivery Saved!' : 'Report Saved!';
+            var message = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
                 var children = [];
                 for (var child in node.children) {
@@ -362,17 +379,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             createToast(message, 'success');
         }
 
-        $scope.warnBeforeSaving = function () {
-
-            if ($scope.selectedPurchaseOrder.isSingleIp === null) {
-                $('#confirmation-modal').modal();
-            } else {
-                $scope.saveDistributionPlanNodes();
-            }
-        };
-
         $scope.saveDistributionPlanNodes = function () {
-            $('#confirmation-modal').modal('hide');
             if ($scope.distributionPlan) {
                 saveDistributionPlanNodes();
             }
@@ -397,7 +404,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         $scope.showSubConsigneeButton = function (node) {
-            return node.id && !node.isEndUser;
+            return node.id && !node.forEndUser;
         };
 
         $scope.previousConsignee = function (planNode) {
