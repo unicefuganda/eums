@@ -189,7 +189,7 @@
 
             </div>
             <div class="pad-20 row">
-                <button ng-show="parentNode.quantityLeft(deliveryNodes) > 0"
+                <button ng-show="selectedPurchaseOrderItem.quantityLeft(deliveryNodes) > 0"
                         type="button" class="btn btn-primary" ng-click="addDeliveryNode()">
                     <i class="glyphicon glyphicon-plus"> </i>Add Sub-Consignee
                 </button>
