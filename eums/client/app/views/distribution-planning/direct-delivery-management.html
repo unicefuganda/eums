@@ -101,7 +101,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-show="purchaseOrderItems.length && selectedPurchaseOrderItem" class="panel panel-default">
+                <div class="panel panel-default">
                     <div class="panel-body">
                         <div ng-show="distributionPlanNodes.length">
                             <table id="distributionPlanTable"
@@ -219,7 +219,7 @@
                         </button>
                         <div ng-show="distributionPlanNodes.length" class="pull-right">
                             <button type="button" class="btn btn-primary"
-                                    ng-click="saveDistributionPlanNodes()"
+                                    ng-click="warnBeforeSaving()"
                                     ng-disabled="invalidNodes">
                                 <i class="glyphicon glyphicon-floppy-save"> </i>
                                 Save
@@ -229,6 +229,7 @@
                 </div>
             </div>
             <ng-include src="'/static/app/views/contacts/partials/add-contact-modal.html'"></ng-include>
+            <ng-include src="'/static/app/views/distribution-planning/partials/confirmation-dialog.html'"></ng-include>
             <ng-include src="'/static/app/views/distribution-planning/partials/add-remark-modal.html'"></ng-include>
         </div>
     </div>
