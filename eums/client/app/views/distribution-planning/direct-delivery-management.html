@@ -22,7 +22,7 @@
             <div class="row pad-left-5 pad-top-10">
 
                 <div ng-show="selectedPurchaseOrderItem">
-                    <alert ng-show="selectedPurchaseOrderItem.quantityLeft <= 0" type="warning">All quantities have been
+                    <alert ng-show="quantityLeft <= 0" type="warning">All quantities have been
                         assigned
                         for this item.
                     </alert>
@@ -90,7 +90,7 @@
                         <div class="col-lg-6 no-side-padding">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.quantity | number }}</span>
+                                    <span class="label label-success label-as-badge">{{ totalQuantity | number }}</span>
                                     Total Quantity
                                 </li>
                                 <li class="list-group-item">
@@ -118,7 +118,7 @@
                                 <th class="table-sub-consignee-header-width"></th>
 
                                 <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
-                                    <td id="input-available-quantity">{{ selectedPurchaseOrderItem.quantityLeft }}</td>
+                                    <td id="input-available-quantity">{{ quantityLeft }}</td>
                                     <td id="input-unit">{{ selectedPurchaseOrderItem.unit }}</td>
                                     <td>
                                         <input type="text" id="input-quantity" class="form-control"
@@ -212,7 +212,7 @@
 
                     </div>
                     <div class="pad-20 row">
-                        <button ng-show="selectedPurchaseOrderItem.quantityLeft > 0"
+                        <button ng-show="quantityLeft > 0"
                                 type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
                             <i class="glyphicon glyphicon-plus"> </i>
                             {{ consigneeButtonText }}
