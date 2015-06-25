@@ -2,14 +2,8 @@
     <div class="content">
         <ng-toast></ng-toast>
 
-        <h4 class="page-header" ng-show="distributionPlanReport">Create A Direct Delivery for Purchase Order:
+        <h4 class="page-header" ng-show="distributionPlanReport">Create A Warehouse Delivery for Release Order:
             <span class="text-primary">{{ selectedReleaseOrder.orderNumber }}</span>
-            <span class="pull-right">PCR:
-                <span class="text-primary">{{ selectedReleaseOrder.programme.name }}</span>
-            </span>
-        </h4>
-        <h4 class="page-header" ng-show="!distributionPlanReport">Report Delivery for Purchase Order:
-            <span class="text-primary">{{ selectedPurchaseOrder.orderNumber }}</span>
             <span class="pull-right">PCR:
                 <span class="text-primary">{{ selectedReleaseOrder.programme.name }}</span>
             </span>

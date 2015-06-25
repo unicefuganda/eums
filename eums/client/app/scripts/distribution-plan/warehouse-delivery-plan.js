@@ -93,6 +93,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         ReleaseOrderService.get($routeParams.releaseOrderId, ['releaseorderitem_set.item.unit']).then(function (releaseOrder) {
             $scope.selectedReleaseOrder = releaseOrder;
             $scope.releaseOrderItems = releaseOrder.releaseorderitemSet;
+            showLoadingModal(false);
         });
 
         $scope.selectReleaseOrderItem = function () {
@@ -103,13 +104,12 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             showLoadingModal(true);
             $scope.deliveryPlanNodes = [];
 
-            console.log('selected release order ' +  $scope.selectedReleaseOrderItem.id + $scope.selectedReleaseOrderItem);
-            ReleaseOrderItemService.get($scope.selectedReleaseOrderItem.id, ['distributionplannode_set']).then(function (releaseOrderItem) {
+            console.log('selected release order ' + $scope.selectedReleaseOrderItem.id + $scope.selectedReleaseOrderItem);
+            ReleaseOrderItemService.get($scope.selectedReleaseOrderItem.id, ['item', 'distributionplannode_set']).then(function (releaseOrderItem) {
                 $scope.selectedReleaseOrderItem = releaseOrderItem;
-                DistributionPlanNodeService.getTopLevelDistributionPlanNodes(releaseOrderItem)
-                    .then(function (topLevelNodes) {
-                        setDistributionPlanNode(releaseOrderItem, topLevelNodes);
-                    });
+                console.log('item is ', releaseOrderItem.item);
+                var nodes = releaseOrderItem.distributionplannodeSet === undefined ? [] : releaseOrderItem.distributionplannodeSet;
+                setDistributionPlanNode(releaseOrderItem, nodes);
             });
         };
 
@@ -182,7 +182,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             showLoadingModal(false);
         };
 
-        $scope.addDeliveryPlanNode = function  () {
+        $scope.addDeliveryPlanNode = function () {
             var distributionPlanNode = {
                 item: $scope.selectedReleaseOrderItem.information.id,
                 plannedDistributionDate: '',
