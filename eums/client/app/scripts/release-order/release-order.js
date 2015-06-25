@@ -1,10 +1,14 @@
 'use strict';
 
-angular.module('ReleaseOrder', ['eums.config', 'eums.service-factory', 'ReleaseOrderItem'])
-    .factory('ReleaseOrderService', function ($http, EumsConfig, ServiceFactory, ReleaseOrderItemService) {
+angular.module('ReleaseOrder', ['eums.config', 'eums.service-factory', 'ReleaseOrderItem', 'SalesOrder', 'Consignee'])
+    .factory('ReleaseOrderService', function ($http, EumsConfig, ServiceFactory, ReleaseOrderItemService, SalesOrderService, ConsigneeService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.RELEASE_ORDER,
-            propertyServiceMap: {releaseorderitem_set: ReleaseOrderItemService},
+            propertyServiceMap: {
+                consignee: ConsigneeService,
+                sales_order: SalesOrderService,
+                releaseorderitem_set: ReleaseOrderItemService
+            },
             methods: {}
         });
     });
