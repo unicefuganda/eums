@@ -7,12 +7,12 @@
                 <span class="text-primary">{{ selectedPurchaseOrder.programmeName }}</span>
             </span>
         </h4>
-
         <div ng-show="selectedPurchaseOrderItem">
-            <alert ng-show="selectedPurchaseOrderItem.quantityLeft <= 0" type="warning">
+            <alert ng-show="selectedPurchaseOrderItem.quantityLeft(deliveryNodes) <= 0" type="warning">
                 All quantities have been assigned for this item.
             </alert>
         </div>
+
         <div class="row">
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
@@ -189,7 +189,6 @@
                 </div>
 
             </div>
-            {{deliveryNodes}}
             <div class="pad-20 row">
                 <button ng-show="selectedPurchaseOrderItem.quantityLeft(deliveryNodes) > 0"
                         type="button" class="btn btn-primary" ng-click="addDeliveryNode()">
@@ -198,7 +197,7 @@
                 <div ng-show="deliveryNodes.length" class="pull-right">
                     <button type="button" class="btn btn-primary"
                             ng-click="saveDeliveryNodes(deliveryNodes)"
-                            ng-disabled="invalidLineItems">
+                            ng-disabled="invalidNodes()">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save
                     </button>
