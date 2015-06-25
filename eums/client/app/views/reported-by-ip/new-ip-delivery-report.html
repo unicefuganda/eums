@@ -89,8 +89,7 @@
         </div>
         <div ng-show="purchaseOrderItems.length && selectedPurchaseOrderItem" class="panel panel-default">
             <div class="panel-body">
-                <!--{{deliveryNodes}}-->
-                <div ng-show="deliveryNodes">
+                <div ng-show="deliveryNodes.length">
                     <table id="distributionPlanTable"
                            class="table table-bordered table-striped table-hover table-condensed">
                         <thead>
@@ -150,12 +149,12 @@
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts required="required"
                                                value="{{ node.contactPerson.id }}" ng-model="node.contactPerson.id"
-                                               ng-attr-id="{{ 'contact-select-for-node-' + node.id}}"
+                                               ng-attr-id="{{ 'contact-select-for-node-' + $index }}"
                                                ng-disabled="node.flowTriggered">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button" class="btn btn-default "
-                                                ng-click="addContact(node)" ng-disabled="node.flowTriggered">
+                                                ng-click="addContact(node, $index)" ng-disabled="node.flowTriggered">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
                                     </div>
@@ -194,7 +193,7 @@
             {{deliveryNodes}}
             <div class="pad-20 row">
                 <button ng-show="selectedPurchaseOrderItem.quantityLeft(deliveryNodes) > 0"
-                        type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
+                        type="button" class="btn btn-primary" ng-click="addDeliveryNode()">
                     <i class="glyphicon glyphicon-plus"> </i>Add Sub-Consignee
                 </button>
                 <div ng-show="deliveryNodes.length" class="pull-right">
