@@ -83,7 +83,6 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             $scope.selectedPurchaseOrder = purchaseOrder;
             $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
         }));
-
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
             $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
         };
@@ -163,7 +162,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         function loadDeliveryDataFor(purchaseOrderItem) {
             var getUser = UserService.getCurrentUser();
-            var getParentNode = function (user) {
+            var getParentNode = function (user) {$scope.$emit('contact-saved', createdContact, $scope.object, $scope.objectIndex);
                 var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
                 return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
                     var ipDeliveryNode = nodes.first();
