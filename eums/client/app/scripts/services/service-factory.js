@@ -47,9 +47,9 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         };
 
         var nestedObjectsToIds = function (object) {
-            var objectToFlatten = Object.clone(object);
+            var objectToFlatten = Object.merge({}, object);
             return Object.map(objectToFlatten, function (key, value, original) {
-                Object.isObject(value) && value.id && (original[key] = value.id);
+                value && value.id && (original[key] = value.id);
                 return original[key];
             });
         };
