@@ -3,7 +3,6 @@
 angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', 'eums.service-factory'])
     .factory('DeliveryNode', function () {
         return function (json) {
-            console.log('received node data', json);
             !json && (json = {});
             this.id = json.id;
             this.item = json.item;
