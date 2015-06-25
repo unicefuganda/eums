@@ -90,11 +90,16 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         $scope.deliveryPlanNodes = [];
         $scope.releaseOrderItems = [];
 
-        ReleaseOrderService.get($routeParams.releaseOrderId, ['releaseorderitem_set.item.unit']).then(function (releaseOrder) {
+        ReleaseOrderService.get($routeParams.releaseOrderId, ['consignee', 'sales_order.programme', 'releaseorderitem_set.item.unit']).then(function (releaseOrder) {
             $scope.selectedReleaseOrder = releaseOrder;
+            $scope.selectedReleaseOrder.totalValue = 0.0;
             $scope.releaseOrderItems = releaseOrder.releaseorderitemSet;
+            $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function(orderItem) {
+                return parseFloat(orderItem.value);
+            });
             showLoadingModal(false);
         });
+
 
         $scope.selectReleaseOrderItem = function () {
             $scope.track = false;
@@ -104,10 +109,8 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             showLoadingModal(true);
             $scope.deliveryPlanNodes = [];
 
-            console.log('selected release order ' + $scope.selectedReleaseOrderItem.id + $scope.selectedReleaseOrderItem);
             ReleaseOrderItemService.get($scope.selectedReleaseOrderItem.id, ['item', 'distributionplannode_set']).then(function (releaseOrderItem) {
                 $scope.selectedReleaseOrderItem = releaseOrderItem;
-                console.log('item is ', releaseOrderItem.item);
                 var nodes = releaseOrderItem.distributionplannodeSet === undefined ? [] : releaseOrderItem.distributionplannodeSet;
                 setDistributionPlanNode(releaseOrderItem, nodes);
             });
@@ -176,6 +179,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 $scope.deliveryPlanNodes = nodes;
             }
             else {
+                $scope.selectedReleaseOrderItem.quantityLeft = selectedReleaseOrderItem.quantity.toString();
                 $scope.deliveryPlanNodes = [];
             }
             setDatePickers();
@@ -184,7 +188,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
 
         $scope.addDeliveryPlanNode = function () {
             var distributionPlanNode = {
-                item: $scope.selectedReleaseOrderItem.information.id,
+                item: $scope.selectedReleaseOrderItem.id,
                 plannedDistributionDate: '',
                 targetedQuantity: 0,
                 destinationLocation: '',
@@ -281,58 +285,23 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         }
 
         function saveDeliveryPlanNodes() {
-            var message = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
+            var message = 'Warehouse Delivery Saved!';
             $scope.deliveryPlanNodes.forEach(function (node) {
                 saveNode(node);
             });
             createToast(message, 'success');
         }
 
-        $scope.saveDeliveryPlanNodes = function () {
+        $scope.saveDeliveryPlan = function () {
             if ($scope.distributionPlan) {
                 saveDeliveryPlanNodes();
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.programme})
+                DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.salesOrder.programme.id})
                     .then(function (createdPlan) {
                         $scope.distributionPlan = createdPlan.id;
                         saveDeliveryPlanNodes();
                     });
-            }
-        };
-
-        $scope.addSubConsignee = function (node) {
-            var locPath = $location.path().split('/')[1];
-            var documentId = $scope.distributionPlanReport ? $scope.selectedReleaseOrder.id : $scope.selectedReleaseOrder.id;
-            $location.path(
-                '/' + locPath + '/new/' +
-                documentId + '-' +
-                $scope.selectedReleaseOrderItem.information.id + '-' +
-                node.id
-            );
-        };
-
-        $scope.showSubConsigneeButton = function (node) {
-            return node.id && !node.forEndUser;
-        };
-
-        $scope.previousConsignee = function (planNode) {
-            var locPath = $location.path().split('/')[1];
-            var documentId = $scope.distributionPlanReport ? $scope.selectedReleaseOrder.id : $scope.selectedReleaseOrder.id;
-            if (planNode.parent) {
-                $location.path(
-                    '/' + locPath + '/new/' +
-                    documentId + '-' +
-                    $scope.selectedReleaseOrderItem.information.id + '-' +
-                    planNode.parent
-                );
-            }
-            else {
-                $location.path(
-                    '/' + locPath + '/new/' +
-                    documentId + '-' +
-                    $scope.selectedReleaseOrderItem.information.id
-                );
             }
         };
     }
