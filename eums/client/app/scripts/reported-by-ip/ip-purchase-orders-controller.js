@@ -73,10 +73,15 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             !state.NODE && loadDeliveryDataFor(purchaseOrderItem);
         });
 
-        var filterParams = {parent: deliveryNodeId};
-        state.NODE && DistributionPlanNodeService.filter(filterParams, ['children']).then(function (childNodes) {
-            $scope.deliveryNodes.add(childNodes);
-        });
+        if (state.NODE) {
+            var fields = ['consignee', 'contact_person_id'];
+            DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
+                $scope.deliveryNodes.add(childNodes);
+            });
+            DistributionPlanNodeService.get(deliveryNodeId).then(function (node) {
+                $scope.delivery = node.distributionPlan;
+            });
+        }
 
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
