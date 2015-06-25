@@ -4,14 +4,26 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
     .factory('DeliveryNode', function () {
         return function (json) {
             !json && (json = {});
+
+            Object.defineProperty(this, 'contactPerson', {
+                set: function (person) {
+                    this.contactPersonId = person
+                }.bind(this),
+                get: function () {
+                    return this.contactPersonId;
+                }.bind(this)
+            });
+
             this.id = json.id;
             this.item = json.item;
             this.plannedDistributionDate = json.plannedDistributionDate || '';
             this.targetedQuantity = json.targetedQuantity || 0;
             this.contactPerson = json.contactPersonId || json.contactPerson;
+            this.contactPersonId = json.contactPersonId || json.contactPerson;
             this.remark = json.remark || '';
             this.track = json.track || false;
             this.forEndUser = json.forEndUser || false;
+            this.treePosition = json.treePosition || 'MIDDLE_MAN';
             this.flowTriggered = json.flowTriggered || false;
             this.consignee = json.consignee;
             this.location = json.location;
@@ -19,7 +31,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.children = json.children;
             this.distributionPlan = json.distributionPlan;
 
-            this.canReceiveSubConsignees = function() {
+            this.canReceiveSubConsignees = function () {
                 return this.id && !this.forEndUser;
             }.bind(this);
         };
