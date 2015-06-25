@@ -22,12 +22,11 @@
                                class="form-control"
                                readonly="true"
                                datepicker-popup="dd/MM/yyyy"
-                               ng-model="item.plannedDistributionDate"
-                               ng-disabled="item.flowTriggered"
+                               ng-model="selectedDate"
                                is-open="datepicker[$index]"
                                datepicker-options="dateOptions" show-button-bar="false"
                                ng-required="true"
-                               value="{{ item.plannedDistributionDate | date : 'dd/MM/yyyy' }}"
+                               value="{{ selectedDate | date : 'dd/MM/yyyy' }}"
                                required="required"/>
                           <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="open($event, $index )" ng-disabled="item.flowTriggered">
@@ -43,16 +42,15 @@
                         <div class="form-inline">
                             <div class="form-group table-contact-form-group col-md-10">
                                 <input type="hidden" search-contacts
-                                       value="{{ item.contactPerson.id }}"
+                                       value="{{ selectedContactPerson.id }}"
                                        required="required"
-                                       ng-model="item.contactPerson.id"
+                                       ng-model="selectedContactPerson.id"
                                        ng-attr-id="{{ 'contact-select-' + $index}}"
                                        ng-disabled="item.flowTriggered">
                             </div>
                             <div class="form-group table-contact-form-group col-md-2">
                                 <button type="button"
                                         ng-click="addContact($index, item)"
-                                        ng-disabled="item.flowTriggered"
                                         class="btn btn-default ">
                                     <i class="glyphicon glyphicon-plus"></i>
                                 </button>
@@ -64,9 +62,8 @@
                     </div>
                     <div class="form-group col-lg-2">
                         <input type="hidden" search-from-list list="{{ districts }}"
-                               ng-model="item.location"
-                               ng-disabled="item.flowTriggered"
-                               value="{{ item.location }}">
+                               ng-model="selectedLocation"
+                               value="{{ selectedLocation }}">
                     </div>
                 </div>
             </div>
@@ -112,7 +109,7 @@
             </div>
             <div class="pad-20 row">
                 <div class="pull-right">
-                    <button type="button" class="btn btn-primary" ng-click="saveDeliveryPlan()">
+                    <button type="button" class="btn btn-primary" ng-click="saveDelivery()">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
                         Save
                     </button>
