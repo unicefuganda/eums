@@ -16,6 +16,9 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         $scope.track = false;
         $scope.consigneeLevel = false;
         $scope.isReport = false;
+        $scope.selectedDate = '';
+        $scope.selectedLocation = '';
+        $scope.selectedContactPerson = {};
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
         $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
@@ -94,7 +97,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             $scope.selectedReleaseOrder = releaseOrder;
             $scope.selectedReleaseOrder.totalValue = 0.0;
             $scope.releaseOrderItems = releaseOrder.releaseorderitemSet;
-            $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function(orderItem) {
+            $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
                 return parseFloat(orderItem.value);
             });
             showLoadingModal(false);
@@ -282,6 +285,56 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     return DistributionPlanNodeService.create(node);
                 }
             });
+        }
+
+
+        var saveDeliveryNodes = function () {
+            $scope.releaseOrderItems.forEach(function (releaseOrderItem) {
+                saveDeliveryNode(releaseOrderItem)
+            });
+            var message = 'Warehouse Delivery Saved!';
+            createToast(message, 'success');
+        };
+
+        $scope.saveDelivery = function () {
+            if ($scope.distributionPlan) {
+                saveDeliveryNodes();
+            }
+            else {
+                DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.salesOrder.programme.id})
+                    .then(function (createdPlan) {
+                        $scope.distributionPlan = createdPlan.id;
+                        saveDeliveryNodes();
+                    });
+            }
+        };
+
+        var saveDeliveryNode = function (releaseOrderItem) {
+            var deliveryDate = new Date($scope.selectedDate);
+
+            if (deliveryDate.toString() === 'Invalid Date') {
+                var planDate = $scope.selectedDate.split('/');
+                deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
+            }
+
+            UserService.getCurrentUser().then(function (user) {
+                var node = {
+                    consignee: $scope.selectedReleaseOrder.consignee.id,
+                    location: 1,//Location not being picked up!! $scope.selectedLocation,
+                    contact_person_id: $scope.selectedContactPerson.id,
+                    distribution_plan: $scope.distributionPlan,
+                    tree_position: 'IMPLEMENTING_PARTNER',
+                    item: releaseOrderItem,
+                    targeted_quantity: parseInt(releaseOrderItem.quantity),
+                    planned_distribution_date: formatDateForSave(deliveryDate)
+                    //remark: uiPlanNode.remark,
+                    //track: user.consignee_id ? true : $scope.track
+                };
+                return DistributionPlanNodeService.create(node);
+            },function(error){
+                console.log(error);
+            });
+
         }
 
         function saveDeliveryPlanNodes() {
