@@ -81,7 +81,6 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         loadPromises.push(PurchaseOrderService.get($routeParams.purchaseOrderId, fieldsToBuild).then(function (purchaseOrder) {
             $scope.selectedPurchaseOrder = purchaseOrder;
             $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
-
         }));
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
@@ -107,6 +106,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             loadPromises.add([getParentNode, getChildNodes]);
         }
 
+
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
@@ -126,7 +126,12 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         $scope.toSubConsigneeView = function (node) {
             var path = rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/' + node.id;
-            $location.path(path);
+            $location.path(path)
+        };
+
+        $scope.addDeliveryNode = function () {
+            var deliveryNode = new DeliveryNode({parent: deliveryNodeId, item: $scope.selectedPurchaseOrderItem});
+            $scope.deliveryNodes.push(deliveryNode);
         };
 
         $scope.addDeliveryNode = function () {
