@@ -26,7 +26,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/:purchaseOrderId', {
+            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
@@ -35,7 +35,16 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
+            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/:purchaseOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {

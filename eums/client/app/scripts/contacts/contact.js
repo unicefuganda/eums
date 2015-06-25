@@ -146,5 +146,5 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             }).catch(function (response) {
                 ngToast.create({content: response.data.error, class: 'danger', maxNumber: 1, dismissOnTimeout: true});
             });
-        }
+        };
     });
