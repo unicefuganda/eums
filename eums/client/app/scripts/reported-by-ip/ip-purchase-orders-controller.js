@@ -34,8 +34,8 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
     });
 
-angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap'])
-    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q,
+angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap', 'ngToast'])
+    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q, ngToast,
                                                      DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
         function showLoader() {
             angular.element('#loading').modal();
@@ -44,6 +44,15 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         function hideLoader() {
             angular.element('#loading').modal('hide');
             angular.element('#loading.modal').removeClass('in');
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({
+                content: message,
+                class: klass,
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
         }
 
         showLoader();
@@ -101,6 +110,13 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
 
+        $scope.invalidNodes = function() {
+            var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
+                return node.isInvalid()
+            });
+            return someNodesAreInvalid || $scope.selectedPurchaseOrderItem.quantityLeft($scope.deliveryNodes) < 0;
+        };
+
         $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
             node.contactPerson = {id: contact._id};
             $scope.$broadcast('set-contact-for-node', contact, nodeIndex);
@@ -130,7 +146,13 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                     node = created;
                 }));
             });
-            $q.all(savePromises).then(hideLoader);
+            $q.all(savePromises).then(function() {
+                createToast('Report Saved!', 'success');
+            }).catch(function(error) {
+                createToast('Report not saved!', 'danger');
+            }).finally(function() {
+                hideLoader();
+            });
         };
 
         function loadDeliveryDataFor(purchaseOrderItem) {
