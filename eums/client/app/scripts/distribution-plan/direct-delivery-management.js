@@ -219,6 +219,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     var selectedPurchaseOrderItem = $scope.selectedPurchaseOrderItem;
 
                     $scope.totalQuantity = $scope.selectedPurchaseOrderItem.quantity;
+                    $scope.quantityLeft = computeQuantityLeft($scope.totalQuantity);
 
                     PurchaseOrderItemService.get(selectedPurchaseOrderItem.information.id, ['distributionplannode_set'])
                         .then(function (purchaseOrderItem) {
@@ -383,7 +384,17 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             createToast(message, 'success');
         }
 
+        $scope.warnBeforeSaving = function() {
+
+            if($scope.selectedPurchaseOrder.isSingleIp === null){
+                $('#confirmation-modal').modal();
+            } else {
+                $scope.saveDistributionPlanNodes();
+            }
+        };
+
         $scope.saveDistributionPlanNodes = function () {
+            $('#confirmation-modal').modal('hide');
             if ($scope.distributionPlan) {
                 saveDistributionPlanNodes();
             }
