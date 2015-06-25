@@ -120,12 +120,12 @@ describe('DirectDeliveryController', function () {
 
     });
 
-    describe('when sales order is selected', function () {
-        it('should change location to create distribution plan path', function () {
+    describe('when purchase order is selected', function () {
+        it('should change location to create direct delivery path', function () {
             deferredPurchaseOrder.resolve(purchaseOrderOne);
             scope.selectPurchaseOrder(purchaseOrderOne);
             scope.$apply();
-            expect(location.path()).toEqual('/distribution-plan/new/1');
+            expect(location.path()).toEqual('/direct-delivery/1');
         });
     });
 });

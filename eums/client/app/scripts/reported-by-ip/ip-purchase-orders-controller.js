@@ -63,7 +63,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         PurchaseOrderService.get($routeParams.purchaseOrderId, fieldsToBuild).then(function (purchaseOrder) {
             $scope.selectedPurchaseOrder = purchaseOrder;
             $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
-            console.log('po items set. selected = ', $scope.selectedPurchaseOrderItem)
+            console.log('po items set. selected = ', $scope.selectedPurchaseOrderItem);
         });
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
@@ -82,7 +82,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         });
 
         $scope.addContact = function (node) {
-            $scope.$broadcast('add-contact', node)
+            $scope.$broadcast('add-contact', node);
         };
 
         $scope.$on('contact-saved', function (event, contact, node) {
@@ -94,7 +94,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         $scope.toSubConsigneeView = function (node) {
             var path = rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/' + node.id;
             console.log('going to path', path);
-            $location.path(path)
+            $location.path(path);
         };
 
         function loadSubConsigneeDeliveryNodes(purchaseOrderItem) {
