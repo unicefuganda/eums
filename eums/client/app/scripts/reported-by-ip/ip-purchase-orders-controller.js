@@ -37,50 +37,57 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
 angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap'])
     .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q,
                                                      DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
-        $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
-        $scope.selectedPurchaseOrderItem = $scope.datepicker = {};
+
+        angular.element('#loading').modal();
+
         var rootPath = '/ip-delivery-report/new/';
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
-
+        var loadPromises = [];
         var state = {
             NODE: deliveryNodeId,
             PO_ITEM: purchaseOrderItemId
         };
+        $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
+        $scope.selectedPurchaseOrderItem = $scope.datepicker = {};
 
-        IPService.loadAllDistricts().then(function (response) {
+        loadPromises.push(IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
             });
-        });
+        }));
 
-        ConsigneeService.all().then(function (consignees) {
+        loadPromises.push(ConsigneeService.all().then(function (consignees) {
             $scope.consignees = consignees;
-        });
+        }));
 
         var fieldsToBuild = ['purchaseorderitem_set.item.unit'];
-        PurchaseOrderService.get($routeParams.purchaseOrderId, fieldsToBuild).then(function (purchaseOrder) {
+        loadPromises.push(PurchaseOrderService.get($routeParams.purchaseOrderId, fieldsToBuild).then(function (purchaseOrder) {
             $scope.selectedPurchaseOrder = purchaseOrder;
             $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
-        });
+        }));
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
             $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
         };
 
-        state.PO_ITEM && PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
-            $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-            !state.NODE && loadDeliveryDataFor(purchaseOrderItem);
-        });
+        if (state.PO_ITEM) {
+            var getItem = PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
+                $scope.selectedPurchaseOrderItem = purchaseOrderItem;
+                !state.NODE && loadDeliveryDataFor(purchaseOrderItem);
+            });
+            loadPromises.push(getItem);
+        }
 
         if (state.NODE) {
             var fields = ['consignee', 'contact_person_id'];
-            DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
+            var getChildNodes = DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
                 $scope.deliveryNodes.add(childNodes);
             });
-            DistributionPlanNodeService.get(deliveryNodeId).then(function (node) {
+            var getParentNode = DistributionPlanNodeService.get(deliveryNodeId).then(function (node) {
                 $scope.delivery = node.distributionPlan;
             });
+            loadPromises.add([getParentNode, getChildNodes]);
         }
 
         $scope.addContact = function (node, nodeIndex) {
@@ -133,7 +140,13 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                     $scope.deliveryNodes.add(children);
                 });
             };
-
             getUser.then(getParentNode).then(getChildNodes);
+
+            loadPromises.add([getUser, getParentNode, getChildNodes]);
         }
+
+        $q.all(loadPromises).then(function() {
+            angular.element('#loading').modal('hide');
+            angular.element('#loading.modal').removeClass('in');
+        });
     });
