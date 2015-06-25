@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives'])
+angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives', 'DatePicker'])
     .controller('IPPurchaseOrdersController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
         $scope.sortBy = $sorter;
         $scope.purchaseOrders = [];
@@ -34,13 +34,12 @@ angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', '
         };
     });
 
-angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem'])
-    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode,
+angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap'])
+    .controller('NewIpDeliveryController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q,
                                                      DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
         $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
-        $scope.selectedPurchaseOrderItem = {};
+        $scope.selectedPurchaseOrderItem = $scope.datepicker = {};
         var rootPath = '/ip-delivery-report/new/';
-        var nodeFieldsToBuild = ['consignee', 'contact_person_id', 'children'];
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
 
@@ -71,11 +70,11 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         state.PO_ITEM && PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
             $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-            !state.NODE && loadSubConsigneeDeliveryNodes(purchaseOrderItem);
+            !state.NODE && loadDeliveryDataFor(purchaseOrderItem);
         });
 
         var filterParams = {parent: deliveryNodeId};
-        state.NODE && DistributionPlanNodeService.filter(filterParams, nodeFieldsToBuild).then(function (childNodes) {
+        state.NODE && DistributionPlanNodeService.filter(filterParams, ['children']).then(function (childNodes) {
             $scope.deliveryNodes.add(childNodes);
         });
 
@@ -95,16 +94,41 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         };
 
         $scope.addDeliveryNode = function () {
-            var deliveryNode = new DeliveryNode({parent: deliveryNodeId, item: $scope.selectedPurchaseOrderItem});
+            var deliveryNode = new DeliveryNode({
+                parent: deliveryNodeId,
+                item: $scope.selectedPurchaseOrderItem,
+                distributionPlan: $scope.delivery
+            });
             $scope.deliveryNodes.push(deliveryNode);
         };
 
-        function loadSubConsigneeDeliveryNodes(purchaseOrderItem) {
-            UserService.getCurrentUser().then(function (user) {
-                var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
-                DistributionPlanNodeService.filter(filterParams, nodeFieldsToBuild).then(function (nodes) {
-                    $scope.deliveryNodes.add(nodes.length ? nodes[0].children : []);
+        $scope.saveDeliveryNodes = function (nodes) {
+            nodes.forEach(function (node) {
+                !node.id && DistributionPlanNodeService.create(node).then(function (created) {
+                    node = created;
                 });
+                node.id && DistributionPlanNodeService.update(node);
             });
+        };
+
+        function loadDeliveryDataFor(purchaseOrderItem) {
+            var getUser = UserService.getCurrentUser();
+            var getParentNode = function (user) {
+                var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
+                return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+                    var ipDeliveryNode = nodes.first();
+                    deliveryNodeId = ipDeliveryNode.id;
+                    $scope.delivery = ipDeliveryNode.distributionPlan;
+                    return ipDeliveryNode;
+                });
+            };
+            var getChildNodes = function (parentNode) {
+                var fieldsToBuild = ['consignee', 'contact_person_id'];
+                DistributionPlanNodeService.filter({parent: parentNode.id}, fieldsToBuild).then(function (children) {
+                    $scope.deliveryNodes.add(children);
+                });
+            };
+
+            getUser.then(getParentNode).then(getChildNodes);
         }
     });
