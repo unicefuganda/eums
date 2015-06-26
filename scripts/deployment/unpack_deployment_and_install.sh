@@ -3,6 +3,7 @@
 set -e
 
 today=$1
+hostip=$2
 
 echo "Un packing deployment directory ..."
 tar --force-local -xzvf deploy_latest.tar.gz
@@ -15,4 +16,4 @@ cd deploy_$today
 chmod a+x scripts/*.sh
 
 echo "Running install script ..."
-scripts/install-image-eums.sh
+scripts/install-image-eums.sh ${hostip}
