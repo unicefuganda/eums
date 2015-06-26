@@ -17,7 +17,7 @@ echo "Copying unpack script to server ..."
 sshpass -p "${DEPLOY_USER_PASSWORD}" scp build/deployment/unpack_deployment_and_install.sh ${DEPLOY_USER}@${DEPLOY_HOST}:/home/${DEPLOY_USER}/
 
 echo "running the unpack script via ssh on the server ..."
-sshpass -p "${DEPLOY_USER_PASSWORD}" ssh ${DEPLOY_USER}@${DEPLOY_HOST} "export DEPLOY_MACHINE_HTTP_PORT=$DEPLOY_MACHINE_HTTP_PORT && export DEPLOY_MACHINE_SSH_PORT=$DEPLOY_MACHINE_SSH_PORT && export EUMS_CONTAINER_HOST_NAME=$EUMS_CONTAINER_HOST_NAME && export today=$today && cd /home/${DEPLOY_USER}/ && sudo ./unpack_deployment_and_install.sh $today"
+sshpass -p "${DEPLOY_USER_PASSWORD}" ssh ${DEPLOY_USER}@${DEPLOY_HOST} "cd /home/${DEPLOY_USER}/ && sudo ./unpack_deployment_and_install.sh $today ${DEPLOY_HOST}"
 
 # uninstall ssh-pass
 sudo apt-get -y --purge remove sshpass
