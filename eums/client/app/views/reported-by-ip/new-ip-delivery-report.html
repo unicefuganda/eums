@@ -7,6 +7,7 @@
                 <span class="text-primary">{{ selectedPurchaseOrder.programmeName }}</span>
             </span>
         </h4>
+
         <div ng-show="selectedPurchaseOrderItem">
             <alert ng-show="parentNode.quantityLeft(deliveryNodes) <= 0" type="warning">
                 All quantities have been assigned for this item.
@@ -14,35 +15,43 @@
         </div>
         <div class="row">
             <div class="form-horizontal">
-                <div class="form-group col-lg-4">
+                <div class="form-group col-lg-4" ng-show="!state.PO_ITEM">
                     <div class="col-lg-12">
                         <label for="select-purchase-order-item" class="col-lg-4 control-label description-label">
                             Item Description:
                         </label>
 
-                        <div class="col-lg-8" ng-show="!state.PO_ITEM">
-                            <select id="select-purchase-order-item" ng-model="selectedPurchaseOrderItem" required="required"
+                        <div class="col-lg-8">
+                            <select id="select-purchase-order-item" ng-model="selectedPurchaseOrderItem"
+                                    required="required"
                                     class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                     ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
                                 <option value="">Select Item</option>
                             </select>
                         </div>
-                        <div ng-show="state.PO_ITEM" style="font-size: 15px; margin-top: 8px">
-                            {{ selectedPurchaseOrderItem.item.description }}
-                        </div>
                     </div>
                 </div>
 
-                <div class="form-group col-lg-4" ng-show="parentNode">
+                <div class="form-group col-lg-4" ng-show="parentNode && state.canGoBack()">
                     <div class="sub_header_padding">
                         <span class="sub-header">Add Sub-Consignee to:</span> <span
                             class="text-muted">{{ parentNode.consignee.name }}</span>
                     </div>
-                    <div class="sub_header_padding" ng-show="state.canGoBack()">
+                    <div class="sub_header_padding">
                         <button type="button" class="btn btn-default btn-sm blue-border-button"
                                 ng-click="toSubConsigneeView(parentNode.parent)">
                             <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
                             Back to Previous Consignee
+                        </button>
+                    </div>
+
+                </div>
+                <div class="form-group col-lg-4" ng-show="!state.canGoBack() && !state.PO_LEVEL">
+                    <div class="sub_header_padding">
+                        <button type="button" class="btn btn-default btn-sm blue-border-button"
+                                ng-click="toOrderView(selectedPurchaseOrder)">
+                            <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
+                            Back to Purchase Order
                         </button>
                     </div>
                 </div>
