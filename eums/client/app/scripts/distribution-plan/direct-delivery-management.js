@@ -140,7 +140,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             });
         });
 
-
         if ($routeParams.distributionPlanNodeId) {
             $scope.consigneeButtonText = 'Add Sub-Consignee';
 
@@ -179,7 +178,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 });
             });
         }
-
 
         $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
@@ -372,7 +370,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         function saveDistributionPlanNodes() {
-            var message = $scope.distributionPlanReport ? 'Plan Saved!' : 'Report Saved!';
+            var message = $scope.distributionPlanReport ? 'Delivery Created!' : 'Report Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
                 var children = [];
                 for (var child in node.children) {
@@ -384,9 +382,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             createToast(message, 'success');
         }
 
-        $scope.warnBeforeSaving = function() {
+        $scope.warnBeforeSaving = function () {
 
-            if($scope.selectedPurchaseOrder.isSingleIp === null){
+            if ($scope.selectedPurchaseOrder.isSingleIp === null) {
                 $('#confirmation-modal').modal();
             } else {
                 $scope.saveDistributionPlanNodes();
@@ -419,7 +417,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         $scope.showSubConsigneeButton = function (node) {
-            return node.id && !node.forEndUser;
+            return node.id && !node.isEndUser;
         };
 
         $scope.previousConsignee = function (planNode) {
