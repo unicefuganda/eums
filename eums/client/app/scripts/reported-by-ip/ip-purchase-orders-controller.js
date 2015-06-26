@@ -64,6 +64,8 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             NODE: deliveryNodeId,
             PO_ITEM: purchaseOrderItemId
         };
+        $scope.state = state;
+
         $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
         $scope.selectedPurchaseOrderItem = $scope.datepicker = {};
 
@@ -112,7 +114,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
 
-        $scope.invalidNodes = function() {
+        $scope.invalidNodes = function () {
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
                 return node.isInvalid()
             });
@@ -154,9 +156,9 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                     node.id = created.id;
                 }));
             });
-            $q.all(savePromises).then(function() {
+            $q.all(savePromises).then(function () {
                 createToast('Report Saved!', 'success');
-            }).catch(function() {
+            }).catch(function () {
                 createToast('Report not saved!', 'danger');
             }).finally(hideLoader);
         };
