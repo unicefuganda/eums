@@ -40,41 +40,21 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
 
-        $scope.addContact = function (itemIndex, lineItem) {
-            $scope.$parent.itemIndex = itemIndex;
-            $scope.$parent.lineItem = lineItem;
-            $('#add-contact-modal').modal();
+        $scope.addContact = function (node, nodeIndex) {
+            $scope.$broadcast('add-contact', node, nodeIndex);
         };
+
+        $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
+            node.contactPerson = {id: contact._id};
+            $scope.$broadcast('set-contact-for-node', contact, nodeIndex);
+            event.stopPropagation();
+        });
 
         $scope.addRemark = function (itemIndex, lineItem) {
             $scope.$parent.itemIndex = itemIndex;
             $scope.$parent.lineItem = lineItem;
             $('#add-remark-modal').modal();
         };
-
-        $scope.saveContact = function () {
-            ContactService
-                .create($scope.contact)
-                .then(function (contact) {
-                    $('#add-contact-modal').modal('hide');
-
-                    var contactInput = $('#contact-select-' + $scope.itemIndex);
-                    var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-                    contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
-                    contactInput.val(contact._id);
-                    $scope.lineItem.contactPerson = contact._id;
-
-                    $scope.contact = {};
-                }, function (response) {
-                    createToast(response.data.error, 'danger');
-                });
-        };
-
-        $scope.invalidContact = function (contact) {
-            return !(contact.firstName && contact.lastName && contact.phone);
-        };
-
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
@@ -370,7 +350,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         function saveDistributionPlanNodes() {
-            var message = $scope.distributionPlanReport ? 'Delivery Created!' : 'Report Saved!';
+            var message = $scope.distributionPlanReport ? 'Delivery Saved!' : 'Report Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
                 var children = [];
                 for (var child in node.children) {
