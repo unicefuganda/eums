@@ -63,6 +63,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         $scope.state = {
             NODE: deliveryNodeId,
             PO_ITEM: purchaseOrderItemId,
+            PO_LEVEL: !deliveryNodeId && !purchaseOrderItemId && $routeParams.purchaseOrderId,
             canGoBack: function () {
                 return $scope.parentNode && $scope.parentNode.parent;
             }
@@ -135,6 +136,10 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             !node.id && DistributionPlanNodeService.get(node).then(function (fetchedNode) {
                 $location.path(path + fetchedNode.id);
             });
+        };
+
+        $scope.toOrderView = function(order) {
+            $location.path(rootPath + order.id);
         };
 
         $scope.addDeliveryNode = function () {
