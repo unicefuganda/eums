@@ -16,16 +16,19 @@
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
                     <div class="col-lg-12">
-                        <label for="select-purchase-order" class="col-lg-4 control-label description-label">
+                        <label for="select-purchase-order-item" class="col-lg-4 control-label description-label">
                             Item Description:
                         </label>
 
-                        <div class="col-lg-8">
-                            <select id="select-purchase-order" ng-model="selectedPurchaseOrderItem" required="required"
+                        <div class="col-lg-8" ng-show="!state.PO_ITEM">
+                            <select id="select-purchase-order-item" ng-model="selectedPurchaseOrderItem" required="required"
                                     class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                     ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
                                 <option value="">Select Item</option>
                             </select>
+                        </div>
+                        <div ng-show="state.PO_ITEM" style="font-size: 15px; margin-top: 8px">
+                            {{ selectedPurchaseOrderItem.item.description }}
                         </div>
                     </div>
                 </div>
