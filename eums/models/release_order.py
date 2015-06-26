@@ -1,5 +1,6 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from eums.models import SalesOrder, PurchaseOrder, Consignee
+from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, DistributionPlan
 
 
 class ReleaseOrder(models.Model):
@@ -9,6 +10,13 @@ class ReleaseOrder(models.Model):
     consignee = models.ForeignKey(Consignee)
     waybill = models.IntegerField()
     delivery_date = models.DateField(auto_now=False)
+
+    def delivery(self):
+        item = self.items.first()
+        try:
+            return DistributionPlanNode.objects.get(item=item).distribution_plan.id
+        except ObjectDoesNotExist:
+            return None
 
     class Meta:
         app_label = 'eums'

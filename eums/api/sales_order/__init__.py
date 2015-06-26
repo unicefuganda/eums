@@ -9,7 +9,7 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ReleaseOrder
         fields = ('id', 'order_number', 'purchase_order', 'waybill', 'delivery_date', 'sales_order_id', 'consignee_id',
-                  'releaseorderitem_set')
+                  'items')
 
 
 class ReleaseOrderViewSet(ModelViewSet):

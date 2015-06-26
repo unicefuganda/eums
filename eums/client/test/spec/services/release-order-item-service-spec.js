@@ -3,6 +3,7 @@ describe('Release Order Item Service', function () {
     var releaseOrderItemService,
         mockBackend,
         endpointUrl,
+        purchaseOrderItemEndpointUrl,
         mockPurchaseOrderItemService,
         scope,
         releaseOrderItemId = 1,
@@ -67,6 +68,7 @@ describe('Release Order Item Service', function () {
 
             mockBackend = $httpBackend;
             endpointUrl = EumsConfig.BACKEND_URLS.RELEASE_ORDER_ITEM;
+            purchaseOrderItemEndpointUrl = EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM;
             releaseOrderItemService = ReleaseOrderItemService;
         });
     });
@@ -82,6 +84,7 @@ describe('Release Order Item Service', function () {
         };
 
         mockBackend.whenGET(endpointUrl + releaseOrderItemId + '/').respond(stubReleaseOrderItem);
+        mockBackend.whenGET(purchaseOrderItemEndpointUrl + stubPurchaseOrderItem.id + '/').respond(stubPurchaseOrderItem);
         releaseOrderItemService.get(releaseOrderItemId, ['purchase_order_item']).then(function (releaseOrderItem) {
             expect(releaseOrderItem).toEqual(expectedReleaseOrderItem);
             done();

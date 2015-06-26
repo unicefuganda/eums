@@ -27,7 +27,7 @@ describe('ManualReportingController', function () {
             consignee: 1,
             waybill: 1,
             sales_order: 1,
-            releaseorderitem_set: [1, 2],
+            items: [1, 2],
             programme: programmeName
         }];
 

@@ -4,7 +4,11 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
     .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
-            propertyServiceMap: {consignee: ConsigneeService, contact_person_id: ContactService, children: 'self'},
+            propertyServiceMap: {
+                consignee: ConsigneeService,
+                contact_person_id: ContactService,
+                children: 'self'
+            },
             methods: {
                 getNodeResponse: function (nodeId) {
                     return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
