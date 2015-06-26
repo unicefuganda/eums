@@ -23,13 +23,21 @@
                             Item Description:
                         </label>
 
+<<<<<<< HEAD
                         <div class="col-lg-8">
                             <select id="select-purchase-order-item" ng-model="selectedPurchaseOrderItem"
                                     required="required"
+=======
+                        <div class="col-lg-8" ng-show="!state.PO_ITEM">
+                            <select id="select-purchase-order-item" ng-model="selectedPurchaseOrderItem" required="required"
+>>>>>>> [nim] #96992360 Adds contextual switch to reported by ip
                                     class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                     ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
                                 <option value="">Select Item</option>
                             </select>
+                        </div>
+                        <div ng-show="state.PO_ITEM" style="font-size: 15px; margin-top: 8px">
+                            {{ selectedPurchaseOrderItem.item.description }}
                         </div>
                     </div>
                 </div>
