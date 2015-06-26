@@ -154,6 +154,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 var planDate = $scope.selectedDate.split('/');
                 deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
+
             var node = getNodeForItem(releaseOrderItem);
             if (node) {
                 node.location = $scope.selectedLocation.id;
