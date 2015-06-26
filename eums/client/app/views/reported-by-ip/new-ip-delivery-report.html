@@ -1,8 +1,10 @@
 <div class="container-fluid">
     <div class="content">
         <ng-toast></ng-toast>
-        <h4 class="page-header" ng-show="!distributionPlanReport">Report Delivery for Purchase Order:
-            <span class="text-primary">{{ selectedPurchaseOrder.orderNumber }}</span>
+        <h4 class="page-header">Report Delivery for Purchase Order:
+            <span class="text-primary" ng-click="toOrderView(selectedPurchaseOrder)">
+                <a href="">{{ selectedPurchaseOrder.orderNumber }}</a>
+            </span>
             <span class="pull-right">PCR:
                 <span class="text-primary">{{ selectedPurchaseOrder.programmeName }}</span>
             </span>
