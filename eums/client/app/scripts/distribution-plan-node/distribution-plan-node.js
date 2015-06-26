@@ -48,6 +48,10 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
             }.bind(this);
+
+            this.hasSubConsignees = function() {
+                return this.children.length > 0;
+            };
             
             this.isInvalid = function() {
                 return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location || !this.contactPerson || !this.plannedDistributionDate;
