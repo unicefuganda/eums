@@ -56,7 +56,13 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                 || !this.location
                 || !this.contactPerson 
                 || !this.plannedDistributionDate;
-            }
+            };
+
+            this.quantityLeft = function (children) {
+                return this.targetedQuantity - children.sum(function(node) {
+                    return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
+                });
+            }.bind(this);
         };
     })
     .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService,

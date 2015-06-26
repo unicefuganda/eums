@@ -102,6 +102,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             });
             var getParentNode = DistributionPlanNodeService.get(deliveryNodeId).then(function (node) {
                 $scope.delivery = node.distributionPlan;
+                $scope.parentNode = node;
             });
             loadPromises.add([getParentNode, getChildNodes]);
         }
@@ -115,7 +116,8 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
                 return node.isInvalid()
             });
-            return someNodesAreInvalid || $scope.selectedPurchaseOrderItem.quantityLeft($scope.deliveryNodes) < 0;
+            var quantityLeft = $scope.parentNode ? $scope.parentNode.quantityLeft($scope.deliveryNodes) : -1;
+            return someNodesAreInvalid || quantityLeft < 0;
         };
 
         $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
@@ -149,7 +151,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             nodes.forEach(function (node) {
                 node.id && savePromises.push(DistributionPlanNodeService.update(node));
                 !node.id && savePromises.push(DistributionPlanNodeService.create(node).then(function (created) {
-                    node = created;
+                    node.id = created.id;
                 }));
             });
             $q.all(savePromises).then(function() {
@@ -167,6 +169,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                     var ipDeliveryNode = nodes.first();
                     deliveryNodeId = ipDeliveryNode.id;
                     $scope.delivery = ipDeliveryNode.distributionPlan;
+                    $scope.parentNode = ipDeliveryNode;
                     return ipDeliveryNode;
                 });
             };
