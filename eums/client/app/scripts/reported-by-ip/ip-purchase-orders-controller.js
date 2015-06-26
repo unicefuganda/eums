@@ -60,11 +60,10 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
         var loadPromises = [];
-        var state = {
+        $scope.state = {
             NODE: deliveryNodeId,
             PO_ITEM: purchaseOrderItemId
         };
-        $scope.state = state;
 
         $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
         $scope.selectedPurchaseOrderItem = $scope.datepicker = {};
@@ -89,15 +88,15 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
         };
 
-        if (state.PO_ITEM) {
+        if ($scope.state.PO_ITEM) {
             var getItem = PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-                !state.NODE && loadDeliveryDataFor(purchaseOrderItem);
+                !$scope.state.NODE && loadDeliveryDataFor(purchaseOrderItem);
             });
             loadPromises.push(getItem);
         }
 
-        if (state.NODE) {
+        if ($scope.state.NODE) {
             var fields = ['consignee', 'contact_person_id'];
             var getChildNodes = DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
                 $scope.deliveryNodes.add(childNodes);
@@ -121,7 +120,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         $scope.invalidNodes = function () {
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
-                return node.isInvalid()
+                return node.isInvalid();
             });
             var quantityLeft = $scope.parentNode ? $scope.parentNode.quantityLeft($scope.deliveryNodes) : -1;
             return someNodesAreInvalid || quantityLeft < 0;
