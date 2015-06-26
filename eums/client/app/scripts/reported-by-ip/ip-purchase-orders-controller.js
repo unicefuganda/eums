@@ -109,10 +109,15 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             loadPromises.add([getParentNode, getChildNodes]);
         }
 
-
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
+
+        $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
+            node.contactPerson = {id: contact._id};
+            $scope.$broadcast('set-contact-for-node', contact, nodeIndex);
+            event.stopPropagation();
+        });
 
         $scope.invalidNodes = function () {
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
@@ -121,12 +126,6 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             var quantityLeft = $scope.parentNode ? $scope.parentNode.quantityLeft($scope.deliveryNodes) : -1;
             return someNodesAreInvalid || quantityLeft < 0;
         };
-
-        $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
-            node.contactPerson = {id: contact._id};
-            $scope.$broadcast('set-contact-for-node', contact, nodeIndex);
-            event.stopPropagation();
-        });
 
         $scope.toSubConsigneeView = function (node) {
             var path = rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/' + node.id;
