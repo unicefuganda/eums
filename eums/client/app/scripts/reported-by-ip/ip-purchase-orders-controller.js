@@ -118,7 +118,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         $scope.invalidNodes = function () {
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
-                return node.isInvalid();
+                return node.isInvalid()
             });
             var quantityLeft = $scope.parentNode ? $scope.parentNode.quantityLeft($scope.deliveryNodes) : -1;
             return someNodesAreInvalid || quantityLeft < 0;
