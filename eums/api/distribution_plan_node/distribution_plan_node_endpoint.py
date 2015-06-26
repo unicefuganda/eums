@@ -7,6 +7,8 @@ from eums.models import DistributionPlanNode
 
 
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
+    children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+
     class Meta:
         model = DistributionPlanNode
         fields = ('id', 'parent', 'distribution_plan', 'children', 'location', 'consignee', 'tree_position',
