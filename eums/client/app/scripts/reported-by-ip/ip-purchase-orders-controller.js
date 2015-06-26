@@ -64,7 +64,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             NODE: deliveryNodeId,
             PO_ITEM: purchaseOrderItemId,
             canGoBack: function () {
-                return $scope.parentNode && $scope.parentNode.parent
+                return $scope.parentNode && $scope.parentNode.parent;
             }
         };
 
