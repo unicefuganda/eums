@@ -15,7 +15,7 @@
             </div>
         </div>
         <div id="multiple-ip" ng-show="inMultipleIpMode">
-            <div class="row pad-left-5 pad-top-10">
+            <div class="row pad-left-5 pad-top-10" ng-show="!planNode">
                 <span class="label label-success label-as-step-badge">Step 2: Please select an item in the purchase order to create a direct delivery</span>
             </div>
             <ng-toast></ng-toast>
@@ -191,17 +191,17 @@
                                     <td>
                                         <div class="text-center">
                                             <input type="checkbox" class="end-user-checkbox"
-                                                   value="{{ item.forEndUser }}"
-                                                   ng-model="item.forEndUser"
+                                                   value="{{ item.isEndUser }}"
+                                                   ng-model="item.isEndUser"
                                                    ng-disabled="item.flowTriggered">
                                         </div>
                                     </td>
                                     <td>
                                         <div class="text-center">
                                             <button class="btn
-                                                    {{ showSubConsigneeButton(item) ? 'btn-primary' : 'btn-default'}}"
+                                                    {{ item.canReceiveSubConsignees() ? 'btn-primary' : 'btn-default'}}"
                                                     title="Consignees"
-                                                    ng-disabled="!showSubConsigneeButton(item)"
+                                                    ng-disabled="!item.canReceiveSubConsignees()"
                                                     ng-click="addSubConsignee(item)">Sub-Consignees
                                             </button>
                                         </div>
