@@ -20,7 +20,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     serializer_class = DistributionPlanNodeSerialiser
     filter_backends = (filters.DjangoFilterBackend,)
     search_fields = ('tree_position',)
-    filter_fields = ('consignee', 'item', 'parent')
+    filter_fields = ('consignee', 'item', 'distribution_plan')
 
 
 distributionPlanNodeRouter = DefaultRouter()
