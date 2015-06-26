@@ -70,13 +70,18 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             ['consignee', 'sales_order.programme', 'delivery', 'items.item.unit']).then(function (releaseOrder) {
                 $scope.selectedReleaseOrder = releaseOrder;
                 $scope.selectedReleaseOrder.totalValue = 0.0;
-                $scope.releaseOrderItems = releaseOrder.releaseorderitemSet;
+                $scope.releaseOrderItems = releaseOrder.items;
                 $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
                     return parseFloat(orderItem.value);
                 });
-                DistributionPlanService.
-                    // load existing delivery and deliveryNodes
-                    showLoadingModal(false);
+                $scope.delivery = releaseOrder.delivery;
+                if ($scope.delivery) {
+                    DistributionPlanNodeService.getNodesByDelivery($scope.delivery.id)
+                        .then(function (response) {
+                            $scope.deliveryNodes = response.data;
+                        });
+                }
+                showLoadingModal(false);
             });
 
         var formatDateForSave = function (date) {
@@ -92,16 +97,22 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         };
 
         $scope.saveDelivery = function () {
-            if ($scope.distributionPlan) {
+            if ($scope.delivery) {
                 saveDeliveryNodes();
             }
             else {
                 DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.salesOrder.programme.id})
-                    .then(function (createdPlan) {
-                        $scope.distributionPlan = createdPlan.id;
+                    .then(function (createdDelivery) {
+                        $scope.delivery = createdDelivery;
                         saveDeliveryNodes();
                     });
             }
+        };
+
+        var getNodeForItem = function (releaseOrderitem) {
+            return $scope.deliveryNodes.find(function(deliveryNode){
+                return deliveryNode.item === releaseOrderitem.id
+            });
         };
 
         var saveDeliveryNode = function (releaseOrderItem) {
@@ -112,19 +123,26 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
 
-            var node = {
-                consignee: $scope.selectedReleaseOrder.consignee.id,
-                location: 1,//Location not being picked up!! $scope.selectedLocation,
-                contact_person_id: $scope.contact.id,
-                distribution_plan: $scope.distributionPlan,
-                tree_position: 'IMPLEMENTING_PARTNER',
-                item: releaseOrderItem,
-                targeted_quantity: parseInt(releaseOrderItem.quantity),
-                planned_distribution_date: formatDateForSave(deliveryDate),
-                track: false
-            };
-            return DistributionPlanNodeService.create(node);
-        };
+            var node = getNodeForItem(releaseOrderItem);
+            if (node) {
+                node.location = 1;//Location not being picked up!! $scope.selectedLocation;
+                node.contact_person_id = $scope.contact.id;
+                node.planned_distribution_date = formatDateForSave(deliveryDate);
+                return DistributionPlanNodeService.update(node);
+            } else {
+                node = {
+                    consignee: $scope.selectedReleaseOrder.consignee.id,
+                    location: 1,//Location not being picked up!! $scope.selectedLocation,
+                    contact_person_id: $scope.contact.id,
+                    distribution_plan: $scope.delivery,
+                    tree_position: 'IMPLEMENTING_PARTNER',
+                    item: releaseOrderItem,
+                    targeted_quantity: parseInt(releaseOrderItem.quantity),
+                    planned_distribution_date: formatDateForSave(deliveryDate),
+                    track: false
+                };
+                return DistributionPlanNodeService.create(node);
+            }
 
-    }
-);
+        };
+    });
