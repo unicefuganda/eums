@@ -1,10 +1,10 @@
 'use strict';
 
 angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
-    'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact', 'User'])
+    'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
     .controller('WarehouseDeliveryPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanService,
                                                              DistributionPlanNodeService, ReleaseOrderService, ReleaseOrderItemService,
-                                                             IPService, UserService, ngToast, ContactService) {
+                                                             IPService, ngToast, ContactService) {
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.contact = {};
@@ -66,16 +66,18 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             });
         });
 
-        ReleaseOrderService.get($routeParams.releaseOrderId, ['consignee', 'sales_order.programme', 'releaseorderitem_set.item.unit']).then(function (releaseOrder) {
-            $scope.selectedReleaseOrder = releaseOrder;
-            $scope.selectedReleaseOrder.totalValue = 0.0;
-            $scope.releaseOrderItems = releaseOrder.releaseorderitemSet;
-            $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
-                return parseFloat(orderItem.value);
+        ReleaseOrderService.get($routeParams.releaseOrderId,
+            ['consignee', 'sales_order.programme', 'delivery', 'items.item.unit']).then(function (releaseOrder) {
+                $scope.selectedReleaseOrder = releaseOrder;
+                $scope.selectedReleaseOrder.totalValue = 0.0;
+                $scope.releaseOrderItems = releaseOrder.releaseorderitemSet;
+                $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
+                    return parseFloat(orderItem.value);
+                });
+                DistributionPlanService.
+                    // load existing delivery and deliveryNodes
+                    showLoadingModal(false);
             });
-            // load existing delivery and deliveryNodes
-            showLoadingModal(false);
-        });
 
         var formatDateForSave = function (date) {
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
@@ -83,7 +85,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
 
         var saveDeliveryNodes = function () {
             $scope.releaseOrderItems.forEach(function (releaseOrderItem) {
-                saveDeliveryNode(releaseOrderItem)
+                saveDeliveryNode(releaseOrderItem);
             });
             var message = 'Warehouse Delivery Saved!';
             createToast(message, 'success');
@@ -110,44 +112,19 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
 
-            UserService.getCurrentUser().then(function (user) {
-                var node = {
-                    consignee: $scope.selectedReleaseOrder.consignee.id,
-                    location: 1,//Location not being picked up!! $scope.selectedLocation,
-                    contact_person_id: $scope.contact.id,
-                    distribution_plan: $scope.distributionPlan,
-                    tree_position: 'IMPLEMENTING_PARTNER',
-                    item: releaseOrderItem,
-                    targeted_quantity: parseInt(releaseOrderItem.quantity),
-                    planned_distribution_date: formatDateForSave(deliveryDate),
-                    track: false
-                };
-                return DistributionPlanNodeService.create(node);
-            }, function (error) {
-                console.log(error);
-            });
-
-        }
-
-        function saveDeliveryPlanNodes() {
-            var message = 'Warehouse Delivery Saved!';
-            $scope.deliveryNodes.forEach(function (node) {
-                saveNode(node);
-            });
-            createToast(message, 'success');
-        }
-
-        $scope.saveDeliveryPlan = function () {
-            if ($scope.distributionPlan) {
-                saveDeliveryPlanNodes();
-            }
-            else {
-                DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.salesOrder.programme.id})
-                    .then(function (createdPlan) {
-                        $scope.distributionPlan = createdPlan.id;
-                        saveDeliveryPlanNodes();
-                    });
-            }
+            var node = {
+                consignee: $scope.selectedReleaseOrder.consignee.id,
+                location: 1,//Location not being picked up!! $scope.selectedLocation,
+                contact_person_id: $scope.contact.id,
+                distribution_plan: $scope.distributionPlan,
+                tree_position: 'IMPLEMENTING_PARTNER',
+                item: releaseOrderItem,
+                targeted_quantity: parseInt(releaseOrderItem.quantity),
+                planned_distribution_date: formatDateForSave(deliveryDate),
+                track: false
+            };
+            return DistributionPlanNodeService.create(node);
         };
+
     }
 );

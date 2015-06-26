@@ -6,16 +6,17 @@ from eums.models import ReleaseOrder
 
 
 class ReleaseOrderSerialiser(serializers.ModelSerializer):
-    programme = serializers.SerializerMethodField('get_programme')
+    programme = serializers.CharField(read_only=True, source='sales_order.programme.name')
+    delivery = serializers.IntegerField(read_only=True, source='delivery')
 
     class Meta:
         model = ReleaseOrder
         fields = ('id', 'order_number', 'sales_order', 'purchase_order', 'programme', 'consignee', 'waybill', 'delivery_date',
-                  'releaseorderitem_set')
+                  'items', 'delivery')
 
     @staticmethod
     def get_programme(release_order):
-        return release_order.sales_order.programme.name
+        return None
 
 
 class ReleaseOrderViewSet(ModelViewSet):

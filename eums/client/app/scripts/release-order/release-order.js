@@ -7,7 +7,7 @@ angular.module('ReleaseOrder', ['eums.config', 'eums.service-factory', 'ReleaseO
             propertyServiceMap: {
                 consignee: ConsigneeService,
                 sales_order: SalesOrderService,
-                releaseorderitem_set: ReleaseOrderItemService
+                items: ReleaseOrderItemService
             },
             methods: {}
         });
