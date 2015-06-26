@@ -1,5 +1,5 @@
 from eums.test.api.api_test_helpers import create_distribution_plan_node, \
-    make_node_details, create_consignee, create_sales_order_item
+    create_consignee, create_sales_order_item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
