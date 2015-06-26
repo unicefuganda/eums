@@ -3,6 +3,8 @@ from eums.test.api.api_test_helpers import create_distribution_plan_node, \
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
+from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
@@ -117,3 +119,18 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
                              'tree_position': self.MIDDLEMAN_POSITION, 'parent': created_parent_details['id']}
         created_child_details = create_distribution_plan_node(self, child_details)
         return created_parent_details, created_child_details
+
+    def test_should_filter_nodes_by_delivery(self):
+        create_delivery = lambda id: DistributionPlanFactory(id=id)
+        first_delivery = create_delivery(1)
+        second_delivery = create_delivery(2)
+
+        create_delivery_node = lambda delivery: DistributionPlanNodeFactory(distribution_plan = delivery);
+        node_one = create_delivery_node(first_delivery)
+        node_two = create_delivery_node(first_delivery)
+        node_three = create_delivery_node(second_delivery)
+
+        returned_nodes = self.client.get("%s?distribution_plan=%d" % (ENDPOINT_URL, first_delivery.id)).data
+        self.assertEqual(len(returned_nodes), 2)
+        self.assertEqual(returned_nodes[0]['id'], node_one.id)
+        self.assertEqual(returned_nodes[1]['id'], node_two.id)
