@@ -7,7 +7,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
 
             Object.defineProperty(this, 'contactPerson', {
                 set: function (person) {
-                    this.contactPersonId = person
+                    this.contactPersonId = person;
                 }.bind(this),
                 get: function () {
                     return this.contactPersonId;
@@ -17,7 +17,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             Object.defineProperty(this, 'isEndUser', {
                 set: function (isEndUser) {
                     if(isEndUser) {
-                        this.treePosition = 'END_USER'
+                        this.treePosition = 'END_USER';
                     }
                     else {
                         this.treePosition = 'MIDDLE_MAN';
@@ -50,12 +50,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             }.bind(this);
             
             this.isInvalid = function() {
-                return this.targetedQuantity <= 0 
-                || isNaN(this.targetedQuantity) 
-                || !this.consignee 
-                || !this.location
-                || !this.contactPerson 
-                || !this.plannedDistributionDate;
+                return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location || !this.contactPerson || !this.plannedDistributionDate;
             };
 
             this.quantityLeft = function (children) {
