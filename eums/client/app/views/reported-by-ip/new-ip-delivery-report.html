@@ -159,7 +159,7 @@
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ node.isEndUser }}"
                                            ng-model="node.isEndUser"
-                                           ng-disabled="node.flowTriggered">
+                                           ng-disabled="node.flowTriggered || node.hasSubConsignees()">
                                 </div>
                             </td>
                             <td>
