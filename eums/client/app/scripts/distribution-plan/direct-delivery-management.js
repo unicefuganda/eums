@@ -261,7 +261,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 contactPerson: '',
                 remark: '',
                 track: false,
-                forEndUser: false,
+                isEndUser: false,
                 flowTriggered: false
             };
 
@@ -310,7 +310,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     location: uiPlanNode.location,
                     contact_person_id: uiPlanNode.contactPerson.id,
                     distribution_plan: $scope.distributionPlan,
-                    tree_position: uiPlanNode.forEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
+                    tree_position: uiPlanNode.isEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
                     parent: parentNodeId(),
                     item: uiPlanNode.item,
                     targeted_quantity: uiPlanNode.targetedQuantity,
@@ -379,6 +379,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     });
             }
         };
+
 
         $scope.addSubConsignee = function (node) {
             var locPath = $location.path().split('/')[1];
