@@ -1,0 +1,66 @@
+<div class="container-fluid">
+    <div class="content">
+        <h4 class="page-header">Consignees</h4>
+        <ng-toast></ng-toast>
+
+        <button id="add-consignee" class="btn btn-primary" ng-click="add()">Add Consignee</button>
+        <div class="panel panel-default line-order-panel">
+            <div class="row">
+                <div class="col-xs-4 pull-right">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"
+                               id="filter"
+                               class="form-control"
+                               name="filter"
+                               ng-model="query"
+                               placeholder="Search by name, type or customer ID"/>
+                    </div>
+                </div>
+            </div>
+            <span class="well-sm"></span>
+
+            <div class="table-wrapper">
+                <table class="table table-bordered table-striped table-hover table-condensed">
+                    <thead>
+                    <tr>
+                        <th><a> Name </a></th>
+                        <th><a>Customer Number</a></th>
+                        <th><a>Type</a></th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="consignee in consignees">
+                        <td>{{ consignee.name }}</td>
+                        <td>{{ consignee.customerNumber }}</td>
+                        <td>{{ consignee.type }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">Edit</button>
+                            <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <!--<si-table-pagination limit="15" indices="3"/>-->
+                        </td>
+                    </tr>
+                    </tfoot>
+                <span class="information message"
+                      ng-show="consignees.length > 0">
+                There are no matches to your search criteria.
+                </span>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-include src="'/static/app/views/consignees/partials/delete-consignee-modal.html'"></ng-include>
+<ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"></ng-include>
+<ng-include src="'/static/app/views/consignees/partials/edit-consignee-modal.html'"></ng-include>
+
+</div>

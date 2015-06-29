@@ -17,13 +17,9 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
                             });
 
                             data.results = matches.map(function (match) {
-                                return {
-                                    id: match.id,
-                                    text: match.name
-                                };
+                                return {id: match.id, text: match.name};
                             });
                             query.callback(data);
-
                         }
                     });
 
@@ -51,6 +47,12 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
                     });
                 }
             }
+        });
+    })
+    .controller('ConsigneesController', function($scope, ConsigneeService) {
+        $scope.consignees = [];
+        ConsigneeService.all().then(function(consignees) {
+            $scope.consignees = consignees;
         });
     });
 

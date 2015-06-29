@@ -30,7 +30,7 @@
         {% if perms.auth.can_view_users %}
             <ul class="nav navbar-nav navbar-right">
                 <li id="admin-nav" class="dropdown {% if request.path == '/users/' %} active {% endif %}"
-                    ng-class="{ active: isActive('/users,/contacts,/import-data')}">
+                    ng-class="{ active: isActive('/users,/contacts,/import-data,/consignees')}">
                     <a href="" data-toggle="dropdown" role="button" aria-expanded="false">Admin<span
                             class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -39,6 +39,8 @@
                         <li><a href="/users">Users</a></li>
                         <li class="divider"></li>
                         <li id="contact-nav"><a href="/#/contacts">Contacts</a></li>
+                        <li class="divider"></li>
+                        <li id="consignee-nav"><a href="/#/consignees">Consignees</a></li>
                     </ul>
                 </li>
             </ul>
