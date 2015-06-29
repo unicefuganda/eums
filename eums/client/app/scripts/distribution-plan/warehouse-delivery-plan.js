@@ -100,6 +100,10 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         };
 
         $scope.saveDelivery = function () {
+            validate($scope.selectedDate, 'Fill in Date field!');
+            validate($scope.contact.id, 'Fill in Contact field!');
+            validate($scope.selectedLocation.id, 'Fill in Location field!');
+            
             if ($scope.delivery) {
                 saveDeliveryNodes();
             }
@@ -114,6 +118,13 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     });
             }
         };
+
+        var validate = function (field, message){
+            if (!field) {
+                createToast(message, 'danger');
+                return;
+            }
+        }
 
         var getNodeForItem = function (releaseOrderItem) {
             return $scope.deliveryNodes.find(function (deliveryNode) {
