@@ -9,19 +9,6 @@ ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 
 class ConsigneeEndpointTest(AuthenticatedAPITestCase):
-    def test_should_create_consignee(self):
-        consignee_details = {'name': "Save the Children", 'type': "implementing_partner"}
-        created_consignee = create_consignee(self)
-        self.assertDictContainsSubset(consignee_details, created_consignee)
-
-    def test_should_get_consignee(self):
-        consignee_details = create_consignee(self)
-
-        get_response = self.client.get(ENDPOINT_URL)
-
-        self.assertEqual(get_response.status_code, 200)
-        self.assertDictContainsSubset(consignee_details, get_response.data[0])
-
     def test_should_get_consignees_sorted_by_name(self):
         consignee_one_details = {'name': "Save the Children", 'type': "implementing_partner"}
         consignee_two_details = {'name': "Feed the Children", 'type': "implementing_partner"}

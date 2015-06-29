@@ -1,6 +1,6 @@
 import datetime
 
-from eums.models import Programme, ItemUnit, Item, Question
+from eums.models import Programme, ItemUnit, Item
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory

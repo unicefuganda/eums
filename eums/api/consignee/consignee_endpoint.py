@@ -5,8 +5,6 @@ from rest_framework.viewsets import ModelViewSet
 
 from eums.models import Consignee, DistributionPlanNode
 
-TOPLEVEL = 'top'
-
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
     class Meta:
@@ -20,12 +18,11 @@ class ConsigneeViewSet(ModelViewSet):
     filter_backends = (filters.SearchFilter,)
     search_fields = ('type',)
 
-    def list(self, request, *args, **kwargs):
-        if request.GET.get('node') == TOPLEVEL:
-            consignee_ids = DistributionPlanNode.objects.filter(parent=None).values_list('consignee', flat=True)
-            self.queryset = Consignee.objects.filter(id__in=consignee_ids)
-        return super(ConsigneeViewSet, self).list(request, *args, **kwargs)
-
+    def get_queryset(self):
+        if self.request.GET.get('node') == 'top':
+            consignee_ids = DistributionPlanNode.objects.filter(parent=None).values_list('consignee')
+            return self.queryset.filter(id__in=consignee_ids)
+        return self.queryset
 
 consigneeRouter = DefaultRouter()
 consigneeRouter.register(r'consignee', ConsigneeViewSet)
