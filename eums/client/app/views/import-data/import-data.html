@@ -14,13 +14,13 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Sales Orders (ZSOCLS)</h4>
             </div>
-            <div class="row pad-20">
+            <div id="salesOrdersDiv" class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Sales Orders (in excel format):</label>
-                <input id="salesOrderFileSelector" class="col-lg-2" type="file" nv-file-select="" uploader="salesOrdersUploader"/>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="salesOrdersUploader"/>
                 <span class="col-lg-1" ng-show="salesOrdersUploader.isHTML5"
                       nowrap>{{ salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
-                <button id="salesOrderUploadBtn" type="button" class="btn btn-primary col-lg-1" ng-click="salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].upload()"
                         ng-disabled="salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].isReady || salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -44,14 +44,14 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Purchase Orders (ZEXPD)</h4>
             </div>
-            <div class="row pad-20">
+            <div id="purchaseOrdersDiv" class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Purchase Orders (in excel format):</label>
-                <input id="purchaseOrderFileSelector" class="col-lg-2" type="file" nv-file-select="" uploader="purchaseOrdersUploader"/>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="purchaseOrdersUploader"/>
                 <span class="col-lg-1" ng-show="purchaseOrdersUploader.isHTML5"
                       nowrap>{{ purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button id="purchaseOrderUploadBtn" type="button" class="btn btn-primary col-lg-1" ng-click="purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].upload()"
                         ng-disabled="purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].isReady || purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -75,14 +75,14 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Release Orders (ZROSTS)</h4>
             </div>
-            <div class="row pad-20">
+            <div id="releaseOrdersDiv" class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Release Orders (in excel format):</label>
-                <input id="releaseOrderFileSelector" class="col-lg-2" type="file" nv-file-select="" uploader="releaseOrdersUploader"/>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="releaseOrdersUploader"/>
                 <span class="col-lg-1" ng-show="releaseOrdersUploader.isHTML5"
                       nowrap>{{ releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button id="releaseOrderUploadBtn" type="button" class="btn btn-primary col-lg-1" ng-click="releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].upload()"
                         ng-disabled="releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].isReady || releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -106,14 +106,14 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Consignees</h4>
             </div>
-            <div class="row pad-20">
+            <div id="consigneesDiv" class="row pad-20">
                 <label class="col-lg-3" >Import Consignees (in excel format):</label>
-                <input id="consigneeFileSelector" class="col-lg-2" type="file" nv-file-select="" uploader="consigneesUploader"/>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="consigneesUploader"/>
                 <span class="col-lg-1" ng-show="consigneesUploader.isHTML5"
                       nowrap>{{ consigneesUploader.queue[consigneesUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button id="consigneeUploadBtn" type="button" class="btn btn-primary col-lg-1" ng-click="consigneesUploader.queue[consigneesUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="consigneesUploader.queue[consigneesUploader.queue.length-1].upload()"
                         ng-disabled="consigneesUploader.queue[consigneesUploader.queue.length-1].isReady || consigneesUploader.queue[consigneesUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -137,14 +137,14 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Programmes</h4>
             </div>
-            <div class="row pad-20">
+            <div id="programmesDiv" class="row pad-20">
                 <label class="col-lg-3" >Import Programmes (in excel format):</label>
-                <input id="programmeFileSelector" class="col-lg-2" type="file" nv-file-select="" uploader="programmesUploader"/>
+                <input class="col-lg-2" type="file" nv-file-select="" uploader="programmesUploader"/>
                 <span class="col-lg-1" ng-show="programmesUploader.isHTML5"
                       nowrap>{{ programmesUploader.queue[programmesUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button id="prgrammeUploadBtn" type="button" class="btn btn-primary col-lg-1" ng-click="programmesUploader.queue[programmesUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="programmesUploader.queue[programmesUploader.queue.length-1].upload()"
                         ng-disabled="programmesUploader.queue[programmesUploader.queue.length-1].isReady || programmesUploader.queue[programmesUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
