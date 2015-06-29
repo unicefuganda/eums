@@ -11,11 +11,13 @@ from eums.models import PurchaseOrder
 class PurchaseOrderSerialiser(serializers.ModelSerializer):
     programme_name = serializers.CharField(read_only=True, source='sales_order.programme.name')
     programme = serializers.IntegerField(read_only=True, source='sales_order.programme.id')
+    has_plan = serializers.BooleanField(read_only=True, source='has_plan')
+    is_fully_delivered = serializers.BooleanField(read_only=True, source='is_fully_delivered')
 
     class Meta:
         model = PurchaseOrder
         fields = ('id', 'order_number', 'date', 'sales_order', 'programme_name',
-                  'purchaseorderitem_set', 'release_orders', 'programme', 'is_single_ip')
+                  'purchaseorderitem_set', 'release_orders', 'programme', 'is_single_ip', 'has_plan', 'is_fully_delivered')
 
 
 class PurchaseOrderViewSet(ModelViewSet):
