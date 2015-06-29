@@ -280,6 +280,10 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
+            .when('/consignees', {
+                templateUrl: '/static/app/views/consignees/consignees.html',
+                controller: 'ConsigneesController'
+            })
             .when('/response-details/:district', {
                 templateUrl: '/static/app/views/responses/index.html',
                 controller: 'ResponseController',
