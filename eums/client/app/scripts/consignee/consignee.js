@@ -54,6 +54,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         ConsigneeService.all().then(function(consignees) {
             $scope.consignees = consignees;
         });
+
         $scope.edit = function(consignee) {
             $scope.$broadcast('edit-consignee', consignee);
         }
