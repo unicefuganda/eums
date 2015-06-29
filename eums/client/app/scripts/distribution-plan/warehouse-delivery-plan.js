@@ -9,7 +9,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         $scope.districts = [];
         $scope.contact = {};
         $scope.selectedDate = '';
-        $scope.selectedLocation = {};
+        $scope.selectedLocationId = '';
         $scope.deliveryNodes = [];
         $scope.delivery = {};
         $scope.releaseOrderItems = [];
@@ -81,6 +81,9 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     DistributionPlanNodeService.getNodesByDelivery($scope.delivery.id)
                         .then(function (response) {
                             $scope.deliveryNodes = response.data;
+                            $scope.selectedLocationId = response.data[0].location
+                            $scope.selectedDate = response.data[0].plannedDistributionDate;
+                            $scope.contact.id = response.data[0].contactPersonId;
                         });
                 }
                 showLoadingModal(false);
@@ -112,7 +115,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         };
 
         var getNodeForItem = function (releaseOrderitem) {
-            return $scope.deliveryNodes.find(function(deliveryNode){
+            return $scope.deliveryNodes.find(function (deliveryNode) {
                 return deliveryNode.item === releaseOrderitem.id
             });
         };
@@ -130,11 +133,11 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
                 node.planned_distribution_date = formatDateForSave(deliveryDate);
-                return DistributionPlanNodeService.update(node);
+                DistributionPlanNodeService.update(node);
             } else {
                 node = {
                     consignee: $scope.selectedReleaseOrder.consignee.id,
-                    location: 1,//Location not being picked up!! $scope.selectedLocation,
+                    location: $scope.selectedLocationId,
                     contact_person_id: $scope.contact.id,
                     distribution_plan: $scope.delivery,
                     tree_position: 'IMPLEMENTING_PARTNER',
@@ -143,7 +146,8 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     planned_distribution_date: formatDateForSave(deliveryDate),
                     track: false
                 };
-                return DistributionPlanNodeService.create(node);
+                var response = DistributionPlanNodeService.create(node);
+                $scope.deliveryNodes.push(response.data);
             }
 
         };
