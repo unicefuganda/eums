@@ -27,7 +27,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.isReport = false;
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
-        $scope.quantityHeaderText = $scope.distributionPlanReport ? 'Targeted Qty' : 'Delivered Qty';
+        $scope.quantityHeaderText = 'Delivered Qty';
         $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
         function createToast(message, klass) {
@@ -350,7 +350,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         function saveDistributionPlanNodes() {
-            var message = $scope.distributionPlanReport ? 'Delivery Saved!' : 'Report Saved!';
+            var message = 'Delivery Saved!';
             $scope.distributionPlanNodes.forEach(function (node) {
                 saveNode(node);
             });
