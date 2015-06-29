@@ -60,7 +60,7 @@
                     <div class="form-group col-lg-2">
                         District:
                     </div>
-                    <div class="form-group col-lg-2">
+                    <div class="form-group col-lg-2" ng-if="districtsLoaded">
                         <input type="hidden" search-from-list list="{{ districts }}"
                                ng-model="selectedLocation"
                                value="{{ selectedLocation }}">

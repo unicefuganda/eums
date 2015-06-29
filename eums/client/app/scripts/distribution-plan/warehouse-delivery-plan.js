@@ -9,10 +9,11 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         $scope.districts = [];
         $scope.contact = {};
         $scope.selectedDate = '';
-        $scope.selectedLocation = '';
+        $scope.selectedLocation = {};
         $scope.deliveryNodes = [];
         $scope.delivery = {};
         $scope.releaseOrderItems = [];
+        $scope.districtsLoaded = false;
 
         function createToast(message, klass) {
             ngToast.create({
@@ -64,6 +65,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
             });
+            $scope.districtsLoaded = true;
         });
 
         ReleaseOrderService.get($routeParams.releaseOrderId,
@@ -125,7 +127,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
 
             var node = getNodeForItem(releaseOrderItem);
             if (node) {
-                node.location = 1;//Location not being picked up!! $scope.selectedLocation;
+                node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
                 node.planned_distribution_date = formatDateForSave(deliveryDate);
                 return DistributionPlanNodeService.update(node);
