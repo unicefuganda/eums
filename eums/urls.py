@@ -8,7 +8,7 @@ from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
-from eums.api.consignee.consignee import consigneeRouter
+from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, \
     ConsigneePurchaseOrderItemNode
 from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
