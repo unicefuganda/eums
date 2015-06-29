@@ -139,12 +139,16 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             $('#add-contact-modal').modal();
         });
 
-        $scope.saveContact = function () {
-            ContactService.create($scope.contact).then(function (createdContact) {
+        $scope.saveContact = function (contact) {
+            ContactService.create(contact).then(function (createdContact) {
                 $scope.$emit('contact-saved', createdContact, $scope.object, $scope.objectIndex);
                 $('#add-contact-modal').modal('hide');
             }).catch(function (response) {
                 ngToast.create({content: response.data.error, class: 'danger', maxNumber: 1, dismissOnTimeout: true});
             });
         };
+
+        $scope.invalidContact = function(contact) {
+            return !(contact.firstName && contact.lastName && contact.phone);
+        }
     });
