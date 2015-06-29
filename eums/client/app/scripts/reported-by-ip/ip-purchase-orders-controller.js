@@ -46,12 +46,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         }
 
         function createToast(message, klass) {
-            ngToast.create({
-                content: message,
-                class: klass,
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
+            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
         }
 
         showLoader();
@@ -146,7 +141,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             });
         };
 
-        $scope.toOrderView = function(order) {
+        $scope.toOrderView = function (order) {
             $location.path(rootPath + order.id);
         };
 
