@@ -9,7 +9,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         $scope.districts = [];
         $scope.contact = {};
         $scope.selectedDate = '';
-        $scope.selectedLocationId = '';
+        $scope.selectedLocation = {};
         $scope.deliveryNodes = [];
         $scope.delivery = {};
         $scope.releaseOrderItems = [];
@@ -81,7 +81,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     DistributionPlanNodeService.getNodesByDelivery($scope.delivery.id)
                         .then(function (response) {
                             $scope.deliveryNodes = response.data;
-                            $scope.selectedLocationId = response.data[0].location
+                            $scope.selectedLocation.id = response.data[0].location;
                             $scope.selectedDate = response.data[0].plannedDistributionDate;
                             $scope.contact.id = response.data[0].contactPersonId;
                         });
@@ -97,8 +97,6 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             $scope.releaseOrderItems.forEach(function (releaseOrderItem) {
                 saveDeliveryNode(releaseOrderItem);
             });
-            var message = 'Warehouse Delivery Saved!';
-            createToast(message, 'success');
         };
 
         $scope.saveDelivery = function () {
@@ -108,15 +106,18 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             else {
                 DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.salesOrder.programme.id})
                     .then(function (createdDelivery) {
+                        var message = 'Warehouse Delivery Saved!';
+                        createToast(message, 'success');
+
                         $scope.delivery = createdDelivery;
                         saveDeliveryNodes();
                     });
             }
         };
 
-        var getNodeForItem = function (releaseOrderitem) {
+        var getNodeForItem = function (releaseOrderItem) {
             return $scope.deliveryNodes.find(function (deliveryNode) {
-                return deliveryNode.item === releaseOrderitem.id
+                return deliveryNode.item === releaseOrderItem.id
             });
         };
 
@@ -127,28 +128,57 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 var planDate = $scope.selectedDate.split('/');
                 deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
-
             var node = getNodeForItem(releaseOrderItem);
             if (node) {
                 node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
                 node.planned_distribution_date = formatDateForSave(deliveryDate);
-                DistributionPlanNodeService.update(node);
+                DistributionPlanNodeService.update(node)
+                    .then(function (response) {
+                        handleSuccess(true);
+                    },
+                    function (response) {
+                        handleErrors(response);
+                    });
             } else {
                 node = {
                     consignee: $scope.selectedReleaseOrder.consignee.id,
-                    location: $scope.selectedLocationId,
+                    location: $scope.selectedLocation.id,
                     contact_person_id: $scope.contact.id,
-                    distribution_plan: $scope.delivery,
+                    distribution_plan: $scope.delivery.id,
                     tree_position: 'IMPLEMENTING_PARTNER',
                     item: releaseOrderItem,
                     targeted_quantity: parseInt(releaseOrderItem.quantity),
                     planned_distribution_date: formatDateForSave(deliveryDate),
                     track: false
                 };
-                var response = DistributionPlanNodeService.create(node);
-                $scope.deliveryNodes.push(response.data);
+                DistributionPlanNodeService.create(node)
+                    .then(function (response) {
+                        handleSuccess(false);
+                        $scope.deliveryNodes.push(response.data);
+                    }, function (response) {
+                        handleErrors(response, releaseOrderItem.item.materialCode);
+                    });
+
             }
 
         };
+
+        var handleSuccess = function (isUpdate) {
+            var message = 'Warehouse Delivery Node Saved!';
+
+            if (isUpdate) {
+                message = 'Warehouse Delivery Node Updated!';
+            }
+            createToast(message, 'success');
+        }
+        var handleErrors = function (response, materialCode) {
+            var message = '';
+            var errors = response.data;
+            for (var property in errors) {
+                message += 'Material: ' + materialCode + ', ' + property + ': ' + errors[property] + '\n';
+            }
+            $scope.nodeSavingErrors = true;
+            createToast(message, 'danger');
+        }
     });
