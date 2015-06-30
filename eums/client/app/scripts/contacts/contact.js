@@ -133,6 +133,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         $scope.contact = {};
 
         $scope.$on('add-contact', function (_, object, objectIndex) {
+            $scope.contact = {};
             $scope.object = object;
             $scope.objectIndex = objectIndex;
             $('#add-contact-modal').modal();
