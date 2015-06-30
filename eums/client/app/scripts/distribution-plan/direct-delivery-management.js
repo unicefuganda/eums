@@ -295,7 +295,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             return null;
         }
 
-        function saveNode(uiPlanNode, savedNodes) {
+        function saveNode(uiPlanNode) {
             var deferred = $q.defer();
 
             var nodeId = uiPlanNode.id;
@@ -329,8 +329,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
                     DistributionPlanNodeService.update(node).then(function(retNode){
-                        savedNodes.push( uiPlanNode);
-                        deferred.resolve();
+                        deferred.resolve(uiPlanNode);
                     });
                 }
                 else {
@@ -339,8 +338,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                         uiPlanNode.canReceiveSubConsignees = function () {
                             return this.id && !this.isEndUser;
                         }.bind(uiPlanNode)
-                        savedNodes.push(uiPlanNode);
-                        deferred.resolve();
+                        deferred.resolve(uiPlanNode);
                     });
                 }
             }).catch(function(){
@@ -372,7 +370,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             var saveNodePromises = [];
 
             pNodes.forEach(function (node) {
-                saveNodePromises.push[saveNode(node, nodesCumulator)];
+                saveNodePromises.push[saveNode(node).then(function(upToDateNode){
+                    return nodesCumulator.push(upToDateNode);
+                })];
             });
 
             $q.all(saveNodePromises).then(function () {
