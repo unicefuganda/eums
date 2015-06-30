@@ -326,10 +326,15 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     node.id = nodeId;
                     node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
-                    return DistributionPlanNodeService.update(node);
+                    return DistributionPlanNodeService.update(node).then(function(retNode){
+                        return retNode;
+                    });
                 }
                 else {
-                    return DistributionPlanNodeService.create(node);
+                    return DistributionPlanNodeService.create(node).then(function(retNode){
+                        uiPlanNode.id = retNode.id;
+                        return retNode;
+                    });
                 }
             });
         }
