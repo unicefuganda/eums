@@ -343,7 +343,7 @@ module.exports = function (grunt) {
                 'clean:dist',
                 'shell:processConfigs:' + url,
                 'ngconstant:staging',
-                'newer:uglify:all',
+                'uglify:all',
                 'less'
             ]);
         }
@@ -352,7 +352,7 @@ module.exports = function (grunt) {
                 'clean:dist',
                 'shell:processConfigs:localhost',
                 'ngconstant:staging',
-                'newer:uglify:all',
+                'uglify:all',
                 'less'
             ]);
         }
