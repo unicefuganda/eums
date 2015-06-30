@@ -80,67 +80,69 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         work_book = Workbook()
         sheet = work_book.add_sheet('Sheet 1')
 
-        self.header = ['PurGrp', 'Purchasing Group Name', 'Document Date', 'Doc Year', 'Doc Month',
-                       'Purchasing Doc. Type',
-                       'PurchDoc', 'PO Item', 'Schline', 'Material', 'PurchaseOrderMaterialText', 'MatGroup',
-                       'Material Group Name', 'Line Category', 'Currency', 'Net Order Price', 'USD Value',
-                       'Net Order Value',
-                       'QntyPoLineOrder', 'Scheduled Quantity', 'Sales Document', 'Soitem', 'SO Reason',
-                       'Emerg. Approval Field', 'SO Short Desc.', 'Sold-to party', 'SoldToParty name',
-                       'Purchase Requisition No.', 'Purchase Requisition Item No.', 'LTA Number', 'LTA Item',
-                       'Incoterms',
-                       'Incoterms2', 'WBS Element', 'Grant Expiry Date', 'Grant', 'ContractingInfoText', 'Created by',
-                       'Vendor', 'POVendorName', 'VendorCtryName', 'PO Release Status', 'PO Release Date', 'PODeldate',
-                       'Statdeldate', 'AB Creation Date', 'AB Delivery Date', 'GoodsReadinessDate',
-                       'GoodsReadvsPODelDate',
-                       'Statdatediff', 'FF Code', 'FF Name', 'Partner Function', 'Shipping Notification Number',
-                       'QntyInbDelivery', 'SR Number', 'ZA Creation Date', 'VendGRNotifDate', 'ActualPickupDate(LA)',
-                       'ShipToParty', 'ShipToParty country', 'CurrShipmentStart', 'ETA date', 'ActualShipmentEnd',
-                       'Agreed TAD']
+        self.header = ['Purchasing Org', 'Purchasing Group', 'Purchasing Group Description', 'Plant',
+                       'Storage Location', 'PReq Type', 'PReq No', 'PReq Item', 'PReq Creation Date', 'PReq Qty',
+                       'Material No', 'Material Short Text', 'Material Group', 'PO No', 'PO Item', 'PO Type',
+                       'PO Creation Date', 'PO Doc. Date', 'PO Created By', 'Vendor Code', 'Release Indicator',
+                       'Deletion Indicator', 'Inco Terms', 'Tracking No', 'PO Quantity', 'PO UOM', 'PO Delivery Date',
+                       'Order Price Unit', 'Price Conv. (price)', 'Price Conv. (qty)', 'Net Price', 'Price Unit',
+                       'Net Value', 'LTA No.', 'LTA Item No.', 'Consignee Code', 'RFQ No.', 'RFQ Item No.',
+                       'Seq. No. of Account Assgt', 'SO Document No.', 'Material Type	Currency', 'USD Value',
+                       'Gross Value', 'Effective Value', 'Grand Total', 'Vendor Name', 'Vendor Country',
+                       'Vendor Country Name', 'Consignee Name', 'Consignee Country', 'Consignee Country Name',
+                       'Consignee Region Code', 'Consignee Region Name', 'PO Line Process', 'SO Creation Date',
+                       'SO Short Desc', 'SO Issue Date', 'SO Doc Type', 'Order Reason Code', 'Order Reason Text',
+                       'MM Pur Group', '	Material Group Description', 'Material Type', 'Material Type Description',
+                       'Material Sub Type', 'Material Sub Type Description', 'Mstr ITB Creation Date',
+                       'Mstr ITB Release Date', 'Mstr ITB Mailing Date', 'Mstr ITB Opening Date',
+                       'Replt ITB Creation Date', 'PO Release Date(First)', 'PO Release Date(Latest)',
+                       'Sold To Party Code', 'Sold To Party Name', 'Receiving Country', 'Receiving Country Name',
+                       'Receiving Country Region Code', 'Receiving Country Region Name', 'Funding Code', 'Funding Name',
+                       'Direct Order Indicator', 'Forwarder Code', 'Forwarder Name', 'WBS', 'GL Account', 'Fund',
+                       'Grant', 'Grant Valid From', 'Grant Valid Until', 'Line Category', 'Preq LPA Flag',
+                       'Preq LPA Reference']
 
-        self.first_row = [u'617', u'Kampala, Uganda', u'15/01/2015', u'2015', u'1', u'ZLC', u'54101099', u'10', u'1',
-                          u'SL005144',
-                          u'Laptop Lenovo ThinkPad T510', u'Z11109', u'WATER AND SANITATION', u'PROG', u'UGX',
-                          u'1190.00',
-                          u'3436.82', u'9520000.00', u'8000', u'8000', u'20153976', u'10', u'', u'',
-                          u'ALIVE:WASH Ltrine mt',
-                          u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'30323186', u'40', u'', u'0', u'DAP',
-                          u'UNICEF SPEDAG INTERFREIGHT',
-                          u'4380/A0/04/105/007/017', u'30.06.2015', u'SM140277', u'', u'SOLOWO', u'2300026922',
-                          u'Techno Relief Services (U) Ltd', u'Uganda', u'1', u'2015-01-15', u'30/01/2015',
-                          u'30/01/2015', u'',
-                          u'', u'09/02/2015', u'10', u'10', u'', u'', u'', u'56186111', u'8000', u'', u'', u'', u'',
-                          u'X43805',
-                          u'UGANDA', u'', u'', u'', u'22/07/2014']
+        self.first_row = [u'1000', u'617', u'Kampala, Uganda', u'5617', u'', u'NB', u'0030323186', u'10', u'01/14/2015',
+                          u'8000', u'SL005144', u'Laptop Lenovo ThinkPad T510', u'Z11109', u'54101099', u'10', u'ZLC',
+                          u'01/15/2015', u'01/15/2015', u'SOLOWO', u'2300026922', u'1', u'', u'DAP', u'ALIVE:WASH',
+                          u'8000', u'EA', u'01/30/2015', u'EA', u'1', u'1', u'1190.00', u'1', u'9520000.00', u'', u'0',
+                          u'X43805', u'9116811031', u'10', u'1', u'20153976', u'ZSL', u'UGX', u'3436.82', u'9520000.00',
+                          u'9520000.00', u'0.00', u'Techno Relief Services (U) Ltd', u'438', u'Uganda',
+                          u'UNICEF KAMPALA', u'438', u'Uganda', u'12', u'(ESARO)EASTERN AND SOUTHERN AFRICA', u'RFQ',
+                          u'07/22/2014', u'ALIVE:WASH Ltrine mt', u'07/22/2014', u'ZCOM', u'', u'', u'111',
+                          u'Sanitation & Hygiene', u'Z1', u'Misc Std Non Stock', u'Z111', u'WATER AND SANITATION',
+                          u'01/12/2015', u'01/12/2015', u'01/12/2015', u'01/15/2015', u'01/12/2015', u'01/15/2015',
+                          u'2015-01-15', u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'438', u'Uganda', u'12',
+                          u'(ESARO)EASTERN AND SOUTHERN AFRICA', u'', u'', u'N', u'', u'', u'4380/A0/04/105/007/017',
+                          u'0001310190', u'SM', u'SM140277', u'01.01.2014', u'30.06.2015', u'PROG']
 
-        self.second_row = [u'617', u'Kampala, Uganda', u'15/01/2015', u'2015', u'1', u'ZLC', u'54101099', u'20', u'1',
-                           u'SL002248',
-                           u'Laptop bag', u'Z11109', u'WATER AND SANITATION', u'PROG', u'UGX', u'1190.00',
-                           u'2000.01', u'9520000.00', u'1000', u'8000', u'20153976', u'20', u'', u'',
-                           u'ALIVE:WASH Ltrine mt',
-                           u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'30323186', u'40', u'', u'0', u'DAP',
-                           u'UNICEF SPEDAG INTERFREIGHT',
-                           u'4380/A0/04/105/007/017', u'30.06.2015', u'SM140277', u'', u'SOLOWO', u'2300026922',
-                           u'Techno Relief Services (U) Ltd', u'Uganda', u'1', u'15/01/2015', u'30/01/2015',
-                           u'30/01/2015', u'',
-                           u'', u'09/02/2015', u'10', u'10', u'', u'', u'', u'56186111', u'8000', u'', u'', u'', u'',
-                           u'X43805',
-                           u'UGANDA', u'', u'', u'', u'22/07/2014']
+        self.second_row = [u'1000', u'617', u'Kampala, Uganda', u'5617', u'', u'NB', u'0030323186', u'20',
+                           u'01/14/2015', u'8000', u'SL002248', u'Laptop bag', u'Z11109', u'54101099', u'20', u'ZLC',
+                           u'01/15/2015', u'01/15/2015', u'SOLOWO', u'2300026922', u'1', u'', u'DAP', u'ALIVE:WASH',
+                           u'1000', u'EA', u'01/30/2015', u'EA', u'1', u'1', u'1190.00', u'1', u'9520000.00', u'', u'0',
+                           u'X43805', u'9116811031', u'10', u'1', u'20153976', u'ZSL', u'UGX', u'2000.01',
+                           u'9520000.00', u'9520000.00', u'0.00', u'Techno Relief Services (U) Ltd', u'438', u'Uganda',
+                           u'UNICEF KAMPALA', u'438', u'Uganda', u'12', u'(ESARO)EASTERN AND SOUTHERN AFRICA', u'RFQ',
+                           u'07/22/2014', u'ALIVE:WASH Ltrine mt', u'07/22/2014', u'ZCOM', u'', u'', u'111',
+                           u'Sanitation & Hygiene', u'Z1', u'Misc Std Non Stock', u'Z111', u'WATER AND SANITATION',
+                           u'01/12/2015', u'01/12/2015', u'01/12/2015', u'01/15/2015', u'01/12/2015', u'01/15/2015',
+                           u'15/01/2015', u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'438', u'Uganda', u'12',
+                           u'(ESARO)EASTERN AND SOUTHERN AFRICA', u'', u'', u'N', u'', u'', u'4380/A0/04/105/007/017',
+                           u'0001310190', u'SM', u'SM140277', u'01.01.2014', u'30.06.2015', u'PROG']
 
-        self.third_row = [u'617', u'Kampala, Uganda', u'15/01/2015', u'2015', u'1', u'ZLC', u'54101128', u'20', u'1',
-                          u'S0000208',
-                          u'F-75 therap.diet sachet 102.5g/CAR-120', u'Z11109', u'WATER AND SANITATION', u'PROG',
-                          u'UGX', u'1190.00',
-                          u'4850.19', u'9520000.00', u'5000', u'8000', u'20143982', u'20', u'', u'',
-                          u'ALIVE:WASH Ltrine mt',
-                          u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'30323186', u'40', u'', u'0', u'DAP',
-                          u'UNICEF SPEDAG INTERFREIGHT',
-                          u'4380/A0/04/105/007/017', u'30.06.2015', u'SM140277', u'', u'SOLOWO', u'2300026922',
-                          u'Techno Relief Services (U) Ltd', u'Uganda', u'1', u'', u'30/01/2015',
-                          u'30/01/2015', u'',
-                          u'', u'09/02/2015', u'10', u'10', u'', u'', u'', u'56186111', u'8000', u'', u'', u'', u'',
-                          u'X43805',
-                          u'UGANDA', u'', u'', u'', u'22/07/2014']
+        self.third_row = [u'1000', u'617', u'Kampala, Uganda', u'5617', u'', u'NB', u'0030323186', u'20', u'01/14/2015',
+                          u'8000', u'S0000208', u'F-75 therap.diet sachet 102.5g/CAR-120', u'Z11109', u'54101128',
+                          u'20', u'ZLC', u'01/15/2015', u'01/15/2015', u'SOLOWO', u'2300026922', u'1', u'', u'DAP',
+                          u'ALIVE:WASH', u'5000', u'EA', u'01/30/2015', u'EA', u'1', u'1', u'1190.00', u'1',
+                          u'9520000.00', u'', u'0', u'X43805', u'9116811031', u'10', u'1', u'20143982', u'ZSL', u'UGX',
+                          u'4850.19', u'9520000.00', u'9520000.00', u'0.00', u'Techno Relief Services (U) Ltd', u'438',
+                          u'Uganda', u'UNICEF KAMPALA', u'438', u'Uganda', u'12', u'(ESARO)EASTERN AND SOUTHERN AFRICA',
+                          u'RFQ', u'07/22/2014', u'ALIVE:WASH Ltrine mt', u'07/22/2014', u'ZCOM', u'', u'', u'111',
+                          u'Sanitation & Hygiene', u'Z1', u'Misc Std Non Stock', u'Z111', u'WATER AND SANITATION',
+                          u'01/12/2015', u'01/12/2015', u'01/12/2015', u'01/15/2015', u'01/12/2015', u'01/15/2015', u'',
+                          u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'438', u'Uganda', u'12',
+                          u'(ESARO)EASTERN AND SOUTHERN AFRICA', u'', u'', u'N', u'', u'', u'4380/A0/04/105/007/017',
+                          u'0001310190', u'SM', u'SM140277', u'01.01.2014', u'30.06.2015', u'PROG']
 
         rows = [self.header, self.first_row, self.second_row, self.third_row]
 
@@ -158,9 +160,12 @@ class TestPurchaseOrdersVisionFacade(TestCase):
     def create_sales_orders(self):
         self.sales_order_one = SalesOrderFactory(order_number=20153976)
         self.sales_order_two = SalesOrderFactory(order_number=20143982)
-        self.sales_order_item_one = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_one, item_number=10)
-        self.sales_order_item_two = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_two, item_number=20)
-        self.sales_order_item_three = SalesOrderItemFactory(sales_order=self.sales_order_two, item=self.item_three, item_number=20)
+        self.sales_order_item_one = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_one,
+                                                          item_number=10)
+        self.sales_order_item_two = SalesOrderItemFactory(sales_order=self.sales_order_one, item=self.item_two,
+                                                          item_number=20)
+        self.sales_order_item_three = SalesOrderItemFactory(sales_order=self.sales_order_two, item=self.item_three,
+                                                            item_number=20)
 
     def test_should_load_purchase_order_data(self):
         purchase_order_data = self.facade.load_records()
@@ -217,7 +222,8 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.facade.save_records(self.updated_imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
-        self.assertEqual(str(PurchaseOrder.objects.all()[0].date), self.updated_imported_purchase_order_data[0]['po_date'])
+        self.assertEqual(str(PurchaseOrder.objects.all()[0].date),
+                         self.updated_imported_purchase_order_data[0]['po_date'])
 
     def test_should_update_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
         self.create_items()
