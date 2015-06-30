@@ -295,7 +295,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             return null;
         }
 
-        function saveNode(uiPlanNode) {
+        function saveNode(uiPlanNode, savedNodes) {
+            var deferred = $q.defer();
+
             var nodeId = uiPlanNode.id;
             var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
 
@@ -326,17 +328,25 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     node.id = nodeId;
                     node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
-                    return DistributionPlanNodeService.update(node).then(function(retNode){
-                        return retNode;
+                    DistributionPlanNodeService.update(node).then(function(retNode){
+                        savedNodes.push( uiPlanNode);
+                        deferred.resolve();
                     });
                 }
                 else {
-                    return DistributionPlanNodeService.create(node).then(function(retNode){
+                    DistributionPlanNodeService.create(node).then(function(retNode){
                         uiPlanNode.id = retNode.id;
-                        return retNode;
+                        uiPlanNode.canReceiveSubConsignees = function () {
+                            return this.id && !this.isEndUser;
+                        }.bind(uiPlanNode)
+                        savedNodes.push(uiPlanNode);
+                        deferred.resolve();
                     });
                 }
+            }).catch(function(){
+                deferred.reject();
             });
+            return deferred.promise;
         }
 
         function savePurchaseOrderIPMode() {
@@ -356,10 +366,20 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         function saveDistributionPlanNodes() {
             var message = 'Delivery Saved!';
-            $scope.distributionPlanNodes.forEach(function (node) {
-                saveNode(node);
+            var pNodes = $scope.distributionPlanNodes;
+            $scope.distributionPlanNodes = [];
+            var nodesCumulator = [];
+            var saveNodePromises = [];
+
+            pNodes.forEach(function (node) {
+                saveNodePromises.push[saveNode(node, nodesCumulator)];
             });
-            createToast(message, 'success');
+
+            $q.all(saveNodePromises).then(function () {
+                $scope.distributionPlanNodes = nodesCumulator;
+                createToast(message, 'success');
+            });
+
         }
 
         $scope.warnBeforeSaving = function () {
