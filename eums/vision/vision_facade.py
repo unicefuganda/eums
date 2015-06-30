@@ -323,11 +323,14 @@ class PurchaseOrderFacade(OrderFacade):
 
     def _create_new_order(self, order_dict):
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=order_dict['order_number'])
+        po_date = None if order_dict['po_date'] == '' else self._get_as_date(order_dict['po_date'])
         if len(matching_purchase_orders):
-            return matching_purchase_orders[0]
+            matching_order = matching_purchase_orders[0]
+            matching_order.date = po_date
+            matching_order.save()
+            return matching_order
 
         matching_sales_orders = self._get_matching_sales_order(order_dict)
-        po_date = None if order_dict['po_date'] == '' else self._get_as_date(order_dict['po_date'])
         if len(matching_sales_orders):
             return PurchaseOrder.objects.create(order_number=order_dict['order_number'],
                                                 sales_order=matching_sales_orders[0],

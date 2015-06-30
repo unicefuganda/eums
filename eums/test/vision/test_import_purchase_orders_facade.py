@@ -43,7 +43,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                                          'so_item_number': 20}]}]
         self.updated_imported_purchase_order_data = [{'order_number': 54101099,
                                                       'so_number': 20153976,
-                                                      'po_date': '2015-01-15',
+                                                      'po_date': '2015-10-15',
                                                       'items': [{'material_code': 'SL005144',
                                                                  'material_description': 'Laptop Lenovo ThinkPad T510',
                                                                  'quantity': 16000,
@@ -58,7 +58,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                                                  'so_item_number': 20}]},
                                                      {'order_number': 54101128,
                                                       'so_number': 20143982,
-                                                      'po_date': '',
+                                                      'po_date': '2015-11-15',
                                                       'items': [{'material_code': 'S0000208',
                                                                  'material_description': 'F-75 therap.diet sachet 102.5g/CAR-120',
                                                                  'quantity': 5000,
@@ -207,6 +207,17 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 0)
+
+    def test_should_update_existing_purchase_order_date_when_saving_only_matching_by_order_number(self):
+        self.create_items()
+        self.create_sales_orders()
+
+        self.facade.save_records(self.imported_purchase_order_data)
+        self.assertEqual(PurchaseOrderItem.objects.count(), 3)
+
+        self.facade.save_records(self.updated_imported_purchase_order_data)
+        self.assertEqual(PurchaseOrderItem.objects.count(), 3)
+        self.assertEqual(str(PurchaseOrder.objects.all()[0].date), self.updated_imported_purchase_order_data[0]['po_date'])
 
     def test_should_update_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
         self.create_items()
