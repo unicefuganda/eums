@@ -15,5 +15,5 @@ cd deploy_$today
 
 chmod a+x scripts/*.sh
 
-echo "Running install script ..."
+echo "Running install script for host IP: " ${hostip} "..."
 scripts/install-image-eums.sh ${hostip}
