@@ -47,8 +47,8 @@ sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 -
 -d --name=eums \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
--e "LOCAL_HOST_IP=${HOST_IP}" \
-%IMAGENAME%:latest
+%IMAGENAME%:latest \
+/bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} && /usr/bin/supervisord"
 
 echo "Done!"
 
