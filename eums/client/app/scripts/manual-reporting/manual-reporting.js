@@ -75,7 +75,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
     })
     .filter('documentFilter', function ($filter) {
         return  function (documents, query) {
-            var results = $filter('filter')(documents, {order_number: query});
+            var results = $filter('filter')(documents, {orderNumber: query});
             results = _.union(results, $filter('filter')(documents, {date: query}));
             results = _.union(results, $filter('filter')(documents, {programme: query}));
             return results;
