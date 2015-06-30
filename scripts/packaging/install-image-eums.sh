@@ -36,7 +36,7 @@ if [ $(sudo docker ps | grep eums | awk '{print$1}') ]; then
 fi
 
 
-echo "Running image ..."
+echo "Running image on host IP: " $1 "..."
 DEPLOY_MACHINE_HTTP_PORT=80
 DEPLOY_MACHINE_SSH_PORT=50000
 EUMS_CONTAINER_HOST_NAME=127.0.0.1
