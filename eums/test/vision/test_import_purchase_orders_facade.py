@@ -20,6 +20,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.imported_purchase_order_data = [{'order_number': 54101099,
                                               'so_number': 20153976,
                                               'po_date': '2015-01-15',
+                                              'po_type': 'ZLC',
                                               'items': [{'material_code': 'SL005144',
                                                          'material_description': 'Laptop Lenovo ThinkPad T510',
                                                          'quantity': 8000,
@@ -35,6 +36,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                              {'order_number': 54101128,
                                               'so_number': 20143982,
                                               'po_date': '',
+                                              'po_type': 'NB',
                                               'items': [{'material_code': 'S0000208',
                                                          'material_description': 'F-75 therap.diet sachet 102.5g/CAR-120',
                                                          'quantity': 5000,
@@ -44,6 +46,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.updated_imported_purchase_order_data = [{'order_number': 54101099,
                                                       'so_number': 20153976,
                                                       'po_date': '2015-10-15',
+                                                      'po_type': 'NB',
                                                       'items': [{'material_code': 'SL005144',
                                                                  'material_description': 'Laptop Lenovo ThinkPad T510',
                                                                  'quantity': 16000,
@@ -59,6 +62,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                                      {'order_number': 54101128,
                                                       'so_number': 20143982,
                                                       'po_date': '2015-11-15',
+                                                      'po_type': 'ZLC',
                                                       'items': [{'material_code': 'S0000208',
                                                                  'material_description': 'F-75 therap.diet sachet 102.5g/CAR-120',
                                                                  'quantity': 5000,
@@ -132,7 +136,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.third_row = [u'1000', u'617', u'Kampala, Uganda', u'5617', u'', u'NB', u'0030323186', u'20', u'01/14/2015',
                           u'8000', u'S0000208', u'F-75 therap.diet sachet 102.5g/CAR-120', u'Z11109', u'54101128',
-                          u'20', u'ZLC', u'01/15/2015', u'01/15/2015', u'SOLOWO', u'2300026922', u'1', u'', u'DAP',
+                          u'20', u'NB', u'01/15/2015', u'01/15/2015', u'SOLOWO', u'2300026922', u'1', u'', u'DAP',
                           u'ALIVE:WASH', u'5000', u'EA', u'01/30/2015', u'EA', u'1', u'1', u'1190.00', u'1',
                           u'9520000.00', u'', u'0', u'X43805', u'9116811031', u'10', u'1', u'20143982', u'ZSL', u'UGX',
                           u'4850.19', u'9520000.00', u'9520000.00', u'0.00', u'Techno Relief Services (U) Ltd', u'438',
@@ -213,7 +217,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.facade.save_records(self.imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 0)
 
-    def test_should_update_existing_purchase_order_date_when_saving_only_matching_by_order_number(self):
+    def test_should_update_existing_purchase_order_date_and_po_type_when_saving_only_matching_by_order_number(self):
         self.create_items()
         self.create_sales_orders()
 
@@ -224,6 +228,8 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
         self.assertEqual(str(PurchaseOrder.objects.all()[0].date),
                          self.updated_imported_purchase_order_data[0]['po_date'])
+        self.assertEqual(PurchaseOrder.objects.all()[0].po_type,
+                         self.updated_imported_purchase_order_data[0]['po_type'])
 
     def test_should_update_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
         self.create_items()

@@ -119,7 +119,7 @@ def create_purchase_order(test_case, purchase_order_details=None):
     if not purchase_order_details:
         programme = create_programme()
         sales_order = create_sales_order(test_case)
-        purchase_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5),
+        purchase_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5), 'po_type': 'NB',
                                   'programme': programme.id, 'description': 'test', "sales_order": sales_order['id']}
 
     response = test_case.client.post(PURCHASE_ORDER_ENDPOINT_URL, purchase_order_details, format='json')

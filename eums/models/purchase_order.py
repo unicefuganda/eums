@@ -20,6 +20,8 @@ class PurchaseOrder(models.Model):
     sales_order = models.ForeignKey(SalesOrder)
     date = models.DateField(auto_now=False, null=True)
     is_single_ip = models.NullBooleanField(null=True)
+    po_type = models.CharField(max_length=255, null=True)
+
     objects = PurchaseOrderManager()
 
     def has_plan(self):
