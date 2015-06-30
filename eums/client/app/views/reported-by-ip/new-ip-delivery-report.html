@@ -20,8 +20,6 @@
                             Item Description:
                         </label>
                         <div class="col-lg-8" ng-show="!state.PO_ITEM">
-                            <select id="select-purchase-order-item" ng-model="selectedPurchaseOrderItem" required="required"
-                        <div class="col-lg-8">
                             <select id="select-purchase-order" ng-model="selectedPurchaseOrderItem" required="required"
                                     class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                     ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
@@ -30,31 +28,6 @@
                         </div>
                     </div>
                 </div>
-
-<<<<<<< HEAD
-                <div class="form-group col-lg-4" ng-show="parentNode && state.canGoBack()">
-                    <div class="sub_header_padding">
-                        <span class="sub-header">Add Sub-Consignee to:</span> <span
-                            class="text-muted">{{ parentNode.consignee.name }}</span>
-                    </div>
-                    <div class="sub_header_padding" ng-show="state.canGoBack()">
-                        <button type="button" class="btn btn-default btn-sm blue-border-button"
-                                ng-click="toSubConsigneeView(parentNode.parent)">
-                            <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
-                            Back to Previous Consignee
-                        </button>
-                    </div>
-                </div>
-                <div class="form-group col-lg-4" ng-show="!state.canGoBack() && !state.PO_LEVEL">
-                    <div class="sub_header_padding">
-                        <button type="button" class="btn btn-default btn-sm blue-border-button"
-                                ng-click="toOrderView(selectedPurchaseOrder)">
-                            <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
-                            Back to Purchase Order
-                        </button>
-                    </div>
-                </div>
-=======
                 <!--<div class="form-group col-lg-4" ng-show="planNode && !consigneeLevel">-->
                 <!--<div class="sub_header_padding">-->
                 <!--<span class="sub-header">Add Sub-Consignee:</span> <span-->
@@ -68,7 +41,6 @@
                 <!--</button>-->
                 <!--</div>-->
                 <!--</div>-->
->>>>>>> [#95500096] Added check for whether purchase order is fully delivered
             </div>
 
             <div ng-show="selectedPurchaseOrderItem" class="material-items well col-lg-7 pull-right">
