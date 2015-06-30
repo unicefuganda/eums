@@ -22,5 +22,3 @@ celerybeat-schedule.db
 eums/client/less/*.css
 eums/client/app/css/app.css
 
-# environment.json used on staging and prod
-eums/client/config/environment.json
