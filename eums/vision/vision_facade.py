@@ -82,7 +82,7 @@ class Facade():
                 raise ImportException(
                     "Import has failed due to missing [{0}] in row [{1}]. "
                     "Please correct the error then try the upload again"
-                    .format(e.message, str(row_number)))
+                        .format(e.message, str(row_number)))
             except XLDateAmbiguous:
                 pass
 
@@ -124,7 +124,7 @@ class OrderFacade(Facade):
                 raise Exception(
                     "Import has failed due to an error in row [{0}] column [{1}]. "
                     "Please correct the error then try the upload again"
-                    .format(str(row_num), e.message))
+                        .format(str(row_num), e.message))
                 pass
             row_num += 1
         return order_list
@@ -318,8 +318,8 @@ class ReleaseOrderFacade(OrderFacade):
 
 
 class PurchaseOrderFacade(OrderFacade):
-    RELEVANT_DATA = {6: 'order_number', 7: 'po_item_number', 9: 'material_code', 10: 'material_description',
-                     16: 'value', 18: 'quantity', 20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
+    RELEVANT_DATA = {13: 'order_number', 14: 'po_item_number', 10: 'material_code', 11: 'material_description',
+                     42: 'value', 24: 'quantity', 39: 'so_number', 7: 'so_item_number', 73: 'po_date'}
 
     def _create_new_order(self, order_dict):
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=order_dict['order_number'])
@@ -386,6 +386,7 @@ class PurchaseOrderFacade(OrderFacade):
             if column != 'po_date' and row[column] is '':
                 return True
         return False
+
 
 class ConsigneeFacade(Facade):
     RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
