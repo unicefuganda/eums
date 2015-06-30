@@ -43,10 +43,16 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         function hideLoader() {
             angular.element('#loading').modal('hide');
+            angular.element('#loading.modal').removeClass('in');
         }
 
         function createToast(message, klass) {
-            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
+            ngToast.create({
+                content: message,
+                class: klass,
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
         }
 
         showLoader();
@@ -54,16 +60,10 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
         var loadPromises = [];
-
-        $scope.state = {
+        var state = {
             NODE: deliveryNodeId,
-            PO_ITEM: purchaseOrderItemId,
-            PO_LEVEL: !deliveryNodeId && !purchaseOrderItemId && $routeParams.purchaseOrderId,
-            canGoBack: function () {
-                return $scope.parentNode && $scope.parentNode.parent;
-            }
+            PO_ITEM: purchaseOrderItemId
         };
-
         $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
         $scope.selectedPurchaseOrderItem = $scope.datepicker = {};
 
@@ -82,32 +82,42 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             $scope.selectedPurchaseOrder = purchaseOrder;
             $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
         }));
+
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
             $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
         };
 
-        if ($scope.state.PO_ITEM) {
+        if (state.PO_ITEM) {
             var getItem = PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-                !$scope.state.NODE && loadDeliveryDataFor(purchaseOrderItem);
+                !state.NODE && loadDeliveryDataFor(purchaseOrderItem);
             });
             loadPromises.push(getItem);
         }
 
-        if ($scope.state.NODE) {
+        if (state.NODE) {
             var fields = ['consignee', 'contact_person_id'];
             var getChildNodes = DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
                 $scope.deliveryNodes.add(childNodes);
             });
-            var getParentNode = DistributionPlanNodeService.get(deliveryNodeId, ['consignee']).then(function (node) {
+            var getParentNode = DistributionPlanNodeService.get(deliveryNodeId).then(function (node) {
                 $scope.delivery = node.distributionPlan;
                 $scope.parentNode = node;
             });
             loadPromises.add([getParentNode, getChildNodes]);
         }
 
+
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
+        };
+
+        $scope.invalidNodes = function() {
+            var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
+                return node.isInvalid();
+            });
+            var quantityLeft = $scope.parentNode ? $scope.parentNode.quantityLeft($scope.deliveryNodes) : -1;
+            return someNodesAreInvalid || quantityLeft < 0;
         };
 
         $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
@@ -116,25 +126,9 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             event.stopPropagation();
         });
 
-        $scope.invalidNodes = function () {
-            var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
-                return node.isInvalid();
-            });
-            var quantityLeft = $scope.parentNode ? $scope.parentNode.quantityLeft($scope.deliveryNodes) : -1;
-            return someNodesAreInvalid || quantityLeft < 0;
-        };
-
         $scope.toSubConsigneeView = function (node) {
-            var path = rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/';
-            node.id && $location.path(path + node.id);
-            showLoader();
-            !node.id && DistributionPlanNodeService.get(node).then(function (fetchedNode) {
-                $location.path(path + fetchedNode.id);
-            });
-        };
-
-        $scope.toOrderView = function (order) {
-            $location.path(rootPath + order.id);
+            var path = rootPath + $routeParams.purchaseOrderId + '/' + $routeParams.purchaseOrderItemId + '/' + node.id;
+            $location.path(path);
         };
 
         $scope.addDeliveryNode = function () {
@@ -160,18 +154,18 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                     node.id = created.id;
                 }));
             });
-            $q.all(savePromises).then(function () {
+            $q.all(savePromises).then(function() {
                 createToast('Report Saved!', 'success');
-            }).catch(function () {
+            }).catch(function() {
                 createToast('Report not saved!', 'danger');
             }).finally(hideLoader);
         };
 
         function loadDeliveryDataFor(purchaseOrderItem) {
             var getUser = UserService.getCurrentUser();
-            var getParentNode = function (user) {$scope.$emit('contact-saved', createdContact, $scope.object, $scope.objectIndex);
+            var getParentNode = function (user) {
                 var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
-                return DistributionPlanNodeService.filter(filterParams, ['consignee']).then(function (nodes) {
+                return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
                     var ipDeliveryNode = nodes.first();
                     deliveryNodeId = ipDeliveryNode.id;
                     $scope.delivery = ipDeliveryNode.distributionPlan;
@@ -186,9 +180,9 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                 });
             };
             getUser.then(getParentNode).then(getChildNodes);
+
             loadPromises.add([getUser, getParentNode, getChildNodes]);
         }
 
         $q.all(loadPromises).then(hideLoader);
-    })
-;
+    });
