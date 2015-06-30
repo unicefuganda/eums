@@ -64,6 +64,7 @@
                     <div class="form-group col-lg-2" ng-if="districtsLoaded">
                         <input type="hidden" search-from-list list="{{ districts }}"
                                ng-model="selectedLocation.id"
+                               ng-attr-id="{{ 'location-select' }}"
                                value="{{ selectedLocation.id }}">
                     </div>
                 </div>
