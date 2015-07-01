@@ -88,7 +88,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                             });
                     }
                 });
-        }
+        };
 
         showLoadingModal(true);
         IPService.loadAllDistricts().then(function (response) {
@@ -112,9 +112,9 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         };
 
         $scope.saveDelivery = function () {
-            if (validate($scope.selectedDate, 'Fill in Date field!') === false
-                || validate($scope.contact.id, 'Fill in Contact field!') === false
-                || validate($scope.selectedLocation.id, 'Fill in Location field!') === false) {
+            if (validate($scope.selectedDate, 'Fill in Date field!') === false ||
+                validate($scope.contact.id, 'Fill in Contact field!') === false ||
+                validate($scope.selectedLocation.id, 'Fill in Location field!') === false) {
                 return;
             }
             showLoadingModal(true);
@@ -144,7 +144,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
 
         var getNodeForItem = function (releaseOrderItem) {
             return $scope.deliveryNodes.find(function (deliveryNode) {
-                return deliveryNode.item === releaseOrderItem.id
+                return deliveryNode.item === releaseOrderItem.id;
             });
         };
 
@@ -161,7 +161,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                 node.contact_person_id = $scope.contact.id;
                 node.planned_distribution_date = formatDateForSave(deliveryDate);
                 DistributionPlanNodeService.update(node)
-                    .then(function (response) {
+                    .then(function () {
                         getDelivery();
                         showLoadingModal(false);
                     },
@@ -181,7 +181,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     track: false
                 };
                 DistributionPlanNodeService.create(node)
-                    .then(function (response) {
+                    .then(function () {
                         getDelivery();
                         showLoadingModal(false);
                     }, function (response) {
@@ -200,5 +200,5 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
             }
             $scope.nodeSavingErrors = true;
             createToast(message, 'danger');
-        }
+        };
     });
