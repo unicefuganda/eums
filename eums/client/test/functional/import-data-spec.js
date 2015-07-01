@@ -6,24 +6,16 @@ var importDataPage = require('./pages/import-data-page.js');
 
 describe('Vision Data Imports', function () {
 
-    it('should show consignees imported from vision on the feedback report page', function () {
+    beforeEach(function(){
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
         importDataPage.visit();
+    });
 
-        var path = require('path');
-        var fileToUpload = './files/consignees.xlsx',
-            absolutePath = path.resolve(__dirname, fileToUpload);
+    it('should show consignees imported from vision on the feedback report page', function () {
 
-        element(by.css('#consigneesDiv input')).sendKeys(absolutePath);
-        element(by.css('#consigneesDiv button')).click();
-
-        var EC = protractor.ExpectedConditions;
-        var successTick = element(by.css('#consigneesDiv .glyphicon.glyphicon-ok'));
-
-        var uploadIsComplete = (EC.visibilityOf(successTick));
-        browser.wait(uploadIsComplete, 15000, "Timeout exceeded while importing data");
+        importDataPage.uploadConsignees('../files/consignees.xlsx');
 
         feedbackReportPage.visit();
         feedbackReportPage.consigneeSelect.click();
@@ -32,23 +24,8 @@ describe('Vision Data Imports', function () {
     });
 
     it('should show programmes imported from vision on the feedback report page', function () {
-        loginPage.visit();
-        loginPage.loginAs('admin', 'admin');
 
-        importDataPage.visit();
-
-        var path = require('path');
-        var fileToUpload = './files/programs.xlsx',
-            absolutePath = path.resolve(__dirname, fileToUpload);
-
-        element(by.css('#programmesDiv input')).sendKeys(absolutePath);
-        element(by.css('#programmesDiv button')).click();
-
-        var EC = protractor.ExpectedConditions;
-        var successTick = element(by.css('#programmesDiv .glyphicon.glyphicon-ok'));
-
-        var uploadIsComplete = (EC.visibilityOf(successTick));
-        browser.wait(uploadIsComplete, 15000, "Timeout exceeded while importing data");
+        importDataPage.uploadProgrammes('../files/programs.xlsx');
 
         feedbackReportPage.visit();
         feedbackReportPage.programmeSelect.click();
