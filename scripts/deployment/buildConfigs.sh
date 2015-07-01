@@ -9,4 +9,4 @@ grunt build-staging:$1
 HOST=$1
 
 cd /opt/app/contacts
-sed -i '.bak' "s/stg.eum.unicefuganda.org/${HOST}/" config/config.json
+sed -i "s/stg.eum.unicefuganda.org/${HOST}/" config/config.json
