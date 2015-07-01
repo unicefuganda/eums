@@ -17,8 +17,13 @@ class TestConsigneeVisionFacade(TestCase):
                                         {'name': 'KALAS GIRLS PRIMARY SCHOO', 'customer_id': 'L438000532'}
                                         ]
         self.imported_missing_consignee_data = [{'name': 'ADVOCATE COALITION FOR DE', 'customer_id': 'L438000582'},
-                                        {'name': 'AGAGO DISTRICT PROBATION', 'customer_id': 'L438000025'}
-                                        ]
+                                                {'name': 'AGAGO DISTRICT PROBATION', 'customer_id': 'L438000025'}
+                                                ]
+
+        self.updated_consignee_data = [{'name': 'ADVOCATE COALITION', 'customer_id': 'L438000582'},
+                                       {'name': 'AGAGO DISTRICT PROBATION SERVICES', 'customer_id': 'L438000025'},
+                                       {'name': 'KALAS GIRLS PRIMARY SCHOOL', 'customer_id': 'L438000532'}
+                                      ]
 
         self.facade = ConsigneeFacade(self.consignee_file_location)
         self.facade_for_missing = ConsigneeFacade(self.consignee_missing_data_file_location)
@@ -79,6 +84,16 @@ class TestConsigneeVisionFacade(TestCase):
         self.facade.save_records(self.imported_consignee_data)
 
         self.assert_consignees_were_created()
+
+    def test_should_update_name_for_existing_consignee_customer_data(self):
+        self.assertEqual(Consignee.objects.count(), 0)
+        self.facade.save_records(self.imported_consignee_data)
+        self.assertEqual(Consignee.objects.count(), 3)
+
+        self.facade.save_records(self.updated_consignee_data)
+        self.assertEqual(Consignee.objects.count(), 3)
+        self.assertEqual(Consignee.objects.get(customer_id=self.updated_consignee_data[0]['customer_id']).name, self.updated_consignee_data[0]['name'])
+        self.assertEqual(Consignee.objects.get(customer_id=self.updated_consignee_data[1]['customer_id']).name, self.updated_consignee_data[1]['name'])
 
     def test_should_load_consignee_from_excel_and_save(self):
         self.assertEqual(Consignee.objects.count(), 0)

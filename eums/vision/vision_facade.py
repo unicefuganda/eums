@@ -405,6 +405,7 @@ class ProgrammeFacade(Facade):
     RELEVANT_DATA = {2: 'name', 3: 'wbs_element_ex'}
 
     def _create_record_from_dict(self, record_dict):
-        programme, _ = Programme.objects.get_or_create(wbs_element_ex=record_dict['wbs_element_ex'],
-                                                       name=record_dict['name'])
+        programme, _ = Programme.objects.get_or_create(wbs_element_ex=record_dict['wbs_element_ex'])
+        programme.name = record_dict['name']
+        programme.save()
         return programme

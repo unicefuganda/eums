@@ -22,8 +22,12 @@ class TestProgrammeVisionFacade(TestCase):
                                         {'name': 'Y108 - PCR 4 CROSS SECTORAL', 'wbs_element_ex': '4380/A0/04/108'}
                                         ]
 
+        self.updated_programme_data = [{'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE ALWAYS', 'wbs_element_ex': '4380/A0/04/107'},
+                                       {'name': 'YI105 - PCR 1 KEEP CHILDREN AND MOTHERS SAFE', 'wbs_element_ex': '4380/A0/04/105'},
+                                       ]
+
         self.facade = ProgrammeFacade(self.programme_file_location)
-        self.facade_for_missing  = ProgrammeFacade(self.programme_file_with_missing_data_location)
+        self.facade_for_missing = ProgrammeFacade(self.programme_file_with_missing_data_location)
 
     def tearDown(self):
         os.remove(self.programme_file_location)
@@ -80,6 +84,16 @@ class TestProgrammeVisionFacade(TestCase):
         self.facade.save_records(self.imported_programme_data)
 
         self.assert_programmes_were_created()
+
+    def test_should_update_name_for_existing_programme_wbs_element_ex_data(self):
+        self.assertEqual(Programme.objects.count(), 0)
+        self.facade.save_records(self.imported_programme_data)
+        self.assertEqual(Programme.objects.count(), 4)
+
+        self.facade.save_records(self.updated_programme_data)
+        self.assertEqual(Programme.objects.count(), 4)
+        self.assertEqual(Programme.objects.get(wbs_element_ex=self.updated_programme_data[0]['wbs_element_ex']).name, self.updated_programme_data[0]['name'])
+        self.assertEqual(Programme.objects.get(wbs_element_ex=self.updated_programme_data[1]['wbs_element_ex']).name, self.updated_programme_data[1]['name'])
 
     def test_should_load_programme_from_excel_and_save(self):
         self.assertEqual(Programme.objects.count(), 0)
