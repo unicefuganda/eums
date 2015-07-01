@@ -5,6 +5,7 @@
         <div class="row pad-left-5 pad-top-10" ng-hide="inSingleIpMode || inMultipleIpMode">
             <span class="label label-success label-as-step-badge">Step 1: Is this Purchase order for a single or multiple Implementing Partners(IP)?</span>
         </div>
+        <ng-toast></ng-toast>
         <div ng-hide="inSingleIpMode || inMultipleIpMode" class="row pad-left-5">
             <label class="radio-inline"><input id="single-ip" type="radio" name="ip-group" ng-click="showSingleIpMode()">Single IP</label>
             <label class="radio-inline"><input id="multiple-ip" type="radio" name="ip-group" ng-click="showMultipleIpMode()">Multiple IPs</label>
@@ -13,12 +14,33 @@
             <div class="row pad-left-5 pad-top-10">
                 <span class="label label-success label-as-step-badge">Step 2: Please select the Implementing Partners(IP)</span>
             </div>
+            <div class="row pad-left-5 pad-top-10">
+                <div class="row">
+                    <div class="form-horizontal">
+                        <div class="form-group col-lg-4">
+                            <div class="col-lg-12">
+                                <label for="select-sales-order" class="col-lg-4 control-label description-label">
+                                    IP:
+                                </label>
+
+                                <div class="col-lg-8">
+                                    <select id="select-sales-order" ng-model="selectedImplementingPartner"
+                                            required="required"
+                                            class="form-control"
+                                            ng-options="implementingPartner.name for implementingPartner in implementingPartners | orderBy: 'display'">
+                                        <option value="">Select Implementing Partner</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+             </div>
         </div>
         <div id="multiple-ip" ng-show="inMultipleIpMode">
             <div class="row pad-left-5 pad-top-10" ng-show="!planNode">
                 <span class="label label-success label-as-step-badge">Step 2: Please select an item in the purchase order to create a direct delivery</span>
             </div>
-            <ng-toast></ng-toast>
             <div class="row pad-left-5 pad-top-10">
 
                 <div ng-show="selectedPurchaseOrderItem">

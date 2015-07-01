@@ -73,6 +73,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.distributionPlanNodes = [];
         $scope.purchaseOrderItems = [];
+        $scope.implementingPartners = [];
         function computeQuantityLeft() {
             var reduced = $scope.distributionPlanNodes.reduce(function (previous, current) {
                 return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
@@ -166,6 +167,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
             $scope.inMultipleIpMode = false;
+            ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
+                $scope.implementingPartners = allIps;
+            });
         };
 
         $scope.showMultipleIpMode = function () {
