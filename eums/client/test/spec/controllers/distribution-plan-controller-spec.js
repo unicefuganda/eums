@@ -90,7 +90,7 @@ describe('DirectDeliveryController', function () {
         it('should sort by order number', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sort.criteria).toBe('order_number');
+            expect(scope.sort.criteria).toBe('orderNumber');
         });
 
         it('should sort in descending order', function () {
@@ -108,24 +108,24 @@ describe('DirectDeliveryController', function () {
         it('should set the clicked column as active', function () {
             scope.initialize();
             scope.$apply();
-            expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-down');
+            expect(scope.sortArrowClass('orderNumber')).toEqual('active glyphicon glyphicon-arrow-down');
         });
 
         it('should set the clicked column as active and have the up arrow when ascending', function () {
             scope.initialize();
             scope.sort.descending = true;
             scope.$apply();
-            expect(scope.sortArrowClass('order_number')).toEqual('active glyphicon glyphicon-arrow-up');
+            expect(scope.sortArrowClass('orderNumber')).toEqual('active glyphicon glyphicon-arrow-up');
         });
 
     });
 
-    describe('when sales order is selected', function () {
-        it('should change location to create distribution plan path', function () {
+    describe('when purchase order is selected', function () {
+        it('should change location to create direct delivery path', function () {
             deferredPurchaseOrder.resolve(purchaseOrderOne);
             scope.selectPurchaseOrder(purchaseOrderOne);
             scope.$apply();
-            expect(location.path()).toEqual('/distribution-plan/new/1');
+            expect(location.path()).toEqual('/direct-delivery/1');
         });
     });
 });

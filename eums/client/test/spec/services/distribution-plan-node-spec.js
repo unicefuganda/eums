@@ -185,7 +185,7 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.flush();
     });
 
-    it('should get node with full details', function (done) {
+    xit('should get node with full details', function (done) {
         mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
         mockBackend.whenGET(planNodeEndpointUrl + childPlanNodeId + '/').respond(stubChildPlanNode);
         planNodeService.getPlanNodeDetails(planNodeId).then(function (returnedPlanNode) {

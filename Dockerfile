@@ -126,6 +126,7 @@ COPY ./eums /opt/app/eums
 COPY ./contacts /opt/app/contacts
 COPY ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
 COPY ./eums/scripts/deployment/startPostgres.sh /opt/scripts/startPostgres.sh
+COPY ./eums/scripts/deployment/buildConfigs.sh /opt/scripts/buildConfigs.sh
 RUN chmod a+x /opt/scripts/*.sh
 RUN chmod a+x /opt/app/eums/scripts/**/*.sh
 RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
@@ -141,7 +142,7 @@ COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/superviso
 VOLUME /var/lib/postgresql
 VOLUME /data
 
-EXPOSE 22 80
+EXPOSE 22 80 8005
 
 ##############################################################################
 ## Entrypoint and command parameters

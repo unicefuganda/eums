@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDelivery', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'ReportedByIP', 'WarehouseDelivery', 'NewDistributionPlan',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'NewIpReport', 'WarehouseDeliveryPlan'])
@@ -20,6 +20,33 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDelivery',
             .when('/direct-delivery', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery.html',
                 controller: 'DirectDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/:purchaseOrderId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');
@@ -53,7 +80,24 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDelivery',
                     }
                 }
             })
-            //TODO these are too many duplicate routes for the distribution plan route. Remove
+            .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
+                controller: 'NewIpDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId/:deliveryNodeId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
+                controller: 'NewIpDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
             .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/new.html',
                 controller: 'NewDistributionPlanController',

@@ -82,7 +82,7 @@ class Facade():
                 raise ImportException(
                     "Import has failed due to missing [{0}] in row [{1}]. "
                     "Please correct the error then try the upload again"
-                    .format(e.message, str(row_number)))
+                        .format(e.message, str(row_number)))
             except XLDateAmbiguous:
                 pass
 
@@ -124,7 +124,7 @@ class OrderFacade(Facade):
                 raise Exception(
                     "Import has failed due to an error in row [{0}] column [{1}]. "
                     "Please correct the error then try the upload again"
-                    .format(str(row_num), e.message))
+                        .format(str(row_num), e.message))
                 pass
             row_num += 1
         return order_list
@@ -318,20 +318,24 @@ class ReleaseOrderFacade(OrderFacade):
 
 
 class PurchaseOrderFacade(OrderFacade):
-    RELEVANT_DATA = {6: 'order_number', 7: 'po_item_number', 9: 'material_code', 10: 'material_description',
-                     16: 'value', 18: 'quantity', 20: 'so_number', 21: 'so_item_number', 42: 'po_date'}
+    RELEVANT_DATA = {13: 'order_number', 14: 'po_item_number', 15: 'po_type', 10: 'material_code', 11: 'material_description',
+                     42: 'value', 24: 'quantity', 39: 'so_number', 7: 'so_item_number', 73: 'po_date'}
 
     def _create_new_order(self, order_dict):
         matching_purchase_orders = PurchaseOrder.objects.filter(order_number=order_dict['order_number'])
+        po_date = None if order_dict['po_date'] == '' else self._get_as_date(order_dict['po_date'])
         if len(matching_purchase_orders):
-            return matching_purchase_orders[0]
+            matching_order = matching_purchase_orders[0]
+            matching_order.date = po_date
+            matching_order.po_type = order_dict['po_type']
+            matching_order.save()
+            return matching_order
 
         matching_sales_orders = self._get_matching_sales_order(order_dict)
-        po_date = None if order_dict['po_date'] == '' else self._get_as_date(order_dict['po_date'])
         if len(matching_sales_orders):
             return PurchaseOrder.objects.create(order_number=order_dict['order_number'],
                                                 sales_order=matching_sales_orders[0],
-                                                date=po_date)
+                                                date=po_date, po_type=order_dict['po_type'])
 
     def _save_item(self, po_item, quantity, value):
         po_item.quantity = quantity
@@ -363,14 +367,16 @@ class PurchaseOrderFacade(OrderFacade):
     def _append_new_order(self, item_dict, order_list, order_number):
         sales_order = item_dict['so_number']
         po_date = item_dict['po_date']
+        po_type = item_dict['po_type']
         self._remove_order_level_data_from(item_dict)
         order_list.append({'so_number': sales_order, 'order_number': order_number,
-                           'po_date': po_date, 'items': [item_dict]})
+                           'po_date': po_date, 'po_type': po_type, 'items': [item_dict]})
 
     def _remove_order_level_data_from(self, item_dict):
         del item_dict['order_number']
         del item_dict['so_number']
         del item_dict['po_date']
+        del item_dict['po_type']
 
     @staticmethod
     def _get_matching_sales_order(order_dict):
@@ -384,12 +390,14 @@ class PurchaseOrderFacade(OrderFacade):
                 return True
         return False
 
+
 class ConsigneeFacade(Facade):
     RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
 
     def _create_record_from_dict(self, record_dict):
-        consignee, _ = Consignee.objects.get_or_create(customer_id=record_dict['customer_id'],
-                                                       name=record_dict['name'])
+        consignee, _ = Consignee.objects.get_or_create(customer_id=record_dict['customer_id'])
+        consignee.name = record_dict['name']
+        consignee.save()
         return consignee
 
 

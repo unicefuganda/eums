@@ -36,17 +36,19 @@ if [ $(sudo docker ps | grep eums | awk '{print$1}') ]; then
 fi
 
 
-echo "Running image ..."
+echo "Running image on host IP: " $1 "..."
 DEPLOY_MACHINE_HTTP_PORT=80
 DEPLOY_MACHINE_SSH_PORT=50000
 EUMS_CONTAINER_HOST_NAME=127.0.0.1
+HOST_IP=$1
 
-sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 \
+sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 -p 8005:8005 \
 -e "LC_ALL=C" \
 -d --name=eums \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
-%IMAGENAME%:latest
+%IMAGENAME%:latest \
+/bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} && /usr/bin/supervisord"
 
 echo "Done!"
 

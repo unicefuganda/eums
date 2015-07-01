@@ -17,10 +17,13 @@
     <div class="text-muted pad-top-10">
         <ul class="list-inline">
             <li>
-                <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivery set
+                <span class="glyphicon glyphicon-ok text-success pad-right-5"></span>Delivered
             </li>
             <li>
-                <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Delivery not set
+                <span class="glyphicon glyphicon-warning-sign text-warning pad-right-5"></span>Partially Delivered
+            </li>
+            <li>
+                <span class="glyphicon glyphicon-remove text-danger pad-right-5"></span>Not Delivered
             </li>
         </ul>
     </div>
@@ -38,6 +41,12 @@
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
+                <th style="width: 18%">
+                    <a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i ng-class="sortArrowClass('poType');"></i></a>
+                </th>
+                <th style="width: 18%">
+                    <a ng-click="sortBy('programmeName')">{{ outcomeColumnTitle }} <i ng-class="sortArrowClass('programmeName');"></i></a>
+                </th>
                 <th style="width: 50%" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
                 </th>
@@ -47,14 +56,20 @@
             <tbody>
             <tr ng-repeat="purchaseOrder in purchaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
                 <td>
-                    <span ng-class="purchaseOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
-                     'glyphicon glyphicon-exclamation-sign text-warning';"></span>
+                    <span ng-class="purchaseOrder.hasPlan ?  (purchaseOrder.isFullyDelivered ? 'glyphicon glyphicon-ok text-success' :
+                     'glyphicon glyphicon-warning-sign text-warning') : 'glyphicon glyphicon-remove text-danger'" ></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
-                    <a ng-click="selectSalesOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
+                    <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
                 </td>
                 <td data-header="Date Created">
-                    {{ purchaseOrder.date }}
+                    {{ purchaseOrder.date | date : 'dd/MM/yyyy' }}
+                </td>
+                <td data-header="{{ poTypeColumnTitle }}">
+                    {{ purchaseOrder.poType }}
+                </td>
+                <td data-header="{{ outcomeColumnTitle }}">
+                    {{ purchaseOrder.programmeName }}
                 </td>
                 <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
                     {{ purchaseOrder.description }}
@@ -69,10 +84,10 @@
             </tr>
             </tfoot>
                 <span class="information message"
-                      ng-show="salesOrders.length > 0 && (salesOrders | purchaseOrderFilter: query).length == 0">
+                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | purchaseOrderFilter: query).length == 0">
                 There are no matches to your search criteria.
                 </span>
-            <span class="information message" ng-show="salesOrders.length == 0">There are no deliveries available right now.</span>
+            <span class="information message" ng-show="purchaseOrders.length == 0">There are no deliveries available right now.</span>
         </table>
     </div>
 </div>

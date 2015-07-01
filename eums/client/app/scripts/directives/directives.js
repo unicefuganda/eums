@@ -55,12 +55,13 @@ angular.module('Directives', [])
         };
     })
     .directive('searchContacts', function (ContactService, $timeout) {
+        function formatContact(contact) {
+            return {id: contact._id, text: contact.firstName + ' ' + contact.lastName};
+        }
+
         function formatResponse(data) {
             return data.map(function (contact) {
-                return {
-                    id: contact._id,
-                    text: contact.firstName + ' ' + contact.lastName
-                };
+                return formatContact(contact);
             });
         }
 
@@ -69,7 +70,6 @@ angular.module('Directives', [])
             scope: true,
             require: 'ngModel',
             link: function (scope, element, _, ngModel) {
-
                 element.select2({
                     minimumInputLength: 1,
                     width: '150px',
@@ -86,10 +86,7 @@ angular.module('Directives', [])
                             if (modelValue) {
                                 ContactService.get(modelValue).then(function (contact) {
                                     if (contact._id) {
-                                        callback({
-                                            id: contact._id,
-                                            text: contact.firstName + ' ' + contact.lastName
-                                        });
+                                        callback(formatContact(contact));
                                     }
                                 });
                             }
@@ -100,6 +97,16 @@ angular.module('Directives', [])
                 element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
+                });
+
+                scope.$on('set-contact-for-node', function (_, contact, nodeId) {
+                    var myNodeId = element[0].getAttribute('id').split('-').last();
+                    if (nodeId === myNodeId) {
+                        var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                        var formattedContact = formatContact(contact);
+                        contactSelect2Input.text(formattedContact.text);
+                        $(element).val(formattedContact.id);
+                    }
                 });
             }
         };

@@ -7,19 +7,19 @@ describe('Purchase Order Filter', function () {
             filter = $filter;
             purchaseOrders = [
                 {
-                    order_number: '1234',
+                    orderNumber: '1234',
                     'date': '2014-10-06',
                     'description': 'Midwife Supplies',
                     'purchaseorderitem_set': [1, 2]
                 },
                 {
-                    order_number: '6234',
+                    orderNumber: '6234',
                     'date': '2014-12-06',
                     'description': 'Vehicles',
                     'purchaseorderitem_set': [1, 2]
                 },
                 {
-                    order_number: '00006',
+                    orderNumbergit : '00006',
                     'date': '2014-11-06',
                     'description': 'Nets',
                     'purchaseorderitem_set': [1, 2]

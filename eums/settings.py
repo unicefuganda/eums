@@ -81,7 +81,11 @@ MAX_ALLOWED_REPLY_PERIOD = 7
 
 
 # Contacts service settings
-CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
+import os
+try:
+    CONTACTS_SERVICE_URL = os.environ['LOCAL_HOST_HTTP_URL'] + ':8005/api/contacts/'
+except KeyError:
+    CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
 # TODO figure out a way to use environment variable with supervisor

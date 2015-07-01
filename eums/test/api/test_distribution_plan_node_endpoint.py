@@ -65,21 +65,6 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
 
         self.assertDictContainsSubset(expected_parent, returned_parent)
 
-    def test_should_create_node_of_type_middleman(self):
-        plan_id = create_distribution_plan(self)
-        consignee = create_consignee(self)
-        sales_order_item = create_sales_order_item(self)
-        node_details = {'item': sales_order_item['id'], 'targeted_quantity': 10,
-                        'planned_distribution_date': '2014-01-21',
-                        'distribution_plan': plan_id, 'consignee': consignee['id'],
-                        'tree_position': self.MIDDLEMAN_POSITION, 'location': 'Kampala',
-                        'contact_person_id': u'1234'}
-
-        node = create_distribution_plan_node(self, node_details=node_details)
-
-        response = self.client.get("%s%d/" % (ENDPOINT_URL, node['id']))
-        self.assertDictContainsSubset({'tree_position': node['tree_position']}, response.data)
-
     def test_should_create_node_of_type_end_user(self):
         plan_id = create_distribution_plan(self)
         consignee = create_consignee(self)
@@ -105,6 +90,14 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.post(ENDPOINT_URL, node_details, format='json')
 
         self.assertEqual(response.status_code, 400)
+
+    def test_children_field_should_be_read_only_on_the_api(self):
+        parent = DistributionPlanNodeFactory()
+        child = DistributionPlanNodeFactory(parent=parent)
+        returned_parent = self.client.get("%s%d/" % (ENDPOINT_URL, parent.id)).data
+        self.assertDictContainsSubset({'children': [child.id]}, returned_parent)
+        self.client.patch("%s%d" % (ENDPOINT_URL, parent.id), {'children': []})
+        self.assertEqual(parent.children.first(), child)
 
     def create_distribution_plan_parent_and_child_nodes(self, parent_details=None, child_details=None):
         created_parent_details = create_distribution_plan_node(self, parent_details)

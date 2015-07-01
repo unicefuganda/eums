@@ -14,7 +14,7 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Sales Orders (ZSOCLS)</h4>
             </div>
-            <div class="row pad-20">
+            <div id="salesOrdersDiv" class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Sales Orders (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="salesOrdersUploader"/>
                 <span class="col-lg-1" ng-show="salesOrdersUploader.isHTML5"
@@ -44,7 +44,7 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Purchase Orders (ZEXPD)</h4>
             </div>
-            <div class="row pad-20">
+            <div id="purchaseOrdersDiv" class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Purchase Orders (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="purchaseOrdersUploader"/>
                 <span class="col-lg-1" ng-show="purchaseOrdersUploader.isHTML5"
@@ -75,7 +75,7 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Release Orders (ZROSTS)</h4>
             </div>
-            <div class="row pad-20">
+            <div id="releaseOrdersDiv" class="row pad-20">
                 <label class="col-lg-3" for="import-sales-orders">Import Release Orders (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="releaseOrdersUploader"/>
                 <span class="col-lg-1" ng-show="releaseOrdersUploader.isHTML5"
@@ -106,7 +106,7 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Consignees</h4>
             </div>
-            <div class="row pad-20">
+            <div id="consigneesDiv" class="row pad-20">
                 <label class="col-lg-3" >Import Consignees (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="consigneesUploader"/>
                 <span class="col-lg-1" ng-show="consigneesUploader.isHTML5"
@@ -137,7 +137,7 @@
             <div class="row pad-20">
                 <h4 class="underline">Import Programmes</h4>
             </div>
-            <div class="row pad-20">
+            <div id="programmesDiv" class="row pad-20">
                 <label class="col-lg-3" >Import Programmes (in excel format):</label>
                 <input class="col-lg-2" type="file" nv-file-select="" uploader="programmesUploader"/>
                 <span class="col-lg-1" ng-show="programmesUploader.isHTML5"

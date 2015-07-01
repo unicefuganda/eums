@@ -14,10 +14,12 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
 
         $scope.documentColumnTitle = 'Purchase Order';
         $scope.dateColumnTitle = 'Date Created';
+        $scope.poTypeColumnTitle = 'PO Type';
+        $scope.outcomeColumnTitle = 'Outcome';
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
-            this.sortBy('order_number');
+            this.sortBy('orderNumber');
             this.sort.descending = false;
 
             PurchaseOrderService.forDirectDelivery().then(function (purchaseOrders) {
@@ -39,14 +41,14 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
         };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
-            $location.path('/distribution-plan/new/' + selectedPurchaseOrder.id);
+            $location.path('/direct-delivery/' + selectedPurchaseOrder.id);
         };
 
     })
     .filter('purchaseOrderFilter', function ($filter) {
-        return function (salesOrders, query) {
-            var results = $filter('filter')(salesOrders, {order_number: query});
-            results = _.union(results, $filter('filter')(salesOrders, {date: query}));
+        return function (purchaseOrders, query) {
+            var results = $filter('filter')(purchaseOrders, {orderNumber: query});
+            results = _.union(results, $filter('filter')(purchaseOrders, {date: query}));
             return results;
         };
     }).factory('$sorter', function () {

@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 from eums.models import SalesOrder, DistributionPlanNode, PurchaseOrderItem
 
@@ -19,10 +19,21 @@ class PurchaseOrder(models.Model):
     order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder)
     date = models.DateField(auto_now=False, null=True)
+    is_single_ip = models.NullBooleanField(null=True)
+    po_type = models.CharField(max_length=255, null=True)
+
     objects = PurchaseOrderManager()
 
     def has_plan(self):
         return DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all()).exists()
+
+    def is_fully_delivered(self):
+        if self.has_plan():
+            total_purchase_order_items = self.purchaseorderitem_set.aggregate(Sum('quantity'))
+            total_node_items = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all(), tree_position=DistributionPlanNode.END_USER).aggregate(Sum('targeted_quantity'))
+            return total_node_items['targeted_quantity__sum'] == total_purchase_order_items['quantity__sum']
+        else:
+            return False
 
     class Meta:
         app_label = 'eums'

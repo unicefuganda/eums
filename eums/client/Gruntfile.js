@@ -288,6 +288,11 @@ module.exports = function (grunt) {
             },
             dropStagingDb: {
                 command: 'dropdb app_test --if-exists'
+            },
+            processConfigs: {
+                command: function (url) {
+                    return "sed 's/localhost/" + url +"/' config/development.json > config/environment.json";
+                }
             }
         },
         ngconstant: {
@@ -305,7 +310,7 @@ module.exports = function (grunt) {
             },
             staging: {
                 constants: {
-                    EumsConfig: grunt.file.readJSON('config/staging.json')
+                    EumsConfig: grunt.file.readJSON('config/environment.json')
                 }
             },
             prod: {
@@ -332,6 +337,27 @@ module.exports = function (grunt) {
         ]);
     });
 
+    grunt.registerTask('build-staging', 'builds staging with the specified url in the config', function (url) {
+        if (url) {
+            return grunt.task.run([
+                'clean:dist',
+                'shell:processConfigs:' + url,
+                'ngconstant:staging',
+                'uglify:all',
+                'less'
+            ]);
+        }
+        else {
+            return grunt.task.run([
+                'clean:dist',
+                'shell:processConfigs:localhost',
+                'ngconstant:staging',
+                'uglify:all',
+                'less'
+            ]);
+        }
+    });
+
     grunt.registerTask('server', 'DEPRECATED TASK. Use the "serve" task instead', function (target) {
         grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
         grunt.task.run(['serve:' + target]);
@@ -351,13 +377,6 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
         'clean:dist',
         'ngconstant:dev',
-        'newer:uglify:all',
-        'less'
-    ]);
-
-    grunt.registerTask('build-staging', [
-        'clean:dist',
-        'ngconstant:staging',
         'newer:uglify:all',
         'less'
     ]);
