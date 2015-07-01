@@ -7,6 +7,9 @@ FeedbackReportPage.prototype = Object.create({}, {
         browser.get(this.url);
     }},
 
+    programmeSelect: { get: function() { return element.all(by.css('.chosen-single.chosen-default span')).get(0); }},
+    programmeResults: { get: function(){ return element.all(by.css('.chosen-drop')).get(0).getText(); }},
+
     consigneeSelect: { get: function() { return element.all(by.css('.chosen-single.chosen-default span')).get(1); }},
     consigneeResults: { get: function(){ return element.all(by.css('.chosen-drop')).get(1).getText(); }}
 });
