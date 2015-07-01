@@ -9,7 +9,7 @@ exports.config = {
 
     directConnect: true,
 
-    specs: ['test/functional/*-spec.js'],
+    specs: ['functional/*-spec.js'],
 
     baseUrl: 'http://localhost:9000',
 
