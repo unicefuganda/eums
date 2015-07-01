@@ -10,83 +10,78 @@
             <span class="text-primary">{{ selectedReleaseOrder.consignee.name }}</span>
         </h4>
 
-        <h4 class="page-header">
-        <form>
-            <div class="row">
-                <div class="form-horizontal">
-                    <div class="form-group col-lg-2">
+        <div class="row">
+            <div class="form-horizontal">
+                <div class="form-group col-lg-4">
+                    <label class="col-lg-4 control-label description-label">
                         Delivery Date:
-                    </div>
-                    <div class="form-group col-lg-2">
+                    </label>
+                    <div class="col-lg-8">
                         <span class="table-date-width input-group" eums-date-picker>
-                        <input type="text"
-                               class="form-control"
-                               readonly="true"
-                               datepicker-popup="dd/MM/yyyy"
-                               ng-model="selectedDate"
-                               is-open="datepicker[$index]"
-                               datepicker-options="dateOptions" show-button-bar="false"
-                               ng-required="true"
-                               value="{{ selectedDate | date : 'dd/MM/yyyy' }}"
-                               required="required"/>
-                          <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="open($event, $index )" ng-disabled="item.flowTriggered">
-                                <i class="glyphicon glyphicon-calendar"></i></button>
-                          </span>
+                            <input type="text"
+                                   class="form-control"
+                                   readonly="true"
+                                   datepicker-popup="dd/MM/yyyy"
+                                   ng-model="selectedDate"
+                                   is-open="datepicker[$index]"
+                                   datepicker-options="dateOptions" show-button-bar="false"
+                                   ng-required="true"
+                                   value="{{ selectedDate | date : 'dd/MM/yyyy' }}"
+                                   required="required"/>
+                              <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="open($event, $index )" ng-disabled="item.flowTriggered">
+                                    <i class="glyphicon glyphicon-calendar"></i></button>
+                              </span>
                         </span>
                     </div>
-
-                    <div class="form-group col-lg-2">
+                </div>
+                <div class="form-group col-lg-4">
+                    <label class="col-lg-4 control-label description-label">
                         Contact Person:
+                    </label>
+                    <div class="col-lg-8">
+                        <input type="hidden" search-contacts
+                           value="{{ contact.id }}"
+                           required="required"
+                           ng-model="contact.id"
+                           ng-attr-id="{{ 'contact-select' }}"
+                           ng-disabled="item.flowTriggered">
                     </div>
-                    <div class="form-group col-lg-2">
-                        <div class="form-inline">
-                            <div class="form-group table-contact-form-group col-md-10">
-                                <input type="hidden" search-contacts
-                                       value="{{ contact.id }}"
-                                       required="required"
-                                       ng-model="contact.id"
-                                       ng-attr-id="{{ 'contact-select' }}"
-                                       ng-disabled="item.flowTriggered">
-                            </div>
-                            <div class="form-group table-contact-form-group col-md-2">
-                                <button type="button"
-                                        ng-click="addContact()"
-                                        class="btn btn-default ">
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group col-lg-2">
+                </div>
+                <div class="form-group col-lg-3" ng-if="districtsLoaded">
+                    <label class="col-lg-4 control-label description-label">
                         District:
-                    </div>
-                    <div class="form-group col-lg-2" ng-if="districtsLoaded">
+                    </label>
+                    <div class="col-lg-8">
                         <input type="hidden" search-from-list list="{{ districts }}"
-                               ng-model="selectedLocation.id"
-                               ng-attr-id="{{ 'location-select' }}"
-                               value="{{ selectedLocation.id }}">
+                           ng-model="selectedLocation.id"
+                           ng-attr-id="{{ 'location-select' }}"
+                           value="{{ selectedLocation.id }}">
                     </div>
                 </div>
             </div>
-            </form>
-        </h4>
-
-        <div class="row">
-            <div class="col-md-2">
-                <span>Release Order</span>
-                <span class="label label-success label-as-badge">{{ selectedReleaseOrder.orderNumber }}</span>
-            </div>
-            <div class="col-md-2">
-                <span>Total Items</span>
-                <span class="label label-success label-as-badge">{{ selectedReleaseOrder.items.length }}</span>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <span>Total Value (USD)</span>
-                <span class="label label-success label-as-badge">{{ selectedReleaseOrder.totalValue | number }}</span>
-            </div>
+            <div class="material-items well col-lg-7 pull-left">
+                <div class="col-lg-6 no-side-padding">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="label label-success label-as-badge">{{ selectedReleaseOrder.orderNumber }}</span>
+                            Release Order
+                        </li>
+                        <li class="list-group-item">
+                            <span class="label label-success label-as-badge">{{ selectedReleaseOrder.totalValue | number }}</span>
+                            Total Value (USD)
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-lg-6 no-side-padding">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="label label-success label-as-badge">{{ selectedReleaseOrder.items.length }}</span>
+                            Total Items
+                        </li>
+                    </ul>
+                </div>
+             </div>
         </div>
 
         <div ng-show="releaseOrderItems.length" class="panel panel-default warehouse-delivery-panel">
