@@ -66,6 +66,11 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             $scope.consignees = consignees;
         });
 
+        $scope.invalidContact = function (contact) {
+            return !(contact.firstName && contact.lastName && contact.phone);
+        };
+
+
         $scope.distributionPlanNodes = [];
         $scope.purchaseOrderItems = [];
         function computeQuantityLeft() {
