@@ -30,4 +30,29 @@ describe('Vision Data Imports', function () {
 
         expect(feedbackReportPage.consigneeResults).toContain('name of test consignee');
     });
+
+    it('should show programmes imported from vision on the feedback report page', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+
+        importDataPage.visit();
+
+        var path = require('path');
+        var fileToUpload = './files/programs.xlsx',
+            absolutePath = path.resolve(__dirname, fileToUpload);
+
+        element(by.css('#programmesDiv input')).sendKeys(absolutePath);
+        element(by.css('#programmesDiv button')).click();
+
+        var EC = protractor.ExpectedConditions;
+        var successTick = element(by.css('#programmesDiv .glyphicon.glyphicon-ok'));
+
+        var uploadIsComplete = (EC.visibilityOf(successTick));
+        browser.wait(uploadIsComplete, 15000, "Timeout exceeded while importing data");
+
+        feedbackReportPage.visit();
+        feedbackReportPage.programmeSelect.click();
+
+        expect(feedbackReportPage.programmeResults).toContain('YI100 - PCR 3 Test Programme Name');
+    });
 });
