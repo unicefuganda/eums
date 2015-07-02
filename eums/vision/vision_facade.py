@@ -105,11 +105,13 @@ class OrderFacade(Facade):
 
     def _convert_view_to_list_of_dicts(self, sheet, relevant_data):
         order_list = []
-        row_num = 1
+        row_number = 1
         for row in sheet:
+            row_number += 1
             try:
                 item_dict = self._filter_relevant_data(relevant_data, row)
-                if not self._is_summary_row(item_dict):
+
+                if self._has_all_relevant_data(item_dict):
                     order_number = item_dict['order_number']
                     order_index = self._index_in_list(order_number, order_list, 'order_number')
                     if order_index > -1:
@@ -121,19 +123,12 @@ class OrderFacade(Facade):
                 raise Exception("Ambiguous excel date")
                 pass
             except ImportException, e:
-                raise Exception(
-                    "Import has failed due to an error in row [{0}] column [{1}]. "
+                raise ImportException(
+                    "Import has failed due to missing [{0}] in row [{1}]. "
                     "Please correct the error then try the upload again"
-                        .format(str(row_num), e.message))
+                        .format(e.message, str(row_number)))
                 pass
-            row_num += 1
         return order_list
-
-    def _is_summary_row(self, row):
-        for column in self.RELEVANT_DATA.values():
-            if row[column] is '':
-                return True
-        return False
 
     def _create_record_from_dict(self, record_dict):
         new_order = self._create_new_order(record_dict)
