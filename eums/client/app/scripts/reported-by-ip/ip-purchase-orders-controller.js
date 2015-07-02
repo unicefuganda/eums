@@ -175,7 +175,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             var getNodes = function (user) {
                 var filterParams = {item: purchaseOrderItem.id};
                 if (user.consignee_id) {
-                    filterParams.consignee = user.consignee_id
+                    filterParams.consignee = user.consignee_id;
                 }
                 return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
                     $scope.deliveryNodes = nodes;
@@ -188,14 +188,14 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         $scope.getTotalQuantity = function () {
             if (!$scope.parentNode) {
-                return $scope.deliveryNodes.sum(function (node) {
+                return $scope.deliveryNodes ? '' : $scope.deliveryNodes.sum(function (node) {
                     return parseInt(node.targetedQuantity);
                 });
             }
             else {
                 return $scope.parentNode.targetedQuantity;
             }
-        }
+        };
 
         $scope.computeQuantityLeft = function computeQuantityLeft(parentNode, deliveryNodes) {
             var reduced = deliveryNodes.reduce(function (previous, current) {
@@ -203,7 +203,7 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
             }, {targetedQuantity: 0});
 
             return parentNode.targetedQuantity - reduced.targetedQuantity;
-        }
+        };
 
 
         $q.all(loadPromises).then(hideLoader);
