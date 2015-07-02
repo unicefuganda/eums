@@ -25,6 +25,7 @@ describe('DirectDeliveryController', function () {
                     id: 1,
                     description: 'Test Item',
                     materialCode: '12345AS',
+                    value: '100.00',
                     unit: {
                         name: 'EA'
                     }
@@ -70,6 +71,7 @@ describe('DirectDeliveryController', function () {
                 id: 1,
                 description: 'Test Item',
                 materialCode: '12345AS',
+                value: '100.00',
                 unit: {
                     name: 'EA'
                 }
@@ -90,6 +92,7 @@ describe('DirectDeliveryController', function () {
                 id: 1,
                 description: 'Test Item',
                 material_code: '12345AS',
+                value: '100.00',
                 unit: {
                     name: 'EA'
                 }
@@ -105,7 +108,8 @@ describe('DirectDeliveryController', function () {
         materialCode: stubPurchaseOrderItem.information.item.materialCode,
         quantity: stubPurchaseOrderItem.quantity,
         unit: stubPurchaseOrderItem.information.item.unit.name,
-        information: stubPurchaseOrderItem.information
+        information: stubPurchaseOrderItem.information,
+        value: stubPurchaseOrderItem.value
     };
 
     var setUp = function (routeParams) {
@@ -379,6 +383,7 @@ describe('DirectDeliveryController', function () {
                 id: 1,
                 description: 'Test Item',
                 materialCode: '12345AS',
+                value: '100.00',
                 unit: {
                     name: 'EA'
                 }

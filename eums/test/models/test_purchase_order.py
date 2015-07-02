@@ -48,16 +48,18 @@ class PurchaseOrderTest(TestCase):
         self.assertFalse(purchase_order_one.is_fully_delivered())
 
         purchase_order_item_two = PurchaseOrderItemFactory(purchase_order=purchase_order_two, quantity=100)
+        node_one = NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
+                    tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        node_two = NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
+                    tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_one)
         NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                    tree_position=DistributionPlanNode.MIDDLE_MAN)
-        self.assertFalse(purchase_order_two.is_fully_delivered())
+                               tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_two)
+        self.assertTrue(purchase_order_two.is_fully_delivered())
 
         purchase_order_item_three = PurchaseOrderItemFactory(purchase_order=purchase_order_three, quantity=100)
         purchase_order_item_four = PurchaseOrderItemFactory(purchase_order=purchase_order_three, quantity=50)
-        NodeFactory(item=purchase_order_item_three, consignee=consignee, targeted_quantity=100,
-                    tree_position=DistributionPlanNode.END_USER)
-        NodeFactory(item=purchase_order_item_four, consignee=consignee, targeted_quantity=50,
-                    tree_position=DistributionPlanNode.END_USER)
+        NodeFactory(item=purchase_order_item_three, consignee=consignee, targeted_quantity=100, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        NodeFactory(item=purchase_order_item_four, consignee=consignee, targeted_quantity=50, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         self.assertTrue(purchase_order_three.is_fully_delivered())
 
     def test_should_get_orders__as_a_queryset__whose_items_have_been_delivered_to_a_specific_consignee(self):

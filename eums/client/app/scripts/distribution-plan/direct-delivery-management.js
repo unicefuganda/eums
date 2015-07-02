@@ -352,7 +352,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     node.id = nodeId;
                     node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
-                    DistributionPlanNodeService.update(node).then(function(retNode){
+                    DistributionPlanNodeService.update(node).then(function(){
                         deferred.resolve(uiPlanNode);
                     });
                 }
@@ -361,7 +361,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                         uiPlanNode.id = retNode.id;
                         uiPlanNode.canReceiveSubConsignees = function () {
                             return this.id && !this.isEndUser;
-                        }.bind(uiPlanNode)
+                        }.bind(uiPlanNode);
                         deferred.resolve(uiPlanNode);
                     });
                 }
