@@ -160,12 +160,13 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         function loadDeliveryDataFor(purchaseOrderItem) {
             var getNodes = function (user) {
+                var filterParams = {item: purchaseOrderItem.id};
                 if (user.consignee_id) {
-                    var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
-                    return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
-                        $scope.deliveryNodes = nodes;
-                    });
+                    filterParams.consignee = user.consignee_id
                 }
+                return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
+                    $scope.deliveryNodes = nodes;
+                });
             };
 
             var getParentNode = function (user) {
