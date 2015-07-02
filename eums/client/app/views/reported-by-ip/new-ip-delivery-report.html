@@ -61,7 +61,7 @@
                 <div class="col-lg-6 no-side-padding">
                     <ul class="list-group">
                         <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ parentNode.targetedQuantity || '-' }}</span>
+                            <span class="label label-success label-as-badge">{{ getTotalQuantity() }}</span>
                             Total Quantity
                         </li>
                         <li class="list-group-item">
@@ -94,7 +94,7 @@
                         <tbody>
                         <tr ng-repeat="node in deliveryNodes">
                             <td id="input-available-quantity">
-                                {{ parentNode.quantityLeft(deliveryNodes)}}
+                                {{ node.quantityLeft(node.children)}}
                             </td>
                             <td id="input-unit">{{ selectedPurchaseOrderItem.item.unit.name }}</td>
                             <td><input type="text" id="input-quantity" class="form-control"
