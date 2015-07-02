@@ -35,7 +35,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                                                          'so_item_number': 20}]},
                                              {'order_number': 54101128,
                                               'so_number': 20143982,
-                                              'po_date': '',
+                                              'po_date': '2015-01-15',
                                               'po_type': 'NB',
                                               'items': [{'material_code': 'S0000208',
                                                          'material_description': 'F-75 therap.diet sachet 102.5g/CAR-120',
@@ -143,8 +143,8 @@ class TestPurchaseOrdersVisionFacade(TestCase):
                           u'Uganda', u'UNICEF KAMPALA', u'438', u'Uganda', u'12', u'(ESARO)EASTERN AND SOUTHERN AFRICA',
                           u'RFQ', u'07/22/2014', u'ALIVE:WASH Ltrine mt', u'07/22/2014', u'ZCOM', u'', u'', u'111',
                           u'Sanitation & Hygiene', u'Z1', u'Misc Std Non Stock', u'Z111', u'WATER AND SANITATION',
-                          u'01/12/2015', u'01/12/2015', u'01/12/2015', u'01/15/2015', u'01/12/2015', u'01/15/2015', u'',
-                          u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'438', u'Uganda', u'12',
+                          u'01/12/2015', u'01/12/2015', u'01/12/2015', u'01/15/2015', u'01/12/2015', u'01/15/2015',
+                          u'2015-01-15', u'Z43801', u'UNICEF-UGANDA-KAMPALA', u'438', u'Uganda', u'12',
                           u'(ESARO)EASTERN AND SOUTHERN AFRICA', u'', u'', u'N', u'', u'', u'4380/A0/04/105/007/017',
                           u'0001310190', u'SM', u'SM140277', u'01.01.2014', u'30.06.2015', u'PROG']
 
@@ -264,7 +264,7 @@ class TestPurchaseOrdersVisionFacade(TestCase):
         self.purchase_order_one = PurchaseOrder(order_number=54101099, sales_order=self.sales_order_one,
                                                 date=datetime.date(2015, 1, 15))
         self.purchase_order_two = PurchaseOrder(order_number=54101128, sales_order=self.sales_order_two,
-                                                date=None)
+                                                date=datetime.date(2015, 1, 15))
         self.assert_purchase_orders_are_equal(self.purchase_order_one, PurchaseOrder.objects.all()[0])
         self.assert_purchase_orders_are_equal(self.purchase_order_two, PurchaseOrder.objects.all()[1])
 

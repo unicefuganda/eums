@@ -12,13 +12,15 @@ from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
-from eums.vision.vision_facade import SalesOrderFacade
+from eums.vision.vision_facade import SalesOrderFacade, ImportException
 
 
 class TestSalesOrdersVisionFacade(TestCase):
     def setUp(self):
         self.sales_order_file_location = 'sales_orders.xlsx'
+        self.sales_order_with_missing_data_file_location = 'sales_with_missing_orders.xlsx'
         self.create_sales_order_workbook()
+        self.create_sales_order_missing_data_workbook()
         self.imported_sales_order_data = [{'order_number': 20146879,
                                            'programme_wbs_element': '4380/A0/04/105/007',
                                            'items': [
@@ -72,6 +74,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                                         'quantity': 2630}]}]
 
         self.facade = SalesOrderFacade(self.sales_order_file_location)
+        self.missing_data_facade = SalesOrderFacade(self.sales_order_with_missing_data_file_location)
 
     def tearDown(self):
         os.remove(self.sales_order_file_location)
@@ -83,7 +86,15 @@ class TestSalesOrdersVisionFacade(TestCase):
 
     def test_should_load_sales_order_data_excluding_summary_rows(self):
         sales_order_data = self.facade.load_records()
+        import logging
+        log = logging.getLogger("TestSalesOrdersVisionFacade")
+        # log.debug("sssssales order: {0}".format(str(sales_order_data)))
+        # print "sssssssssssales order: {0}".format(str(sales_order_data))
         self.assertEqual(sales_order_data, self.imported_sales_order_data)
+
+    def test_should_not_load_sales_orders_with_missing_data(self):
+        with self.assertRaises(ImportException):
+            self.missing_data_facade.load_records()
 
     def create_items(self):
         self.item_one = ItemFactory(material_code='S0009113', description='SQFlex 3-10 Pump C/W 1.4KW')
@@ -261,27 +272,53 @@ class TestSalesOrdersVisionFacade(TestCase):
                           u'2014-01-03',
                           u'2014', u'2014-01-03', u'SQFlex 3-10 Pump C/W 1.4KW', u'438', u'UGANDA',
                           u'4380/A0/04/105/007/020',
-                          u'SM130359' u'', u'0', u'0', u'0', u'0 ', u'0', u'3179.47', u'', u'', u'@02@', u'', u'Yes',
+                          u'SM130359' u'fhdd-sjs', u'0', u'0', u'0', u'0 ', u'0', u'3179.47', u'1', u'1', u'@02', u'dk', u'Yes',
                           u'No', u'0',
-                          u'0', u'0', u'2953.79', u'']
+                          u'0', u'0', u'2953.79', u'76088583']
 
         self.second_row = [20146879, '20', 'SL006173', '12', '12', '2638.32', 'Emergency:Kyangwali', '2014-01-03',
                            '2014', '2014-01-03', 'Solar Power System', '438', 'UGANDA',
-                           '4380/A0/04/105/007/020', 'SM130359' '', '0', '0', '0', '0 ', '0', '2638.32', '', '',
-                           '@02@', '', 'Yes', 'No', '0', '0', '0', '2451.02', '']
+                           '4380/A0/04/105/007/020', 'SM130359', '1', '0', '0', '0', '0 ', '0', '2638.32', '1', '1',
+                           '@02@', '1', 'Yes', 'No', '0', '0', '0', '2451.02', '76088583']
 
         self.third_row = [20147028, '10', 'S7800001', '2630', '2630', '21592.3', '1.4 IKA Vitamin A', '2014-01-09',
                           '2014', '2014-01-09', 'Retinol 100,000IU soft gel.caps/PAC-500', '438', 'UGANDA',
-                          '4380/A0/04/106/004/010', 'KC130014' '', '2630', '20476.4', '2630', '0 ', '0', '1115.9', '',
-                          '', '@DF@', '', 'Yes', 'No', '0', '0', '0', '20487.7', '']
+                          '4380/A0/04/106/004/010', 'KC130014', '1', '2630', '20476.4', '2630', '0 ', '0', '1115.9', '1',
+                          '1', '@DF@', 'cvg', 'Yes', 'No', '0', '0', '0', '20487.7', '76088583']
 
-        self.summary_row = [20147028, '', '', '', '', '21592.3', '', '', '', '', '', '', '', '', '' '', '', '20476.4',
-                            '', '0', '0', '1115.9', '', '', '', '', '', '', '', '', '', '', '']
-
-        rows = [self.header, self.first_row, self.second_row, self.third_row, self.summary_row]
+        rows = [self.header, self.first_row, self.second_row, self.third_row]
 
         for row_index, row in enumerate(rows):
             for col_index, item in enumerate(row):
                 sheet.write(row_index, col_index, item)
 
         work_book.save(self.sales_order_file_location)
+
+    def create_sales_order_missing_data_workbook(self):
+            work_book = Workbook()
+            sheet = work_book.add_sheet('Sheet 1')
+
+            self.header = ['Sales Document', 'Sales Document Item', 'Material', 'Sales Order Qty', 'PO/STO Qty',
+                           'Item budget', 'Purchase order no.', 'Purchase order date', 'Budget year', 'Document Date',
+                           'Description', 'Receiving country', 'Country Short Name', 'WBS Element', 'Grant',
+                           'User field 1 WBS element', 'PGI/IR Quantity', 'Pgi/IR Amount', 'Shipment Qty',
+                           'Ship Inv. Amount', 'Ship Insurance Amt', 'Budget - Pgi/Ir - Ship Ins. - Ship Inv',
+                           'Delivery Completed', 'Shipping Completed', 'Supplies and freight action complete', 'Zflow_new',
+                           'Delivery Completed', 'Final Invoice', 'WBS_Supply_expenditure', 'WBS_Freight_expenditure',
+                           'WBS_Others_expenditure', 'PO/STO Amount', 'Purchasing Document']
+
+            self.first_row = [u'20146879', u'10', u'S0009145', u'1', u'1', u'3179.47', u'Emergency:Kyangwali',
+                              u'2014-01-03',
+                              u'2014', u'2014-01-03', u' ', u'438', u'UGANDA',
+                              u'4380/A0/04/105/007/020',
+                              u'SM130359' u'', u'0', u'0', u'0', u'', u'0', u'3179.47', u'', u'', u'@02@', u'', u'Yes',
+                              u'No', u'0',
+                              u'0', u'0', u'2953.79', u'']
+
+            rows = [self.header, self.first_row]
+
+            for row_index, row in enumerate(rows):
+                for col_index, item in enumerate(row):
+                    sheet.write(row_index, col_index, item)
+
+            work_book.save(self.sales_order_with_missing_data_file_location)
