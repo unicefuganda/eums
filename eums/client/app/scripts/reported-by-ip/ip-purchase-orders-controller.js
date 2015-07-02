@@ -93,21 +93,9 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         if ($scope.state.PO_ITEM) {
             var getItem = PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-                !$scope.state.NODE && loadDeliveryDataFor(purchaseOrderItem);
+                loadDeliveryDataFor(purchaseOrderItem);
             });
             loadPromises.push(getItem);
-        }
-
-        if ($scope.state.NODE) {
-            var fields = ['consignee', 'contact_person_id'];
-            var getChildNodes = DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
-                $scope.deliveryNodes.add(childNodes);
-            });
-            var getParentNode = DistributionPlanNodeService.get(deliveryNodeId, ['consignee']).then(function (node) {
-                $scope.delivery = node.distributionPlan;
-                $scope.parentNode = node;
-            });
-            loadPromises.add([getParentNode, getChildNodes]);
         }
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
@@ -171,6 +159,15 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         };
 
         function loadDeliveryDataFor(purchaseOrderItem) {
+            var getNodes = function (user) {
+                if (user.consignee_id) {
+                    var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
+                    return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
+                        $scope.deliveryNodes = nodes;
+                    });
+                }
+            };
+
             var getParentNode = function (user) {
                 var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
                 return DistributionPlanNodeService.filter(filterParams, ['consignee']).then(function (nodes) {
@@ -187,8 +184,14 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                     $scope.deliveryNodes.add(children);
                 });
             };
-            getUser.then(getParentNode).then(getChildNodes);
-            loadPromises.add([getUser, getParentNode, getChildNodes]);
+            getUser.then(getNodes);
+            loadPromises.add([getUser, getNodes]);
+        }
+
+        $scope.getTotalQuantity = function () {
+            return $scope.deliveryNodes.sum(function (node) {
+                return parseInt(node.targetedQuantity);
+            });
         }
 
         $q.all(loadPromises).then(hideLoader);
