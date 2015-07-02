@@ -291,7 +291,7 @@ module.exports = function (grunt) {
             },
             processConfigs: {
                 command: function (url) {
-                    return "sed 's/localhost/" + url +"/' config/development.json > config/environment.json";
+                    return 'sed "s/localhost/' + url +'/" config/development.json > config/environment.json';
                 }
             }
         },
