@@ -93,10 +93,23 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
         if ($scope.state.PO_ITEM) {
             var getItem = PurchaseOrderItemService.get(purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-                loadDeliveryDataFor(purchaseOrderItem);
+                !$scope.state.NODE && loadDeliveryDataFor(purchaseOrderItem);
             });
             loadPromises.push(getItem);
         }
+
+        if ($scope.state.NODE) {
+            var fields = ['consignee', 'contact_person_id'];
+            var getChildNodes = DistributionPlanNodeService.filter({parent: deliveryNodeId}, fields).then(function (childNodes) {
+                $scope.deliveryNodes.add(childNodes);
+            });
+            var getParentNode = DistributionPlanNodeService.get(deliveryNodeId, ['consignee']).then(function (node) {
+                $scope.delivery = node.distributionPlan;
+                $scope.parentNode = node;
+            });
+            loadPromises.add([getParentNode, getChildNodes]);
+        }
+
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
             $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
@@ -169,31 +182,29 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
                 });
             };
 
-            var getParentNode = function (user) {
-                var filterParams = {consignee: user.consignee_id, item: purchaseOrderItem.id};
-                return DistributionPlanNodeService.filter(filterParams, ['consignee']).then(function (nodes) {
-                    var ipDeliveryNode = nodes.first();
-                    deliveryNodeId = ipDeliveryNode.id;
-                    $scope.delivery = ipDeliveryNode.distributionPlan;
-                    $scope.parentNode = ipDeliveryNode;
-                    return ipDeliveryNode;
-                });
-            };
-            var getChildNodes = function (parentNode) {
-                var fieldsToBuild = ['consignee', 'contact_person_id'];
-                DistributionPlanNodeService.filter({parent: parentNode.id}, fieldsToBuild).then(function (children) {
-                    $scope.deliveryNodes.add(children);
-                });
-            };
             getUser.then(getNodes);
             loadPromises.add([getUser, getNodes]);
         }
 
         $scope.getTotalQuantity = function () {
-            return $scope.deliveryNodes.sum(function (node) {
-                return parseInt(node.targetedQuantity);
-            });
+            if (!$scope.parentNode) {
+                return $scope.deliveryNodes.sum(function (node) {
+                    return parseInt(node.targetedQuantity);
+                });
+            }
+            else {
+                return $scope.parentNode.targetedQuantity;
+            }
         }
+
+        $scope.computeQuantityLeft = function computeQuantityLeft(parentNode, deliveryNodes) {
+            var reduced = deliveryNodes.reduce(function (previous, current) {
+                return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
+            }, {targetedQuantity: 0});
+
+            return parentNode.targetedQuantity - reduced.targetedQuantity;
+        }
+
 
         $q.all(loadPromises).then(hideLoader);
     })
