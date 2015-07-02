@@ -21,7 +21,7 @@ class PurchaseOrderItemViewSet(ModelViewSet):
 
     def get_queryset(self):
         consignee = self.request.GET.get('consignee', None)
-        if consignee:
+        if consignee and consignee != 'null':
             po_item_ids = DistributionPlanNode.objects.filter(consignee_id=int(consignee)).values_list('item_id')
             return self.queryset.filter(id__in=po_item_ids)
         return self.queryset
