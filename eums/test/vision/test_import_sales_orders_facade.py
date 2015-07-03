@@ -78,6 +78,7 @@ class TestSalesOrdersVisionFacade(TestCase):
 
     def tearDown(self):
         os.remove(self.sales_order_file_location)
+        os.remove(self.sales_order_with_missing_data_file_location)
         Item.objects.all().delete()
         SalesOrder.objects.all().delete()
         SalesOrderItem.objects.all().delete()
@@ -86,10 +87,7 @@ class TestSalesOrdersVisionFacade(TestCase):
 
     def test_should_load_sales_order_data_excluding_summary_rows(self):
         sales_order_data = self.facade.load_records()
-        import logging
-        log = logging.getLogger("TestSalesOrdersVisionFacade")
-        # log.debug("sssssales order: {0}".format(str(sales_order_data)))
-        # print "sssssssssssales order: {0}".format(str(sales_order_data))
+
         self.assertEqual(sales_order_data, self.imported_sales_order_data)
 
     def test_should_not_load_sales_orders_with_missing_data(self):
@@ -286,7 +284,10 @@ class TestSalesOrdersVisionFacade(TestCase):
                           '4380/A0/04/106/004/010', 'KC130014', '1', '2630', '20476.4', '2630', '0 ', '0', '1115.9', '1',
                           '1', '@DF@', 'cvg', 'Yes', 'No', '0', '0', '0', '20487.7', '76088583']
 
-        rows = [self.header, self.first_row, self.second_row, self.third_row]
+        self.summary_row = [20147028, '', '', '', '', '21592.3', '', '', '', '', '', '', '', '', '' '', '', '20476.4',
+                            '', '0', '0', '1115.9', '', '', '', '', '', '', '', '', '', '', '']
+
+        rows = [self.header, self.first_row, self.second_row, self.third_row, self.summary_row]
 
         for row_index, row in enumerate(rows):
             for col_index, item in enumerate(row):
@@ -315,7 +316,10 @@ class TestSalesOrdersVisionFacade(TestCase):
                               u'No', u'0',
                               u'0', u'0', u'2953.79', u'']
 
-            rows = [self.header, self.first_row]
+            self.second_row = [20147028, '', '', '', '', '', '', '', '', '', '', '', '', '', '' '', '', '20476.4',
+                                '', '0', '0', '1115.9', '', '', '', '', '', '', '', '', '', '', '']
+
+            rows = [self.header, self.first_row, self.second_row]
 
             for row_index, row in enumerate(rows):
                 for col_index, item in enumerate(row):

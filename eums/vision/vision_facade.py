@@ -111,7 +111,7 @@ class OrderFacade(Facade):
             try:
                 item_dict = self._filter_relevant_data(relevant_data, row)
 
-                if self._has_all_relevant_data(item_dict):
+                if not self._is_summary_row(item_dict) and self._has_all_relevant_data(item_dict):
                     order_number = item_dict['order_number']
                     order_index = self._index_in_list(order_number, order_list, 'order_number')
                     if order_index > -1:
@@ -135,6 +135,19 @@ class OrderFacade(Facade):
         if new_order:
             for item in record_dict['items']:
                 self._create_new_item(item, new_order)
+
+    def _is_summary_row(self, item_dict):
+        net_value = 'net_value'
+
+        order_number = 'order_number'
+        if not item_dict.get(order_number) and not item_dict[net_value]:
+            raise False
+
+        for column in self.RELEVANT_DATA.values():
+            if column != net_value and column != order_number and item_dict[column]:
+                return False
+
+        return True
 
     @staticmethod
     def _get_as_date(raw_value):
