@@ -418,7 +418,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.warningAccepted = function(){
             $('#confirmation-modal').modal('hide');
             $scope.saveDistributionPlanNodes();
-        }
+        };
 
         $scope.saveDistributionPlanNodes = function() {
             if ($scope.distributionPlan) {
