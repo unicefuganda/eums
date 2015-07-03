@@ -1,10 +1,13 @@
 'use strict';
 
 
-angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
-    .controller('DirectDeliveryController', function ($scope, $location, DistributionPlanService, ProgrammeService, PurchaseOrderService, UserService, $sorter) {
+angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User',
+    'Directives', 'EumsFilters'])
+    .controller('DirectDeliveryController', function ($scope, $location, DistributionPlanService, ProgrammeService, PurchaseOrderService,
+                                                      UserService, $sorter) {
 
         $scope.sortBy = $sorter;
+        $scope.searchFields = ['orderNumber', 'date'];
         $scope.errorMessage = '';
         $scope.planId = '';
 
@@ -45,13 +48,7 @@ angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTabl
         };
 
     })
-    .filter('purchaseOrderFilter', function ($filter) {
-        return function (purchaseOrders, query) {
-            var results = $filter('filter')(purchaseOrders, {orderNumber: query});
-            results = _.union(results, $filter('filter')(purchaseOrders, {date: query}));
-            return results;
-        };
-    }).factory('$sorter', function () {
+    .factory('$sorter', function () {
         return function (field) {
             this.sort = this.sort || {};
             angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});

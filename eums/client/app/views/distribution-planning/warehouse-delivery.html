@@ -3,7 +3,18 @@
 
 <div>
     <div class="row">
-        <div class="col-xs-4 pull-right">
+        <div class="col-xs-2 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon glyphicon-search"></i>
+                <input type="text"
+                       id="dateFilter"
+                       class="form-control"
+                       name="dateFilter"
+                       ng-model="dateQuery"
+                       placeholder="Date (yyyy-MM-dd)"/>
+            </div>
+        </div>
+        <div class="col-xs-3 pull-right">
             <div class="inner-addon left-addon">
                 <i class="glyphicon glyphicon-search"></i>
                 <input type="text"
@@ -11,10 +22,11 @@
                        class="form-control"
                        name="filter"
                        ng-model="query"
-                       placeholder="Search by document number, date or description"/>
+                       placeholder="Search by document number or description"/>
             </div>
         </div>
     </div>
+
     <div class="text-muted pad-top-10">
         <ul class="list-inline">
             <li>
@@ -46,7 +58,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="releaseOrder in releaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+            <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
                     <span ng-class="releaseOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
                      'glyphicon glyphicon-exclamation-sign text-warning';"></span>
@@ -70,7 +82,7 @@
             </tr>
             </tfoot>
                 <span class="information message"
-                      ng-show="releaseOrders.length > 0 && (releaseOrders | purchaseOrderFilter: query).length == 0">
+                      ng-show="releaseOrders.length > 0 && (releaseOrders | orderFilter: query:dateQuery:searchFields).length == 0">
                 There are no matches to your search criteria.
                 </span>
             <span class="information message" ng-show="releaseOrders.length == 0">There are no deliveries available right now.</span>

@@ -1,8 +1,20 @@
 <ng-include src="'/static/app/views/distribution-planning/partials/delivery-header.html'"></ng-include>
 
 <div class="container-fluid">
+
     <div class="row">
-        <div class="col-xs-4 pull-right">
+        <div class="col-xs-2 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon glyphicon-search"></i>
+                <input type="text"
+                       id="dateFilter"
+                       class="form-control"
+                       name="dateFilter"
+                       ng-model="dateQuery"
+                       placeholder="Date (yyyy-MM-dd)"/>
+            </div>
+        </div>
+        <div class="col-xs-3 pull-right">
             <div class="inner-addon left-addon">
                 <i class="glyphicon glyphicon-search"></i>
                 <input type="text"
@@ -10,7 +22,7 @@
                        class="form-control"
                        name="filter"
                        ng-model="query"
-                       placeholder="Search by document number, date or description"/>
+                       placeholder="Search by document number or description"/>
             </div>
         </div>
     </div>
@@ -37,7 +49,7 @@
                     <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
                 <th style="width: 30%">
-                    <a ng-click="sortBy('date')">{{dateColumnTitle}}
+                    <a ng-click="sortBy('date')">{{ dateColumnTitle }}
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
@@ -54,10 +66,10 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="purchaseOrder in purchaseOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+            <tr ng-repeat="purchaseOrder in purchaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
                     <span ng-class="purchaseOrder.hasPlan ?  (purchaseOrder.isFullyDelivered ? 'glyphicon glyphicon-ok text-success' :
-                     'glyphicon glyphicon-warning-sign text-warning') : 'glyphicon glyphicon-remove text-danger'" ></span>
+                     'glyphicon glyphicon-warning-sign text-warning') : 'glyphicon glyphicon-remove text-danger'"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
                     <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
@@ -71,7 +83,7 @@
                 <td data-header="{{ outcomeColumnTitle }}">
                     {{ purchaseOrder.programmeName }}
                 </td>
-                <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
+                <td data-header="{{ descriptionColumnTitle }}" ng-if="descriptionColumnTitle">
                     {{ purchaseOrder.description }}
                 </td>
             </tr>
@@ -84,7 +96,7 @@
             </tr>
             </tfoot>
                 <span class="information message"
-                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | purchaseOrderFilter: query).length == 0">
+                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | orderFilter: query:dateQuery:searchFields ).length == 0">
                 There are no matches to your search criteria.
                 </span>
             <span class="information message" ng-show="purchaseOrders.length == 0">There are no deliveries available right now.</span>

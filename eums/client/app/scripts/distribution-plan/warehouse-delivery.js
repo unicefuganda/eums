@@ -6,6 +6,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
+        $scope.searchFields = ['waybill', 'deliveryDate'];//, 'programme'];
 
         $scope.releaseOrders = [];
         $scope.programmes = [];
