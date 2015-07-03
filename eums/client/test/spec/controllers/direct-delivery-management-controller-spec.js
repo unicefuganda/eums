@@ -268,7 +268,7 @@ describe('DirectDeliveryController', function () {
                 contactPerson: '5444d433ec8e8257ae48dc73',
                 remark: '',
                 track: true,
-                forEndUser: false
+                isEndUser: false
             };
 
             beforeEach(function () {
@@ -633,8 +633,7 @@ describe('DirectDeliveryController', function () {
         });
     });
 
-    //FIXME TECH-DEBT need to re-enable these tests when time is available
-    xdescribe('when save is clicked, ', function () {
+    describe('when save is clicked, ', function () {
         var programmeId, distributionPlan;
 
         beforeEach(function () {
@@ -655,7 +654,7 @@ describe('DirectDeliveryController', function () {
                 scope.$apply();
 
                 var expectedToastArguments = {
-                    content: 'Plan Saved!',
+                    content: 'Delivery Saved!',
                     class: 'success',
                     maxNumber: 1,
                     dismissOnTimeout: true
@@ -725,6 +724,27 @@ describe('DirectDeliveryController', function () {
                     deferredUserPromise.resolve(stubUser);
                 });
 
+                it('should save node with end user tree position', function () {
+                    uiPlanNode.isEndUser = true;
+
+                    scope.saveDistributionPlanNodes();
+                    scope.$apply();
+
+                    expect(mockNodeService.create).toHaveBeenCalledWith({
+                        consignee: 1,
+                        location: 'Kampala',
+                        contact_person_id: '0489284',
+                        distribution_plan: 1,
+                        tree_position: 'END_USER',
+                        parent: null,
+                        item: uiPlanNode.item,
+                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        planned_distribution_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
+                        track: scope.track
+                    });
+                });
+
                 it('a node should be saved with no parent id as implementing partner', function () {
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
@@ -745,7 +765,7 @@ describe('DirectDeliveryController', function () {
                 });
 
                 it('should save node with middle man user tree position', function () {
-                    uiPlanNode.forEndUser = false;
+                    uiPlanNode.isEndUser = false;
                     scope.planNode = {id: 1};
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
@@ -757,27 +777,6 @@ describe('DirectDeliveryController', function () {
                         distribution_plan: 1,
                         tree_position: 'MIDDLE_MAN',
                         parent: 1,
-                        item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetedQuantity,
-                        planned_distribution_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
-                        track: scope.track
-                    });
-                });
-
-                it('should save node with end user tree position', function () {
-                    uiPlanNode.forEndUser = true;
-
-                    scope.saveDistributionPlanNodes();
-                    scope.$apply();
-
-                    expect(mockNodeService.create).toHaveBeenCalledWith({
-                        consignee: 1,
-                        location: 'Kampala',
-                        contact_person_id: '0489284',
-                        distribution_plan: 1,
-                        tree_position: 'END_USER',
-                        parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
