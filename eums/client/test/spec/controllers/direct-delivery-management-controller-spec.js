@@ -650,6 +650,7 @@ describe('DirectDeliveryController', function () {
 
         describe('and the plan is successfully saved, ', function () {
             it('a toast confirming the save action should be created', function () {
+                scope.inMultipleIpMode = true;
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
@@ -666,22 +667,25 @@ describe('DirectDeliveryController', function () {
 
         describe('and a plan for the purchase order item has not been saved, ', function () {
             it('a distribution plan should be created', function () {
+                scope.inMultipleIpMode = true;
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
                 expect(mockPlanService.createPlan).toHaveBeenCalledWith({programme: programmeId});
             });
             it('the created distribution plan should be put on the scope', function () {
+                scope.inMultipleIpMode = true;
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(scope.distributionPlan).toEqual(distributionPlan.id);
+                expect(scope.distributionPlan.id).toEqual(distributionPlan.id);
             });
         });
 
         describe('and a plan for the purchase order item has been saved, ', function () {
             it('a distribution plan should not be created', function () {
-                scope.distributionPlan = {programme: 1};
+                scope.distributionPlanId = {id: 1};
+                scope.inMultipleIpMode = true;
                 scope.$apply();
 
                 scope.saveDistributionPlanNodes();
@@ -726,7 +730,7 @@ describe('DirectDeliveryController', function () {
 
                 it('should save node with end user tree position', function () {
                     uiPlanNode.isEndUser = true;
-
+                    scope.inMultipleIpMode = true;
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
@@ -746,6 +750,7 @@ describe('DirectDeliveryController', function () {
                 });
 
                 it('a node should be saved with no parent id as implementing partner', function () {
+                    scope.inMultipleIpMode = true;
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
@@ -767,6 +772,7 @@ describe('DirectDeliveryController', function () {
                 it('should save node with middle man user tree position', function () {
                     uiPlanNode.isEndUser = false;
                     scope.planNode = {id: 1};
+                    scope.inMultipleIpMode = true;
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
@@ -786,6 +792,7 @@ describe('DirectDeliveryController', function () {
                 });
 
                 it('a distribution plan node should be saved, with it\'s track property picked from the scope', function () {
+                    scope.inMultipleIpMode = true;
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
@@ -811,6 +818,7 @@ describe('DirectDeliveryController', function () {
                 deferredPlanNode.resolve({id: nodeId});
                 deferredUserPromise.resolve(stubIPUser);
                 scope.track = false;
+                scope.inMultipleIpMode = true;
 
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
@@ -845,6 +853,7 @@ describe('DirectDeliveryController', function () {
 
                 it('the node for the ui plan node should be updated and not saved', function () {
                     uiPlanNode.id = nodeId;
+                    scope.inMultipleIpMode = true;
 
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
@@ -896,6 +905,7 @@ describe('DirectDeliveryController', function () {
             });
 
             it('a node be saved with parent node', function () {
+                scope.inMultipleIpMode = true;
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
