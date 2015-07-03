@@ -188,9 +188,9 @@ angular.module('NewIpReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 
 
         $scope.getTotalQuantity = function () {
             if (!$scope.parentNode) {
-                return $scope.deliveryNodes ? '' : $scope.deliveryNodes.sum(function (node) {
+                return $scope.deliveryNodes ? $scope.deliveryNodes.sum(function (node) {
                     return parseInt(node.targetedQuantity);
-                });
+                }) : '';
             }
             else {
                 return $scope.parentNode.targetedQuantity;
