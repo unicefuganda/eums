@@ -13,11 +13,12 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
     programme = serializers.IntegerField(read_only=True, source='sales_order.programme.id')
     has_plan = serializers.BooleanField(read_only=True, source='has_plan')
     is_fully_delivered = serializers.BooleanField(read_only=True, source='is_fully_delivered')
+    delivery = serializers.IntegerField(read_only=True, source='delivery')
 
     class Meta:
         model = PurchaseOrder
         fields = ('id', 'order_number', 'date', 'sales_order', 'po_type', 'programme_name',
-                  'purchaseorderitem_set', 'release_orders', 'programme', 'is_single_ip', 'has_plan', 'is_fully_delivered')
+                  'purchaseorderitem_set', 'release_orders', 'programme', 'is_single_ip', 'has_plan', 'is_fully_delivered', 'delivery')
 
 
 class PurchaseOrderViewSet(ModelViewSet):

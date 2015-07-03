@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Count, Sum
 
@@ -36,6 +37,13 @@ class PurchaseOrder(models.Model):
             return total_node_items['targeted_quantity__sum'] == total_purchase_order_items['quantity__sum']
         else:
             return False
+
+    def delivery(self):
+        first_node = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all()).first()
+        if first_node:
+            return first_node.distribution_plan.id
+        else:
+            return None
 
     class Meta:
         app_label = 'eums'

@@ -3,12 +3,18 @@
         Order: {{ selectedPurchaseOrder.orderNumber }}</div>
     <div class="content">
         <div class="row pad-left-5 pad-top-10" ng-hide="inSingleIpMode || inMultipleIpMode">
-            <span class="label label-success label-as-step-badge">Step 1: Is this Purchase order for a single or multiple Implementing Partners(IP)?</span>
+            <span class="label label-success label-as-step-badge">Is this purchase order for a single or multiple Implementing Partners(IP)?</span>
         </div>
         <ng-toast></ng-toast>
         <div ng-hide="inSingleIpMode || inMultipleIpMode" class="row pad-left-5">
-            <label class="radio-inline"><input id="single-ip" type="radio" name="ip-group" ng-click="showSingleIpMode()">Single IP</label>
-            <label class="radio-inline"><input id="multiple-ip" type="radio" name="ip-group" ng-click="showMultipleIpMode()">Multiple IPs</label>
+            <ul class="nav nav-pills" style="margin-top: 1em;">
+                <li role="presentation" >
+                    <button id="single-ip" class="btn btn-default blue-border-button" ng-click="showSingleIpMode()">Single IP</button>
+                </li>
+                <li role="presentation" >
+                    <button id="multiple-ip" class="btn btn-default blue-border-button" ng-click="showMultipleIpMode()">Multiple IPs</button>
+                </li>
+            </ul>
         </div>
         <div id="single-ip" ng-show="inSingleIpMode">
             <div class="row pad-left-5 pad-top-10">
@@ -17,19 +23,17 @@
             <div class="row pad-left-5 pad-top-10">
                 <div class="side-pad-left-20 row">
                     <div class="form-horizontal">
-                        <div class="form-group col-lg-4">
+                        <div class="form-group col-lg-4" ng-if="IPsLoaded">
 
                                 <label for="select-implementing_partner" class="col-lg-4 control-label description-label">
                                     IP:
                                 </label>
 
                                 <div class="col-lg-8">
-                                    <select id="select-implementing_partner" ng-model="selectedImplementingPartner"
-                                            required="required"
-                                            class="form-control"
-                                            ng-options="implementingPartner.name for implementingPartner in implementingPartners | orderBy: 'display'">
-                                        <option value="">Select Implementing Partner</option>
-                                    </select>
+                                    <input type="hidden" search-from-list list="{{ implementingPartners }}"
+                                           ng-model="consignee.id"
+                                           ng-attr-id="{{ 'ip-select' }}"
+                                           value="{{ consignee.id }}">
                                 </div>
                         </div>
                      </div>
@@ -67,8 +71,7 @@
                                 <div class="form-group table-contact-form-group col-md-10">
                                     <input type="hidden" search-contacts required="required"
                                            value="{{ contact.id }}" ng-model="contact.id"
-                                           ng-attr-id="{{ 'contact-select' }}"
-                                           ng-disabled="item.flowTriggered">
+                                           ng-attr-id="{{ 'contact-select' }}">
                                 </div>
                                 <div class="form-group table-contact-form-group col-md-2">
                                     <button type="button" class="btn btn-default "
@@ -118,6 +121,9 @@
                                     <span class="label label-success label-as-badge">{{ purchaseOrderItems.length }}</span>
                                     Total Items
                                 </li>
+                                <li class="list-group-item">
+                                    &nbsp;
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -150,7 +156,7 @@
                         <div ng-show="purchaseOrderItems.length" class="pull-right">
                             <button type="button" class="btn btn-primary"
                                     ng-click="warnBeforeSaving()"
-                                    ng-disabled="invalidNodes">
+                                    ng-disabled="invalidDelivery()">
                                 <i class="glyphicon glyphicon-floppy-save"> </i>
                                 Save
                             </button>

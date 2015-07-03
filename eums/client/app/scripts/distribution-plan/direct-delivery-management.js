@@ -2,7 +2,7 @@
 
 
 angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DistributionPlanNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
-    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast, ItemService) {
+    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast, ItemService, ContactService) {
 
         function showLoadingModal(show) {
             if (show && !angular.element('#loading').hasClass('in')) {
@@ -20,6 +20,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.districts = [];
         $scope.consigneeButtonText = 'Add Consignee';
         $scope.contact = {};
+        $scope.selectedDate = '';
+        $scope.selectedLocation = {};
+        $scope.consignee = {};
         $scope.lineItem = {};
         $scope.itemIndex = '';
         $scope.track = false;
@@ -27,8 +30,9 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.isReport = false;
         $scope.districtsLoaded = false;
         $scope.totalValue = 0;
+        $scope.IPsLoaded = false;
 
-            $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
+        $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
         $scope.quantityHeaderText = 'Delivered Qty';
         $scope.deliveryDateHeaderText = $scope.distributionPlanReport ? 'Delivery Date' : 'Date Delivered';
 
@@ -136,6 +140,8 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     computeTotalPurchaseOrderValue();
                 });
             });
+            $scope.distributionPlanId = purchaseOrder.delivery;
+            getDelivery();
 
         });
 
@@ -184,12 +190,135 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             $scope.inMultipleIpMode = false;
             ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
                 $scope.implementingPartners = allIps;
+                $scope.IPsLoaded = true;
             });
         };
 
         $scope.showMultipleIpMode = function () {
             $scope.inMultipleIpMode = true;
             $scope.inSingleIpMode = false;
+        };
+
+        var saveDeliveryNodes = function () {
+            $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
+                saveDeliveryNode(purchaseOrderItem);
+            });
+        };
+
+        var saveSingleIPDeliveryNodes = function () {
+            showLoadingModal(true);
+            saveDeliveryNodes();
+
+            if ($scope.selectedPurchaseOrder.isSingleIp === null) {
+                savePurchaseOrderIPMode();
+            }
+        };
+
+        var isValidDelivery = function() {
+            return validate($scope.consignee.id, 'Fill in IP field!') &&
+                validate($scope.selectedDate, 'Fill in Date field!') &&
+                validate($scope.contact.id, 'Fill in Contact field!') &&
+                validate($scope.selectedLocation.id, 'Fill in Location field!');
+        };
+
+        var validate = function (field, message) {
+            if (!field) {
+                createToast(message, 'danger');
+                return false;
+            } else {
+                return true;
+            }
+        };
+
+        var getNodeForItem = function (purchaseOrderItem) {
+            return $scope.distributionPlanNodes.find(function (node) {
+                return node.item === purchaseOrderItem.information.id;
+            });
+        };
+
+        var saveDeliveryNode = function (purchaseOrderItem) {
+            var deliveryDate = new Date($scope.selectedDate);
+
+            if (deliveryDate.toString() === 'Invalid Date') {
+                var planDate = $scope.selectedDate.split('/');
+                deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
+            }
+            var node = getNodeForItem(purchaseOrderItem);
+            if (node) {
+                node.location = $scope.selectedLocation.id;
+                node.contact_person_id = $scope.contact.id;
+                node.planned_distribution_date = formatDateForSave(deliveryDate);
+                DistributionPlanNodeService.update(node)
+                    .then(function () {
+                        getDelivery();
+                        showLoadingModal(false);
+                    },
+                    function (response) {
+                        handleErrors(response);
+                    });
+            } else {
+                node = {
+                    consignee: $scope.consignee.id,
+                    location: $scope.selectedLocation.id,
+                    contact_person_id: $scope.contact.id,
+                    distribution_plan: $scope.distributionPlanId,
+                    tree_position: 'IMPLEMENTING_PARTNER',
+                    item: purchaseOrderItem.information.id,
+                    targeted_quantity: parseInt(purchaseOrderItem.quantity),
+                    planned_distribution_date: formatDateForSave(deliveryDate),
+                    track: false
+                };
+                DistributionPlanNodeService.create(node)
+                    .then(function () {
+                        getDelivery();
+                        showLoadingModal(false);
+                    }, function (response) {
+                        handleErrors(response, purchaseOrderItem.materialCode);
+                    });
+
+            }
+
+        };
+
+        var handleErrors = function (response, materialCode) {
+            var message = '';
+            var errors = response.data;
+            for (var property in errors) {
+                message += 'Material: ' + materialCode + ', ' + property + ': ' + errors[property] + '\n';
+            }
+            $scope.nodeSavingErrors = true;
+            createToast(message, 'danger');
+        };
+
+        var setPOFields = function(){
+            ContactService.get($scope.contact.id)
+                .then(function(contact){
+                    $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+                });
+
+            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
+
+            ConsigneeService.get($scope.consignee.id).then(function(consignee) {
+                $('#ip-select').siblings('div').find('a span.select2-chosen').text(consignee.name);
+            });
+
+        };
+
+        var getDelivery = function () {
+            if ($scope.distributionPlanId) {
+                DistributionPlanService.get($scope.distributionPlanId).then(function (response) {
+                    $scope.distributionPlan = response.data;
+                    });
+
+                DistributionPlanNodeService.getNodesByDelivery($scope.distributionPlanId)
+                    .then(function (response) {
+                        $scope.consignee.id = response.data[0].consignee;
+                        $scope.selectedLocation.id = response.data[0].location;
+                        $scope.selectedDate = response.data[0].planned_distribution_date;
+                        $scope.contact.id = response.data[0].contact_person_id;
+                        setPOFields();
+                    });
+            }
         };
 
         $scope.selectPurchaseOrderItem = function () {
@@ -335,7 +464,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     consignee: uiPlanNode.consignee.id,
                     location: uiPlanNode.location,
                     contact_person_id: uiPlanNode.contactPerson.id,
-                    distribution_plan: $scope.distributionPlan,
+                    distribution_plan: $scope.distributionPlan.id,
                     tree_position: uiPlanNode.isEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
                     parent: parentNodeId(),
                     item: uiPlanNode.item,
@@ -386,7 +515,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             PurchaseOrderService.update(purchaseOrder);
         }
 
-        function saveDistributionPlanNodes() {
+        function saveMultipleIpDeliveryNodes() {
             var message = 'Delivery Saved!';
             var pNodes = $scope.distributionPlanNodes;
             $scope.distributionPlanNodes = [];
@@ -407,11 +536,12 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         $scope.warnBeforeSaving = function () {
-
-            if ($scope.selectedPurchaseOrder.isSingleIp === null) {
-                $('#confirmation-modal').modal();
-            } else {
-                $scope.saveDistributionPlanNodes();
+            if($scope.inMultipleIpMode || ($scope.inSingleIpMode && isValidDelivery())) {
+                if ($scope.selectedPurchaseOrder.isSingleIp === null) {
+                    $('#confirmation-modal').modal();
+                } else {
+                    $scope.warningAccepted();
+                }
             }
         };
 
@@ -420,16 +550,24 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             $scope.saveDistributionPlanNodes();
         };
 
-        $scope.saveDistributionPlanNodes = function() {
-            if ($scope.distributionPlan) {
-                saveDistributionPlanNodes();
-            }
-            else {
+        $scope.saveDistributionPlanNodes = function(){
+            if (!$scope.distributionPlanId) {
                 DistributionPlanService.createPlan({programme: $scope.selectedPurchaseOrder.programme})
                     .then(function (createdPlan) {
-                        $scope.distributionPlan = createdPlan.id;
-                        saveDistributionPlanNodes();
+                        $scope.distributionPlan = createdPlan;
+                        $scope.distributionPlanId = createdPlan.id;
+                        if($scope.inSingleIpMode) {
+                            saveSingleIPDeliveryNodes();
+                        } else if($scope.inMultipleIpMode) {
+                            saveMultipleIpDeliveryNodes();
+                        }
                     });
+            } else {
+                if($scope.inSingleIpMode) {
+                    saveSingleIPDeliveryNodes();
+                } else if($scope.inMultipleIpMode) {
+                    saveMultipleIpDeliveryNodes();
+                }
             }
         };
 
