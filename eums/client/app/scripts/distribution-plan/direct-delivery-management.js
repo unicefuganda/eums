@@ -420,7 +420,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             $scope.saveDistributionPlanNodes();
         }
 
-        $scope.saveDistributionPlanNodes = function () {
+        $scope.saveDistributionPlanNodes = function() {
             if ($scope.distributionPlan) {
                 saveDistributionPlanNodes();
             }
