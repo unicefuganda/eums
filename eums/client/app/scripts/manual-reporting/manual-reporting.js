@@ -5,6 +5,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         $scope.sortBy = $sorter;
         var purchaseOrders = [];
         var waybills = [];
+        $scope.searchFields = ['orderNumber', 'date', 'programme'];
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
@@ -72,12 +73,4 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
            }
 
         });
-    })
-    .filter('documentFilter', function ($filter) {
-        return  function (documents, query) {
-            var results = $filter('filter')(documents, {orderNumber: query});
-            results = _.union(results, $filter('filter')(documents, {date: query}));
-            results = _.union(results, $filter('filter')(documents, {programme: query}));
-            return results;
-        };
     });
