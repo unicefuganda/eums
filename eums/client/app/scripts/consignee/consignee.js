@@ -54,6 +54,17 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         ConsigneeService.all().then(function(consignees) {
             $scope.consignees = consignees;
         });
+        $scope.edit = function(consignee) {
+            $scope.$broadcast('edit-consignee', consignee);
+        }
+    })
+    .controller('EditConsigneeController', function($scope, ConsigneeService) {
+        $scope.$on('edit-consignee', function(_, consignee) {
+            angular.element('#edit-consignee-modal').modal();
+            ConsigneeService.update(consignee).then(function(createdConsignee) {
+                $scope.consignee = createdConsignee;
+            });
+        });
     });
 
 
