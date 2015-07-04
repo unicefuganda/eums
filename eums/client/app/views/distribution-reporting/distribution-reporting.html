@@ -8,8 +8,20 @@
             </li>
         </ul>
         <div class="panel panel-default line-order-panel">
+
             <div class="row">
-                <div class="col-xs-4 pull-right">
+                <div class="col-xs-2 pull-right">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"
+                               id="dateFilter"
+                               class="form-control"
+                               name="dateFilter"
+                               ng-model="dateQuery"
+                               placeholder="Date (yyyy-MM-dd)"/>
+                    </div>
+                </div>
+                <div class="col-xs-3 pull-right">
                     <div class="inner-addon left-addon">
                         <i class="glyphicon glyphicon-search"></i>
                         <input type="text"
@@ -17,10 +29,11 @@
                                class="form-control"
                                name="filter"
                                ng-model="query"
-                               placeholder={{placeHolderText}}>
+                               placeholder="{{placeHolderText}}"/>
                     </div>
                 </div>
             </div>
+
             <span class="well-sm"></span>
 
             <div class="table-wrapper">
@@ -47,7 +60,7 @@
                     </thead>
 
                     <tbody>
-                    <tr ng-repeat="document in documents | documentFilter: query | orderBy: sort.criteria:!sort.descending">
+                    <tr ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                         <td data-header="Document Number">
                             <a ng-click="selectDocument(document)">{{ document.orderNumber }}</a>
                         </td>

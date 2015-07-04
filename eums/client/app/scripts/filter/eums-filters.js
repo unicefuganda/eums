@@ -1,20 +1,20 @@
 'use strict';
 
-
 angular.module('EumsFilters', [])
     .filter('orderFilter', function ($filter) {
 
         var contains = function (array, item) {
             for (var i = 0; i < array.length; i++) {
-                if (array[i].id === item.id)
+                if (array[i].id === item.id) {
                     return true;
+                }
             }
             return false;
         };
 
         var intersection = function (arrays) {
             var result = [], arraysLength = arrays.length;
-            if (arrays.length == 0) {
+            if (arrays.length === 0) {
                 return result;
             }
             for (var k = 0; k < arrays[0].length; k++) {
@@ -22,7 +22,9 @@ angular.module('EumsFilters', [])
                 if (!contains(result, item)) {
                     var j;
                     for (j = 1; j < arraysLength; j++) {
-                        if (!contains(arrays[j], item)) break;
+                        if (!contains(arrays[j], item)) {
+                            break;
+                        }
                     }
                     if (j === arraysLength) {
                         result.push(item);
@@ -34,9 +36,8 @@ angular.module('EumsFilters', [])
 
         return function (orderArray, query, dateQuery, searchFields) {
             if (!query && !dateQuery || orderArray.length <= 0) {
-                return orderArray
+                return orderArray;
             }
-
             var filteredArrays = [];
             searchFields && searchFields.each(function (field) {
                 var fieldObj = {};
@@ -46,4 +47,4 @@ angular.module('EumsFilters', [])
             });
             return intersection(filteredArrays);
         };
-    })
+    });
