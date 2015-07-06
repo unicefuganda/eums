@@ -29,7 +29,7 @@ def _clean_input(value):
         return value
 
 
-class Facade():
+class Facade(object):
     RELEVANT_DATA = {}
 
     __metaclass__ = ABCMeta
@@ -138,9 +138,9 @@ class OrderFacade(Facade):
 
     def _is_summary_row(self, item_dict):
         net_value = 'net_value'
-
+        value = 'value'
         order_number = 'order_number'
-        if not item_dict.get(order_number) and not item_dict[net_value]:
+        if not item_dict.get(order_number) and not item_dict.get(net_value) and not item_dict.get(value):
             raise False
 
         for column in self.RELEVANT_DATA.values():
