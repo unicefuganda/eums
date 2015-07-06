@@ -2,6 +2,7 @@ from unittest import TestCase
 from django.db import IntegrityError
 from eums.models import ReleaseOrderItem, DistributionPlan, DistributionPlanNode, Programme
 from eums.models.release_order import ReleaseOrder
+from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
@@ -55,3 +56,18 @@ class ReleaseOrderTest(TestCase):
 
         returned_release_order = ReleaseOrder.objects.get(order_number=2342)
         self.assertEqual(returned_release_order.delivery(), None)
+
+    def test_should_get_orders__as_a_queryset__whose_items_have_been_delivered_to_a_specific_consignee(self):
+        consignee = ConsigneeFactory()
+        order_one = ReleaseOrderFactory()
+        order_two = ReleaseOrderFactory()
+        order_three = ReleaseOrderFactory()
+        order_item_one = ReleaseOrderItemFactory(release_order=order_one)
+        order_item_two = ReleaseOrderItemFactory(release_order=order_two)
+        DistributionPlanNodeFactory(item=order_item_one, consignee=consignee)
+        DistributionPlanNodeFactory(item=order_item_two, consignee=consignee)
+
+        consignee_orders = ReleaseOrder.objects.for_consignee(consignee.id).order_by('id')
+
+        self.assertListEqual(list(consignee_orders), [order_one, order_two])
+        self.assertNotIn(order_three, consignee_orders)
