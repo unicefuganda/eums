@@ -1,7 +1,7 @@
 from inspect import getargspec
 
 
-class MockCelery():
+class MockCelery(object):
     def __init__(self):
         self.method = None
         self.invoked_after = None
