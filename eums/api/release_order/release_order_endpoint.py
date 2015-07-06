@@ -1,3 +1,4 @@
+from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
@@ -22,6 +23,14 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
 class ReleaseOrderViewSet(ModelViewSet):
     queryset = ReleaseOrder.objects.all().order_by('order_number')
     serializer_class = ReleaseOrderSerialiser
+
+    def list(self, request, *args, **kwargs):
+        consignee_id = request.GET.get('consignee', None)
+        if consignee_id:
+            orders = ReleaseOrder.objects.for_consignee(consignee_id).order_by('waybill')
+        else:
+            orders = self.get_queryset()
+        return Response(self.get_serializer(orders, many=True).data)
 
 
 releaseOrderRouter = DefaultRouter()

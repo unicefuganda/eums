@@ -19,8 +19,8 @@ from eums.models.flow import Flow
 from eums.models.order_item import OrderItem
 from eums.models.purchase_order_item import PurchaseOrderItem
 from eums.models.purchase_order import PurchaseOrder
-from eums.models.release_order import ReleaseOrder
 from eums.models.release_order_item import ReleaseOrderItem
+from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
 
@@ -44,9 +44,9 @@ __all__ = [
     'MultipleChoiceQuestion',
     'NumericQuestion',
     'Flow',
+    'ReleaseOrderItem',
     'ReleaseOrder',
     'OrderItem',
-    'ReleaseOrderItem',
     'DistributionReport',
     'UserProfile',
     'PurchaseOrderItem',
