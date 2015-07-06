@@ -42,10 +42,14 @@ function resetdb {
     echo "+++ Resetting database eums_test..."
     echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums_test' AND pid <> pg_backend_pid();" | psql &> /dev/null
     echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
+    python manage.py migrate --settings=eums.test_settings
+    python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings
   else
     echo "+++ Resetting database eums..."
     echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums' AND pid <> pg_backend_pid();" | psql &> /dev/null
     echo "drop database eums; create database eums;" | psql -h localhost -U postgres
+    python manage.py migrate
+    python manage.py loaddata eums/client/test/functional/fixtures/user.json
   fi
 }
 
