@@ -19,7 +19,7 @@ describe('Route Provider', function () {
     it('should know distribution plan route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/reported-by-ip');
         expect(routes.routes['/reported-by-ip'].controller).toBe('IPPurchaseOrdersController');
-        expect(routes.routes['/reported-by-ip'].templateUrl).toBe('/static/app/views/distribution-planning/reported-by-ip.html');
+        expect(routes.routes['/reported-by-ip'].templateUrl).toBe('/static/app/views/reported-by-ip/direct-delivery.html');
     });
 
     it('should know new distribution plan route exists', function () {

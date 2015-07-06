@@ -63,7 +63,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/reported-by-ip', {
-                templateUrl: '/static/app/views/distribution-planning/reported-by-ip.html',
+                templateUrl: '/static/app/views/reported-by-ip/direct-delivery.html',
                 controller: 'IPPurchaseOrdersController',
                 resolve: {
                     permission: function (UserService) {
