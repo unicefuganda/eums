@@ -12,6 +12,18 @@ var ImportDataPage = function () {
     this.uploadProgrammes = function(fileToUpload) {
         uploadUsingThisDiv('programmesDiv', fileToUpload);
     };
+
+    this.uploadPurchaseOrders = function(fileToUpload) {
+        uploadUsingThisDiv('purchaseOrdersDiv', fileToUpload);
+    };
+
+    this.uploadReleaseOrders = function(fileToUpload) {
+        uploadUsingThisDiv('releaseOrdersDiv', fileToUpload);
+    };
+
+    this.uploadSalesOrders = function(fileToUpload) {
+        uploadUsingThisDiv('salesOrdersDiv', fileToUpload);
+    };
 };
 
 module.exports = new ImportDataPage;

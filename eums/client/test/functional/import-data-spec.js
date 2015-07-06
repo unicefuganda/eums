@@ -4,6 +4,9 @@ var feedbackReportPage = require('./pages/feedback-report-page.js');
 var loginPage = require('./pages/login-page.js');
 var importDataPage = require('./pages/import-data-page.js');
 
+var directDeliveryPage = require('./pages/direct-delivery-page.js');
+var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
+
 describe('Vision Data Imports', function () {
 
     beforeEach(function(){
@@ -31,5 +34,23 @@ describe('Vision Data Imports', function () {
         feedbackReportPage.programmeSelect.click();
 
         expect(feedbackReportPage.programmeResults).toContain('YI100 - PCR 3 Test Programme Name');
+    });
+
+    it('should show purchase orders and waybills imported from the spreadsheets', function () {
+
+        importDataPage.uploadSalesOrders('../files/sales-orders.xlsx');
+        importDataPage.uploadPurchaseOrders('../files/purchase-orders.xlsx');
+        importDataPage.uploadReleaseOrders('../files/release-orders.xlsx');
+
+        directDeliveryPage.visit();
+        expect(directDeliveryPage.purchaseOrders).toContain('81020737');
+
+        warehouseDeliveryPage.visit();
+        expect(warehouseDeliveryPage.releaseOrders).toContain('72082647');
+        expect(warehouseDeliveryPage.releaseOrders).toContain('72089797');
+        expect(warehouseDeliveryPage.releaseOrders).toContain('72088441');
+        expect(warehouseDeliveryPage.releaseOrders).toContain('72090975');
+        expect(warehouseDeliveryPage.releaseOrders).toContain('72102556');
+        expect(warehouseDeliveryPage.releaseOrders).toContain('72077697');
     });
 });
