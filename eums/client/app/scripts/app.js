@@ -73,7 +73,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
             })
             .when('/ip-delivery-report/new/:purchaseOrderId', {
                 templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
-                controller: 'NewIpDeliveryController',
+                controller: 'IPPurchaseOrderReportController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_delivery_reports');
@@ -82,7 +82,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
             })
             .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId', {
                 templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
-                controller: 'NewIpDeliveryController',
+                controller: 'IPPurchaseOrderReportController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_delivery_reports');
@@ -91,7 +91,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
             })
             .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId/:deliveryNodeId', {
                 templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
-                controller: 'NewIpDeliveryController',
+                controller: 'IPPurchaseOrderReportController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_delivery_reports');
