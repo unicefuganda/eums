@@ -13,6 +13,9 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
     selectWaybillByNumber: { value: function (text) { element(by.linkText(text)).click(); }},
     waybillItems: { get: function () { return element.all(by.repeater('(itemIndex, releaseOrderItem) in releaseOrderItems').column('releaseOrderItem.item.description')).getText(); }},
 
+    waybillQuantities: { get: function () { return element.all(by.repeater('(itemIndex, releaseOrderItem) in releaseOrderItems').column('releaseOrderItem.quantity')).getText(); }},
+    waybillValues: { get: function () { return element.all(by.repeater('(itemIndex, releaseOrderItem) in releaseOrderItems').column('releaseOrderItem.value')).getText(); }},
+
     searchBar: { get:  function () { return element(by.id('filter')); }},
 
     searchForThisWaybill: { value: function (searchTerm) {

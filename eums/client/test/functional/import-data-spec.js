@@ -68,6 +68,9 @@ describe('Vision Data Imports', function () {
         expect(warehouseDeliveryPage.waybillItems).toContain('Computer, laptop');
         expect(warehouseDeliveryPage.waybillItems).toContain('Laptop bag');
         expect(warehouseDeliveryPage.waybillItems).toContain('IT Accessories');
+
+        expect(warehouseDeliveryPage.waybillQuantities).toContain('3.00');
+        expect(warehouseDeliveryPage.waybillValues).toContain('3091.26');
     });
 
     it('should show errors if the spreadsheets have missing required information', function () {
@@ -98,6 +101,17 @@ describe('Vision Data Imports', function () {
         expect(importDataPage.programmeErrorMessage()).toEqual(
             'Import has failed due to missing [wbs_element_ex] in row [5]. Please correct the error then try the upload again'
         );
+    });
 
+    it('should update existing release orders with data from newly imported spreadsheets', function () {
+        importDataPage.uploadReleaseOrders('../files/release-update.xlsx');
+
+        warehouseDeliveryPage.visit();
+        warehouseDeliveryPage.searchForThisWaybill('72095454');
+        warehouseDeliveryPage.selectWaybillByNumber('72095454');
+
+        expect(warehouseDeliveryPage.waybillQuantities).toContain('2.00');
+        expect(warehouseDeliveryPage.waybillValues).toContain('4000.00');
+        expect(warehouseDeliveryPage.waybillValues).toContain('200.00');
     });
 });
