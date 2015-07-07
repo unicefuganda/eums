@@ -4,7 +4,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryPlan', 'EumsFilters', 'IPDirectDelivery', 'IPDirectDeliveryManagement',
-    'IPWarehouseDelivery'])
+    'IPWarehouseDelivery', 'IPWarehouseDeliveryManagement'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -75,6 +75,33 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
             .when('/ip-warehouse-delivery', {
                 templateUrl: '/static/app/views/reported-by-ip/warehouse-delivery.html',
                 controller: 'IPWarehouseDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            .when('/ip-warehouse-delivery/new/:releaseOrderId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html',
+                controller: 'IPWarehouseDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            .when('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html',
+                controller: 'IPWarehouseDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
+                    }
+                }
+            })
+            .when('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId', {
+                templateUrl: '/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html',
+                controller: 'IPWarehouseDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_delivery_reports');

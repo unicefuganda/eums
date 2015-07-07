@@ -28,6 +28,24 @@ describe('Route Provider', function () {
         expect(routes.routes['/ip-warehouse-delivery'].templateUrl).toBe('/static/app/views/reported-by-ip/warehouse-delivery.html');
     });
 
+    it('should know new ip warehouse delivery report route exists', function(){
+        expect(Object.keys(routes.routes)).toContain('/ip-warehouse-delivery/new/:releaseOrderId');
+        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId'].controller).toBe('IPWarehouseDeliveryManagementController');
+        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId'].templateUrl).toBe('/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html');
+    });
+
+    it('should know new ip warehouse delivery report with release order item Id route exists', function(){
+        expect(Object.keys(routes.routes)).toContain('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId');
+        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId'].controller).toBe('IPWarehouseDeliveryManagementController');
+        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId'].templateUrl).toBe('/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html');
+    });
+
+    it('should know new ip warehouse delivery report with release order item Id and delivery node Id route exists', function(){
+        expect(Object.keys(routes.routes)).toContain('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId');
+        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId'].controller).toBe('IPWarehouseDeliveryManagementController');
+        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId'].templateUrl).toBe('/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html');
+    });
+
     it('should know new distribution plan route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/delivery-report/new/:purchaseOrderId');
         expect(routes.routes['/delivery-report/new/:purchaseOrderId'].controller).toBe('NewDistributionPlanController');

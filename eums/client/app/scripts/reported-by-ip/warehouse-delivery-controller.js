@@ -32,6 +32,6 @@ angular.module('IPWarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Us
         };
 
         $scope.selectReleaseOrder = function (selectedReleaseOrder) {
-            $location.path('/ip-delivery-report/new/' + selectedReleaseOrder.id);
+            $location.path('/ip-warehouse-delivery/new/' + selectedReleaseOrder.id);
         };
     });

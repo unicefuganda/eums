@@ -25,7 +25,7 @@ class ReleaseOrder(models.Model):
     def delivery(self):
         item = self.items.first()
         try:
-            return DistributionPlanNode.objects.get(item=item).distribution_plan.id
+            return DistributionPlanNode.objects.get(item=item, parent=None).distribution_plan.id
         except ObjectDoesNotExist:
             return None
 
