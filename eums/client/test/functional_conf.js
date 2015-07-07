@@ -16,11 +16,13 @@ exports.config = {
     framework: 'jasmine',
 
     jasmineNodeOpts: {
-        defaultTimeoutInterval: 30000,
+        defaultTimeoutInterval: 60000,
         print: function () {}
     },
 
     onPrepare: function () {
+        browser.driver.manage().window().setSize(1280, 800);
+
         jasmine.getEnv().addReporter(new SpecReporter({
             displayFailuresSummary: true,
             displaySpecDuration: true,

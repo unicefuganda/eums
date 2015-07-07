@@ -43,10 +43,14 @@ describe('Vision Data Imports', function () {
         importDataPage.uploadReleaseOrders('../files/release-orders.xlsx');
 
         directDeliveryPage.visit();
-        expect(directDeliveryPage.purchaseOrders).toContain('81020737');
-
         directDeliveryPage.searchForThisPurchaseOrder('81020737');
         expect(directDeliveryPage.purchaseOrderCount).toEqual(1);
+
+        directDeliveryPage.selectPurchaseOrderByNumber('81020737');
+        directDeliveryPage.selectSingleIP();
+
+        expect(directDeliveryPage.purchaseOrderItems).toContain('Acrylic glass scratch proof, 3mm');
+        expect(directDeliveryPage.purchaseOrderItems).toContain('Cariage bolt M6x25 A2');
 
         warehouseDeliveryPage.visit();
         expect(warehouseDeliveryPage.waybills).toContain('72082647');
@@ -55,8 +59,14 @@ describe('Vision Data Imports', function () {
         expect(warehouseDeliveryPage.waybills).toContain('72090975');
         expect(warehouseDeliveryPage.waybills).toContain('72102556');
         expect(warehouseDeliveryPage.waybills).toContain('72077697');
+        expect(warehouseDeliveryPage.waybills).toContain('72095454');
 
-        warehouseDeliveryPage.searchForThisWaybill('72082647');
+        warehouseDeliveryPage.searchForThisWaybill('72095454');
         expect(warehouseDeliveryPage.waybillCount).toEqual(1);
+
+        warehouseDeliveryPage.selectWaybillByNumber('72095454');
+        expect(warehouseDeliveryPage.waybillItems).toContain('Computer, laptop');
+        expect(warehouseDeliveryPage.waybillItems).toContain('Laptop bag');
+        expect(warehouseDeliveryPage.waybillItems).toContain('IT Accessories');
     });
 });
