@@ -27,5 +27,11 @@ angular.module('ImportData', ['eums.config', 'angularFileUpload'])
         $scope.consigneesUploader = getUploader(EumsConfig.BACKEND_URLS.IMPORT_CONSIGNEES, 'errorMessageCO');
         $scope.programmesUploader = getUploader(EumsConfig.BACKEND_URLS.IMPORT_PROGRAMMES, 'errorMessagePGO');
 
+        $scope.sendUpload = function (fileUploader, errorMessage) {
+            $scope[errorMessage] = '';
+            $scope.$apply();
+
+            fileUploader.queue[fileUploader.queue.length-1].upload();
+        };
 
     });

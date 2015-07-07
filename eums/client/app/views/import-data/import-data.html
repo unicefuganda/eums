@@ -20,7 +20,7 @@
                 <span class="col-lg-1" ng-show="salesOrdersUploader.isHTML5"
                       nowrap>{{ salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
-                <button type="button" class="btn btn-primary col-lg-1" ng-click="salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="sendUpload(salesOrdersUploader, 'errorMessageSO')"
                         ng-disabled="salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].isReady || salesOrdersUploader.queue[salesOrdersUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -51,7 +51,7 @@
                       nowrap>{{ purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button type="button" class="btn btn-primary col-lg-1" ng-click="purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="sendUpload(purchaseOrdersUploader, 'errorMessagePO')"
                         ng-disabled="purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].isReady || purchaseOrdersUploader.queue[purchaseOrdersUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -82,7 +82,7 @@
                       nowrap>{{ releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button type="button" class="btn btn-primary col-lg-1" ng-click="releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="sendUpload(releaseOrdersUploader, 'errorMessageRO')"
                         ng-disabled="releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].isReady || releaseOrdersUploader.queue[releaseOrdersUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -113,7 +113,7 @@
                       nowrap>{{ consigneesUploader.queue[consigneesUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button type="button" class="btn btn-primary col-lg-1" ng-click="consigneesUploader.queue[consigneesUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="sendUpload(consigneesUploader, 'errorMessageCO')"
                         ng-disabled="consigneesUploader.queue[consigneesUploader.queue.length-1].isReady || consigneesUploader.queue[consigneesUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
@@ -144,7 +144,7 @@
                       nowrap>{{ programmesUploader.queue[programmesUploader.queue.length-1].file.size/1024/1024|number:2 }} MB</span>
 
 
-                <button type="button" class="btn btn-primary col-lg-1" ng-click="programmesUploader.queue[programmesUploader.queue.length-1].upload()"
+                <button type="button" class="btn btn-primary col-lg-1" ng-click="sendUpload(programmesUploader, 'errorMessagePGO')"
                         ng-disabled="programmesUploader.queue[programmesUploader.queue.length-1].isReady || programmesUploader.queue[programmesUploader.queue.length-1].isUploading">
                     <span class="glyphicon glyphicon-upload"></span> Upload
                 </button>
