@@ -45,12 +45,18 @@ describe('Vision Data Imports', function () {
         directDeliveryPage.visit();
         expect(directDeliveryPage.purchaseOrders).toContain('81020737');
 
+        directDeliveryPage.searchForThisPurchaseOrder('81020737');
+        expect(directDeliveryPage.purchaseOrderCount).toEqual(1);
+
         warehouseDeliveryPage.visit();
-        expect(warehouseDeliveryPage.releaseOrders).toContain('72082647');
-        expect(warehouseDeliveryPage.releaseOrders).toContain('72089797');
-        expect(warehouseDeliveryPage.releaseOrders).toContain('72088441');
-        expect(warehouseDeliveryPage.releaseOrders).toContain('72090975');
-        expect(warehouseDeliveryPage.releaseOrders).toContain('72102556');
-        expect(warehouseDeliveryPage.releaseOrders).toContain('72077697');
+        expect(warehouseDeliveryPage.waybills).toContain('72082647');
+        expect(warehouseDeliveryPage.waybills).toContain('72089797');
+        expect(warehouseDeliveryPage.waybills).toContain('72088441');
+        expect(warehouseDeliveryPage.waybills).toContain('72090975');
+        expect(warehouseDeliveryPage.waybills).toContain('72102556');
+        expect(warehouseDeliveryPage.waybills).toContain('72077697');
+
+        warehouseDeliveryPage.searchForThisWaybill('72082647');
+        expect(warehouseDeliveryPage.waybillCount).toEqual(1);
     });
 });

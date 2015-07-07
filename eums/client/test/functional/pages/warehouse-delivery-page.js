@@ -7,7 +7,15 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
         browser.get(this.url);
     }},
 
-    releaseOrders: { get: function () { return element.all(by.repeater('releaseOrder in releaseOrders').column('releaseOrder.waybill')).getText(); }}
+    waybills: { get: function () { return element.all(by.repeater('releaseOrder in releaseOrders').column('releaseOrder.waybill')).getText(); }},
+    waybillCount: { get: function () { return element.all(by.repeater('releaseOrder in releaseOrders')).count(); }},
+
+    searchBar: { get:  function () { return element(by.id('filter')); }},
+
+    searchForThisWaybill: { value: function (searchTerm) {
+        this.searchBar.clear().sendKeys(searchTerm);
+    }}
+
 });
 
 module.exports = new WarehouseDeliveryPage;
