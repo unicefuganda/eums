@@ -43,7 +43,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="salesOrder in salesOrders | purchaseOrderFilter: query | orderBy: sort.criteria:!sort.descending">
+            <tr ng-repeat="salesOrder in salesOrders | orderFilter: query | orderBy: sort.criteria:!sort.descending">
                 <td>
                     <span ng-class="salesOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
                      'glyphicon glyphicon-exclamation-sign text-warning';"></span>
@@ -67,7 +67,7 @@
             </tr>
             </tfoot>
                 <span class="information message"
-                      ng-show="salesOrders.length > 0 && (salesOrders | purchaseOrderFilter: query).length == 0">
+                      ng-show="salesOrders.length > 0 && (salesOrders | orderFilter: query).length == 0">
                 There are no matches to your search criteria.
                 </span>
             <span class="information message" ng-show="salesOrders.length == 0">There are no deliveries available right now.</span>
