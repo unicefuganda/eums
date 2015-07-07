@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('ReportedByIP', ['ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives', 'DatePicker'])
-    .controller('IPPurchaseOrdersController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
+angular.module('IPDirectDelivery', ['ngTable', 'siTable', 'PurchaseOrder', 'User', 'Directives', 'DatePicker'])
+    .controller('IPDirectDeliveryController', function ($scope, $location, PurchaseOrderService, UserService, $sorter) {
         $scope.sortBy = $sorter;
         $scope.purchaseOrders = [];
         $scope.searchFields = ['orderNumber', 'date'];

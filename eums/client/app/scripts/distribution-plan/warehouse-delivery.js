@@ -21,7 +21,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
             this.sortBy('orderNumber');
             this.sort.descending = false;
 
-            ReleaseOrderService.all().then(function (releaseOrders) {
+            ReleaseOrderService.all(['consignee']).then(function (releaseOrders) {
                 $scope.releaseOrders = releaseOrders.sort();
                 angular.element('#loading').modal('hide');
             });

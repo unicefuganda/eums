@@ -16,10 +16,16 @@ describe('Route Provider', function () {
         expect(routes.routes['/'].templateUrl).toBe('/static/app/views/home.html');
     });
 
-    it('should know distribution plan route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/reported-by-ip');
-        expect(routes.routes['/reported-by-ip'].controller).toBe('IPPurchaseOrdersController');
-        expect(routes.routes['/reported-by-ip'].templateUrl).toBe('/static/app/views/reported-by-ip/direct-delivery.html');
+    it('should know reported by ip direct-delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/ip-direct-delivery');
+        expect(routes.routes['/ip-direct-delivery'].controller).toBe('IPDirectDeliveryController');
+        expect(routes.routes['/ip-direct-delivery'].templateUrl).toBe('/static/app/views/reported-by-ip/direct-delivery.html');
+    });
+
+    it('should know reported by ip warehouse-delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/ip-direct-delivery');
+        expect(routes.routes['/ip-warehouse-delivery'].controller).toBe('IPWarehouseDeliveryController');
+        expect(routes.routes['/ip-warehouse-delivery'].templateUrl).toBe('/static/app/views/reported-by-ip/warehouse-delivery.html');
     });
 
     it('should know new distribution plan route exists', function () {

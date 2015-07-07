@@ -1,0 +1,83 @@
+<div class="container-fluid">
+
+    <ng-include src="'/static/app/views/reported-by-ip/partials/delivery-header.html'"></ng-include>
+
+    <div class="content">
+
+        <div>
+
+            <div class="row">
+                <div class="col-xs-2 pull-right">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"
+                               id="dateFilter"
+                               class="form-control"
+                               name="dateFilter"
+                               ng-model="dateQuery"
+                               placeholder="Date (yyyy-MM-dd)"/>
+                    </div>
+                </div>
+                <div class="col-xs-3 pull-right">
+                    <div class="inner-addon left-addon">
+                        <i class="glyphicon glyphicon-search"></i>
+                        <input type="text"
+                               id="filter"
+                               class="form-control"
+                               name="filter"
+                               ng-model="query"
+                               placeholder="Search by waybill"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table si-table class="table table-bordered table-hover table-striped table-condensed">
+                    <thead ng-init="initialize()">
+                    <tr>
+                        <th style="width: 20%">
+                            <a ng-click="sortBy('orderNumber')">Waybill #
+                                <i ng-class="sortArrowClass('orderNumber');"></i></a>
+                        </th>
+                        <th style="width: 30%">
+                            <a ng-click="sortBy('date')">Date Created
+                                <i ng-class="sortArrowClass('date');"></i>
+                            </a>
+                        </th>
+                        <th style="width: 50%">
+                            <a ng-click="sortBy('programmeName')">Programme
+                                <i ng-class="sortArrowClass('description');"></i>
+                            </a>
+                        </th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
+                        <td data-header="Waybill #">
+                            <a ng-click="selectReleaseOrder(releaseOrder)">{{ releaseOrder.waybill }}</a>
+                        </td>
+                        <td data-header="Date Created">
+                            {{ releaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}
+                        </td>
+                        <td data-header="Programme">{{ releaseOrder.programme }}</td>
+                    </tr>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <td colspan="5">
+                            <si-table-pagination limit="15" indices="3"/>
+                        </td>
+                    </tr>
+                    </tfoot>
+                <span class="information message"
+                      ng-show="releaseOrders.length > 0 && (releaseOrders | orderFilter: query:dateQuery:searchFields).length == 0">
+                There are no matches to your search criteria.
+                </span>
+                    <span class="information message"
+                          ng-show="releaseOrders.length == 0">There are no 'release orders' available right now.</span>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -24,6 +24,7 @@ from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
 
+
 __all__ = [
     'DistributionPlan',
     'Consignee',
@@ -44,13 +45,12 @@ __all__ = [
     'MultipleChoiceQuestion',
     'NumericQuestion',
     'Flow',
-    'ReleaseOrderItem',
     'ReleaseOrder',
+    'ReleaseOrderItem',
     'OrderItem',
     'DistributionReport',
     'UserProfile',
     'PurchaseOrderItem',
     'PurchaseOrder'
 ]
-
 

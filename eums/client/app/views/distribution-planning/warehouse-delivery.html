@@ -46,13 +46,16 @@
                 <th style="width: 18%">
                     <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
-                <th style="width: 30%">
+                <th style="width: 20%">
                     <a ng-click="sortBy('date')">{{dateColumnTitle}}
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
-                <th style="width: 50%" ng-if="descriptionColumnTitle">
+                <th style="width: 30%" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
+                </th>
+                <th style="width: 30%">
+                    Consignee
                 </th>
             </tr>
             </thead>
@@ -72,6 +75,7 @@
                 <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
                     {{ releaseOrder.programme }}
                 </td>
+                <td data-header="Consignee">{{ releaseOrder.consignee.name }}</td>
             </tr>
             </tbody>
             <tfoot>

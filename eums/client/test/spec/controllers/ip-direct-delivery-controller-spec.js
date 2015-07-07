@@ -1,4 +1,4 @@
-describe('IP Purchase Orders Controller', function () {
+describe('IP Direct delivery Controller', function () {
     var mockPurchaseOrderService, mockUserService, location, scope, deferredPurchaseOrders, deferredUser;
     var purchaseOrders = [{order_number: 10}, {order_number: 2}, {order_number: 8}];
     var user = {consignee_id: 1};
@@ -8,7 +8,7 @@ describe('IP Purchase Orders Controller', function () {
     };
 
     beforeEach(function () {
-        module('ReportedByIP');
+        module('IPDirectDelivery');
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['forUser', 'all']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
 
@@ -24,7 +24,7 @@ describe('IP Purchase Orders Controller', function () {
 
             spyOn(angular, 'element').and.returnValue(fakeElement);
 
-            $controller('IPPurchaseOrdersController', {
+            $controller('IPDirectDeliveryController', {
                 $scope: scope,
                 $sorter: $sorter,
                 $location: location,

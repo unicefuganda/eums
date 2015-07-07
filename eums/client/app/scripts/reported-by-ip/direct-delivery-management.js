@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('IPPurchaseOrderReport', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap', 'ngToast'])
-    .controller('IPPurchaseOrderReportController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q, ngToast,
+angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap', 'ngToast'])
+    .controller('IPDirectDeliveryManagementController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q, ngToast,
                                                      DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
         function showLoader() {
             angular.element('#loading').modal();

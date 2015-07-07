@@ -12,6 +12,12 @@ angular.module('ReleaseOrder', ['eums.config', 'eums.service-factory', 'ReleaseO
                 items: ReleaseOrderItemService,
                 delivery: DistributionPlanService
             },
-            methods: {}
+            methods: {
+                forUser: function (user, nestedFields) {
+                    return user.consignee_id ?
+                        this.filter({consignee: user.consignee_id}, nestedFields)
+                        : this.all(nestedFields);
+                }
+            }
         });
     });
