@@ -69,4 +69,35 @@ describe('Vision Data Imports', function () {
         expect(warehouseDeliveryPage.waybillItems).toContain('Laptop bag');
         expect(warehouseDeliveryPage.waybillItems).toContain('IT Accessories');
     });
+
+    it('should show errors if the spreadsheets have missing required information', function () {
+
+        importDataPage.uploadSalesOrders('../files/sales-errors.xlsx');
+        expect(importDataPage.salesOrderErrorMessage()).toEqual(
+            'Import has failed due to missing [order_number] in row [6]. Please correct the error then try the upload again'
+        );
+
+        //COMMENTED OUT AWAITING FIX TO ISSUE #96260050 FOR PURCHASE ORDER SPREADSHEETS
+
+        // importDataPage.uploadPurchaseOrders('../files/purchase-errors.xlsx');
+        //expect(importDataPage.purchaseOrderErrorMessage()).toEqual(
+        //    'Import has failed due to missing... '
+        //);
+
+        importDataPage.uploadReleaseOrders('../files/release-errors.xlsx');
+        expect(importDataPage.releaseOrderErrorMessage()).toEqual(
+            'Import has failed due to missing [ro_item_number] in row [4]. Please correct the error then try the upload again'
+        );
+
+        importDataPage.uploadConsignees('../files/consignees-errors.xlsx');
+        expect(importDataPage.consigneeErrorMessage()).toEqual(
+            'Import has failed due to missing [customer_id] in row [6]. Please correct the error then try the upload again'
+        );
+
+        importDataPage.uploadProgrammes('../files/programs-errors.xlsx');
+        expect(importDataPage.programmeErrorMessage()).toEqual(
+            'Import has failed due to missing [wbs_element_ex] in row [5]. Please correct the error then try the upload again'
+        );
+
+    });
 });

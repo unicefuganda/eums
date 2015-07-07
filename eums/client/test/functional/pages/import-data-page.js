@@ -24,6 +24,12 @@ var ImportDataPage = function () {
     this.uploadSalesOrders = function(fileToUpload) {
         uploadUsingThisDiv('salesOrdersDiv', fileToUpload);
     };
+
+    this.consigneeErrorMessage = function() { return getErrorMessage('consigneesDiv'); };
+    this.programmeErrorMessage = function() { return getErrorMessage('programmesDiv'); };
+    this.purchaseOrderErrorMessage = function() { return getErrorMessage('purchaseOrdersDiv'); };
+    this.salesOrderErrorMessage = function() { return getErrorMessage('salesOrdersDiv'); };
+    this.releaseOrderErrorMessage = function() { return getErrorMessage('releaseOrdersDiv'); };
 };
 
 module.exports = new ImportDataPage;
@@ -40,7 +46,12 @@ function uploadUsingThisDiv (divID, fileToUpload) {
 
     var EC = protractor.ExpectedConditions;
     var successTick = element(by.css('#' + itemDiv + ' .glyphicon.glyphicon-ok'));
+    var errorCross = element(by.css('#' + itemDiv + ' .glyphicon.glyphicon-remove'));
 
-    var uploadIsComplete = (EC.visibilityOf(successTick));
+    var uploadIsComplete = EC.or(EC.visibilityOf(successTick), EC.visibilityOf(errorCross));
     browser.wait(uploadIsComplete, 15000, "Timeout exceeded while importing data");
+}
+
+function getErrorMessage(divID) {
+    return element(by.css('#' + divID + ' div div.text-danger.ng-binding')).getText()
 }
