@@ -67,9 +67,9 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         };
 
         $scope.$watch('currentDocumentType', function(){
-           $scope.placeHolderText = 'Search by purchase order number, date or programme';
+           $scope.placeHolderText = 'Search by purchase order number';
            if($scope.currentDocumentType === 'WB'){
-               $scope.placeHolderText = 'Search by waybill number, date or programme';
+               $scope.placeHolderText = 'Search by waybill number';
            }
 
         });

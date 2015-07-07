@@ -180,14 +180,14 @@ describe('ManualReportingController', function () {
 
     describe('when document type changes', function () {
         it('should change the placeholder to have purchase order text', function () {
-            var expectedPlaceHolderMessage = 'Search by purchase order number, date or programme';
+            var expectedPlaceHolderMessage = 'Search by purchase order number';
             scope.currentDocumentType = 'PO';
             scope.$apply();
             expect(scope.placeHolderText).toEqual(expectedPlaceHolderMessage);
         });
 
         it('should change the placeholder to have waybill text', function () {
-            var expectedPlaceHolderMessage = 'Search by waybill number, date or programme';
+            var expectedPlaceHolderMessage = 'Search by waybill number';
             scope.currentDocumentType = 'WB';
             scope.$apply();
             expect(scope.placeHolderText).toEqual(expectedPlaceHolderMessage);
