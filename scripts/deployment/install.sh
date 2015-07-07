@@ -20,7 +20,7 @@ if [ ! -f /usr/local/bin/docker ] || [ ! -f /usr/bin/sshpass ]; then
     fi
 
     if [ ! -f /usr/bin/sshpass ]; then
-    apt-get -y install sshpass
+    apt-get -y install sshpass --force-yes
     fi
 
 fi

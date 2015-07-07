@@ -12,7 +12,7 @@ if [ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]; then
 fi
 
 if [ ! -f /usr/bin/sshpass ] && [ ! -f /usr/local/bin/sshpass ]; then
-    apt-get -y install sshpass
+    apt-get -y install sshpass --force-yes
 fi
 
 echo "Loading docker image ..."
