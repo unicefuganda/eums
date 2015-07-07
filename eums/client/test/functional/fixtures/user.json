@@ -42,12 +42,12 @@
             "name": "WAKISO DHO"
         },
         "model": "eums.consignee",
-        "pk": 5
+        "pk": 1
     },
     {
         "fields": {
             "user": 2,
-            "consignee": 5,
+            "consignee": 1,
             "modified": "2014-12-03T17:40:36.537",
             "created": "2014-12-03T17:40:36.534"
         },
