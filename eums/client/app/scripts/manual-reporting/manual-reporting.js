@@ -5,7 +5,7 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 
         $scope.sortBy = $sorter;
         var purchaseOrders = [];
         var waybills = [];
-        $scope.searchFields = ['orderNumber', 'date', 'programme'];
+        $scope.searchFields = ['orderNumber', 'date'];
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
