@@ -5,7 +5,7 @@ set -e
 today=`date +%Y-%m-%d.%H:%M:%S`
 
 if [ ! -f /usr/bin/sshpass ]; then
-    sudo apt-get -y install sshpass
+    sudo apt-get -y install sshpass --force-yes
 fi
 
 sudo build/deployment/pack_deployment.sh $today
