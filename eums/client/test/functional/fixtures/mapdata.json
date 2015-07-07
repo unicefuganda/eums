@@ -3460,7 +3460,7 @@
       "targeted_quantity": 10,
       "track": false,
       "planned_distribution_date": "2014-10-06",
-      "consignee": 5,
+      "consignee": 1,
       "item": 3,
       "location": "WAKISO",
       "contact_person_id": "542126831a8a4f1e4337edb2"
@@ -3596,7 +3596,7 @@
       "targeted_quantity": 1,
       "track": false,
       "planned_distribution_date": "2014-09-22",
-      "consignee": 5,
+      "consignee": 1,
       "item": 14,
       "location": "Wakiso",
       "contact_person_id": "54213ccc797221e84ac993fe"
