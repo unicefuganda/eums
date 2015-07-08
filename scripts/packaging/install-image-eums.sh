@@ -8,41 +8,33 @@ if [ ! -f /usr/local/bin/docker ] && [ ! -f /usr/bin/docker ]; then
 
     apt-get -y install wget
     wget -qO- https://get.docker.com/ | sh
-
 fi
 
 if [ ! -f /usr/bin/sshpass ] && [ ! -f /usr/local/bin/sshpass ]; then
     apt-get -y install sshpass --force-yes
 fi
 
-echo "Loading docker image ..."
+echo "Loading docker image..."
 sudo docker load -i %IMAGEFILE%
-echo "Done!"
 
 if  [ ! -z $(sudo docker images | awk '/^unicef.%ARTIFACTNAME%[[:blank:]]+latest/ { print $3 }') ]; then
- echo "Tagging latest image as rollback ..."
+ echo "Tagging latest image as rollback..."
  sudo docker tag -f %IMAGENAME%:latest %IMAGENAME%:rollback
- echo "Done!"
 fi
 
-echo "Tagging new image as latest ..."
+echo "Tagging new image as latest..."
 sudo docker tag -f %IMAGENAME%:%IMAGEVERSION% %IMAGENAME%:latest
-echo "Done!"
 
-echo "Stopping and remove the existing eums container"
+echo "Stopping and removing existing eums container..."
 #!/bin/bash
 if [ $(sudo docker ps | grep eums | awk '{print$1}') ]; then
   sudo docker rm -f $(sudo docker ps | grep eums | awk '{print$1}')
 fi
 
-
-echo "Running image on host IP: " $1 "..."
-DEPLOY_MACHINE_HTTP_PORT=80
-DEPLOY_MACHINE_SSH_PORT=50000
-EUMS_CONTAINER_HOST_NAME=127.0.0.1
+echo "Running image..."
 HOST_IP=$1
 
-sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 -p 8005:8005 \
+sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 \
 -e "LC_ALL=C" \
 -d --name=eums \
 -v /opt/app/mongodb:/data/db \
@@ -50,18 +42,10 @@ sudo docker run -p $DEPLOY_MACHINE_SSH_PORT:22 -p $DEPLOY_MACHINE_HTTP_PORT:80 -
 %IMAGENAME%:latest \
 /bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} && /usr/bin/supervisord"
 
+echo "Cleaning older eums docker images..."
+sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk '{print$3}' | xargs -I {} sudo docker rmi {}
+
+echo "Cleaning unused docker images..."
+sudo docker images | grep -e '^<none>' | awk '{print$3}' | xargs -I {} sudo docker rmi {}
+
 echo "Done!"
-
-#sleep 10s
-
-#echo "Editing host name ..."
-#sed -i -e "s/%EUMS_CONTAINER_HOST_NAME%/$EUMS_CONTAINER_HOST_NAME/g" scripts/eums.nginx.config
-
-#echo "copying config file ..."
-#sshpass -p 'password' scp -o StrictHostKeyChecking=no -P $DEPLOY_MACHINE_SSH_PORT scripts/eums.nginx.config root@0.0.0.0:/etc/nginx/sites-available/eums
-
-#echo "Creating ln and restarting nginx ..."
-#sshpass -p 'password' ssh -o StrictHostKeyChecking=no -p $DEPLOY_MACHINE_SSH_PORT root@0.0.0.0 'ln -sf /etc/nginx/sites-available/eums /etc/nginx/sites-enabled/eums && service nginx restart'
-
-# uninstall ssh-pass
-sudo apt-get -y --purge remove sshpass

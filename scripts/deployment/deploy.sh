@@ -2,7 +2,7 @@
 
 set -e
 
-today=`date +%Y-%m-%d.%H:%M:%S`
+today='eums_latest'
 
 if [ ! -f /usr/bin/sshpass ]; then
     sudo apt-get -y install sshpass --force-yes
