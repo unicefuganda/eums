@@ -31,9 +31,29 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
             }
         };
     })
-    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory) {
+
+    .factory('Consignee', function () {
+        var hasId = function () {
+            return this.id !== undefined && this.id !== null;
+        };
+
+        return function (json) {
+            !json && (json = {});
+            Object.defineProperty(this, 'isEditable', {get: hasId.bind(this)});
+            Object.defineProperty(this, 'isDeletable', {get: hasId.bind(this)});
+            this.id = json.id || undefined;
+            this.name = json.name || null;
+            this.customerId = json.customerId || null;
+            this.location = json.location || null;
+            this.importedFromVision = json.importedFromVision || false;
+            this.remarks = json.remarks || null;
+        };
+    })
+    .
+    factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.CONSIGNEE,
+            model: Consignee,
             methods: {
                 getByTopLevelNode: function () {
                     return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?node=top')
@@ -49,23 +69,12 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
             }
         });
     })
-    .controller('ConsigneesController', function($scope, ConsigneeService) {
+    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee) {
         $scope.consignees = [];
-        ConsigneeService.all().then(function(consignees) {
+        ConsigneeService.all().then(function (consignees) {
             $scope.consignees = consignees;
         });
-
-        $scope.edit = function(consignee) {
-            $scope.$broadcast('edit-consignee', consignee);
+        $scope.addConsignee = function () {
+            $scope.consignees.insert(new Consignee(), 0);
         };
-    })
-    .controller('EditConsigneeController', function($scope, ConsigneeService) {
-        $scope.$on('edit-consignee', function(_, consignee) {
-            angular.element('#edit-consignee-modal').modal();
-            ConsigneeService.update(consignee).then(function(createdConsignee) {
-                $scope.consignee = createdConsignee;
-            });
-        });
     });
-
-

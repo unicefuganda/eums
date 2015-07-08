@@ -3,7 +3,7 @@
         <h4 class="page-header">Consignees</h4>
         <ng-toast></ng-toast>
 
-        <button id="add-consignee" class="btn btn-primary" ng-click="add()">Add Consignee</button>
+        <button id="add-consignee" class="btn btn-primary" ng-click="addConsignee()">Add Consignee</button>
         <div class="panel panel-default line-order-panel">
             <div class="row">
                 <div class="col-xs-4 pull-right">
@@ -25,9 +25,10 @@
                     <thead>
                     <tr>
                         <th></th>
-                        <th><a> Name </a></th>
-                        <th><a>Customer Number</a></th>
-                        <th><a>Type</a></th>
+                        <th><a>Name</a></th>
+                        <th><a>Location</a></th>
+                        <th><a>Vision ID</a></th>
+                        <th><a>General Remarks</a></th>
                         <th></th>
                     </tr>
                     </thead>
@@ -35,12 +36,14 @@
                     <tr ng-repeat="consignee in consignees">
                         <td><span ng-show="consignee.importedFromVision" class="glyphicon glyphicon-ok text-success"></span></td>
                         <td>{{ consignee.name }}</td>
+                        <td>{{ consignee.location }}</td>
                         <td>{{ consignee.customerId }}</td>
-                        <td>{{ consignee.type }}</td>
+                        <td>{{ consignee.remarks }}</td>
                         <td>
-                            <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">Edit
-                            </button>
-                            <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">Delete
+                            <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)"
+                                    ng-show="consignee.isEditable">Edit</button>
+                            <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)"
+                                    ng-show="consignee.isDeletable">Delete
                             </button>
                         </td>
                     </tr>
@@ -64,10 +67,4 @@
 </div>
 
 <ng-include src="'/static/app/views/consignees/partials/delete-consignee-modal.html'"></ng-include>
-<ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"></ng-include>
-
-<div ng-controller="EditConsigneeController">
-    <ng-include src="'/static/app/views/consignees/partials/edit-consignee-modal.html'"></ng-include>
-</div>
-
 </div>

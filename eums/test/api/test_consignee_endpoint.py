@@ -24,7 +24,7 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(consignee_one_details, response.data[1])
 
     def test_should_search_for_consignee_by_type(self):
-        implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner'}
+        implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner', 'location': 'Kampala'}
         middle_man = {'name': "Kibuli DHO", 'type': 'middle_man'}
 
         implementing_partner_details = create_consignee(self, implementing_partner)

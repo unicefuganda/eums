@@ -44,6 +44,7 @@ def create_consignee(_, consignee_details=None):
     consignee = ConsigneeFactory(name=consignee_details.get('name', ''),
                                  type=consignee_details.get('type', 'implementing_partner'),
                                  customer_id=consignee_details.get('customer_id', 'L400'),
+                                 location=consignee_details.get('location', 'Kampala'),
                                  imported_from_vision=consignee_details.get('imported_from_vision', False))
     return consignee.__dict__
 

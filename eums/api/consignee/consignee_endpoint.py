@@ -12,7 +12,7 @@ class ConsigneeSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = Consignee
-        fields = ('id', 'name', 'type', 'imported_from_vision', 'customer_id')
+        fields = ('id', 'name', 'type', 'imported_from_vision', 'customer_id', 'location')
 
 
 class ConsigneeViewSet(ModelViewSet):
