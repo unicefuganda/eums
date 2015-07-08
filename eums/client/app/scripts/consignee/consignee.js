@@ -33,14 +33,13 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
     })
 
     .factory('Consignee', function () {
-        var hasId = function () {
-            return this.id !== undefined && this.id !== null;
-        };
-
         return function (json) {
             !json && (json = {});
-            Object.defineProperty(this, 'isEditable', {get: hasId.bind(this)});
-            Object.defineProperty(this, 'isDeletable', {get: hasId.bind(this)});
+            Object.defineProperty(this, 'isNull', {
+                get: function () {
+                    return this.id === undefined || this.id === null;
+                }.bind(this)
+            });
             this.id = json.id || undefined;
             this.name = json.name || null;
             this.customerId = json.customerId || null;
@@ -56,10 +55,9 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
             model: Consignee,
             methods: {
                 getByTopLevelNode: function () {
-                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?node=top')
-                        .then(function (response) {
-                            return response.data;
-                        });
+                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?node=top').then(function (response) {
+                        return response.data;
+                    });
                 },
                 filterByType: function (type) {
                     return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?search=' + type).then(function (response) {
@@ -76,5 +74,10 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         });
         $scope.addConsignee = function () {
             $scope.consignees.insert(new Consignee(), 0);
+        };
+        $scope.save = function (consignee) {
+            ConsigneeService.create(consignee).then(function (createdConsignee) {
+                consignee.id = createdConsignee.id;
+            });
         };
     });

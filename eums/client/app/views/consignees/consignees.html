@@ -34,16 +34,25 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="consignee in consignees">
-                        <td><span ng-show="consignee.importedFromVision" class="glyphicon glyphicon-ok text-success"></span></td>
-                        <td>{{ consignee.name }}</td>
-                        <td>{{ consignee.location }}</td>
-                        <td>{{ consignee.customerId }}</td>
-                        <td>{{ consignee.remarks }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)"
-                                    ng-show="consignee.isEditable">Edit</button>
-                            <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)"
-                                    ng-show="consignee.isDeletable">Delete
+                        <td><span ng-show="consignee.importedFromVision"
+                                  class="glyphicon glyphicon-ok text-success"></span></td>
+                        <td ng-show="!consignee.isNull">{{ consignee.name }}</td>
+                        <td ng-show="!consignee.isNull">{{ consignee.location }}</td>
+                        <td ng-show="!consignee.isNull">{{ consignee.customerId !== 'None' ? consignee.customerId : ''}}</td>
+                        <td ng-show="!consignee.isNull">{{ consignee.remarks }}</td>
+                        <td ng-show="!consignee.isNull">
+                            <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">Edit
+                            </button>
+                            <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">Delete
+                            </button>
+                        </td>
+                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.name"></td>
+                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.location"></td>
+                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.customerId"></td>
+                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.remarks"></td>
+                        <td ng-show="consignee.isNull">
+                            <button class="btn btn-sm btn-default blue-border-button"
+                                    ng-click="save(consignee)" ng-show="consignee.isNull">Save
                             </button>
                         </td>
                     </tr>
@@ -55,9 +64,8 @@
                         </td>
                     </tr>
                     </tfoot>
-                <span class="information message"
-                      ng-show="consignees.length > 0">
-                There are no matches to your search criteria.
+                <span class="information message" ng-show="consignees.length <= 0">
+                    There are no matches to your search criteria.
                 </span>
                 </table>
 

@@ -23,6 +23,11 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(consignee_two_details, response.data[0])
         self.assertDictContainsSubset(consignee_one_details, response.data[1])
 
+    def test_should_allow_post_of_consignee_with_only_name(self):
+        consignee_one_details = {'name': "Other Children NGO"}
+        response = self.client.post(ENDPOINT_URL, data=consignee_one_details)
+        self.assertEqual(response.status_code, 201)
+
     def test_should_search_for_consignee_by_type(self):
         implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner', 'location': 'Kampala'}
         middle_man = {'name': "Kibuli DHO", 'type': 'middle_man'}

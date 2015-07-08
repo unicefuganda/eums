@@ -30,15 +30,13 @@ describe('Consignee Model', function () {
         expect(consignee.importedFromVision).toBe(true);
     });
 
-    it('should be editable and deletable if it has an id', function() {
+    it('should not be null if it has an id', function() {
         var consignee = new ConsigneeModel({id: 10});
-        expect(consignee.isDeletable).toBe(true);
-        expect(consignee.isEditable).toBe(true);
+        expect(consignee.isNull).toBe(false);
     });
 
-    it('should not be editable and deletable if it does not have an id', function() {
+    it('should be null if it does not have an id', function() {
         var consignee = new ConsigneeModel();
-        expect(consignee.isDeletable).toBe(false);
-        expect(consignee.isEditable).toBe(false);
+        expect(consignee.isNull).toBe(true);
     });
 });

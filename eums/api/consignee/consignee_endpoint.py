@@ -7,12 +7,9 @@ from eums.models import Consignee, DistributionPlanNode
 
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
-    customer_id = serializers.CharField(default='', required=False)
-    imported_from_vision = serializers.BooleanField(required=False)
-
     class Meta:
         model = Consignee
-        fields = ('id', 'name', 'type', 'imported_from_vision', 'customer_id', 'location')
+        fields = ('id', 'name', 'type', 'imported_from_vision', 'customer_id', 'location', 'remarks')
 
 
 class ConsigneeViewSet(ModelViewSet):
