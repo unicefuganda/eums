@@ -400,11 +400,13 @@ class PurchaseOrderFacade(OrderFacade):
 
 
 class ConsigneeFacade(Facade):
-    RELEVANT_DATA = {1: 'name', 3: 'customer_id'}
+    RELEVANT_DATA = {1: 'name', 2: 'location', 3: 'customer_id'}
 
     def _create_record_from_dict(self, record_dict):
         consignee, _ = Consignee.objects.get_or_create(customer_id=record_dict['customer_id'])
         consignee.name = record_dict['name']
+        consignee.location = record_dict['location']
+        consignee.imported_from_vision = True
         consignee.save()
         return consignee
 
