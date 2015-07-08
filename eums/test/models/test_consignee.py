@@ -8,8 +8,8 @@ class ConsigneeTest(TestCase):
         consignee = Consignee()
         fields_in_consignee = consignee._meta._name_map
 
-        self.assertEqual(len(consignee._meta.fields), 4)
-        for field in ['name', 'customer_id', 'id', 'type']:
+        self.assertEqual(len(consignee._meta.fields), 6)
+        for field in ['name', 'customer_id', 'id', 'type', 'location', 'imported_from_vision']:
             self.assertIn(field, fields_in_consignee)
 
     def test_string_representation_of_consignee_is_consignee_name(self):
