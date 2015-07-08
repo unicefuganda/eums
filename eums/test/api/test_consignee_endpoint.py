@@ -4,23 +4,24 @@ from eums.test.api.api_test_helpers import create_consignee, create_distribution
     create_sales_order_item
 from eums.test.config import BACKEND_URL
 
-
 ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 
 class ConsigneeEndpointTest(AuthenticatedAPITestCase):
     def test_should_get_consignees_sorted_by_name(self):
-        consignee_one_details = {'name': "Save the Children", 'type': "implementing_partner"}
-        consignee_two_details = {'name': "Feed the Children", 'type': "implementing_partner"}
-
+        consignee_one_details = {'name': "Save the Children", 'type': "implementing_partner",
+                                 'customer_id': 'L100', 'imported_from_vision': True}
+        consignee_two_details = {'name': "Feed the Children", 'type': "implementing_partner",
+                                 'customer_id': '', 'imported_from_vision': False}
+        
         create_consignee(self, consignee_one_details)
         create_consignee(self, consignee_two_details)
 
-        get_response = self.client.get(ENDPOINT_URL)
+        response = self.client.get(ENDPOINT_URL)
 
-        self.assertEqual(get_response.status_code, 200)
-        self.assertDictContainsSubset(consignee_two_details, get_response.data[0])
-        self.assertDictContainsSubset(consignee_one_details, get_response.data[1])
+        self.assertEqual(response.status_code, 200)
+        self.assertDictContainsSubset(consignee_two_details, response.data[0])
+        self.assertDictContainsSubset(consignee_one_details, response.data[1])
 
     def test_should_search_for_consignee_by_type(self):
         implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner'}
@@ -32,7 +33,7 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         get_response = self.client.get(ENDPOINT_URL + '?search=implementing_partner')
 
         self.assertEqual(get_response.status_code, 200)
-        self.assertDictContainsSubset(implementing_partner_details, get_response.data[0])
+        self.assertDictContainsSubset(get_response.data[0], implementing_partner_details)
 
     def test_should_search_for_consignee_at_top_level(self):
         implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner'}
@@ -52,7 +53,7 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         get_response = self.client.get(ENDPOINT_URL + '?node=top')
 
         self.assertEqual(get_response.status_code, 200)
-        self.assertDictContainsSubset(implementing_partner_details, get_response.data[0])
+        self.assertDictContainsSubset(get_response.data[0], implementing_partner_details)
         self.assertEqual(1, len(get_response.data))
 
         get_response = self.client.get(ENDPOINT_URL + '?node=1')

@@ -7,7 +7,6 @@ from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 
-
 DISTRIBUTION_PLAN_ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 DISTRIBUTION_PLAN_NODE_ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 CONSIGNEE_ENDPOINT_URL = BACKEND_URL + 'consignee/'
@@ -39,12 +38,14 @@ def create_programme():
     return programme
 
 
-def create_consignee(test_case, consignee_details=None):
+def create_consignee(_, consignee_details=None):
     if not consignee_details:
-        consignee_details = {'name': "Save the Children", 'type': 'implementing_partner'}
-    response = test_case.client.post(CONSIGNEE_ENDPOINT_URL, consignee_details, format='json')
-    test_case.assertEqual(response.status_code, 201)
-    return response.data
+        consignee_details = {}
+    consignee = ConsigneeFactory(name=consignee_details.get('name', ''),
+                                 type=consignee_details.get('type', 'implementing_partner'),
+                                 customer_id=consignee_details.get('customer_id', 'L400'),
+                                 imported_from_vision=consignee_details.get('imported_from_vision', False))
+    return consignee.__dict__
 
 
 def create_distribution_plan_node(test_case, node_details=None):
