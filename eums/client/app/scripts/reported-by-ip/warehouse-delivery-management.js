@@ -1,14 +1,20 @@
 'use strict';
 
-angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'ReleaseOrderItem', 'DatePicker', 'ui.bootstrap', 'ngToast'])
-    .controller('IPWarehouseDeliveryManagementController', function ($scope, $routeParams, ReleaseOrderService, UserService, $location, DeliveryNode, $q, ngToast,
-                                                     DistributionPlanNodeService, IPService, ConsigneeService, ReleaseOrderItemService) {
+angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact',
+    'ReleaseOrderItem', 'DatePicker', 'ui.bootstrap', 'ngToast'])
+    .controller('IPWarehouseDeliveryManagementController', function ($scope, $routeParams, ReleaseOrderService, UserService, $location,
+                                                                     DeliveryNode, $q, ngToast, DistributionPlanNodeService, IPService,
+                                                                     ConsigneeService, ReleaseOrderItemService) {
         function showLoader() {
-            angular.element('#loading').modal();
+            if (!angular.element('#loading').hasClass('in')) {
+                angular.element('#loading').modal();
+            }
         }
 
         function hideLoader() {
             angular.element('#loading').modal('hide');
+            angular.element('#loading.modal').removeClass('in');
+            angular.element('.modal-backdrop').remove();
         }
 
         function createToast(message, klass) {
@@ -40,12 +46,7 @@ angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'Distri
         }));
 
         loadPromises.push(ConsigneeService.all().then(function (consignees) {
-            //getUser.then(function(user){
-                //if (user.consignee_id) {
-                //    //remove self from consignees list
-                //}
-                $scope.consignees = consignees;
-            //});
+            $scope.consignees = consignees;
         }));
 
         var getUser = UserService.getCurrentUser();
@@ -143,13 +144,27 @@ angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'Distri
         };
 
         function loadDeliveryDataFor(releaseOrderItem) {
+            var getIpNode = function (nodes) {
+                for (var i = 0; i < nodes.length; i++) {
+                    if (!nodes[i].parent) {
+                        return nodes[i];
+                    }
+                }
+                return null;
+            };
             var getNodes = function (user) {
                 var filterParams = {item: releaseOrderItem.id};
                 if (user.consignee_id) {
                     filterParams.consignee = user.consignee_id;
                 }
                 return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
-                    $scope.deliveryNodes = nodes;
+                    var node = getIpNode(nodes);
+                    if (node) {
+                        $scope.toSubConsigneeView(node);
+                    }
+                    else {
+                        $scope.deliveryNodes = nodes;
+                    }
                 });
             };
 
