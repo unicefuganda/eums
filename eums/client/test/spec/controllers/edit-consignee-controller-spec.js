@@ -18,17 +18,17 @@ describe('Edit Consignee Controller', function () {
         });
     });
 
-    xdescribe("when 'edit-consignee' event is fired", function () {
-        it('should should show the edit consignee modal', function() {
+    describe('when "edit-consignee" event is fired', function () {
+        xit('should should show the edit consignee modal', function() {
 
         });
 
-        it('should put passed consignee on scope', function() {
+        xit('should put passed consignee on scope', function() {
             rootScope.$broadcast('edit-consignee', consignee);
             scope.$apply();
         });
 
-        it('should update consignee when save is called event is broadcast', function () {
+        xit('should update consignee when save is called event is broadcast', function () {
             deferredConsignee.resolve(consignee);
             rootScope.$broadcast('edit-consignee', consignee);
             scope.$apply();

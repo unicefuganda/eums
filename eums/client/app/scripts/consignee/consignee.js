@@ -57,7 +57,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
 
         $scope.edit = function(consignee) {
             $scope.$broadcast('edit-consignee', consignee);
-        }
+        };
     })
     .controller('EditConsigneeController', function($scope, ConsigneeService) {
         $scope.$on('edit-consignee', function(_, consignee) {

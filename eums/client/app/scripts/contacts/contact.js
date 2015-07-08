@@ -150,5 +150,5 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         $scope.invalidContact = function(contact) {
             return !(contact.firstName && contact.lastName && contact.phone);
-        }
+        };
     });
