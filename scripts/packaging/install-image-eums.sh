@@ -43,9 +43,9 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 \
 /bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} && /usr/bin/supervisord"
 
 echo "Cleaning older eums docker images..."
-sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk '{print$3}' | xargs -I {} sudo docker rmi {}
+sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=3 {print$3}' | xargs -I {} sudo docker rmi {} || true
 
 echo "Cleaning unused docker images..."
-sudo docker images | grep -e '^<none>' | awk '{print$3}' | xargs -I {} sudo docker rmi {}
+sudo docker images | grep -e '^<none>' | awk '{print$3}' | xargs -I {} sudo docker rmi {} || true
 
 echo "Done!"
