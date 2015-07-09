@@ -99,16 +99,16 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should make api filter calls on filter', function(done) {
+    it('should make api filter calls on filter', function (done) {
         mockBackend.whenGET(levelOneEndpoint + '?param=value&other=1').respond(fakeObjects);
-        levelOneService.filter({param: 'value', other: 1}).then(function(objects) {
+        levelOneService.filter({param: 'value', other: 1}).then(function (objects) {
             expect(objects).toEqual(fakeObjects);
             done();
         });
         mockBackend.flush();
     });
 
-    it('should build nested objects when filtering', function(done) {
+    it('should build nested objects when filtering', function (done) {
         mockBackend.whenGET(levelOneEndpoint + '?param=value').respond(fakeObjects);
         mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedOne.id)).respond(nestedOne);
         mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedTwo.id)).respond(nestedTwo);
@@ -128,6 +128,17 @@ describe('Service Factory', function () {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond(fakeOne);
         levelOneService.get(fakeOne.id).then(function (object) {
             expect(object).toEqual(fakeOne);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should get object detail using detail route', function (done) {
+        var detailRouteName = 'detail/';
+        var expectedResponse = {details: 1};
+        mockBackend.whenGET('{1}{2}/{3}'.assign(levelOneEndpoint, fakeOne.id, detailRouteName)).respond(expectedResponse);
+        levelOneService.getDetail(fakeOne, detailRouteName).then(function (detail) {
+            expect(detail).toEqual(expectedResponse);
             done();
         });
         mockBackend.flush();
@@ -176,7 +187,7 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should fetch deep nested objects', function(done) {
+    it('should fetch deep nested objects', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond(fakeOne);
         mockBackend.whenGET('{1}{2}/'.assign(levelTwoEndpoint, nestedOne.id)).respond(nestedOne);
         mockBackend.whenGET('{1}{2}/'.assign(grandChildEndpoint, grandChild.id)).respond(grandChild);
@@ -353,6 +364,17 @@ describe('Service Factory', function () {
             });
             mockBackend.flush();
         });
+
+        it('should not use model when fetching object detail', function (done) {
+            var detailRouteName = 'detail/';
+            var expectedResponse = {details: 1};
+            mockBackend.whenGET('{1}{2}/{3}'.assign(levelTwoEndpoint, fakeOne.id, detailRouteName)).respond(expectedResponse);
+            service.getDetail(fakeOne, detailRouteName).then(function (detail) {
+                expect(detail).toEqual(expectedResponse);
+                done();
+            });
+            mockBackend.flush();
+        });
     });
 
     describe('when additional methods are specified', function () {
@@ -363,7 +385,7 @@ describe('Service Factory', function () {
                     special: function () {
                         return this.get;
                     },
-                    compute: function() {
+                    compute: function () {
                         return 10;
                     }
                 }

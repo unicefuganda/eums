@@ -112,6 +112,15 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             return queryString.to(queryString.length - 1);
         }
 
+        function getObject(uri, options, nestedFields) {
+            return $http.get(uri).then(function (response) {
+                return buildObject.call(this, response.data, nestedFields || [], options.propertyServiceMap).then(function (builtObject) {
+                    var objectToReturn = options.changeCase ? changeCase(builtObject, toCamelCase) : builtObject;
+                    return options.model ? new options.model(objectToReturn) : objectToReturn;
+                });
+            }.bind(this));
+        }
+
         return {
             create: function (options) {
                 options.changeCase === undefined && (options.changeCase = true);
@@ -124,13 +133,13 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         }.bind(this));
                     },
                     get: function (id, nestedFields) {
-                        var self = this;
-                        return $http.get('{1}{2}/'.assign(options.uri, id)).then(function (response) {
-                            return buildObject.call(self, response.data, nestedFields || [], options.propertyServiceMap).then(function (builtObject) {
-                                var objectToReturn = options.changeCase ? changeCase(builtObject, toCamelCase) : builtObject;
-                                return options.model ? new options.model(objectToReturn) : objectToReturn;
-                            });
-                        });
+                        var uri = '{1}{2}/'.assign(options.uri, id);
+                        return getObject.call(this, uri, options, nestedFields);
+                    },
+                    getDetail: function (object, detailRouteName, nestedFields) {
+                        var uri = '{1}{2}/{3}'.assign(options.uri, object.id, detailRouteName);
+                        var opts = Object.merge({model: undefined}, options.model);
+                        return getObject.call(this, uri, opts, nestedFields);
                     },
                     create: function (object) {
                         var flatObject = nestedObjectsToIds(object);
