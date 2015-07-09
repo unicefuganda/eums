@@ -13,7 +13,6 @@ angular.module('IPWarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Us
 
             UserService.getCurrentUser().then(function (user) {
                 ReleaseOrderService.forUser(user).then(function (releaseOrders) {
-                    console.log('release-orders', releaseOrders);
                     $scope.releaseOrders = releaseOrders.sort();
                     angular.element('#loading').modal('hide');
                 });

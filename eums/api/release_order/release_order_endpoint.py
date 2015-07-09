@@ -1,4 +1,3 @@
-from rest_framework import filters
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
@@ -24,9 +23,6 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
 class ReleaseOrderViewSet(ModelViewSet):
     queryset = ReleaseOrder.objects.all().order_by('order_number')
     serializer_class = ReleaseOrderSerialiser
-    filter_backends = (filters.DjangoFilterBackend,)
-    search_fields = ('tree_position',)
-    filter_fields = 'delivery'
 
     def list(self, request, *args, **kwargs):
         consignee_id = request.GET.get('consignee', None)
