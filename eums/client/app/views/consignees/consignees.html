@@ -14,7 +14,7 @@
                                class="form-control"
                                name="filter"
                                ng-model="query"
-                               placeholder="Search by name, type or customer ID"/>
+                               placeholder="Search by name, location or Vision ID"/>
                     </div>
                 </div>
             </div>
@@ -36,23 +36,23 @@
                     <tr ng-repeat="consignee in consignees">
                         <td><span ng-show="consignee.importedFromVision"
                                   class="glyphicon glyphicon-ok text-success"></span></td>
-                        <td ng-show="!consignee.isNull">{{ consignee.name }}</td>
-                        <td ng-show="!consignee.isNull">{{ consignee.location }}</td>
-                        <td ng-show="!consignee.isNull">{{ consignee.customerId !== 'None' ? consignee.customerId : ''}}</td>
-                        <td ng-show="!consignee.isNull">{{ consignee.remarks }}</td>
-                        <td ng-show="!consignee.isNull">
+                        <td ng-show="!consignee.inEditMode">{{ consignee.name }}</td>
+                        <td ng-show="!consignee.inEditMode">{{ consignee.location }}</td>
+                        <td ng-show="!consignee.inEditMode">{{ consignee.customerId !== 'None' ? consignee.customerId : ''}}</td>
+                        <td ng-show="!consignee.inEditMode">{{ consignee.remarks }}</td>
+                        <td ng-show="!consignee.inEditMode">
                             <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">Edit
                             </button>
                             <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">Delete
                             </button>
                         </td>
-                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.name"></td>
-                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.location"></td>
-                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.customerId"></td>
-                        <td ng-show="consignee.isNull"><input class="table-input" ng-model="consignee.remarks"></td>
-                        <td ng-show="consignee.isNull">
+                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.name"></td>
+                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.location"></td>
+                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.customerId"></td>
+                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.remarks"></td>
+                        <td ng-show="consignee.inEditMode">
                             <button class="btn btn-sm btn-default blue-border-button"
-                                    ng-click="save(consignee)" ng-show="consignee.isNull">Save
+                                    ng-click="save(consignee)" ng-show="consignee.inEditMode">Save
                             </button>
                         </td>
                     </tr>

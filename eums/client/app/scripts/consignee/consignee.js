@@ -35,8 +35,11 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
     .factory('Consignee', function () {
         return function (json) {
             !json && (json = {});
-            Object.defineProperty(this, 'isNull', {
+            Object.defineProperty(this, 'inEditMode', {
                 get: function () {
+                    if (this._inEditMode) {
+                        return true;
+                    }
                     return this.id === undefined || this.id === null;
                 }.bind(this)
             });
@@ -46,10 +49,20 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
             this.location = json.location || null;
             this.importedFromVision = json.importedFromVision || false;
             this.remarks = json.remarks || null;
+
+            this._inEditMode = false;
+            this.switchToEditMode = function () {
+                this._inEditMode = true;
+            };
+            this.switchToReadMode = function () {
+                if (!this.id) {
+                    throw new Error('cannot switch consignee without id to read mode');
+                }
+                this._inEditMode = false;
+            };
         };
     })
-    .
-    factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee) {
+    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.CONSIGNEE,
             model: Consignee,
@@ -76,8 +89,18 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
             $scope.consignees.insert(new Consignee(), 0);
         };
         $scope.save = function (consignee) {
-            ConsigneeService.create(consignee).then(function (createdConsignee) {
-                consignee.id = createdConsignee.id;
-            });
+            if (consignee.id) {
+                ConsigneeService.update(consignee).then(function (c) {
+                    consignee.switchToReadMode();
+                });
+            }
+            else {
+                ConsigneeService.create(consignee).then(function (createdConsignee) {
+                    consignee.id = createdConsignee.id;
+                });
+            }
         };
+        $scope.edit = function (consignee) {
+            consignee.switchToEditMode();
+        }
     });

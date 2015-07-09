@@ -30,13 +30,29 @@ describe('Consignee Model', function () {
         expect(consignee.importedFromVision).toBe(true);
     });
 
-    it('should not be null if it has an id', function() {
+    it('should by default not be inEditMode if it has an id', function () {
         var consignee = new ConsigneeModel({id: 10});
-        expect(consignee.isNull).toBe(false);
+        expect(consignee.inEditMode).toBe(false);
     });
 
-    it('should be null if it does not have an id', function() {
+    it('should by default be inEditMode if it does not have an id', function () {
         var consignee = new ConsigneeModel();
-        expect(consignee.isNull).toBe(true);
+        expect(consignee.inEditMode).toBe(true);
     });
+
+    it('should switch to edit mode upon request', function () {
+        var consignee = new ConsigneeModel({id: 11});
+        expect(consignee.inEditMode).toBe(false);
+        consignee.switchToEditMode();
+        expect(consignee.inEditMode).toBe(true);
+    });
+
+    it('should switch to read mode upon request', function () {
+        var consignee = new ConsigneeModel();
+        expect(consignee.inEditMode).toBe(true);
+        consignee.id = 12;
+        consignee.switchToReadMode();
+        expect(consignee.inEditMode).toBe(false);
+    });
+
 });
