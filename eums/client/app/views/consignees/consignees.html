@@ -60,16 +60,17 @@
                         </td>
                         <td>
                             <span ng-show="!consignee.inEditMode">{{ consignee.remarks }}</span>
-                            <span ng-show="consignee.inEditMode"><input class="table-input form-control"
-                                                                        ng-model="consignee.remarks"></span>
+                            <span ng-show="consignee.inEditMode">
+                                <input class="table-input form-control" ng-model="consignee.remarks">
+                            </span>
                         </td>
                         <td>
                             <span ng-show="!consignee.inEditMode">
                                 <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">
                                     Edit
                                 </button>
-                                <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">
-                                    Delete
+                                <button class="btn btn-sm btn-default red-border-button"
+                                        ng-click="del(consignee)" ng-show="!consignee.importedFromVision">Delete
                                 </button>
                             </span>
                             <span ng-show="consignee.inEditMode">
