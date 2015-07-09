@@ -1,13 +1,25 @@
+from eums.models import DistributionPlanNode, Consignee
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.api.api_test_helpers import create_consignee, create_distribution_plan, create_distribution_plan_node, \
     create_sales_order_item
 from eums.test.config import BACKEND_URL
+from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as DeliveryNodeFactory
 
 ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 
 class ConsigneeEndpointTest(AuthenticatedAPITestCase):
+    def setUp(self):
+        super(ConsigneeEndpointTest, self).setUp()
+        DistributionPlanNode.objects.all().delete()
+        Consignee.objects.all().delete()
+
+    def tearDown(self):
+        DistributionPlanNode.objects.all().delete()
+        Consignee.objects.all().delete()
+
     def test_should_get_consignees_sorted_by_name(self):
         consignee_one_details = {'name': "Save the Children", 'type': "implementing_partner",
                                  'customer_id': 'L100', 'imported_from_vision': True}
@@ -22,6 +34,20 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(consignee_two_details, response.data[0])
         self.assertDictContainsSubset(consignee_one_details, response.data[1])
+
+    def test_should_get_consignee_deliveries(self):
+        consignee = ConsigneeFactory()
+        detail_route = '%s%d/deliveries/' % (ENDPOINT_URL, consignee.id)
+        self.assertListEqual(self.client.get(detail_route).data, [])
+
+        node_one = DeliveryNodeFactory(consignee=consignee)
+        node_two = DeliveryNodeFactory(consignee=consignee)
+
+        consignee_node_ids = self.client.get(detail_route).data
+
+        self.assertEqual(len(consignee_node_ids), 2)
+        self.assertIn(node_one.id, consignee_node_ids)
+        self.assertIn(node_two.id, consignee_node_ids)
 
     def test_should_allow_post_of_consignee_with_only_name(self):
         consignee_one_details = {'name': "Other Children NGO"}
