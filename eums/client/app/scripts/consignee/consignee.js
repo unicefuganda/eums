@@ -90,7 +90,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         };
         $scope.save = function (consignee) {
             if (consignee.id) {
-                ConsigneeService.update(consignee).then(function (c) {
+                ConsigneeService.update(consignee).then(function () {
                     consignee.switchToReadMode();
                 });
             }
@@ -102,5 +102,5 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         };
         $scope.edit = function (consignee) {
             consignee.switchToEditMode();
-        }
+        };
     });

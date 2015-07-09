@@ -13,7 +13,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         $scope.programmeSelected = null;
 
         $scope.documentColumnTitle = 'Waybill #';
-        $scope.dateColumnTitle = 'Date Delivered';
+        $scope.dateColumnTitle = 'Date Shipped';
         $scope.descriptionColumnTitle = 'Programme Name';
 
         $scope.initialize = function () {
@@ -21,7 +21,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
             this.sortBy('orderNumber');
             this.sort.descending = false;
 
-            ReleaseOrderService.all(['consignee']).then(function (releaseOrders) {
+            ReleaseOrderService.all().then(function (releaseOrders) {
                 $scope.releaseOrders = releaseOrders.sort();
                 angular.element('#loading').modal('hide');
             });

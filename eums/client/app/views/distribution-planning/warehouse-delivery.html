@@ -70,12 +70,12 @@
                     <a ng-click="selectReleaseOrder(releaseOrder.id)">{{ releaseOrder.waybill }}</a>
                 </td>
                 <td data-header="Date Created">
-                    {{ releaseOrder.deliveryDate }}
+                    {{ releaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}
                 </td>
                 <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
                     {{ releaseOrder.programme }}
                 </td>
-                <td data-header="Consignee">{{ releaseOrder.consignee.name }}</td>
+                <td data-header="Consignee">{{ releaseOrder.consigneeName }}</td>
             </tr>
             </tbody>
             <tfoot>

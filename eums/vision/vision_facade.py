@@ -227,7 +227,7 @@ class SalesOrderFacade(OrderFacade):
         net_value = 'net_value'
         order_number = 'order_number'
         if not item_dict.get(order_number) and not item_dict.get(net_value):
-            raise False
+            return False
 
         for column in self.RELEVANT_DATA.values():
             if column != net_value and column != order_number and item_dict[column]:
@@ -242,7 +242,7 @@ class SalesOrderFacade(OrderFacade):
 
 
 class ReleaseOrderFacade(OrderFacade):
-    RELEVANT_DATA = {0: 'order_number', 1: 'ro_item_number', 3: 'recommended_delivery_date', 4: 'material_code',
+    RELEVANT_DATA = {0: 'order_number', 1: 'ro_item_number', 24: 'shipment_end_date', 4: 'material_code',
                      5: 'description',
                      6: 'quantity', 7: 'value', 11: 'consignee', 14: 'so_number', 15: 'purchase_order', 22: 'waybill',
                      40: 'so_item_number', 41: 'po_item_number', 12: 'consignee_name'}
@@ -259,7 +259,7 @@ class ReleaseOrderFacade(OrderFacade):
         matching_purchase_orders = self._get_matching_purchase_order(order_dict)
         if len(matching_sales_orders) and len(matching_purchase_orders):
             return ReleaseOrder.objects.create(order_number=order_dict['order_number'], waybill=order_dict['waybill'],
-                                               delivery_date=self._get_as_date(order_dict['recommended_delivery_date']),
+                                               delivery_date=self._get_as_date(order_dict['shipment_end_date']),
                                                consignee=consignee,
                                                sales_order=matching_sales_orders[0],
                                                purchase_order=matching_purchase_orders[0])
@@ -300,11 +300,11 @@ class ReleaseOrderFacade(OrderFacade):
         consignee = item_dict['consignee']
         consignee_name = item_dict['consignee_name']
         waybill = item_dict['waybill']
-        recommended_delivery_date = item_dict['recommended_delivery_date']
+        shipment_end_date = item_dict['shipment_end_date']
         self._remove_order_level_data_from(item_dict)
         order_list.append({'so_number': sales_order, 'purchase_order': purchase_order, 'order_number': order_number,
                            'consignee': consignee, 'consignee_name': consignee_name,
-                           'recommended_delivery_date': recommended_delivery_date, 'waybill': waybill,
+                           'shipment_end_date': shipment_end_date, 'waybill': waybill,
                            'items': [item_dict]})
 
     def _remove_order_level_data_from(self, item_dict):
@@ -313,12 +313,12 @@ class ReleaseOrderFacade(OrderFacade):
         del item_dict['consignee']
         del item_dict['consignee_name']
         del item_dict['waybill']
-        del item_dict['recommended_delivery_date']
+        del item_dict['shipment_end_date']
 
     def _is_summary_row(self, item_dict):
         value = 'value'
         if not item_dict.get(value):
-            raise False
+            return False
 
         for column in self.RELEVANT_DATA.values():
             if column != value and item_dict[column]:

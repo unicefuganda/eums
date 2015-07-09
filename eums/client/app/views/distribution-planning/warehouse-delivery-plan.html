@@ -15,35 +15,25 @@
                         Delivery Date:
                     </label>
                     <div class="col-lg-8">
-                        <span class="table-date-width input-group" eums-date-picker>
-                            <input type="text"
-                                   class="form-control"
-                                   readonly="true"
-                                   datepicker-popup="dd/MM/yyyy"
-                                   ng-model="selectedDate"
-                                   is-open="datepicker[$index]"
-                                   datepicker-options="dateOptions" show-button-bar="false"
-                                   ng-required="true"
-                                   value="{{ selectedDate | date : 'dd/MM/yyyy' }}"
-                                   required="required"/>
-                              <span class="input-group-btn">
-                                <button type="button" class="btn btn-default" ng-click="open($event, $index )" ng-disabled="item.flowTriggered">
-                                    <i class="glyphicon glyphicon-calendar"></i></button>
-                              </span>
-                        </span>
+                        <label class="col-lg-4 control-label text-success">{{ selectedReleaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}</label>
                     </div>
                 </div>
                 <div class="form-group col-lg-4">
                     <label class="col-lg-4 control-label description-label">
                         Contact Person:
                     </label>
-                    <div class="col-lg-8">
-                        <input type="hidden" search-contacts
-                           value="{{ contact.id }}"
-                           required="required"
-                           ng-model="contact.id"
-                           ng-attr-id="{{ 'contact-select' }}"
-                           ng-disabled="item.flowTriggered">
+                    <div class="col-lg-8 form-inline">
+                        <div class="form-group table-contact-form-group col-md-10">
+                            <input type="hidden" search-contacts required="required"
+                                   value="{{ contact.id }}" ng-model="contact.id"
+                                   ng-attr-id="{{ 'contact-select' }}">
+                        </div>
+                        <div class="form-group table-contact-form-group col-md-2">
+                            <button type="button" class="btn btn-default "
+                                    ng-click="addContact(item, $index)" ng-disabled="item.flowTriggered">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group col-lg-3" ng-if="districtsLoaded">
@@ -83,16 +73,16 @@
              </div>
         </div>
 
-        <div ng-show="releaseOrderItems.length" class="panel panel-default warehouse-delivery-panel">
+        <div ng-show="releaseOrderItems.length">
             <div class="panel-body ">
                 <table id="warehouseDeliveryTable" class="table table-bordered table-striped table-hover table-condensed">
                     <tr>
-                        <th class="table-header-width" id="input-available-quantity-header">No.</th>
-                        <th class="table-header-width" id="input-header">Material</th>
-                        <th id="input-quantity-header">Description</th>
-                        <th id="input-planned-distribution-date-header">Quantity</th>
-                        <th class="table-select-header-width">Unit</th>
-                        <th class="table-contact-select-header-width">Value</th>
+                        <th class="item-list-col-header">No.</th>
+                        <th class="item-list-col-header">Material</th>
+                        <th id="item-list-col-header">Description</th>
+                        <th id="item-list-col-header">Quantity</th>
+                        <th class="item-list-col-header">Unit</th>
+                        <th class="item-list-col-header">Value</th>
                     </tr>
                     <tr ng-repeat="(itemIndex, releaseOrderItem) in releaseOrderItems">
                         <td>{{ itemIndex + 1 }}</td>

@@ -8,7 +8,6 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.contact = {};
-        $scope.selectedDate = '';
         $scope.selectedLocation = {};
         $scope.deliveryNodes = [];
         $scope.delivery = {};
@@ -82,7 +81,6 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                             .then(function (response) {
                                 $scope.deliveryNodes = response.data;
                                 $scope.selectedLocation.id = response.data[0].location;
-                                $scope.selectedDate = response.data[0].planned_distribution_date;
                                 $scope.contact.id = response.data[0].contact_person_id;
                                 setLocationAndContactFields();
                             });
@@ -101,10 +99,6 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         getDelivery();
         showLoadingModal(false);
 
-        var formatDateForSave = function (date) {
-            return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
-        };
-
         var saveDeliveryNodes = function () {
             $scope.releaseOrderItems.forEach(function (releaseOrderItem) {
                 saveDeliveryNode(releaseOrderItem);
@@ -112,8 +106,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         };
 
         $scope.saveDelivery = function () {
-            if (validate($scope.selectedDate, 'Fill in Date field!') === false ||
-                validate($scope.contact.id, 'Fill in Contact field!') === false ||
+            if (validate($scope.contact.id, 'Fill in Contact field!') === false ||
                 validate($scope.selectedLocation.id, 'Fill in Location field!') === false) {
                 return;
             }
@@ -148,18 +141,11 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
         };
 
         var saveDeliveryNode = function (releaseOrderItem) {
-            var deliveryDate = new Date($scope.selectedDate);
-
-            if (deliveryDate.toString() === 'Invalid Date') {
-                var planDate = $scope.selectedDate.split('/');
-                deliveryDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
-            }
-
             var node = getNodeForItem(releaseOrderItem);
             if (node) {
                 node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
-                node.planned_distribution_date = formatDateForSave(deliveryDate);
+                node.planned_distribution_date = $scope.selectedReleaseOrder.deliveryDate;
                 DistributionPlanNodeService.update(node)
                     .then(function () {
                         getDelivery();
@@ -177,7 +163,7 @@ angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable
                     tree_position: 'IMPLEMENTING_PARTNER',
                     item: releaseOrderItem,
                     targeted_quantity: parseInt(releaseOrderItem.quantity),
-                    planned_distribution_date: formatDateForSave(deliveryDate),
+                    planned_distribution_date: $scope.selectedReleaseOrder.deliveryDate,
                     track: false
                 };
                 DistributionPlanNodeService.create(node)
