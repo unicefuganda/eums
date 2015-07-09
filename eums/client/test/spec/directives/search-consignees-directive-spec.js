@@ -37,12 +37,12 @@ describe('Search Consignee Directive', function () {
 
             scope.$apply();
             expect(mockConsigneeService.filterByType).toHaveBeenCalledWith('implementing_partner');
-            expect(mockConsigneeService.getByTopLevelNode).toHaveBeenCalled();
+            expect(mockConsigneeService.getTopLevelConsignees).toHaveBeenCalled();
         });
 
         it('should Invoke getByTopLevelNode', function () {
             scope.$apply();
-            expect(mockConsigneeService.getByTopLevelNode).toHaveBeenCalled();
+            expect(mockConsigneeService.getTopLevelConsignees).toHaveBeenCalled();
         });
     });
 });

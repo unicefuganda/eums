@@ -496,7 +496,7 @@
                 restrict: 'A',
                 link: function (scope, elem) {
 
-                    ConsigneeService.getByTopLevelNode().then(function (displayedData){
+                    ConsigneeService.getTopLevelConsignees().then(function (displayedData){
                         var data = displayedData.map(function(consignee){
                             return {
                                 id: consignee.id,

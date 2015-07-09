@@ -161,14 +161,17 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         });
                     },
                     del: function (object) {
-                        return $http.delete('{1}{2}/'.assign(options.uri, object[idField]), object).then(function (response) {
-                            return response.status;
-                        });
+                        return this._del(object);
                     },
                     filter: function (filterParams, nestedFields) {
                         return $http.get(options.uri + queryStringFrom(filterParams)).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
+                    },
+                    _del: function (object) {
+                        return $http.delete('{1}{2}/'.assign(options.uri, object[idField]), object).then(function (response) {
+                            return response.status;
+                        });
                     },
                     _listEndpointMethod: function (url, nestedFields) {
                         return $http.get(options.uri + url).then(function (response) {

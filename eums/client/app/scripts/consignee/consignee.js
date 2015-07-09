@@ -62,20 +62,30 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
             };
         };
     })
-    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee) {
+    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee, $q) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.CONSIGNEE,
             model: Consignee,
             methods: {
-                getByTopLevelNode: function () {
+                getTopLevelConsignees: function () {
+                    //TODO return this.filter({node: 'top'});
                     return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?node=top').then(function (response) {
                         return response.data;
                     });
                 },
                 filterByType: function (type) {
+                    //TODO call service.filter({search: type}) wherever this method is used
                     return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?search=' + type).then(function (response) {
                         return response.data;
                     });
+                },
+                del: function (consignee) {
+                    if (!consignee.importedFromVision) {
+                        return this.getDetail(consignee, 'deliveries/').then(function (deliveries) {
+                            return deliveries.length ? $q.reject('CANNOT DELETE CONSIGNEE THAT HAS DELIVERIES') : this._del(consignee);
+                        }.bind(this));
+                    }
+                    return $q.reject('CANNOT DELETE CONSIGNEE IMPORTED FROM VISION');
                 }
             }
         });
@@ -102,5 +112,12 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         };
         $scope.edit = function (consignee) {
             consignee.switchToEditMode();
+        };
+        $scope.del = function (consignee) {
+            ConsigneeService.del(consignee).then(function () {
+                $scope.consignees.remove(function (scopeConsignee) {
+                    return scopeConsignee.id === consignee.id;
+                });
+            });
         };
     });

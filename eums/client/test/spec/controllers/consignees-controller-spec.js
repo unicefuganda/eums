@@ -1,12 +1,12 @@
 describe('Consignees Controller', function () {
-    var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise, updateConsigneePromise;
+    var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise, updateConsigneePromise, deleteConsigneePromise;
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
     var savedConsignee = {id: 1, name: 'Dwelling Places',  switchToReadMode: function() {}, switchToEditMode: function() {}};
     var emptyConsignee = {properties: null, switchToEditMode: function() {}};
 
     beforeEach(function () {
         module('Consignee');
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del']);
         mockConsigneeModel = function() {
             this.properties = emptyConsignee.properties;
         };
@@ -15,6 +15,7 @@ describe('Consignees Controller', function () {
             deferredConsignees = $q.defer();
             saveConsigneePromise = $q.defer();
             updateConsigneePromise = $q.defer();
+            deleteConsigneePromise = $q.defer();
 
             deferredConsignees.resolve(consignees);
             saveConsigneePromise.resolve(savedConsignee);
@@ -23,6 +24,7 @@ describe('Consignees Controller', function () {
             mockConsigneeService.all.and.returnValue(deferredConsignees.promise);
             mockConsigneeService.create.and.returnValue(saveConsigneePromise.promise);
             mockConsigneeService.update.and.returnValue(updateConsigneePromise.promise);
+            mockConsigneeService.del.and.returnValue(deleteConsigneePromise.promise);
 
             scope = $rootScope.$new();
             $controller('ConsigneesController', {
@@ -72,5 +74,17 @@ describe('Consignees Controller', function () {
         spyOn(emptyConsignee, 'switchToEditMode');
         scope.edit(emptyConsignee);
         expect(emptyConsignee.switchToEditMode).toHaveBeenCalled();
+    });
+
+    it('should delete a consignee when delete is called and remove consignee from list', function() {
+        deleteConsigneePromise.resolve(200);
+        scope.$apply();
+        var firstConsignee = scope.consignees.first();
+
+        scope.del(firstConsignee);
+        scope.$apply();
+
+        expect(mockConsigneeService.del).toHaveBeenCalledWith(firstConsignee);
+        expect(scope.consignees).not.toContain(firstConsignee);
     });
 });

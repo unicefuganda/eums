@@ -1,6 +1,6 @@
 describe('Consignee Service', function () {
 
-    var endpointUrl;
+    var endpointUrl, scope;
 
     var consigneeList = [{
         id: 1,
@@ -25,6 +25,7 @@ describe('Consignee Service', function () {
             inject(function (ConsigneeService, EumsConfig) {
                 endpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;
             });
+
         });
 
         it('should be instantiated with the right options', function () {
@@ -38,10 +39,11 @@ describe('Consignee Service', function () {
         var consigneeService, mockBackend;
 
         beforeEach(function () {
-            inject(function (ConsigneeService, $httpBackend, EumsConfig) {
+            inject(function (ConsigneeService, $httpBackend, EumsConfig, $rootScope) {
                 mockBackend = $httpBackend;
                 consigneeService = ConsigneeService;
                 endpointUrl = EumsConfig.BACKEND_URLS.CONSIGNEE;
+                scope = $rootScope.$new();
             });
         });
 
@@ -58,12 +60,41 @@ describe('Consignee Service', function () {
 
         it('should get all consignees by node level ', function (done) {
             mockBackend.whenGET(endpointUrl + '?node=top').respond(consigneeList);
-            consigneeService.getByTopLevelNode().then(function (consignees) {
+            consigneeService.getTopLevelConsignees().then(function (consignees) {
                 expect(consignees).toEqual(consigneeList);
                 done();
             });
             mockBackend.flush();
         });
-    });
 
+        it('should delete consignee that is not imported from vision and has no deliveries attached to them', function (done) {
+            var consignee = {id: 1, importedFromVision: false};
+            mockBackend.expectGET(endpointUrl + consignee.id + '/deliveries/').respond([]);
+            mockBackend.whenDELETE(endpointUrl + consignee.id + '/').respond(200);
+            consigneeService.del(consignee).then(function (status) {
+                expect(status).toEqual(200);
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should reject deletion of consignee imported from vision', function (done) {
+            var consignee = {id: 1, importedFromVision: true};
+            consigneeService.del(consignee).catch(function (reason) {
+                expect(reason).toEqual('CANNOT DELETE CONSIGNEE IMPORTED FROM VISION');
+                done();
+            });
+            scope.$apply();
+        });
+
+        it('should reject deletion of consignee that has deliveries attached to them', function (done) {
+            var consignee = {id: 1, importedFromVision: false};
+            mockBackend.expectGET(endpointUrl + consignee.id + '/deliveries/').respond([{id: 1}]);
+            consigneeService.del(consignee).catch(function (reason) {
+                expect(reason).toEqual('CANNOT DELETE CONSIGNEE THAT HAS DELIVERIES');
+                done();
+            });
+            mockBackend.flush();
+        });
+    });
 });
