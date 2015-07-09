@@ -30,10 +30,10 @@
     <div class="text-muted pad-top-10">
         <ul class="list-inline">
             <li>
-                <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivery set
+                <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivered
             </li>
             <li>
-                <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Delivery not set
+                <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Not Delivered
             </li>
         </ul>
     </div>
@@ -63,7 +63,7 @@
             <tbody>
             <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
-                    <span ng-class="releaseOrder.hasPlan ? 'glyphicon glyphicon-ok-sign text-success' :
+                    <span ng-class="releaseOrder.delivery ? 'glyphicon glyphicon-ok-sign text-success' :
                      'glyphicon glyphicon-exclamation-sign text-warning';"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">

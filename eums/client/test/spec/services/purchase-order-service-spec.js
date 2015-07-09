@@ -64,7 +64,7 @@ describe('Purchase Order Service when instantiated', function () {
 
     it('should return all purchase orders for a user who is not an IP', function (done) {
         var nonIpUser = {};
-        mockBackend.whenGET(purchaseOrderEndpoint).respond([{id: 31}]);
+        mockBackend.whenGET(purchaseOrderEndpoint + 'for_direct_delivery/').respond([{id: 31}]);
         purchaseOrderService.forUser(nonIpUser).then(function (orders) {
             expect(orders).toEqual([{id: 31}]);
             done();

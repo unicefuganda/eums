@@ -2,7 +2,7 @@
 
 angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'DistributionPlanNode', 'Consignee', 'eums.ip', 'Contact', 'PurchaseOrderItem', 'DatePicker', 'ui.bootstrap', 'ngToast'])
     .controller('IPDirectDeliveryManagementController', function ($scope, $routeParams, PurchaseOrderService, UserService, $location, DeliveryNode, $q, ngToast,
-                                                     DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
+                                                                  DistributionPlanNodeService, IPService, ConsigneeService, PurchaseOrderItemService) {
         function showLoader() {
             angular.element('#loading').modal();
         }
@@ -138,13 +138,23 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
         };
 
         function loadDeliveryDataFor(purchaseOrderItem) {
+            var getIpNodes = function (nodes) {
+                var ipNodes = [];
+                for (var i = 0; i < nodes.length; i++) {
+                    if (!nodes[i].parent) {
+                        ipNodes.push(nodes[i]);
+                    }
+                }
+                return ipNodes;
+            };
             var getNodes = function (user) {
                 var filterParams = {item: purchaseOrderItem.id};
                 if (user.consignee_id) {
                     filterParams.consignee = user.consignee_id;
                 }
                 return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
-                    $scope.deliveryNodes = nodes;
+                    var ipNodes = getIpNodes(nodes);
+                    $scope.deliveryNodes = ipNodes;
                 });
             };
 
