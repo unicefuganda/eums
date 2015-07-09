@@ -84,12 +84,10 @@ describe('Vision Data Imports', function () {
             'Import has failed due to missing [order_number] in row [6]. Please correct the error then try the upload again'
         );
 
-        //COMMENTED OUT AWAITING FIX TO ISSUE #96260050 FOR PURCHASE ORDER SPREADSHEETS
-
-        // importDataPage.uploadPurchaseOrders('../files/purchase-errors.xlsx');
-        //expect(importDataPage.purchaseOrderErrorMessage()).toEqual(
-        //    'Import has failed due to missing... '
-        //);
+         importDataPage.uploadPurchaseOrders('../files/purchase-errors.xlsx');
+        expect(importDataPage.purchaseOrderErrorMessage()).toEqual(
+            'Import has failed due to missing [value] in row [4]. Please correct the error then try the upload again'
+        );
 
         importDataPage.uploadReleaseOrders('../files/release-errors.xlsx');
         expect(importDataPage.releaseOrderErrorMessage()).toEqual(

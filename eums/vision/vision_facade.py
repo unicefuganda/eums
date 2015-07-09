@@ -137,17 +137,7 @@ class OrderFacade(Facade):
                 self._create_new_item(item, new_order)
 
     def _is_summary_row(self, item_dict):
-        net_value = 'net_value'
-        value = 'value'
-        order_number = 'order_number'
-        if not item_dict.get(order_number) and not item_dict.get(net_value) and not item_dict.get(value):
-            raise False
-
-        for column in self.RELEVANT_DATA.values():
-            if column != net_value and column != order_number and item_dict[column]:
-                return False
-
-        return True
+        return False
 
     @staticmethod
     def _get_as_date(raw_value):
@@ -233,6 +223,18 @@ class SalesOrderFacade(OrderFacade):
         del item_dict['order_number']
         del item_dict['programme_wbs_element']
 
+    def _is_summary_row(self, item_dict):
+        net_value = 'net_value'
+        order_number = 'order_number'
+        if not item_dict.get(order_number) and not item_dict.get(net_value):
+            raise False
+
+        for column in self.RELEVANT_DATA.values():
+            if column != net_value and column != order_number and item_dict[column]:
+                return False
+
+        return True
+
     @staticmethod
     def _trim_programme_wbs(extended_programme_wbs):
         wbs_element_list = extended_programme_wbs.split('/')[:5]
@@ -266,6 +268,7 @@ class ReleaseOrderFacade(OrderFacade):
         ro_item.quantity = quantity
         ro_item.value = value
         ro_item.save()
+        return ro_item
 
     def _create_new_item(self, item_dict, order):
         matching_purchase_orders = self._get_matching_purchase_order(item_dict)
@@ -311,6 +314,17 @@ class ReleaseOrderFacade(OrderFacade):
         del item_dict['consignee_name']
         del item_dict['waybill']
         del item_dict['recommended_delivery_date']
+
+    def _is_summary_row(self, item_dict):
+        value = 'value'
+        if not item_dict.get(value):
+            raise False
+
+        for column in self.RELEVANT_DATA.values():
+            if column != value and item_dict[column]:
+                return False
+
+        return True
 
     @staticmethod
     def _get_matching_sales_order(order_dict):
@@ -391,13 +405,6 @@ class PurchaseOrderFacade(OrderFacade):
         if not isinstance(order_dict['so_number'], basestring):
             return SalesOrder.objects.filter(order_number=order_dict['so_number'])
         return []
-
-    def _is_summary_row(self, row):
-        for column in self.RELEVANT_DATA.values():
-            if column != 'po_date' and row[column] is '':
-                return True
-        return False
-
 
 class ConsigneeFacade(Facade):
     RELEVANT_DATA = {1: 'name', 2: 'location', 3: 'customer_id'}

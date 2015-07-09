@@ -15,13 +15,15 @@ from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.vision.vision_facade import ReleaseOrderFacade
+from eums.vision.vision_facade import ReleaseOrderFacade, ImportException
 
 
 class TestReleaseOrdersVisionFacade(TestCase):
     def setUp(self):
         self.release_order_file_location = 'release_orders.xlsx'
+        self.release_order_with_missing_data_file_location = 'release_orders_with_missing_data.xlsx'
         self.create_release_order_workbook()
+        self.create_release_order_with_missing_data_workbook()
         self.imported_release_order_data = [{'order_number': 54101099.0,
                                              'so_number': 20148031.0,
                                              'purchase_order': 81018523.0,
@@ -100,9 +102,11 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                                                 'so_item_number': 20}]}]
 
         self.facade = ReleaseOrderFacade(self.release_order_file_location)
+        self.facade_with_missing_data = ReleaseOrderFacade(self.release_order_with_missing_data_file_location)
 
     def tearDown(self):
         os.remove(self.release_order_file_location)
+        os.remove(self.release_order_with_missing_data_file_location)
         SalesOrderItem.objects.all().delete()
         ReleaseOrderItem.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
@@ -179,6 +183,52 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
         work_book.save(self.release_order_file_location)
 
+    def create_release_order_with_missing_data_workbook(self):
+        work_book = Workbook()
+        sheet = work_book.add_sheet('Sheet 1')
+
+        self.header = ['Release Order Number', 'Release Order Item', 'Release Order Date', 'Recommended Delivery Date',
+                       'Material', 'Material Description', 'Delivery Quantity', 'Value', 'Storage Location',
+                       'Warehouse Number', 'Warehouse Description', 'Consignee', 'Consignee Name', 'Authorized Person',
+                       'Release Document', 'Purchasing Document', 'Delivery', 'Grant', 'WBS Element', 'Pick Status',
+                       'Transfer Order Number', 'Transportation Planning Status', 'Waybill Number', 'Forwarder Name',
+                       'Shipment End Date', 'Goods Issue Status', 'Goods Issue Date', 'Release Order Sub-Item',
+                       'HigherLevelItemBatch', 'Release Order Type', 'Release unit', 'Moving price', 'Plant',
+                       'Plant Name', 'Storage Location Desc', 'Dest Warehouse Number', 'Dest Warehouse Description',
+                       'Ship-to party', 'Means of Trans. ID', 'Program Officer', 'Release Document Item',
+                       'Purchasing Item', 'Reference document', 'Reference item', 'Delivery Item',
+                       'Transfer Order Item', 'Forwarder Number', 'Goods Issue Number', 'Goods Issue Item', 'Batch',
+                       'SLED/BBD', 'Actual End Planning Date', 'Check-in Date', 'Planned Shipment Start Date',
+                       'Loading Start Date', 'Loading End Date', 'Actual Shipment Start Date',
+                       'Shipment Completion Date', 'Shipment Days Difference', 'Goods Issue Days Difference',
+                       'Handed-Over to IP Planned', 'Handed-Over to IP', 'Reason for Amendment', 'RO User Reference 1',
+                       'RO User Reference 2', 'RO User Reference 3', 'RO User Reference 4', 'RO User Reference 5',
+                       'WB User Reference 1', 'WB User Reference 2', 'WB User Reference 3', 'WB User Reference 4',
+                       'WB User Reference 5']
+
+        self.row = [u'', u'10', u'2014-01-08', u'', u'', u'',
+                          u'1',
+                          u'1167.66', u'2611', u'261', u'', u'L438000393', u'OYAM DISTRICT ADMIN',
+                          u'', u'20148031', u'81018523', u'56162712', u'SC130003',
+                          u'',
+                          u'C', u'7732', u'C', u'72081598', u'UNICEF - Kampala Uganda Kampala Country Office Uganda',
+                          u'08/05/2014', u'C', u'8/20/2014', u'0', u'0', u'ZLO', u'EA', u'1167.67', u'5617', u'Uganda',
+                          u'Kampala W1-Prog', u'', u'', u'L438000393', u'', u'Silvia Pasti', u'10', u'10', u'', u'1',
+                          u'1', u'1',
+                          u'F43801', u'4900086016', u'1', u'SYS0084421', u'', u'2014-05-08', u'2014-05-08', u'',
+                          u'2014-05-08',
+                          u'2014-05-08', u'2014-05-08', u'2014-05-08', u'', u'15', u'', u'', u'', u'', u'', u'', u'',
+                          u'',
+                          u'CD 96-50U', u'UNICEF', u'Bongomin', u'', u'']
+
+        rows = [self.header, self.row]
+
+        for row_index, row in enumerate(rows):
+            for col_index, item in enumerate(row):
+                sheet.write(row_index, col_index, item)
+
+        work_book.save(self.release_order_with_missing_data_file_location)
+
     def create_items(self):
         self.item_one = ItemFactory(material_code='SL005144', description='Laptop Lenovo ThinkPad T510')
         self.item_two = ItemFactory(material_code='SL002248', description='Laptop bag')
@@ -215,6 +265,13 @@ class TestReleaseOrdersVisionFacade(TestCase):
         release_order_data = self.facade.load_records()
 
         self.assertEqual(release_order_data, self.imported_release_order_data)
+
+    def test_should_not_load_release_order_with_missing_data(self):
+        with self.assertRaises(ImportException) as context:
+            self.facade_with_missing_data.load_records()
+
+        expected_message = "Import has failed due to missing [order_number] in row [2]. Please correct the error then try the upload again"
+        self.assertEqual(context.exception.message, expected_message)
 
     def test_should_save_release_order_data(self):
         self.assertEqual(ReleaseOrder.objects.count(), 0)
