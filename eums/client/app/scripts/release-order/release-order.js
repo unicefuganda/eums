@@ -16,7 +16,7 @@ angular.module('ReleaseOrder', ['eums.config', 'eums.service-factory', 'ReleaseO
                 forUser: function (user, nestedFields) {
                     return user.consignee_id ?
                         this.filter({consignee: user.consignee_id}, nestedFields)
-                        : this.all(nestedFields);
+                        : this.filter({delivered:true}, nestedFields);
                 }
             }
         });

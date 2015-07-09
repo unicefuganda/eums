@@ -21,4 +21,14 @@ describe('Release Order Service', function () {
         });
         mockBackend.flush();
     });
+
+    iit('should return delivered release orders for unicef user', function (done) {
+        var unicefUser = {};
+        mockBackend.whenGET(releaseOrderEndpoint + '?delivered=true').respond([{id: 11}]);
+        releaseOrderService.forUser(unicefUser).then(function (orders) {
+            expect(orders).toEqual([{id: 11}]);
+            done();
+        });
+        mockBackend.flush();
+    });
 });
