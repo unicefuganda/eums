@@ -34,26 +34,46 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="consignee in consignees">
-                        <td><span ng-show="consignee.importedFromVision"
-                                  class="glyphicon glyphicon-ok text-success"></span></td>
-                        <td ng-show="!consignee.inEditMode">{{ consignee.name }}</td>
-                        <td ng-show="!consignee.inEditMode">{{ consignee.location }}</td>
-                        <td ng-show="!consignee.inEditMode">{{ consignee.customerId !== 'None' ? consignee.customerId : ''}}</td>
-                        <td ng-show="!consignee.inEditMode">{{ consignee.remarks }}</td>
-                        <td ng-show="!consignee.inEditMode">
-                            <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">Edit
-                            </button>
-                            <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">Delete
-                            </button>
+                        <td>
+                            <span ng-show="consignee.importedFromVision"
+                                  class="glyphicon glyphicon-ok text-success"></span>
                         </td>
-                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.name"></td>
-                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.location"></td>
-                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.customerId"></td>
-                        <td ng-show="consignee.inEditMode"><input class="table-input form-control" ng-model="consignee.remarks"></td>
-                        <td ng-show="consignee.inEditMode">
-                            <button class="btn btn-sm btn-default blue-border-button"
+                        <td>
+                            <span ng-show="!consignee.inEditMode">{{ consignee.name }}</span>
+                            <span ng-show="consignee.inEditMode"><input class="table-input form-control"
+                                                                        ng-model="consignee.name"></span>
+                        </td>
+                        <td>
+                            <span ng-show="!consignee.inEditMode">{{ consignee.location }}</span>
+                            <span ng-show="consignee.inEditMode"><input class="table-input form-control"
+                                                                        ng-model="consignee.location"></span>
+                        </td>
+                        <td>
+                            <span ng-show="!consignee.inEditMode">
+                                {{ consignee.customerId !== 'None' ? consignee.customerId : ''}}
+                            </span>
+                            <span ng-show="consignee.inEditMode"><input class="table-input form-control"
+                                                                        ng-model="consignee.customerId"></span>
+                        </td>
+                        <td>
+                            <span ng-show="!consignee.inEditMode">{{ consignee.remarks }}</span>
+                            <span ng-show="consignee.inEditMode"><input class="table-input form-control"
+                                                                        ng-model="consignee.remarks"></span>
+                        </td>
+                        <td>
+                            <span ng-show="!consignee.inEditMode">
+                                <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">
+                                    Edit
+                                </button>
+                                <button class="btn btn-sm btn-default red-border-button" ng-click="del(consignee)">
+                                    Delete
+                                </button>
+                            </span>
+                            <span ng-show="consignee.inEditMode">
+                                <button class="btn btn-sm btn-default blue-border-button"
                                     ng-click="save(consignee)" ng-show="consignee.inEditMode">Save
-                            </button>
+                                </button>
+                            </span>
                         </td>
                     </tr>
                     </tbody>
