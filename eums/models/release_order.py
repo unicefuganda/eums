@@ -11,6 +11,13 @@ class ReleaseOrderManager(models.Manager):
         orders = ReleaseOrder.objects.filter(id__in=order_ids)
         return orders
 
+    @staticmethod
+    def delivered():
+        order_item_ids = DistributionPlanNode.objects.filter().values_list('item')
+        order_ids = ReleaseOrderItem.objects.filter(id__in=order_item_ids).values_list('release_order_id')
+        orders = ReleaseOrder.objects.filter(id__in=order_ids)
+        return orders
+
 
 class ReleaseOrder(models.Model):
     order_number = models.IntegerField(unique=True)

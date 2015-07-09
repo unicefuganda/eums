@@ -71,3 +71,17 @@ class ReleaseOrderTest(TestCase):
 
         self.assertListEqual(list(consignee_orders), [order_one, order_two])
         self.assertNotIn(order_three, consignee_orders)
+
+    def test_should_get_orders__as_a_queryset__which_have_deliveries(self):
+        order_one = ReleaseOrderFactory()
+        order_two = ReleaseOrderFactory()
+        order_three = ReleaseOrderFactory()
+        order_item_one = ReleaseOrderItemFactory(release_order=order_one)
+        order_item_two = ReleaseOrderItemFactory(release_order=order_two)
+        DistributionPlanNodeFactory(item=order_item_one)
+        DistributionPlanNodeFactory(item=order_item_two)
+
+        delivered_orders = ReleaseOrder.objects.delivered().order_by('id')
+
+        self.assertListEqual(list(delivered_orders), [order_one, order_two])
+        self.assertNotIn(order_three, delivered_orders)
