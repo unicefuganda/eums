@@ -22,5 +22,11 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     search_fields = ('tree_position',)
     filter_fields = ('consignee', 'item', 'distribution_plan', 'parent')
 
+    def get_queryset(self):
+        parent_is_null = self.request.GET.get('parent__isnull', None)
+        if parent_is_null == 'true':
+            return self.queryset.filter(parent__isnull=True)
+        return self.queryset
+
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)

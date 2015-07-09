@@ -118,7 +118,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         first_delivery = create_delivery(1)
         second_delivery = create_delivery(2)
 
-        create_delivery_node = lambda delivery: DistributionPlanNodeFactory(distribution_plan = delivery);
+        create_delivery_node = lambda delivery: DistributionPlanNodeFactory(distribution_plan=delivery);
         node_one = create_delivery_node(first_delivery)
         node_two = create_delivery_node(first_delivery)
         node_three = create_delivery_node(second_delivery)
@@ -127,3 +127,19 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(returned_nodes), 2)
         self.assertEqual(returned_nodes[0]['id'], node_one.id)
         self.assertEqual(returned_nodes[1]['id'], node_two.id)
+
+    def test_should_filter_nodes_by_parent_null(self):
+        parent_node = create_distribution_plan_node(self)
+        consignee_id = create_consignee(self)['id']
+        child_node_details = {'item': parent_node['item'], 'targeted_quantity': parent_node['targeted_quantity'],
+                              'planned_distribution_date': parent_node['planned_distribution_date'],
+                              'distribution_plan': parent_node['distribution_plan'], 'consignee': consignee_id,
+                              'tree_position': self.MIDDLEMAN_POSITION, 'parent': parent_node['id'],
+                              'location': 'Kampala', 'contact_person_id': u'1234'}
+        create_distribution_plan_node(self, child_node_details)
+
+        all_nodes = self.client.get(ENDPOINT_URL).data
+        self.assertEqual(len(all_nodes), 2)
+
+        parent_nodes = self.client.get(ENDPOINT_URL + "?parent__isnull=true").data
+        self.assertEqual(len(parent_nodes), 1)
