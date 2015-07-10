@@ -140,8 +140,7 @@ describe('Vision Data Imports', function () {
         expect(feedbackReportPage.programmeResults).toContain('YI100 - PCR 3 Updated Test Programme Name');
     });
 
-    // COMMENTING OUT THIS TEST PENDING FIX TO #96259738 WHERE CONSIGNEES ARE NOT BEING UPDATED
-    xit('should update existing consignees with data from newly imported spreadsheets', function () {
+    it('should update existing consignees with data from newly imported spreadsheets', function () {
         importDataPage.uploadConsignees('../files/consignees-update.xlsx');
 
         feedbackReportPage.visit();

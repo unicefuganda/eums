@@ -22,7 +22,7 @@ class ConsigneeViewSet(ModelViewSet):
         if self.request.GET.get('node') == 'top':
             consignee_ids = DistributionPlanNode.objects.filter(parent=None).values_list('consignee')
             return self.queryset.filter(id__in=consignee_ids)
-        return self.queryset
+        return self.queryset._clone()
 
 consigneeRouter = DefaultRouter()
 consigneeRouter.register(r'consignee', ConsigneeViewSet)

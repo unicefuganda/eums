@@ -406,6 +406,7 @@ class PurchaseOrderFacade(OrderFacade):
             return SalesOrder.objects.filter(order_number=order_dict['so_number'])
         return []
 
+
 class ConsigneeFacade(Facade):
     RELEVANT_DATA = {1: 'name', 2: 'location', 3: 'customer_id'}
 

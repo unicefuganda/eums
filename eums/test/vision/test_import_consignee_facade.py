@@ -26,10 +26,10 @@ class TestConsigneeVisionFacade(TestCase):
 
         self.updated_consignee_data = [{'name': 'ADVOCATE COALITION', 'customer_id': 'L438000582',
                                         'location': 'KAMPALA'},
-                                       {'name': 'AGAGO DISTRICT PROBATION SERVICES', 'customer_id': 'L438000025',
+                                       {'name': 'KILTIR DISTRICT PROBATION SERVICES', 'customer_id': 'L438000025',
                                         'location': 'AGAGO'},
-                                       {'name': 'KALAS GIRLS PRIMARY SCHOOL', 'customer_id': 'L438000532',
-                                        'location': 'AMUDAT'}]
+                                       {'name': 'KALAS BOYS PRIMARY SCHOOL', 'customer_id': 'L438000532',
+                                        'location': 'GULU'}]
 
         self.facade = ConsigneeFacade(self.consignee_file_location)
         self.facade_for_missing = ConsigneeFacade(self.consignee_missing_data_file_location)
@@ -91,17 +91,25 @@ class TestConsigneeVisionFacade(TestCase):
 
         self.assert_consignees_were_created()
 
-    def test_should_update_name_for_existing_consignee_customer_data(self):
+    def test_should_update_data_for_existing_consignee_customer_data(self):
         self.assertEqual(Consignee.objects.count(), 0)
         self.facade.save_records(self.imported_consignee_data)
         self.assertEqual(Consignee.objects.count(), 3)
 
         self.facade.save_records(self.updated_consignee_data)
         self.assertEqual(Consignee.objects.count(), 3)
-        self.assertEqual(Consignee.objects.get(customer_id=self.updated_consignee_data[0]['customer_id']).name,
-                         self.updated_consignee_data[0]['name'])
-        self.assertEqual(Consignee.objects.get(customer_id=self.updated_consignee_data[1]['customer_id']).name,
-                         self.updated_consignee_data[1]['name'])
+
+        first_consignee = Consignee.objects.get(customer_id=self.updated_consignee_data[0]['customer_id'])
+        self.assertEqual(first_consignee.name,self.updated_consignee_data[0]['name'])
+        self.assertEqual(first_consignee.location, self.updated_consignee_data[0]['location'])
+
+        second_consignee = Consignee.objects.get(customer_id=self.updated_consignee_data[1]['customer_id'])
+        self.assertEqual(second_consignee.name, self.updated_consignee_data[1]['name'])
+        self.assertEqual(second_consignee.location, self.updated_consignee_data[1]['location'])
+
+        third_consignee = Consignee.objects.get(customer_id=self.updated_consignee_data[2]['customer_id'])
+        self.assertEqual(third_consignee.name, self.updated_consignee_data[2]['name'])
+        self.assertEqual(third_consignee.location, self.updated_consignee_data[2]['location'])
 
     def test_should_load_consignee_from_excel_and_save(self):
         self.assertEqual(Consignee.objects.count(), 0)
