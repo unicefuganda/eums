@@ -28,15 +28,15 @@
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
-                <th style="width: 18%">
+                <th style="width: 23%">
                     <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
-                <th style="width: 30%">
+                <th class="col-xs-3">
                     <a ng-click="sortBy('date')">{{dateColumnTitle}}
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
-                <th style="width: 50%" ng-if="descriptionColumnTitle">
+                <th class="col-xs-6" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
                 </th>
             </tr>

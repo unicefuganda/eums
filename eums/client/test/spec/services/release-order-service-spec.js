@@ -22,7 +22,7 @@ describe('Release Order Service', function () {
         mockBackend.flush();
     });
 
-    iit('should return delivered release orders for unicef user', function (done) {
+    it('should return delivered release orders for unicef user', function (done) {
         var unicefUser = {};
         mockBackend.whenGET(releaseOrderEndpoint + '?delivered=true').respond([{id: 11}]);
         releaseOrderService.forUser(unicefUser).then(function (orders) {

@@ -5,6 +5,7 @@ angular.module('IPWarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Us
         $scope.sortBy = $sorter;
         $scope.releaseOrders = [];
         $scope.searchFields = ['waybill', 'deliveryDate'];
+        $scope.isIP;
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
@@ -12,6 +13,7 @@ angular.module('IPWarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Us
             this.sort.descending = false;
 
             UserService.getCurrentUser().then(function (user) {
+                $scope.isIP = !(user.consignee_id === undefined);
                 ReleaseOrderService.forUser(user).then(function (releaseOrders) {
                     $scope.releaseOrders = releaseOrders.sort();
                     angular.element('#loading').modal('hide');

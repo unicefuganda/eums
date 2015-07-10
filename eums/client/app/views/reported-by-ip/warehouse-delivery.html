@@ -44,10 +44,14 @@
                                 <i ng-class="sortArrowClass('date');"></i>
                             </a>
                         </th>
-                        <th style="width: 50%">
+
+                        <th ng-class="isIp?col-xs-3:col-xs-6">
                             <a ng-click="sortBy('programmeName')">Programme
                                 <i ng-class="sortArrowClass('description');"></i>
                             </a>
+                        </th>
+                        <th class="col-xs-3" ng-if="!isIP">
+                            Consignee
                         </th>
                     </tr>
                     </thead>
@@ -61,6 +65,7 @@
                             {{ releaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}
                         </td>
                         <td data-header="Programme">{{ releaseOrder.programme }}</td>
+                        <td ng-if="!isIP">{{ releaseOrder.consignee.name }}</td>
                     </tr>
                     </tbody>
                     <tfoot>
