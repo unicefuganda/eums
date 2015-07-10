@@ -1,6 +1,6 @@
 describe('Consignees Controller', function () {
     var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise,
-        updateConsigneePromise, deleteConsigneePromise, toast;
+        updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults;
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
     var savedConsignee = {
         id: 1, name: 'Dwelling Places', switchToReadMode: function () {}, switchToEditMode: function () {}
@@ -11,13 +11,14 @@ describe('Consignees Controller', function () {
 
     beforeEach(function () {
         module('Consignee');
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'search']);
         mockConsigneeModel = function () {
             this.properties = emptyConsignee.properties;
         };
 
         inject(function ($controller, $rootScope, $q, ngToast) {
             deferredConsignees = $q.defer();
+            deferredSearchResults = $q.defer();
             saveConsigneePromise = $q.defer();
             updateConsigneePromise = $q.defer();
             deleteConsigneePromise = $q.defer();
@@ -30,6 +31,7 @@ describe('Consignees Controller', function () {
             mockConsigneeService.create.and.returnValue(saveConsigneePromise.promise);
             mockConsigneeService.update.and.returnValue(updateConsigneePromise.promise);
             mockConsigneeService.del.and.returnValue(deleteConsigneePromise.promise);
+            mockConsigneeService.search.and.returnValue(deferredSearchResults.promise);
 
             toast = ngToast;
             scope = $rootScope.$new();
@@ -116,5 +118,23 @@ describe('Consignees Controller', function () {
                 content: 'Consignee deleted successfully', class: 'success', maxNumber: 1, dismissOnTimeout: true
             });
         });
+    });
+
+    it('should search for consignees with scope search term', function() {
+        scope.$apply();
+        expect(scope.consignees).toEqual(consignees);
+        var matches = consignees.first(2);
+        deferredSearchResults.resolve(matches);
+        var searchTerm = 'some consignee name';
+
+        scope.searchTerm = searchTerm;
+        scope.$apply();
+        expect(mockConsigneeService.search).toHaveBeenCalledWith(searchTerm);
+        expect(scope.consignees).toEqual(matches);
+
+        scope.searchTerm = '';
+        scope.$apply();
+        expect(mockConsigneeService.all).toHaveBeenCalled();
+        expect(scope.consignees).toEqual(consignees);
     });
 });

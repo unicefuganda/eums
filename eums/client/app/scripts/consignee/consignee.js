@@ -31,7 +31,6 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
             }
         };
     })
-
     .factory('Consignee', function () {
         return function (json) {
             !json && (json = {});
@@ -95,10 +94,14 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
             ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
         }
 
+        function fetchConsignees() {
+            ConsigneeService.all().then(function (consignees) {
+                $scope.consignees = consignees;
+            });
+        }
+
         $scope.consignees = [];
-        ConsigneeService.all().then(function (consignees) {
-            $scope.consignees = consignees;
-        });
+        fetchConsignees();
         $scope.addConsignee = function () {
             $scope.consignees.insert(new Consignee(), 0);
         };
@@ -128,6 +131,17 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
         $scope.showDeleteDialog = function (consignee) {
             $scope.$broadcast('deleteConsignee', consignee);
         };
+
+        $scope.$watch('searchTerm', function (term) {
+            if (term && term.length) {
+                ConsigneeService.search(term).then(function (matches) {
+                    $scope.consignees = matches;
+                });
+            }
+            else {
+                fetchConsignees();
+            }
+        });
     })
     .controller('DeleteConsigneeController', function ($scope, ConsigneeService, ngToast) {
         function createToast(message, klass) {
