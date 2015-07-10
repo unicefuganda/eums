@@ -5,10 +5,12 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from eums.models import SalesOrderItem, PurchaseOrderItem, PurchaseOrder
+from eums.models import SalesOrderItem, PurchaseOrderItem
 
 
 class SalesOrderItemSerialiser(serializers.ModelSerializer):
+    distributionplannode_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = SalesOrderItem
         fields = ('id', 'sales_order', 'item', 'quantity', 'net_price', 'net_value', 'issue_date', 'delivery_date',

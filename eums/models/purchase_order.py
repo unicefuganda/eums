@@ -31,9 +31,10 @@ class PurchaseOrder(models.Model):
     def is_fully_delivered(self):
         if self.has_plan():
             total_purchase_order_items = self.purchaseorderitem_set.aggregate(Sum('quantity'))
-            total_node_items = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all(),
-                                                                   tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER).aggregate(
-                Sum('targeted_quantity'))
+            total_node_items = DistributionPlanNode.objects.filter(
+                item__in=self.purchaseorderitem_set.all(),
+                tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER
+            ).aggregate(Sum('targeted_quantity'))
             return total_node_items['targeted_quantity__sum'] == total_purchase_order_items['quantity__sum']
         else:
             return False

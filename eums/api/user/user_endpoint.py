@@ -5,17 +5,12 @@ from rest_framework.viewsets import ModelViewSet
 from django.contrib.auth.models import User
 
 class UserSerialiser(serializers.ModelSerializer):
-    consignee = serializers.SerializerMethodField('get_consignee')
+    consignee = serializers.PrimaryKeyRelatedField(source='user_profile.consignee.id', read_only=True)
 
     class Meta:
         model = User
         fields = ('id', 'username', 'first_name', 'last_name', 'email', 'consignee')
 
-    def get_consignee(self, user):
-        try:
-            return user.user_profile.consignee_id
-        except:
-            return None
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()

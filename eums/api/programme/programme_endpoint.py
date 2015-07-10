@@ -6,6 +6,8 @@ from eums.models import Programme
 
 
 class ProgrammeSerialiser(serializers.ModelSerializer):
+    salesorder_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Programme
         fields = ('id', 'name', 'salesorder_set')

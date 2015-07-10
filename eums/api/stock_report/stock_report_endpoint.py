@@ -13,8 +13,7 @@ class StockReport(APIView):
 
 
 def aggregate_nodes_into_stock_report(stock_report, node):
-    purchase_order_item = node.item.purchase_order_item()
-    if purchase_order_item:
+    if node.item:
         stock_report.append(_get_report_details_for_node(node))
     return stock_report
 
@@ -25,8 +24,7 @@ def _build_stock_report(consignee_id):
 
 
 def _get_report_details_for_node(node):
-    purchase_order_item = node.item.purchase_order_item()
-    purchase_order_number = purchase_order_item.purchase_order.order_number
+    purchase_order_number = node.item.purchase_order.order_number
     quantity_received = _compute_quantity_received(node)
     total_value_received = quantity_received * node.item.net_price
     quantity_dispensed = _compute_quantity_dispensed(node)

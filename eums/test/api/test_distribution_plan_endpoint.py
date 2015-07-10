@@ -15,11 +15,11 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         self.programme = create_programme()
 
     def test_should_create_distribution_plan(self):
-        plan_details = {'programme': self.programme.id, 'date': datetime.date.today()}
+        today = datetime.date.today()
+        plan_details = {'programme': self.programme.id, 'date': today}
         create_distribution_plan(self, plan_details)
-
+        plan_details['date'] = str(today)
         response = self.client.get(ENDPOINT_URL)
-
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset(plan_details, response.data[0])
 

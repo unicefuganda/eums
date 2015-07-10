@@ -30,7 +30,6 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
 
         created_release_order, _ = create_release_order(self, release_order_details=release_order_details)
 
-        # print 'CREATED RO', created_release_order
         self.assertDictContainsSubset(release_order_details, created_release_order)
         self.assertDictContainsSubset({'items': []}, created_release_order)
         self.assertDictContainsSubset({'programme': sales_order.programme.name}, created_release_order)

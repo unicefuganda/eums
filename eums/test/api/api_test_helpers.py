@@ -66,9 +66,9 @@ def make_node_details(test_case, plan_id=None):
     item_unit = ItemUnit.objects.create(name='EA')
     item = Item.objects.create(description='Item 1', unit=item_unit)
 
-    sales_order = create_sales_order(test_case)
+    sales_order = SalesOrderFactory()
 
-    sales_order_details = {'sales_order': sales_order['id'], 'item': item.id, 'quantity': 23,
+    sales_order_details = {'sales_order': sales_order.id, 'item': item.id, 'quantity': 23,
                            'net_price': 12000.0, 'net_value': 100.0, 'issue_date': '2014-01-21',
                            'delivery_date': '2014-01-21', 'item_number': 10}
 
@@ -86,18 +86,6 @@ def make_node_details(test_case, plan_id=None):
     return node
 
 
-def create_sales_order(test_case, sales_order_details=None):
-    if not sales_order_details:
-        programme = create_programme()
-        sales_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5),
-                               'programme': programme.id, 'description': 'test'}
-
-    response = test_case.client.post(SALES_ORDER_ENDPOINT_URL, sales_order_details, format='json')
-    test_case.assertEqual(response.status_code, 201)
-
-    return response.data
-
-
 def create_release_order(test_case, release_order_details=None):
     if not release_order_details:
         sales_order = SalesOrderFactory()
@@ -106,7 +94,10 @@ def create_release_order(test_case, release_order_details=None):
 
         release_order_details = {'order_number': 232345434, 'delivery_date': datetime.date(2014, 10, 5),
                                  'sales_order': sales_order.id, 'purchase_order': purchase_order.id,
-                                 'consignee': consignee.id, 'waybill': 234256}
+                                 'consignee': consignee.id, 'waybill': 234256, 'items': []}
+
+    if not release_order_details.get('items', None):
+        release_order_details['items'] = []
 
     response = test_case.client.post(RELEASE_ORDER_ENDPOINT_URL, release_order_details, format='json')
 
@@ -117,35 +108,21 @@ def create_release_order(test_case, release_order_details=None):
     return formatted_data, formatted_data['sales_order']
 
 
-def create_purchase_order(test_case, purchase_order_details=None):
-    if not purchase_order_details:
-        programme = create_programme()
-        sales_order = create_sales_order(test_case)
-        purchase_order_details = {'order_number': 2342523, 'date': datetime.date(2014, 10, 5), 'po_type': 'NB',
-                                  'programme': programme.id, 'description': 'test', "sales_order": sales_order['id']}
-
-    response = test_case.client.post(PURCHASE_ORDER_ENDPOINT_URL, purchase_order_details, format='json')
-    test_case.assertEqual(response.status_code, 201)
-
-    return response.data
-
-
-def make_sales_order_item_details(test_case):
+def make_sales_order_item_details():
     item_unit = ItemUnit.objects.create(name='EA')
     item = Item.objects.create(description='Item 1', unit=item_unit)
 
-    sales_order = create_sales_order(test_case)
+    sales_order = SalesOrderFactory()
 
-    return {'sales_order': sales_order['id'], 'item': item.id, 'quantity': 23,
+    return {'sales_order': sales_order.id, 'item': item.id, 'quantity': 23,
             'net_price': 12000.0, 'net_value': 100.0, 'issue_date': '2014-01-21',
             'delivery_date': '2014-01-21', 'item_number': 10}
 
 
 def create_sales_order_item(test_case, sales_order_item_details=None):
     if not sales_order_item_details:
-        sales_order_item_details = make_sales_order_item_details(test_case)
+        sales_order_item_details = make_sales_order_item_details()
     response = test_case.client.post(SALES_ORDER_ITEM_ENDPOINT_URL, sales_order_item_details, format='json')
-
     test_case.assertEqual(response.status_code, 201)
 
     formatted_data = response.data
