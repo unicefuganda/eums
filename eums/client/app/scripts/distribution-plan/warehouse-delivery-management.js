@@ -75,15 +75,17 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
                         return parseFloat(orderItem.value);
                     });
-                    $scope.delivery = releaseOrder.delivery;
-                    if ($scope.delivery) {
-                        DistributionPlanNodeService.getNodesByDelivery($scope.delivery.id)
-                            .then(function (response) {
-                                $scope.deliveryNodes = response.data;
-                                $scope.selectedLocation.id = response.data[0].location;
-                                $scope.contact.id = response.data[0].contact_person_id;
+                    if(releaseOrder.delivery) {
+                        $scope.delivery = releaseOrder.delivery.data;
+                        if ($scope.delivery) {
+                            var fields = ['consignee'];
+                            DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}, fields).then(function (childNodes) {
+                                $scope.deliveryNodes.add(childNodes);
+                                $scope.selectedLocation.id = childNodes[0].location;
+                                $scope.contact.id = childNodes[0].contactPersonId;
                                 setLocationAndContactFields();
                             });
+                        }
                     }
                 });
         };
@@ -111,7 +113,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                 return;
             }
             showLoadingModal(true);
-            if ($scope.delivery) {
+            if ($scope.delivery.id) {
                 saveDeliveryNodes();
                 var message = 'Warehouse Delivery updated!';
                 createToast(message, 'success');
