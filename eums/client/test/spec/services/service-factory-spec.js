@@ -213,6 +213,16 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should search against endpoint', function(done) {
+        var searchString = 'search string';
+        mockBackend.expectGET('{1}?search={2}'.assign(levelOneEndpoint, searchString)).respond(fakeObjects);
+        levelOneService.search(searchString).then(function(matches) {
+            expect(matches).toEqual(fakeObjects);
+            done();
+        });
+        mockBackend.flush();
+    });
+
     it('should fetch objects in list properties when fetching all when required', function (done) {
         var flat = {id: 11, children: [nestedOne.id, nestedTwo.id], relatives: [nestedOne.id, nestedTwo.id]};
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, flat.id)).respond(flat);
