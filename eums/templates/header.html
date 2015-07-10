@@ -1,31 +1,35 @@
 {% extends 'base/header.html' %}
 
 {% block nav %}
-    {% if perms.auth.can_view_distribution_plans %}
-        <li id="distribution-plan-nav"
-            ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
-            <a href="#/direct-delivery">Delivery</a>
-        </li>
-        <li class="dropdown"
-            ng-class="{ active: isActive('/field-verification-reports,/delivery-reports,/ip-direct-delivery,/ip-warehouse-delivery')}">
-            <a href="#" class="dropdown-toggle">Delivery Reporting <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#/field-verification-reports">Field Verification</a></li>
-                <li class="divider"></li>
-                <li><a href="#/ip-direct-delivery">Reported By IP</a></li>
-            </ul>
-        </li>
-        <li class="dropdown" ng-class="{ active: isActive('/reports,/distribution-plan-responses,/end-user-responses')}">
-            <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
-            <ul class="dropdown-menu" role="menu">
-                <li><a href="#/end-user-responses">Feedback Reports</a></li>
-                <li class="divider"></li>
-                <li><a href="#/reports">IP Stock Report</a></li>
-            </ul>
-        </li>
-    {% else %}
-        <li ng-class="{ active: isActive('/delivery-reports,/delivery-reports/new')}">
-            <a href="#/ip-direct-delivery">Reported by IP</a>
-        </li>
-    {% endif %}
+{% if perms.auth.can_view_distribution_plans %}
+<li id="distribution-plan-nav"
+    ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
+    <a href="#/direct-delivery">Delivery</a>
+</li>
+<li class="dropdown"
+    ng-class="{ active: isActive('/field-verification-reports,/delivery-reports,/ip-direct-delivery,/ip-warehouse-delivery')}">
+    <a href="#" class="dropdown-toggle">Delivery Reporting <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href="#/field-verification-reports">Field Verification</a></li>
+        <li class="divider"></li>
+        <li><a href="#/ip-direct-delivery">Reported By IP</a></li>
+    </ul>
+</li>
+<li class="dropdown" ng-class="{ active: isActive('/reports,/distribution-plan-responses,/end-user-responses')}">
+    <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li><a href="#/end-user-responses">Feedback Reports</a></li>
+        <li class="divider"></li>
+        <li><a href="#/reports">IP Stock Report</a></li>
+    </ul>
+</li>
+<li class="dropdown" ng-class="{ active: isActive('/consignees')}">
+    <a href="#/consignees">Consignees</a>
+</li>
+
+{% else %}
+<li ng-class="{ active: isActive('/delivery-reports,/delivery-reports/new')}">
+    <a href="#/ip-direct-delivery">Reported by IP</a>
+</li>
+{% endif %}
 {% endblock %}
