@@ -57,12 +57,6 @@ describe('Vision Data Imports', function () {
 
 
         warehouseDeliveryPage.visit();
-        expect(warehouseDeliveryPage.waybills).toContain('72082647');
-        expect(warehouseDeliveryPage.waybills).toContain('72089797');
-        expect(warehouseDeliveryPage.waybills).toContain('72088441');
-        expect(warehouseDeliveryPage.waybills).toContain('72090975');
-        expect(warehouseDeliveryPage.waybills).toContain('72102556');
-        expect(warehouseDeliveryPage.waybills).toContain('72077697');
         expect(warehouseDeliveryPage.waybills).toContain('72095454');
 
         warehouseDeliveryPage.searchForThisWaybill('72095454');

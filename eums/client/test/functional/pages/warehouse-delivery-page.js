@@ -5,6 +5,10 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
 
     visit: { value: function () {
         browser.get(this.url);
+        var EC = protractor.ExpectedConditions;
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
+        var ordersHaveLoaded = EC.stalenessOf(fadingModal);
+        browser.wait(ordersHaveLoaded, 5000, "Timeout exceeded while loading release orders");
     }},
 
     waybills: { get: function () { return element.all(by.repeater('releaseOrder in releaseOrders').column('releaseOrder.waybill')).getText(); }},
