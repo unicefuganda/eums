@@ -30,6 +30,9 @@ function main {
       testjsunit
       testfunctional;;
 
+    "rs" )
+      runserver;;
+
     esac
 }
 
@@ -78,6 +81,17 @@ function killdbconnections {
 
 function killtestdbconnections {
   echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums_test' AND pid <> pg_backend_pid();" | psql &> /dev/null
+}
+
+function runserver {
+  cd eums/client
+  npm install
+  bower install
+  grunt build
+  cd -
+  pip install -r requirements.txt
+  ./manage.py migrate
+  ./manage.py runserver
 }
 
 main $@
