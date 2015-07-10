@@ -122,7 +122,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
             $scope.consignees.remove(function (scopeConsignee) {
                 return scopeConsignee.id === consignee.id;
             });
-            createToast('Consignee deleted successfully', 'success')
+            createToast('Consignee deleted successfully', 'success');
         });
 
         $scope.showDeleteDialog = function (consignee) {
@@ -136,7 +136,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
 
         $scope.$on('deleteConsignee', function (_, consignee) {
             $scope.consignee = consignee;
-            angular.element('#delete-consignee-modal').modal()
+            angular.element('#delete-consignee-modal').modal();
         });
 
         $scope.del = function (consignee) {
@@ -145,7 +145,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
             }).catch(function (reason) {
                 createToast(reason, 'danger');
             }).finally(function () {
-                angular.element('#delete-consignee-modal').modal('hide')
+                angular.element('#delete-consignee-modal').modal('hide');
             });
         };
     });
