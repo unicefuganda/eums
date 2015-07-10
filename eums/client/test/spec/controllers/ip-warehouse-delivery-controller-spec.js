@@ -2,7 +2,7 @@ describe('IP Warehouse Delivery Controller', function () {
     var mockReleaseOrderService, mockUserService, location, scope, deferredReleaseOrders, deferredUser;
     var releaseOrders = [{order_number: 10}, {order_number: 2}, {order_number: 8}];
     var ipUser = {consignee_id: 1};
-    var unicefUser = {};
+    var unicefUser = {consignee_id: null};
     var fakeElement = {
         modal: function () {
         }

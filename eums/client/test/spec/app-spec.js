@@ -16,6 +16,30 @@ describe('Route Provider', function () {
         expect(routes.routes['/'].templateUrl).toBe('/static/app/views/home.html');
     });
 
+    it('should know direct delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/direct-delivery');
+        expect(routes.routes['/direct-delivery'].controller).toBe('DirectDeliveryController');
+        expect(routes.routes['/direct-delivery'].templateUrl).toBe('/static/app/views/distribution-planning/direct-delivery.html');
+    });
+
+    it('should know new direct delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].controller).toBe('DirectDeliveryManagementController');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].templateUrl).toBe('/static/app/views/distribution-planning/direct-delivery-management.html');
+    });
+
+    it('should know warehouse-delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/warehouse-delivery');
+        expect(routes.routes['/warehouse-delivery'].controller).toBe('WarehouseDeliveryController');
+        expect(routes.routes['/warehouse-delivery'].templateUrl).toBe('/static/app/views/distribution-planning/warehouse-delivery.html');
+    });
+
+    it('should know new warehouse delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/warehouse-delivery/new/:releaseOrderId');
+        expect(routes.routes['/warehouse-delivery/new/:releaseOrderId'].controller).toBe('WarehouseDeliveryManagementController');
+        expect(routes.routes['/warehouse-delivery/new/:releaseOrderId'].templateUrl).toBe('/static/app/views/distribution-planning/warehouse-delivery-management.html');
+    });
+
     it('should know reported by ip direct-delivery route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/ip-direct-delivery');
         expect(routes.routes['/ip-direct-delivery'].controller).toBe('IPDirectDeliveryController');

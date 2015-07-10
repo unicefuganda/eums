@@ -125,7 +125,7 @@ describe('DirectDeliveryController', function () {
             deferredPurchaseOrder.resolve(purchaseOrderOne);
             scope.selectPurchaseOrder(purchaseOrderOne);
             scope.$apply();
-            expect(location.path()).toEqual('/direct-delivery/1');
+            expect(location.path()).toEqual('/direct-delivery/new/1');
         });
     });
 });

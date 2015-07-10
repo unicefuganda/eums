@@ -35,22 +35,22 @@
                 <table si-table class="table table-bordered table-hover table-striped table-condensed">
                     <thead ng-init="initialize()">
                     <tr>
-                        <th style="width: 20%">
+                        <th class="col-xs-2">
                             <a ng-click="sortBy('orderNumber')">Waybill #
                                 <i ng-class="sortArrowClass('orderNumber');"></i></a>
                         </th>
-                        <th style="width: 30%">
+                        <th class="col-xs-2">
                             <a ng-click="sortBy('date')">Date Created
                                 <i ng-class="sortArrowClass('date');"></i>
                             </a>
                         </th>
 
-                        <th ng-class="isIp?col-xs-3:col-xs-6">
+                        <th ng-class="isIp?col-xs-8:col-xs-4">
                             <a ng-click="sortBy('programmeName')">Programme
                                 <i ng-class="sortArrowClass('description');"></i>
                             </a>
                         </th>
-                        <th class="col-xs-3" ng-if="!isIP">
+                        <th class="col-xs-4" ng-if="!isIP">
                             Consignee
                         </th>
                     </tr>

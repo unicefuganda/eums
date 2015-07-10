@@ -3,7 +3,7 @@
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery', 'NewDistributionPlan',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
-    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryPlan', 'EumsFilters', 'IPDirectDelivery', 'IPDirectDeliveryManagement',
+    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'IPDirectDelivery', 'IPDirectDeliveryManagement',
     'IPWarehouseDelivery', 'IPWarehouseDeliveryManagement'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -27,7 +27,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
+            .when('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
@@ -36,7 +36,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/:purchaseOrderId-:purchaseOrderItemId', {
+            .when('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
@@ -45,7 +45,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/:purchaseOrderId', {
+            .when('/direct-delivery/new/:purchaseOrderId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
@@ -190,8 +190,8 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/warehouse-delivery/new/:releaseOrderId', {
-                templateUrl: '/static/app/views/distribution-planning/warehouse-delivery-plan.html',
-                controller: 'WarehouseDeliveryPlanController',
+                templateUrl: '/static/app/views/distribution-planning/warehouse-delivery-management.html',
+                controller: 'WarehouseDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_distribution_plans');

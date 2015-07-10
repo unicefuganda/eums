@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('WarehouseDeliveryPlan', ['DistributionPlan', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
+angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
     'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
-    .controller('WarehouseDeliveryPlanController', function ($scope, $location, $q, $routeParams, DistributionPlanService,
+    .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DistributionPlanService,
                                                              DistributionPlanNodeService, ReleaseOrderService, ReleaseOrderItemService,
                                                              IPService, ngToast, ContactService) {
         $scope.datepicker = {};
