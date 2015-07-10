@@ -59,10 +59,10 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.saveContact = function () {
-            ContactService.create($scope.contact).then(function () {
+            ContactService.create($scope.contact).then(function (createdContact) {
                 angular.element('#add-contact-modal').modal('hide');
                 loadContacts();
-                $scope.contact = {};
+                $scope.contact.id = createdContact._id;
 
             }, function (response) {
                 if (response.status === 0) {

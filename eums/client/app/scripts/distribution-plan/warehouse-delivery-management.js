@@ -48,7 +48,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
 
                     contactInput.val(contact._id);
 
-                    $scope.contact = {};
+                    $scope.contact.id = contact._id;
                 }, function (response) {
                     createToast(response.data.error, 'danger');
                 });
