@@ -81,7 +81,7 @@ describe('Consignee Service', function () {
         it('should reject deletion of consignee imported from vision', function (done) {
             var consignee = {id: 1, importedFromVision: true};
             consigneeService.del(consignee).catch(function (reason) {
-                expect(reason).toEqual('CANNOT DELETE CONSIGNEE IMPORTED FROM VISION');
+                expect(reason).toEqual('Cannot delete consignee imported from vision');
                 done();
             });
             scope.$apply();
@@ -91,7 +91,7 @@ describe('Consignee Service', function () {
             var consignee = {id: 1, importedFromVision: false};
             mockBackend.expectGET(endpointUrl + consignee.id + '/deliveries/').respond([{id: 1}]);
             consigneeService.del(consignee).catch(function (reason) {
-                expect(reason).toEqual('CANNOT DELETE CONSIGNEE THAT HAS DELIVERIES');
+                expect(reason).toEqual('Cannot delete consignee that has deliveries');
                 done();
             });
             mockBackend.flush();

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Consignee', ['eums.config', 'eums.service-factory'])
+angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
     .directive('searchConsignees', function (ConsigneeService) {
         return {
             restrict: 'A',
@@ -82,15 +82,19 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
                 del: function (consignee) {
                     if (!consignee.importedFromVision) {
                         return this.getDetail(consignee, 'deliveries/').then(function (deliveries) {
-                            return deliveries.length ? $q.reject('CANNOT DELETE CONSIGNEE THAT HAS DELIVERIES') : this._del(consignee);
+                            return deliveries.length ? $q.reject('Cannot delete consignee that has deliveries') : this._del(consignee);
                         }.bind(this));
                     }
-                    return $q.reject('CANNOT DELETE CONSIGNEE IMPORTED FROM VISION');
+                    return $q.reject('Cannot delete consignee imported from vision');
                 }
             }
         });
     })
-    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee) {
+    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast) {
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
+        }
+
         $scope.consignees = [];
         ConsigneeService.all().then(function (consignees) {
             $scope.consignees = consignees;
@@ -113,11 +117,35 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory'])
         $scope.edit = function (consignee) {
             consignee.switchToEditMode();
         };
+
+        $scope.$on('consigneeDeleted', function (_, consignee) {
+            $scope.consignees.remove(function (scopeConsignee) {
+                return scopeConsignee.id === consignee.id;
+            });
+            createToast('Consignee deleted successfully', 'success')
+        });
+
+        $scope.showDeleteDialog = function (consignee) {
+            $scope.$broadcast('deleteConsignee', consignee);
+        };
+    })
+    .controller('DeleteConsigneeController', function ($scope, ConsigneeService, ngToast) {
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
+        }
+
+        $scope.$on('deleteConsignee', function (_, consignee) {
+            $scope.consignee = consignee;
+            angular.element('#delete-consignee-modal').modal()
+        });
+
         $scope.del = function (consignee) {
             ConsigneeService.del(consignee).then(function () {
-                $scope.consignees.remove(function (scopeConsignee) {
-                    return scopeConsignee.id === consignee.id;
-                });
+                $scope.$emit('consigneeDeleted', consignee);
+            }).catch(function (reason) {
+                createToast(reason, 'danger');
+            }).finally(function () {
+                angular.element('#delete-consignee-modal').modal('hide')
             });
         };
     });

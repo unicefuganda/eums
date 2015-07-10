@@ -2,7 +2,6 @@
     <div class="content">
         <h4 class="page-header">Consignees</h4>
         <ng-toast></ng-toast>
-
         <button id="add-consignee" class="btn btn-primary" ng-click="addConsignee()">Add Consignee</button>
         <div class="panel panel-default line-order-panel">
             <div class="row">
@@ -10,7 +9,7 @@
                     <div class="inner-addon left-addon">
                         <i class="glyphicon glyphicon-search"></i>
                         <input type="text" id="filter" class="form-control" name="filter" ng-model="query"
-                               placeholder="Search by name, location or Vision ID"/>
+                               placeholder="Search by name, location or vision ID"/>
                     </div>
                 </div>
             </div>
@@ -70,7 +69,8 @@
                                     Edit
                                 </button>
                                 <button class="btn btn-sm btn-default red-border-button"
-                                        ng-click="del(consignee)" ng-show="!consignee.importedFromVision">Delete
+                                        ng-click="showDeleteDialog(consignee)" ng-show="!consignee.importedFromVision">
+                                    Delete
                                 </button>
                             </span>
                             <span ng-show="consignee.inEditMode">
@@ -97,6 +97,7 @@
         </div>
     </div>
 </div>
-
-<ng-include src="'/static/app/views/consignees/partials/delete-consignee-modal.html'"></ng-include>
+<div ng-controller="DeleteConsigneeController">
+    <ng-include src="'/static/app/views/consignees/partials/delete-consignee-modal.html'"></ng-include>
+</div>
 </div>
