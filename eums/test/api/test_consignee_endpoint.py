@@ -105,3 +105,17 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         get_response = self.client.get(ENDPOINT_URL + '?node=1')
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(2, len(get_response.data))
+
+    def test_should_return_correct_consignees(self):
+        first_consignee = create_consignee({'name': "Save the Children", 'type': 'implementing_partner'})
+        create_consignee({'name': "Masaka DHO", 'type': 'middle_man'})
+        create_consignee({'name': "Gulu DHO", 'type': 'middle_man'})
+
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 3)
+        Consignee.objects.get(id=first_consignee['id']).delete()
+
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
