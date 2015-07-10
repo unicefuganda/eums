@@ -18,7 +18,7 @@ class ConsigneeViewSet(ModelViewSet):
     queryset = Consignee.objects.all().order_by('name')
     serializer_class = ConsigneeSerialiser
     filter_backends = (filters.SearchFilter,)
-    search_fields = ('type',)
+    search_fields = ('type', 'customer_id', 'name', 'location')
 
     def get_queryset(self):
         if self.request.GET.get('node') == 'top':

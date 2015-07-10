@@ -49,6 +49,21 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertIn(node_one.id, consignee_node_ids)
         self.assertIn(node_two.id, consignee_node_ids)
 
+    def test_should_search_consignee_by_customer_id(self):
+        consignee = ConsigneeFactory(customer_id='LX350')
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'LX3'))
+        self.assertIn(consignee.id, [consignee['id'] for consignee in response.data])
+
+    def test_should_search_consignee_by_name(self):
+        consignee = ConsigneeFactory(name='Save all of the children')
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'all of the'))
+        self.assertIn(consignee.id, [consignee['id'] for consignee in response.data])
+
+    def test_should_search_consignee_by_location(self):
+        consignee = ConsigneeFactory(location='Some Village')
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'village'))
+        self.assertIn(consignee.id, [consignee['id'] for consignee in response.data])
+
     def test_should_allow_post_of_consignee_with_only_name(self):
         consignee_one_details = {'name': "Other Children NGO"}
         response = self.client.post(ENDPOINT_URL, data=consignee_one_details)
