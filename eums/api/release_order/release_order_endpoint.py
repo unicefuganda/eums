@@ -43,7 +43,7 @@ class ReleaseOrderViewSet(ModelViewSet):
             return self.queryset.filter(delivery__isnull=True)
         if delivery_is_null == 'false':
             return self.queryset.filter(delivery__isnull=False)
-        return self.queryset
+        return self.queryset._clone()
 
 releaseOrderRouter = DefaultRouter()
 releaseOrderRouter.register(r'release-order', ReleaseOrderViewSet)
