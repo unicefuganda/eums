@@ -1,14 +1,20 @@
 describe('Consignees Controller', function () {
     var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise,
         updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults;
-    var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
-    var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page'};
+
+
     var savedConsignee = {
-        id: 1, name: 'Dwelling Places', switchToReadMode: function () {}, switchToEditMode: function () {}
+        id: 1, name: 'Dwelling Places', switchToReadMode: function () {
+        }, switchToEditMode: function () {
+        }
     };
     var emptyConsignee = {
-        properties: null, switchToEditMode: function () {}
+        properties: null, switchToEditMode: function () {
+        }
     };
+    var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
+    var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page'};
+    var searchResults = consignees.first(2);
 
     beforeEach(function () {
         module('Consignee');
@@ -27,6 +33,7 @@ describe('Consignees Controller', function () {
             deferredConsignees.resolve(consigneesResponse);
             saveConsigneePromise.resolve(savedConsignee);
             updateConsigneePromise.resolve(savedConsignee);
+            deferredSearchResults.resolve({results: searchResults});
 
             mockConsigneeService.all.and.returnValue(deferredConsignees.promise);
             mockConsigneeService.create.and.returnValue(saveConsigneePromise.promise);
@@ -49,6 +56,12 @@ describe('Consignees Controller', function () {
         scope.$apply();
         expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([[], {paginate: 'true'}]);
         expect(scope.consignees).toEqual(consignees);
+    });
+
+    it('should fetch consignees and put their count on scope', function () {
+        scope.$apply();
+        expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([[], {paginate: 'true'}]);
+        expect(scope.count).toEqual(consignees.length);
     });
 
     it('should add empty consignee at the top of the list when add method is called', function () {
@@ -98,7 +111,7 @@ describe('Consignees Controller', function () {
     describe('when consigneeDeleted event is received', function () {
         var childScope, firstConsignee, removeSpy;
 
-        beforeEach(function() {
+        beforeEach(function () {
             childScope = scope.$new();
             firstConsignee = scope.consignees.first();
         });
@@ -111,7 +124,7 @@ describe('Consignees Controller', function () {
             expect(scope.consignees).not.toContain(firstConsignee);
         });
 
-        it('should notify user of successful delete', function() {
+        it('should notify user of successful delete', function () {
             spyOn(toast, 'create');
             childScope.$emit('consigneeDeleted', firstConsignee);
             scope.$apply();
@@ -121,21 +134,35 @@ describe('Consignees Controller', function () {
         });
     });
 
-    it('should search for consignees with scope search term', function() {
+    it('should search for consignees with scope search term', function () {
         scope.$apply();
         expect(scope.consignees).toEqual(consignees);
-        var matches = consignees.first(2);
-        deferredSearchResults.resolve({results: matches});
-        var searchTerm = 'some consignee name';
 
+        var searchTerm = 'some consignee name';
         scope.searchTerm = searchTerm;
         scope.$apply();
         expect(mockConsigneeService.search).toHaveBeenCalledWith(searchTerm, [], {paginate: true});
-        expect(scope.consignees).toEqual(matches);
+        expect(scope.consignees).toEqual(searchResults);
 
         scope.searchTerm = '';
         scope.$apply();
         expect(mockConsigneeService.all).toHaveBeenCalled();
         expect(scope.consignees).toEqual(consignees);
+    });
+
+    it('should fetch new page when pageChanged is called and put the consignees on that page on scope', function () {
+        scope.goToPage(10);
+        scope.$apply();
+        expect(mockConsigneeService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10});
+        expect(scope.consignees).toEqual(consignees);
+    });
+
+    it('should maintain search term when moving through pages', function() {
+        var term = 'search term';
+        scope.searchTerm = term;
+        scope.$apply();
+        scope.goToPage(10);
+        scope.$apply();
+        expect(mockConsigneeService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10, search: term});
     });
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
+angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap'])
     .directive('searchConsignees', function (ConsigneeService) {
         return {
             restrict: 'A',
@@ -94,17 +94,24 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
             ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
         }
 
+        function setScopeDataFromResponse(response) {
+            $scope.consignees = response.results;
+            $scope.count = response.count;
+        }
+
         function fetchConsignees() {
             ConsigneeService.all([], {paginate: 'true'}).then(function (response) {
-                $scope.consignees = response.results;
+                setScopeDataFromResponse(response);
             });
         }
 
         $scope.consignees = [];
         fetchConsignees();
+
         $scope.addConsignee = function () {
             $scope.consignees.insert(new Consignee(), 0);
         };
+
         $scope.save = function (consignee) {
             if (consignee.id) {
                 ConsigneeService.update(consignee).then(function () {
@@ -117,6 +124,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
                 });
             }
         };
+
         $scope.edit = function (consignee) {
             consignee.switchToEditMode();
         };
@@ -135,13 +143,23 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
                 ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
-                    $scope.consignees = response.results;
+                    setScopeDataFromResponse(response);
                 });
             }
             else {
                 fetchConsignees();
             }
         });
+
+        $scope.goToPage = function (page) {
+            var urlArgs = {paginate: 'true', page: page};
+            if($scope.searchTerm && $scope.searchTerm.length) {
+                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm})
+            }
+            ConsigneeService.all([], urlArgs).then(function(response) {
+                setScopeDataFromResponse(response);
+            });
+        };
     })
     .controller('DeleteConsigneeController', function ($scope, ConsigneeService, ngToast) {
         function createToast(message, klass) {
