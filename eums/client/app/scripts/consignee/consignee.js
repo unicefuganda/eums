@@ -95,8 +95,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
         }
 
         function fetchConsignees() {
-            ConsigneeService.all().then(function (consignees) {
-                $scope.consignees = consignees;
+            ConsigneeService.all([], {paginate: 'true'}).then(function (response) {
+                $scope.consignees = response.results;
             });
         }
 
@@ -134,8 +134,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast'])
 
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
-                ConsigneeService.search(term).then(function (matches) {
-                    $scope.consignees = matches;
+                ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
+                    $scope.consignees = response.results;
                 });
             }
             else {

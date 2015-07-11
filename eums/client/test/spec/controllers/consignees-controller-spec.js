@@ -2,6 +2,7 @@ describe('Consignees Controller', function () {
     var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise,
         updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults;
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
+    var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page'};
     var savedConsignee = {
         id: 1, name: 'Dwelling Places', switchToReadMode: function () {}, switchToEditMode: function () {}
     };
@@ -23,7 +24,7 @@ describe('Consignees Controller', function () {
             updateConsigneePromise = $q.defer();
             deleteConsigneePromise = $q.defer();
 
-            deferredConsignees.resolve(consignees);
+            deferredConsignees.resolve(consigneesResponse);
             saveConsigneePromise.resolve(savedConsignee);
             updateConsigneePromise.resolve(savedConsignee);
 
@@ -46,7 +47,7 @@ describe('Consignees Controller', function () {
 
     it('should fetch consignees and put them on the scope.', function () {
         scope.$apply();
-        expect(mockConsigneeService.all).toHaveBeenCalled();
+        expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([[], {paginate: 'true'}]);
         expect(scope.consignees).toEqual(consignees);
     });
 
@@ -124,12 +125,12 @@ describe('Consignees Controller', function () {
         scope.$apply();
         expect(scope.consignees).toEqual(consignees);
         var matches = consignees.first(2);
-        deferredSearchResults.resolve(matches);
+        deferredSearchResults.resolve({results: matches});
         var searchTerm = 'some consignee name';
 
         scope.searchTerm = searchTerm;
         scope.$apply();
-        expect(mockConsigneeService.search).toHaveBeenCalledWith(searchTerm);
+        expect(mockConsigneeService.search).toHaveBeenCalledWith(searchTerm, [], {paginate: true});
         expect(scope.consignees).toEqual(matches);
 
         scope.searchTerm = '';
