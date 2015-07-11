@@ -106,6 +106,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         }
 
         $scope.consignees = [];
+        $scope.searching = false;
         fetchConsignees();
 
         $scope.addConsignee = function () {
@@ -142,7 +143,9 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
+                $scope.searching = true;
                 ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
+                    $scope.searching = false;
                     setScopeDataFromResponse(response);
                 });
             }

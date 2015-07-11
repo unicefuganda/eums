@@ -33,7 +33,6 @@ describe('Consignees Controller', function () {
             deferredConsignees.resolve(consigneesResponse);
             saveConsigneePromise.resolve(savedConsignee);
             updateConsigneePromise.resolve(savedConsignee);
-            deferredSearchResults.resolve({results: searchResults});
 
             mockConsigneeService.all.and.returnValue(deferredConsignees.promise);
             mockConsigneeService.create.and.returnValue(saveConsigneePromise.promise);
@@ -137,7 +136,7 @@ describe('Consignees Controller', function () {
     it('should search for consignees with scope search term', function () {
         scope.$apply();
         expect(scope.consignees).toEqual(consignees);
-
+        deferredSearchResults.resolve({results: searchResults});
         var searchTerm = 'some consignee name';
         scope.searchTerm = searchTerm;
         scope.$apply();
@@ -164,5 +163,17 @@ describe('Consignees Controller', function () {
         scope.goToPage(10);
         scope.$apply();
         expect(mockConsigneeService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10, search: term});
+    });
+
+    it('should toggle search mode during search', function() {
+        scope.$apply();
+        expect(scope.searching).toBe(false);
+        scope.searchTerm = 'something';
+        scope.$apply();
+        expect(mockConsigneeService.search).toHaveBeenCalled();
+        expect(scope.searching).toBe(true);
+        deferredSearchResults.resolve({results: searchResults});
+        scope.$apply();
+        expect(scope.searching).toBe(false);
     });
 });

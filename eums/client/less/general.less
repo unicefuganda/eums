@@ -252,7 +252,7 @@ h4.page-header {
 }
 
 .left-addon .glyphicon {
-  left: 0px;
+  left: 0;
 }
 
 .glyphicon-plus.pull-right {
@@ -304,3 +304,29 @@ h4.page-header {
   margin-bottom: 10px;
 }
 
+.glyphicon-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
