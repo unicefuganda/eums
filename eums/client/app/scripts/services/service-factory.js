@@ -93,15 +93,23 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
         }
 
         function buildListResponse(response, nestedFields, options) {
-            var buildPromises = response.data.map(function (flatObject) {
+            var responseIsPaginated = Object.has(response.data, 'results');
+            var resultSet = responseIsPaginated ? response.data.results : response.data;
+            var buildPromises = resultSet.map(function (flatObject) {
                 return buildObject.call(this, flatObject, nestedFields || [], options.propertyServiceMap);
             }.bind(this));
             return $q.all(buildPromises).then(function (builtObjects) {
-                return builtObjects.map(function (object) {
+                var results = builtObjects.map(function (object) {
                     var objectToReturn = options.changeCase ? changeCase(object, toCamelCase) : object;
                     return options.model ? new options.model(objectToReturn) : objectToReturn;
                 });
+                return responseIsPaginated ? makePaginatedResponse(response, results) : results;
             });
+        }
+
+        function makePaginatedResponse(response, results) {
+            var data = response.data;
+            return {results: results, next: data.next, previous: data.previous, count: data.count};
         }
 
         function queryStringFrom(filterParams) {
@@ -127,8 +135,9 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                 var idField = options.idField || 'id';
 
                 var service = {
-                    all: function (nestedFields) {
-                        return $http.get(options.uri).then(function (response) {
+                    all: function (nestedFields, urlArgs) {
+                        var uri = urlArgs ? options.uri + queryStringFrom(urlArgs) : options.uri;
+                        return $http.get(uri).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
                     },
@@ -168,8 +177,9 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
                     },
-                    search: function (searchTerm, nestedFields) {
-                        var uri = '{1}?search={2}'.assign(options.uri, searchTerm);
+                    search: function (searchTerm, nestedFields, extras) {
+                        var uri = extras ? options.uri + queryStringFrom(extras) + '&' : options.uri + '?';
+                        uri += 'search=' + searchTerm;
                         return $http.get(uri).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));

@@ -238,6 +238,30 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should get results from paginated response', function() {
+        var expected = {results: [], count: 10, next: '?page=3', previous: '?page=1'};
+        mockBackend.whenGET(levelOneEndpoint).respond(expected);
+        levelOneService.all().then(function(response) {
+            expect(response.results).toEqual(expected.results);
+            expect(response.next).toEqual(expected.next);
+            expect(response.count).toEqual(expected.count);
+            expect(response.previous).toEqual(expected.previous);
+        });
+        mockBackend.flush();
+    });
+
+    it('should accept url params when fetching all', function() {
+        mockBackend.expectGET(levelOneEndpoint + '?arg=val').respond([]);
+        levelOneService.all([], {arg: 'val'});
+        mockBackend.flush();
+    });
+
+    it('should accept url params when searching', function() {
+        mockBackend.expectGET(levelOneEndpoint + '?arg=val&search=term').respond([]);
+        levelOneService.search('term', [], {arg: 'val'});
+        mockBackend.flush();
+    });
+
     it('should notify when get object by id does not return 200', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond(401);
         levelOneService.get(fakeOne.id).catch(function (error) {
