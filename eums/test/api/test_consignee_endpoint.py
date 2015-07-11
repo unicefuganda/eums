@@ -51,17 +51,23 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_search_consignee_by_customer_id(self):
         consignee = ConsigneeFactory(customer_id='LX350')
+        ConsigneeFactory(customer_id='AA')
         response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'LX3'))
+        self.assertEqual(len(response.data), 1)
         self.assertIn(consignee.id, [consignee['id'] for consignee in response.data])
 
     def test_should_search_consignee_by_name(self):
         consignee = ConsigneeFactory(name='Save all of the children')
+        ConsigneeFactory(name='consignee')
         response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'all of the'))
+        self.assertEqual(len(response.data), 1)
         self.assertIn(consignee.id, [consignee['id'] for consignee in response.data])
 
     def test_should_search_consignee_by_location(self):
         consignee = ConsigneeFactory(location='Some Village')
+        ConsigneeFactory(location='Luwafu')
         response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'village'))
+        self.assertEqual(len(response.data), 1)
         self.assertIn(consignee.id, [consignee['id'] for consignee in response.data])
 
     def test_should_allow_post_of_consignee_with_only_name(self):
@@ -106,7 +112,7 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(2, len(get_response.data))
 
-    def test_should_return_correct_consignees(self):
+    def test_should_not_cache_consignees(self):
         first_consignee = create_consignee({'name': "Save the Children", 'type': 'implementing_partner'})
         create_consignee({'name': "Masaka DHO", 'type': 'middle_man'})
         create_consignee({'name': "Gulu DHO", 'type': 'middle_man'})
@@ -119,3 +125,14 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
+
+    def test_should_paginate_consignee_list_on_request(self):
+        ConsigneeFactory()
+        ConsigneeFactory()
+        response = self.client.get('%s?paginate=true' % ENDPOINT_URL)
+        self.assertIn('results', response.data)
+        self.assertIn('count', response.data)
+        self.assertIn('next', response.data)
+        self.assertIn('previous', response.data)
+        self.assertEqual(len(response.data['results']), 2)
+
