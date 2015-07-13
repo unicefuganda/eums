@@ -5,6 +5,10 @@ DirectDeliveryPage.prototype = Object.create({}, {
 
     visit: { value: function () {
         browser.get(this.url);
+        var EC = protractor.ExpectedConditions;
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
+        var ordersHaveLoaded = EC.stalenessOf(fadingModal);
+        browser.wait(ordersHaveLoaded, 5000, "Timeout exceeded while loading purchase orders");
     }},
 
     purchaseOrders: { get: function () { return element.all(by.repeater('purchaseOrder in purchaseOrders').column('purchaseOrder.orderNumber')).getText(); }},
