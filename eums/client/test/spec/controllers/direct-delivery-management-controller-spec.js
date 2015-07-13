@@ -503,6 +503,7 @@ describe('DirectDeliveryController', function () {
             scope.invalidNodes = false;
             scope.distributionPlan = 1;
 
+            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.selectPurchaseOrderItem();
             scope.$apply();
 
