@@ -76,13 +76,17 @@
                                     Edit
                                 </button>
                                 <button class="btn btn-sm btn-default red-border-button"
-                                        ng-click="showDeleteDialog(consignee)" ng-show="!consignee.importedFromVision">
+                                        ng-click="showDeleteDialog(consignee)" ng-class="{'invisible': consignee.importedFromVision}">
                                     Delete
                                 </button>
                             </span>
                             <span ng-show="consignee.inEditMode">
                                 <button class="btn btn-sm btn-default blue-border-button"
-                                        ng-click="save(consignee)" ng-show="consignee.inEditMode">Save
+                                        ng-click="save(consignee)" ng-show="consignee.inEditMode"
+                                        ng-disabled="!consignee.name.length">Save
+                                </button>
+                                <button class="btn btn-sm btn-default"
+                                        ng-click="cancelEditOrCreate(consignee)" ng-show="consignee.inEditMode">Cancel
                                 </button>
                             </span>
                         </td>

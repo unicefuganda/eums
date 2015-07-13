@@ -107,6 +107,23 @@ describe('Consignees Controller', function () {
         expect(scope.$broadcast).toHaveBeenCalledWith('deleteConsignee', consignee);
     });
 
+    it('should cancel edit of consignee by switching them to read mode if they have an id', function() {
+        spyOn(savedConsignee, 'switchToReadMode');
+        savedConsignee.switchToEditMode();
+        scope.cancelEditOrCreate(savedConsignee);
+        scope.$apply();
+        expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
+    });
+
+    it('should cancel edit of consignee by removing them from scope if they do not have an id', function() {
+        scope.$apply();
+        var consignee = scope.consignees.first();
+        consignee.id = undefined;
+        scope.cancelEditOrCreate(consignee);
+        scope.$apply();
+        expect(scope.consignees).not.toContain(consignee);
+    });
+
     describe('when consigneeDeleted event is received', function () {
         var childScope, firstConsignee, removeSpy;
 

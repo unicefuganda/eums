@@ -141,6 +141,17 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             $scope.$broadcast('deleteConsignee', consignee);
         };
 
+        $scope.cancelEditOrCreate = function (consignee) {
+            if (consignee.id) {
+                consignee.switchToReadMode();
+            }
+            else {
+                $scope.consignees.remove(function (scopeConsignee) {
+                    return scopeConsignee.id === consignee.id;
+                });
+            }
+        };
+
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
                 $scope.searching = true;
@@ -156,10 +167,10 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
         $scope.goToPage = function (page) {
             var urlArgs = {paginate: 'true', page: page};
-            if($scope.searchTerm && $scope.searchTerm.length) {
+            if ($scope.searchTerm && $scope.searchTerm.length) {
                 urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm})
             }
-            ConsigneeService.all([], urlArgs).then(function(response) {
+            ConsigneeService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
             });
         };
