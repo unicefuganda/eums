@@ -1,4 +1,3 @@
-import json
 from urllib import quote
 
 from django.test import TestCase
@@ -9,12 +8,38 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 
 from eums.forms.filter import UserFilterForm
+
 from eums.forms.user_profile import UserProfileForm, EditUserProfileForm
-from eums.models import UserProfile
+from eums.models import UserProfile, Consignee
+from eums.test.factories.consignee_factory import ConsigneeFactory
 
 
 class UsersViewTest(TestCase):
     GLOBAL_ADMIN = 'GLOBAL_ADMIN'
+
+    def setUp(self):
+        self.client = Client()
+        self.user = self.create_user()
+        self.assign('can_view_users', self.user)
+        self.login_user()
+        self.global_admin = Group.objects.create(name='Global Admin')
+        auth_content = ContentType.objects.get_for_model(Permission)
+        permission, out = Permission.objects.get_or_create(codename='is_global_admin', content_type=auth_content)
+        self.global_admin.permissions.add(permission)
+        self.global_admin.user_set.add(self.user)
+
+        self.form_data = {
+            'username': 'rajni',
+            'password1': 'kant',
+            'password2': 'kant',
+            'email': 'raj@ni.kant',
+            'groups': self.global_admin.id,
+        }
+
+        Consignee.objects.all().delete()
+
+    def tearDown(self):
+        Consignee.objects.all().delete()
 
     def create_user(self, username=None):
         username = username if username else "user"
@@ -47,25 +72,6 @@ class UsersViewTest(TestCase):
         response = self.client.get(url)
         self.assertRedirects(response, expected_url='/login?next=%s' % quote(url),
                              status_code=302, target_status_code=301, msg_prefix='')
-
-    def setUp(self):
-        self.client = Client()
-        self.user = self.create_user()
-        self.assign('can_view_users', self.user)
-        self.login_user()
-        self.global_admin = Group.objects.create(name='Global Admin')
-        auth_content = ContentType.objects.get_for_model(Permission)
-        permission, out = Permission.objects.get_or_create(codename='is_global_admin', content_type=auth_content)
-        self.global_admin.permissions.add(permission)
-        self.global_admin.user_set.add(self.user)
-
-        self.form_data = {
-            'username': 'rajni',
-            'password1': 'kant',
-            'password2': 'kant',
-            'email': 'raj@ni.kant',
-            'groups': self.global_admin.id,
-        }
 
     def test_get_login(self):
         response = self.client.get('/login/')
@@ -119,7 +125,7 @@ class UsersViewTest(TestCase):
 
     def test_post_update(self):
         saved_user = User.objects.create(username='user1', email='emily@gmail.com')
-        user_profile = UserProfile.objects.create(user=saved_user)
+        UserProfile.objects.create(user=saved_user)
         self.global_admin.user_set.add(saved_user)
         form_data = {
             'username': 'user1tom',
@@ -139,7 +145,7 @@ class UsersViewTest(TestCase):
 
     def test_post_update_with_errors(self):
         saved_user = User.objects.create(username='user1', email='emily@gmail.com')
-        user_profile = UserProfile.objects.create(user=saved_user)
+        UserProfile.objects.create(user=saved_user)
         self.global_admin.user_set.add(saved_user)
         form_data = {
             'username': 'user1tom hjdhdh',
@@ -156,10 +162,9 @@ class UsersViewTest(TestCase):
 
     def test_post_update_with_no_email_shows_errors(self):
         saved_user = User.objects.create(username='user1', email='testuser@unicef.org')
-        user_profile = UserProfile.objects.create(user=saved_user)
+        UserProfile.objects.create(user=saved_user)
         self.global_admin.user_set.add(saved_user)
-        form_data = {
-            'username': 'user1tom'}
+        form_data = {'username': 'user1tom'}
         response = self.client.post('/users/%d/edit/' % saved_user.pk, data=form_data)
         self.assertEqual(200, response.status_code)
         self.failUnless(User.objects.filter(username='user1', email='testuser@unicef.org'))
@@ -169,3 +174,19 @@ class UsersViewTest(TestCase):
         self.assertIsInstance(response.context['form'], EditUserProfileForm)
         self.assertIn('SAVE', response.context['btn_label'])
         self.assertIn('Edit User', response.context['title'])
+
+    def test_should_list_only_consignees_imported_from_vision_sorted_in_ascending_order_of_name(self):
+        one = ConsigneeFactory(name='A', imported_from_vision=True)
+        two = ConsigneeFactory(name='Z', imported_from_vision=True)
+        three = ConsigneeFactory(name='G', imported_from_vision=True)
+        four = ConsigneeFactory(name='E', imported_from_vision=True)
+        ConsigneeFactory(imported_from_vision=False)
+
+        response = self.client.get('/users/new/')
+        consignees = response.context['form'].consignees
+        consignee_ids = [c.id for c in consignees]
+
+        self.assertEqual(Consignee.objects.count(), 5)
+        self.assertEqual(len(consignees), 4)
+
+        self.assertListEqual(consignee_ids, [one.id, four.id, three.id, two.id])

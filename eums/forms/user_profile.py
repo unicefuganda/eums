@@ -9,8 +9,9 @@ from eums.models import UserProfile, Consignee
 class UserProfileForm(UserCreationForm):
     groups = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label=None, required=True,
                                     widget=forms.RadioSelect(attrs={'class': 'radio-roles'}), label="Role")
-    consignee = forms.ModelChoiceField(queryset=Consignee.objects.all(), empty_label="Choose an Implementing Partner",
-                                          required=False)
+    consignees = Consignee.objects.filter(imported_from_vision=True).order_by('name')
+    consignee = forms.ModelChoiceField(queryset=consignees, empty_label="Choose an Implementing Partner",
+                                       required=False)
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
