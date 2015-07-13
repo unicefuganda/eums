@@ -28,6 +28,18 @@ describe('Route Provider', function () {
         expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].templateUrl).toBe('/static/app/views/distribution-planning/direct-delivery-management.html');
     });
 
+    it('should know new direct delivery, select purchase order item route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId'].controller).toBe('DirectDeliveryManagementController');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId'].templateUrl).toBe('/static/app/views/distribution-planning/direct-delivery-management.html');
+    });
+
+    it('should know new direct delivery, select purchase order item, and select delivery route exists', function () {
+        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:deliveryNodeId');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:deliveryNodeId'].controller).toBe('DirectDeliveryManagementController');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:deliveryNodeId'].templateUrl).toBe('/static/app/views/distribution-planning/direct-delivery-management.html');
+    });
+
     it('should know warehouse-delivery route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/warehouse-delivery');
         expect(routes.routes['/warehouse-delivery'].controller).toBe('WarehouseDeliveryController');

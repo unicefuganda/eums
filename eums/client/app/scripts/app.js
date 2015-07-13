@@ -27,7 +27,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
+            .when('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:deliveryNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {

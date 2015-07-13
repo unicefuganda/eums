@@ -136,7 +136,7 @@ describe('DirectDeliveryController', function () {
 
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
-            if (!routeParams.distributionPlanNodeId) {
+            if (!routeParams.deliveryNodeId) {
                 spyOn(angular, 'element').and.callFake(function () {
                     return {
                         modal: jasmine.createSpy('modal').and.callFake(function (status) {
@@ -397,7 +397,7 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should get distribution plan nodes for nodes if nodes exist', function () {
-            setUp({purchaseOrderId: 1, distributionPlanNodeId: 1});
+            setUp({purchaseOrderId: 1, deliveryNodeId: 1});
 
             deferred.resolve({distribution_plan_node: 1});
             scope.selectedPurchaseOrderItem = {information: {distributionplannode_set: ['1']}};
@@ -406,7 +406,7 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should put a distribution plan on the scope if distribution plan node exists', function () {
-            setUp({purchaseOrderId: 1, distributionPlanNodeId: 1});
+            setUp({purchaseOrderId: 1, deliveryNodeId: 1});
 
             deferredUserPromise.resolve(stubUser);
             deferredNode.resolve({});
@@ -417,7 +417,7 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should put a distribution plan on the scope if distribution plan node exists', function () {
-            setUp({purchaseOrderId: 1, distributionPlanNodeId: 1});
+            setUp({purchaseOrderId: 1, deliveryNodeId: 1});
 
             deferredUserPromise.resolve(stubUser);
             deferredNode.resolve({});
@@ -589,6 +589,34 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
 
             expect(scope.distributionPlanNodes).toEqual([expectedPlanNode]);
+        });
+    });
+
+    describe('should rout correctly on page', function () {
+        it('when Sub Consignee button is clicked', function () {
+            scope.selectedPurchaseOrder = {id:5};
+            scope.selectedPurchaseOrderItem = {id:76};
+            scope.addSubConsignee({id:9})
+            scope.$apply();
+
+            expect(location.path()).toBe('/direct-delivery/new/5-76-9');
+        });
+        it('when back to consignee button is clicked with top-level node', function () {
+            scope.selectedPurchaseOrder = {id:5};
+            scope.selectedPurchaseOrderItem = {id:76};
+            scope.previousConsignee({id:9})
+            scope.$apply();
+
+            expect(location.path()).toBe('/direct-delivery/new/5-76');
+        });
+
+        it('when back to consignee button is clicked with top-level node', function () {
+            scope.selectedPurchaseOrder = {id:5};
+            scope.selectedPurchaseOrderItem = {id:76};
+            scope.previousConsignee({id:9, parent:90})
+            scope.$apply();
+
+            expect(location.path()).toBe('/direct-delivery/new/5-76-90');
         });
     });
 
