@@ -148,12 +148,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             });
         };
 
-        $scope.invalidContact = function(contact) {
+        $scope.invalidContact = function (contact) {
             return !(contact.firstName && contact.lastName && contact.phone);
         };
     })
-    .directive('eumsContact', function(ContactService, ngToast){
-        var createToast =  function(message, klass) {
+    .directive('eumsContact', function (ContactService, ngToast) {
+        var createToast = function (message, klass) {
             ngToast.create({
                 content: message,
                 class: klass,
@@ -162,46 +162,48 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             });
         };
 
-       return{
-           restrict: 'E',
-           scope: {
-               contact:'='
-           },
-           link: function(scope, elem, attrs, Ctrl){
-               $("#mobile-number").intlTelInput({
-                   defaultCountry: "auto",
-                   geoIpLookup: function(callback) {
-                       $.get("http://ipinfo.io", function () {
-                       }, "jsonp").always(function (resp){
-                           var countryCode = (resp && resp.country) ? resp.country : "UG";
-                           callback(countryCode);
-                       });
-                   }
-               });
-               scope.addContact = function () {
-                   $('#add-contact-modal').modal();
-               };
-               scope.invalidContact = function (contact) {
-                   return !(scope.contact.firstName && scope.contact.lastName && scope.contact.phone);
-               };
-               scope.saveContact = function () {
-                   ContactService.create(scope.contact)
-                       .then(function (contact) {
-                           $('#add-contact-modal').modal('hide');
+        return {
+            restrict: 'E',
+            scope: {
+                contact: '='
+            },
+            link: function (scope, elem, attrs, Ctrl) {
+                $("#contact-phone").intlTelInput({
+                    defaultCountry: "auto",
+                    geoIpLookup: function (callback) {
+                        $.get("http://ipinfo.io", function () {
+                        }, "jsonp").always(function (resp) {
+                            var countryCode = (resp && resp.country) ? resp.country : "UG";
+                            callback(countryCode);
+                        });
+                    },
+                    utilsScript: "/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js"
+                });
+                scope.addContact = function () {
+                    $('#add-contact-modal').modal();
+                };
+                scope.invalidContact = function () {
+                    scope.contact.phone = $("#contact-phone").intlTelInput("getNumber");
+                    return !(scope.contact.firstName && scope.contact.lastName && scope.contact.phone);
+                };
+                scope.saveContact = function () {
+                    ContactService.create(scope.contact)
+                        .then(function (contact) {
+                            $('#add-contact-modal').modal('hide');
 
-                           var contactInput = $('#contact-select');
-                           var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-                           contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+                            var contactInput = $('#contact-select');
+                            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+                            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
 
-                           contactInput.val(contact._id);
+                            contactInput.val(contact._id);
 
-                           scope.contact.id = contact._id;
-                           createToast("Contact Saved!", 'success');
-                       }, function (response) {
-                           createToast(response.data.error, 'danger');
-                       });
-               };
-           },
-           templateUrl: '/static/app/views/contacts/partials/add-contact-modal.html'
-       }
+                            scope.contact.id = contact._id;
+                            createToast("Contact Saved!", 'success');
+                        }, function (response) {
+                            createToast(response.data.error, 'danger');
+                        });
+                };
+            },
+            templateUrl: '/static/app/views/contacts/partials/add-contact-modal.html'
+        }
     });
