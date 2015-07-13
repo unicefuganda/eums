@@ -29,7 +29,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.consigneeLevel = false;
         $scope.isReport = false;
         $scope.districtsLoaded = false;
-        $scope.totalValue = 0;
         $scope.IPsLoaded = false;
 
         $scope.distributionPlanReport = $location.path().substr(1, 15) !== 'delivery-report';
@@ -106,46 +105,25 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             }
         }
 
-        function computeTotalPurchaseOrderValue() {
-            var reduced = $scope.selectedPurchaseOrder.purchaseorderitemSet.reduce(function (previous, current) {
-                return {value: (current.value === '') ? parseFloat(previous.value) : (parseFloat(previous.value) + parseFloat(current.value))};
-            }, {value: 0});
-
-            $scope.totalValue = reduced.value;
-        }
-
-        PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set']).then(function (purchaseOrder) {
+        PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item.unit']).then(function (purchaseOrder) {
             $scope.selectedPurchaseOrder = purchaseOrder;
-
             updateIpMode(purchaseOrder);
-
-            $scope.selectedPurchaseOrder.purchaseorderitemSet.forEach(function (purchaseOrderItem) {
-                ItemService.get(purchaseOrderItem.item, ['unit']).then(function (item) {
-                    var formattedPurchaseOrderItem = {
-                        display: item.description,
-                        materialCode: item.materialCode,
-                        quantity: purchaseOrderItem.quantity,
-                        unit: item.unit.name,
-                        information: purchaseOrderItem,
-                        value: purchaseOrderItem.value
-                    };
-                    $scope.quantityLeft = computeQuantityLeft();
-
-                    if (formattedPurchaseOrderItem.information.id === Number($routeParams.purchaseOrderItemId) && !$routeParams.distributionPlanNodeId) {
-                        $scope.selectedPurchaseOrderItem = formattedPurchaseOrderItem;
-                        $scope.selectPurchaseOrderItem();
-                    }
-
-                    $scope.purchaseOrderItems.push(formattedPurchaseOrderItem);
-                    computeTotalPurchaseOrderValue();
-                });
+            $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
+            $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
+                return parseFloat(orderItem.value);
             });
+
             $scope.distributionPlanId = purchaseOrder.delivery;
             getDelivery();
 
         });
 
-
+        if ($routeParams.purchaseOrderItemId && !$routeParams.distributionPlanNodeId) {
+            PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
+                $scope.selectedPurchaseOrderItem = purchaseOrderItem;
+                $scope.selectPurchaseOrderItem();
+            });
+        }
 
         if ($routeParams.distributionPlanNodeId) {
             $scope.consigneeButtonText = 'Add Sub-Consignee';
@@ -233,7 +211,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         var getNodeForItem = function (purchaseOrderItem) {
             return $scope.distributionPlanNodes.find(function (node) {
-                return node.item === purchaseOrderItem.information.id;
+                return node.item === purchaseOrderItem.id;
             });
         };
 
@@ -264,7 +242,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     contact_person_id: $scope.contact.id,
                     distribution_plan: $scope.distributionPlanId,
                     tree_position: 'IMPLEMENTING_PARTNER',
-                    item: purchaseOrderItem.information.id,
+                    item: purchaseOrderItem.id,
                     targeted_quantity: parseInt(purchaseOrderItem.quantity),
                     planned_distribution_date: formatDateForSave(deliveryDate),
                     track: false
@@ -332,14 +310,14 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             UserService.getCurrentUser().then(function (user) {
                 $scope.user = user;
                 if ($scope.user.consignee_id) {
-                    PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedPurchaseOrderItem.information.id).then(function (response) {
+                    PurchaseOrderService.getConsigneePurchaseOrderNode($scope.user.consignee_id, $scope.selectedPurchaseOrderItem.id).then(function (response) {
                         var node = response;
                         var locPath = $location.path().split('/')[1];
                         var documentId = $scope.distributionPlanReport ? $scope.selectedPurchaseOrder.id : $scope.selectedPurchaseOrder.id;
                         $location.path(
                             '/' + locPath + '/new/' +
                             documentId + '-' +
-                            $scope.selectedPurchaseOrderItem.information.id + '-' +
+                            $scope.selectedPurchaseOrderItem.id + '-' +
                             node
                         );
                     });
@@ -352,7 +330,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     $scope.totalQuantity = $scope.selectedPurchaseOrderItem.quantity;
                     $scope.quantityLeft = computeQuantityLeft($scope.totalQuantity);
 
-                    PurchaseOrderItemService.get(selectedPurchaseOrderItem.information.id, ['distributionplannode_set'])
+                    PurchaseOrderItemService.get(selectedPurchaseOrderItem.id, ['distributionplannode_set'])
                         .then(function (purchaseOrderItem) {
                             PurchaseOrderItemService.getTopLevelDistributionPlanNodes(purchaseOrderItem)
                                 .then(function (topLevelNodes) {
@@ -408,7 +386,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.addDistributionPlanNode = function () {
             var distributionPlanNode = {
-                item: $scope.selectedPurchaseOrderItem.information.id,
+                item: $scope.selectedPurchaseOrderItem.id,
                 plannedDistributionDate: '',
                 targetedQuantity: 0,
                 destinationLocation: '',
@@ -579,7 +557,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             $location.path(
                 '/' + locPath + '/' +
                 documentId + '-' +
-                $scope.selectedPurchaseOrderItem.information.id + '-' +
+                $scope.selectedPurchaseOrderItem.id + '-' +
                 node.id
             );
         };
@@ -595,7 +573,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 $location.path(
                     '/' + locPath + '/' +
                     documentId + '-' +
-                    $scope.selectedPurchaseOrderItem.information.id + '-' +
+                    $scope.selectedPurchaseOrderItem.id + '-' +
                     planNode.parent
                 );
             }
@@ -603,7 +581,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 $location.path(
                     '/' + locPath + '/' +
                     documentId + '-' +
-                    $scope.selectedPurchaseOrderItem.information.id
+                    $scope.selectedPurchaseOrderItem.id
                 );
             }
         };

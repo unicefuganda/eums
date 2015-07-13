@@ -110,7 +110,7 @@
                                     Purchase Order Type
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ totalValue | currency }}</span>
+                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrder.totalValue | currency }}</span>
                                     Total Value (USD)
                                 </li>
                             </ul>
@@ -172,10 +172,7 @@
             <div class="row pad-left-5 pad-top-10">
 
                 <div ng-show="selectedPurchaseOrderItem">
-                    <alert ng-show="quantityLeft <= 0" type="warning">All quantities have been
-                        assigned
-                        for this item.
-                    </alert>
+                    <alert ng-show="quantityLeft <= 0" type="warning">All quantities have been assigned for this item.</alert>
                 </div>
                 <div class="row">
                     <div class="form-horizontal">

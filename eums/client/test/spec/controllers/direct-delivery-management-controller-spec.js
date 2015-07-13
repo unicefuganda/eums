@@ -4,7 +4,7 @@ describe('DirectDeliveryController', function () {
     var mockNodeService, mockIPService, mockPlanService, mockPurchaseOrderItemService,
         mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
-        deferredPlanNode, deferredPurchaseOrder, deferredNode, deferredUserPromise, deferredItemPromise;
+        deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredUserPromise, deferredItemPromise;
     var scope, q, mockToastProvider, location;
 
     var orderNumber = '00001';
@@ -30,6 +30,7 @@ describe('DirectDeliveryController', function () {
                         name: 'EA'
                     }
                 },
+                value: 1500,
                 quantity: 100,
                 quantityLeft: 100
             }]
@@ -64,20 +65,15 @@ describe('DirectDeliveryController', function () {
 
     var stubPurchaseOrderItem = {
         id: 1,
-        purchase_order: '1',
-        information: {
+        purchaseOrder: '1',
+        item: {
             id: 1,
-            item: {
-                id: 1,
-                description: 'Test Item',
-                materialCode: '12345AS',
-                value: '100.00',
-                unit: {
-                    name: 'EA'
-                }
-            },
-            quantity: 100,
-            quantityLeft: 100
+            description: 'Test Item',
+            materialCode: '12345AS',
+            value: '100.00',
+            unit: {
+                name: 'EA'
+            }
         },
         quantity: 100,
         date: '2014-10-02',
@@ -103,15 +99,6 @@ describe('DirectDeliveryController', function () {
         distributionplannode_set: []
     };
 
-    var expectedFormattedPurchaseOrderItem = {
-        display: stubPurchaseOrderItem.information.item.description,
-        materialCode: stubPurchaseOrderItem.information.item.materialCode,
-        quantity: stubPurchaseOrderItem.quantity,
-        unit: stubPurchaseOrderItem.information.item.unit.name,
-        information: stubPurchaseOrderItem.information,
-        value: stubPurchaseOrderItem.value
-    };
-
     var setUp = function (routeParams) {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'all', 'createPlan', 'updatePlanTracking']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update']);
@@ -132,6 +119,7 @@ describe('DirectDeliveryController', function () {
             deferredNode = $q.defer();
             deferredTopLevelNodes = $q.defer();
             deferredPurchaseOrder = $q.defer();
+            deferredPurchaseOrderItem = $q.defer();
             deferredUserPromise = $q.defer();
             deferredItemPromise = $q.defer();
             mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
@@ -365,11 +353,18 @@ describe('DirectDeliveryController', function () {
             expect(scope.districts).toEqual(expectedDistricts);
         });
 
-        it('should have the selected purchase orders in the scope', function () {
+        it('should have the selected purchase order in the scope', function () {
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             scope.$apply();
 
             expect(scope.selectedPurchaseOrder).toEqual(purchaseOrders[0]);
+        });
+
+        it('should set totalValue on the selected purchase order in the scope', function () {
+            deferredPurchaseOrder.resolve(purchaseOrders[0]);
+            scope.$apply();
+
+            expect(scope.selectedPurchaseOrder.totalValue).toEqual(1500);
         });
 
         it('should have the default selected purchase orders item undefined in the scope', function () {
@@ -378,32 +373,19 @@ describe('DirectDeliveryController', function () {
             expect(scope.selectedPurchaseOrderItem).toBeUndefined();
         });
 
-        it('should format the selected purchase order appropriately for the view', function () {
-            var stubItem = {
-                id: 1,
-                description: 'Test Item',
-                materialCode: '12345AS',
-                value: '100.00',
-                unit: {
-                    name: 'EA'
-                }
-            };
-
+        it('should set purchase order items on the scope when a purchase order is set', function () {
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
-            deferredItemPromise.resolve(stubItem);
             scope.$apply();
-
-            expect(scope.purchaseOrderItems).toEqual([expectedFormattedPurchaseOrderItem]);
+            expect(scope.purchaseOrderItems).toEqual(purchaseOrders[0].purchaseorderitemSet);
         });
-
     });
 
     describe('when purchase order item selected changes, ', function () {
 
         it('should set the selected purchase order to the scope when purchase order item is selected', function () {
-            scope.selectedPurchaseOrderItem = expectedFormattedPurchaseOrderItem;
+            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.$apply();
-            expect(scope.selectedPurchaseOrderItem).toEqual(expectedFormattedPurchaseOrderItem);
+            expect(scope.selectedPurchaseOrderItem).toEqual(stubPurchaseOrderItem);
         });
 
         xit('should put a distribution plan on the scope if purchase order item has associated distribution plan nodes', function () {
@@ -463,11 +445,7 @@ describe('DirectDeliveryController', function () {
             deferredTopLevelNodes.resolve([stubNode, stubNode2]);
             deferredNode.resolve(stubNode);
 
-            scope.selectedPurchaseOrderItem = {
-                display: stubPurchaseOrderItem.information.item.description,
-                materialCode: stubPurchaseOrderItem.information.item.materialCode, quantity: stubPurchaseOrderItem.quantity,
-                unit: stubPurchaseOrderItem.information.item.unit.name, information: stubPurchaseOrderItem
-            };
+            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.selectPurchaseOrderItem();
             scope.$apply();
 
@@ -491,13 +469,7 @@ describe('DirectDeliveryController', function () {
             deferredNode.resolve(stubNode);
             deferredTopLevelNodes.resolve([stubNode, stubNode2]);
 
-            scope.selectedPurchaseOrderItem = {
-                display: stubPurchaseOrderItem.information.item.description,
-                materialCode: stubPurchaseOrderItem.information.item.material_code,
-                quantity: stubPurchaseOrderItem.quantity,
-                unit: stubPurchaseOrderItem.information.item.unit.name,
-                information: stubPurchaseOrderItem
-            };
+            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.selectPurchaseOrderItem();
             scope.$apply();
 
@@ -520,13 +492,7 @@ describe('DirectDeliveryController', function () {
 
         it('should not get distribution plan nodes service linked to the particular purchase order item with undefined line item set', function () {
 
-            scope.selectedPurchaseOrderItem = {
-                display: stubPurchaseOrderItem.information.item.description,
-                material_code: stubPurchaseOrderItem.information.item.material_code,
-                quantity: stubPurchaseOrderItem.quantity,
-                item: stubPurchaseOrderItem.information.item,
-                information: {}
-            };
+            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.$apply();
 
             expect(scope.distributionPlanNodes).toEqual([]);
@@ -603,19 +569,11 @@ describe('DirectDeliveryController', function () {
 
     describe('when Add Consignee button is clicked', function () {
         it('should add a default distribution plan line item to the selectedPurchaseOrderItem', function () {
-            scope.selectedPurchaseOrderItem = {
-                display: stubPurchaseOrderItem.information.item.description,
-                materialCode: stubPurchaseOrderItem.information.item.material_code,
-                quantity: 100,
-                quantityLeft: stubPurchaseOrderItem.quantity,
-                item: stubPurchaseOrderItem.information.item,
-                information: stubPurchaseOrderItem,
-                distributionplannode_set: stubPurchaseOrderItem.information.distributionplannode_set
-            };
+            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.$apply();
 
             var expectedPlanNode = {
-                item: stubPurchaseOrderItem.information.item.id,
+                item: stubPurchaseOrderItem.item.id,
                 plannedDistributionDate: '',
                 targetedQuantity: 0,
                 destinationLocation: '',
@@ -927,5 +885,3 @@ describe('DirectDeliveryController', function () {
         });
     });
 });
-
-
