@@ -94,14 +94,14 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 $scope.inSingleIpMode = false;
                 $scope.inMultipleIpMode = false;
             } else {
-                if (purchaseOrder.isSingleIp) {
-                    $scope.inSingleIpMode = true;
-                    $scope.inMultipleIpMode = false;
-                    $scope.showSingleIpMode();
-                } else {
-                    $scope.inSingleIpMode = false;
-                    $scope.inMultipleIpMode = true;
-                    $scope.showMultipleIpMode();
+                $scope.inSingleIpMode = purchaseOrder.isSingleIp;
+                $scope.inMultipleIpMode = !purchaseOrder.isSingleIp;
+
+                if(purchaseOrder.isSingleIp) {
+                    ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
+                        $scope.implementingPartners = allIps;
+                        $scope.IPsLoaded = true;
+                    });
                 }
             }
         }
@@ -185,6 +185,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 });
             });
         }
+
         $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
             $scope.inMultipleIpMode = false;
