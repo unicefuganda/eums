@@ -180,7 +180,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                 ConsigneeService.search(term, [], {paginate: true}).then(function (response) {
                     setScopeDataFromResponse(response);
                 }).catch(function () {
-                    createToast("Search failed", 'danger');
+                    createToast('Search failed', 'danger');
                 }).finally(function () {
                     $scope.searching = false;
                 });

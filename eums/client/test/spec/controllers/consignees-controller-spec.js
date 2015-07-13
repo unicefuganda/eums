@@ -1,17 +1,13 @@
 describe('Consignees Controller', function () {
     var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise,
-        updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults;
-
-
+        updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults, elementSpy;
+    var emptyFunction = function () {
+    };
+    var fakeElement = {modal: emptyFunction, hasClass: emptyFunction};
     var savedConsignee = {
-        id: 1, name: 'Dwelling Places', switchToReadMode: function () {
-        }, switchToEditMode: function () {
-        }
+        id: 1, name: 'Dwelling Places', switchToReadMode: emptyFunction, switchToEditMode: emptyFunction
     };
-    var emptyConsignee = {
-        properties: null, switchToEditMode: function () {
-        }
-    };
+    var emptyConsignee = {properties: null, switchToEditMode: emptyFunction};
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
     var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page'};
     var searchResults = consignees.first(2);
@@ -43,12 +39,18 @@ describe('Consignees Controller', function () {
             toast = ngToast;
             scope = $rootScope.$new();
 
+            elementSpy = spyOn(angular, 'element').and.returnValue(fakeElement);
+
             $controller('ConsigneesController', {
                 $scope: scope,
                 ConsigneeService: mockConsigneeService,
                 Consignee: mockConsigneeModel
             });
         });
+    });
+
+    afterEach(function () {
+        elementSpy.and.callThrough();
     });
 
     it('should fetch consignees and put them on the scope.', function () {
@@ -107,7 +109,7 @@ describe('Consignees Controller', function () {
         expect(scope.$broadcast).toHaveBeenCalledWith('deleteConsignee', consignee);
     });
 
-    it('should cancel edit of consignee by switching them to read mode if they have an id', function() {
+    it('should cancel edit of consignee by switching them to read mode if they have an id', function () {
         spyOn(savedConsignee, 'switchToReadMode');
         savedConsignee.switchToEditMode();
         scope.cancelEditOrCreate(savedConsignee);
@@ -115,7 +117,7 @@ describe('Consignees Controller', function () {
         expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
     });
 
-    it('should cancel edit of consignee by removing them from scope if they do not have an id', function() {
+    it('should cancel edit of consignee by removing them from scope if they do not have an id', function () {
         scope.$apply();
         var consignee = scope.consignees.first();
         consignee.id = undefined;
@@ -144,9 +146,7 @@ describe('Consignees Controller', function () {
             spyOn(toast, 'create');
             childScope.$emit('consigneeDeleted', firstConsignee);
             scope.$apply();
-            expect(toast.create).toHaveBeenCalledWith({
-                content: 'Consignee deleted successfully', class: 'success', maxNumber: 1, dismissOnTimeout: true
-            });
+            expect(toast.create).toHaveBeenCalledWith({content: 'Consignee deleted successfully', class: 'success'});
         });
     });
 
@@ -173,7 +173,7 @@ describe('Consignees Controller', function () {
         expect(scope.consignees).toEqual(consignees);
     });
 
-    it('should maintain search term when moving through pages', function() {
+    it('should maintain search term when moving through pages', function () {
         var term = 'search term';
         scope.searchTerm = term;
         scope.$apply();
@@ -182,7 +182,7 @@ describe('Consignees Controller', function () {
         expect(mockConsigneeService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10, search: term});
     });
 
-    it('should toggle search mode during search', function() {
+    it('should toggle search mode during search', function () {
         scope.$apply();
         expect(scope.searching).toBe(false);
         scope.searchTerm = 'something';
