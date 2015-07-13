@@ -186,7 +186,7 @@
                                     <select id="select-sales-order" ng-model="selectedPurchaseOrderItem"
                                             required="required"
                                             class="form-control" ng-change="selectPurchaseOrderItem()"
-                                            ng-options="purchaseOrderItem.display for purchaseOrderItem in purchaseOrderItems | orderBy: 'display'">
+                                            ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
                                         <option value="">Select Item</option>
                                     </select>
                                 </div>
@@ -225,11 +225,11 @@
                         <div class="col-lg-6 no-side-padding">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.materialCode }}</span>
+                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.materialCode }}</span>
                                     Material Code
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.display }}</span>
+                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.description }}</span>
                                     Item Description
                                 </li>
                             </ul>
@@ -241,7 +241,7 @@
                                     Total Quantity
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.unit }}</span>
+                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.unit.name }}</span>
                                     Unit
                                 </li>
                             </ul>
