@@ -252,16 +252,17 @@ class ReleaseOrderFacade(OrderFacade):
         if len(matching_release_orders):
             return matching_release_orders[0]
 
-        consignee, _ = Consignee.objects.get_or_create(customer_id=order_dict['consignee'],
-                                                       name=order_dict['consignee_name'])
+        consignee, _ = Consignee.objects.get_or_create(customer_id=order_dict['consignee'])
+        consignee.imported_from_vision = True
+        consignee.name = order_dict['consignee_name']
+        consignee.save()
 
         matching_sales_orders = self._get_matching_sales_order(order_dict)
         matching_purchase_orders = self._get_matching_purchase_order(order_dict)
         if len(matching_sales_orders) and len(matching_purchase_orders):
             return ReleaseOrder.objects.create(order_number=order_dict['order_number'], waybill=order_dict['waybill'],
                                                delivery_date=self._get_as_date(order_dict['shipment_end_date']),
-                                               consignee=consignee,
-                                               sales_order=matching_sales_orders[0],
+                                               consignee=consignee, sales_order=matching_sales_orders[0],
                                                purchase_order=matching_purchase_orders[0])
 
     def _update_item(self, ro_item, quantity, value):

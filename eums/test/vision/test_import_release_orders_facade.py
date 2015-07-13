@@ -292,9 +292,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.create_items()
         self.create_sales_orders()
         self.create_purchase_orders()
-
         self.facade.save_records(self.imported_release_order_data)
-
         self.assert_consignees_were_created()
 
     def test_should_not_save_a_release_order_with_no_matching_sales_order(self):
@@ -380,9 +378,9 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def assert_consignees_were_created(self):
         consignee_one = Consignee(name='OYAM DISTRICT ADMIN', customer_id='L438000393',
-                                  type=Consignee.TYPES.implementing_partner)
+                                  type=Consignee.TYPES.implementing_partner, imported_from_vision=True)
         consignee_two = Consignee(name='GULU HOSPITAL', customer_id='L438000181',
-                                  type=Consignee.TYPES.implementing_partner)
+                                  type=Consignee.TYPES.implementing_partner, imported_from_vision=True)
 
         self.assert_consignees_are_equal(consignee_one, Consignee.objects.all()[0])
         self.assert_consignees_are_equal(consignee_two, Consignee.objects.all()[1])
@@ -417,6 +415,7 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.assertEqual(consignee_one.name, consignee_two.name)
         self.assertEqual(consignee_one.customer_id, consignee_two.customer_id)
         self.assertEqual(consignee_one.type, consignee_two.type)
+        self.assertEqual(consignee_one.imported_from_vision, consignee_two.imported_from_vision)
 
     def assert_release_orders_are_equal(self, order_one, order_two):
         self.assertEqual(order_one.order_number, order_two.order_number)
