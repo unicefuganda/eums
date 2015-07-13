@@ -66,6 +66,7 @@ function testjsunit {
 
 function testfunctional {
   killtestdbconnections
+  if [ $(lsof -t -i :9000) ]; then kill $(lsof -t -i :9000); fi
   cd eums/client
   grunt functional
   cd -
