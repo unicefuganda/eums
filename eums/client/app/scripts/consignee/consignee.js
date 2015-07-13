@@ -168,7 +168,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         $scope.goToPage = function (page) {
             var urlArgs = {paginate: 'true', page: page};
             if ($scope.searchTerm && $scope.searchTerm.length) {
-                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm})
+                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
             }
             ConsigneeService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
