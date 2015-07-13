@@ -65,7 +65,7 @@
                             {{ releaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}
                         </td>
                         <td data-header="Programme">{{ releaseOrder.programme }}</td>
-                        <td ng-if="!isIP">{{ releaseOrder.consignee.name }}</td>
+                        <td ng-if="!isIP">{{ releaseOrder.consigneeName }}</td>
                     </tr>
                     </tbody>
                     <tfoot>
