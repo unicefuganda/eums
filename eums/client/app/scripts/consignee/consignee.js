@@ -9,7 +9,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             scope: false,
             require: 'ngModel',
             link: function (scope, element, _, ngModel) {
-                ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
+                ConsigneeService.fetchIPs().then(function (allIps) {
                     element.select2({
                         width: '100%',
                         query: function (query) {
@@ -69,21 +69,16 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             model: Consignee,
             methods: {
                 getTopLevelConsignees: function () {
-                    //TODO return this.filter({node: 'top'});
-                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?node=top').then(function (response) {
-                        return response.data;
-                    });
+                    return this.filter({node: 'top'});
                 },
-                filterByType: function (type) {
-                    //TODO call service.filter({search: type}) wherever this method is used
-                    return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE + '?search=' + type).then(function (response) {
-                        return response.data;
-                    });
+                fetchIPs: function () {
+                    return this.filter({imported_from_vision: 'True'});
                 },
                 del: function (consignee) {
                     if (!consignee.importedFromVision) {
                         return this.getDetail(consignee, 'deliveries/').then(function (deliveries) {
-                            return deliveries.length ? $q.reject('Cannot delete consignee that has deliveries') : this._del(consignee);
+                            return deliveries.length ?
+                                $q.reject('Cannot delete consignee that has deliveries') : this._del(consignee);
                         }.bind(this));
                     }
                     return $q.reject('Cannot delete consignee imported from vision');

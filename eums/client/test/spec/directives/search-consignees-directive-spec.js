@@ -19,7 +19,7 @@ describe('Search Consignee Directive', function () {
 
         inject(function ($rootScope, $compile, $q) {
             deferredStubIps = $q.defer();
-            mockConsigneeService.filterByType.and.returnValue(deferredStubIps.promise);
+            mockConsigneeService.fetchIPs.and.returnValue(deferredStubIps.promise);
             mockConsigneeService.getConsigneebyType.and.returnValue(stubIpList);
 
             scope = $rootScope.$new();
@@ -36,7 +36,7 @@ describe('Search Consignee Directive', function () {
             deferredStubIps.resolve(stubIpList);
 
             scope.$apply();
-            expect(mockConsigneeService.filterByType).toHaveBeenCalledWith('implementing_partner');
+            expect(mockConsigneeService.fetchIPs).toHaveBeenCalled();
             expect(mockConsigneeService.getTopLevelConsignees).toHaveBeenCalled();
         });
 

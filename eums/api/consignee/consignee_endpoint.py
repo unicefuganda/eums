@@ -22,8 +22,8 @@ class StandardResultsSetPagination(PageNumberPagination):
 class ConsigneeViewSet(ModelViewSet):
     queryset = Consignee.objects.all().order_by('name')
     serializer_class = ConsigneeSerialiser
-    filter_backends = (filters.SearchFilter,)
-    search_fields = ('type', 'customer_id', 'name', 'location')
+    search_fields = ('customer_id', 'name', 'location')
+    filter_fields = ('imported_from_vision',)
     pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):

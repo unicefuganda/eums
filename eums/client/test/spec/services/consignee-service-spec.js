@@ -2,11 +2,6 @@ describe('Consignee Service', function () {
 
     var endpointUrl, scope;
 
-    var consigneeList = [{
-        id: 1,
-        name: 'Save the Children'
-    }];
-
     beforeEach(function () {
         module('Consignee');
     });
@@ -47,24 +42,16 @@ describe('Consignee Service', function () {
             });
         });
 
-        it('should get consignees by type', function (done) {
-            mockBackend.whenGET(endpointUrl + '?search=implementing_partner').respond(consigneeList);
-            var type = 'implementing_partner';
-
-            consigneeService.filterByType(type).then(function (consignees) {
-                expect(consignees).toEqual(consigneeList);
-                done();
-            });
-            mockBackend.flush();
+        it('should get consignees implementing partners from backend', function () {
+            spyOn(consigneeService, 'filter');
+            consigneeService.fetchIPs();
+            expect(consigneeService.filter).toHaveBeenCalledWith({imported_from_vision: 'True'});
         });
 
-        it('should get all consignees by node level ', function (done) {
-            mockBackend.whenGET(endpointUrl + '?node=top').respond(consigneeList);
-            consigneeService.getTopLevelConsignees().then(function (consignees) {
-                expect(consignees).toEqual(consigneeList);
-                done();
-            });
-            mockBackend.flush();
+        it('should get all consignees by node level ', function () {
+            spyOn(consigneeService, 'filter');
+            consigneeService.getTopLevelConsignees();
+            expect(consigneeService.filter).toHaveBeenCalledWith({node: 'top'});
         });
 
         it('should delete consignee that is not imported from vision and has no deliveries attached to them', function (done) {

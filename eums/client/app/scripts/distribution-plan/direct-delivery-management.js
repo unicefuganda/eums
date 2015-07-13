@@ -188,7 +188,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
             $scope.inMultipleIpMode = false;
-            ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
+            ConsigneeService.fetchIPs().then(function (allIps) {
                 $scope.implementingPartners = allIps;
                 $scope.IPsLoaded = true;
             });

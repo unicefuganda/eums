@@ -75,17 +75,16 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.post(ENDPOINT_URL, data=consignee_one_details)
         self.assertEqual(response.status_code, 201)
 
-    def test_should_search_for_consignee_by_type(self):
-        implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner', 'location': 'Kampala'}
-        middle_man = {'name': "Kibuli DHO", 'type': 'middle_man'}
+    def test_should_filter_consignees_by_imported_from_vision_flag(self):
+        vision_consignee = ConsigneeFactory(imported_from_vision=True)
+        ConsigneeFactory(imported_from_vision=False)
 
-        implementing_partner_details = create_consignee(self, implementing_partner)
-        create_consignee(self, middle_man)
+        response = self.client.get(ENDPOINT_URL + '?imported_from_vision=True')
 
-        get_response = self.client.get(ENDPOINT_URL + '?search=implementing_partner')
-
-        self.assertEqual(get_response.status_code, 200)
-        self.assertDictContainsSubset(get_response.data[0], implementing_partner_details)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Consignee.objects.count(), 2)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], vision_consignee.id)
 
     def test_should_search_for_consignee_at_top_level(self):
         implementing_partner = {'name': "Save the Children", 'type': 'implementing_partner'}
