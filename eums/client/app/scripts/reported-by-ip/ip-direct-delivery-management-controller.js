@@ -76,7 +76,6 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
             loadPromises.add([getParentNode, getChildNodes]);
         }
 
-
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
             $location.path(rootPath + $routeParams.purchaseOrderId + '/' + purchaseOrderItem.id);
         };
@@ -139,22 +138,18 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
 
         function loadDeliveryDataFor(purchaseOrderItem) {
             var getIpNodes = function (nodes) {
-                var ipNodes = [];
-                for (var i = 0; i < nodes.length; i++) {
-                    if (!nodes[i].parent) {
-                        ipNodes.push(nodes[i]);
-                    }
-                }
-                return ipNodes;
+                return nodes.filter(function(node) {
+                    return !node.parent;
+                });
             };
             var getNodes = function (user) {
                 var filterParams = {item: purchaseOrderItem.id};
                 if (user.consignee_id) {
                     filterParams.consignee = user.consignee_id;
                 }
-                return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
-                    var ipNodes = getIpNodes(nodes);
-                    $scope.deliveryNodes = ipNodes;
+                var fieldsToBuild = ['consignee', 'contact_person_id', 'children'];
+                return DistributionPlanNodeService.filter(filterParams, fieldsToBuild).then(function (nodes) {
+                    $scope.deliveryNodes = getIpNodes(nodes);
                 });
             };
 
@@ -173,14 +168,13 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
             }
         };
 
-        $scope.computeQuantityLeft = function computeQuantityLeft(parentNode, deliveryNodes) {
+        $scope.computeQuantityLeft = function (parentNode, deliveryNodes) {
             var reduced = deliveryNodes.reduce(function (previous, current) {
                 return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
             }, {targetedQuantity: 0});
 
             return parentNode.targetedQuantity - reduced.targetedQuantity;
         };
-
 
         $q.all(loadPromises).then(hideLoader);
     });
