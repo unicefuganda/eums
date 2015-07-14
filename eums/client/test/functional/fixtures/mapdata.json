@@ -297,6 +297,14 @@
   },
   {
     "fields": {
+      "expire_date": "2015-07-28T10:16:35.332",
+      "session_data": "YjBlZDE5YzdkNDczMzY5NjdlNzZlMTFhZjRjNjVjYTk1NTIwMTNlNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjQ1MmI5MjAyMmJiM2FiZThkMTkxYjBiMTU0ZTYwNjFiYmQ4ZmI1YjkiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9"
+    },
+    "model": "sessions.session",
+    "pk": "ta93pcqcp0tlbmzalwvhk0k7jj6js1q8"
+  },
+  {
+    "fields": {
       "expire_date": "2015-07-06T19:39:00.063",
       "session_data": "YjBlZDE5YzdkNDczMzY5NjdlNzZlMTFhZjRjNjVjYTk1NTIwMTNlNTp7Il9hdXRoX3VzZXJfaGFzaCI6IjQ1MmI5MjAyMmJiM2FiZThkMTkxYjBiMTU0ZTYwNjFiYmQ4ZmI1YjkiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9"
     },
@@ -417,6 +425,22 @@
   },
   {
     "fields": {
+      "wbs_element_ex": "4380/A0/04/105/005",
+      "name": ""
+    },
+    "model": "eums.programme",
+    "pk": 17
+  },
+  {
+    "fields": {
+      "wbs_element_ex": "4380/A0/04/108/003",
+      "name": ""
+    },
+    "model": "eums.programme",
+    "pk": 18
+  },
+  {
+    "fields": {
       "date": "2014-10-13",
       "programme": 1
     },
@@ -473,381 +497,531 @@
   },
   {
     "fields": {
+      "name": "first consignee",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "",
-      "type": "implementing_partner",
-      "name": "first consignee"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 1
   },
   {
     "fields": {
+      "name": "second consigne",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "",
-      "type": "implementing_partner",
-      "name": "second consigne"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 2
   },
   {
     "fields": {
+      "name": "end user consignee",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "",
-      "type": "implementing_partner",
-      "name": "end user consignee"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 3
   },
   {
     "fields": {
+      "name": "ARUA DHO DR. ANGUZU PATRICK",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000580",
-      "type": "implementing_partner",
-      "name": "ARUA DHO DR. ANGUZU PATRICK"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 4
   },
   {
     "fields": {
+      "name": "DUMMY",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000581",
-      "type": "implementing_partner",
-      "name": "DUMMY"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 5
   },
   {
     "fields": {
+      "name": "KAABONG DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000215",
-      "type": "implementing_partner",
-      "name": "KAABONG DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 6
   },
   {
     "fields": {
+      "name": "Ntungamo  DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000520",
-      "type": "implementing_partner",
-      "name": "Ntungamo  DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 7
   },
   {
     "fields": {
+      "name": "AGAGO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000024",
-      "type": "implementing_partner",
-      "name": "AGAGO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 8
   },
   {
     "fields": {
+      "name": "AMURU DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000043",
-      "type": "implementing_partner",
-      "name": "AMURU DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 9
   },
   {
     "fields": {
+      "name": "PADER DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000394",
-      "type": "implementing_partner",
-      "name": "PADER DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 10
   },
   {
     "fields": {
+      "name": "KITGUM DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000256",
-      "type": "implementing_partner",
-      "name": "KITGUM DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 11
   },
   {
     "fields": {
+      "name": "LAMWO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000286",
-      "type": "implementing_partner",
-      "name": "LAMWO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 12
   },
   {
     "fields": {
+      "name": "NWOYA DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000381",
-      "type": "implementing_partner",
-      "name": "NWOYA DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 13
   },
   {
     "fields": {
+      "name": "YUMBE DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000498",
-      "type": "implementing_partner",
-      "name": "YUMBE DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 14
   },
   {
     "fields": {
+      "name": "BUIKWE DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000080",
-      "type": "implementing_partner",
-      "name": "BUIKWE DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 15
   },
   {
     "fields": {
+      "name": "BUKOMANSIMBI DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000503",
-      "type": "implementing_partner",
-      "name": "BUKOMANSIMBI DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 16
   },
   {
     "fields": {
+      "name": "KALUNGU DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000504",
-      "type": "implementing_partner",
-      "name": "KALUNGU DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 17
   },
   {
     "fields": {
+      "name": "LWENGO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000505",
-      "type": "implementing_partner",
-      "name": "LWENGO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 18
   },
   {
     "fields": {
+      "name": "MUBENDE DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000351",
-      "type": "implementing_partner",
-      "name": "MUBENDE DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 19
   },
   {
     "fields": {
+      "name": "MUKONO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000354",
-      "type": "implementing_partner",
-      "name": "MUKONO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 20
   },
   {
     "fields": {
+      "name": "BUNDIBUGYO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000088",
-      "type": "implementing_partner",
-      "name": "BUNDIBUGYO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 21
   },
   {
     "fields": {
+      "name": "KABALORE DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000222",
-      "type": "implementing_partner",
-      "name": "KABALORE DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 22
   },
   {
     "fields": {
+      "name": "KYENGEGWA DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000281",
-      "type": "implementing_partner",
-      "name": "KYENGEGWA DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 23
   },
   {
     "fields": {
+      "name": "KYENJOJO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000283",
-      "type": "implementing_partner",
-      "name": "KYENJOJO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 24
   },
   {
     "fields": {
+      "name": "NTOROKO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000378",
-      "type": "implementing_partner",
-      "name": "NTOROKO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 25
   },
   {
     "fields": {
+      "name": "KAMULI DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000233",
-      "type": "implementing_partner",
-      "name": "KAMULI DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 26
   },
   {
     "fields": {
+      "name": "IGANGA DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000196",
-      "type": "implementing_partner",
-      "name": "IGANGA DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 27
   },
   {
     "fields": {
+      "name": "Makindye Division Dr Walyomo Richard",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000524",
-      "type": "implementing_partner",
-      "name": "Makindye Division Dr Walyomo Richard"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 28
   },
   {
     "fields": {
+      "name": "Central Division Dr Muhammed Kirumira",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000525",
-      "type": "implementing_partner",
-      "name": "Central Division Dr Muhammed Kirumira"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 29
   },
   {
     "fields": {
+      "name": "Lubaga Division Jannat Kulabako",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000523",
-      "type": "implementing_partner",
-      "name": "Lubaga Division Jannat Kulabako"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 30
   },
   {
     "fields": {
+      "name": "Kawempe Division Dr Henry Mugerwa",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000522",
-      "type": "implementing_partner",
-      "name": "Kawempe Division Dr Henry Mugerwa"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 31
   },
   {
     "fields": {
+      "name": "ADJUMANI DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000019",
-      "type": "implementing_partner",
-      "name": "ADJUMANI DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 32
   },
   {
     "fields": {
+      "name": "RAKAI DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000401",
-      "type": "implementing_partner",
-      "name": "RAKAI DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 33
   },
   {
     "fields": {
+      "name": "UNITED NATIONS HIGH COMMISSION FOR REFUGEES",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000501",
-      "type": "implementing_partner",
-      "name": "UNITED NATIONS HIGH COMMISSION FOR REFUGEES"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 34
   },
   {
     "fields": {
+      "name": "GULU DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000176",
-      "type": "implementing_partner",
-      "name": "GULU DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 35
   },
   {
     "fields": {
+      "name": "KYEGEGWA DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000279",
-      "type": "implementing_partner",
-      "name": "KYEGEGWA DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 36
   },
   {
     "fields": {
+      "name": "MOROTO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000331",
-      "type": "implementing_partner",
-      "name": "MOROTO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 37
   },
   {
     "fields": {
+      "name": "NAPAK DHO",
+      "imported_from_vision": true,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000368",
-      "type": "implementing_partner",
-      "name": "NAPAK DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 38
   },
   {
     "fields": {
+      "name": "KOTIDO DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000267",
-      "type": "implementing_partner",
-      "name": "KOTIDO DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 39
   },
   {
     "fields": {
+      "name": "AMUDAT DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000038",
-      "type": "implementing_partner",
-      "name": "AMUDAT DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 40
   },
   {
     "fields": {
+      "name": "NAKAPIRIPIRIT DHO",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000362",
-      "type": "implementing_partner",
-      "name": "NAKAPIRIPIRIT DHO"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 41
   },
   {
     "fields": {
+      "name": "MALARIA CONSORTIUM",
+      "imported_from_vision": false,
+      "location": null,
+      "remarks": null,
       "customer_id": "L438000296",
-      "type": "implementing_partner",
-      "name": "MALARIA CONSORTIUM"
+      "type": "implementing_partner"
     },
     "model": "eums.consignee",
     "pk": 42
+  },
+  {
+    "fields": {
+      "name": "CUAMM KAMPALA",
+      "imported_from_vision": true,
+      "location": null,
+      "remarks": null,
+      "customer_id": "L438000143",
+      "type": "implementing_partner"
+    },
+    "model": "eums.consignee",
+    "pk": 44
+  },
+  {
+    "fields": {
+      "name": "UNICEF",
+      "imported_from_vision": true,
+      "location": null,
+      "remarks": null,
+      "customer_id": "L438000519",
+      "type": "implementing_partner"
+    },
+    "model": "eums.consignee",
+    "pk": 45
   },
   {
     "fields": {"name": "kgs"},
@@ -3351,6 +3525,51 @@
   },
   {
     "fields": {
+      "material_code": "SL004638",
+      "description": "Children's Rights & Busi Principles Info",
+      "unit": null
+    },
+    "model": "eums.item",
+    "pk": 276
+  },
+  {
+    "fields": {
+      "material_code": "SL004638",
+      "description": "Children's Rights & Business Principles",
+      "unit": null
+    },
+    "model": "eums.item",
+    "pk": 277
+  },
+  {
+    "fields": {
+      "material_code": "SL004638",
+      "description": "Children's Rights&Corporate Sector bklet",
+      "unit": null
+    },
+    "model": "eums.item",
+    "pk": 278
+  },
+  {
+    "fields": {
+      "material_code": "SL004638",
+      "description": "How Business Affects Us",
+      "unit": null
+    },
+    "model": "eums.item",
+    "pk": 279
+  },
+  {
+    "fields": {
+      "material_code": "SL004638",
+      "description": "Investor Perspectives & Children's Right",
+      "unit": null
+    },
+    "model": "eums.item",
+    "pk": 280
+  },
+  {
+    "fields": {
       "distribution_plan": 1,
       "remark": "hh",
       "tree_position": "END_USER",
@@ -4983,6 +5202,26 @@
     },
     "model": "eums.salesorder",
     "pk": 104
+  },
+  {
+    "fields": {
+      "date": "2014-03-27",
+      "order_number": 20129353,
+      "description": null,
+      "programme": 17
+    },
+    "model": "eums.salesorder",
+    "pk": 105
+  },
+  {
+    "fields": {
+      "date": "2014-10-13",
+      "order_number": 20157313,
+      "description": null,
+      "programme": 18
+    },
+    "model": "eums.salesorder",
+    "pk": 106
   },
   {
     "fields": {
@@ -9153,6 +9392,186 @@
     },
     "model": "eums.orderitem",
     "pk": 417
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 180,
+      "quantity": "100.00",
+      "polymorphic_ctype": 15
+    },
+    "model": "eums.orderitem",
+    "pk": 418
+  },
+  {
+    "fields": {
+      "item_number": 50,
+      "item": 276,
+      "quantity": "500.00",
+      "polymorphic_ctype": 15
+    },
+    "model": "eums.orderitem",
+    "pk": 419
+  },
+  {
+    "fields": {
+      "item_number": 30,
+      "item": 277,
+      "quantity": "500.00",
+      "polymorphic_ctype": 15
+    },
+    "model": "eums.orderitem",
+    "pk": 420
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 278,
+      "quantity": "500.00",
+      "polymorphic_ctype": 15
+    },
+    "model": "eums.orderitem",
+    "pk": 421
+  },
+  {
+    "fields": {
+      "item_number": 20,
+      "item": 279,
+      "quantity": "500.00",
+      "polymorphic_ctype": 15
+    },
+    "model": "eums.orderitem",
+    "pk": 422
+  },
+  {
+    "fields": {
+      "item_number": 40,
+      "item": 280,
+      "quantity": "500.00",
+      "polymorphic_ctype": 15
+    },
+    "model": "eums.orderitem",
+    "pk": 423
+  },
+  {
+    "fields": {
+      "item_number": 50,
+      "item": 276,
+      "quantity": "500.00",
+      "polymorphic_ctype": 27
+    },
+    "model": "eums.orderitem",
+    "pk": 424
+  },
+  {
+    "fields": {
+      "item_number": 30,
+      "item": 277,
+      "quantity": "500.00",
+      "polymorphic_ctype": 27
+    },
+    "model": "eums.orderitem",
+    "pk": 425
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 278,
+      "quantity": "500.00",
+      "polymorphic_ctype": 27
+    },
+    "model": "eums.orderitem",
+    "pk": 426
+  },
+  {
+    "fields": {
+      "item_number": 20,
+      "item": 279,
+      "quantity": "500.00",
+      "polymorphic_ctype": 27
+    },
+    "model": "eums.orderitem",
+    "pk": 427
+  },
+  {
+    "fields": {
+      "item_number": 40,
+      "item": 280,
+      "quantity": "500.00",
+      "polymorphic_ctype": 27
+    },
+    "model": "eums.orderitem",
+    "pk": 428
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 180,
+      "quantity": "100.00",
+      "polymorphic_ctype": 27
+    },
+    "model": "eums.orderitem",
+    "pk": 429
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 174,
+      "quantity": "50.00",
+      "polymorphic_ctype": 29
+    },
+    "model": "eums.orderitem",
+    "pk": 430
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 174,
+      "quantity": "1.00",
+      "polymorphic_ctype": 29
+    },
+    "model": "eums.orderitem",
+    "pk": 431
+  },
+  {
+    "fields": {
+      "item_number": 30,
+      "item": 174,
+      "quantity": "2.00",
+      "polymorphic_ctype": 29
+    },
+    "model": "eums.orderitem",
+    "pk": 432
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 174,
+      "quantity": "1.00",
+      "polymorphic_ctype": 29
+    },
+    "model": "eums.orderitem",
+    "pk": 433
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 174,
+      "quantity": "7.00",
+      "polymorphic_ctype": 29
+    },
+    "model": "eums.orderitem",
+    "pk": 434
+  },
+  {
+    "fields": {
+      "item_number": 10,
+      "item": 174,
+      "quantity": "10.00",
+      "polymorphic_ctype": 29
+    },
+    "model": "eums.orderitem",
+    "pk": 435
   },
   {
     "fields": {
@@ -14157,6 +14576,78 @@
     },
     "model": "eums.salesorderitem",
     "pk": 417
+  },
+  {
+    "fields": {
+      "issue_date": "2014-03-27",
+      "description": "Birth Cushion Set",
+      "sales_order": 105,
+      "net_price": "209.0000",
+      "net_value": "20900.0000",
+      "delivery_date": "2014-03-27"
+    },
+    "model": "eums.salesorderitem",
+    "pk": 418
+  },
+  {
+    "fields": {
+      "issue_date": "2014-10-13",
+      "description": "Children's Rights & Busi Principles Info",
+      "sales_order": 106,
+      "net_price": "1.0000",
+      "net_value": "500.0000",
+      "delivery_date": "2014-10-13"
+    },
+    "model": "eums.salesorderitem",
+    "pk": 419
+  },
+  {
+    "fields": {
+      "issue_date": "2014-10-13",
+      "description": "Children's Rights & Business Principles",
+      "sales_order": 106,
+      "net_price": "5.0000",
+      "net_value": "2500.0000",
+      "delivery_date": "2014-10-13"
+    },
+    "model": "eums.salesorderitem",
+    "pk": 420
+  },
+  {
+    "fields": {
+      "issue_date": "2014-10-13",
+      "description": "Children's Rights&Corporate Sector bklet",
+      "sales_order": 106,
+      "net_price": "5.0000",
+      "net_value": "2500.0000",
+      "delivery_date": "2014-10-13"
+    },
+    "model": "eums.salesorderitem",
+    "pk": 421
+  },
+  {
+    "fields": {
+      "issue_date": "2014-10-13",
+      "description": "How Business Affects Us",
+      "sales_order": 106,
+      "net_price": "2.0000",
+      "net_value": "1000.0000",
+      "delivery_date": "2014-10-13"
+    },
+    "model": "eums.salesorderitem",
+    "pk": 422
+  },
+  {
+    "fields": {
+      "issue_date": "2014-10-13",
+      "description": "Investor Perspectives & Children's Right",
+      "sales_order": 106,
+      "net_price": "3.0000",
+      "net_value": "1500.0000",
+      "delivery_date": "2014-10-13"
+    },
+    "model": "eums.salesorderitem",
+    "pk": 423
   },
   {
     "fields": {
@@ -19409,9 +19900,65 @@
   },
   {
     "fields": {
+      "purchase_order": 105,
+      "sales_order_item": 419,
+      "value": "267.58"
+    },
+    "model": "eums.purchaseorderitem",
+    "pk": 424
+  },
+  {
+    "fields": {
+      "purchase_order": 105,
+      "sales_order_item": 420,
+      "value": "756.21"
+    },
+    "model": "eums.purchaseorderitem",
+    "pk": 425
+  },
+  {
+    "fields": {
+      "purchase_order": 105,
+      "sales_order_item": 421,
+      "value": "541.04"
+    },
+    "model": "eums.purchaseorderitem",
+    "pk": 426
+  },
+  {
+    "fields": {
+      "purchase_order": 105,
+      "sales_order_item": 422,
+      "value": "401.53"
+    },
+    "model": "eums.purchaseorderitem",
+    "pk": 427
+  },
+  {
+    "fields": {
+      "purchase_order": 105,
+      "sales_order_item": 423,
+      "value": "395.66"
+    },
+    "model": "eums.purchaseorderitem",
+    "pk": 428
+  },
+  {
+    "fields": {
+      "purchase_order": 106,
+      "sales_order_item": 418,
+      "value": "17712.00"
+    },
+    "model": "eums.purchaseorderitem",
+    "pk": 429
+  },
+  {
+    "fields": {
       "date": "2014-12-21",
       "order_number": 12345,
-      "sales_order": 1
+      "is_single_ip": null,
+      "sales_order": 1,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 1
@@ -19420,7 +19967,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148033,
-      "sales_order": 2
+      "is_single_ip": null,
+      "sales_order": 2,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 2
@@ -19429,7 +19978,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150358,
-      "sales_order": 3
+      "is_single_ip": null,
+      "sales_order": 3,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 3
@@ -19438,7 +19989,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147539,
-      "sales_order": 4
+      "is_single_ip": null,
+      "sales_order": 4,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 4
@@ -19447,7 +20000,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20141971,
-      "sales_order": 5
+      "is_single_ip": null,
+      "sales_order": 5,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 5
@@ -19456,7 +20011,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20135486,
-      "sales_order": 6
+      "is_single_ip": null,
+      "sales_order": 6,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 6
@@ -19465,7 +20022,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148737,
-      "sales_order": 7
+      "is_single_ip": null,
+      "sales_order": 7,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 7
@@ -19474,7 +20033,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20135300,
-      "sales_order": 8
+      "is_single_ip": null,
+      "sales_order": 8,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 8
@@ -19483,7 +20044,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20135686,
-      "sales_order": 9
+      "is_single_ip": null,
+      "sales_order": 9,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 9
@@ -19492,7 +20055,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149353,
-      "sales_order": 10
+      "is_single_ip": null,
+      "sales_order": 10,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 10
@@ -19501,7 +20066,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149293,
-      "sales_order": 11
+      "is_single_ip": null,
+      "sales_order": 11,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 11
@@ -19510,7 +20077,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152899,
-      "sales_order": 12
+      "is_single_ip": null,
+      "sales_order": 12,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 12
@@ -19519,7 +20088,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153396,
-      "sales_order": 13
+      "is_single_ip": null,
+      "sales_order": 13,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 13
@@ -19528,7 +20099,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20145809,
-      "sales_order": 14
+      "is_single_ip": null,
+      "sales_order": 14,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 14
@@ -19537,7 +20110,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148341,
-      "sales_order": 15
+      "is_single_ip": null,
+      "sales_order": 15,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 15
@@ -19546,7 +20121,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20156130,
-      "sales_order": 16
+      "is_single_ip": null,
+      "sales_order": 16,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 16
@@ -19555,7 +20132,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20156023,
-      "sales_order": 17
+      "is_single_ip": null,
+      "sales_order": 17,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 17
@@ -19564,7 +20143,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20156020,
-      "sales_order": 18
+      "is_single_ip": null,
+      "sales_order": 18,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 18
@@ -19573,7 +20154,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20155548,
-      "sales_order": 19
+      "is_single_ip": null,
+      "sales_order": 19,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 19
@@ -19582,7 +20165,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20155285,
-      "sales_order": 20
+      "is_single_ip": null,
+      "sales_order": 20,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 20
@@ -19591,7 +20176,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20155260,
-      "sales_order": 21
+      "is_single_ip": null,
+      "sales_order": 21,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 21
@@ -19600,7 +20187,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154856,
-      "sales_order": 22
+      "is_single_ip": null,
+      "sales_order": 22,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 22
@@ -19609,7 +20198,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154788,
-      "sales_order": 23
+      "is_single_ip": null,
+      "sales_order": 23,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 23
@@ -19618,7 +20209,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154704,
-      "sales_order": 24
+      "is_single_ip": null,
+      "sales_order": 24,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 24
@@ -19627,7 +20220,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154698,
-      "sales_order": 25
+      "is_single_ip": null,
+      "sales_order": 25,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 25
@@ -19636,7 +20231,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154640,
-      "sales_order": 26
+      "is_single_ip": null,
+      "sales_order": 26,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 26
@@ -19645,7 +20242,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154551,
-      "sales_order": 27
+      "is_single_ip": null,
+      "sales_order": 27,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 27
@@ -19654,7 +20253,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154411,
-      "sales_order": 28
+      "is_single_ip": null,
+      "sales_order": 28,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 28
@@ -19663,7 +20264,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154406,
-      "sales_order": 29
+      "is_single_ip": null,
+      "sales_order": 29,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 29
@@ -19672,7 +20275,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20154234,
-      "sales_order": 30
+      "is_single_ip": null,
+      "sales_order": 30,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 30
@@ -19681,7 +20286,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153917,
-      "sales_order": 31
+      "is_single_ip": null,
+      "sales_order": 31,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 31
@@ -19690,7 +20297,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153539,
-      "sales_order": 32
+      "is_single_ip": null,
+      "sales_order": 32,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 32
@@ -19699,7 +20308,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153457,
-      "sales_order": 33
+      "is_single_ip": null,
+      "sales_order": 33,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 33
@@ -19708,7 +20319,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153438,
-      "sales_order": 34
+      "is_single_ip": null,
+      "sales_order": 34,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 34
@@ -19717,7 +20330,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153397,
-      "sales_order": 35
+      "is_single_ip": null,
+      "sales_order": 35,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 35
@@ -19726,7 +20341,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20153195,
-      "sales_order": 36
+      "is_single_ip": null,
+      "sales_order": 36,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 36
@@ -19735,7 +20352,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152898,
-      "sales_order": 37
+      "is_single_ip": null,
+      "sales_order": 37,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 37
@@ -19744,7 +20363,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152894,
-      "sales_order": 38
+      "is_single_ip": null,
+      "sales_order": 38,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 38
@@ -19753,7 +20374,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152848,
-      "sales_order": 39
+      "is_single_ip": null,
+      "sales_order": 39,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 39
@@ -19762,7 +20385,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152836,
-      "sales_order": 40
+      "is_single_ip": null,
+      "sales_order": 40,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 40
@@ -19771,7 +20396,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152826,
-      "sales_order": 41
+      "is_single_ip": null,
+      "sales_order": 41,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 41
@@ -19780,7 +20407,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152614,
-      "sales_order": 42
+      "is_single_ip": null,
+      "sales_order": 42,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 42
@@ -19789,7 +20418,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152484,
-      "sales_order": 43
+      "is_single_ip": null,
+      "sales_order": 43,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 43
@@ -19798,7 +20429,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152479,
-      "sales_order": 44
+      "is_single_ip": null,
+      "sales_order": 44,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 44
@@ -19807,7 +20440,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152446,
-      "sales_order": 45
+      "is_single_ip": null,
+      "sales_order": 45,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 45
@@ -19816,7 +20451,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152438,
-      "sales_order": 46
+      "is_single_ip": null,
+      "sales_order": 46,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 46
@@ -19825,7 +20462,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152431,
-      "sales_order": 47
+      "is_single_ip": null,
+      "sales_order": 47,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 47
@@ -19834,7 +20473,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152327,
-      "sales_order": 48
+      "is_single_ip": null,
+      "sales_order": 48,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 48
@@ -19843,7 +20484,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20152124,
-      "sales_order": 49
+      "is_single_ip": null,
+      "sales_order": 49,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 49
@@ -19852,7 +20495,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151862,
-      "sales_order": 50
+      "is_single_ip": null,
+      "sales_order": 50,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 50
@@ -19861,7 +20506,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151855,
-      "sales_order": 51
+      "is_single_ip": null,
+      "sales_order": 51,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 51
@@ -19870,7 +20517,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151698,
-      "sales_order": 52
+      "is_single_ip": null,
+      "sales_order": 52,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 52
@@ -19879,7 +20528,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151686,
-      "sales_order": 53
+      "is_single_ip": null,
+      "sales_order": 53,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 53
@@ -19888,7 +20539,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151491,
-      "sales_order": 54
+      "is_single_ip": null,
+      "sales_order": 54,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 54
@@ -19897,7 +20550,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151442,
-      "sales_order": 55
+      "is_single_ip": null,
+      "sales_order": 55,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 55
@@ -19906,7 +20561,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151377,
-      "sales_order": 56
+      "is_single_ip": null,
+      "sales_order": 56,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 56
@@ -19915,7 +20572,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151371,
-      "sales_order": 57
+      "is_single_ip": null,
+      "sales_order": 57,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 57
@@ -19924,7 +20583,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151097,
-      "sales_order": 58
+      "is_single_ip": null,
+      "sales_order": 58,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 58
@@ -19933,7 +20594,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20151094,
-      "sales_order": 59
+      "is_single_ip": null,
+      "sales_order": 59,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 59
@@ -19942,7 +20605,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150937,
-      "sales_order": 60
+      "is_single_ip": null,
+      "sales_order": 60,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 60
@@ -19951,7 +20616,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150684,
-      "sales_order": 61
+      "is_single_ip": null,
+      "sales_order": 61,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 61
@@ -19960,7 +20627,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150447,
-      "sales_order": 62
+      "is_single_ip": null,
+      "sales_order": 62,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 62
@@ -19969,7 +20638,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150442,
-      "sales_order": 63
+      "is_single_ip": null,
+      "sales_order": 63,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 63
@@ -19978,7 +20649,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150432,
-      "sales_order": 64
+      "is_single_ip": null,
+      "sales_order": 64,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 64
@@ -19987,7 +20660,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150364,
-      "sales_order": 65
+      "is_single_ip": null,
+      "sales_order": 65,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 65
@@ -19996,7 +20671,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150357,
-      "sales_order": 66
+      "is_single_ip": null,
+      "sales_order": 66,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 66
@@ -20005,7 +20682,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20150138,
-      "sales_order": 67
+      "is_single_ip": null,
+      "sales_order": 67,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 67
@@ -20014,7 +20693,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149876,
-      "sales_order": 68
+      "is_single_ip": null,
+      "sales_order": 68,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 68
@@ -20023,7 +20704,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149865,
-      "sales_order": 69
+      "is_single_ip": null,
+      "sales_order": 69,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 69
@@ -20032,7 +20715,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149812,
-      "sales_order": 70
+      "is_single_ip": null,
+      "sales_order": 70,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 70
@@ -20041,7 +20726,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149713,
-      "sales_order": 71
+      "is_single_ip": null,
+      "sales_order": 71,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 71
@@ -20050,7 +20737,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149529,
-      "sales_order": 72
+      "is_single_ip": null,
+      "sales_order": 72,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 72
@@ -20059,7 +20748,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149456,
-      "sales_order": 73
+      "is_single_ip": null,
+      "sales_order": 73,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 73
@@ -20068,7 +20759,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149396,
-      "sales_order": 74
+      "is_single_ip": null,
+      "sales_order": 74,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 74
@@ -20077,7 +20770,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149354,
-      "sales_order": 75
+      "is_single_ip": null,
+      "sales_order": 75,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 75
@@ -20086,7 +20781,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149298,
-      "sales_order": 76
+      "is_single_ip": null,
+      "sales_order": 76,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 76
@@ -20095,7 +20792,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149207,
-      "sales_order": 77
+      "is_single_ip": null,
+      "sales_order": 77,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 77
@@ -20104,7 +20803,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149204,
-      "sales_order": 78
+      "is_single_ip": null,
+      "sales_order": 78,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 78
@@ -20113,7 +20814,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20149038,
-      "sales_order": 79
+      "is_single_ip": null,
+      "sales_order": 79,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 79
@@ -20122,7 +20825,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148958,
-      "sales_order": 80
+      "is_single_ip": null,
+      "sales_order": 80,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 80
@@ -20131,7 +20836,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148739,
-      "sales_order": 81
+      "is_single_ip": null,
+      "sales_order": 81,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 81
@@ -20140,7 +20847,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148400,
-      "sales_order": 82
+      "is_single_ip": null,
+      "sales_order": 82,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 82
@@ -20149,7 +20858,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148359,
-      "sales_order": 83
+      "is_single_ip": null,
+      "sales_order": 83,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 83
@@ -20158,7 +20869,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148342,
-      "sales_order": 84
+      "is_single_ip": null,
+      "sales_order": 84,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 84
@@ -20167,7 +20880,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148307,
-      "sales_order": 85
+      "is_single_ip": null,
+      "sales_order": 85,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 85
@@ -20176,7 +20891,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148208,
-      "sales_order": 86
+      "is_single_ip": null,
+      "sales_order": 86,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 86
@@ -20185,7 +20902,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148149,
-      "sales_order": 87
+      "is_single_ip": null,
+      "sales_order": 87,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 87
@@ -20194,7 +20913,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148083,
-      "sales_order": 88
+      "is_single_ip": null,
+      "sales_order": 88,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 88
@@ -20203,7 +20924,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148049,
-      "sales_order": 89
+      "is_single_ip": null,
+      "sales_order": 89,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 89
@@ -20212,7 +20935,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20148031,
-      "sales_order": 90
+      "is_single_ip": null,
+      "sales_order": 90,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 90
@@ -20221,7 +20946,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147814,
-      "sales_order": 91
+      "is_single_ip": null,
+      "sales_order": 91,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 91
@@ -20230,7 +20957,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147735,
-      "sales_order": 92
+      "is_single_ip": null,
+      "sales_order": 92,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 92
@@ -20239,7 +20968,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147702,
-      "sales_order": 93
+      "is_single_ip": null,
+      "sales_order": 93,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 93
@@ -20248,7 +20979,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147633,
-      "sales_order": 94
+      "is_single_ip": null,
+      "sales_order": 94,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 94
@@ -20257,7 +20990,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147610,
-      "sales_order": 95
+      "is_single_ip": null,
+      "sales_order": 95,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 95
@@ -20266,7 +21001,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147608,
-      "sales_order": 96
+      "is_single_ip": null,
+      "sales_order": 96,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 96
@@ -20275,7 +21012,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147602,
-      "sales_order": 97
+      "is_single_ip": null,
+      "sales_order": 97,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 97
@@ -20284,7 +21023,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147548,
-      "sales_order": 98
+      "is_single_ip": null,
+      "sales_order": 98,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 98
@@ -20293,7 +21034,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147537,
-      "sales_order": 99
+      "is_single_ip": null,
+      "sales_order": 99,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 99
@@ -20302,7 +21045,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147523,
-      "sales_order": 100
+      "is_single_ip": null,
+      "sales_order": 100,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 100
@@ -20311,7 +21056,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147381,
-      "sales_order": 101
+      "is_single_ip": null,
+      "sales_order": 101,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 101
@@ -20320,7 +21067,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147188,
-      "sales_order": 102
+      "is_single_ip": null,
+      "sales_order": 102,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 102
@@ -20329,7 +21078,9 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20147028,
-      "sales_order": 103
+      "is_single_ip": null,
+      "sales_order": 103,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 103
@@ -20338,10 +21089,160 @@
     "fields": {
       "date": "2014-12-21",
       "order_number": 20146879,
-      "sales_order": 104
+      "is_single_ip": null,
+      "sales_order": 104,
+      "po_type": null
     },
     "model": "eums.purchaseorder",
     "pk": 104
+  },
+  {
+    "fields": {
+      "date": "2014-12-03",
+      "order_number": 81026395,
+      "is_single_ip": null,
+      "sales_order": 106,
+      "po_type": "ZLC"
+    },
+    "model": "eums.purchaseorder",
+    "pk": 105
+  },
+  {
+    "fields": {
+      "date": "2014-04-07",
+      "order_number": 81019250,
+      "is_single_ip": null,
+      "sales_order": 105,
+      "po_type": "ZLC"
+    },
+    "model": "eums.purchaseorder",
+    "pk": 106
+  },
+  {
+    "fields": {
+      "purchase_order_item": 429,
+      "value": "8999.05",
+      "release_order": 1
+    },
+    "model": "eums.releaseorderitem",
+    "pk": 430
+  },
+  {
+    "fields": {
+      "purchase_order_item": 429,
+      "value": "179.98",
+      "release_order": 2
+    },
+    "model": "eums.releaseorderitem",
+    "pk": 431
+  },
+  {
+    "fields": {
+      "purchase_order_item": 429,
+      "value": "359.96",
+      "release_order": 3
+    },
+    "model": "eums.releaseorderitem",
+    "pk": 432
+  },
+  {
+    "fields": {
+      "purchase_order_item": 429,
+      "value": "179.98",
+      "release_order": 4
+    },
+    "model": "eums.releaseorderitem",
+    "pk": 433
+  },
+  {
+    "fields": {
+      "purchase_order_item": 429,
+      "value": "1259.87",
+      "release_order": 5
+    },
+    "model": "eums.releaseorderitem",
+    "pk": 434
+  },
+  {
+    "fields": {
+      "purchase_order_item": 429,
+      "value": "1799.80",
+      "release_order": 6
+    },
+    "model": "eums.releaseorderitem",
+    "pk": 435
+  },
+  {
+    "fields": {
+      "sales_order": 105,
+      "waybill": 72082647,
+      "consignee": 1,
+      "purchase_order": 106,
+      "order_number": 54102852,
+      "delivery_date": "2014-08-19"
+    },
+    "model": "eums.releaseorder",
+    "pk": 1
+  },
+  {
+    "fields": {
+      "sales_order": 105,
+      "waybill": 72089797,
+      "consignee": 44,
+      "purchase_order": 106,
+      "order_number": 54109789,
+      "delivery_date": "2014-11-06"
+    },
+    "model": "eums.releaseorder",
+    "pk": 2
+  },
+  {
+    "fields": {
+      "sales_order": 105,
+      "waybill": 72088441,
+      "consignee": 38,
+      "purchase_order": 106,
+      "order_number": 54110379,
+      "delivery_date": "2014-10-23"
+    },
+    "model": "eums.releaseorder",
+    "pk": 3
+  },
+  {
+    "fields": {
+      "sales_order": 105,
+      "waybill": 72090975,
+      "consignee": 44,
+      "purchase_order": 106,
+      "order_number": 54112876,
+      "delivery_date": "2014-11-18"
+    },
+    "model": "eums.releaseorder",
+    "pk": 4
+  },
+  {
+    "fields": {
+      "sales_order": 105,
+      "waybill": 72102556,
+      "consignee": 44,
+      "purchase_order": 106,
+      "order_number": 54127722,
+      "delivery_date": "2015-03-25"
+    },
+    "model": "eums.releaseorder",
+    "pk": 5
+  },
+  {
+    "fields": {
+      "sales_order": 105,
+      "waybill": 72077697,
+      "consignee": 45,
+      "purchase_order": 106,
+      "order_number": 57006881,
+      "delivery_date": "2014-06-25"
+    },
+    "model": "eums.releaseorder",
+    "pk": 6
   },
   {
     "fields": {
@@ -21297,23 +22198,5 @@
     },
     "model": "auth.group",
     "pk": 2
-  },
-  {
-    "fields": {
-      "username": "admin",
-      "first_name": "",
-      "last_name": "",
-      "is_active": true,
-      "is_superuser": true,
-      "is_staff": true,
-      "last_login": "2015-06-22T19:39:00.061",
-      "groups": [],
-      "user_permissions": [],
-      "password": "pbkdf2_sha256$12000$2bb3iUxyCylj$yv6UMIj1IuNr81BR3T6o0q0zwuRWSi5uyACf3+Qf/dU=",
-      "email": "adm@a.com",
-      "date_joined": "2015-06-22T19:38:54.858"
-    },
-    "model": "auth.user",
-    "pk": 1
   }
 ]

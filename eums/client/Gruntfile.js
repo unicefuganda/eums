@@ -248,7 +248,7 @@ module.exports = function (grunt) {
                 }
             },
             seedData: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings && python manage.py loaddata eums/client/test/functional/fixtures/staging_datadump.json --settings=eums.test_settings',
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {

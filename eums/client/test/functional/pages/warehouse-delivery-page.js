@@ -24,6 +24,32 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
 
     searchForThisWaybill: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
+    }},
+
+    selectContact: { value: function (contact) {
+        element(by.id('select2-chosen-4')).click();
+        element(by.id('s2id_autogen4_search')).clear().sendKeys(contact);
+        element(by.css('.select2-results li')).click();
+    }},
+
+    selectLocation: { value: function (location) {
+        element(by.id('select2-chosen-6')).click();
+        element(by.id('s2id_autogen6_search')).clear().sendKeys(location);
+        element(by.css('.select2-results li')).click();
+    }},
+
+    saveDelivery: { value: function () {
+        element(by.id('warehouseSaveBtn')).click();
+
+        var EC = protractor.ExpectedConditions;
+        var successToast = element(by.repeater('message in messages'));
+        var deliveryIsSaved = EC.stalenessOf(successToast);
+
+        browser.wait(deliveryIsSaved, 5000, "Timeout exceeded while while waiting for delivery saved notifcation");
+    }},
+
+    firstReleaseOrderAttributes: { get: function () {
+        return element.all(by.repeater('releaseOrder in releaseOrders')).first().element(by.css('span')).getAttribute('class');
     }}
 
 });

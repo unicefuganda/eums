@@ -1,17 +1,20 @@
-var LoginPage = function () {
+var LoginPage = function () {};
 
-    this.url = 'login';
-    this.visit = function () {
+LoginPage.prototype = Object.create({}, {
+
+    url: { get: function () { return 'login'; }},
+
+    visit: { value: function () {
         browser.ignoreSynchronization = true;
         browser.get(this.url);
-    };
+    }},
 
-    this.welcomeMessage = element(by.id('login-welcome'));
-    this.username = element(by.id('username'));
-    this.password = element(by.id('password'));
-    this.loginButton = element(by.id('btn-login'));
+    welcomeMessage: { get: function () { return element(by.id('login-welcome')); }},
+    username: { get: function () { return element(by.id('username')); }},
+    password: { get: function () { return element(by.id('password')); }},
+    loginButton: { get: function () { return element(by.id('btn-login')); }},
 
-    this.loginAs = function (username, password) {
+    loginAs: { value: function (username, password) {
         this.username.sendKeys(username);
         this.password.sendKeys(password);
         this.loginButton.click();
@@ -24,12 +27,14 @@ var LoginPage = function () {
         var mapHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
 
         browser.wait(mapHasLoaded, 5000, "Timeout exceeded while loading map");
-    };
-    this.loginWithNoWaitAs = function (username, password) {
+    }},
+
+    loginWithNoWaitAs: { value: function (username, password) {
         this.username.sendKeys(username);
         this.password.sendKeys(password);
         this.loginButton.click();
-    };
-};
+    }}
+
+});
 
 module.exports = new LoginPage;
