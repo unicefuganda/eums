@@ -118,4 +118,9 @@ describe('Route Provider', function () {
         expect(routes.routes['/field-verification-details/waybill/:releaseOrderId'].templateUrl).toBe('/static/app/views/distribution-reporting/details.html');
     });
 
+    it('should have a consignees route', function () {
+        expect((Object.keys(routes.routes))).toContain('/consignees');
+        expect(routes.routes['/consignees'].controller).toBe('ConsigneesController');
+        expect(routes.routes['/consignees'].templateUrl).toBe('/static/app/views/consignees/consignees.html');
+    });
 });
