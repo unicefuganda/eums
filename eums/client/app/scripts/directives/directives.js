@@ -19,7 +19,6 @@ angular.module('Directives', [])
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 var list = JSON.parse(attrs.list);
-
                 element.select2({
                     width: '100%',
                     query: function (query) {

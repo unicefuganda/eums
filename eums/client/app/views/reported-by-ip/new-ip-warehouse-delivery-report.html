@@ -94,7 +94,7 @@
                         <tbody>
                         <tr ng-repeat="node in deliveryNodes">
                             <td id="input-available-quantity">
-                                {{ parentNode ? computeQuantityLeft(parentNode, deliveryNodes) : node.quantityLeft(node.children) }}
+                                {{ parentNode ? parentNode.quantityLeft(deliveryNodes) : node.quantityLeft() }}
                             </td>
                             <td id="input-unit">{{ selectedReleaseOrderItem.item.unit.name }}</td>
                             <td><input type="text" id="input-quantity" class="form-control"
@@ -124,8 +124,8 @@
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
-                                        <input type="hidden" search-from-list list="{{ consignees }}"
-                                               ng-model="node.consignee.id"
+                                        <input type="hidden" search-from-list="" list="{{ consignees }}"
+                                               ng-model="node.consignee.id"  ng-if="consignees.length"
                                                ng-disabled="node.flowTriggered"
                                                value="{{ node.consignee.id }}">
                                     </div>
@@ -166,7 +166,7 @@
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ node.isEndUser }}"
                                            ng-model="node.isEndUser"
-                                           ng-disabled="node.flowTriggered">
+                                           ng-disabled="node.flowTriggered || node.hasSubConsignees()">
                                 </div>
                             </td>
                             <td>
