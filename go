@@ -16,6 +16,9 @@ function main {
         resetdb
       fi;;
 
+    "seed" )
+      seed;;
+
     "bt" )
       testbackend;;
 
@@ -92,6 +95,10 @@ function runserver {
   pip install -r requirements.txt
   ./manage.py migrate
   ./manage.py runserver
+}
+
+function seed {
+  python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json
 }
 
 main $@
