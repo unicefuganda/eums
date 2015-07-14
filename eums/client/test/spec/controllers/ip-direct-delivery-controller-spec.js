@@ -1,6 +1,6 @@
 describe('IP Direct delivery Controller', function () {
     var mockPurchaseOrderService, mockUserService, location, scope, deferredPurchaseOrders, deferredUser;
-    var purchaseOrders = [{order_number: 10}, {order_number: 2}, {order_number: 8}];
+    var purchaseOrders = [{order_number: 10, hasPlan:true}, {order_number: 2, hasPlan:true}, {order_number: 8}];
     var user = {consignee_id: 1};
     var fakeElement = {
         modal: function () {
@@ -39,8 +39,9 @@ describe('IP Direct delivery Controller', function () {
         deferredUser.resolve(user);
         scope.initialize();
         scope.$apply();
+        var expectedPurchaseOrders = [{order_number: 10, hasPlan:true}, {order_number: 2, hasPlan:true}]
         expect(mockPurchaseOrderService.forUser).toHaveBeenCalledWith(user);
-        expect(scope.purchaseOrders).toEqual(purchaseOrders);
+        expect(scope.purchaseOrders).toEqual(expectedPurchaseOrders);
     });
 
     it('should redirect to new report page when purchase order is selected', function () {

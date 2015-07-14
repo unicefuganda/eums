@@ -13,7 +13,11 @@ angular.module('IPDirectDelivery', ['ngTable', 'siTable', 'PurchaseOrder', 'User
 
             UserService.getCurrentUser().then(function (user) {
                 PurchaseOrderService.forUser(user).then(function (purchaseOrders) {
-                    $scope.purchaseOrders = purchaseOrders.sort();
+                    purchaseOrders.forEach(function (purchaseOrder) {
+                        if(purchaseOrder.hasPlan) {
+                            $scope.purchaseOrders.push(purchaseOrder);
+                        }
+                    });
                     angular.element('#loading').modal('hide');
                 });
             });

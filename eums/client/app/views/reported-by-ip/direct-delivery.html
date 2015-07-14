@@ -52,7 +52,7 @@
 
                 <tbody>
                 <tr ng-repeat="purchaseOrder in purchaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
-                    <td data-header="Sales Order">
+                    <td data-header="Purchase Order">
                         <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
                     </td>
                     <td data-header="Date Created">
