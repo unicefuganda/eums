@@ -34,7 +34,7 @@ class ConsigneeViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         paginate = request.GET.get('paginate', None)
-        if not paginate:
+        if paginate != 'true':
             self.paginator.page_size = 0
         return super(ConsigneeViewSet, self).list(request, args, kwargs)
 
