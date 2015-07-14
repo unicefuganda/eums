@@ -31,7 +31,7 @@ describe('Delete Consignee Controller', function () {
     });
 
     describe('when "deleteConsignee" event is fired', function () {
-        it('should should show the edit consignee modal', function () {
+        it('should should show the delete consignee modal', function () {
             spyOn(fakeElement, 'modal');
             rootScope.$broadcast('deleteConsignee', consignee);
             scope.$apply();
@@ -71,19 +71,12 @@ describe('Delete Consignee Controller', function () {
             });
         });
 
-        it('should remove modal whether or not delete is successful', function() {
+        it('should remove modal when delete is successful', function() {
             deleteConsigneePromise.resolve(consignee);
             spyOn(fakeElement, 'modal');
             scope.del(consignee);
             scope.$apply();
             expect(fakeElement.modal).toHaveBeenCalledWith('hide');
-
-
-            deleteConsigneePromise.reject('some reason');
-            scope.del(consignee);
-            scope.$apply();
-            expect(fakeElement.modal).toHaveBeenCalledWith('hide');
-            expect(fakeElement.modal.calls.count()).toBe(2);
         });
     });
 });

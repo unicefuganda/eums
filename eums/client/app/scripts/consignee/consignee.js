@@ -231,13 +231,13 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             $scope.consignee = {};
             $scope.object = object;
             $scope.objectIndex = objectIndex;
-            $('#add-consignee-modal').modal();
+            angular.element('#add-consignee-modal').modal();
         });
 
         $scope.save = function (contact) {
             ConsigneeService.create(contact).then(function (createdConsignee) {
                 $scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
-                $('#add-consignee-modal').modal('hide');
+                angular.element('#add-consignee-modal').modal('hide');
             }).catch(function (response) {
                 ngToast.create({content: response.data.error, class: 'danger'});
             });
