@@ -101,7 +101,7 @@ describe('DirectDeliveryController', function () {
 
     var setUp = function (routeParams) {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'all', 'createPlan', 'updatePlanTracking']);
-        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update']);
+        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update', 'filter']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
@@ -124,11 +124,12 @@ describe('DirectDeliveryController', function () {
             deferredItemPromise = $q.defer();
             mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
+            mockNodeService.filter.and.returnValue(deferredTopLevelNodes.promise);
             mockNodeService.create.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
-            mockPurchaseOrderItemService.get.and.returnValue(deferred.promise);
+            mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItem.promise);
             mockPurchaseOrderItemService.getTopLevelDistributionPlanNodes.and.returnValue(deferredTopLevelNodes.promise);
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
@@ -136,7 +137,7 @@ describe('DirectDeliveryController', function () {
 
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
-            if (!routeParams.deliveryNodeId) {
+            if (!routeParams.deliveryNodeId && !routeParams.purchaseOrderItemId) {
                 spyOn(angular, 'element').and.callFake(function () {
                     return {
                         modal: jasmine.createSpy('modal').and.callFake(function (status) {
@@ -229,19 +230,20 @@ describe('DirectDeliveryController', function () {
     });
 
     describe('when distributionPlanNodes list on scope changes, ', function () {
+
         it('the selected purchase order item quantityLeft attribute should be updated', function () {
             scope.invalidNodes = false;
-            scope.totalQuantity = 100;
             scope.selectedPurchaseOrderItem = {quantity: 100, information: stubPurchaseOrderItem};
             scope.$apply();
 
             scope.distributionPlanNodes.push({targetedQuantity: 50});
             scope.$apply();
-            expect(scope.quantityLeft).toBe(50);
+            expect(scope.computeQuantityLeft(scope.distributionPlanNodes)).toBe(50);
 
             scope.distributionPlanNodes[0].targetedQuantity = 25;
+            scope.distributionPlanNodes.push({targetedQuantity: 55});
             scope.$apply();
-            expect(scope.quantityLeft).toBe(75);
+            expect(scope.computeQuantityLeft(scope.distributionPlanNodes)).toBe(20);
 
         });
 
@@ -270,8 +272,6 @@ describe('DirectDeliveryController', function () {
 
             it('sets the invalidNodes field to false when there are no invalid nodes', function () {
                 scope.invalidNodes = false;
-                scope.quantityLeft = 100;
-                scope.totalQuantity = 100;
                 scope.distributionPlanNodes.push(validNode);
                 scope.$apply();
 
@@ -378,6 +378,50 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
             expect(scope.purchaseOrderItems).toEqual(purchaseOrders[0].purchaseorderitemSet);
         });
+
+    });
+
+    describe('when the controller is initialized with PO and POItem', function () {
+
+        var topLevelNodes = [{
+            consignee: {
+                name: 'Save the Children'
+            },
+            location: 'Kampala',
+            contact_person: {_id: 1}
+        }];
+
+        it('should put the poItem on the scope', function () {
+            setUp({purchaseOrderId: 1, purchaseOrderItemId: 1});
+            deferredDistrictPromise.resolve({data: plainDistricts});
+
+            deferredPurchaseOrder.resolve(purchaseOrders[0]);
+            deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
+            deferredTopLevelNodes.resolve(topLevelNodes);
+            scope.$apply();
+            expect(scope.selectedPurchaseOrder).toEqual(purchaseOrders[0]);
+            expect(scope.selectedPurchaseOrderItem).toEqual(stubPurchaseOrderItem);
+            expect(scope.distributionPlanNodes).toEqual(topLevelNodes);
+        });
+
+        it('should reset track, invalid nodes and distribution plan if newly selected item has no items', function () {
+            setUp({purchaseOrderId: 1, purchaseOrderItemId: 1});
+
+            scope.track = true;
+            scope.invalidNodes = false;
+            scope.distributionPlan = 1;
+            deferredDistrictPromise.resolve({data: plainDistricts});
+
+            deferredPurchaseOrder.resolve(purchaseOrders[0]);
+            deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
+            deferredTopLevelNodes.resolve([]);
+
+            scope.$apply();
+
+            expect(scope.track).toEqual(false);
+            expect(scope.invalidNodes).toEqual(NaN);
+            expect(scope.distributionPlan).toEqual(NaN);
+        });
     });
 
     describe('when purchase order item selected changes, ', function () {
@@ -410,7 +454,7 @@ describe('DirectDeliveryController', function () {
 
             deferredUserPromise.resolve(stubUser);
             deferredNode.resolve({});
-            deferredPlanNode.resolve({distributionPlan: 2, distributionplannode_set: [1]});
+            deferredPlanNode.resolve({distributionPlan: 2, children: [{id:1}]});
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual(2);
@@ -421,59 +465,18 @@ describe('DirectDeliveryController', function () {
 
             deferredUserPromise.resolve(stubUser);
             deferredNode.resolve({});
-            deferredPlanNode.resolve({distributionPlan: 2, distributionplannode_set: [1]});
+            deferredPlanNode.resolve({distributionPlan: 2, children: [{id:1}]});
             scope.$apply();
 
             expect(scope.distributionPlan).toEqual(2);
         });
 
-        it('should call the get distribution plan node service linked to the particular purchase order item', function () {
-            deferredUserPromise.resolve(stubUser);
+        it('should navigate to same page with POid and POItemId specified', function () {
+            scope.selectedPurchaseOrder = {id: 5};
+            scope.selectPurchaseOrderItem({id: 1});
             scope.$apply();
 
-            deferredPlanNode.resolve({
-                consignee: {
-                    name: 'Save the Children'
-                },
-                location: 'Kampala',
-                contact_person: {_id: 1}
-            });
-
-            var stubNode = {id: 1};
-            var stubNode2 = {id: 2};
-            deferred.resolve(stubPurchaseOrderItem);
-            deferredTopLevelNodes.resolve([stubNode, stubNode2]);
-            deferredNode.resolve(stubNode);
-
-            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
-            scope.selectPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockPurchaseOrderItemService.getTopLevelDistributionPlanNodes).toHaveBeenCalledWith(stubPurchaseOrderItem);
-        });
-
-        it('should put the distribution plan nodes linked to the particular purchase order item on the scope', function () {
-            deferredUserPromise.resolve(stubUser);
-            scope.$apply();
-
-            deferredPlanNode.resolve({
-                consignee: {
-                    name: 'Save the Children'
-                },
-                location: 'Kampala',
-                contact_person: {_id: 1}
-            });
-            var stubNode = {id: 1};
-            var stubNode2 = {id: 2};
-            deferred.resolve(stubPurchaseOrderItem);
-            deferredNode.resolve(stubNode);
-            deferredTopLevelNodes.resolve([stubNode, stubNode2]);
-
-            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
-            scope.selectPurchaseOrderItem();
-            scope.$apply();
-
-            expect(scope.distributionPlanNodes).toEqual([stubNode, stubNode2]);
+            expect(location.path()).toBe('/direct-delivery/new/5-1');
         });
 
         it('should not get distribution plan nodes if there are no ui nodes', function () {
@@ -491,25 +494,10 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should not get distribution plan nodes service linked to the particular purchase order item with undefined line item set', function () {
-
             scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.$apply();
 
             expect(scope.distributionPlanNodes).toEqual([]);
-        });
-
-        it('should reset track, invalid nodes and distribution plan if newly selected item has no items', function () {
-            scope.track = true;
-            scope.invalidNodes = false;
-            scope.distributionPlan = 1;
-
-            scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
-            scope.selectPurchaseOrderItem();
-            scope.$apply();
-
-            expect(scope.track).toEqual(false);
-            expect(scope.invalidNodes).toEqual(NaN);
-            expect(scope.distributionPlan).toEqual(NaN);
         });
     });
 
@@ -526,7 +514,7 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function () {
-            scope.planNode = 1;
+            scope.parentNode = 1;
 
             scope.trackPurchaseOrderItem();
             scope.$apply();
@@ -556,7 +544,7 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should call updatePlanTracking if track is set to true and no plan Node', function () {
-            scope.planNode = NaN;
+            scope.parentNode = NaN;
 
             scope.trackPurchaseOrderItem();
             scope.$apply();
@@ -594,26 +582,26 @@ describe('DirectDeliveryController', function () {
 
     describe('should rout correctly on page', function () {
         it('when Sub Consignee button is clicked', function () {
-            scope.selectedPurchaseOrder = {id:5};
-            scope.selectedPurchaseOrderItem = {id:76};
-            scope.addSubConsignee({id:9})
+            scope.selectedPurchaseOrder = {id: 5};
+            scope.selectedPurchaseOrderItem = {id: 76};
+            scope.addSubConsignee({id: 9})
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5-76-9');
         });
         it('when back to consignee button is clicked with top-level node', function () {
-            scope.selectedPurchaseOrder = {id:5};
-            scope.selectedPurchaseOrderItem = {id:76};
-            scope.previousConsignee({id:9})
+            scope.selectedPurchaseOrder = {id: 5};
+            scope.selectedPurchaseOrderItem = {id: 76};
+            scope.previousConsignee({id: 9})
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5-76');
         });
 
         it('when back to consignee button is clicked with top-level node', function () {
-            scope.selectedPurchaseOrder = {id:5};
-            scope.selectedPurchaseOrderItem = {id:76};
-            scope.previousConsignee({id:9, parent:90})
+            scope.selectedPurchaseOrder = {id: 5};
+            scope.selectedPurchaseOrderItem = {id: 76};
+            scope.previousConsignee({id: 9, parent: 90})
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5-76-90');
@@ -758,7 +746,7 @@ describe('DirectDeliveryController', function () {
 
                 it('should save node with middle man user tree position', function () {
                     uiPlanNode.isEndUser = false;
-                    scope.planNode = {id: 1};
+                    scope.parentNode = {id: 1};
                     scope.inMultipleIpMode = true;
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
@@ -885,7 +873,7 @@ describe('DirectDeliveryController', function () {
                 };
 
                 scope.distributionPlanNodes = [uiPlanNodes];
-                scope.planNode = {id: 42};
+                scope.parentNode = {id: 42};
                 deferredUserPromise.resolve(stubUser);
                 scope.track = true;
                 scope.$apply();
@@ -902,7 +890,7 @@ describe('DirectDeliveryController', function () {
                     contact_person_id: '0489284',
                     distribution_plan: 1,
                     tree_position: 'MIDDLE_MAN',
-                    parent: scope.planNode.id,
+                    parent: scope.parentNode.id,
                     item: 1,
                     targeted_quantity: 10,
                     planned_distribution_date: '2014-2-3',
