@@ -16,7 +16,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
 
             Object.defineProperty(this, 'isEndUser', {
                 set: function (isEndUser) {
-                    if(isEndUser) {
+                    if (isEndUser) {
                         this.treePosition = 'END_USER';
                     }
                     else {
@@ -53,7 +53,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                 return this.children && this.children.length > 0;
             };
 
-            this.isInvalid = function() {
+            this.isInvalid = function () {
                 return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location || !this.contactPerson || !this.plannedDistributionDate;
             };
 
@@ -80,8 +80,25 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                     var fieldsToBuild = ['consignee', 'contact_person_id', 'children'];
                     return this.get(planNodeId, fieldsToBuild).then(function (planNode) {
                         planNode.contactPerson = planNode.contactPersonId;
-                        return planNode;
-                    });
+                        var buildChildren = []
+                        if (planNode.children) {
+                            planNode.children.forEach(function (child) {
+                                buildChildren.push(this.get(child.id, ['consignee', 'contact_person_id']));
+                            }.bind(this));
+                            return $q.all(buildChildren).then(function (builtChildren) {
+                                planNode.children = builtChildren;
+                                return planNode;
+                            });
+                            planNode.children.forEach(function (child) {
+                                this.get(child.id, ['consignee', 'contact_person_id']).then(function (childNode) {
+                                    childNode.contactPerson = child.contactPersonId;
+                                    children.push(childNode)
+                                });
+                            }.bind(this));
+                        } else {
+                            return planNode;
+                        }
+                    }.bind(this));
                 },
                 getNodesByDelivery: function (deliveryId) {
                     return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?' + deliveryId)

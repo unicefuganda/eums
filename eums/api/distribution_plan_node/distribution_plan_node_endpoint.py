@@ -26,6 +26,9 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         parent_is_null = self.request.GET.get('parent__isnull', None)
         if parent_is_null == 'true':
             return self.queryset.filter(parent__isnull=True)
+        else:
+            if parent_is_null == 'false':
+                return self.queryset.filter(parent__isnull=False)
         return self.queryset
 
 distributionPlanNodeRouter = DefaultRouter()

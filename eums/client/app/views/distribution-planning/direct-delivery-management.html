@@ -166,7 +166,7 @@
              </div>
         </div>
         <div ng-show="inMultipleIpMode">
-            <div class="row pad-left-5 pad-top-10" ng-show="!planNode">
+            <div class="row pad-left-5 pad-top-10" ng-show="!parentNode">
                 <span class="label label-success label-as-step-badge">Step 2: Please select an item in the purchase order to create a direct delivery</span>
             </div>
             <div class="row pad-left-5 pad-top-10">
@@ -176,7 +176,7 @@
                 </div>
                 <div class="row">
                     <div class="form-horizontal">
-                        <div class="form-group col-lg-4" ng-show="!planNode || consigneeLevel">
+                        <div class="form-group col-lg-4" ng-show="!parentNode || consigneeLevel">
                             <div class="col-lg-12">
                                 <label for="select-sales-order" class="col-lg-4 control-label description-label">
                                     Item Description:
@@ -185,7 +185,7 @@
                                 <div class="col-lg-8">
                                     <select id="select-sales-order" ng-model="selectedPurchaseOrderItem"
                                             required="required"
-                                            class="form-control" ng-change="selectPurchaseOrderItem()"
+                                            class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                             ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
                                         <option value="">Select Item</option>
                                     </select>
@@ -206,14 +206,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group col-lg-4" ng-show="planNode && !consigneeLevel">
+                        <div class="form-group col-lg-4" ng-show="parentNode && !consigneeLevel">
                             <div class="sub_header_padding">
                                 <span class="sub-header">Add Sub-Consignee to Consignee:</span> <span
-                                    class="text-muted">{{ planNode.consignee.name }}</span>
+                                    class="text-muted">{{ parentNode.consignee.name }}</span>
                             </div>
                             <div class="sub_header_padding">
                                 <button type="button" class="btn btn-default btn-sm blue-border-button"
-                                        ng-click="previousConsignee(planNode)">
+                                        ng-click="previousConsignee(parentNode)">
                                     <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
                                     Back to Consignee
                                 </button>
@@ -237,7 +237,7 @@
                         <div class="col-lg-6 no-side-padding">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ totalQuantity | number }}</span>
+                                    <span class="label label-success label-as-badge">{{ getTotalQuantity() | number }}</span>
                                     Total Quantity
                                 </li>
                                 <li class="list-group-item">
@@ -257,7 +257,7 @@
                                 <th class="table-header-width" id="input-header">Unit</th>
                                 <th id="input-quantity-header">Delivered Qty</th>
                                 <th id="input-planned-distribution-date-header">Date Delivered</th>
-                                <th class="table-select-header-width">{{ planNode ? 'Sub-Consignee' : 'Consignee'}}</th>
+                                <th class="table-select-header-width">{{ parentNode ? 'Sub-Consignee' : 'Consignee'}}</th>
                                 <th class="table-contact-select-header-width">Contact Person</th>
                                 <th class="table-select-header-width">District</th>
                                 <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
@@ -265,7 +265,7 @@
                                 <th class="table-sub-consignee-header-width"></th>
 
                                 <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
-                                    <td id="input-available-quantity">{{ quantityLeft }}</td>
+                                    <td id="input-available-quantity">{{ computeQuantityLeft(distributionPlanNodes) }}</td>
                                     <td id="input-unit">{{ selectedPurchaseOrderItem.item.unit.name }}</td>
                                     <td>
                                         <input type="text" id="input-quantity" class="form-control"
@@ -355,7 +355,7 @@
 
                     </div>
                     <div class="pad-20 row">
-                        <button ng-show="quantityLeft > 0"
+                        <button ng-show="computeQuantityLeft(distributionPlanNodes) > 0"
                                 type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
                             <i class="glyphicon glyphicon-plus"> </i>
                             {{ consigneeButtonText }}
