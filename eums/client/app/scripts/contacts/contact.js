@@ -204,6 +204,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                         });
                 };
             },
-            templateUrl: '/static/app/views/contacts/partials/add-contact-modal.html'
+            templateUrl: '/static/app/views/contacts/partials/add-general-contact-modal.html'
         }
     });
