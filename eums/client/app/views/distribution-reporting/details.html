@@ -67,7 +67,7 @@
 
                     <tr ng-repeat="(responseIndex, response) in responses">
                         <td class="table-select-max-width">
-                            <input type="hidden" search-from-list list="{{ consignees }}"
+                            <input type="hidden" search-consignees
                                    ng-model="response.consignee" ng-disabled="response.lineItemRunId"
                                    value="{{ response.consignee }}">
                         </td>

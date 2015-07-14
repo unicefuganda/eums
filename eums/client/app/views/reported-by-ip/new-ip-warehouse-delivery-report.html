@@ -124,8 +124,8 @@
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
-                                        <input type="hidden" search-from-list="" list="{{ consignees }}"
-                                               ng-model="node.consignee.id"  ng-if="consignees.length"
+                                        <input type="hidden" search-consignees
+                                               ng-model="node.consignee.id" ng-if="consignees.length"
                                                ng-disabled="node.flowTriggered"
                                                value="{{ node.consignee.id }}">
                                     </div>

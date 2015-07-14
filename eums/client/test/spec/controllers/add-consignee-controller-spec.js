@@ -1,5 +1,5 @@
 describe('Add Consignee Controller', function () {
-    var mockConsigneeService, scope, rootScope, addConsigneePromise, spy, toast;
+    var mockConsigneeService, scope, rootScope, addConsigneePromise, spy, toast, ConsigneeModel;
     var consignee = {name: 'Dwelling Places'};
     var fakeElement = {
         modal: function () {
@@ -10,12 +10,13 @@ describe('Add Consignee Controller', function () {
         module('Consignee');
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['create']);
 
-        inject(function ($controller, $rootScope, $q, ngToast) {
+        inject(function ($controller, $rootScope, $q, ngToast, Consignee) {
             addConsigneePromise = $q.defer();
             mockConsigneeService.create.and.returnValue(addConsigneePromise.promise);
             rootScope = $rootScope;
             scope = rootScope.$new();
             toast = ngToast;
+            ConsigneeModel = Consignee;
 
             spy = spyOn(angular, 'element').and.returnValue(fakeElement);
 
@@ -36,6 +37,13 @@ describe('Add Consignee Controller', function () {
             rootScope.$broadcast('add-consignee');
             scope.$apply();
             expect(fakeElement.modal).toHaveBeenCalled();
+        });
+
+        it('should put an instance of Consignee on scope', function () {
+            consignee = new ConsigneeModel();
+            rootScope.$broadcast('add-consignee');
+            scope.$apply();
+            expect(JSON.stringify(scope.consignee)).toEqual(JSON.stringify(consignee));
         });
 
         it('should put passed object and object index on scope. For use when broadcasting "consignee-saved" event', function () {

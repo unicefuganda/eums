@@ -1,0 +1,32 @@
+<div class="modal fade" id="add-consignee-modal">
+    <div class="modal-dialog">
+        <div class="modal-content col-md-offset-3 col-md-6">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                        class="sr-only">Close</span></button>
+                <h4 class="modal-title">Add Consignee</h4>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="input form-control" ng-model="consignee.name" required
+                               placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="input form-control" ng-model="consignee.location" required
+                               placeholder="Location">
+                    </div>
+                    <div class="form-group">
+                        <textarea class="input form-control" ng-model="consignee.remarks" required
+                               placeholder="Remarks"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="save(consignee)"
+                        ng-disabled="!consignee.isValid">Save Consignee
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

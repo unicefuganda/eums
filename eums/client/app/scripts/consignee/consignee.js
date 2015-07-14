@@ -3,36 +3,7 @@
 angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1});
-    }]).directive('searchConsignees', function (ConsigneeService) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function (scope, element, _, ngModel) {
-                ConsigneeService.fetchIPs().then(function (allIps) {
-                    element.select2({
-                        width: '100%',
-                        query: function (query) {
-                            var data = {results: []};
-                            var matches = allIps.filter(function (item) {
-                                return item.name.toLowerCase().indexOf(query.term.toLowerCase()) >= 0;
-                            });
-
-                            data.results = matches.map(function (match) {
-                                return {id: match.id, text: match.name};
-                            });
-                            query.callback(data);
-                        }
-                    });
-
-                    element.change(function () {
-                        ngModel.$setViewValue(element.select2('data').id);
-                        scope.$apply();
-                    });
-                });
-            }
-        };
-    })
+    }])
     .factory('Consignee', function () {
         return function (json) {
             !json && (json = {});
@@ -224,19 +195,20 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             });
         };
     })
-    .controller('AddConsigneeController', function ($scope, ConsigneeService, ngToast) {
-        $scope.consignee = {};
-
-        $scope.$on('add-consignee', function (_, object, objectIndex) {
-            $scope.consignee = {};
+    .controller('AddConsigneeController', function ($scope, ConsigneeService, ngToast, Consignee) {
+        $scope.$on('add-consignee', function (_, object) {
+            $scope.consignee = new Consignee();
             $scope.object = object;
-            $scope.objectIndex = objectIndex;
+            console.log('obj', object);
+            //$scope.objectIndex = objectIndex;
             angular.element('#add-consignee-modal').modal();
         });
 
         $scope.save = function (contact) {
             ConsigneeService.create(contact).then(function (createdConsignee) {
-                $scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
+                $scope.object.consignee = createdConsignee;
+                console.log('object', $scope.object);
+                //$scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
                 angular.element('#add-consignee-modal').modal('hide');
             }).catch(function (response) {
                 ngToast.create({content: response.data.error, class: 'danger'});
