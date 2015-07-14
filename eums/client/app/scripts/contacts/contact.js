@@ -144,7 +144,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             link: function (scope, elem, attrs, Ctrl) {
                 scope.contact = {};
 
-                $("#contact-phone").intlTelInput({
+                var contactInput = $("#contact-phone");
+                contactInput.intlTelInput({
                     defaultCountry: "auto",
                     geoIpLookup: function (callback) {
                         $.get("http://ipinfo.io", function () {
@@ -156,6 +157,15 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     utilsScript: "/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js"
                 });
 
+                scope.contactChanged = function () {
+                    if ($.trim(contactInput.val()) && contactInput.intlTelInput("isValidNumber")) {
+                        scope.contact.phone = contactInput.intlTelInput("getNumber")
+                    } else {
+                        scope.contact.phone = undefined;
+                    }
+
+                };
+
                 scope.$on('add-contact', function (_, object, objectIndex) {
                     scope.contact = {};
                     scope.object = object;
@@ -164,12 +174,10 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 });
 
                 scope.invalidContact = function (contact) {
-                    contact.phone = $("#contact-phone").intlTelInput("getNumber");
                     return !(contact.firstName && contact.lastName && contact.phone);
                 };
 
                 scope.saveContact = function (contact) {
-                    contact.phone = $("#contact-phone").intlTelInput("getNumber");
                     ContactService.create(contact)
                         .then(function (createdContact) {
                             createToast("Contact Saved!", 'success');
