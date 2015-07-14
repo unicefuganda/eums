@@ -391,13 +391,13 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         function parentNodeId() {
-            if (!!$scope.planNode) {
+            if ($scope.planNode) {
                 return $scope.planNode.id;
             }
             return null;
         }
 
-        function saveNode(uiPlanNode) {
+        function saveMultipleIPNode(uiPlanNode) {
             var deferred = $q.defer();
 
             var nodeId = uiPlanNode.id;
@@ -472,7 +472,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             var saveNodePromises = [];
 
             pNodes.forEach(function (node) {
-                saveNodePromises.push[saveNode(node).then(function (upToDateNode) {
+                saveNodePromises.push[saveMultipleIPNode(node).then(function (upToDateNode) {
                     return nodesCumulator.push(upToDateNode);
                 })];
             });
@@ -535,7 +535,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         showLoadingModal(false);
-
 
     });
 

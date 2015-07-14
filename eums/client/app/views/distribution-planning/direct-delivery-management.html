@@ -143,9 +143,9 @@
                                 </tr>
                                 <tr ng-repeat="(index, item) in purchaseOrderItems">
                                     <td>{{ index + 1 }}</td>
-                                    <td>{{ item.materialCode }}</td>
-                                    <td>{{ item.display }}</td>
-                                    <td>{{ item.unit }}</td>
+                                    <td>{{ item.item.materialCode }}</td>
+                                    <td>{{ item.item.description }}</td>
+                                    <td>{{ item.item.unit.name }}</td>
                                     <td>{{ item.quantity }}</td>
                                     <td>{{ item.value | currency }}</td>
                                 </tr>
@@ -266,7 +266,7 @@
 
                                 <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
                                     <td id="input-available-quantity">{{ quantityLeft }}</td>
-                                    <td id="input-unit">{{ selectedPurchaseOrderItem.unit }}</td>
+                                    <td id="input-unit">{{ selectedPurchaseOrderItem.item.unit.name }}</td>
                                     <td>
                                         <input type="text" id="input-quantity" class="form-control"
                                                ng-disabled="item.flowTriggered"

@@ -1,0 +1,27 @@
+<div class="modal fade" id="ip-confirm-retaining-goods-modal">
+    <div class="modal-dialog">
+        <div class="modal-content col-md-offset-3 col-md-10">
+            <div class="modal-header">
+                <h4 class="modal-title"><span class="text-warning glyphicon glyphicon-plus glyphicon-warning-sign"></span>
+                    Retain Goods Confirmation
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span
+                            class="sr-only">No</span></button>
+                </h4>
+
+            </div>
+            <div class="modal-body">
+                <div>You have selected your-self as the sub-consignee.
+                    This means you are retaining these goods. You will be marked as the End User.<br/>
+                    Are you sure you would like to proceed?
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                        ng-click="retainGoodsWarningAccepted()">Yes
+                </button>
+                &nbsp;&nbsp;
+                <button type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
