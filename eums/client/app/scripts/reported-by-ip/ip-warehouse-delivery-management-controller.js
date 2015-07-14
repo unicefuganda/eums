@@ -48,10 +48,6 @@ angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'Distri
             });
         }));
 
-        loadPromises.push(ConsigneeService.all().then(function (consignees) {
-            $scope.consignees = consignees;
-        }));
-
         var getUser = UserService.getCurrentUser();
 
         loadPromises.push(getUser.then(function (user) {

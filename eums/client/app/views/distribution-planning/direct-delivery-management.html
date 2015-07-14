@@ -30,7 +30,7 @@
                                 </label>
 
                                 <div class="col-lg-8">
-                                    <input type="hidden" search-from-list list="{{ implementingPartners }}"
+                                    <input type="hidden" search-consignees only-ips
                                            ng-model="consignee.id"
                                            ng-attr-id="{{ 'ip-select' }}"
                                            value="{{ consignee.id }}">
@@ -294,7 +294,7 @@
                                         </p>
                                     </td>
                                     <td class="table-select-max-width">
-                                        <input type="hidden" search-consignees
+                                        <input type="hidden" search-consignees only-ips
                                                ng-model="item.consignee.id"
                                                ng-disabled="item.flowTriggered"
                                                value="{{ item.consignee.id }}">

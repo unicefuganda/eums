@@ -498,10 +498,7 @@
 
                     ConsigneeService.getTopLevelConsignees().then(function (displayedData){
                         var data = displayedData.map(function(consignee){
-                            return {
-                                id: consignee.id,
-                                text: consignee.name
-                            }
+                            return {id: consignee.id, text: consignee.name}
                         });
 
                         $(elem).select2({

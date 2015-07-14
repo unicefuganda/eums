@@ -42,12 +42,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             });
         }
 
-        function loadConsignees() {
-            ConsigneeService.all().then(function (consignees) {
-                $scope.consignees = consignees;
-            });
-        }
-
         function loadReceivedResponsesList() {
             $scope.receivedResponsesList = [];
             OptionService.receivedOptions().then(function (response) {
@@ -81,7 +75,6 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         function loadLists() {
             loadDistricts();
-            loadConsignees();
             loadReceivedResponsesList();
             loadQualityResponsesList();
             loadSatisfiedResponsesList();

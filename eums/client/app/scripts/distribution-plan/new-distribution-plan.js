@@ -78,10 +78,6 @@ angular.module('NewDistributionPlan', ['DistributionPlan', 'ngTable', 'siTable',
             });
         });
 
-        ConsigneeService.all().then(function (consignees) {
-            $scope.consignees = consignees;
-        });
-
         $scope.distributionPlanNodes = [];
         $scope.purchaseOrderItems = [];
 

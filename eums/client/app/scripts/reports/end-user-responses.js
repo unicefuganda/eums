@@ -27,10 +27,6 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
                 $scope.programmes = $scope.programmes.concat(programmes);
             });
 
-            ConsigneeService.all().then(function (consignees) {
-                $scope.consignees = $scope.consignees.concat(consignees);
-            });
-
             PurchaseOrderService.all().then(function (purchaseOrders) {
                 $scope.purchaseOrders = $scope.purchaseOrders.concat(purchaseOrders);
             });

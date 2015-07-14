@@ -48,9 +48,6 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                 getTopLevelConsignees: function () {
                     return this.filter({node: 'top'});
                 },
-                fetchIPs: function () {
-                    return this.filter({imported_from_vision: 'True'});
-                },
                 del: function (consignee) {
                     if (!consignee.importedFromVision) {
                         return this.getDetail(consignee, 'deliveries/').then(function (deliveries) {
@@ -196,19 +193,16 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         };
     })
     .controller('AddConsigneeController', function ($scope, ConsigneeService, ngToast, Consignee) {
-        $scope.$on('add-consignee', function (_, object) {
+        $scope.$on('add-consignee', function (_, object, objectIndex) {
             $scope.consignee = new Consignee();
             $scope.object = object;
-            console.log('obj', object);
-            //$scope.objectIndex = objectIndex;
+            $scope.objectIndex = objectIndex;
             angular.element('#add-consignee-modal').modal();
         });
 
         $scope.save = function (contact) {
             ConsigneeService.create(contact).then(function (createdConsignee) {
-                $scope.object.consignee = createdConsignee;
-                console.log('object', $scope.object);
-                //$scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
+                $scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
                 angular.element('#add-consignee-modal').modal('hide');
             }).catch(function (response) {
                 ngToast.create({content: response.data.error, class: 'danger'});

@@ -163,14 +163,6 @@ describe('EndUserResponsesController', function () {
         expect(scope.programmes).toEqual([{id: 0, name: 'All Outcomes'}].concat(stubProgrammes));
     });
 
-    it('should fetch all consignees when controller is initialized', function () {
-        deferredConsigneePromise.resolve(stubConsignees);
-        scope.initialize();
-        scope.$apply();
-
-        expect(scope.consignees).toEqual([{id: 0, name: 'All Implementing Partners'}].concat(stubConsignees));
-    });
-
     it('should fetch all purchase orders when controller is initialized', function () {
         deferredPurchaseOrderPromise.resolve(stubPurchaseOrders);
         scope.initialize();
