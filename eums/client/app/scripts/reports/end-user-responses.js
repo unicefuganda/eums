@@ -23,8 +23,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
 
         $scope.initialize = function () {
             ProgrammeService.all().then(function (result) {
-                var programmes = result;
-                $scope.programmes = $scope.programmes.concat(programmes);
+                $scope.programmes = $scope.programmes.concat(result);
             });
 
             PurchaseOrderService.all().then(function (purchaseOrders) {

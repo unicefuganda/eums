@@ -24,16 +24,9 @@
                     <label for="select-sales-order" class="control-label description-label col-lg-12">
                         Implementing Partner:
                     </label>
-
-                    <select required="required"
-                            class="form-control responses-select"
-                            data-placeholder="Choose IP"
-                            chosen
-                            ng-model="selectedConsignee"
-                            ng-change="selectConsignee()"
-                            ng-options="consignee.name for consignee in consignees track by consignee.id">
-                        <option value=""></option>
-                    </select>
+                    <input type="hidden" search-consignees only-ips
+                           ng-model="selectedConsignee"
+                           value="{{ selectedConsignee }}">
                 </div>
                 <div class="form-group col-lg-3">
                     <label for="select-purchase-order" class="control-label description-label col-lg-12">
@@ -92,11 +85,13 @@
                     <td class="table-body">{{ response.item }}</td>
                     <td class="table-body">{{ response.programme.name }}</td>
                     <td class="table-body">{{ response.consignee.name }}</td>
-                    <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchase_order)">{{ response.purchase_order.orderNumber }}</a></td>
+                    <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchase_order)">{{
+                        response.purchase_order.orderNumber }}</a></td>
                     <td class="table-body">
                         <span class="table-body-end-user">{{ response.contact_person.firstName }} {{ response.contact_person.lastName }}</span>
                         <a custom-popover class="btn btn-default btn-xs glyphicon glyphicon-earphone pull-right"
-                           ng-show="response.contact_person.phone" popover-html="{{ response.contact_person.phone }}"></a>
+                           ng-show="response.contact_person.phone"
+                           popover-html="{{ response.contact_person.phone }}"></a>
                     </td>
                     <td class="table-body">{{ response.productReceived }}</td>
                     <td class="table-body">{{ response.dateOfReceipt }}</td>
