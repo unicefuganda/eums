@@ -22,7 +22,10 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var loadPromises = [];
 
-        $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
+        $scope.districts = [];
+        $scope.consignees = [];
+        $scope.deliveryNodes = [];
+
         $scope.state = {
             NODE: deliveryNodeId,
             PO_ITEM: purchaseOrderItemId,
@@ -89,6 +92,10 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
             $scope.$broadcast('set-contact-for-node', contact, nodeIndex);
             event.stopPropagation();
         });
+
+        $scope.addConsignee = function(node, nodeIndex) {
+
+        };
 
         $scope.invalidNodes = function () {
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
@@ -166,14 +173,6 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
             else {
                 return $scope.parentNode.targetedQuantity;
             }
-        };
-
-        $scope.computeQuantityLeft = function (parentNode, deliveryNodes) {
-            var reduced = deliveryNodes.reduce(function (previous, current) {
-                return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
-            }, {targetedQuantity: 0});
-
-            return parentNode.targetedQuantity - reduced.targetedQuantity;
         };
 
         $q.all(loadPromises).then(hideLoader);

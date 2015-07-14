@@ -50,7 +50,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             }.bind(this);
 
             this.hasSubConsignees = function() {
-                return this.children.length > 0;
+                return this.children && this.children.length > 0;
             };
 
             this.isInvalid = function() {
@@ -58,6 +58,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             };
 
             this.quantityLeft = function (children) {
+                !children && (children = this.children);
                 return this.targetedQuantity - children.sum(function(node) {
                     return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
                 });

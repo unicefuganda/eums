@@ -28,7 +28,10 @@ angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'Distri
         var deliveryNodeId = $routeParams.deliveryNodeId;
         var loadPromises = [];
 
-        $scope.districts = $scope.consignees = $scope.deliveryNodes = [];
+        $scope.districts = [];
+        $scope.consignees = [];
+        $scope.deliveryNodes = [];
+        
         $scope.state = {
             NODE: deliveryNodeId,
             PO_ITEM: releaseOrderItemId,
@@ -81,7 +84,6 @@ angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'Distri
             });
             loadPromises.add([getParentNode, getChildNodes]);
         }
-
 
         $scope.selectReleaseOrderItem = function (releaseOrderItem) {
             $location.path(rootPath + $routeParams.releaseOrderId + '/' + releaseOrderItem.id);
@@ -182,15 +184,6 @@ angular.module('IPWarehouseDeliveryManagement', ['ReleaseOrder', 'User', 'Distri
                 return $scope.parentNode.targetedQuantity;
             }
         };
-
-        $scope.computeQuantityLeft = function computeQuantityLeft(parentNode, deliveryNodes) {
-            var reduced = deliveryNodes.reduce(function (previous, current) {
-                return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
-            }, {targetedQuantity: 0});
-
-            return parentNode.targetedQuantity - reduced.targetedQuantity;
-        };
-
 
         $q.all(loadPromises).then(hideLoader);
     });
