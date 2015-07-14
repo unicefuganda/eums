@@ -80,7 +80,7 @@
                             <span ng-show="consignee.inEditMode">
                                 <button class="btn btn-sm btn-default blue-border-button"
                                         ng-click="save(consignee)" ng-show="consignee.inEditMode"
-                                        ng-disabled="!consignee.name.length">Save
+                                        ng-disabled="!consignee.isValid">Save
                                 </button>
                                 <button class="btn btn-sm btn-default"
                                         ng-click="cancelEditOrCreate(consignee)" ng-show="consignee.inEditMode">Cancel

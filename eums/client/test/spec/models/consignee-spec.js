@@ -55,4 +55,15 @@ describe('Consignee Model', function () {
         expect(consignee.inEditMode).toBe(false);
     });
 
+    it('should be invalid if name is not set', function() {
+        var consignee_one = new ConsigneeModel({name: ''});
+        var consignee_two = new ConsigneeModel();
+        expect(consignee_one.isValid).toBeFalsy();
+        expect(consignee_two.isValid).toBeFalsy();
+    });
+
+    it('should be valid if it has a name set', function() {
+        var consignee = new ConsigneeModel({name: 'some name'});
+        expect(consignee.isValid).toBeTruthy();
+    });
 });
