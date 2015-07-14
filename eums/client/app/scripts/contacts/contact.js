@@ -129,6 +129,29 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
         };
     })
+    .controller('AddContactController', function ($scope, ContactService, ngToast) {
+        $scope.contact = {};
+
+        $scope.$on('add-contact', function (_, object, objectIndex) {
+            $scope.contact = {};
+            $scope.object = object;
+            $scope.objectIndex = objectIndex;
+            $('#add-contact-modal').modal();
+        });
+
+        $scope.saveContact = function (contact) {
+            ContactService.create(contact).then(function (createdContact) {
+                $scope.$emit('contact-saved', createdContact, $scope.object, $scope.objectIndex);
+                $('#add-contact-modal').modal('hide');
+            }).catch(function (response) {
+                ngToast.create({content: response.data.error, class: 'danger', maxNumber: 1, dismissOnTimeout: true});
+            });
+        };
+
+        $scope.invalidContact = function (contact) {
+            return !contact || !(contact.firstName && contact.lastName && contact.phone);
+        };
+    })
     .directive('eumsContact', function (ContactService, ngToast) {
         var createToast = function (message, klass) {
             ngToast.create({
