@@ -149,7 +149,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.invalidContact = function (contact) {
-            return !(contact.firstName && contact.lastName && contact.phone);
+            return !contact || !(contact.firstName && contact.lastName && contact.phone);
         };
     })
     .directive('eumsContact', function (ContactService, ngToast) {

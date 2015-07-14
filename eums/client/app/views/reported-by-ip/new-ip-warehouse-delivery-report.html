@@ -83,7 +83,7 @@
                             <th class="table-header-width" id="input-header">Unit</th>
                             <th id="input-quantity-header">Delivered Qty</th>
                             <th id="input-planned-distribution-date-header">Date Delivered</th>
-                            <th class="table-select-header-width">Sub-Consignee</th>
+                            <th class="table-contact-header-width">Sub-Consignee</th>
                             <th class="table-contact-select-header-width">Contact Person</th>
                             <th class="table-select-header-width">District</th>
                             <th class="table-header-width">End User</th>
@@ -122,10 +122,20 @@
                                 </p>
                             </td>
                             <td class="table-select-max-width">
-                                <input type="hidden" search-from-list="" list="{{ consignees }}"
-                                       ng-model="node.consignee.id"
-                                       ng-disabled="node.flowTriggered"
-                                       value="{{ node.consignee.id }}">
+                                <div class="form-inline">
+                                    <div class="form-group table-contact-form-group col-md-10">
+                                        <input type="hidden" search-from-list list="{{ consignees }}"
+                                               ng-model="node.consignee.id"
+                                               ng-disabled="node.flowTriggered"
+                                               value="{{ node.consignee.id }}">
+                                    </div>
+                                    <div class="form-group table-contact-form-group col-md-2">
+                                        <button type="button" class="btn btn-default "
+                                                ng-click="addConsignee(node, $index)" ng-disabled="node.flowTriggered">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </td>
 
                             <td class="table-select-max-width">

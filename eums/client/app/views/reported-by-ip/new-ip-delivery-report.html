@@ -7,6 +7,7 @@
                 <span class="text-primary">{{ selectedPurchaseOrder.programmeName }}</span>
             </span>
         </h4>
+
         <div ng-show="selectedPurchaseOrderItem">
             <alert ng-show="parentNode.quantityLeft(deliveryNodes) <= 0" type="warning">
                 All quantities have been assigned for this item.
@@ -83,7 +84,7 @@
                             <th class="table-header-width" id="input-header">Unit</th>
                             <th id="input-quantity-header">Delivered Qty</th>
                             <th id="input-planned-distribution-date-header">Date Delivered</th>
-                            <th class="table-select-header-width">Sub-Consignee</th>
+                            <th class="table-contact-select-header-width">Sub-Consignee</th>
                             <th class="table-contact-select-header-width">Contact Person</th>
                             <th class="table-select-header-width">District</th>
                             <th class="table-header-width">End User</th>
@@ -94,7 +95,8 @@
                         <tbody>
                         <tr ng-repeat="node in deliveryNodes">
                             <td id="input-available-quantity">
-                                {{ parentNode ? computeQuantityLeft(parentNode, deliveryNodes) : node.quantityLeft(node.children) }}
+                                {{ parentNode ? computeQuantityLeft(parentNode, deliveryNodes) :
+                                node.quantityLeft(node.children) }}
                             </td>
                             <td id="input-unit">{{ selectedPurchaseOrderItem.item.unit.name }}</td>
                             <td><input type="text" id="input-quantity" class="form-control"
@@ -122,12 +124,21 @@
                                 </p>
                             </td>
                             <td class="table-select-max-width">
-                                <input type="hidden" search-from-list="" list="{{ consignees }}"
-                                       ng-model="node.consignee.id"
-                                       ng-disabled="node.flowTriggered"
-                                       value="{{ node.consignee.id }}">
+                                <div class="form-inline">
+                                    <div class="form-group table-contact-form-group col-md-10">
+                                        <input type="hidden" search-from-list list="{{ consignees }}"
+                                               ng-model="node.consignee.id"
+                                               ng-disabled="node.flowTriggered"
+                                               value="{{ node.consignee.id }}">
+                                    </div>
+                                    <div class="form-group table-contact-form-group col-md-2">
+                                        <button type="button" class="btn btn-default "
+                                                ng-click="addConsignee(node, $index)" ng-disabled="node.flowTriggered">
+                                            <i class="glyphicon glyphicon-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </td>
-
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
