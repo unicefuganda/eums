@@ -65,10 +65,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             $scope.districtsLoaded = true;
         });
 
-        ConsigneeService.all().then(function (consignees) {
-            $scope.consignees = consignees;
-        });
-
         $scope.invalidContact = function (contact) {
             return !(contact.firstName && contact.lastName && contact.phone);
         };
@@ -76,7 +72,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.distributionPlanNodes = [];
         $scope.purchaseOrderItems = [];
-        $scope.implementingPartners = [];
         function computeQuantityLeft() {
             var reduced = $scope.distributionPlanNodes.reduce(function (previous, current) {
                 return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
@@ -92,13 +87,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             } else {
                 $scope.inSingleIpMode = purchaseOrder.isSingleIp;
                 $scope.inMultipleIpMode = !purchaseOrder.isSingleIp;
-
-                if (purchaseOrder.isSingleIp) {
-                    ConsigneeService.filterByType('implementing_partner').then(function (allIps) {
-                        $scope.implementingPartners = allIps;
-                        $scope.IPsLoaded = true;
-                    });
-                }
             }
         }
 
@@ -155,10 +143,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.showSingleIpMode = function () {
             $scope.inSingleIpMode = true;
             $scope.inMultipleIpMode = false;
-            ConsigneeService.fetchIPs().then(function (allIps) {
-                $scope.implementingPartners = allIps;
-                $scope.IPsLoaded = true;
-            });
         };
 
         $scope.showMultipleIpMode = function () {

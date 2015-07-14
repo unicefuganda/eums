@@ -42,12 +42,6 @@ describe('Consignee Service', function () {
             });
         });
 
-        it('should get consignees implementing partners from backend', function () {
-            spyOn(consigneeService, 'filter');
-            consigneeService.fetchIPs();
-            expect(consigneeService.filter).toHaveBeenCalledWith({imported_from_vision: 'True'});
-        });
-
         it('should get all consignees by node level ', function () {
             spyOn(consigneeService, 'filter');
             consigneeService.getTopLevelConsignees();

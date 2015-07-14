@@ -183,7 +183,6 @@ describe('ManualReportingDetailsController', function () {
         });
     };
 
-
     describe('when initialized', function () {
         describe('loading initial lists', function () {
             beforeEach(function () {
@@ -198,15 +197,6 @@ describe('ManualReportingDetailsController', function () {
                 scope.$apply();
 
                 expect(scope.districts).toEqual(expectedDistricts);
-            });
-
-            it('should load consignee list on the scope', function () {
-                var expectedConsignees = [{id: 1, name: 'Test Consignee'}];
-                deferredConsigneePromise.resolve(expectedConsignees);
-                scope.initialize();
-                scope.$apply();
-
-                expect(scope.consignees).toEqual(expectedConsignees);
             });
 
             it('should load received responses option list on the scope', function () {

@@ -125,14 +125,16 @@ angular.module('Directives', [])
             restrict: 'A',
             scope: true,
             require: 'ngModel',
-            link: function (scope, element, _, ngModel) {
+            link: function (scope, element, attrs, ngModel) {
+                var filters = Object.has(attrs, 'onlyIps') ? {imported_from_vision: 'True'} : {};
+                var queryParams = Object.merge({paginate: false}, filters);
                 element.select2({
                     minimumInputLength: 1,
                     width: '240px',
                     query: function (query) {
                         var data = {results: []};
-                        ConsigneeService.search(query.term, [], {paginate: true}).then(function (response) {
-                            data.results = formatResponse(response.results);
+                        ConsigneeService.search(query.term, [], queryParams).then(function (consignees) {
+                            data.results = formatResponse(consignees);
                             query.callback(data);
                         });
                     },
