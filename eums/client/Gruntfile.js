@@ -308,6 +308,11 @@ module.exports = function (grunt) {
                     EumsConfig: grunt.file.readJSON('config/development.json')
                 }
             },
+            test: {
+                constants: {
+                    EumsConfig: grunt.file.readJSON('config/test.json')
+                }
+            },
             staging: {
                 constants: {
                     EumsConfig: grunt.file.readJSON('config/environment.json')
@@ -318,7 +323,14 @@ module.exports = function (grunt) {
                     EumsConfig: grunt.file.readJSON('config/production.json')
                 }
             }
+        },
+
+        apimocker: {
+            options: {
+                configFile: 'test/functional/apimock/apimock.json'
+            }
         }
+
 
     });
 
@@ -381,15 +393,23 @@ module.exports = function (grunt) {
         'less'
     ]);
 
+    grunt.registerTask('build-test', [
+        'clean:dist',
+        'ngconstant:test',
+        'newer:uglify:all',
+        'less'
+    ]);
+
     grunt.registerTask('prepare-for-server-start', [
-        'build',
+        'build-test',
         'clean:server',
         'shell:sourceEnv',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
         'shell:seedData',
-        'shell:mapData'
+        'shell:mapData',
+        'apimocker'
     ]);
 
     grunt.registerTask('functional', [
@@ -404,7 +424,7 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('functional-staging', [
-        'build',
+        'build-test',
         'clean:server',
         'shell:dropStagingDb',
         'shell:createStagingDb',
@@ -412,6 +432,7 @@ module.exports = function (grunt) {
         'shell:seedStagingData',
         'shell:mapDataStaging',
         'run:djangoServerStaging',
+        'apimocker',
         'protractor:headless',
         'stop:djangoServerStaging'
     ]);

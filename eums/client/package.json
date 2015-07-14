@@ -34,7 +34,8 @@
     "jasmine-spec-reporter": "~1.2.0",
     "socket.io": "~1.3.5",
     "bytes": "~2.1.0",
-    "less": "~1.7.5"
+    "less": "~1.7.5",
+    "grunt-apimocker": "0.0.1"
   },
   "engines": {
     "node": ">=0.10.0"

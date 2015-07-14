@@ -1,0 +1,17 @@
+{
+  "mockDirectory": "./test/functional/apimock/mocks/",
+
+  "quiet": false,
+  "port": "9005",
+
+  "latency": 50,
+  "logRequestHeaders": false,
+
+  "webServices": {
+    "api/contacts": {
+      "mockFile": "contacts.json",
+      "latency": 20,
+      "verbs": ["get"]
+    }
+  }
+}
