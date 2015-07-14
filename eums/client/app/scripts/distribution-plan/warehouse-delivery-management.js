@@ -33,9 +33,21 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
             }
         }
 
-        $scope.addContact = function () {
-            $('#add-contact-modal').modal();
+        $scope.addContact = function (node, nodeIndex) {
+            $scope.$broadcast('add-contact', node, nodeIndex);
         };
+
+        $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
+            $scope.contact = {id: contact._id};
+            var contactInput = $('#contact-select');
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+            contactInput.val(contact._id);
+
+            contact.id = contact._id;
+            event.stopPropagation();
+        });
 
         var setLocationAndContactFields = function(){
             ContactService.get($scope.contact.id)

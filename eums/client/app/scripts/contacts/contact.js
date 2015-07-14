@@ -164,10 +164,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         return {
             restrict: 'E',
-            scope: {
-                contact: '='
-            },
             link: function (scope, elem, attrs, Ctrl) {
+                scope.contact = {};
+                
                 $("#contact-phone").intlTelInput({
                     defaultCountry: "auto",
                     geoIpLookup: function (callback) {
@@ -179,26 +178,27 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     },
                     utilsScript: "/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js"
                 });
-                scope.addContact = function () {
+
+                scope.$on('add-contact', function (_, object, objectIndex) {
+                    scope.contact = {};
+                    scope.object = object;
+                    scope.objectIndex = objectIndex;
                     $('#add-contact-modal').modal();
+                });
+
+                scope.invalidContact = function (contact) {
+                    contact.phone = $("#contact-phone").intlTelInput("getNumber");
+                    return !(contact.firstName && contact.lastName && contact.phone);
                 };
-                scope.invalidContact = function () {
-                    scope.contact.phone = $("#contact-phone").intlTelInput("getNumber");
-                    return !(scope.contact.firstName && scope.contact.lastName && scope.contact.phone);
-                };
-                scope.saveContact = function () {
-                    ContactService.create(scope.contact)
-                        .then(function (contact) {
+
+                scope.saveContact = function (contact) {
+                    contact.phone = $("#contact-phone").intlTelInput("getNumber");
+                    ContactService.create(contact)
+                        .then(function (createdContact) {
+                            createToast("Contact Saved!", 'success');
+                            scope.$emit('contact-saved', createdContact, scope.object, scope.objectIndex);
                             $('#add-contact-modal').modal('hide');
 
-                            var contactInput = $('#contact-select');
-                            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
-                            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
-
-                            contactInput.val(contact._id);
-
-                            scope.contact.id = contact._id;
-                            createToast("Contact Saved!", 'success');
                         }, function (response) {
                             createToast(response.data.error, 'danger');
                         });
