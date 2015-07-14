@@ -110,6 +110,58 @@ angular.module('Directives', [])
             }
         };
     })
+    .directive('searchConsignees', function (ConsigneeService, $timeout) {
+        function formatConsignee(consignee) {
+            return Object.merge(consignee, {text: consignee.name});
+        }
+
+        function formatResponse(data) {
+            return data.map(function (contact) {
+                return formatConsignee(contact);
+            });
+        }
+
+        return {
+            restrict: 'A',
+            scope: true,
+            require: 'ngModel',
+            link: function (scope, element, _, ngModel) {
+                element.select2({
+                    minimumInputLength: 1,
+                    width: '240px',
+                    query: function (query) {
+                        var data = {results: []};
+                        ConsigneeService.search(query.term, [], {paginate: true}).then(function (response) {
+                            data.results = formatResponse(response.results);
+                            query.callback(data);
+                        });
+                    },
+                    initSelection: function (element, callback) {
+                        $timeout(function () {
+                            var modelValue = ngModel.$modelValue;
+                            modelValue && ConsigneeService.get(modelValue).then(function(consignee) {
+                                callback(formatConsignee(consignee));
+                            });
+                        });
+                    }
+                });
+
+                element.change(function () {
+                    ngModel.$setViewValue(element.select2('data').id);
+                    scope.$apply();
+                });
+
+                scope.$on('set-consignee-for-node', function (_, consignee, nodeId) {
+                    var myNodeId = element[0].getAttribute('id').split('-').last();
+                    if (nodeId === myNodeId) {
+                        var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                        consigneeSelect2Input.text(consignee.name);
+                        $(element).val(consignee.id);
+                    }
+                });
+            }
+        };
+    })
     .directive('onlyDigits', function () {
         return {
             require: 'ngModel',

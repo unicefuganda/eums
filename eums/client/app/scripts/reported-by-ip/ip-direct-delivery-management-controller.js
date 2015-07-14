@@ -42,9 +42,9 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
             });
         }));
 
-        loadPromises.push(ConsigneeService.all().then(function (consignees) {
-            $scope.consignees = consignees;
-        }));
+        //loadPromises.push(ConsigneeService.all().then(function (consignees) {
+            //$scope.consignees = consignees;
+        //}));
 
         var getUser = UserService.getCurrentUser();
 
@@ -94,7 +94,7 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
         });
 
         $scope.addConsignee = function(node, nodeIndex) {
-
+            $scope.$broadcast('add-consignee', node, nodeIndex);
         };
 
         $scope.invalidNodes = function () {

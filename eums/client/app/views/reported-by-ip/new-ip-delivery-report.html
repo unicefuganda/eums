@@ -125,13 +125,14 @@
                             <td class="table-select-max-width">
                                 <div class="form-inline">
                                     <div class="form-group table-contact-form-group col-md-10">
-                                        <input type="hidden" search-from-list="" list="{{ consignees }}"
-                                               ng-model="node.consignee.id" ng-if="consignees.length"
+                                        <input type="hidden" search-consignees required="required"
+                                               ng-attr-id="{{ 'consignee-select-for-node-' + $index }}"
+                                               ng-model="node.consignee.id"
                                                ng-disabled="node.flowTriggered"
                                                value="{{ node.consignee.id }}">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
-                                        <button type="button" class="btn btn-default "
+                                        <button type="button" class="btn btn-default"
                                                 ng-click="addConsignee(node, $index)" ng-disabled="node.flowTriggered">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
@@ -202,6 +203,9 @@
     </div>
     <div ng-controller="AddContactController">
         <ng-include src="'/static/app/views/contacts/partials/add-contact-modal.html'"></ng-include>
+    </div>
+    <div ng-controller="AddConsigneeController">
+        <ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"></ng-include>
     </div>
     <ng-include src="'/static/app/views/distribution-planning/partials/add-remark-modal.html'"></ng-include>
 </div>
