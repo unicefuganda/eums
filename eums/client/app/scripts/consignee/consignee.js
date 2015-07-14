@@ -44,6 +44,12 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                     return this.id === undefined || this.id === null;
                 }.bind(this)
             });
+
+            Object.defineProperty(this, 'isValid', {
+                get: function() {
+                    return this.name && this.name.length;
+                }.bind(this)
+            });
             this.id = json.id || undefined;
             this.name = json.name || null;
             this.customerId = json.customerId || null;
@@ -215,6 +221,25 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                 createToast(reason, 'danger');
             }).finally(function () {
                 angular.element('#delete-consignee-modal').modal('hide');
+            });
+        };
+    })
+    .controller('AddConsigneeController', function ($scope, ConsigneeService, ngToast) {
+        $scope.consignee = {};
+
+        $scope.$on('add-consignee', function (_, object, objectIndex) {
+            $scope.consignee = {};
+            $scope.object = object;
+            $scope.objectIndex = objectIndex;
+            $('#add-consignee-modal').modal();
+        });
+
+        $scope.save = function (contact) {
+            ConsigneeService.create(contact).then(function (createdConsignee) {
+                $scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
+                $('#add-consignee-modal').modal('hide');
+            }).catch(function (response) {
+                ngToast.create({content: response.data.error, class: 'danger'});
             });
         };
     });
