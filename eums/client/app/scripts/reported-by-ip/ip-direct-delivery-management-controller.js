@@ -93,6 +93,12 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
             $scope.$broadcast('add-consignee', node, nodeIndex);
         };
 
+        $scope.$on('consignee-saved', function(event, consignee, node, nodeIndex) {
+            node.consignee = consignee;
+            $scope.$broadcast('set-consignee-for-node', consignee, nodeIndex);
+            event.stopPropagation();
+        });
+
         $scope.invalidNodes = function () {
             var someNodesAreInvalid = $scope.deliveryNodes.some(function (node) {
                 return node.isInvalid();
