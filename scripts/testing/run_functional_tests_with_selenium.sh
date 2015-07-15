@@ -22,7 +22,7 @@ sudo npm install -g grunt-cli
 npm install
 npm install bower
 bower install
-grunt build
+grunt build-test
 
 #Start the server
 cd ../../
@@ -35,7 +35,7 @@ python manage.py runserver 0.0.0.0:8000 --settings=eums.snap_settings &
 
 # Run the functional tests
 cd eums/client
-grunt protractor:headless_selenium
+grunt functional-staging
 
 #Kill the server
 kill -9 $(lsof -t -i:8000)
