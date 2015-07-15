@@ -100,7 +100,7 @@ angular.module('Directives', [])
 
                 scope.$on('set-contact-for-node', function (_, contact, nodeId) {
                     var myNodeId = element[0].getAttribute('id').split('-').last();
-                    if (nodeId === myNodeId) {
+                    if (Number(nodeId) === Number(myNodeId)) {
                         var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                         var formattedContact = formatContact(contact);
                         contactSelect2Input.text(formattedContact.text);
@@ -155,7 +155,7 @@ angular.module('Directives', [])
 
                 scope.$on('set-consignee-for-node', function (_, consignee, nodeId) {
                     var myNodeId = element[0].getAttribute('id').split('-').last();
-                    if (nodeId === myNodeId) {
+                    if (Number(nodeId) === Number(myNodeId)) {
                         var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                         consigneeSelect2Input.text(consignee.name);
                         $(element).val(consignee.id);
