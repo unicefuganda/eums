@@ -107,11 +107,11 @@
                         <div class="col-md-12 no-side-padding">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrder.poType }}</span>
+                                    <span class="label label-success label-as-badge" id="po-type">{{ selectedPurchaseOrder.poType }}</span>
                                     PO Type
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrder.totalValue | currency }}</span>
+                                    <span class="label label-success label-as-badge" id="po-total-value">{{ selectedPurchaseOrder.totalValue | currency }}</span>
                                     Total Value
                                 </li>
                             </ul>
@@ -124,19 +124,23 @@
                             <table id="singleIPDeliveryItemsTable" class="table table-bordered table-striped table-hover table-condensed">
                                 <tr>
                                     <th class="item-list-col-header">No.</th>
-                                    <th class="item-list-col-header">Material Number</th>
-                                    <th class="item-list-col-header">Item</th>
-                                    <th class="item-list-col-header">Unit</th>
-                                    <th class="item-list-col-header">Quantity</th>
-                                    <th class="item-list-col-header">Value</th>
+                                    <th class="item-list-col-header">Material No.</th>
+                                    <th class="item-list-col-header">Item Description</th>
+                                    <th class="item-list-col-header">Qty in PO</th>
+                                    <th class="item-list-col-header">Value in PO</th>
+                                    <th class="item-list-col-header">Avail. Balance</th>
+                                    <th class="item-list-col-header">Qty Shipped</th>
+                                    <th class="item-list-col-header">Value of Delivery</th>
                                 </tr>
                                 <tr ng-repeat="(index, item) in purchaseOrderItems">
                                     <td>{{ index + 1 }}</td>
                                     <td>{{ item.item.materialCode }}</td>
                                     <td>{{ item.item.description }}</td>
-                                    <td>{{ item.item.unit.name }}</td>
                                     <td>{{ item.quantity }}</td>
                                     <td>{{ item.value | currency }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             </table>
                         </div>

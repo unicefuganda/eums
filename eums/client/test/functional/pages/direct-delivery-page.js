@@ -19,8 +19,12 @@ DirectDeliveryPage.prototype = Object.create({}, {
     selectMultipleIP: { value: function () { element(by.id('multiple-ip')).click(); }},
 
     programmeName: { get: function () { return element(by.className('secondary-header')).getText(); }},
+    purchaseOrderType: { get: function () { return element(by.id('po-type')).getText(); }},
+    purchaseOrderTotalValue: { get: function () { return element(by.id('po-total-value')).getText(); }},
 
     purchaseOrderItems: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.item.description')).getText(); }},
+    purchaseOrderItemCount: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems')).count(); }},
+
     purchaseOrderQuantities: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.quantity')).getText(); }},
     purchaseOrderValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.value')).getText(); }},
 

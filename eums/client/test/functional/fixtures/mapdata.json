@@ -434,7 +434,7 @@
   {
     "fields": {
       "wbs_element_ex": "4380/A0/04/108/003",
-      "name": ""
+      "name": "PCR: 123 - Test Outcome 1"
     },
     "model": "eums.programme",
     "pk": 18
