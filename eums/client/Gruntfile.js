@@ -424,17 +424,8 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('functional-staging', [
-        'build-test',
-        'clean:server',
-        'shell:dropStagingDb',
-        'shell:createStagingDb',
-        'shell:runStagingMigrations',
-        'shell:seedStagingData',
-        'shell:mapDataStaging',
-        'run:djangoServerStaging',
         'apimocker',
-        'protractor:headless',
-        'stop:djangoServerStaging'
+        'protractor:headless_selenium'
     ]);
 
     grunt.registerTask('default', [
