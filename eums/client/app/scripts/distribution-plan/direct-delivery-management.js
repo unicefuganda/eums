@@ -2,7 +2,7 @@
 
 
 angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DistributionPlanNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
-    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast, ItemService, ContactService) {
+    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
 
         function showLoadingModal(show) {
             if (show && !angular.element('#loading').hasClass('in')) {
@@ -117,7 +117,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 $scope.distributionPlanNodes = nodes;
                 resetFields();
             });
-        }
+        };
 
         var resetFields = function () {
             if (!$scope.distributionPlanNodes || $scope.distributionPlanNodes.length === 0) {

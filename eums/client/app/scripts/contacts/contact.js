@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
-    .controller('ContactController', function (ContactService, $scope, $sorter, ngToast) {
+    .controller('ContactController', function (ContactService, $scope, $sorter) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
@@ -31,22 +31,18 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             return output;
         };
 
-        function createToast(message, klass) {
-            ngToast.create({
-                content: message,
-                class: klass,
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
-        }
-
         $scope.invalidContact = function (contact) {
             return !(contact.firstName && contact.lastName && contact.phone);
         };
 
         $scope.showAddContact = function () {
-            angular.element('#add-contact-modal').modal();
+            $scope.$broadcast('add-contact');
         };
+
+        $scope.$on('contact-saved', function (contact) {
+            loadContacts();
+            $scope.contact.id = contact._id;
+        });
 
         $scope.showDeleteContact = function (contact) {
             $scope.currentContact = contact;
@@ -55,24 +51,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         $scope.showEditContact = function (contact) {
             angular.copy(contact, $scope.currentContact);
-            angular.element('#edit-contact-modal').modal();
+            $scope.$broadcast('edit-contact', contact);
         };
 
-        $scope.saveContact = function () {
-            ContactService.create($scope.contact).then(function (createdContact) {
-                angular.element('#add-contact-modal').modal('hide');
-                loadContacts();
-                $scope.contact.id = createdContact._id;
-
-            }, function (response) {
-                if (response.status === 0) {
-                    createToast('Contact service down', 'danger');
-                }
-                else {
-                    createToast(response.data.error, 'danger');
-                }
-            });
-        };
+        $scope.$on('dialog-closed', function () {
+            loadContacts();
+        });
 
         $scope.deleteSelectedContact = function () {
             ContactService.del($scope.currentContact).then(function () {
@@ -129,29 +113,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
         };
     })
-    .controller('AddContactController', function ($scope, ContactService, ngToast) {
-        $scope.contact = {};
-
-        $scope.$on('add-contact', function (_, object, objectIndex) {
-            $scope.contact = {};
-            $scope.object = object;
-            $scope.objectIndex = objectIndex;
-            $('#add-contact-modal').modal();
-        });
-
-        $scope.saveContact = function (contact) {
-            ContactService.create(contact).then(function (createdContact) {
-                $scope.$emit('contact-saved', createdContact, $scope.object, $scope.objectIndex);
-                $('#add-contact-modal').modal('hide');
-            }).catch(function (response) {
-                ngToast.create({content: response.data.error, class: 'danger', maxNumber: 1, dismissOnTimeout: true});
-            });
-        };
-
-        $scope.invalidContact = function (contact) {
-            return !contact || !(contact.firstName && contact.lastName && contact.phone);
-        };
-    })
     .directive('eumsContact', function (ContactService, ngToast) {
         var createToast = function (message, klass) {
             ngToast.create({
@@ -164,25 +125,25 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
 
         return {
             restrict: 'E',
-            link: function (scope, elem, attrs, Ctrl) {
+            link: function (scope) {
                 scope.contact = {};
 
-                var contactInput = $("#contact-phone");
+                var contactInput = $('#contact-phone'), isEdit = false;
                 contactInput.intlTelInput({
-                    defaultCountry: "auto",
+                    defaultCountry: 'auto',
                     geoIpLookup: function (callback) {
-                        $.get("http://ipinfo.io", function () {
-                        }, "jsonp").always(function (resp) {
-                            var countryCode = (resp && resp.country) ? resp.country : "UG";
+                        $.get('http://ipinfo.io', function () {
+                        }, 'jsonp').always(function (resp) {
+                            var countryCode = (resp && resp.country) ? resp.country : 'UG';
                             callback(countryCode);
                         });
                     },
-                    utilsScript: "/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js"
+                    utilsScript: '/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js'
                 });
 
                 scope.contactChanged = function () {
-                    if ($.trim(contactInput.val()) && contactInput.intlTelInput("isValidNumber")) {
-                        scope.contact.phone = contactInput.intlTelInput("getNumber")
+                    if ($.trim(contactInput.val()) && contactInput.intlTelInput('isValidNumber')) {
+                        scope.contact.phone = contactInput.intlTelInput('getNumber');
                     } else {
                         scope.contact.phone = undefined;
                     }
@@ -190,28 +151,54 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 };
 
                 scope.$on('add-contact', function (_, object, objectIndex) {
+                    isEdit = false;
                     scope.contact = {};
                     scope.object = object;
                     scope.objectIndex = objectIndex;
+                    contactInput.val('');
                     $('#add-contact-modal').modal();
                 });
+
+                scope.$on('edit-contact', function (_, contact) {
+                    scope.contact = contact;
+                    isEdit = true;
+                    contactInput.intlTelInput('setNumber', contact.phone);
+                    $('#add-contact-modal').modal();
+                });
+
+                scope.closeDialog = function () {
+                    scope.$emit('dialog-closed');
+                };
 
                 scope.invalidContact = function (contact) {
                     return !(contact.firstName && contact.lastName && contact.phone);
                 };
 
-                scope.saveContact = function (contact) {
-                    ContactService.create(contact)
-                        .then(function (createdContact) {
-                            createToast("Contact Saved!", 'success');
-                            scope.$emit('contact-saved', createdContact, scope.object, scope.objectIndex);
-                            $('#add-contact-modal').modal('hide');
+                var emitEvent = function (contact) {
+                    scope.$emit('contact-saved', contact, scope.object, scope.objectIndex);
+                    $('#add-contact-modal').modal('hide');
+                };
 
-                        }, function (response) {
-                            createToast(response.data.error, 'danger');
-                        });
+                scope.saveContact = function (contact) {
+                    if (isEdit) {
+                        ContactService.update(contact)
+                            .then(function (createdContact) {
+                                createToast('Contact Updated!', 'success');
+                                emitEvent(createdContact);
+                            }, function (response) {
+                                createToast(response.data.error, 'danger');
+                            });
+                    } else {
+                        ContactService.create(contact)
+                            .then(function (createdContact) {
+                                createToast('Contact Saved!', 'success');
+                                emitEvent(createdContact);
+                            }, function (response) {
+                                createToast(response.data.error, 'danger');
+                            });
+                    }
                 };
             },
             templateUrl: '/static/app/views/contacts/partials/add-general-contact-modal.html'
-        }
+        };
     });

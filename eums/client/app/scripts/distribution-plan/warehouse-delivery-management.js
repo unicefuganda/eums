@@ -37,7 +37,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
 
-        $scope.$on('contact-saved', function (event, contact, node, nodeIndex) {
+        $scope.$on('contact-saved', function (event, contact) {
             $scope.contact = {id: contact._id};
             var contactInput = $('#contact-select');
             var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');

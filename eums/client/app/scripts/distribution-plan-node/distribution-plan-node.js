@@ -49,7 +49,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                 return this.id && !this.isEndUser;
             }.bind(this);
 
-            this.hasSubConsignees = function() {
+            this.hasSubConsignees = function () {
                 return this.children && this.children.length > 0;
             };
 
@@ -59,9 +59,9 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
 
             this.quantityLeft = function (children) {
                 !children && (children = this.children);
-                return this.targetedQuantity - children.sum(function(node) {
-                    return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
-                });
+                return this.targetedQuantity - children.sum(function (node) {
+                        return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
+                    });
             }.bind(this);
         };
     })
@@ -80,7 +80,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                     var fieldsToBuild = ['consignee', 'contact_person_id', 'children'];
                     return this.get(planNodeId, fieldsToBuild).then(function (planNode) {
                         planNode.contactPerson = planNode.contactPersonId;
-                        var buildChildren = []
+                        var buildChildren = [];
                         if (planNode.children) {
                             planNode.children.forEach(function (child) {
                                 buildChildren.push(this.get(child.id, ['consignee', 'contact_person_id']));

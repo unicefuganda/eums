@@ -64,6 +64,9 @@ describe('ContactController', function () {
                     })};
             });
 
+            spyOn(scope, '$broadcast');
+            spyOn(scope, '$on');
+
             $controller('ContactController',
                 {
                     $scope: scope,
@@ -105,18 +108,18 @@ describe('ContactController', function () {
     });
 
     describe('showing modals', function () {
-        it('should show the add contact modal', function () {
+        it('should fire add-contact event to show the add contact modal', function () {
             scope.showAddContact();
 
-            expect(angular.element).toHaveBeenCalledWith('#add-contact-modal');
+            expect(scope.$broadcast).toHaveBeenCalledWith('add-contact');
         });
 
-        it('should show the edit contact modal', function () {
+        it('should fire edit-contact event to show the edit contact modal', function () {
             scope.showEditContact(stubContact);
             scope.$apply();
 
             expect(scope.currentContact).toEqual(stubContact);
-            expect(angular.element).toHaveBeenCalledWith('#edit-contact-modal');
+            expect(scope.$broadcast).toHaveBeenCalledWith('edit-contact', stubContact);
         });
 
         it('should show the delete contact modal', function () {
@@ -176,49 +179,17 @@ describe('ContactController', function () {
     });
 
     describe('adding a contact', function () {
-        it('should save contact', function () {
+        it('should handle save-contact event', function () {
             stubContactPromise.resolve(stubContact);
 
-            scope.contact = stubNewContact;
-            scope.saveContact();
+            var contactScope = scope.$new();
+            contactScope.$emit('contact-saved');
             scope.$apply();
 
-            expect(angular.element).toHaveBeenCalledWith('#add-contact-modal');
-            expect(mockContactService.create).toHaveBeenCalledWith(stubNewContact);
+            expect(scope.$on).toHaveBeenCalled();
         });
 
-        it('should show an error if contact service is down', function() {
-            stubContactPromise.reject({status: 0});
-            toastPromise.resolve();
-
-            scope.contact = stubNewContact;
-            scope.saveContact();
-            scope.$apply();
-
-            expect(mockToastProvider.create).toHaveBeenCalledWith({
-                content: 'Contact service down',
-                class: 'danger',
-                maxNumber: 1,
-                dismissOnTimeout: true
             });
-        });
-
-        it('should show an error if contact data is invalid', function() {
-            stubContactPromise.reject({status: 400, data: {error: 'Phone number format invalid'}});
-            toastPromise.resolve();
-
-            scope.contact = stubNewContact;
-            scope.saveContact();
-            scope.$apply();
-
-            expect(mockToastProvider.create).toHaveBeenCalledWith({
-                content: 'Phone number format invalid',
-                class: 'danger',
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
-        });
-    });
 
     describe('editing a contact', function () {
         it('should edit a contact', function () {
