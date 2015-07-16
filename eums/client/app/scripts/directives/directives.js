@@ -112,7 +112,9 @@ angular.module('Directives', [])
     })
     .directive('searchConsignees', function (ConsigneeService, $timeout) {
         function formatConsignee(consignee) {
-            return Object.merge(consignee, {text: consignee.name});
+            var consigneeHasLocation = consignee.location && consignee.location.length;
+            var consigneeDescription = consigneeHasLocation ? consignee.name + ' / ' + consignee.location : consignee.name;
+            return Object.merge(consignee, {text: consigneeDescription});
         }
 
         function formatResponse(data) {
@@ -141,7 +143,7 @@ angular.module('Directives', [])
                     initSelection: function (element, callback) {
                         $timeout(function () {
                             var modelValue = ngModel.$modelValue;
-                            modelValue && ConsigneeService.get(modelValue).then(function(consignee) {
+                            modelValue && ConsigneeService.get(modelValue).then(function (consignee) {
                                 callback(formatConsignee(consignee));
                             });
                         });
