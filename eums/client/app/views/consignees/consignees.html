@@ -36,7 +36,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="consignee in consignees">
-                        <td>
+                        <td class="consigneeType">
                             <span ng-show="consignee.importedFromVision"
                                   class="glyphicon glyphicon-ok text-success"></span>
                         </td>
@@ -69,20 +69,20 @@
                         </td>
                         <td>
                             <span ng-show="!consignee.inEditMode">
-                                <button class="btn btn-sm btn-default blue-border-button" ng-click="edit(consignee)">
+                                <button class="btn btn-sm btn-default blue-border-button editBtn" ng-click="edit(consignee)">
                                     Edit
                                 </button>
-                                <button class="btn btn-sm btn-default red-border-button"
+                                <button class="btn btn-sm btn-default red-border-button deleteBtn"
                                         ng-click="showDeleteDialog(consignee)" ng-class="{'invisible': consignee.importedFromVision}">
                                     Delete
                                 </button>
                             </span>
                             <span ng-show="consignee.inEditMode">
-                                <button class="btn btn-sm btn-default blue-border-button"
+                                <button class="btn btn-sm btn-default blue-border-button saveBtn"
                                         ng-click="save(consignee)" ng-show="consignee.inEditMode"
                                         ng-disabled="!consignee.isValid">Save
                                 </button>
-                                <button class="btn btn-sm btn-default"
+                                <button class="btn btn-sm btn-default cancelBtn"
                                         ng-click="cancelEditOrCreate(consignee)" ng-show="consignee.inEditMode">Cancel
                                 </button>
                             </span>
