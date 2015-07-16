@@ -7,7 +7,8 @@ var header = require('./pages/header.js');
 
 describe('Direct Delivery', function () {
 
-    it('Admin should be able to create direct deliveries to multiple IPs', function () {
+    //TODO - Enable this after bug on #95500096 has been fixed
+    xit('Admin should be able to create direct deliveries to multiple IPs', function () {
 
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
