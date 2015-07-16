@@ -35,6 +35,6 @@ angular.module('IPDirectDelivery', ['ngTable', 'siTable', 'PurchaseOrder', 'User
         };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
-            $location.path('/ip-delivery-report/new/' + selectedPurchaseOrder.id);
+            $location.path('/ip-direct-delivery/new/' + selectedPurchaseOrder.id);
         };
     });

@@ -47,6 +47,6 @@ describe('IP Direct delivery Controller', function () {
     it('should redirect to new report page when purchase order is selected', function () {
         scope.selectPurchaseOrder({id: 10});
         scope.$apply();
-        expect(location.path()).toBe('/ip-delivery-report/new/10');
+        expect(location.path()).toBe('/ip-direct-delivery/new/10');
     });
 });

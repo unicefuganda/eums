@@ -16,7 +16,7 @@ angular.module('IPDirectDeliveryManagement', ['PurchaseOrder', 'User', 'Distribu
         }
 
         showLoader();
-        var rootPath = '/ip-delivery-report/new/';
+        var rootPath = '/ip-direct-delivery/new/';
         var purchaseOrderId = $routeParams.purchaseOrderId;
         var purchaseOrderItemId = $routeParams.purchaseOrderItemId;
         var deliveryNodeId = $routeParams.deliveryNodeId;

@@ -108,7 +108,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/ip-delivery-report/new/:purchaseOrderId', {
+            .when('/ip-direct-delivery/new/:purchaseOrderId', {
                 templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
                 controller: 'IPDirectDeliveryManagementController',
                 resolve: {
@@ -117,7 +117,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId', {
+            .when('/ip-direct-delivery/new/:purchaseOrderId/:purchaseOrderItemId', {
                 templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
                 controller: 'IPDirectDeliveryManagementController',
                 resolve: {
@@ -126,7 +126,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/ip-delivery-report/new/:purchaseOrderId/:purchaseOrderItemId/:deliveryNodeId', {
+            .when('/ip-direct-delivery/new/:purchaseOrderId/:purchaseOrderItemId/:deliveryNodeId', {
                 templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
                 controller: 'IPDirectDeliveryManagementController',
                 resolve: {
