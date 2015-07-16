@@ -138,9 +138,12 @@
                                     <td>{{ item.item.description }}</td>
                                     <td>{{ item.quantity }}</td>
                                     <td>{{ item.value | currency }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ item.availableBalance }}</td>
+                                    <td class="table-row-input-column">
+                                        <input type="text" id="quantity-shipped" class="form-control"
+                                               ng-model="item.quantityShipped" only-digits>
+                                    </td>
+                                    <td>{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
                                 </tr>
                             </table>
                         </div>

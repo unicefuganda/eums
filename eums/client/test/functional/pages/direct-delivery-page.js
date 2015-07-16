@@ -22,12 +22,15 @@ DirectDeliveryPage.prototype = Object.create({}, {
     purchaseOrderType: { get: function () { return element(by.id('po-type')).getText(); }},
     purchaseOrderTotalValue: { get: function () { return element(by.id('po-total-value')).getText(); }},
 
+    firstRowQuantityShipped: {get: function () { return element.all(by.css('.table-row-input-column .form-control')).get(0); }},
+
     purchaseOrderItemCount: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems')).count(); }},
     purchaseOrderItemMaterialNumbers: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.item.materialCode')).getText(); }},
     purchaseOrderItemDescriptions: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.item.description')).getText(); }},
     purchaseOrderItemQuantities: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.quantity')).getText(); }},
     purchaseOrderItemValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.value')).getText(); }},
-
+    purchaseOrderItemBalances: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.availableBalance')).getText(); }},
+    purchaseOrderItemDeliveryValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.deliveryValue')).getText(); }},
     purchaseOrderQuantities: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.quantity')).getText(); }},
     purchaseOrderValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.value')).getText(); }},
 

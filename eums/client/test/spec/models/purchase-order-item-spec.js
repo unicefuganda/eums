@@ -1,8 +1,8 @@
 describe('Purchase Order Item Model', function () {
     var PurchaseOrderItemModel;
     var itemJson = {
-        id: 1, purchaseOrder: 10, quantity: 100, value: 11, salesOrderItem: 12,
-        item: 89, distributionplannodeSet: [1, 2]
+        id: 1, purchaseOrder: 10, quantity: 100, availableBalance: 50, quantityShipped: 50, 
+        value: 11, salesOrderItem: 12, item: 89, distributionplannodeSet: [1, 2]
     };
 
     beforeEach(function () {
@@ -17,6 +17,8 @@ describe('Purchase Order Item Model', function () {
         expect(purchaseOrderItem.id).toBeUndefined();
         expect(purchaseOrderItem.purchaseOrder).toBeUndefined();
         expect(purchaseOrderItem.quantity).toEqual(0);
+        expect(purchaseOrderItem.availableBalance).toEqual(0);
+        expect(purchaseOrderItem.quantityShipped).toEqual(0);
         expect(purchaseOrderItem.value).toEqual(0);
         expect(purchaseOrderItem.salesOrderItem).toBeUndefined();
         expect(purchaseOrderItem.item).toBeUndefined();
@@ -28,6 +30,8 @@ describe('Purchase Order Item Model', function () {
         expect(purchaseOrderItem.id).toBe(1);
         expect(purchaseOrderItem.purchaseOrder).toBe(10);
         expect(purchaseOrderItem.quantity).toEqual(100);
+        expect(purchaseOrderItem.availableBalance).toEqual(50);
+        expect(purchaseOrderItem.quantityShipped).toEqual(50);
         expect(purchaseOrderItem.value).toEqual(11);
         expect(purchaseOrderItem.salesOrderItem).toEqual(12);
         expect(purchaseOrderItem.item).toEqual(89);
@@ -38,5 +42,23 @@ describe('Purchase Order Item Model', function () {
         var purchaseOrderItem = new PurchaseOrderItemModel(itemJson);
         var nodes = [{targetedQuantity: 10}, {targetedQuantity: 30}, {targetedQuantity: NaN}];
         expect(purchaseOrderItem.quantityLeft(nodes)).toBe(60);
+    });
+
+    it('should calculate delivery value based on quantity to be shipped', function() {
+        attrs = {quantity: 100, availableBalance: 50, value: 1200.00}
+        var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
+        expect(purchaseOrderItem.deliveryValue(purchaseOrderItem.quantityShipped)).toBe('600.00');
+    });
+
+    it('should calculate delivery value based on quantity to be shipped with decimals', function() {
+        attrs = {quantity: 100, availableBalance: 37, value: 1222.00}
+        var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
+        expect(purchaseOrderItem.deliveryValue(purchaseOrderItem.quantityShipped)).toBe('452.14');
+    });
+
+    it('should zero delivery value when quantity to be shipped is zero', function() {
+        attrs = {quantity: 100, availableBalance: 37, value: 1222.00}
+        var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
+        expect(purchaseOrderItem.deliveryValue(0)).toBe('0.00');
     });
 });

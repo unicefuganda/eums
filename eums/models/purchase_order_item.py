@@ -1,6 +1,8 @@
 from django.db import models
+from django.db.models import Sum
 
-from eums.models.order_item import OrderItem
+from eums.models import OrderItem
+from eums.models import DistributionPlanNode
 
 
 class PurchaseOrderItem(OrderItem):
@@ -11,6 +13,14 @@ class PurchaseOrderItem(OrderItem):
     class Meta:
         app_label = 'eums'
         unique_together = ('purchase_order', 'item_number', 'sales_order_item')
+
+    def available_balance(self):
+        return (self.quantity - self.quantity_shipped())
+
+    def quantity_shipped(self):
+        result = DistributionPlanNode.objects.filter(item=self).aggregate(Sum('targeted_quantity'))
+        return result['targeted_quantity__sum'] if result['targeted_quantity__sum'] else 0
+
 
     def __unicode__(self):
         return '%s %s %s.' % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)

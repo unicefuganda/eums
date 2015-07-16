@@ -8,6 +8,8 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             this.purchaseOrder = json.purchaseOrder;
             this.itemNumber = json.itemNumber;
             this.quantity = json.quantity || 0;
+            this.availableBalance = json.availableBalance || 0;
+            this.quantityShipped = this.availableBalance || 0;
             this.value = json.value || 0;
             this.salesOrderItem = json.salesOrderItem;
             this.item = json.item;
@@ -17,6 +19,11 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
                 return this.quantity - deliveryNodes.sum(function(node) {
                     return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
                 });
+            }.bind(this);
+
+            this.deliveryValue = function (quantityShipped) {
+                var unitValue = this.value / this.quantity;
+                return (unitValue * quantityShipped).toFixed(2);
             }.bind(this);
         };
     })
