@@ -59,20 +59,20 @@ DirectDeliveryPage.prototype = Object.create({}, {
     }},
 
     setConsignee: { value: function (consignee) {
-        element(by.id('select2-chosen-14')).click();
-        element(by.id('s2id_autogen14_search')).clear().sendKeys(consignee);
+        element(by.id('select2-chosen-18')).click();
+        element(by.id('s2id_autogen18_search')).clear().sendKeys(consignee);
         element(by.css('.select2-results li')).click();
     }},
 
     setContact: { value: function (contact) {
-        element(by.id('select2-chosen-18')).click();
-        element(by.id('s2id_autogen18_search')).clear().sendKeys(contact);
+        element(by.id('select2-chosen-22')).click();
+        element(by.id('s2id_autogen22_search')).clear().sendKeys(contact);
         element(by.css('.select2-results li')).click();
     }},
 
     setDistrict: { value: function (district) {
-        element(by.id('s2id_autogen19')).click();
-        element(by.id('s2id_autogen20_search')).clear().sendKeys(district)
+        element(by.id('s2id_autogen23')).click();
+        element(by.id('s2id_autogen24_search')).clear().sendKeys(district)
         element(by.css('.select2-results li')).click();
     }},
 
