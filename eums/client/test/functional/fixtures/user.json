@@ -39,7 +39,8 @@
         "fields": {
             "customer_id": "L438000484",
             "type": "implementing_partner",
-            "name": "WAKISO DHO"
+            "name": "WAKISO DHO",
+            "imported_from_vision": true
         },
         "model": "eums.consignee",
         "pk": 1

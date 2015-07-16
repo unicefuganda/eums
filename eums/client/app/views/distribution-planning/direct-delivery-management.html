@@ -272,11 +272,10 @@
                                                ng-disabled="item.flowTriggered"
                                                ng-model="item.targetedQuantity" only-digits>
                                     </td>
-                                    <td>
+                                    <td id="input-delivery-date" >
                                         <p class="table-date-width input-group" eums-date-picker>
                                             <input type="text"
                                                    class="form-control"
-                                                   readonly="true"
                                                    datepicker-popup="dd/MM/yyyy"
                                                    ng-model="item.plannedDistributionDate"
                                                    ng-disabled="item.flowTriggered"
@@ -355,13 +354,13 @@
 
                     </div>
                     <div class="pad-20 row">
-                        <button ng-show="computeQuantityLeft(distributionPlanNodes) > 0"
+                        <button id="addConsigneeBtn" ng-show="computeQuantityLeft(distributionPlanNodes) > 0"
                                 type="button" class="btn btn-primary" ng-click="addDistributionPlanNode()">
                             <i class="glyphicon glyphicon-plus"> </i>
                             {{ consigneeButtonText }}
                         </button>
                         <div ng-show="distributionPlanNodes.length" class="pull-right">
-                            <button type="button" class="btn btn-primary"
+                            <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
                                     ng-click="warnBeforeSaving()"
                                     ng-disabled="invalidNodes">
                                 <i class="glyphicon glyphicon-floppy-save"> </i>

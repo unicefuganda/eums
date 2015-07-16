@@ -497,18 +497,6 @@
   },
   {
     "fields": {
-      "name": "first consignee",
-      "imported_from_vision": false,
-      "location": null,
-      "remarks": null,
-      "customer_id": "",
-      "type": "implementing_partner"
-    },
-    "model": "eums.consignee",
-    "pk": 1
-  },
-  {
-    "fields": {
       "name": "second consigne",
       "imported_from_vision": false,
       "location": null,

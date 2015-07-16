@@ -14,19 +14,19 @@ describe('Warehouse Delivery', function () {
 
         warehouseDeliveryPage.visit();
 
-        var WAYBILLNUMBER = '72082647';
+        var WAYBILL_NUMBER = '72082647';
 
-        warehouseDeliveryPage.searchForThisWaybill(WAYBILLNUMBER);
+        warehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-warning');
 
-        warehouseDeliveryPage.selectWaybillByNumber(WAYBILLNUMBER);
+        warehouseDeliveryPage.selectWaybillByNumber(WAYBILL_NUMBER);
 
         warehouseDeliveryPage.selectContact('John');
         warehouseDeliveryPage.selectLocation('wakiso');
         warehouseDeliveryPage.saveDelivery();
 
         warehouseDeliveryPage.visit();
-        warehouseDeliveryPage.searchForThisWaybill(WAYBILLNUMBER);
+        warehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-success');
 
         header.logout();
@@ -34,7 +34,7 @@ describe('Warehouse Delivery', function () {
         loginPage.loginAs('wakiso', 'wakiso');
 
         ipWarehouseDeliveryPage.visit();
-        ipWarehouseDeliveryPage.searchForThisWaybill(WAYBILLNUMBER);
+        ipWarehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
         expect(warehouseDeliveryPage.waybillCount).toEqual(1);
     });
 
