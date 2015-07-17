@@ -27,25 +27,34 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId-:deliveryNodeId', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
-                controller: 'DirectDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_dashboard');
-                    }
-                }
-            })
-            .when('/direct-delivery/new/:purchaseOrderId-:purchaseOrderItemId', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
-                controller: 'DirectDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_dashboard');
-                    }
-                }
-            })
             .when('/direct-delivery/new/:purchaseOrderId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId', {
+                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                controller: 'DirectDeliveryManagementController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
+            .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId', {
                 templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
