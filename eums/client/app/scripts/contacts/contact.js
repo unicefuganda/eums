@@ -113,7 +113,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             angular.extend(this.sort, {criteria: field, descending: !this.sort.descending});
         };
     })
-    .directive('eumsContact', function (ContactService, ngToast) {
+    .directive('eumsContact', function (ContactService, ngToast, $templateCache) {
         var createToast = function (message, klass) {
             ngToast.create({
                 content: message,
@@ -122,13 +122,17 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 dismissOnTimeout: true
             });
         };
+        var templateUrl = '/static/app/views/contacts/partials/add-general-contact-modal.html';
 
         return {
             restrict: 'E',
+            templateUrl: templateUrl,
             link: function (scope) {
                 scope.contact = {};
-
                 var contactInput = $('#contact-phone'), isEdit = false;
+
+                $templateCache.remove(templateUrl);
+
                 contactInput.intlTelInput({
                     defaultCountry: 'auto',
                     geoIpLookup: function (callback) {
@@ -198,7 +202,6 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                             });
                     }
                 };
-            },
-            templateUrl: '/static/app/views/contacts/partials/add-general-contact-modal.html'
+            }
         };
     });
