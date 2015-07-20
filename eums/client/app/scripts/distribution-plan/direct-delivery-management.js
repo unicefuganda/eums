@@ -91,21 +91,21 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 $scope.inSingleIpMode = $routeParams.purchaseOrderType == 'single';
             }
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item.unit']).then(function (purchaseOrder) {
-                    $scope.selectedPurchaseOrder = purchaseOrder;
-                    if (!$routeParams.purchaseOrderType && purchaseOrder.isSingleIp === null) {
+                $scope.selectedPurchaseOrder = purchaseOrder;
+                if (!$routeParams.purchaseOrderType) {
+                    if (purchaseOrder.isSingleIp === null) {
                         $scope.inSingleIpMode = false;
                         $scope.inMultipleIpMode = false;
                     } else {
                         $scope.inSingleIpMode = purchaseOrder.isSingleIp;
                         $scope.inMultipleIpMode = !purchaseOrder.isSingleIp;
-                        $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
-                        $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
-                            return parseFloat(orderItem.value);
-                        });
                     }
                 }
-            )
-            ;
+                $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
+                $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
+                    return parseFloat(orderItem.value);
+                });
+            });
         }
 
         if ($routeParams.purchaseOrderItemId) {
