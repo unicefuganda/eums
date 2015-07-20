@@ -10,6 +10,7 @@ describe('Direct Delivery', function () {
     it('Admin should be able to create direct deliveries to multiple IPs', function () {
 
         loginPage.visit();
+
         loginPage.loginAs('admin', 'admin');
 
         directDeliveryPage.visit();
@@ -24,15 +25,12 @@ describe('Direct Delivery', function () {
 
         directDeliveryPage.selectItem('How Business Affects Us');
 
-        //TODO Fix this - this should not be needed
-        directDeliveryPage.selectMultipleIP();
-
         directDeliveryPage.addConsignee();
         directDeliveryPage.setQuantity(100);
         directDeliveryPage.setDeliveryDate('10/10/2021');
-        directDeliveryPage.setConsignee('Wakiso');
+        directDeliveryPage.setConsignee('WAKISO');
         directDeliveryPage.setContact('John');
-        directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage. setDistrict('Wakiso');
         directDeliveryPage.saveDelivery();
 
         directDeliveryPage.confirmDelivery();

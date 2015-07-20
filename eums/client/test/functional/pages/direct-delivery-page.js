@@ -46,6 +46,10 @@ DirectDeliveryPage.prototype = Object.create({}, {
     selectItem: { value: function (item) {
         element(by.css('#select-sales-order')).click();
         element(by.css("#select-sales-order option[label='" + item + "']")).click();
+        var EC = protractor.ExpectedConditions;
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
+        var itemsHaveLoaded = EC.stalenessOf(fadingModal);
+        browser.wait(itemsHaveLoaded, 5000, "Timeout exceeded while loading item");
     }},
 
     addConsignee: { value: function () { element(by.id('addConsigneeBtn')).click(); }},
@@ -59,20 +63,20 @@ DirectDeliveryPage.prototype = Object.create({}, {
     }},
 
     setConsignee: { value: function (consignee) {
-        element(by.id('select2-chosen-18')).click();
-        element(by.id('s2id_autogen18_search')).clear().sendKeys(consignee);
+        element(by.id('select2-chosen-26')).click();
+        element(by.id('s2id_autogen26_search')).clear().sendKeys(consignee);
         element(by.css('.select2-results li')).click();
     }},
 
     setContact: { value: function (contact) {
-        element(by.id('select2-chosen-22')).click();
-        element(by.id('s2id_autogen22_search')).clear().sendKeys(contact);
+        element(by.id('select2-chosen-30')).click();
+        element(by.id('s2id_autogen30_search')).clear().sendKeys(contact);
         element(by.css('.select2-results li')).click();
     }},
 
     setDistrict: { value: function (district) {
-        element(by.id('s2id_autogen23')).click();
-        element(by.id('s2id_autogen24_search')).clear().sendKeys(district)
+        element(by.id('s2id_autogen31')).click();
+        element(by.id('s2id_autogen32_search')).clear().sendKeys(district)
         element(by.css('.select2-results li')).click();
     }},
 
