@@ -62,22 +62,17 @@ DirectDeliveryPage.prototype = Object.create({}, {
         element.all(by.css('#input-delivery-date p input')).get(0).clear().sendKeys(date);
     }},
 
-    setConsignee: { value: function (consignee) {
-        element(by.id('select2-chosen-26')).click();
-        element(by.id('s2id_autogen26_search')).clear().sendKeys(consignee);
-        element(by.css('.select2-results li')).click();
+
+    setConsignee: { value: function (input) {
+        fillSelect2Chosen('input-consignee', input)
     }},
 
-    setContact: { value: function (contact) {
-        element(by.id('select2-chosen-30')).click();
-        element(by.id('s2id_autogen30_search')).clear().sendKeys(contact);
-        element(by.css('.select2-results li')).click();
+    setContact: { value: function (input) {
+        fillSelect2Chosen('input-contact', input)
     }},
 
-    setDistrict: { value: function (district) {
-        element(by.id('s2id_autogen31')).click();
-        element(by.id('s2id_autogen32_search')).clear().sendKeys(district)
-        element(by.css('.select2-results li')).click();
+    setDistrict: { value: function (input) {
+        fillSelect2Chosen('input-location', input)
     }},
 
     saveDelivery: { value: function () {
@@ -101,3 +96,9 @@ DirectDeliveryPage.prototype = Object.create({}, {
 });
 
 module.exports = new DirectDeliveryPage;
+
+function fillSelect2Chosen (id, input) {
+    element(by.id(id)).click();
+    element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
+    element(by.css('.select2-results li')).click();
+}

@@ -288,14 +288,14 @@
                                           </span>
                                         </p>
                                     </td>
-                                    <td class="table-select-max-width">
+                                    <td id="input-consignee" class="table-select-max-width">
                                         <input type="hidden" search-consignees only-ips
                                                ng-model="item.consignee.id"
                                                ng-disabled="item.flowTriggered"
                                                value="{{ item.consignee.id }}">
                                     </td>
 
-                                    <td class="table-select-max-width">
+                                    <td id="input-contact" class="table-select-max-width">
                                         <div class="form-inline">
                                             <div class="form-group table-contact-form-group col-md-10">
                                                 <input type="hidden" search-contacts required="required"
@@ -312,7 +312,7 @@
                                         </div>
                                     </td>
 
-                                    <td class="table-select-max-width">
+                                    <td id="input-location" class="table-select-max-width">
                                         <input type="hidden" search-from-list list="{{ districts }}"
                                                ng-model="item.location"
                                                ng-disabled="item.flowTriggered"
