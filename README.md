@@ -67,10 +67,14 @@ Local Environment Setup
 * Run the tests to verify setup. 
 
 	```
-	$ python manage.py test
-	$ cd eums/client
-	$ grunt unit
-	$ grunt functional
+	$ ./go bt # runs the backend tests
+	$ ./go ut # runs the client unit tests
+	$ ./go ft # runs the client functional tests
+	```
+	
+* To run all tests together.
+	```
+	$ ./go at # runs all tests
 	```
 	
 	If your virtual environment is not at `~/.virtualenvs/` you should append the following to your `grunt` commands:

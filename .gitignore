@@ -22,6 +22,5 @@ celerybeat-schedule.db
 eums/client/less/*.css
 eums/client/app/css/app.css
 eums/client/.node-version
-eumsenv
 #protractor screenshot directory
 eums/client/test/functional/screenshots/
