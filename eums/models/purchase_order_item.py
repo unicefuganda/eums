@@ -15,15 +15,15 @@ class PurchaseOrderItem(OrderItem):
         unique_together = ('purchase_order', 'item_number', 'sales_order_item')
 
     def available_balance(self):
-        return (self.quantity - self.quantity_shipped())
+        return self.quantity - self.quantity_shipped()
 
     def quantity_shipped(self):
         result = DistributionPlanNode.objects.filter(item=self).aggregate(Sum('targeted_quantity'))
         return result['targeted_quantity__sum'] if result['targeted_quantity__sum'] else 0
 
-
     def __unicode__(self):
-        return '%s %s %s.' % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)
+        return '%s %s %s.' \
+               % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)
 
     def __eq__(self, other):
         if not isinstance(other, PurchaseOrderItem):

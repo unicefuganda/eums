@@ -1,4 +1,3 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models import Count, Sum
 
@@ -9,11 +8,10 @@ class PurchaseOrderManager(models.Manager):
     def for_direct_delivery(self):
         return self.model.objects.annotate(release_order_count=Count('release_orders')).filter(release_order_count=0)
 
-    @staticmethod
-    def for_consignee(consignee_id):
+    def for_consignee(self, consignee_id):
         order_item_ids = DistributionPlanNode.objects.filter(consignee__id=consignee_id).values_list('item')
         order_ids = PurchaseOrderItem.objects.filter(id__in=order_item_ids).values_list('purchase_order')
-        return PurchaseOrder.objects.filter(id__in=order_ids)
+        return self.model.objects.filter(id__in=order_ids)
 
 
 class PurchaseOrder(models.Model):
