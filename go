@@ -60,7 +60,7 @@ function resetdb {
 }
 
 function testbackend {
-  source eums/bin/activate
+  source ~/.virtualenvs/eums/bin/activate
   python manage.py test -v 2
 }
 
@@ -79,11 +79,11 @@ function testfunctional {
 }
 
 function killdbconnections {
-  echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums' AND pid <> pg_backend_pid();" | psql &> /dev/null
+  echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums' AND pid <> pg_backend_pid();" | psql -U postgres &> /dev/null
 }
 
 function killtestdbconnections {
-  echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums_test' AND pid <> pg_backend_pid();" | psql &> /dev/null
+  echo "SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'eums_test' AND pid <> pg_backend_pid();" | psql -U postgres &> /dev/null
 }
 
 function runserver {
