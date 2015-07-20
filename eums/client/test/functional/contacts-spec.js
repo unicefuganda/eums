@@ -1,18 +1,28 @@
 'use strict';
 
-describe('Contacts Page', function () {
-    var loginPage;
+var loginPage = require('./pages/login-page.js');
+var contactsPage = require('./pages/contacts-page.js');
 
-    it('should go to the contacts page', function () {
-        loginPage = require('./pages/login-page');
+describe('Contacts', function () {
 
+    beforeEach(function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
+        contactsPage.visit();
+    });
 
-        element(by.id('admin-nav')).click();
-        element(by.id('contact-nav')).click();
+    it('Existing contacts should be shown on the contacts page', function () {
+        expect(contactsPage.contactCount).toEqual(1);
+        expect(contactsPage.contactFirstNames).toContain('John');
+        expect(contactsPage.contactLastNames).toContain('Doe');
+        expect(contactsPage.contactPhoneNumbers).toContain('+256771234567');
+    });
 
-        expect(element(by.css('.page-header')).getText()).toEqual('Contacts');
-        expect(element(by.id('add-contact')).getText()).toEqual('Add Contact');
+    it('Searching for contacts should show only relevant results', function () {
+        contactsPage.searchForThisContact('Non-existent Contact');
+        expect(contactsPage.contactCount).toEqual(0);
+
+        contactsPage.searchForThisContact('John');
+        expect(contactsPage.contactCount).toEqual(1);
     });
 });
