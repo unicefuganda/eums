@@ -183,7 +183,7 @@
                                             required="required"
                                             class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                             ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
-                                        <option value="">Select Item</option>
+                                        <option value="">{{selectedPurchaseOrderItem.item.description || "Select Item"}}</option>
                                     </select>
                                 </div>
                             </div>
