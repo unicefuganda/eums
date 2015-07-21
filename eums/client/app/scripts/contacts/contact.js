@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'siTable', 'ui.bootstrap', 'ngToast'])
-    .controller('ContactController', function (ContactService, $scope, $sorter) {
+    .controller('ContactController', function (ContactService, $scope, $sorter, ngToast) {
         $scope.contacts = [];
         $scope.sortBy = $sorter;
         $scope.currentContact = {};
@@ -64,6 +64,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
                 angular.element('#delete-contact-modal').modal('hide');
+            }).catch(function(reason) {
+                ngToast.create({content: reason, class: 'danger'})
             });
         };
 
@@ -97,7 +99,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     });
                 },
                 del: function (contact) {
-                    var nodeFilterUrl = EumsConfig.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contact._id;
+                    var nodeFilterUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contact._id;
                     return $http.get(nodeFilterUrl).then(function (response) {
                         return response.data.length ? $q.reject('Cannot delete contact that has deliveries') : this._del(contact);
                     }.bind(this));

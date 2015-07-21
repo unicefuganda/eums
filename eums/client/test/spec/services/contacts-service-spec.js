@@ -37,7 +37,7 @@ describe('Contacts Service', function () {
 
     it('should delete contact when the contact has no associated deliveries', function (done) {
         var contactPersonId = 'FDFD86B7-47D1-46FC-B722-A22F5F14F06D';
-        var contactDeliveriesUrl = config.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contactPersonId;
+        var contactDeliveriesUrl = config.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contactPersonId;
         mockHttpBackend.whenGET(contactDeliveriesUrl).respond([]);
         mockHttpBackend.expectDELETE(config.CONTACT_SERVICE_URL + contactPersonId + '/').respond(201);
         contactService.del({_id: contactPersonId}).then(done);
@@ -46,7 +46,7 @@ describe('Contacts Service', function () {
 
     it('should not delete contact when contact has associated deliveries', function(done) {
         var contactPersonId = 'FDFD86B7-47D1-46FC-B722-A22F5F14F06D';
-        var contactDeliveriesUrl = config.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contactPersonId;
+        var contactDeliveriesUrl = config.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contactPersonId;
         mockHttpBackend.whenGET(contactDeliveriesUrl).respond([1]);
         contactService.del({_id: contactPersonId}).catch(function(reason) {
             expect(reason).toBe('Cannot delete contact that has deliveries');

@@ -46,7 +46,6 @@ describe('ContactController', function () {
         inject(function ($rootScope, $controller, $compile, $q, $sorter) {
             scope = $rootScope.$new();
             sorter = $sorter;
-
             stubContactsPromise = $q.defer();
             deferred = $q.defer();
             stubContactPromise = $q.defer();
@@ -59,9 +58,10 @@ describe('ContactController', function () {
 
             spyOn(angular, 'element').and.callFake(function () {
                 return {
-                    modal : jasmine.createSpy('modal').and.callFake(function (status) {
+                    modal: jasmine.createSpy('modal').and.callFake(function (status) {
                         return status;
-                    })};
+                    })
+                };
             });
 
             spyOn(scope, '$broadcast');
@@ -78,25 +78,25 @@ describe('ContactController', function () {
         });
     });
 
-     describe('change sort arrow direction on sorting column in contacts',function(){
-         var criteria = 'some_criteria';
+    describe('change sort arrow direction on sorting column in contacts', function () {
+        var criteria = 'some_criteria';
 
-         it('should return an down arrow class if a criteria is used to sort contacts)', function () {
-             scope.initialize();
-             scope.$apply();
-             scope.sort.criteria = criteria;
+        it('should return an down arrow class if a criteria is used to sort contacts)', function () {
+            scope.initialize();
+            scope.$apply();
+            scope.sort.criteria = criteria;
 
-             expect(scope.sortArrowClass(criteria)).toEqual('active glyphicon glyphicon-arrow-down');
-         });
+            expect(scope.sortArrowClass(criteria)).toEqual('active glyphicon glyphicon-arrow-down');
+        });
 
-         it('should return an up arrow class if same criteria is used to sort contacts again)', function () {
-             scope.initialize();
-             scope.$apply();
-             scope.sort.criteria = criteria;
-             scope.sort.descending = true;
+        it('should return an up arrow class if same criteria is used to sort contacts again)', function () {
+            scope.initialize();
+            scope.$apply();
+            scope.sort.criteria = criteria;
+            scope.sort.descending = true;
 
-             expect(scope.sortArrowClass(criteria)).toEqual('active glyphicon glyphicon-arrow-up');
-         });
+            expect(scope.sortArrowClass(criteria)).toEqual('active glyphicon glyphicon-arrow-up');
+        });
     });
 
     it('should fetch all contacts', function () {
@@ -189,7 +189,7 @@ describe('ContactController', function () {
             expect(scope.$on).toHaveBeenCalled();
         });
 
-            });
+    });
 
     describe('editing a contact', function () {
         it('should edit a contact', function () {
@@ -216,6 +216,22 @@ describe('ContactController', function () {
             expect(angular.element).toHaveBeenCalledWith('#delete-contact-modal');
             expect(mockContactService.del).toHaveBeenCalledWith(stubContact);
         });
+
+        it('should throw a toast when contact service rejects', function () {
+            stubContacts.push(stubContact);
+            scope.contacts = stubContacts;
+            scope.currentContact = stubContact;
+            var reason = 'cannot delete';
+            deferred.reject(reason);
+            scope.$apply();
+
+            scope.deleteSelectedContact();
+            scope.$apply();
+
+            expect(mockToastProvider.create).toHaveBeenCalledWith({content: reason, class: 'danger'});
+        });
+
+
     });
 
 });
