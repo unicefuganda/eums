@@ -1,5 +1,13 @@
 #!/bin/bash
 
+#run the migrations
+source ~/.virtualenvs/eums/bin/activate
+cd /opt/app/eums
+python manage.py syncdb --noinput
+python manage.py migrate
+python manage.py loaddata eums/fixtures/new-deployment-instance.json
+deactivate
+
 # Make sure we have the right IPs for the contacts service
 cd /opt/app/eums/eums/client
 
