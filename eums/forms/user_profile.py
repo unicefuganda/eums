@@ -8,7 +8,7 @@ from eums.models import UserProfile, Consignee
 
 class UserProfileForm(UserCreationForm):
     groups = forms.ModelChoiceField(queryset=Group.objects.all(), empty_label=None, required=True,
-                                    widget=forms.RadioSelect(attrs={'class': 'radio-roles'}), label="Role")
+                                    widget=forms.Select(attrs={'class': 'select-roles'}), label="Role")
     consignees = Consignee.objects.filter(imported_from_vision=True).order_by('name')
     consignee = forms.ModelChoiceField(queryset=consignees, empty_label="Choose an Implementing Partner",
                                        required=False)
@@ -43,7 +43,7 @@ class UserProfileForm(UserCreationForm):
         message = "This field is required."
         if not group:
             self._errors['groups'] = self.error_class([message])
-        elif group.name == 'Implementing Partner':
+        elif 'Implementing Partner' in group.name:
             self._check_implementing_partner(message)
         return super(UserProfileForm, self).clean()
 

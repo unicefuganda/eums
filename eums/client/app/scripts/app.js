@@ -236,7 +236,12 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
             })
             .when('/consignees', {
                 templateUrl: '/static/app/views/consignees/consignees.html',
-                controller: 'ConsigneesController'
+                controller: 'ConsigneesController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_consignees');
+                    }
+                }
             })
             .when('/response-details/:district', {
                 templateUrl: '/static/app/views/responses/index.html',
