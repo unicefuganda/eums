@@ -158,7 +158,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         });
                     },
                     update: function (object, verb) {
-                        !verb && (verb = 'PUT');
+                        verb = verb || 'PUT';
                         var flatObject = nestedObjectsToIds(object);
                         var objectToPut = options.changeCase ? changeCase(flatObject, toSnakeCase) : flatObject;
                         return $http({
