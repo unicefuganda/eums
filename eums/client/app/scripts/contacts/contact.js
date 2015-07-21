@@ -63,6 +63,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
+                ngToast.create({content: 'Contact deleted', class: 'success'});
             }).catch(function(reason) {
                 ngToast.create({content: reason, class: 'danger'})
             }).finally(function() {

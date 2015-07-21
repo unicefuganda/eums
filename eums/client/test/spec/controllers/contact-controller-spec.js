@@ -212,6 +212,7 @@ describe('ContactController', function () {
 
             expect(angular.element).toHaveBeenCalledWith('#delete-contact-modal');
             expect(mockContactService.del).toHaveBeenCalledWith(stubContact);
+            expect(mockToastProvider.create).toHaveBeenCalledWith({content: 'Contact deleted', class: 'success'});
             expect(mockElement.modal).toHaveBeenCalledWith('hide');
         });
 
