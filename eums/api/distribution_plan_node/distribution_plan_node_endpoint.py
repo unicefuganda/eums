@@ -20,7 +20,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     serializer_class = DistributionPlanNodeSerialiser
     filter_backends = (filters.DjangoFilterBackend,)
     search_fields = ('tree_position',)
-    filter_fields = ('consignee', 'item', 'distribution_plan', 'parent')
+    filter_fields = ('consignee', 'item', 'distribution_plan', 'parent', 'contact_person_id')
 
     def get_queryset(self):
         parent_is_null = self.request.GET.get('parent__isnull', None)

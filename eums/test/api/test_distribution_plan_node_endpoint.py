@@ -1,3 +1,4 @@
+from eums.models import DistributionPlanNode
 from eums.test.api.api_test_helpers import create_distribution_plan_node, \
     create_consignee, create_sales_order_item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -143,3 +144,13 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
 
         parent_nodes = self.client.get(ENDPOINT_URL + "?parent__isnull=true").data
         self.assertEqual(len(parent_nodes), 1)
+
+    def test_should_filter_distribution_plan_nodes_by_contact_person_id(self):
+        contact_person_id = '8541BD02-E862-48FD-952D-470445347DAE'
+        DistributionPlanNodeFactory()
+        node = DistributionPlanNodeFactory(contact_person_id=contact_person_id)
+        self.assertEqual(DistributionPlanNode.objects.count(), 2)
+        response = self.client.get('%s?contact_person_id=%s' % (ENDPOINT_URL, contact_person_id))
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], node.id)
+
