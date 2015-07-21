@@ -14,3 +14,11 @@ chmod -R 700 /var/lib/postgresql
 
 #start the server
 su - postgres -c "/etc/init.d/postgresql start"
+
+sleep 15
+
+#run the migrations
+source ~/.virtualenvs/eums/bin/activate
+cd /opt/app/eums
+python manage.py migrate
+deactivate
