@@ -6,6 +6,7 @@ var importDataPage = require('./pages/import-data-page.js');
 
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
+var consigneesPage = require('./pages/consignees-page.js');
 
 describe('Vision Data Imports', function () {
 
@@ -16,16 +17,15 @@ describe('Vision Data Imports', function () {
         importDataPage.visit();
     });
 
-    //TODO Fix this
-    xit('should show consignees imported from vision on the feedback report page', function () {
+    it('should show consignees imported from vision on the consignees page', function () {
         importDataPage.uploadConsignees('../files/consignees.xlsx');
 
-        feedbackReportPage.visit();
-        console.log('el', feedbackReportPage.consigneeSelect);
-        feedbackReportPage.consigneeSelect.click();
-        feedbackReportPage.consigneeSearchInput.sendKeys('name');
+        consigneesPage.visit();
+        consigneesPage.searchFor('name of test consignee');
 
-        expect(feedbackReportPage.consigneeResults).toContain('name of test consignee');
+        expect(consigneesPage.consigneeNames).toContain('name of test consignee');
+        expect(consigneesPage.consigneeLocations).toContain('city of test consignee');
+        expect(consigneesPage.consigneeIDs).toContain('customer id of test consignee');
     });
 
     it('should show programmes imported from vision on the feedback report page', function () {
@@ -134,13 +134,14 @@ describe('Vision Data Imports', function () {
         expect(feedbackReportPage.programmeResults).toContain('YI100 - PCR 3 Updated Test Programme Name');
     });
 
-    //TODO Fix this
-    xit('should update existing consignees with data from newly imported spreadsheets', function () {
+    it('should update existing consignees with data from newly imported spreadsheets', function () {
         importDataPage.uploadConsignees('../files/consignees-update.xlsx');
 
-        feedbackReportPage.visit();
-        feedbackReportPage.consigneeSelect.enter('updated');
+        consigneesPage.visit();
+        consigneesPage.searchFor('updated name of test consignee');
 
-        expect(feedbackReportPage.consigneeResults).toContain('updated name of test consignee');
+        expect(consigneesPage.consigneeNames).toContain('updated name of test consignee');
+        expect(consigneesPage.consigneeLocations).toContain('city of test consignee');
+        expect(consigneesPage.consigneeIDs).toContain('customer id of test consignee');
     });
 });
