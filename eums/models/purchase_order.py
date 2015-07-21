@@ -37,12 +37,17 @@ class PurchaseOrder(models.Model):
         else:
             return False
 
-    def delivery(self):
-        first_node = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all()).first()
-        if first_node:
-            return first_node.distribution_plan.id
-        else:
-            return None
+    def deliveries(self):
+        nodes = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all())
+        distribution_plans = []
+        for node in nodes:
+            distribution_plan = node.distribution_plan
+            if distribution_plan in distribution_plans:
+                distribution_plan.distributionplannode_set.add(node)
+            else:
+                distribution_plan.distributionplannode_set = [node]
+                distribution_plans.append(distribution_plan)
+        return list(distribution_plans)
 
     class Meta:
         app_label = 'eums'

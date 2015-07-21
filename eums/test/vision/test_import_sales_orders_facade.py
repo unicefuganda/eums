@@ -148,7 +148,8 @@ class TestSalesOrdersVisionFacade(TestCase):
                                              delivery_date=datetime.date(2014, 1, 4),
                                              description=u'SQFlex 3-10 Pump C/W 1.4KW')
 
-        self.assert_sales_order_items_are_equal(expected_order_item, SalesOrderItem.objects.all()[0])
+        item = SalesOrderItem.objects.get(description='SQFlex 3-10 Pump C/W 1.4KW', sales_order=first_sales_order)
+        self.assert_sales_order_items_are_equal(expected_order_item, item)
 
     def test_should_create_sales_order_items_with_different_item_numbers(self):
         num_sales_order_imports = SalesOrderItem.objects.count()

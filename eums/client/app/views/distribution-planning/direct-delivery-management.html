@@ -29,10 +29,10 @@
             <div class="pad-left-5 pad-top-10">
                 <div class="col-md-12 form-horizontal">
                     <div class="form-group col-md-4">
-                        <label for="select-implementing_partner" class="col-md-5 control-label description-label pad-small">
+                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
                             Implementing Partner:
                         </label>
-                        <div class="col-md-7 pad-small">
+                        <div id='input-consignee' class="col-md-7 pad-small">
                             <input type="hidden" search-consignees only-ips
                                    ng-model="consignee.id"
                                    ng-attr-id="{{ 'ip-select' }}"
@@ -40,15 +40,16 @@
                         </div>
                     </div>
                     <div class="form-group col-md-2">
-                        <div class="col-md-12 pad-small">
+                        <div id="input-delivery-date" class="col-md-12 pad-small">
                             <span class="input-group" eums-date-picker>
-                                <input type="text" class="form-control"
-                                       readonly="true"
+                                <input type="text"
+                                       class="form-control"
                                        placeholder="Delivery Date"
                                        datepicker-popup="dd/MM/yyyy"
                                        ng-model="selectedDate"
                                        is-open="datepicker[$index]"
-                                       datepicker-options="dateOptions" show-button-bar="false"
+                                       datepicker-options="dateOptions"
+                                       show-button-bar="false"
                                        ng-required="true"
                                        value="{{ selectedDate | date : 'dd/MM/yyyy' }}"
                                        required="required"/>
@@ -64,7 +65,7 @@
                         <label  class="col-md-4 control-label description-label pad-medium">
                             Contact:
                         </label>
-                        <div class="col-md-8 pad-small">
+                        <div id="input-contact" class="col-md-8 pad-small">
                             <div class="form-group col-md-10 pad-small">
                                 <input type="hidden"
                                        search-contacts
@@ -86,7 +87,7 @@
                         <label class="col-md-4 control-label description-label pad-small">
                             District:
                         </label>
-                        <div class="col-md-8 pad-small">
+                        <div id="input-location" class="col-md-8 pad-small">
                             <input type="hidden"
                                    search-from-list
                                    list="{{ districts }}"
@@ -150,8 +151,8 @@
                     </div>
                     <div class="pad-20 row">
                         <div ng-show="purchaseOrderItems.length" class="pull-right">
-                            <button type="button" class="btn btn-primary"
-                                    ng-click="warnBeforeSaving()"
+                            <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
+                                    ng-click="warnBeforeSavingSingleIP()"
                                     ng-disabled="invalidDelivery()">
                                 <i class="glyphicon glyphicon-floppy-save"> </i>
                                 Save

@@ -101,7 +101,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                     }.bind(this));
                 },
                 getNodesByDelivery: function (deliveryId) {
-                    return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?' + deliveryId)
+                    return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?distribution_plan=' + deliveryId)
                         .then(function (deliveryNodes) {
                             return deliveryNodes;
                         });

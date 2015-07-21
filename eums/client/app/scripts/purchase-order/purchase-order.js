@@ -33,6 +33,9 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem
                     return $http.get(EumsConfig.BACKEND_URLS.CONSIGNEE_PURCHASE_ORDER_ITEMS + consigneeId + '/sales-order-item/' + salesOrderItemId).then(function (response) {
                         return response.data;
                     });
+                },
+                fetchDeliveries: function(purchaseOrder) {
+                    return this.getDetail(purchaseOrder, 'deliveries');
                 }
             }
         });

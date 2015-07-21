@@ -1,11 +1,14 @@
 from mock import patch
 
-from eums.models import PurchaseOrder, Programme
+from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, SalesOrderItem
 from eums.test.api.api_test_helpers import create_release_order
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
+from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 ENDPOINT_URL = BACKEND_URL + 'purchase-order/'
@@ -17,8 +20,13 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         PurchaseOrder.objects.all().delete()
 
     def tearDown(self):
+        DistributionPlan.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
+        DistributionPlanNode.objects.all().delete()
         PurchaseOrder.objects.all().delete()
         Programme.objects.all().delete()
+        SalesOrderItem.objects.all().delete()
+        SalesOrder.objects.all().delete()
 
     def test_should_get_purchase_orders_without_release_orders(self):
         purchase_order = PurchaseOrderFactory()
@@ -49,3 +57,15 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
 
         mock_for_consignee.assert_called_with(consignee_id)
         self.assertDictContainsSubset({'id': order.id}, response.data[0])
+
+    def test_should_return_serialized_response_of_deliveries_for_particular_purchase_order(self):
+        purchase_order = PurchaseOrderFactory()
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        delivery = DistributionPlanFactory()
+        node = NodeFactory(item=purchase_order_item, distribution_plan=delivery)
+
+        response = self.client.get(ENDPOINT_URL + str(purchase_order.id) + '/deliveries/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictContainsSubset({'distributionplannode_set': [node.id]}, response.data[0])
+        self.assertDictContainsSubset({'programme': delivery.programme_id}, response.data[0])

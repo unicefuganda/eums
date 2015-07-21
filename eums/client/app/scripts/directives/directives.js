@@ -50,6 +50,12 @@ angular.module('Directives', [])
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
                 });
+
+                scope.$on('set-location', function (_, location) {
+                    var locationSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    locationSelect2Input.text(location.name);
+                    $(element).val(location.id);
+                });
             }
         };
     })
@@ -107,6 +113,13 @@ angular.module('Directives', [])
                         $(element).val(formattedContact.id);
                     }
                 });
+
+                scope.$on('set-contact-for-single-ip', function (_, contact) {
+                    var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    var formattedContact = formatContact(contact);
+                    contactSelect2Input.text(formattedContact.text);
+                    $(element).val(formattedContact.id);
+                });
             }
         };
     })
@@ -153,6 +166,12 @@ angular.module('Directives', [])
                 element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
+                });
+
+                scope.$on('set-consignee-for-single-ip', function (_, consignee) {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text(consignee.name);
+                    $(element).val(consignee.id);
                 });
 
                 scope.$on('set-consignee-for-node', function (_, consignee, nodeId) {

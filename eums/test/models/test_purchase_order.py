@@ -2,19 +2,24 @@ from unittest import TestCase
 
 from django.db import IntegrityError
 
-from eums.models import Consignee, DistributionPlanNode, SalesOrder
-from eums.models.purchase_order import PurchaseOrder
+from eums.models import Consignee, DistributionPlan, DistributionPlanNode, SalesOrder, PurchaseOrderItem, PurchaseOrder, Programme, SalesOrderItem
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
+from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
 
 class PurchaseOrderTest(TestCase):
     def tearDown(self):
+        DistributionPlan.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
+        DistributionPlanNode.objects.all().delete()
+        PurchaseOrder.objects.all().delete()
+        Programme.objects.all().delete()
+        SalesOrderItem.objects.all().delete()
         SalesOrder.objects.all().delete()
         Consignee.objects.all().delete()
-        DistributionPlanNode.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
         fields_in_order = [field for field in PurchaseOrder._meta._name_map]
@@ -61,6 +66,35 @@ class PurchaseOrderTest(TestCase):
         NodeFactory(item=purchase_order_item_three, consignee=consignee, targeted_quantity=100, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         NodeFactory(item=purchase_order_item_four, consignee=consignee, targeted_quantity=50, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         self.assertTrue(purchase_order_three.is_fully_delivered())
+
+    def test_should_return_empty_list_when_no_deliveries_tied_to_any_purchase_order_items(self):
+        order = PurchaseOrderFactory()
+        PurchaseOrderItemFactory(purchase_order=order)
+        PurchaseOrderItemFactory(purchase_order=order)
+        self.assertEqual(order.deliveries(), [])
+
+    def test_should_return_multiple_deliveries_along_with_their_corresponding_nodes(self):
+        order = PurchaseOrderFactory()
+        order_item_one = PurchaseOrderItemFactory(purchase_order=order)
+        order_item_two = PurchaseOrderItemFactory(purchase_order=order)
+        delivery_one = DistributionPlanFactory()
+        delivery_two = DistributionPlanFactory()
+        node_one = NodeFactory(item=order_item_one, distribution_plan=delivery_one)
+        node_two = NodeFactory(item=order_item_two, distribution_plan=delivery_one)
+        node_three = NodeFactory(item=order_item_one, distribution_plan=delivery_two)
+        node_four = NodeFactory(item=order_item_two, distribution_plan=delivery_two)
+
+        deliveries = order.deliveries()
+
+        self.assertEqual(len(deliveries), 2)
+        self.assertListEqual(deliveries, [delivery_one, delivery_two])
+
+        first_delivery_nodes = delivery_one.distributionplannode_set.all()
+        second_delivery_nodes = delivery_two.distributionplannode_set.all()
+        self.assertIn(node_one, first_delivery_nodes)
+        self.assertIn(node_two, first_delivery_nodes)
+        self.assertIn(node_three, second_delivery_nodes)
+        self.assertIn(node_four, second_delivery_nodes)
 
     def test_should_get_orders__as_a_queryset__whose_items_have_been_delivered_to_a_specific_consignee(self):
         consignee = ConsigneeFactory()

@@ -18,6 +18,8 @@ DirectDeliveryPage.prototype = Object.create({}, {
     selectSingleIP: { value: function () { element(by.id('single-ip')).click(); }},
     selectMultipleIP: { value: function () { element(by.id('multiple-ip')).click(); }},
 
+    implementingPartner: { get: function () { return element(by.css('#input-consignee')).getText(); }},
+
     programmeName: { get: function () { return element(by.className('secondary-header')).getText(); }},
     purchaseOrderType: { get: function () { return element(by.id('po-type')).getText(); }},
     purchaseOrderTotalValue: { get: function () { return element(by.id('po-total-value')).getText(); }},
@@ -62,9 +64,12 @@ DirectDeliveryPage.prototype = Object.create({}, {
         element.all(by.css('#input-delivery-date p input')).get(0).clear().sendKeys(date);
     }},
 
-
     setConsignee: { value: function (input) {
         fillSelect2Chosen('input-consignee', input)
+    }},
+
+    setDeliveryDateForSingleIP: { value: function (date) {
+        element.all(by.css('#input-delivery-date span input')).get(0).clear().sendKeys(date);
     }},
 
     setContact: { value: function (input) {
