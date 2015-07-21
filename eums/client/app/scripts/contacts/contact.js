@@ -63,9 +63,10 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 var index = $scope.contacts.indexOf($scope.currentContact);
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
-                angular.element('#delete-contact-modal').modal('hide');
             }).catch(function(reason) {
                 ngToast.create({content: reason, class: 'danger'})
+            }).finally(function() {
+                angular.element('#delete-contact-modal').modal('hide');
             });
         };
 

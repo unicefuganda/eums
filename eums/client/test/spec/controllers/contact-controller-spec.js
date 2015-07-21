@@ -29,18 +29,19 @@ describe('ContactController', function () {
         }
     ];
 
+    var mockElement = {
+        modal: function () {
+
+        }
+    };
+
     beforeEach(module('Contact'));
 
     beforeEach(function () {
         module('ngTable');
         module('siTable');
 
-        mockContactService = jasmine.createSpyObj('mockContactService',
-            ['all',
-                'create',
-                'update',
-                'del']);
-
+        mockContactService = jasmine.createSpyObj('mockContactService', ['all', 'create', 'update', 'del']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
 
         inject(function ($rootScope, $controller, $compile, $q, $sorter) {
@@ -56,25 +57,17 @@ describe('ContactController', function () {
             mockContactService.del.and.returnValue(deferred.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
 
-            spyOn(angular, 'element').and.callFake(function () {
-                return {
-                    modal: jasmine.createSpy('modal').and.callFake(function (status) {
-                        return status;
-                    })
-                };
-            });
+            spyOn(angular, 'element').and.returnValue(mockElement);
 
             spyOn(scope, '$broadcast');
             spyOn(scope, '$on');
 
-            $controller('ContactController',
-                {
-                    $scope: scope,
-                    ContactService: mockContactService,
-                    $sorter: sorter,
-                    ngToast: mockToastProvider
-                });
-
+            $controller('ContactController', {
+                $scope: scope,
+                ContactService: mockContactService,
+                $sorter: sorter,
+                ngToast: mockToastProvider
+            });
         });
     });
 
@@ -204,7 +197,11 @@ describe('ContactController', function () {
     });
 
     describe('deleting a contact', function () {
-        it('should delete a contact', function () {
+        beforeEach(function () {
+            spyOn(mockElement, 'modal')
+        });
+
+        it('should delete a contact and hide delete dialog', function () {
             stubContacts.push(stubContact);
             scope.contacts = stubContacts;
             scope.currentContact = stubContact;
@@ -215,9 +212,10 @@ describe('ContactController', function () {
 
             expect(angular.element).toHaveBeenCalledWith('#delete-contact-modal');
             expect(mockContactService.del).toHaveBeenCalledWith(stubContact);
+            expect(mockElement.modal).toHaveBeenCalledWith('hide');
         });
 
-        it('should throw a toast when contact service rejects', function () {
+        it('should throw a toast when contact service rejects and hide the delete dialog', function () {
             stubContacts.push(stubContact);
             scope.contacts = stubContacts;
             scope.currentContact = stubContact;
@@ -229,9 +227,7 @@ describe('ContactController', function () {
             scope.$apply();
 
             expect(mockToastProvider.create).toHaveBeenCalledWith({content: reason, class: 'danger'});
+            expect(mockElement.modal).toHaveBeenCalledWith('hide');
         });
-
-
     });
-
 });
