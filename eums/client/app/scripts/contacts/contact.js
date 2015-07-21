@@ -50,7 +50,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
         };
 
         $scope.showEditContact = function (contact) {
-            angular.copy(contact, $scope.currentContact);
+            if (!angular.equals(contact, $scope.currentContact)) {
+                angular.copy(contact, $scope.currentContact);
+            }
             $scope.$broadcast('edit-contact', contact);
         };
 
