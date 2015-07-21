@@ -75,7 +75,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
             });
         };
     })
-    .factory('ContactService', function ($http, EumsConfig, ServiceFactory) {
+    .factory('ContactService', function ($http, EumsConfig, ServiceFactory, $q) {
         return ServiceFactory.create({
             uri: EumsConfig.CONTACT_SERVICE_URL,
             changeCase: false,
@@ -95,6 +95,12 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     return $http.put(EumsConfig.CONTACT_SERVICE_URL, contact).then(function (response) {
                         return response.data;
                     });
+                },
+                del: function (contact) {
+                    var nodeFilterUrl = EumsConfig.DISTRIBUTION_PLAN_NODE + '?contact_person_id=' + contact._id;
+                    return $http.get(nodeFilterUrl).then(function (response) {
+                        return response.data.length ? $q.reject('Cannot delete contact that has deliveries') : this._del(contact);
+                    }.bind(this));
                 }
             }
         });
