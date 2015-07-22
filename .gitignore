@@ -24,3 +24,4 @@ eums/client/app/css/app.css
 eums/client/.node-version
 #protractor screenshot directory
 eums/client/test/functional/screenshots/
+eums/client/functional/
