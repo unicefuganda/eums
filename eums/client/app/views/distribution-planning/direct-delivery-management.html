@@ -182,8 +182,8 @@
                                     <select id="select-sales-order" ng-model="selectedPurchaseOrderItem"
                                             required="required"
                                             class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
-                                            ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description'">
-                                        <option value="">{{selectedPurchaseOrderItem.item.description || "Select Item"}}</option>
+                                            ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description' track by purchaseOrderItem.id ">
+                                        <option value="">Select Item</option>
                                     </select>
                                 </div>
                             </div>
