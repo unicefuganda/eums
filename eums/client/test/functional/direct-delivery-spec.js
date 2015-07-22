@@ -23,11 +23,13 @@ describe('Direct Delivery', function () {
         directDeliveryPage.selectItem('How Business Affects Us');
 
         directDeliveryPage.addConsignee();
+
         directDeliveryPage.setQuantity(100);
         directDeliveryPage.setDeliveryDate('10/10/2021');
         directDeliveryPage.setConsignee('WAKISO');
         directDeliveryPage.setContact('John');
-        directDeliveryPage. setDistrict('Wakiso');
+        directDeliveryPage.setDistrict('Wakiso');
+
         directDeliveryPage.saveDelivery();
         directDeliveryPage.confirmDelivery();
 

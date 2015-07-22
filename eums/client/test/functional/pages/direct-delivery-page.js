@@ -64,20 +64,32 @@ DirectDeliveryPage.prototype = Object.create({}, {
         element.all(by.css('#input-delivery-date p input')).get(0).clear().sendKeys(date);
     }},
 
+    setDeliveryDateForSingleIP: { value: function (date) {
+        element.all(by.css('#input-delivery-date span input')).get(0).clear().sendKeys(date);
+    }},
+
     setConsignee: { value: function (input) {
         fillSelect2Chosen('input-consignee', input)
     }},
 
-    setDeliveryDateForSingleIP: { value: function (date) {
-        element.all(by.css('#input-delivery-date span input')).get(0).clear().sendKeys(date);
+    setConsigneeForSingleIP: { value: function (input) {
+        fillSelect2Chosen('input-single-consignee', input)
     }},
 
     setContact: { value: function (input) {
         fillSelect2Chosen('input-contact', input)
     }},
 
+    setContactForSingleIP: { value: function (input) {
+        fillSelect2Chosen('input-contact-single-ip', input)
+    }},
+
     setDistrict: { value: function (input) {
         fillSelect2Chosen('input-location', input)
+    }},
+
+    setDistrictForSingleIP: { value: function (input) {
+        fillSelect2Chosen('input-location-single-ip', input)
     }},
 
     saveDelivery: { value: function () {
