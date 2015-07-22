@@ -378,18 +378,24 @@ class TestReleaseOrdersVisionFacade(TestCase):
 
     def assert_consignees_were_created(self):
         oyam = 'OYAM DISTRICT ADMIN'
+        oyamID = 'L438000393'
         gulu = 'GULU HOSPITAL'
-        Consignee(name=oyam, customer_id='L438000393',
+        guluID = 'L438000181'
+
+        Consignee(name=oyam, customer_id=oyamID,
                                   type=Consignee.TYPES.implementing_partner, imported_from_vision=True)
-        Consignee(name=gulu, customer_id='L438000181',
+        Consignee(name=gulu, customer_id=guluID,
                                   type=Consignee.TYPES.implementing_partner, imported_from_vision=True)
 
         consignees = Consignee.objects.all()
         consignee_names = [consignee.name for consignee in consignees]
+        consignee_ids = [consignee.customer_id for consignee in consignees]
 
         self.assertEqual(len(consignees), 2)
         self.assertIn(oyam, consignee_names)
         self.assertIn(gulu, consignee_names)
+        self.assertIn(oyamID, consignee_ids)
+        self.assertIn(guluID, consignee_ids)
 
     def assert_release_orders_were_created(self):
         release_order_one = ReleaseOrder(order_number=54101099, consignee=self.consignee_one, waybill=72081598,
