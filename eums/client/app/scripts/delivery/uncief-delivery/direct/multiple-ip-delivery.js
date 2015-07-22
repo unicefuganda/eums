@@ -177,15 +177,11 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         $scope.showSingleIpMode = function () {
-            routeToPurchaseOrderType("single");
+           $location.path('single-ip-direct-delivery/' + $scope.selectedPurchaseOrder.id);
         };
 
         $scope.showMultipleIpMode = function () {
-            routeToPurchaseOrderType("multiple")
-        };
-
-        var routeToPurchaseOrderType = function (purchaseOrderType) {
-            $location.path(rootPath + $scope.selectedPurchaseOrder.id + "/" + purchaseOrderType);
+            $location.path(rootPath + $scope.selectedPurchaseOrder.id + '/multiple');
         };
 
         var isValidDelivery = function () {

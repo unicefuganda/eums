@@ -119,8 +119,9 @@ describe('Route Provider', function () {
     });
 
     it('should route to single ip direct delivery controller for single delivery to one IP', function() {
-        expect((Object.keys(routes.routes))).toContain('/single-ip-direct-delivery');
-        expect(routes.routes['/single-ip-direct-delivery'].controller).toBe('SingleIpDirectDeliveryController');
-        expect(routes.routes['/single-ip-direct-delivery'].templateUrl).toBe('/static/app/views/direct-delivery/single-ip.html');
+        var route = '/single-ip-direct-delivery/:purchaseOrderId';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('SingleIpDirectDeliveryController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/single-ip-direct-delivery.html');
     });
 });

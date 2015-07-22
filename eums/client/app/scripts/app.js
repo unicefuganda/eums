@@ -27,8 +27,8 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/single-ip-direct-delivery', {
-                templateUrl: '/static/app/views/direct-delivery/single-ip.html',
+            .when('/single-ip-direct-delivery/:purchaseOrderId', {
+                templateUrl: '/static/app/views/delivery/single-ip-direct-delivery.html',
                 controller: 'SingleIpDirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {

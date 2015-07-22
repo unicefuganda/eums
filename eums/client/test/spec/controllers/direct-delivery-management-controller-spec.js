@@ -585,14 +585,13 @@ describe('DirectDeliveryController', function () {
     describe('should route correctly on page', function () {
         it('when Single IP button is clicked', function () {
             scope.selectedPurchaseOrder = {id: 5};
-            scope.showSingleIpMode()
+            scope.showSingleIpMode();
             scope.$apply();
-
-            expect(location.path()).toBe('/direct-delivery/new/5/single');
+            expect(location.path()).toBe('/single-ip-direct-delivery/5');
         });
         it('when Multiple IP button is clicked', function () {
             scope.selectedPurchaseOrder = {id: 5};
-            scope.showMultipleIpMode()
+            scope.showMultipleIpMode();
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5/multiple');
@@ -600,7 +599,7 @@ describe('DirectDeliveryController', function () {
         it('when Sub Consignee button is clicked', function () {
             scope.selectedPurchaseOrder = {id: 5, isSingleIp: false};
             scope.selectedPurchaseOrderItem = {id: 76};
-            scope.addSubConsignee({id: 9})
+            scope.addSubConsignee({id: 9});
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5/multiple/76/9');
@@ -608,7 +607,7 @@ describe('DirectDeliveryController', function () {
         it('when back to consignee button is clicked with top-level node', function () {
             scope.selectedPurchaseOrder = {id: 5};
             scope.selectedPurchaseOrderItem = {id: 76};
-            scope.previousConsignee({id: 9})
+            scope.previousConsignee({id: 9});
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5/multiple/76');
@@ -617,7 +616,7 @@ describe('DirectDeliveryController', function () {
         it('when back to consignee button is clicked with top-level node', function () {
             scope.selectedPurchaseOrder = {id: 5};
             scope.selectedPurchaseOrderItem = {id: 76};
-            scope.previousConsignee({id: 9, parent: 90})
+            scope.previousConsignee({id: 9, parent: 90});
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5/multiple/76/90');
