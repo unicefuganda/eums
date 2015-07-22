@@ -49,6 +49,9 @@ class PurchaseOrder(models.Model):
                 distribution_plans.append(distribution_plan)
         return list(distribution_plans)
 
+    def total_value(self):
+        return reduce(lambda total, item: total + item.value, self.purchaseorderitem_set.all(), 0)
+
     class Meta:
         app_label = 'eums'
 

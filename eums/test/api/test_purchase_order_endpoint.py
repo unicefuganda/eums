@@ -1,6 +1,7 @@
 from mock import patch
 
-from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, SalesOrderItem
+from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, \
+    SalesOrderItem
 from eums.test.api.api_test_helpers import create_release_order
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -32,7 +33,7 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         purchase_order = PurchaseOrderFactory()
         create_release_order(self)
 
-        response = self.client.get(ENDPOINT_URL+'for_direct_delivery/')
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertListEqual([purchase_order.id], [order['id'] for order in response.data])
@@ -69,3 +70,14 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictContainsSubset({'distributionplannode_set': [node.id]}, response.data[0])
         self.assertDictContainsSubset({'programme': delivery.programme_id}, response.data[0])
+
+    def test_should_compute_purchase_order_total_value(self):
+        order = PurchaseOrderFactory()
+        PurchaseOrderItemFactory(purchase_order=order, value=100)
+        total_value_route = '%s%d/total_value/' % (ENDPOINT_URL, order.id)
+        response = self.client.get(total_value_route)
+        self.assertEqual(response.data, 100)
+
+        PurchaseOrderItemFactory(purchase_order=order, value=200)
+        response = self.client.get(total_value_route)
+        self.assertEqual(response.data, 300)

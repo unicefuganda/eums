@@ -2,9 +2,10 @@ from rest_framework import serializers
 from rest_framework.decorators import list_route, detail_route
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
-from rest_framework.viewsets import ModelViewSet
-from eums.api.distribution_plan.distribution_plan import DistributionPlanSerialiser
 
+from rest_framework.viewsets import ModelViewSet
+
+from eums.api.distribution_plan.distribution_plan import DistributionPlanSerialiser
 from eums.models import PurchaseOrder
 
 
@@ -40,6 +41,10 @@ class PurchaseOrderViewSet(ModelViewSet):
         purchase_order = self.get_object()
         deliveries = purchase_order.deliveries()
         return Response(DistributionPlanSerialiser(deliveries, many=True).data)
+
+    @detail_route()
+    def total_value(self, _, pk=None):
+        return Response(self.get_object().total_value())
 
 
 purchaseOrderRouter = DefaultRouter()

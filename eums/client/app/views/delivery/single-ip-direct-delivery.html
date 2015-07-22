@@ -1,1 +1,161 @@
-<div>YEY!</div>
+<div class="container-fluid">
+    <div class="eums page-header">
+        <div class="secondary-header">
+            {{ purchaseOrder.programmeName }}
+        </div>
+        <div>
+            Create a Direct Delivery for Purchase Order: {{ purchaseOrder.orderNumber }}
+        </div>
+    </div>
+    <div class="content">
+        <ng-toast></ng-toast>
+        <div>
+            <div class="pad-left-5 pad-top-10">
+                <span class="section-header">Select an Implementing Partner and the Delivery details</span>
+            </div>
+            <div class="pad-left-5 pad-top-10">
+                <div class="col-md-12 form-horizontal">
+                    <div class="form-group col-md-4" ng-class="{'has-error': !consignee.id && errors}">
+                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
+                            Implementing Partner:
+                        </label>
+
+                        <div id='input-consignee' class="col-md-7 pad-small">
+                            <input type="hidden" search-consignees only-ips
+                                   ng-model="consignee.id"
+                                   ng-attr-id="{{ 'ip-select' }}"
+                                   value="{{ consignee.id }}">
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2" ng-class="{'has-error': !deliveryDate && errors}">
+                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
+                            Delivery Date
+                        </label>
+                        <div id="input-delivery-date" class="col-md-7 pad-small">
+                            <span class="input-group" eums-date-picker>
+                                <input type="text" class="form-control" placeholder="Delivery Date"
+                                       datepicker-popup="dd/MM/yyyy" ng-model="deliveryDate"
+                                       is-open="datepicker[$index]" datepicker-options="dateOptions"
+                                       show-button-bar="false" ng-required="true" required="required"
+                                       value="{{ deliveryDate | date : 'dd/MM/yyyy' }}"/>
+                                <span class="input-group-btn">
+                                  <button type="button" class="btn btn-default" ng-click="open($event, $index )"
+                                          ng-disabled="item.flowTriggered">
+                                      <i class="glyphicon glyphicon-calendar"></i>
+                                  </button>
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3" ng-class="{'has-error': !contact.id && errors}">
+                        <label class="col-md-4 control-label description-label pad-medium">
+                            Contact:
+                        </label>
+
+                        <div id="input-contact" class="col-md-8 pad-small">
+                            <div class="form-group col-md-10 pad-small">
+                                <input type="hidden"
+                                       search-contacts
+                                       required="required"
+                                       value="{{ contact.id }}"
+                                       ng-model="contact.id"
+                                       ng-attr-id="{{ 'contact-select' }}">
+                            </div>
+                            <div class="form-group col-md-2 pad-small">
+                                <button type="button" class="btn btn-default "
+                                        ng-click="addContact(item, $index)"
+                                        ng-disabled="item.flowTriggered">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-2" ng-if="districtsLoaded" ng-class="{'has-error': !district.id && errors}">
+                        <label class="col-md-4 control-label description-label pad-small">
+                            District:
+                        </label>
+
+                        <div id="input-location" class="col-md-8 pad-small">
+                            <input type="hidden"
+                                   search-from-list
+                                   list="{{ districts }}"
+                                   ng-model="district.id"
+                                   ng-attr-id="{{ 'location-select' }}"
+                                   value="{{ district.id }}">
+                        </div>
+                    </div>
+                    <div class="text-center col-md-1">
+                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
+                            Remarks
+                        </label>
+                        <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
+                                ng-click="addRemark($index, item)"
+                                ng-disabled="item.flowTriggered">
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <div class="well col-md-3 pull-right">
+                        <div class="col-md-12 no-side-padding">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <span class="label label-success label-as-badge" id="po-type">{{ purchaseOrder.poType }}</span>
+                                    PO Type
+                                </li>
+                                <li class="list-group-item">
+                                    <span class="label label-success label-as-badge" id="po-total-value">{{ purchaseOrder.totalValue | currency }}</span>
+                                    Total Value
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div ng-show="purchaseOrderItems.length">
+                        <div class="panel-body ">
+                            <table id="singleIPDeliveryItemsTable"
+                                   class="table table-bordered table-striped table-hover table-condensed">
+                                <tr>
+                                    <th class="item-list-col-header">No.</th>
+                                    <th class="item-list-col-header">Material No.</th>
+                                    <th class="item-list-col-header">Item Description</th>
+                                    <th class="item-list-col-header">Qty in PO</th>
+                                    <th class="item-list-col-header">Value in PO</th>
+                                    <th class="item-list-col-header">Avail. Balance</th>
+                                    <th class="item-list-col-header">Qty Shipped</th>
+                                    <th class="item-list-col-header">Value of Delivery</th>
+                                </tr>
+                                <tr ng-repeat="(index, item) in purchaseOrderItems">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ item.item.materialCode }}</td>
+                                    <td>{{ item.item.description }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.value | currency }}</td>
+                                    <td>{{ item.availableBalance }}</td>
+                                    <td class="table-row-input-column">
+                                        <input type="text" id="quantity-shipped" class="form-control"
+                                               ng-model="item.quantityShipped" only-digits>
+                                    </td>
+                                    <td>{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="pad-20 row">
+                        <div ng-show="purchaseOrderItems.length" class="pull-right">
+                            <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
+                                    ng-click="save()">
+                                <i class="glyphicon glyphicon-floppy-save"> </i>
+                                Save & Track
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <eums-contact></eums-contact>
+        <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>
+        <ng-include src="'/static/app/views/delivery/partials/add-remark-modal.html'"></ng-include>
+    </div>
+</div>
+</div>
