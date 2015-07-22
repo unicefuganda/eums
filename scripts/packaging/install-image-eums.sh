@@ -14,6 +14,9 @@ if [ ! -f /usr/bin/sshpass ] && [ ! -f /usr/local/bin/sshpass ]; then
     apt-get -y install sshpass --force-yes
 fi
 
+#install sshpass
+apt-get install sshpass
+
 echo "Loading docker image..."
 sudo docker load -i %IMAGEFILE%
 
@@ -40,6 +43,19 @@ sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
 /bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} && /usr/bin/supervisord"
+
+wait
+
+# migrate after deploying
+echo "Migrating ....."
+sshpass -p "password" ssh root@localhost "
+source ~/.virtualenvs/eums/bin/activate &&
+cd /opt/app/eums &&
+python manage.py migrate &&
+deactivate"
+
+# uninstall ssh-pass
+sudo apt-get -y --purge remove sshpass
 
 echo "Cleaning older eums docker images..."
 sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=3 {print$3}' | xargs -I {} sudo docker rmi {} || true
