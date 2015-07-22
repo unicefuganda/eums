@@ -3,14 +3,14 @@
 var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 
-xdescribe('Direct Delivery - Single IP', function () {
+describe('Direct Delivery - Single IP', function () {
 
     beforeEach(function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
     });
 
-    iit('should save a single IP direct delivery', function () {
+    xit('should save a single IP direct delivery', function () {
         directDeliveryPage.visit();
         directDeliveryPage.selectPurchaseOrderByNumber('81026395');
         
@@ -18,10 +18,10 @@ xdescribe('Direct Delivery - Single IP', function () {
 
         directDeliveryPage.selectSingleIP();
 
-        directDeliveryPage.setConsignee('Wakiso');
+        directDeliveryPage.setConsigneeForSingleIP('Wakiso');
         directDeliveryPage.setDeliveryDateForSingleIP('10/10/2021');
-        directDeliveryPage.setContact('John');
-        directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.setContactForSingleIP('John');
+        directDeliveryPage.setDistrictForSingleIP('Wakiso');
 
         expect(directDeliveryPage.purchaseOrderType).toContain('ZLC');
         expect(directDeliveryPage.purchaseOrderTotalValue).toContain('$2,362.02');
@@ -37,7 +37,7 @@ xdescribe('Direct Delivery - Single IP', function () {
 
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$133.79');
 
-        directDeliveryPage.saveDelivery();
+        directDeliveryPage.saveDeliverySingleIP();
         directDeliveryPage.confirmDelivery();
         directDeliveryPage.visit();
         directDeliveryPage.selectPurchaseOrderByNumber('81026395');
@@ -53,7 +53,6 @@ xdescribe('Direct Delivery - Single IP', function () {
         expect(directDeliveryPage.purchaseOrderItemValues).toContain('$267.58');
         expect(directDeliveryPage.purchaseOrderItemBalances).toContain('500');
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$133.79');
-
     });
 });
 
