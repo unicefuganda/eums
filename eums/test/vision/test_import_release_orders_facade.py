@@ -107,8 +107,8 @@ class TestReleaseOrdersVisionFacade(TestCase):
     def tearDown(self):
         os.remove(self.release_order_file_location)
         os.remove(self.release_order_with_missing_data_file_location)
-        SalesOrderItem.objects.all().delete()
         ReleaseOrderItem.objects.all().delete()
+        SalesOrderItem.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
         Item.objects.all().delete()
         Consignee.objects.all().delete()
@@ -377,13 +377,19 @@ class TestReleaseOrdersVisionFacade(TestCase):
         self.facade.save_records.assert_called_with(self.imported_release_order_data)
 
     def assert_consignees_were_created(self):
-        consignee_one = Consignee(name='OYAM DISTRICT ADMIN', customer_id='L438000393',
+        oyam = 'OYAM DISTRICT ADMIN'
+        gulu = 'GULU HOSPITAL'
+        Consignee(name=oyam, customer_id='L438000393',
                                   type=Consignee.TYPES.implementing_partner, imported_from_vision=True)
-        consignee_two = Consignee(name='GULU HOSPITAL', customer_id='L438000181',
+        Consignee(name=gulu, customer_id='L438000181',
                                   type=Consignee.TYPES.implementing_partner, imported_from_vision=True)
 
-        self.assert_consignees_are_equal(consignee_one, Consignee.objects.all()[0])
-        self.assert_consignees_are_equal(consignee_two, Consignee.objects.all()[1])
+        consignees = Consignee.objects.all()
+        consignee_names = [consignee.name for consignee in consignees]
+
+        self.assertEqual(len(consignees), 2)
+        self.assertIn(oyam, consignee_names)
+        self.assertIn(gulu, consignee_names)
 
     def assert_release_orders_were_created(self):
         release_order_one = ReleaseOrder(order_number=54101099, consignee=self.consignee_one, waybill=72081598,
