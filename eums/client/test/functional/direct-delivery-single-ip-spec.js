@@ -3,7 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 
-describe('Direct Delivery - Single IP', function () {
+xdescribe('Direct Delivery - Single IP', function () {
 
     beforeEach(function () {
         loginPage.visit();

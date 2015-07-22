@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('ManualReporting', ['ngTable', 'siTable', 'NewDistributionPlan', 'eums.ip', 'PurchaseOrder', 'ReleaseOrder'])
+angular.module('ManualReporting', ['ngTable', 'siTable', 'eums.ip', 'PurchaseOrder', 'ReleaseOrder'])
     .controller('ManualReportingController', function ($sorter, $scope, $q, $location, PurchaseOrderService, ReleaseOrderService) {
         $scope.sortBy = $sorter;
         var purchaseOrders = [];

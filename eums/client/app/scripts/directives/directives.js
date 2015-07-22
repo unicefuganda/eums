@@ -9,7 +9,7 @@ angular.module('Directives', [])
                 onSelect: '&',
                 actionable: '@'
             },
-            templateUrl: '/static/app/views/distribution-planning/partials/view-sales-orders.html'
+            templateUrl: '/static/app/views/delivery/partials/view-sales-orders.html'
         };
     }])
     .directive('searchFromList', function ($timeout) {

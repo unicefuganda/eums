@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery', 'NewDistributionPlan',
+angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'IPDirectDelivery', 'IPDirectDeliveryManagement',
-    'IPWarehouseDelivery', 'IPWarehouseDeliveryManagement'])
+    'IPWarehouseDelivery', 'IPWarehouseDeliveryManagement', 'SingleIpDirectDelivery'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -19,7 +19,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/direct-delivery', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery.html',
+                templateUrl: '/static/app/views/delivery/direct-delivery.html',
                 controller: 'DirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
@@ -27,8 +27,17 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
+            .when('/single-ip-direct-delivery', {
+                templateUrl: '/static/app/views/direct-delivery/single-ip.html',
+                controller: 'SingleIpDirectDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_dashboard');
+                    }
+                }
+            })
             .when('/direct-delivery/new/:purchaseOrderId', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
@@ -37,7 +46,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
@@ -46,7 +55,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
@@ -55,7 +64,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId', {
-                templateUrl: '/static/app/views/distribution-planning/direct-delivery-management.html',
+                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
                 controller: 'DirectDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
@@ -64,7 +73,7 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 }
             })
             .when('/warehouse-delivery', {
-                templateUrl: '/static/app/views/distribution-planning/warehouse-delivery.html',
+                templateUrl: '/static/app/views/delivery/warehouse-delivery.html',
                 controller: 'WarehouseDeliveryController',
                 resolve: {
                     permission: function (UserService) {
@@ -144,76 +153,12 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                     }
                 }
             })
-            .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/delivery-report/new/:purchaseOrderId-:purchaseOrderItemId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/delivery-report/new/:purchaseOrderId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/distribution-plan/new/:purchaseOrderId-:purchaseOrderItemId-:distributionPlanNodeId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
-                    }
-                }
-            })
-            .when('/distribution-plan/new/:purchaseOrderId-:purchaseOrderItemId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
-                    }
-                }
-            })
-            .when('/distribution-plan/new/:purchaseOrderId', {
-                templateUrl: '/static/app/views/distribution-planning/new.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
-                    }
-                }
-            })
             .when('/warehouse-delivery/new/:releaseOrderId', {
-                templateUrl: '/static/app/views/distribution-planning/warehouse-delivery-management.html',
+                templateUrl: '/static/app/views/delivery/warehouse-delivery-management.html',
                 controller: 'WarehouseDeliveryManagementController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_distribution_plans');
-                    }
-                }
-            })
-            //new distribution plan routes end here
-            .when('/delivery-report/proceed/', {
-                templateUrl: '/static/app/views/distribution-planning/select-items.html',
-                controller: 'NewDistributionPlanController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
                     }
                 }
             })
