@@ -1,24 +1,14 @@
 describe('Single IP Direct Delivery Controller', function () {
-    var mockPurchaseOrderService, deferredPurchaseOrder, scope, location, mockIpService, deferredPurchaseOrderTotalValue, toast, mockDistributionPlanService, mockDistributionPlanNodeService, deferredPurchaseOrderUpdate;
+    var mockPurchaseOrderService, deferredPurchaseOrder, scope, location, mockIpService, deferredPurchaseOrderTotalValue,
+        toast, mockDeliveryService;
     var purchaseOrderValue = 1300.5;
-    var purchaseOrderItems = [{id: 1, quantity: 10}, {id: 2, quantity: 20}];
-    var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems};
+    var purchaseOrderItems = [{id: 1}, {id: 2}];
+    var programmeId = 1;
+    var createdDelivery = {id: 10, programme: programmeId};
+    var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
     var districts = [{name: 'Kampala', id: 'Kampala'}, {name: 'Jinja', id: 'Jinja'}];
     var districtsResponse = {data: ['Kampala', 'Jinja']};
-    var distributionPlanResponse = {id: 1, programme: 1};
-    var distributionPlanNodeResponse = {
-                                        id: 1,
-                                        consignee: 3,
-                                        location: 'Kampala',
-                                        contact_person_id: '559281d40c42914aad3d6006',
-                                        distribution_plan: 1,
-                                        tree_position: 'IMPLEMENTING_PARTNER',
-                                        item: 1,
-                                        targeted_quantity: 5,
-                                        planned_distribution_date: '2015-10-10',
-                                        track: true
-                                    };
     var mockElement = {
         modal: function () {
         }
@@ -27,10 +17,9 @@ describe('Single IP Direct Delivery Controller', function () {
     beforeEach(function () {
         module('SingleIpDirectDelivery');
 
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail', 'update']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
-        mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['create']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast) {
             deferredPurchaseOrder = $q.defer();
@@ -40,20 +29,13 @@ describe('Single IP Direct Delivery Controller', function () {
             deferredPurchaseOrderTotalValue = $q.defer();
             mockPurchaseOrderService.getDetail.and.returnValue(deferredPurchaseOrderTotalValue.promise);
 
-            deferredPurchaseOrderUpdate = $q.defer();
-            mockPurchaseOrderService.update.and.returnValue(deferredPurchaseOrderUpdate.promise);
+            var deferredDelivery = $q.defer();
+            deferredDelivery.resolve(createdDelivery);
+            mockDeliveryService.createPlan.and.returnValue(deferredDelivery.promise);
 
             var deferredDistricts = $q.defer();
             deferredDistricts.resolve(districtsResponse);
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
-
-            var deferredDistributionPlan = $q.defer();
-            deferredDistributionPlan.resolve(distributionPlanResponse);
-            mockDistributionPlanService.createPlan.and.returnValue(deferredDistributionPlan.promise);
-
-            var deferredDistributionPlanNode = $q.defer();
-            deferredDistributionPlanNode.resolve(distributionPlanNodeResponse);
-            mockDistributionPlanNodeService.create.and.returnValue(deferredDistributionPlanNode.promise);
 
             scope = $rootScope.$new();
             location = $location;
@@ -66,9 +48,8 @@ describe('Single IP Direct Delivery Controller', function () {
                 $location: location,
                 $routeParams: routeParams,
                 PurchaseOrderService: mockPurchaseOrderService,
-                DistributionPlanService: mockDistributionPlanService,
-                DistributionPlanNodeService: mockDistributionPlanNodeService,
                 IPService: mockIpService,
+                DistributionPlanService: mockDeliveryService,
                 ngToast: toast
             });
         });
@@ -122,12 +103,7 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should NOT show warning modal if purchase order is already in single IP mode', function () {
-            scope.purchaseOrder = {id: 1, programme: 2, isSingleIp: true};
-            scope.purchaseOrderItems = [{id: 1, quantity: 10, quantityShipped: 5}];
-            scope.consignee = {id:3};
-            scope.district = {id:'Kampala'};
-            scope.contact = {id: '559281d40c42914aad3d6006'};
-            scope.deliveryDate = '10/10/2015';
+            scope.purchaseOrder = {isSingleIp: true};
             scope.save();
             scope.$apply();
             expect(angular.element).not.toHaveBeenCalled();
@@ -137,36 +113,29 @@ describe('Single IP Direct Delivery Controller', function () {
     describe('when save is confirmed', function () {
         beforeEach(function() {
             spyOn(toast, 'create');
+            scope.purchaseOrder = {isSingleIp: true, programme: programmeId};
         });
 
-        it('should throw an error when required fields are not filled out', function () {
+        it('should throw and error when required fields are not filled out', function () {
             testErrorIsOnScope('consignee', {});
             testErrorIsOnScope('deliveryDate');
             testErrorIsOnScope('contact', {});
             testErrorIsOnScope('district', {});
         });
 
-        function setFormData(scope) {
-            scope.consignee = {id: 3};
-            scope.district = {id: 'Kampala'};
-            scope.contact = {id: '559281d40c42914aad3d6006'};
-            scope.deliveryDate = '10/10/2015';
-        }
-
-        it('should save a distribution plan when there is no plan on scope', function() {
-            scope.purchaseOrder = {id: 1, programme: 2};
-            setFormData(scope);
+        it('should create a new delivery and put it on scope when there is no current delivery on scope', function() {
+            scope.delivery = undefined;
             scope.save();
             scope.$apply();
-            expect(mockDistributionPlanService.createPlan).toHaveBeenCalledWith({programme: 2});
-            expect(toast.create).toHaveBeenCalledWith({
-                content: 'Delivery Successfully Created',
-                class: 'success'
-            });
+            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+            expect(scope.delivery).toEqual(createdDelivery);
         });
 
-        it('should set purchase order to single ip mode when save is successful', function() {
-
+        it('should not create a new delivery when there is a delivery in the scope', function() {
+            scope.delivery = createdDelivery;
+            scope.save();
+            scope.$apply();
+            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
         function testErrorIsOnScope(scopeField, nullState) {
