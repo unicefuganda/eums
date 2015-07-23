@@ -185,6 +185,15 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
             expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
+
+
+        });
+
+        it('should not throw zero-total-quantity error when total quantity is non zero and there is a delivery on scope', function() {
+            scope.delivery = createdDelivery;
+            scope.save();
+            scope.$apply();
+            expect(toast.create).not.toHaveBeenCalled();
         });
 
         it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
