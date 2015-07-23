@@ -192,6 +192,8 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.$apply();
 
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+            var errorMessage = 'Cannot save delivery with zero quantity shipped';
+            expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'})
         });
         
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
