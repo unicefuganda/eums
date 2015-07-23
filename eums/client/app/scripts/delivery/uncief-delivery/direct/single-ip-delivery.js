@@ -36,20 +36,20 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         };
 
         var saveDelivery = function () {
-            var totalQuantityShipped = $scope.purchaseOrderItems.sum(function(item) {
-                return item.quantityShipped;
+            var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
+                return item.quantityShipped || 0;
             });
-            var canCreateDelivery = !$scope.delivery && $scope.purchaseOrderItems.length && totalQuantityShipped > 0;
+            var canCreateDelivery = !$scope.delivery && totalQuantityShipped;
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
             canCreateDelivery ? createDelivery().then(createDeliveryNodes) : createToast(errorMessage, 'danger');
         };
 
         function createDelivery() {
-            return DistributionPlanService.createPlan({programme: $scope.purchaseOrder.programme})
-                .then(function (createdDelivery) {
-                    $scope.delivery = createdDelivery;
-                    return createdDelivery;
-                });
+            var programme = {programme: $scope.purchaseOrder.programme};
+            return DistributionPlanService.createPlan(programme).then(function (createdDelivery) {
+                $scope.delivery = createdDelivery;
+                return createdDelivery;
+            });
         }
 
         function createDeliveryNodes(createdDelivery) {

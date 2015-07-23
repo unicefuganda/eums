@@ -102,7 +102,7 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is called', function () {
-        beforeEach(function() {
+        beforeEach(function () {
             scope.purchaseOrderItems = []
         });
 
@@ -176,16 +176,7 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
-        it('should not create a new delivery if there are no purchase order items', function () {
-            scope.delivery = undefined;
-            scope.purchaseOrderItems = [];
-            scope.save();
-            scope.$apply();
-
-            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
-        });
-        
-        it('should not create delivery if all purchase order items have quantityShipped as zero', function() {
+        it('should not create delivery if all purchase order items have quantityShipped as zero', function () {
             scope.delivery = undefined;
             scope.purchaseOrderItems = [{quantityShipped: 0}, {quantityShipped: 0}];
             scope.save();
@@ -193,9 +184,18 @@ describe('Single IP Direct Delivery Controller', function () {
 
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
-            expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'})
+            expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
         });
-        
+
+        it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
+            scope.delivery = undefined;
+            scope.purchaseOrderItems = [{}, {quantityShipped: 10}];
+            scope.save();
+            scope.$apply();
+
+            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+        });
+
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
             setScopeData();
             scope.save();
