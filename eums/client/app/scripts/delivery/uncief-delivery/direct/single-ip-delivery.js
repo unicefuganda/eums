@@ -2,41 +2,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DistributionPlanService, DeliveryNode, $q,
                                                               DistributionPlanNodeService) {
-        function createToast(message, klass) {
-            ngToast.create({content: message, class: klass});
-        }
-
-        function createDelivery() {
-            return DistributionPlanService.createPlan({programme: $scope.purchaseOrder.programme})
-                .then(function (createdDelivery) {
-                    $scope.delivery = createdDelivery;
-                    return createdDelivery;
-                });
-        }
-
-        function createDeliveryNodes(createdDelivery) {
-            $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                DistributionPlanNodeService.create(new DeliveryNode({
-                    item: purchaseOrderItem,
-                    distributionPlan: createdDelivery,
-                    consignee: $scope.consignee,
-                    location: $scope.district.name,
-                    plannedDistributionDate: $scope.deliveryDate,
-                    contactPerson: $scope.contact,
-                    remark: $scope.remark,
-                    track: true,
-                    isEndUser: false,
-                    treePosition: 'IMPLEMENTING_PARTNER'
-                }))
-            });
-        }
-
-        var saveDelivery = function () {
-            if (!$scope.delivery) {
-                createDelivery().then(createDeliveryNodes)
-            }
-        };
-
         $scope.consignee = {};
         $scope.contact = {};
         $scope.district = {};
@@ -69,4 +34,39 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 saveDelivery();
             }
         };
+
+        var saveDelivery = function () {
+            if (!$scope.delivery) {
+                createDelivery().then(createDeliveryNodes)
+            }
+        };
+
+        function createDelivery() {
+            return DistributionPlanService.createPlan({programme: $scope.purchaseOrder.programme})
+                .then(function (createdDelivery) {
+                    $scope.delivery = createdDelivery;
+                    return createdDelivery;
+                });
+        }
+
+        function createDeliveryNodes(createdDelivery) {
+            $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
+                DistributionPlanNodeService.create(new DeliveryNode({
+                    item: purchaseOrderItem,
+                    distributionPlan: createdDelivery,
+                    consignee: $scope.consignee,
+                    location: $scope.district.name,
+                    plannedDistributionDate: $scope.deliveryDate,
+                    contactPerson: $scope.contact,
+                    remark: $scope.remark,
+                    track: true,
+                    isEndUser: false,
+                    treePosition: 'IMPLEMENTING_PARTNER'
+                }))
+            });
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass});
+        }
     });
