@@ -12,6 +12,11 @@
       "mockFile": "contacts.json",
       "latency": 20,
       "verbs": ["get"]
+    },
+    "api/contacts/559281d40c42914aad3d6006": {
+      "mockFile": "contact.json",
+      "latency": 20,
+      "verbs": ["get"]
     }
   }
 }
