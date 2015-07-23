@@ -36,7 +36,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         };
 
         var saveDelivery = function () {
-            if (!$scope.delivery && $scope.purchaseOrderItems.length) {
+            var someItemsHaveQuantityShipped = $scope.purchaseOrderItems.some(function(item) {
+                return item.quantityShipped > 0;
+            });
+            var canCreateDelivery = !$scope.delivery && $scope.purchaseOrderItems.length && someItemsHaveQuantityShipped;
+            if (canCreateDelivery) {
                 createDelivery().then(createDeliveryNodes)
             }
         };

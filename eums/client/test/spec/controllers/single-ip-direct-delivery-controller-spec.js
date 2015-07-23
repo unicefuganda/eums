@@ -184,7 +184,16 @@ describe('Single IP Direct Delivery Controller', function () {
 
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
+        
+        it('should not create delivery if all purchase order items have quantityShipped as zero', function() {
+            scope.delivery = undefined;
+            scope.purchaseOrderItems = [{quantityShipped: 0}, {quantityShipped: 0}];
+            scope.save();
+            scope.$apply();
 
+            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+        });
+        
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
             setScopeData();
             scope.save();
