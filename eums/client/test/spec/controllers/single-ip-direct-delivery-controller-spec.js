@@ -2,7 +2,7 @@ describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, deferredPurchaseOrder, scope, location, mockIpService, deferredPurchaseOrderTotalValue,
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService;
     var purchaseOrderValue = 1300.5;
-    var purchaseOrderItems = [{id: 1}, {id: 2}];
+    var purchaseOrderItems = [{quantityShipped: 10, id: 1}, {quantityShipped: 11, id: 2}];
     var programmeId = 1;
     var createdDelivery = {id: 10, programme: programmeId};
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
@@ -146,25 +146,19 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
-        it('should create delivery nodes for each purchase order item', function () {
+        it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
             var consignee = {id: 1};
-            var district = {id: 'Kampala'};
+            var district = {name: 'Kampala'};
             var deliveryDate = '2013-4-1';
             var contact = {id: 3};
             var remark = 'Some remarks';
-            var itemOne = {quantityShipped: 10, id: 1};
-            var itemTwo = {quantityShipped: 11, id: 2};
+            var itemOne = purchaseOrderItems[0];
+            var itemTwo = purchaseOrderItems[1];
 
-            scope.delivery = createdDelivery;
-            scope.consignee = consignee;
-            scope.district = district;
-            scope.deliveryDate = deliveryDate;
-            scope.contact = contact;
-            scope.remark = remark;
             var deliveryCommonFields = {
                 distributionPlan: createdDelivery,
                 consignee: consignee,
-                location: district,
+                location: district.name,
                 plannedDistributionDate: deliveryDate,
                 contactPerson: contact,
                 remark: remark,
@@ -176,12 +170,21 @@ describe('Single IP Direct Delivery Controller', function () {
             var nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne}, deliveryCommonFields));
             var nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo}, deliveryCommonFields));
 
-            scope.delivery = 1;
+            scope.delivery = undefined;
+            scope.consignee = consignee;
+            scope.district = district;
+            scope.deliveryDate = deliveryDate;
+            scope.contact = contact;
+            scope.remark = remark;
             scope.purchaseOrderItems = [itemOne, itemTwo];
+
             scope.save();
             scope.$apply();
+
+            var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
             expect(mockDeliveryNodeService.create.calls.count()).toBe(2);
-            expect(mockDeliveryNodeService.create.calls.allArgs()).toContain([nodeOne], [nodeTwo]);
+            expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeOne));
+            expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
         });
 
         it('should not create a node for purchase order items with zero distributed quantity', function () {

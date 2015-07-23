@@ -6,28 +6,34 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             ngToast.create({content: message, class: klass});
         }
 
+        function createDelivery() {
+            return DistributionPlanService.createPlan({programme: $scope.purchaseOrder.programme})
+                .then(function (createdDelivery) {
+                    $scope.delivery = createdDelivery;
+                    return createdDelivery;
+                });
+        }
+
+        function createDeliveryNodes(createdDelivery) {
+            $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
+                DistributionPlanNodeService.create(new DeliveryNode({
+                    item: purchaseOrderItem,
+                    distributionPlan: createdDelivery,
+                    consignee: $scope.consignee,
+                    location: $scope.district.name,
+                    plannedDistributionDate: $scope.deliveryDate,
+                    contactPerson: $scope.contact,
+                    remark: $scope.remark,
+                    track: true,
+                    isEndUser: false,
+                    treePosition: 'IMPLEMENTING_PARTNER'
+                }))
+            });
+        }
+
         var saveDelivery = function () {
             if (!$scope.delivery) {
-                DistributionPlanService.createPlan({programme: $scope.purchaseOrder.programme})
-                    .then(function (createdDelivery) {
-                        $scope.delivery = createdDelivery;
-
-                        $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                            DistributionPlanNodeService.create(new DeliveryNode({
-                                item: purchaseOrderItem,
-                                distributionPlan: $scope.delivery,
-                                consignee: $scope.consignee,
-                                location: $scope.district.name,
-                                plannedDistributionDate: $scope.deliveryDate,
-                                contactPerson: $scope.contact,
-                                remark: $scope.remark,
-                                track: true,
-                                isEndUser: false,
-                                treePosition: 'IMPLEMENTING_PARTNER'
-                            }))
-                        });
-
-                    });
+                createDelivery().then(createDeliveryNodes)
             }
         };
 
