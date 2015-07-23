@@ -51,18 +51,20 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function createDeliveryNodes(createdDelivery) {
             $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                DistributionPlanNodeService.create(new DeliveryNode({
-                    item: purchaseOrderItem,
-                    distributionPlan: createdDelivery,
-                    consignee: $scope.consignee,
-                    location: $scope.district.name,
-                    plannedDistributionDate: $scope.deliveryDate,
-                    contactPerson: $scope.contact,
-                    remark: $scope.remark,
-                    track: true,
-                    isEndUser: false,
-                    treePosition: 'IMPLEMENTING_PARTNER'
-                }))
+                if (purchaseOrderItem.quantityShipped) {
+                    DistributionPlanNodeService.create(new DeliveryNode({
+                        item: purchaseOrderItem,
+                        distributionPlan: createdDelivery,
+                        consignee: $scope.consignee,
+                        location: $scope.district.name,
+                        plannedDistributionDate: $scope.deliveryDate,
+                        contactPerson: $scope.contact,
+                        remark: $scope.remark,
+                        track: true,
+                        isEndUser: false,
+                        treePosition: 'IMPLEMENTING_PARTNER'
+                    }));
+                }
             });
         }
 

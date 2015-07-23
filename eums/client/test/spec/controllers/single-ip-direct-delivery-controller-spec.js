@@ -181,7 +181,15 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should not create nodes for purchase order items with zero distributed quantity', function () {
+            setScopeData();
+            purchaseOrder.purchaseorderitemSet[0] = {quantityShipped: 0, id: 1};
+            deferredPurchaseOrder.resolve(purchaseOrder);
+            scope.save();
+            scope.$apply();
 
+            var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
+            expect(mockDeliveryNodeService.create.calls.count()).toBe(1);
+            expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeTwo));
         });
 
         function setScopeData() {
