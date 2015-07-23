@@ -102,6 +102,10 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is called', function () {
+        beforeEach(function() {
+            scope.purchaseOrderItems = []
+        });
+
         it('should show warning modal if purchase order is not already in single IP mode', function () {
             scope.purchaseOrder = {};
             scope.save();
@@ -119,32 +123,35 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is confirmed', function () {
-        var nodeOne, nodeTwo;
-        var consignee = {id: 1};
-        var district = {name: 'Kampala'};
-        var deliveryDate = '2013-4-1';
-        var contact = {id: 3};
-        var remark = 'Some remarks';
-        var itemOne = purchaseOrderItems[0];
-        var itemTwo = purchaseOrderItems[1];
-
-        var deliveryCommonFields = {
-            distributionPlan: createdDelivery,
-            consignee: consignee,
-            location: district.name,
-            plannedDistributionDate: deliveryDate,
-            contactPerson: contact,
-            remark: remark,
-            track: true,
-            isEndUser: false,
-            treePosition: 'IMPLEMENTING_PARTNER'
-        };
+        var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, contact, remark;
 
         beforeEach(function () {
+            consignee = {id: 1};
+            district = {name: 'Kampala'};
+            deliveryDate = '2013-4-1';
+            contact = {id: 3};
+            remark = 'Some remarks';
+            itemOne = purchaseOrderItems[0];
+            itemTwo = purchaseOrderItems[1];
+
+            var deliveryCommonFields = {
+                distributionPlan: createdDelivery,
+                consignee: consignee,
+                location: district.name,
+                plannedDistributionDate: deliveryDate,
+                contactPerson: contact,
+                remark: remark,
+                track: true,
+                isEndUser: false,
+                treePosition: 'IMPLEMENTING_PARTNER'
+            };
+
             spyOn(toast, 'create');
             scope.purchaseOrder = {isSingleIp: true, programme: programmeId};
+            scope.purchaseOrderItems = purchaseOrderItems;
             nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne}, deliveryCommonFields));
             nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo}, deliveryCommonFields));
+
         });
 
         it('should throw and error when required fields are not filled out', function () {
@@ -169,6 +176,15 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
+        it('should not create a new delivery if there are no purchase order items', function () {
+            scope.delivery = undefined;
+            scope.purchaseOrderItems = [];
+            scope.save();
+            scope.$apply();
+
+            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+        });
+
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
             setScopeData();
             scope.save();
@@ -181,9 +197,9 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should not create nodes for purchase order items with zero distributed quantity', function () {
+            itemOne.quantityShipped = 0;
             setScopeData();
-            purchaseOrder.purchaseorderitemSet[0] = {quantityShipped: 0, id: 1};
-            deferredPurchaseOrder.resolve(purchaseOrder);
+
             scope.save();
             scope.$apply();
 

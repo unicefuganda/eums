@@ -36,7 +36,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         };
 
         var saveDelivery = function () {
-            if (!$scope.delivery) {
+            if (!$scope.delivery && $scope.purchaseOrderItems.length) {
                 createDelivery().then(createDeliveryNodes)
             }
         };
@@ -50,21 +50,23 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function createDeliveryNodes(createdDelivery) {
+            function createNodeFrom(purchaseOrderItem) {
+                DistributionPlanNodeService.create(new DeliveryNode({
+                    item: purchaseOrderItem,
+                    distributionPlan: createdDelivery,
+                    consignee: $scope.consignee,
+                    location: $scope.district.name,
+                    plannedDistributionDate: $scope.deliveryDate,
+                    contactPerson: $scope.contact,
+                    remark: $scope.remark,
+                    track: true,
+                    isEndUser: false,
+                    treePosition: 'IMPLEMENTING_PARTNER'
+                }));
+            }
+
             $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                if (purchaseOrderItem.quantityShipped) {
-                    DistributionPlanNodeService.create(new DeliveryNode({
-                        item: purchaseOrderItem,
-                        distributionPlan: createdDelivery,
-                        consignee: $scope.consignee,
-                        location: $scope.district.name,
-                        plannedDistributionDate: $scope.deliveryDate,
-                        contactPerson: $scope.contact,
-                        remark: $scope.remark,
-                        track: true,
-                        isEndUser: false,
-                        treePosition: 'IMPLEMENTING_PARTNER'
-                    }));
-                }
+                purchaseOrderItem.quantityShipped && createNodeFrom(purchaseOrderItem);
             });
         }
 
