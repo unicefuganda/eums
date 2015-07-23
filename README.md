@@ -57,11 +57,12 @@ Local Environment Setup
 		$ npm install -g grunt-cli
 		```  
 		
-* Migrate the database.
+* Set up the database.
 
 	```
 	$ cd to/the/project/root
 	$ python manage.py migrate
+	$ python manage.py setup_permissions
 	```
 
 * Run the tests to verify setup. 

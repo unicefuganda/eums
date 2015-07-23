@@ -1,5 +1,5 @@
 describe('Consignees Controller', function () {
-    var mockConsigneeService, scope, deferredConsignees, mockConsigneeModel, saveConsigneePromise,
+    var mockConsigneeService, mockUserService, scope, mockConsigneeModel, saveConsigneePromise,
         updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults, elementSpy;
     var emptyFunction = function () {
     };
@@ -15,26 +15,21 @@ describe('Consignees Controller', function () {
     beforeEach(function () {
         module('Consignee');
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'search']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['checkUserPermission']);
         mockConsigneeModel = function () {
             this.properties = emptyConsignee.properties;
         };
 
         inject(function ($controller, $rootScope, $q, ngToast) {
-            deferredConsignees = $q.defer();
             deferredSearchResults = $q.defer();
-            saveConsigneePromise = $q.defer();
-            updateConsigneePromise = $q.defer();
-            deleteConsigneePromise = $q.defer();
 
-            deferredConsignees.resolve(consigneesResponse);
-            saveConsigneePromise.resolve(savedConsignee);
-            updateConsigneePromise.resolve(savedConsignee);
-
-            mockConsigneeService.all.and.returnValue(deferredConsignees.promise);
-            mockConsigneeService.create.and.returnValue(saveConsigneePromise.promise);
-            mockConsigneeService.update.and.returnValue(updateConsigneePromise.promise);
-            mockConsigneeService.del.and.returnValue(deleteConsigneePromise.promise);
+            mockConsigneeService.all.and.returnValue($q.when(consigneesResponse));
+            mockConsigneeService.create.and.returnValue($q.when(savedConsignee));
+            mockConsigneeService.update.and.returnValue($q.when(savedConsignee));
+            mockConsigneeService.del.and.returnValue($q.defer());
             mockConsigneeService.search.and.returnValue(deferredSearchResults.promise);
+
+            mockUserService.checkUserPermission.and.returnValue($q.when(true));
 
             toast = ngToast;
             scope = $rootScope.$new();
@@ -44,7 +39,8 @@ describe('Consignees Controller', function () {
             $controller('ConsigneesController', {
                 $scope: scope,
                 ConsigneeService: mockConsigneeService,
-                Consignee: mockConsigneeModel
+                Consignee: mockConsigneeModel,
+                UserService: mockUserService
             });
         });
     });

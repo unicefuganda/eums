@@ -21,4 +21,5 @@ sleep 15
 source ~/.virtualenvs/eums/bin/activate
 cd /opt/app/eums
 python manage.py migrate
+python manage.py setup_permissions
 deactivate

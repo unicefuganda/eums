@@ -5,6 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.permissions import DjangoModelPermissions
 
 from eums.models import Consignee, DistributionPlanNode
 
@@ -20,6 +21,8 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class ConsigneeViewSet(ModelViewSet):
+    permission_classes = (DjangoModelPermissions,)
+
     queryset = Consignee.objects.all().order_by('name')
     serializer_class = ConsigneeSerialiser
     search_fields = ('customer_id', 'name', 'location')

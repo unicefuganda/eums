@@ -2,7 +2,7 @@
     <div class="content">
         <h4 class="page-header">Consignees</h4>
         <ng-toast></ng-toast>
-        <button id="add-consignee" class="btn btn-primary" ng-click="addConsignee()">Add Consignee</button>
+        <button id="add-consignee" ng-show="add_consignee" class="btn btn-primary" ng-click="addConsignee()">Add Consignee</button>
         <div class="panel panel-default line-order-panel">
             <div class="row">
                 <div class="text-muted pad-top-10 col-xs-4 pull-left">
@@ -31,7 +31,7 @@
                         <th><a>Location</a></th>
                         <th><a>Vision ID</a></th>
                         <th><a>General Remarks</a></th>
-                        <th></th>
+                        <th ng-show="change_consignee"></th>
                     </tr>
                     </thead>
                     <tbody>

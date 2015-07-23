@@ -94,6 +94,7 @@ function runserver {
   cd -
   pip install -r requirements.txt
   ./manage.py migrate
+  ./manage.py setup_permissions
   ./manage.py runserver
 }
 

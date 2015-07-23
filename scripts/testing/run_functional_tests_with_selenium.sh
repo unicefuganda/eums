@@ -29,6 +29,7 @@ cd ../../
 dropdb --if-exists app_test
 createdb app_test
 python manage.py migrate --settings=eums.snap_settings
+python manage.py setup_permissions --settings=eums.snap_settings
 python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.snap_settings
 python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json --settings=eums.snap_settings
 python manage.py runserver 0.0.0.0:8000 --settings=eums.snap_settings &

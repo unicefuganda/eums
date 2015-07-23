@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap'])
+angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.bootstrap', 'User'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1});
     }])
@@ -60,7 +60,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             }
         });
     })
-    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast) {
+    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
         function createToast(message, klass) {
             ngToast.create({content: message, class: klass});
         }
@@ -90,6 +90,20 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
 
         $scope.consignees = [];
         $scope.searching = false;
+
+        UserService.checkUserPermission('auth.can_view_consignees').then(function(value){
+            $scope.can_view_consignees = value;
+        });
+        UserService.checkUserPermission('eums.add_consignee').then(function(value){
+            $scope.add_consignee = value;
+        });
+        UserService.checkUserPermission('eums.change_consignee').then(function(value){
+            $scope.change_consignee = value;
+        });
+        UserService.checkUserPermission('eums.delete_consignee').then(function(value){
+            $scope.delete_consignee = value;
+        });
+
         showLoader();
         fetchConsignees().catch(function () {
             createToast('Failed to fetch consignees', 'danger');

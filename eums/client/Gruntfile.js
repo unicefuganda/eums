@@ -212,10 +212,6 @@ module.exports = function (grunt) {
             djangoServer: {
                 cmd: './start-server.sh',
                 args: [9000, 'eums.test_settings', 'eums_test']
-            },
-            djangoServerStaging: {
-                cmd: './start-server.sh',
-                args: [9000, 'eums.snap_settings', 'app_test']
             }
         },
 
@@ -226,20 +222,8 @@ module.exports = function (grunt) {
             createDb: {
                 command: 'createdb eums_test'
             },
-            createStagingDb: {
-                command: 'createdb app_test'
-            },
             runMigrations: {
                 command: 'python manage.py migrate --settings=eums.test_settings',
-                options: {
-                    stderr: false,
-                    execOptions: {
-                        cwd: '../..'
-                    }
-                }
-            },
-            runStagingMigrations: {
-                command: 'python manage.py migrate --settings=eums.snap_settings',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -265,17 +249,8 @@ module.exports = function (grunt) {
                     }
                 }
             },
-            mapDataStaging: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json --settings=eums.snap_settings',
-                options: {
-                    stderr: false,
-                    execOptions: {
-                        cwd: '../..'
-                    }
-                }
-            },
-            seedStagingData: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.snap_settings',
+            setupPermissions: {
+                command: 'python manage.py setup_permissions --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -409,6 +384,7 @@ module.exports = function (grunt) {
         'shell:runMigrations',
         'shell:seedData',
         'shell:mapData',
+        'shell:setupPermissions',
         'apimocker'
     ]);
 
