@@ -1,5 +1,7 @@
-angular.module('SingleIpDirectDelivery', ['ngToast'])
-    .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService, ngToast, DistributionPlanService, $q) {
+angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
+    .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
+                                                              ngToast, DistributionPlanService, DeliveryNode, $q,
+                                                              DistributionPlanNodeService) {
         function createToast(message, klass) {
             ngToast.create({content: message, class: klass});
         }
@@ -9,6 +11,22 @@ angular.module('SingleIpDirectDelivery', ['ngToast'])
                 DistributionPlanService.createPlan({programme: $scope.purchaseOrder.programme})
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
+
+                        $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
+                            DistributionPlanNodeService.create(new DeliveryNode({
+                                item: purchaseOrderItem,
+                                distributionPlan: $scope.delivery,
+                                consignee: $scope.consignee,
+                                location: $scope.district.name,
+                                plannedDistributionDate: $scope.deliveryDate,
+                                contactPerson: $scope.contact,
+                                remark: $scope.remark,
+                                track: true,
+                                isEndUser: false,
+                                treePosition: 'IMPLEMENTING_PARTNER'
+                            }))
+                        });
+
                     });
             }
         };

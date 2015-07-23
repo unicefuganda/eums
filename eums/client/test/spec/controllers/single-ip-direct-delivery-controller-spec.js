@@ -1,6 +1,6 @@
 describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, deferredPurchaseOrder, scope, location, mockIpService, deferredPurchaseOrderTotalValue,
-        toast, mockDeliveryService;
+        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService;
     var purchaseOrderValue = 1300.5;
     var purchaseOrderItems = [{id: 1}, {id: 2}];
     var programmeId = 1;
@@ -20,14 +20,19 @@ describe('Single IP Direct Delivery Controller', function () {
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan']);
+        mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create']);
 
-        inject(function ($controller, $rootScope, $location, $q, ngToast) {
+        inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             deferredPurchaseOrder = $q.defer();
             deferredPurchaseOrder.resolve(purchaseOrder);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
 
             deferredPurchaseOrderTotalValue = $q.defer();
             mockPurchaseOrderService.getDetail.and.returnValue(deferredPurchaseOrderTotalValue.promise);
+
+            var deferredDeliveryNode = $q.defer();
+            deferredDeliveryNode.resolve();
+            mockDeliveryNodeService.create.and.returnValue(deferredDeliveryNode.promise);
 
             var deferredDelivery = $q.defer();
             deferredDelivery.resolve(createdDelivery);
@@ -40,6 +45,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope = $rootScope.$new();
             location = $location;
             toast = ngToast;
+            DeliveryNodeModel = DeliveryNode;
             spyOn(angular, 'element').and.returnValue(mockElement);
             spyOn(mockElement, 'modal');
 
@@ -50,6 +56,8 @@ describe('Single IP Direct Delivery Controller', function () {
                 PurchaseOrderService: mockPurchaseOrderService,
                 IPService: mockIpService,
                 DistributionPlanService: mockDeliveryService,
+                DistributionPlanNodeService: mockDeliveryNodeService,
+                DeliveryNode: DeliveryNodeModel,
                 ngToast: toast
             });
         });
@@ -111,7 +119,7 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is confirmed', function () {
-        beforeEach(function() {
+        beforeEach(function () {
             spyOn(toast, 'create');
             scope.purchaseOrder = {isSingleIp: true, programme: programmeId};
         });
@@ -123,7 +131,7 @@ describe('Single IP Direct Delivery Controller', function () {
             testErrorIsOnScope('district', {});
         });
 
-        it('should create a new delivery and put it on scope when there is no current delivery on scope', function() {
+        it('should create a new delivery and put it on scope when there is no current delivery on scope', function () {
             scope.delivery = undefined;
             scope.save();
             scope.$apply();
@@ -131,17 +139,59 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.delivery).toEqual(createdDelivery);
         });
 
-        it('should not create a new delivery when there is a delivery in the scope', function() {
+        it('should not create a new delivery when there is a delivery in the scope', function () {
             scope.delivery = createdDelivery;
             scope.save();
             scope.$apply();
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
+        it('should create delivery nodes for each purchase order item', function () {
+            var consignee = {id: 1};
+            var district = {id: 'Kampala'};
+            var deliveryDate = '2013-4-1';
+            var contact = {id: 3};
+            var remark = 'Some remarks';
+            var itemOne = {quantityShipped: 10, id: 1};
+            var itemTwo = {quantityShipped: 11, id: 2};
+
+            scope.delivery = createdDelivery;
+            scope.consignee = consignee;
+            scope.district = district;
+            scope.deliveryDate = deliveryDate;
+            scope.contact = contact;
+            scope.remark = remark;
+            var deliveryCommonFields = {
+                distributionPlan: createdDelivery,
+                consignee: consignee,
+                location: district,
+                plannedDistributionDate: deliveryDate,
+                contactPerson: contact,
+                remark: remark,
+                track: true,
+                isEndUser: false,
+                treePosition: 'IMPLEMENTING_PARTNER'
+            };
+
+            var nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne}, deliveryCommonFields));
+            var nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo}, deliveryCommonFields));
+
+            scope.delivery = 1;
+            scope.purchaseOrderItems = [itemOne, itemTwo];
+            scope.save();
+            scope.$apply();
+            expect(mockDeliveryNodeService.create.calls.count()).toBe(2);
+            expect(mockDeliveryNodeService.create.calls.allArgs()).toContain([nodeOne], [nodeTwo]);
+        });
+
+        it('should not create a node for purchase order items with zero distributed quantity', function () {
+
+        });
+
         function testErrorIsOnScope(scopeField, nullState) {
             var fields = ['contact', 'consignee', 'deliveryDate', 'district'];
-            fields.forEach(function(field) {
-                if(field !== scopeField) {
+            fields.forEach(function (field) {
+                if (field !== scopeField) {
                     scope[field] = {id: 1};
                 }
             });
