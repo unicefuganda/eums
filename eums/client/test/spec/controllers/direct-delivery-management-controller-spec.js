@@ -654,35 +654,36 @@ describe('DirectDeliveryController', function () {
                 expect(mockToastProvider.create).toHaveBeenCalledWith(expectedToastArguments);
             });
 
-        });
-
-        describe('and a plan for the purchase order item has not been saved, ', function () {
-            it('a distribution plan should be created', function () {
+            it('two distribution plans should be created', function () {
                 scope.inMultipleIpMode = true;
+                scope.distributionPlanNodes = [{
+                    consignee: {id: 1 },
+                    item: scope.selectedPurchaseOrderItem.id,
+                    plannedDistributionDate: '10/10/2015',
+                    targetedQuantity: 5,
+                    location: 'Kampala',
+                    contactPerson: {id: '559281d40c42914aad3d6006'},
+                    remark: '',
+                    track: false,
+                    isEndUser: false,
+                    flowTriggered: false
+                },
+                    {
+                        consignee: {id: 1 },
+                        item: scope.selectedPurchaseOrderItem.id,
+                        plannedDistributionDate: '10/10/2015',
+                        targetedQuantity: 4,
+                        destinationLocation: 'Wakiso',
+                        contactPerson: {id: '559281d40c42914aad3d6006'},
+                        remark: '',
+                        track: false,
+                        isEndUser: false,
+                        flowTriggered: false
+                    }];
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockPlanService.createPlan).toHaveBeenCalledWith({programme: programmeId});
-            });
-            it('the created distribution plan should be put on the scope', function () {
-                scope.inMultipleIpMode = true;
-                scope.saveDistributionPlanNodes();
-                scope.$apply();
-
-                expect(scope.distributionPlan.id).toEqual(distributionPlan.id);
-            });
-        });
-
-        describe('and a plan for the purchase order item has been saved, ', function () {
-            it('a distribution plan should not be created', function () {
-                scope.distributionPlanId = {id: 1};
-                scope.inMultipleIpMode = true;
-                scope.$apply();
-
-                scope.saveDistributionPlanNodes();
-                scope.$apply();
-
-                expect(mockPlanService.createPlan).not.toHaveBeenCalled();
+                expect(mockPlanService.createPlan.calls.count()).toBe(2);
             });
         });
 
@@ -729,14 +730,14 @@ describe('DirectDeliveryController', function () {
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
-                        distribution_plan: 1,
                         tree_position: 'END_USER',
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
-                        track: scope.track
+                        track: false,
+                        distribution_plan: 1
                     });
                 });
 
@@ -749,14 +750,14 @@ describe('DirectDeliveryController', function () {
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
-                        distribution_plan: 1,
                         tree_position: 'IMPLEMENTING_PARTNER',
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
-                        track: scope.track
+                        track: false,
+                        distribution_plan: 1
                     });
                 });
 
@@ -771,14 +772,14 @@ describe('DirectDeliveryController', function () {
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
-                        distribution_plan: 1,
                         tree_position: 'MIDDLE_MAN',
                         parent: 1,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
-                        track: scope.track
+                        track: false,
+                        distribution_plan: 1
                     });
                 });
 
@@ -791,14 +792,14 @@ describe('DirectDeliveryController', function () {
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
-                        distribution_plan: 1,
                         tree_position: 'IMPLEMENTING_PARTNER',
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
-                        track: scope.track
+                        track: false,
+                        distribution_plan: 1
                     });
                 });
 
@@ -818,14 +819,14 @@ describe('DirectDeliveryController', function () {
                     consignee: 1,
                     location: 'Kampala',
                     contact_person_id: '0489284',
-                    distribution_plan: 1,
                     tree_position: 'IMPLEMENTING_PARTNER',
                     parent: null,
                     item: uiPlanNode.item,
                     targeted_quantity: uiPlanNode.targetedQuantity,
                     planned_distribution_date: distributionDateFormattedForSave,
                     remark: uiPlanNode.remark,
-                    track: true
+                    track: false,
+                    distribution_plan: 1
                 });
             });
 
@@ -844,25 +845,26 @@ describe('DirectDeliveryController', function () {
 
                 it('the node for the ui plan node should be updated and not saved', function () {
                     uiPlanNode.id = nodeId;
+                    uiPlanNode.distributionPlan = 1;
                     scope.inMultipleIpMode = true;
 
                     scope.saveDistributionPlanNodes();
                     scope.$apply();
 
                     expect(mockNodeService.update).toHaveBeenCalledWith({
-                        id: nodeId,
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
-                        distribution_plan: 1,
                         tree_position: 'IMPLEMENTING_PARTNER',
                         parent: null,
-                        children: [],
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
                         planned_distribution_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
-                        track: true
+                        track: false,
+                        distribution_plan: 1,
+                        id: nodeId,
+                        children: []
                     });
                     expect(mockNodeService.create).not.toHaveBeenCalled();
                 });
@@ -878,14 +880,14 @@ describe('DirectDeliveryController', function () {
                     destinationLocation: 'Kampala',
                     location: 'Kampala',
                     contactPerson: {id: '0489284'},
-                    distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     item: 1,
                     targetedQuantity: 10,
                     plannedDistributionDate: '2014-02-03',
                     remark: 'Remark',
                     parent: 42,
-                    track: true
+                    track: false,
+                    distribution_plan: 1
                 };
 
                 scope.distributionPlanNodes = [uiPlanNodes];
@@ -904,14 +906,14 @@ describe('DirectDeliveryController', function () {
                     consignee: 1,
                     location: 'Kampala',
                     contact_person_id: '0489284',
-                    distribution_plan: 1,
                     tree_position: 'MIDDLE_MAN',
                     parent: scope.parentNode.id,
                     item: 1,
                     targeted_quantity: 10,
                     planned_distribution_date: '2014-2-3',
                     remark: 'Remark',
-                    track: true
+                    track: false,
+                    distribution_plan: 1
                 });
 
             });
