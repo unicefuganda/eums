@@ -119,9 +119,32 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is confirmed', function () {
+        var nodeOne, nodeTwo;
+        var consignee = {id: 1};
+        var district = {name: 'Kampala'};
+        var deliveryDate = '2013-4-1';
+        var contact = {id: 3};
+        var remark = 'Some remarks';
+        var itemOne = purchaseOrderItems[0];
+        var itemTwo = purchaseOrderItems[1];
+
+        var deliveryCommonFields = {
+            distributionPlan: createdDelivery,
+            consignee: consignee,
+            location: district.name,
+            plannedDistributionDate: deliveryDate,
+            contactPerson: contact,
+            remark: remark,
+            track: true,
+            isEndUser: false,
+            treePosition: 'IMPLEMENTING_PARTNER'
+        };
+
         beforeEach(function () {
             spyOn(toast, 'create');
             scope.purchaseOrder = {isSingleIp: true, programme: programmeId};
+            nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne}, deliveryCommonFields));
+            nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo}, deliveryCommonFields));
         });
 
         it('should throw and error when required fields are not filled out', function () {
@@ -147,37 +170,7 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
-            var consignee = {id: 1};
-            var district = {name: 'Kampala'};
-            var deliveryDate = '2013-4-1';
-            var contact = {id: 3};
-            var remark = 'Some remarks';
-            var itemOne = purchaseOrderItems[0];
-            var itemTwo = purchaseOrderItems[1];
-
-            var deliveryCommonFields = {
-                distributionPlan: createdDelivery,
-                consignee: consignee,
-                location: district.name,
-                plannedDistributionDate: deliveryDate,
-                contactPerson: contact,
-                remark: remark,
-                track: true,
-                isEndUser: false,
-                treePosition: 'IMPLEMENTING_PARTNER'
-            };
-
-            var nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne}, deliveryCommonFields));
-            var nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo}, deliveryCommonFields));
-
-            scope.delivery = undefined;
-            scope.consignee = consignee;
-            scope.district = district;
-            scope.deliveryDate = deliveryDate;
-            scope.contact = contact;
-            scope.remark = remark;
-            scope.purchaseOrderItems = [itemOne, itemTwo];
-
+            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -187,9 +180,19 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
         });
 
-        it('should not create a node for purchase order items with zero distributed quantity', function () {
+        it('should not create nodes for purchase order items with zero distributed quantity', function () {
 
         });
+
+        function setScopeData() {
+            scope.delivery = undefined;
+            scope.consignee = consignee;
+            scope.district = district;
+            scope.deliveryDate = deliveryDate;
+            scope.contact = contact;
+            scope.remark = remark;
+            scope.purchaseOrderItems = [itemOne, itemTwo];
+        }
 
         function testErrorIsOnScope(scopeField, nullState) {
             var fields = ['contact', 'consignee', 'deliveryDate', 'district'];
