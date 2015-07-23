@@ -9,17 +9,20 @@ exports.config = {
 
     seleniumServerJar: '../node_modules/selenium-standalone/.selenium/2.43.1/server.jar',
 
-    seleniumAddress: 'http://localhost:4444/wd/hub',
-
     chromeDriver: '/usr/local/bin/chromedriver',
 
-    directConnect: false,
+    directConnect: true,
 
-    specs: ['test/functional/*-spec.js'],
+    specs: ['functional/*-spec.js'],
 
     baseUrl: 'http://localhost:9000',
 
     framework: 'jasmine2',
+
+    capabilities: {
+        shardTestFiles: true,
+        maxInstances: 2
+    },
 
     jasmineNodeOpts: {
         defaultTimeoutInterval: 60000,
@@ -43,5 +46,6 @@ exports.config = {
             },
             takeScreenShotsOnlyForFailedSpecs: true
         }));
+
     }
 };
