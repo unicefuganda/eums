@@ -89,12 +89,6 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                                 planNode.children = builtChildren;
                                 return planNode;
                             });
-                            planNode.children.forEach(function (child) {
-                                this.get(child.id, ['consignee', 'contact_person_id']).then(function (childNode) {
-                                    childNode.contactPerson = child.contactPersonId;
-                                    children.push(childNode)
-                                });
-                            }.bind(this));
                         } else {
                             return planNode;
                         }
