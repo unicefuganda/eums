@@ -16,17 +16,23 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         });
 
         $scope.save = function () {
-            $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
+            var someInputsAreEmpty = !($scope.contact.id && $scope.consignee.id && $scope.deliveryDate && $scope.district.id);
+            var someItemsAreInvalid = $scope.purchaseOrderItems.any(function(item) {
+                return item.isInvalid();
+            });
+
+            if (someInputsAreEmpty || someItemsAreInvalid) {
+                $scope.errors = true;
+                createToast('Cannot save. Please fill out all fields marked in red first', 'danger')
+            }
+            else {
+                $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
+            }
         };
 
         $scope.warningAccepted = function () {
             angular.element('#confirmation-modal').modal('hide');
-            if (!($scope.contact.id && $scope.consignee.id && $scope.deliveryDate && $scope.district.id)) {
-                $scope.errors = true;
-                createToast('Cannot save. Please fill out all fields marked in red first', 'danger')
-            } else {
-                saveDelivery();
-            }
+            saveDelivery();
         };
 
         var saveDelivery = function () {
@@ -37,7 +43,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 showLoader();
                 createDelivery()
                     .then(createDeliveryNodes)
-                    .then(updatePurchaseOrder)
+                    .then(updatePurchaseOrderDeliveryMode)
                     .then(loadOrderData)
                     .then(notifyOnSuccess)
                     .catch(alertOnSaveFailure)
@@ -60,7 +66,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             createToast('Save failed', 'danger');
         }
 
-        function updatePurchaseOrder() {
+        function updatePurchaseOrderDeliveryMode() {
             return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true}, 'PATCH');
         }
 
@@ -80,6 +86,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             showLoader();
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
+                    //console.log('po', JSON.stringify(purchaseOrder), 'total', totalValue);
                     purchaseOrder.totalValue = totalValue;
                     hideLoader();
                 });

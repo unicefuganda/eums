@@ -1,8 +1,15 @@
 describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, scope, location, mockIpService,
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
+    var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
-    var purchaseOrderItems = [{quantityShipped: 10, id: 1}, {quantityShipped: 11, id: 2}];
+    var valid = function () {
+        return false
+    };
+    var purchaseOrderItems = [
+        {quantityShipped: 10, id: 1, isInvalid: valid},
+        {quantityShipped: 11, id: 2, isInvalid: valid}
+    ];
     var programmeId = 1;
     var createdDelivery = {id: 10, programme: programmeId};
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
@@ -42,6 +49,7 @@ describe('Single IP Direct Delivery Controller', function () {
             spyOn(angular, 'element').and.callFake(jqueryFake);
             spyOn(mockModal, 'modal');
             spyOn(mockLoader, 'modal');
+            spyOn(toast, 'create');
 
             $controller('SingleIpDirectDeliveryController', {
                 $scope: scope,
@@ -58,7 +66,7 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('on load', function () {
-        it('should show loader while loading and hide it after', function() {
+        it('should show loader while loading and hide it after', function () {
             var getPurchaseOrder = q.defer();
             mockPurchaseOrderService.get.and.returnValue(getPurchaseOrder.promise);
             mockPurchaseOrderService.getDetail.and.returnValue(getPurchaseOrder.promise);
@@ -114,7 +122,38 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.purchaseOrderItems = []
         });
 
+        it('should throw and error when required fields are not filled out', function () {
+            testErrorIsOnScope('consignee', {});
+            testErrorIsOnScope('deliveryDate');
+            testErrorIsOnScope('contact', {});
+            testErrorIsOnScope('district', {});
+        });
+
+        xit('should throw error if any of the purchase order items are invalid', function () {
+            var purchaseOrderClone = Object.clone(purchaseOrder);
+            purchaseOrderClone.purchaseorderitemSet = [
+                {
+                    isInvalid: function () {
+                        return true;
+                    }
+                }, {
+                    isInvalid: function () {
+                        return false
+                    }
+                }
+            ];
+            mockPurchaseOrderService.get.and.returnValue(q.when(purchaseOrderClone));
+            mockPurchaseOrderService.getDetail.and.returnValue(q.when(20));
+            setScopeData();
+            scope.save();
+            scope.$apply();
+
+            expect(scope.errors).toBeTruthy();
+        });
+
         it('should show warning modal if purchase order is not already in single IP mode', function () {
+            makeScopeFixture();
+            setScopeData();
             scope.purchaseOrder = {};
             scope.save();
             scope.$apply();
@@ -127,21 +166,36 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.$apply();
             expect(mockModal.modal).not.toHaveBeenCalled();
         });
+
+        it('should NOT show warning modal if some data on scope is blank', function () {
+            scope.purchaseOrder = {isSingleIp: false};
+            scope.save();
+            scope.$apply();
+            expect(mockModal.modal).not.toHaveBeenCalled();
+        });
+
+        function testErrorIsOnScope(scopeField, nullState) {
+            var fields = ['contact', 'consignee', 'deliveryDate', 'district'];
+            fields.forEach(function (field) {
+                if (field !== scopeField) {
+                    scope[field] = {id: 1};
+                }
+            });
+            scope[scopeField] = nullState;
+
+            scope.$apply();
+            scope.save();
+            expect(scope.errors).toBeTruthy();
+            expect(toast.create).toHaveBeenCalledWith({
+                content: 'Cannot save. Please fill out all fields marked in red first',
+                class: 'danger'
+            });
+        }
     });
 
     describe('when save is confirmed', function () {
-        var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
-
         beforeEach(function () {
-            consignee = {id: 1};
-            district = {id: 'Kampala'};
-            deliveryDate = 'Mon Jun 29 2015 00:00:00 GMT+0300 (EAT)';
-            formattedDeliveryDate = moment(new Date(deliveryDate)).format('YYYY-MM-DD');
-            contact = {id: 3};
-            remark = 'Some remarks';
-            itemOne = purchaseOrderItems[0];
-            itemTwo = purchaseOrderItems[1];
-
+            makeScopeFixture();
             var deliveryCommonFields = {
                 distributionPlan: createdDelivery,
                 consignee: consignee,
@@ -154,7 +208,6 @@ describe('Single IP Direct Delivery Controller', function () {
                 treePosition: 'IMPLEMENTING_PARTNER'
             };
 
-            spyOn(toast, 'create');
             scope.purchaseOrder = {isSingleIp: true, programme: programmeId};
             scope.purchaseOrderItems = purchaseOrderItems;
             nodeOne = new DeliveryNodeModel(Object.merge({
@@ -165,13 +218,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 item: itemTwo,
                 targetedQuantity: itemTwo.quantityShipped
             }, deliveryCommonFields));
-        });
-
-        it('should throw and error when required fields are not filled out', function () {
-            testErrorIsOnScope('consignee', {});
-            testErrorIsOnScope('deliveryDate');
-            testErrorIsOnScope('contact', {});
-            testErrorIsOnScope('district', {});
+            setScopeData();
         });
 
         it('should create a new delivery and put it on scope when there is no current delivery on scope', function () {
@@ -191,7 +238,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should not create delivery if all purchase order items have quantityShipped as zero', function () {
             scope.delivery = undefined;
-            scope.purchaseOrderItems = [{quantityShipped: 0}, {quantityShipped: 0}];
+            scope.purchaseOrderItems = [{quantityShipped: 0, isInvalid: valid}, {quantityShipped: 0, isInvalid: valid}];
             scope.save();
             scope.$apply();
 
@@ -209,7 +256,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
             scope.delivery = undefined;
-            scope.purchaseOrderItems = [{}, {quantityShipped: 10}];
+            scope.purchaseOrderItems = [{isInvalid: valid}, {quantityShipped: 10, isInvalid: valid}];
             scope.save();
             scope.$apply();
 
@@ -218,7 +265,6 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
-            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -230,7 +276,6 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should not create nodes for purchase order items with zero distributed quantity', function () {
             itemOne.quantityShipped = 0;
-            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -241,7 +286,6 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should alert user when creation of delivery fails', function () {
             mockDeliveryService.createPlan.and.returnValue(q.reject());
-            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -250,7 +294,6 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should alert user when creation of delivery nodes fails', function () {
             mockDeliveryNodeService.create.and.returnValue(q.reject());
-            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -258,7 +301,6 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should mark purchase order as singleIP and save it', function () {
-            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -267,7 +309,6 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should show loader during save and hide it after', function () {
-            setScopeData();
             scope.save();
             scope.$apply();
 
@@ -279,7 +320,6 @@ describe('Single IP Direct Delivery Controller', function () {
             it('reload purchase order and purchase order items on scope', function () {
                 var newPurchaseOrder = {id: 15, purchaseorderitemSet: []};
                 mockPurchaseOrderService.get.and.returnValue(q.when(newPurchaseOrder));
-                setScopeData();
 
                 scope.save();
                 scope.$apply();
@@ -293,33 +333,26 @@ describe('Single IP Direct Delivery Controller', function () {
             });
         });
 
-        function setScopeData() {
-            scope.delivery = undefined;
-            scope.consignee = consignee;
-            scope.district = district;
-            scope.deliveryDate = deliveryDate;
-            scope.contact = contact;
-            scope.remark = remark;
-            scope.purchaseOrderItems = [itemOne, itemTwo];
-        }
-
-        function testErrorIsOnScope(scopeField, nullState) {
-            var fields = ['contact', 'consignee', 'deliveryDate', 'district'];
-            fields.forEach(function (field) {
-                if (field !== scopeField) {
-                    scope[field] = {id: 1};
-                }
-            });
-            scope[scopeField] = nullState;
-
-            scope.$apply();
-            scope.warningAccepted();
-            expect(scope.errors).toBeTruthy();
-            expect(toast.create).toHaveBeenCalledWith({
-                content: 'Cannot save. Please fill out all fields marked in red first',
-                class: 'danger'
-            });
-            expect(mockModal.modal).toHaveBeenCalledWith('hide');
-        }
     });
+
+    function makeScopeFixture() {
+        consignee = {id: 1};
+        district = {id: 'Kampala'};
+        deliveryDate = 'Mon Jun 29 2015 00:00:00 GMT+0300 (EAT)';
+        formattedDeliveryDate = moment(new Date(deliveryDate)).format('YYYY-MM-DD');
+        contact = {id: 3};
+        remark = 'Some remarks';
+        itemOne = purchaseOrderItems[0];
+        itemTwo = purchaseOrderItems[1];
+    }
+
+    function setScopeData() {
+        scope.delivery = undefined;
+        scope.consignee = consignee;
+        scope.district = district;
+        scope.deliveryDate = deliveryDate;
+        scope.contact = contact;
+        scope.remark = remark;
+        scope.purchaseOrderItems = [itemOne, itemTwo];
+    }
 });
