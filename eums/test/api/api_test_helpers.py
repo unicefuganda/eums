@@ -58,7 +58,7 @@ def create_distribution_plan_node(test_case, node_details=None):
     test_case.assertEqual(response.status_code, 201)
 
     formatted_data = response.data
-    formatted_data['planned_distribution_date'] = str(formatted_data['planned_distribution_date'])
+    formatted_data['delivery_date'] = str(formatted_data['delivery_date'])
     return formatted_data
 
 
@@ -78,7 +78,7 @@ def make_node_details(test_case, plan_id=None):
     if not plan_id:
         plan_id = create_distribution_plan(test_case)['id']
 
-    node = {'item': sales_item_id, 'targeted_quantity': 10, 'planned_distribution_date': '2014-01-21',
+    node = {'item': sales_item_id, 'targeted_quantity': 10, 'delivery_date': '2014-01-21',
             'location': 'GULU', 'consignee': consignee_id, 'distribution_plan': plan_id,
             'contact_person_id': u'1223',
             'tracked': True, 'remark': 'Dispatched', 'tree_position': 'END_USER'}

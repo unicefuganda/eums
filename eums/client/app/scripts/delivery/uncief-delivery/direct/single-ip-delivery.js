@@ -103,7 +103,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                     distributionPlan: createdDelivery,
                     consignee: $scope.consignee,
                     location: $scope.district.id,
-                    plannedDistributionDate: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
+                    deliveryDate: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
                     contactPerson: $scope.contact,
                     remark: $scope.remark,
                     track: true,

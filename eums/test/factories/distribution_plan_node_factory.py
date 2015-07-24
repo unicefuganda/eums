@@ -22,5 +22,5 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     item = factory.SubFactory(OrderItemFactory)
     track = False
     targeted_quantity = 10
-    planned_distribution_date = FakeDate.today()
+    delivery_date = FakeDate.today()
     remark = "In good condition"

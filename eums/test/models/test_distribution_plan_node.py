@@ -37,7 +37,7 @@ class DistributionPlanNodeTest(TestCase):
 
         self.assertEqual(len(self.node._meta.fields), 12)
         for field in ['parent', 'distribution_plan', 'consignee', 'tree_position', 'location',
-                      'contact_person_id', 'item_id', 'targeted_quantity', 'planned_distribution_date', 'remark',
+                      'contact_person_id', 'item_id', 'targeted_quantity', 'delivery_date', 'remark',
                       'id', 'track']:
             self.assertIn(field, fields)
 

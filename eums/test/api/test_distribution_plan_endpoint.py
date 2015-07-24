@@ -29,7 +29,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         item = create_sales_order_item(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'], 'tree_position': 'END_USER',
                         'location': 'Kampala', 'contact_person_id': u'1234',
-                        'targeted_quantity': 10, 'planned_distribution_date': '2015-01-01', 'item': item['id'],
+                        'targeted_quantity': 10, 'delivery_date': '2015-01-01', 'item': item['id'],
                         'remark': 'None', 'tracked': True}
 
         node = create_distribution_plan_node(self, node_details)

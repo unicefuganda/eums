@@ -328,7 +328,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 parent: null,
                 item: $scope.selectedDocumentItem.sales_order_item.id,
                 targeted_quantity: response.quantity,
-                planned_distribution_date: formatDateForSave(plannedDate),
+                delivery_date: formatDateForSave(plannedDate),
                 remark: '',
                 track: false
             };

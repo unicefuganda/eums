@@ -55,4 +55,4 @@ class NodeRun(models.Model):
         latest_allowed_date = today - delivery_status_check_delay - max_allowed_reply_period
 
         return NodeRun.objects.filter(Q(status=NodeRun.STATUS.scheduled) &
-                                      Q(node__planned_distribution_date__lt=latest_allowed_date))
+                                      Q(node__delivery_date__lt=latest_allowed_date))

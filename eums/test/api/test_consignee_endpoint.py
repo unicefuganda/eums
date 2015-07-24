@@ -95,7 +95,7 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         plan_id = create_distribution_plan(self)
         item = create_sales_order_item(self)
         node_details = {'item': item['id'], 'targeted_quantity': 1, 'distribution_plan': plan_id,
-                        'planned_distribution_date': '2015-04-23', 'consignee': implementing_partner_details['id'],
+                        'delivery_date': '2015-04-23', 'consignee': implementing_partner_details['id'],
                         'tree_position': 'END_USER',
                         'location': 'Kampala', 'contact_person_id': u'1234', }
 

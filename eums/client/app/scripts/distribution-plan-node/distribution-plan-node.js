@@ -30,7 +30,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
 
             this.id = json.id;
             this.item = json.item;
-            this.plannedDistributionDate = json.plannedDistributionDate || '';
+            this.deliveryDate = json.deliveryDate || '';
             this.targetedQuantity = json.targetedQuantity || 0;
             this.contactPerson = json.contactPersonId || json.contactPerson;
             this.contactPersonId = json.contactPersonId || json.contactPerson;
@@ -55,7 +55,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
 
             this.isInvalid = function () {
                 return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location
-                    || !this.contactPerson || !this.plannedDistributionDate;
+                    || !this.contactPerson || !this.deliveryDate;
             };
 
 

@@ -251,7 +251,7 @@ describe('DirectDeliveryController', function () {
             var invalidNode;
             var validNode = {
                 item: 1,
-                plannedDistributionDate: '2014-11-31',
+                deliveryDate: '2014-11-31',
                 targetedQuantity: 42,
                 consignee: 4,
                 location: 'Adjumani',
@@ -314,9 +314,9 @@ describe('DirectDeliveryController', function () {
                 expect(scope.invalidNodes).toBeTruthy();
             });
 
-            it('sets the invalidNodes field to true when there are nodes with no plannedDistributionDate', function () {
+            it('sets the invalidNodes field to true when there are nodes with no deliveryDate', function () {
                 invalidNode = angular.copy(validNode);
-                invalidNode.plannedDistributionDate = '';
+                invalidNode.deliveryDate = '';
                 scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
@@ -565,7 +565,7 @@ describe('DirectDeliveryController', function () {
 
             var expectedPlanNode = {
                 item: stubPurchaseOrderItem.item.id,
-                plannedDistributionDate: '',
+                deliveryDate: '',
                 targetedQuantity: 0,
                 destinationLocation: '',
                 contactPerson: '',
@@ -658,7 +658,7 @@ describe('DirectDeliveryController', function () {
                 scope.distributionPlanNodes = [{
                     consignee: {id: 1 },
                     item: scope.selectedPurchaseOrderItem.id,
-                    plannedDistributionDate: '10/10/2015',
+                    deliveryDate: '10/10/2015',
                     targetedQuantity: 5,
                     location: 'Kampala',
                     contactPerson: {id: '559281d40c42914aad3d6006'},
@@ -670,7 +670,7 @@ describe('DirectDeliveryController', function () {
                     {
                         consignee: {id: 1 },
                         item: scope.selectedPurchaseOrderItem.id,
-                        plannedDistributionDate: '10/10/2015',
+                        deliveryDate: '10/10/2015',
                         targetedQuantity: 4,
                         destinationLocation: 'Wakiso',
                         contactPerson: {id: '559281d40c42914aad3d6006'},
@@ -700,7 +700,7 @@ describe('DirectDeliveryController', function () {
                     tree_position: 'MIDDLE_MAN',
                     item: 1,
                     targetedQuantity: 10,
-                    plannedDistributionDate: '02/03/2014',
+                    deliveryDate: '02/03/2014',
                     remark: 'Remark',
                     track: false
                 };
@@ -733,7 +733,7 @@ describe('DirectDeliveryController', function () {
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
-                        planned_distribution_date: distributionDateFormattedForSave,
+                        delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1
@@ -753,7 +753,7 @@ describe('DirectDeliveryController', function () {
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
-                        planned_distribution_date: distributionDateFormattedForSave,
+                        delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1
@@ -775,7 +775,7 @@ describe('DirectDeliveryController', function () {
                         parent: 1,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
-                        planned_distribution_date: distributionDateFormattedForSave,
+                        delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1
@@ -795,7 +795,7 @@ describe('DirectDeliveryController', function () {
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
-                        planned_distribution_date: distributionDateFormattedForSave,
+                        delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1
@@ -822,7 +822,7 @@ describe('DirectDeliveryController', function () {
                     parent: null,
                     item: uiPlanNode.item,
                     targeted_quantity: uiPlanNode.targetedQuantity,
-                    planned_distribution_date: distributionDateFormattedForSave,
+                    delivery_date: distributionDateFormattedForSave,
                     remark: uiPlanNode.remark,
                     track: false,
                     distribution_plan: 1
@@ -858,7 +858,7 @@ describe('DirectDeliveryController', function () {
                         parent: null,
                         item: uiPlanNode.item,
                         targeted_quantity: uiPlanNode.targetedQuantity,
-                        planned_distribution_date: distributionDateFormattedForSave,
+                        delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1,
@@ -882,7 +882,7 @@ describe('DirectDeliveryController', function () {
                     tree_position: 'MIDDLE_MAN',
                     item: 1,
                     targetedQuantity: 10,
-                    plannedDistributionDate: '2014-02-03',
+                    deliveryDate: '2014-02-03',
                     remark: 'Remark',
                     parent: 42,
                     track: false,
@@ -909,7 +909,7 @@ describe('DirectDeliveryController', function () {
                     parent: scope.parentNode.id,
                     item: 1,
                     targeted_quantity: 10,
-                    planned_distribution_date: '2014-2-3',
+                    delivery_date: '2014-2-3',
                     remark: 'Remark',
                     track: false,
                     distribution_plan: 1

@@ -106,12 +106,12 @@
                                     <input type="text"
                                            class="form-control"
                                            datepicker-popup="dd/MM/yyyy"
-                                           ng-model="node.plannedDistributionDate"
+                                           ng-model="node.deliveryDate"
                                            ng-disabled="node.flowTriggered"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            ng-required="true"
-                                           value="{{ node.plannedDistributionDate = (node.plannedDistributionDate | date: 'yyyy-MM-dd') }}"
+                                           value="{{ node.deliveryDate = (node.deliveryDate | date: 'yyyy-MM-dd') }}"
                                            required="required"/>
                                     <span class="input-group-btn">
                                         <button type="button" class="btn btn-default" ng-click="open($event, $index)"

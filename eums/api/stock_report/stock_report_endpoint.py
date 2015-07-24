@@ -38,7 +38,7 @@ def _get_report_details_for_node(node):
         'items': [{'code': node.item.item.material_code,
                    'description': node.item.item.description,
                    'quantity_delivered': node.targeted_quantity,
-                   'date_delivered': str(node.planned_distribution_date),
+                   'date_delivered': str(node.delivery_date),
                    'quantity_confirmed': quantity_received,
                    'date_confirmed': str(_get_date_received(node)),
                    'quantity_dispatched': quantity_dispensed,

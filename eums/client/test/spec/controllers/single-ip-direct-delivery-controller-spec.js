@@ -192,7 +192,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 distributionPlan: createdDelivery,
                 consignee: consignee,
                 location: district.id,
-                plannedDistributionDate: formattedDeliveryDate,
+                deliveryDate: formattedDeliveryDate,
                 contactPerson: contact,
                 remark: remark,
                 track: true,

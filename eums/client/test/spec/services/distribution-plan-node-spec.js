@@ -18,7 +18,7 @@ describe('Distribution Plan Node Service', function () {
         item: itemId,
         quantity: 10,
         underCurrentSupplyPlan: false,
-        plannedDistributionDate: '2014-02-23',
+        deliveryDate: '2014-02-23',
         remark: 'In good condition',
         track: true
     };
@@ -34,7 +34,7 @@ describe('Distribution Plan Node Service', function () {
         item: itemId,
         quantity: 10,
         underCurrentSupplyPlan: false,
-        plannedDistributionDate: '2014-02-23',
+        deliveryDate: '2014-02-23',
         remark: 'In good condition',
         track: true
     };
@@ -60,7 +60,7 @@ describe('Distribution Plan Node Service', function () {
         item: itemId,
         quantity: 10,
         underCurrentSupplyPlan: false,
-        plannedDistributionDate: '2014-02-23',
+        deliveryDate: '2014-02-23',
         remark: 'In good condition',
         track: true,
         contactPerson: fullContact
@@ -133,14 +133,14 @@ describe('Distribution Plan Node Service', function () {
             id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
             children: [], tree_position: 'END_USER', item: itemId,
             quantity: 10, under_current_supply_plan: false,
-            plannedDistributionDate: '2014-02-23',
+            deliveryDate: '2014-02-23',
             remark: 'In bad condition',
             track: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
         planNodeService.create({
             distribution_plan: planId, consignee: consigneeId, tree_position: 'END_USER', item: itemId,
-            quantity: 10, plannedDistributionDate: '2014-02-23', remark: 'In bad condition',
+            quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition',
             track: true
         }).then(function (createdNode) {
             expect(createdNode).toEqual(stubCreatedNode);
@@ -155,7 +155,7 @@ describe('Distribution Plan Node Service', function () {
             id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
             children: [], tree_position: 'END_USER', item: itemId,
             quantity: 10, under_current_supply_plan: false,
-            plannedDistributionDate: '2014-02-23',
+            deliveryDate: '2014-02-23',
             remark: 'In bad condition',
             track: true
         };
@@ -164,7 +164,7 @@ describe('Distribution Plan Node Service', function () {
             item: itemId,
             quantity: 10,
             underCurrentSupplyPlan: false,
-            plannedDistributionDate: '2014-02-23',
+            deliveryDate: '2014-02-23',
             remark: 'In bad condition',
             track: true
         };
@@ -174,7 +174,7 @@ describe('Distribution Plan Node Service', function () {
             item: itemId,
             quantity: 10,
             under_current_supply_plan: false,
-            planned_distribution_date: '2014-02-23',
+            delivery_date: '2014-02-23',
             remark: 'In bad condition',
             track: true
         };

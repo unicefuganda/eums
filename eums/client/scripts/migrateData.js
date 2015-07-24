@@ -44,7 +44,7 @@ function generateDistributionPlanNode(dpLineItem, dPlanNodesJson) {
       var dPlan = obj;
       dPlan.fields["targeted_quantity"] = dpLineItem.fields["targeted_quantity"];
       dPlan.fields["remark"] = dpLineItem.fields["remark"];
-      dPlan.fields["planned_distribution_date"] = dpLineItem.fields["planned_distribution_date"];
+      dPlan.fields["delivery_date"] = dpLineItem.fields["delivery_date"];
       dPlan.fields["targeted_quantity"] = dpLineItem.fields["targeted_quantity"];
       dPlan.fields["track"] = dpLineItem.fields["track"];
       dPlan.fields["item"] = dpLineItem.fields["item"];

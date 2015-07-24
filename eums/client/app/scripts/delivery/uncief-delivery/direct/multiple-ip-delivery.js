@@ -209,7 +209,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         function invalidFields(item) {
-            return item.targetedQuantity <= 0 || isNaN(item.targetedQuantity) || !item.consignee || !item.location || !item.contactPerson || !item.plannedDistributionDate;
+            return item.targetedQuantity <= 0 || isNaN(item.targetedQuantity) || !item.consignee || !item.location || !item.contactPerson || !item.deliveryDate;
         }
 
         function anyInvalidFields(lineItems) {
@@ -226,7 +226,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.addDistributionPlanNode = function () {
             var distributionPlanNode = {
                 item: $scope.selectedPurchaseOrderItem.id,
-                plannedDistributionDate: '',
+                deliveryDate: '',
                 targetedQuantity: 0,
                 destinationLocation: '',
                 contactPerson: '',
@@ -270,10 +270,10 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             var deferred = $q.defer();
 
             var nodeId = uiPlanNode.id;
-            var plannedDate = new Date(uiPlanNode.plannedDistributionDate);
+            var plannedDate = new Date(uiPlanNode.deliveryDate);
 
             if (plannedDate.toString() === 'Invalid Date') {
-                var planDate = uiPlanNode.plannedDistributionDate.split('/');
+                var planDate = uiPlanNode.deliveryDate.split('/');
                 plannedDate = new Date(planDate[2], planDate[1] - 1, planDate[0]);
             }
             var node = {
@@ -284,7 +284,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 parent: parentNodeId(),
                 item: uiPlanNode.item,
                 targeted_quantity: uiPlanNode.targetedQuantity,
-                planned_distribution_date: formatDateForSave(plannedDate),
+                delivery_date: formatDateForSave(plannedDate),
                 remark: uiPlanNode.remark,
                 track: false,
                 distribution_plan: uiPlanNode.distributionPlan,
@@ -458,7 +458,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
                 targeted_quantity: parseInt(purchaseOrderItem.quantityShipped),
-                    node.planned_distribution_date = formatDateForSave(deliveryDate);
+                    node.delivery_date = formatDateForSave(deliveryDate);
                 DistributionPlanNodeService.update(node).then(function () {
                         deferred.resolve();
                     },
@@ -475,7 +475,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     tree_position: 'IMPLEMENTING_PARTNER',
                     item: purchaseOrderItem.id,
                     targeted_quantity: parseInt(purchaseOrderItem.quantityShipped),
-                    planned_distribution_date: formatDateForSave(deliveryDate),
+                    delivery_date: formatDateForSave(deliveryDate),
                     track: false
                 };
                 DistributionPlanNodeService.create(node).then(function (created) {

@@ -10620,7 +10620,7 @@
         "fields": {
             "item": 1,
             "remark": "remark",
-            "planned_distribution_date": "2014-02-01",
+            "delivery_date": "2014-02-01",
             "distribution_plan_node": 2,
             "targeted_quantity": 5
         },
@@ -10631,7 +10631,7 @@
         "fields": {
             "item": 2,
             "remark": "remark",
-            "planned_distribution_date": "2014-02-01",
+            "delivery_date": "2014-02-01",
             "distribution_plan_node": 2,
             "targeted_quantity": 5
         },
@@ -10642,7 +10642,7 @@
         "fields": {
             "item": 1,
             "remark": "remark",
-            "planned_distribution_date": "2014-03-01",
+            "delivery_date": "2014-03-01",
             "distribution_plan_node": 3,
             "targeted_quantity": 5
         },
@@ -10653,7 +10653,7 @@
         "fields": {
             "item": 2,
             "remark": "remark",
-            "planned_distribution_date": "2014-03-01",
+            "delivery_date": "2014-03-01",
             "distribution_plan_node": 3,
             "targeted_quantity": 5
         },
@@ -10664,7 +10664,7 @@
         "fields": {
             "item": 1,
             "remark": "remark",
-            "planned_distribution_date": "2014-04-01",
+            "delivery_date": "2014-04-01",
             "distribution_plan_node": 4,
             "targeted_quantity": 5
         },
@@ -10675,7 +10675,7 @@
         "fields": {
             "item": 2,
             "remark": "remark",
-            "planned_distribution_date": "2014-04-01",
+            "delivery_date": "2014-04-01",
             "distribution_plan_node": 4,
             "targeted_quantity": 5
         },
@@ -10686,7 +10686,7 @@
         "fields": {
             "item": 3,
             "remark": "SAFE Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 5,
             "targeted_quantity": 100
         },
@@ -10697,7 +10697,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 6,
             "targeted_quantity": 30
         },
@@ -10708,7 +10708,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 7,
             "targeted_quantity": 30
         },
@@ -10719,7 +10719,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 8,
             "targeted_quantity": 10
         },
@@ -10730,7 +10730,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 9,
             "targeted_quantity": 10
         },
@@ -10741,7 +10741,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 10,
             "targeted_quantity": 30
         },
@@ -10752,7 +10752,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe Programme",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 11,
             "targeted_quantity": 20
         },
@@ -10763,7 +10763,7 @@
         "fields": {
             "item": 3,
             "remark": "Safe ",
-            "planned_distribution_date": "2014-10-06",
+            "delivery_date": "2014-10-06",
             "distribution_plan_node": 12,
             "targeted_quantity": 150
         },
@@ -10774,7 +10774,7 @@
         "fields": {
             "item": 13,
             "remark": "Mother and Child",
-            "planned_distribution_date": "2014-10-01",
+            "delivery_date": "2014-10-01",
             "distribution_plan_node": 13,
             "targeted_quantity": 1
         },
@@ -10785,7 +10785,7 @@
         "fields": {
             "item": 13,
             "remark": "Mother and child",
-            "planned_distribution_date": "2014-09-29",
+            "delivery_date": "2014-09-29",
             "distribution_plan_node": 17,
             "targeted_quantity": 1
         },
@@ -10796,7 +10796,7 @@
         "fields": {
             "item": 14,
             "remark": "Mother and child",
-            "planned_distribution_date": "2014-09-22",
+            "delivery_date": "2014-09-22",
             "distribution_plan_node": 16,
             "targeted_quantity": 1
         },
@@ -10807,7 +10807,7 @@
         "fields": {
             "item": 2,
             "remark": "blah blah",
-            "planned_distribution_date": "2014-06-10",
+            "delivery_date": "2014-06-10",
             "distribution_plan_node": 19,
             "targeted_quantity": 3
         },
@@ -10818,7 +10818,7 @@
         "fields": {
             "item": 2,
             "remark": "blah blah",
-            "planned_distribution_date": "2014-06-10",
+            "delivery_date": "2014-06-10",
             "distribution_plan_node": 20,
             "targeted_quantity": 3
         },
@@ -10829,7 +10829,7 @@
         "fields": {
             "item": 1,
             "remark": "ccc",
-            "planned_distribution_date": "2014-10-14",
+            "delivery_date": "2014-10-14",
             "distribution_plan_node": 2,
             "targeted_quantity": 2
         },
@@ -10840,7 +10840,7 @@
         "fields": {
             "item": 2,
             "remark": "heoo",
-            "planned_distribution_date": "2014-09-29",
+            "delivery_date": "2014-09-29",
             "distribution_plan_node": 21,
             "targeted_quantity": 4
         },
@@ -10851,7 +10851,7 @@
         "fields": {
             "item": 1,
             "remark": "hfhf",
-            "planned_distribution_date": "2014-06-10",
+            "delivery_date": "2014-06-10",
             "distribution_plan_node": 22,
             "targeted_quantity": 2
         },
@@ -10862,7 +10862,7 @@
         "fields": {
             "item": 1,
             "remark": "hdh",
-            "planned_distribution_date": "2014-06-10",
+            "delivery_date": "2014-06-10",
             "distribution_plan_node": 23,
             "targeted_quantity": 0
         },
@@ -10873,7 +10873,7 @@
         "fields": {
             "item": 1,
             "remark": "hfhf",
-            "planned_distribution_date": "2014-06-10",
+            "delivery_date": "2014-06-10",
             "distribution_plan_node": 24,
             "targeted_quantity": 2
         },
@@ -10884,7 +10884,7 @@
         "fields": {
             "item": 1,
             "remark": "gktt",
-            "planned_distribution_date": "2014-10-07",
+            "delivery_date": "2014-10-07",
             "distribution_plan_node": 25,
             "targeted_quantity": 5
         },
@@ -10895,7 +10895,7 @@
         "fields": {
             "item": 1,
             "remark": "hh",
-            "planned_distribution_date": "2014-10-14",
+            "delivery_date": "2014-10-14",
             "distribution_plan_node": 26,
             "targeted_quantity": 5
         },

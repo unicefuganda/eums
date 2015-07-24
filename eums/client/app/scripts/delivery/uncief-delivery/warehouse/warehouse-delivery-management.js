@@ -148,7 +148,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
             if (node) {
                 node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
-                node.planned_distribution_date = $scope.selectedReleaseOrder.deliveryDate;
+                node.delivery_date = $scope.selectedReleaseOrder.deliveryDate;
                 DistributionPlanNodeService.update(node)
                     .then(function () {
                         getDelivery();
@@ -166,7 +166,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     tree_position: 'IMPLEMENTING_PARTNER',
                     item: releaseOrderItem,
                     targeted_quantity: parseInt(releaseOrderItem.quantity),
-                    planned_distribution_date: $scope.selectedReleaseOrder.deliveryDate,
+                    delivery_date: $scope.selectedReleaseOrder.deliveryDate,
                     track: false
                 };
                 DistributionPlanNodeService.create(node)

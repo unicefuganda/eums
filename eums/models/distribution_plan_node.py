@@ -20,7 +20,7 @@ class DistributionPlanNode(models.Model):
     item = models.ForeignKey('OrderItem')
     targeted_quantity = models.IntegerField()
     track = models.BooleanField(default=False)
-    planned_distribution_date = models.DateField(null=False)
+    delivery_date = models.DateField(null=False)
     remark = models.TextField(blank=True, null=True)
 
     def build_contact(self):
