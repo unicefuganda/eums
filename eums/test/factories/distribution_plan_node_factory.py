@@ -1,8 +1,6 @@
 import factory
-from eums.test.factories.order_item_factory import OrderItemFactory
 
-from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
+from eums.test.factories.order_item_factory import OrderItemFactory
 from eums.test.helpers.fake_datetime import FakeDate
 from eums.models import DistributionPlanNode
 from eums.test.factories.consignee_factory import ConsigneeFactory

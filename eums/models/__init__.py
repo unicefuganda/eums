@@ -1,5 +1,6 @@
-from eums.models.distribution_plan import DistributionPlan
 from eums.models.consignee import Consignee
+from eums.models.runnable import Runnable
+from eums.models.distribution_plan import DistributionPlan
 from eums.models.item_unit import ItemUnit
 from eums.models.item import Item
 from eums.models.programme import Programme
@@ -26,8 +27,9 @@ from eums.models.users import UserProfile
 
 
 __all__ = [
-    'DistributionPlan',
     'Consignee',
+    'Runnable',
+    'DistributionPlan',
     'Item',
     'ItemUnit',
     'Programme',
