@@ -45,19 +45,19 @@ describe('Purchase Order Item Model', function () {
     });
 
     it('should calculate delivery value based on quantity to be shipped', function() {
-        attrs = {quantity: 100, availableBalance: 50, value: 1200.00}
+        var attrs = {quantity: 100, availableBalance: 50, value: 1200.00};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(purchaseOrderItem.quantityShipped)).toBe('600.00');
     });
 
     it('should calculate delivery value based on quantity to be shipped with decimals', function() {
-        attrs = {quantity: 100, availableBalance: 37, value: 1222.00}
+        var attrs = {quantity: 100, availableBalance: 37, value: 1222.00};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(purchaseOrderItem.quantityShipped)).toBe('452.14');
     });
 
     it('should zero delivery value when quantity to be shipped is zero', function() {
-        attrs = {quantity: 100, availableBalance: 37, value: 1222.00}
+        var attrs = {quantity: 100, availableBalance: 37, value: 1222.00};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(0)).toBe('0.00');
     });
