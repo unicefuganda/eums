@@ -6,13 +6,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         $scope.contact = {};
         $scope.district = {};
 
-        PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
-            PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
-                purchaseOrder.totalValue = totalValue;
-            });
-            $scope.purchaseOrder = purchaseOrder;
-            $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
-        });
+        loadOrderData();
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
@@ -39,10 +33,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
                 return item.quantityShipped || 0;
             });
-            if(!$scope.delivery && totalQuantityShipped) {
-                createDelivery().then(createDeliveryNodes)
+            if (!$scope.delivery && totalQuantityShipped) {
+                createDelivery().then(createDeliveryNodes).then(loadOrderData);
             }
-            else if(!totalQuantityShipped) {
+            else if (!totalQuantityShipped) {
                 createToast('Cannot save delivery with zero quantity shipped', 'danger');
             }
         };
@@ -52,6 +46,16 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             return DistributionPlanService.createPlan(programme).then(function (createdDelivery) {
                 $scope.delivery = createdDelivery;
                 return createdDelivery;
+            });
+        }
+
+        function loadOrderData() {
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
+                PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
+                    purchaseOrder.totalValue = totalValue;
+                });
+                $scope.purchaseOrder = purchaseOrder;
+                $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
             });
         }
 
@@ -71,9 +75,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 }));
             }
 
+            var createNodePromises = [];
             $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                purchaseOrderItem.quantityShipped && createNodeFrom(purchaseOrderItem);
+                purchaseOrderItem.quantityShipped && createNodePromises.push(createNodeFrom(purchaseOrderItem));
             });
+            return $q.all(createNodePromises);
         }
 
         function createToast(message, klass) {

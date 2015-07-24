@@ -1,6 +1,6 @@
 describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, deferredPurchaseOrder, scope, location, mockIpService, deferredPurchaseOrderTotalValue,
-        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService;
+        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, createdDeliveryNode, q;
     var purchaseOrderValue = 1300.5;
     var purchaseOrderItems = [{quantityShipped: 10, id: 1}, {quantityShipped: 11, id: 2}];
     var programmeId = 1;
@@ -30,8 +30,10 @@ describe('Single IP Direct Delivery Controller', function () {
             deferredPurchaseOrderTotalValue = $q.defer();
             mockPurchaseOrderService.getDetail.and.returnValue(deferredPurchaseOrderTotalValue.promise);
 
+            DeliveryNodeModel = DeliveryNode;
             var deferredDeliveryNode = $q.defer();
-            deferredDeliveryNode.resolve();
+            createdDeliveryNode = new DeliveryNodeModel({id: 1});
+            deferredDeliveryNode.resolve(createdDeliveryNode);
             mockDeliveryNodeService.create.and.returnValue(deferredDeliveryNode.promise);
 
             var deferredDelivery = $q.defer();
@@ -45,7 +47,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope = $rootScope.$new();
             location = $location;
             toast = ngToast;
-            DeliveryNodeModel = DeliveryNode;
+            q = $q;
             spyOn(angular, 'element').and.returnValue(mockElement);
             spyOn(mockElement, 'modal');
 
@@ -185,11 +187,9 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
             expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
-
-
         });
 
-        it('should not throw zero-total-quantity error when total quantity is non zero and there is a delivery on scope', function() {
+        it('should not throw zero-total-quantity error when total quantity is non zero and there is a delivery on scope', function () {
             scope.delivery = createdDelivery;
             scope.save();
             scope.$apply();
@@ -219,13 +219,34 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should not create nodes for purchase order items with zero distributed quantity', function () {
             itemOne.quantityShipped = 0;
             setScopeData();
-
             scope.save();
             scope.$apply();
 
             var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
             expect(mockDeliveryNodeService.create.calls.count()).toBe(1);
             expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeTwo));
+        });
+
+        describe('successfully with track = true', function () {
+            it('reload purchase order and purchase order items on scope', function () {
+                var newPurchaseOrder = {id: 15, purchaseorderitemSet: []};
+                mockPurchaseOrderService.get.and.returnValue(q.when(newPurchaseOrder));
+                setScopeData();
+
+                scope.save();
+                scope.$apply();
+
+                expect(mockPurchaseOrderService.get.calls.count()).toBe(2);
+                expect(mockPurchaseOrderService.get.calls.mostRecent().args).toEqual(
+                    [purchaseOrder.id, ['purchaseorderitem_set.item']]
+                );
+                expect(scope.purchaseOrder).toEqual(newPurchaseOrder);
+                expect(scope.purchaseOrderItems).toEqual([]);
+            });
+
+            //it('should disable and demote items with zero available quantity', function() {
+            //    itemOne.
+            //});
         });
 
         function setScopeData() {
