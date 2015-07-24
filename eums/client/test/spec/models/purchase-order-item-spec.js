@@ -61,4 +61,10 @@ describe('Purchase Order Item Model', function () {
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
         expect(purchaseOrderItem.deliveryValue(0)).toBe('0.00');
     });
+
+    it('should be invalid if quantityShipped is greater than availableBalance', function() {
+        var attrs = {availableBalance: 37, quantityShipped: 200};
+        var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
+        expect(purchaseOrderItem.isInvalid()).toBe(false);
+    });
 });

@@ -15,6 +15,7 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             this.item = json.item;
             this.distributionplannodeSet = json.distributionplannodeSet || [];
 
+
             this.quantityLeft = function (deliveryNodes) {
                 return this.quantity - deliveryNodes.sum(function(node) {
                     return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
@@ -25,6 +26,10 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
                 var unitValue = this.value / this.quantity;
                 return (unitValue * quantityShipped).toFixed(2);
             }.bind(this);
+
+            this.isInvalid = function() {
+                return this.quantityShipped > this.availableBalance;
+            }.bind(this)
         };
     })
     .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, DistributionPlanNodeService, $q,

@@ -54,8 +54,11 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             };
 
             this.isInvalid = function () {
-                return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location || !this.contactPerson || !this.plannedDistributionDate;
+                return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location
+                    || !this.contactPerson || !this.plannedDistributionDate;
             };
+
+
 
             this.quantityLeft = function (children) {
                 !children && (children = this.children);
