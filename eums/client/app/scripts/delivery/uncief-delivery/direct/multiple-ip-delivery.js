@@ -106,25 +106,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     return parseFloat(orderItem.value);
                 });
                 if (purchaseOrder.isSingleIp) {
-                    $scope.deliveriesWithNodes = [];
-                    PurchaseOrderService.fetchDeliveries(purchaseOrder).then(function (deliveries) {
-                        deliveries.forEach(function (delivery) {
-                            DistributionPlanNodeService.getNodesByDelivery(delivery.id).then(function (result) {
-                                delivery.distributionplannode_set = result.data;
-                                $scope.deliveriesWithNodes.push(delivery);
-                            });
-                        });
-                        var nodeId = deliveries[0].distributionplannode_set[0];
-                        DistributionPlanNodeService.getPlanNodeDetails(nodeId).then(function (node) {
-                            $scope.consignee = node.consignee;
-                            $scope.$broadcast('set-consignee-for-single-ip', $scope.consignee);
-                            $scope.contact = node.contactPersonId;
-                            $scope.$broadcast('set-contact-for-single-ip', $scope.contact);
-                            $scope.selectedLocation = {'id': node.location, 'name': node.location};
-                            $scope.$broadcast('set-location', $scope.selectedLocation);
-                            $scope.selectedDate = node.plannedDistributionDate;
-                        });
-                    });
+                    $location.path('/single-ip-direct-delivery/' + purchaseOrder.id)
                 }
             });
         }
