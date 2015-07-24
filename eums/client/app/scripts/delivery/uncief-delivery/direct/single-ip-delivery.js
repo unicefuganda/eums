@@ -51,8 +51,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function updatePurchaseOrder() {
-            var updatedPurchaseOrder = Object.merge(Object.clone($scope.purchaseOrder), {isSingleIp: true});
-            return PurchaseOrderService.update(updatedPurchaseOrder);
+            return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true}, 'PATCH');
         }
 
         function notifyOnSuccess() {

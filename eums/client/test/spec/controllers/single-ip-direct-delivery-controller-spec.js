@@ -6,7 +6,6 @@ describe('Single IP Direct Delivery Controller', function () {
     var programmeId = 1;
     var createdDelivery = {id: 10, programme: programmeId};
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
-    var updatedPurchaseOrder = Object.merge({isSingleIp: true, totalValue: 0}, Object.clone(purchaseOrder));
     var routeParams = {purchaseOrderId: purchaseOrder.id};
     var districts = [{name: 'Kampala', id: 'Kampala'}, {name: 'Jinja', id: 'Jinja'}];
     var districtsResponse = {data: ['Kampala', 'Jinja']};
@@ -32,7 +31,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
             mockPurchaseOrderService.getDetail.and.returnValue($q.when(0));
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
-            mockPurchaseOrderService.update.and.returnValue($q.when(updatedPurchaseOrder));
+            mockPurchaseOrderService.update.and.returnValue($q.when({}));
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
             mockDeliveryService.createPlan.and.returnValue($q.when(createdDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
@@ -245,7 +244,8 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.save();
             scope.$apply();
 
-            expect(mockPurchaseOrderService.update).toHaveBeenCalledWith(updatedPurchaseOrder);
+            var purchaseOrderPatch = {id: purchaseOrder.id, isSingleIp: true};
+            expect(mockPurchaseOrderService.update).toHaveBeenCalledWith(purchaseOrderPatch, 'PATCH');
         });
 
         describe('successfully with track = true', function () {
