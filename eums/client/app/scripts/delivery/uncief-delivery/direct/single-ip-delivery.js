@@ -34,7 +34,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 return item.quantityShipped || 0;
             });
             if (!$scope.delivery && totalQuantityShipped) {
-                createDelivery().then(createDeliveryNodes).then(loadOrderData)
+                createDelivery()
+                    .then(createDeliveryNodes)
+                    .then(updatePurchaseOrder)
+                    .then(loadOrderData)
                     .then(notifyOnSuccess)
                     .catch(alertOnSaveFailure)
             }
@@ -45,6 +48,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function alertOnSaveFailure() {
             createToast('Save failed', 'danger');
+        }
+
+        function updatePurchaseOrder() {
+            var updatedPurchaseOrder = Object.merge(Object.clone($scope.purchaseOrder), {isSingleIp: true});
+            return PurchaseOrderService.update(updatedPurchaseOrder);
         }
 
         function notifyOnSuccess() {

@@ -6,6 +6,7 @@ describe('Single IP Direct Delivery Controller', function () {
     var programmeId = 1;
     var createdDelivery = {id: 10, programme: programmeId};
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
+    var updatedPurchaseOrder = Object.merge({isSingleIp: true, totalValue: 0}, Object.clone(purchaseOrder));
     var routeParams = {purchaseOrderId: purchaseOrder.id};
     var districts = [{name: 'Kampala', id: 'Kampala'}, {name: 'Jinja', id: 'Jinja'}];
     var districtsResponse = {data: ['Kampala', 'Jinja']};
@@ -17,7 +18,7 @@ describe('Single IP Direct Delivery Controller', function () {
     beforeEach(function () {
         module('SingleIpDirectDelivery');
 
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail', 'update']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create']);
@@ -31,6 +32,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
             mockPurchaseOrderService.getDetail.and.returnValue($q.when(0));
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
+            mockPurchaseOrderService.update.and.returnValue($q.when(updatedPurchaseOrder));
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
             mockDeliveryService.createPlan.and.returnValue($q.when(createdDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
@@ -111,7 +113,7 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is confirmed', function () {
-        var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate , contact, remark;
+        var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
 
         beforeEach(function () {
             consignee = {id: 1};
@@ -231,6 +233,14 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.$apply();
 
             expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
+        });
+
+        it('should mark purchase order as singleIP and save it', function () {
+            setScopeData();
+            scope.save();
+            scope.$apply();
+
+            expect(mockPurchaseOrderService.update).toHaveBeenCalledWith(updatedPurchaseOrder);
         });
 
         describe('successfully with track = true', function () {
