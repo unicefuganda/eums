@@ -190,6 +190,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.$apply();
 
             expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+            expect(toast.create).toHaveBeenCalledWith({content: 'Delivery created', class: 'success'})
         });
 
         it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
