@@ -63,8 +63,20 @@ describe('Purchase Order Item Model', function () {
     });
 
     it('should be invalid if quantityShipped is greater than availableBalance', function() {
-        var attrs = {availableBalance: 37, quantityShipped: 200};
+        var attrs = {availableBalance: 37};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
-        expect(purchaseOrderItem.isInvalid()).toBe(false);
+        purchaseOrderItem.quantityShipped = 100;
+        expect(purchaseOrderItem.isInvalid()).toBe(true);
+    });
+
+    it('should be valid if quantityShipped is less or equal to availableBalance', function() {
+        var attrs = {availableBalance: 37};
+        var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
+
+        purchaseOrderItem.quantityShipped = 20;
+        expect(purchaseOrderItem.isInvalid()).toBeFalsy();
+
+        purchaseOrderItem.quantityShipped = 37;
+        expect(purchaseOrderItem.isInvalid()).toBeFalsy();
     });
 });
