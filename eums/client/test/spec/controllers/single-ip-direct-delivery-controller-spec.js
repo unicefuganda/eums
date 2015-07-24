@@ -222,7 +222,7 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
         });
 
-        xit('should alert user when creation of delivery nodes fails', function () {
+        it('should alert user when creation of delivery nodes fails', function () {
             mockDeliveryNodeService.create.and.returnValue(q.reject());
             setScopeData();
             scope.save();

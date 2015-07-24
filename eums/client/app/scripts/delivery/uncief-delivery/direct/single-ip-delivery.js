@@ -34,12 +34,16 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 return item.quantityShipped || 0;
             });
             if (!$scope.delivery && totalQuantityShipped) {
-                createDelivery().then(createDeliveryNodes).then(loadOrderData);
+                createDelivery().then(createDeliveryNodes).then(loadOrderData).catch(alertOnSaveFailure);
             }
             else if (!totalQuantityShipped) {
                 createToast('Cannot save delivery with zero quantity shipped', 'danger');
             }
         };
+
+        function alertOnSaveFailure() {
+            createToast('Save failed', 'danger');
+        }
 
         function createDelivery() {
             var programme = {programme: $scope.purchaseOrder.programme};
@@ -61,7 +65,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function createDeliveryNodes(createdDelivery) {
             function createNodeFrom(purchaseOrderItem) {
-                DistributionPlanNodeService.create(new DeliveryNode({
+                return DistributionPlanNodeService.create(new DeliveryNode({
                     item: purchaseOrderItem,
                     distributionPlan: createdDelivery,
                     consignee: $scope.consignee,
