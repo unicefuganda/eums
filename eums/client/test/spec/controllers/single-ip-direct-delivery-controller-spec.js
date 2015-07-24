@@ -140,9 +140,14 @@ describe('Single IP Direct Delivery Controller', function () {
             spyOn(toast, 'create');
             scope.purchaseOrder = {isSingleIp: true, programme: programmeId};
             scope.purchaseOrderItems = purchaseOrderItems;
-            nodeOne = new DeliveryNodeModel(Object.merge({item: itemOne}, deliveryCommonFields));
-            nodeTwo = new DeliveryNodeModel(Object.merge({item: itemTwo}, deliveryCommonFields));
-
+            nodeOne = new DeliveryNodeModel(Object.merge({
+                item: itemOne,
+                targetedQuantity: itemOne.quantityShipped
+            }, deliveryCommonFields));
+            nodeTwo = new DeliveryNodeModel(Object.merge({
+                item: itemTwo,
+                targetedQuantity: itemTwo.quantityShipped
+            }, deliveryCommonFields));
         });
 
         it('should throw and error when required fields are not filled out', function () {

@@ -81,6 +81,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             function createNodeFrom(purchaseOrderItem) {
                 return DistributionPlanNodeService.create(new DeliveryNode({
                     item: purchaseOrderItem,
+                    targetedQuantity: purchaseOrderItem.quantityShipped,
                     distributionPlan: createdDelivery,
                     consignee: $scope.consignee,
                     location: $scope.district.id,
