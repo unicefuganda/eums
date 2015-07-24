@@ -1,6 +1,6 @@
 describe('Single IP Direct Delivery Controller', function () {
-    var mockPurchaseOrderService, deferredPurchaseOrder, scope, location, mockIpService, deferredPurchaseOrderTotalValue,
-        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, createdDeliveryNode, q;
+    var mockPurchaseOrderService, scope, location, mockIpService,
+        toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
     var purchaseOrderValue = 1300.5;
     var purchaseOrderItems = [{quantityShipped: 10, id: 1}, {quantityShipped: 11, id: 2}];
     var programmeId = 1;
@@ -23,31 +23,18 @@ describe('Single IP Direct Delivery Controller', function () {
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
-            deferredPurchaseOrder = $q.defer();
-            deferredPurchaseOrder.resolve(purchaseOrder);
-            mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
-
-            deferredPurchaseOrderTotalValue = $q.defer();
-            mockPurchaseOrderService.getDetail.and.returnValue(deferredPurchaseOrderTotalValue.promise);
-
             DeliveryNodeModel = DeliveryNode;
-            var deferredDeliveryNode = $q.defer();
-            createdDeliveryNode = new DeliveryNodeModel({id: 1});
-            deferredDeliveryNode.resolve(createdDeliveryNode);
-            mockDeliveryNodeService.create.and.returnValue(deferredDeliveryNode.promise);
-
-            var deferredDelivery = $q.defer();
-            deferredDelivery.resolve(createdDelivery);
-            mockDeliveryService.createPlan.and.returnValue(deferredDelivery.promise);
-
-            var deferredDistricts = $q.defer();
-            deferredDistricts.resolve(districtsResponse);
-            mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
-
             scope = $rootScope.$new();
             location = $location;
             toast = ngToast;
             q = $q;
+
+            mockPurchaseOrderService.getDetail.and.returnValue($q.when(0));
+            mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
+            mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
+            mockDeliveryService.createPlan.and.returnValue($q.when(createdDelivery));
+            mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
+
             spyOn(angular, 'element').and.returnValue(mockElement);
             spyOn(mockElement, 'modal');
 
@@ -88,11 +75,10 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should put purchase order value on purchase order', function () {
+            mockPurchaseOrderService.getDetail.and.returnValue(q.when(purchaseOrderValue));
             scope.$apply();
             expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'total_value');
             expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
-            deferredPurchaseOrderTotalValue.resolve(purchaseOrderValue);
-            scope.$apply();
             expect(scope.purchaseOrder.totalValue).toEqual(purchaseOrderValue);
         });
 
@@ -225,6 +211,24 @@ describe('Single IP Direct Delivery Controller', function () {
             var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
             expect(mockDeliveryNodeService.create.calls.count()).toBe(1);
             expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeTwo));
+        });
+
+        it('should alert user when creation of delivery fails', function () {
+            mockDeliveryService.createPlan.and.returnValue(q.reject());
+            setScopeData();
+            scope.save();
+            scope.$apply();
+
+            expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
+        });
+
+        xit('should alert user when creation of delivery nodes fails', function () {
+            mockDeliveryNodeService.create.and.returnValue(q.reject());
+            setScopeData();
+            scope.save();
+            scope.$apply();
+
+            expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
         });
 
         describe('successfully with track = true', function () {
