@@ -129,22 +129,14 @@ describe('Single IP Direct Delivery Controller', function () {
             testErrorIsOnScope('district', {});
         });
 
-        xit('should throw error if any of the purchase order items are invalid', function () {
-            var purchaseOrderClone = Object.clone(purchaseOrder);
-            purchaseOrderClone.purchaseorderitemSet = [
-                {
-                    isInvalid: function () {
-                        return true;
-                    }
-                }, {
-                    isInvalid: function () {
-                        return false
-                    }
-                }
-            ];
-            mockPurchaseOrderService.get.and.returnValue(q.when(purchaseOrderClone));
-            mockPurchaseOrderService.getDetail.and.returnValue(q.when(20));
+        it('should throw error if any of the purchase order items are invalid', function () {
+            makeScopeFixture();
             setScopeData();
+            var invalidItemOne = Object.clone(itemOne);
+            invalidItemOne.isInvalid = function() {
+                return true;
+            };
+            scope.purchaseOrderItems = [invalidItemOne, itemTwo];
             scope.save();
             scope.$apply();
 
