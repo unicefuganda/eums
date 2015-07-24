@@ -111,12 +111,13 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('when save is confirmed', function () {
-        var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, contact, remark;
+        var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate , contact, remark;
 
         beforeEach(function () {
             consignee = {id: 1};
-            district = 'Kampala';
-            deliveryDate = '2013-4-1';
+            district = {id: 'Kampala'};
+            deliveryDate = 'Mon Jun 29 2015 00:00:00 GMT+0300 (EAT)';
+            formattedDeliveryDate = moment(new Date(deliveryDate)).format('YYYY-MM-DD');
             contact = {id: 3};
             remark = 'Some remarks';
             itemOne = purchaseOrderItems[0];
@@ -125,8 +126,8 @@ describe('Single IP Direct Delivery Controller', function () {
             var deliveryCommonFields = {
                 distributionPlan: createdDelivery,
                 consignee: consignee,
-                location: district,
-                plannedDistributionDate: deliveryDate,
+                location: district.id,
+                plannedDistributionDate: formattedDeliveryDate,
                 contactPerson: contact,
                 remark: remark,
                 track: true,

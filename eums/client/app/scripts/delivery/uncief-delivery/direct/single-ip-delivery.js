@@ -2,6 +2,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DistributionPlanService, DeliveryNode, $q,
                                                               DistributionPlanNodeService) {
+        $scope.datepicker = {};
         $scope.consignee = {};
         $scope.contact = {};
         $scope.district = {};
@@ -69,8 +70,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                     item: purchaseOrderItem,
                     distributionPlan: createdDelivery,
                     consignee: $scope.consignee,
-                    location: $scope.district,
-                    plannedDistributionDate: $scope.deliveryDate,
+                    location: $scope.district.id,
+                    plannedDistributionDate: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
                     contactPerson: $scope.contact,
                     remark: $scope.remark,
                     track: true,
