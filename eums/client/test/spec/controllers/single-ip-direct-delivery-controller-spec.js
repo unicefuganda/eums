@@ -9,9 +9,12 @@ describe('Single IP Direct Delivery Controller', function () {
     var routeParams = {purchaseOrderId: purchaseOrder.id};
     var districts = [{name: 'Kampala', id: 'Kampala'}, {name: 'Jinja', id: 'Jinja'}];
     var districtsResponse = {data: ['Kampala', 'Jinja']};
-    var mockElement = {
-        modal: function () {
-        }
+    var emptyFunction = function () {
+    };
+    var mockModal = {modal: emptyFunction};
+    var mockLoader = {modal: emptyFunction};
+    var jqueryFake = function (selector) {
+        return selector === '#confirmation-modal' ? mockModal : mockLoader;
     };
 
     beforeEach(function () {
@@ -36,8 +39,9 @@ describe('Single IP Direct Delivery Controller', function () {
             mockDeliveryService.createPlan.and.returnValue($q.when(createdDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
 
-            spyOn(angular, 'element').and.returnValue(mockElement);
-            spyOn(mockElement, 'modal');
+            spyOn(angular, 'element').and.callFake(jqueryFake);
+            spyOn(mockModal, 'modal');
+            spyOn(mockLoader, 'modal');
 
             $controller('SingleIpDirectDeliveryController', {
                 $scope: scope,
@@ -54,6 +58,21 @@ describe('Single IP Direct Delivery Controller', function () {
     });
 
     describe('on load', function () {
+        it('should show loader while loading and hide it after', function() {
+            var getPurchaseOrder = q.defer();
+            mockPurchaseOrderService.get.and.returnValue(getPurchaseOrder.promise);
+            mockPurchaseOrderService.getDetail.and.returnValue(getPurchaseOrder.promise);
+
+            scope.$apply();
+
+            expect(mockLoader.modal).toHaveBeenCalled();
+            expect(mockLoader.modal.calls.count()).toBe(1);
+
+            getPurchaseOrder.resolve({});
+            scope.$apply();
+            expect(mockLoader.modal).toHaveBeenCalledWith('hide');
+        });
+
         it('should put empty objects on on scope', function () {
             scope.$apply();
             expect(scope.consignee).toEqual({});
@@ -99,15 +118,14 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.purchaseOrder = {};
             scope.save();
             scope.$apply();
-            expect(angular.element).toHaveBeenCalledWith('#confirmation-modal');
-            expect(mockElement.modal).toHaveBeenCalled();
+            expect(mockModal.modal).toHaveBeenCalled();
         });
 
         it('should NOT show warning modal if purchase order is already in single IP mode', function () {
             scope.purchaseOrder = {isSingleIp: true};
             scope.save();
             scope.$apply();
-            expect(angular.element).not.toHaveBeenCalled();
+            expect(mockModal.modal).not.toHaveBeenCalled();
         });
     });
 
@@ -264,10 +282,6 @@ describe('Single IP Direct Delivery Controller', function () {
                 expect(scope.purchaseOrder).toEqual(newPurchaseOrder);
                 expect(scope.purchaseOrderItems).toEqual([]);
             });
-
-            //it('should disable and demote items with zero available quantity', function() {
-            //    itemOne.
-            //});
         });
 
         function setScopeData() {
@@ -296,12 +310,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 content: 'Cannot save. Please fill out all fields marked in red first',
                 class: 'danger'
             });
-            expect(mockElement.modal).toHaveBeenCalledWith('hide');
+            expect(mockModal.modal).toHaveBeenCalledWith('hide');
         }
     });
-
-    it('should show loader when loading data', function () {
-        // TODO Implement at end
-    });
-
 });

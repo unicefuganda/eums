@@ -46,6 +46,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             }
         };
 
+        function showLoader(show) {
+            show == true ? angular.element('#loading').modal() : angular.element('#loading').modal('hide');
+        }
+
         function alertOnSaveFailure() {
             createToast('Save failed', 'danger');
         }
@@ -67,9 +71,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function loadOrderData() {
+            showLoader(true);
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
                     purchaseOrder.totalValue = totalValue;
+                    showLoader(false);
                 });
                 $scope.purchaseOrder = purchaseOrder;
                 $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
