@@ -10,16 +10,13 @@ exports.config = {
 
     chromeDriver: '/usr/local/bin/chromedriver',
 
-    chromeOnly: true,
-
     directConnect: false,
-
 
     specs: ['test/performance/*-spec.js'],
 
     baseUrl: process.env['PERFORMANCE_TEST_BASE_URL'],
 
-    framework: 'jasmine',
+    framework: 'jasmine2',
 
     jasmineNodeOpts: {
         defaultTimeoutInterval: 30000,
