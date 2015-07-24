@@ -34,20 +34,26 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 return item.quantityShipped || 0;
             });
             if (!$scope.delivery && totalQuantityShipped) {
+                showLoader();
                 createDelivery()
                     .then(createDeliveryNodes)
                     .then(updatePurchaseOrder)
                     .then(loadOrderData)
                     .then(notifyOnSuccess)
                     .catch(alertOnSaveFailure)
+                    .finally(hideLoader)
             }
             else if (!totalQuantityShipped) {
                 createToast('Cannot save delivery with zero quantity shipped', 'danger');
             }
         };
 
-        function showLoader(show) {
-            show == true ? angular.element('#loading').modal() : angular.element('#loading').modal('hide');
+        function showLoader() {
+            angular.element('#loading').modal();
+        }
+
+        function hideLoader() {
+            angular.element('#loading').modal('hide');
         }
 
         function alertOnSaveFailure() {
@@ -71,11 +77,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function loadOrderData() {
-            showLoader(true);
+            showLoader();
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
                     purchaseOrder.totalValue = totalValue;
-                    showLoader(false);
+                    hideLoader();
                 });
                 $scope.purchaseOrder = purchaseOrder;
                 $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;

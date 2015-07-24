@@ -266,6 +266,15 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockPurchaseOrderService.update).toHaveBeenCalledWith(purchaseOrderPatch, 'PATCH');
         });
 
+        it('should show loader during save and hide it after', function () {
+            setScopeData();
+            scope.save();
+            scope.$apply();
+
+            expect(mockLoader.modal.calls.allArgs()).toContain([], ['hide']);
+            expect(mockLoader.modal.calls.count()).toBe(6);
+        });
+
         describe('successfully with track = true', function () {
             it('reload purchase order and purchase order items on scope', function () {
                 var newPurchaseOrder = {id: 15, purchaseorderitemSet: []};
