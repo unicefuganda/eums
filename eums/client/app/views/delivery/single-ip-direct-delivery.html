@@ -70,7 +70,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-2" ng-if="districtsLoaded" ng-class="{'has-error': !district.id && errors}">
+
+                    <div class="form-group col-md-2" ng-if="districtsLoaded" ng-class="{'has-error': !district && errors}">
                         <label class="col-md-4 control-label description-label pad-small">
                             District:
                         </label>
@@ -79,9 +80,9 @@
                             <input type="hidden"
                                    search-from-list
                                    list="{{ districts }}"
-                                   ng-model="district.id"
+                                   ng-model="district"
                                    ng-attr-id="{{ 'location-select' }}"
-                                   value="{{ district.id }}">
+                                   value="{{ district }}">
                         </div>
                     </div>
                     <div class="text-center col-md-1">

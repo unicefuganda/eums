@@ -69,7 +69,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                     item: purchaseOrderItem,
                     distributionPlan: createdDelivery,
                     consignee: $scope.consignee,
-                    location: $scope.district.name,
+                    location: $scope.district,
                     plannedDistributionDate: $scope.deliveryDate,
                     contactPerson: $scope.contact,
                     remark: $scope.remark,

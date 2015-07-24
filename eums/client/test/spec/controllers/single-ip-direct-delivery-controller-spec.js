@@ -115,7 +115,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
         beforeEach(function () {
             consignee = {id: 1};
-            district = {name: 'Kampala'};
+            district = 'Kampala';
             deliveryDate = '2013-4-1';
             contact = {id: 3};
             remark = 'Some remarks';
@@ -125,7 +125,7 @@ describe('Single IP Direct Delivery Controller', function () {
             var deliveryCommonFields = {
                 distributionPlan: createdDelivery,
                 consignee: consignee,
-                location: district.name,
+                location: district,
                 plannedDistributionDate: deliveryDate,
                 contactPerson: contact,
                 remark: remark,
