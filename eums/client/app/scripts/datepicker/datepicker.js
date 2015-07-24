@@ -17,6 +17,7 @@ angular.module('DatePicker', []).directive('eumsDatePicker', function () {
                 angular.forEach(scope.datepicker, function (item, index) {
                     scope.datepicker[index] = false;
                 });
+                scope.datepicker = scope.datepicker || {};
                 scope.datepicker[type] = true;
             };
 
