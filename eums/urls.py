@@ -11,7 +11,7 @@ from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, \
     ConsigneePurchaseOrderItemNode
-from eums.api.distribution_plan.distribution_plan import distributionPlanRouter
+from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.item.item_endpoint import itemRouter
 from eums.api.item_unit.item_unit_endpoint import itemUnitRouter

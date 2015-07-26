@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 from rest_framework.viewsets import ModelViewSet
 
-from eums.api.distribution_plan.distribution_plan import DistributionPlanSerialiser
+from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPlanSerialiser
 from eums.models import PurchaseOrder
 
 

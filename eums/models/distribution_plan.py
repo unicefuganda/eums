@@ -1,9 +1,10 @@
 from django.db import models
 
+from eums.models import Runnable
 from eums.models.programme import Programme
 
 
-class DistributionPlan(models.Model):
+class DistributionPlan(Runnable):
     programme = models.ForeignKey(Programme)
     date = models.DateField(auto_now=True)
 
@@ -12,4 +13,3 @@ class DistributionPlan(models.Model):
 
     def __unicode__(self):
         return "%s, %s" % (self.programme.name, str(self.date))
-

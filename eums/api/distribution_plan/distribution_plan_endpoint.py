@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeSerialiser
 
 from eums.models import DistributionPlan
 
@@ -11,7 +10,8 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = DistributionPlan
-        fields = ('id', 'programme', 'date', 'distributionplannode_set')
+        fields = ('id', 'programme', 'date', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
+                  'track', 'contact_person_id', 'remark')
 
 
 class DistributionPlanViewSet(ModelViewSet):

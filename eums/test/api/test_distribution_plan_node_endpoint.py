@@ -2,7 +2,6 @@ from eums.models import DistributionPlanNode
 from eums.test.api.api_test_helpers import create_distribution_plan_node, \
     create_consignee, create_sales_order_item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
-from eums.test.api.test_distribution_plan_endpoint import create_distribution_plan
 from eums.test.config import BACKEND_URL
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
@@ -18,7 +17,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         self.END_USER_POSITION = 'END_USER'
 
     def test_should_create_distribution_plan_node_without_parent_node(self):
-        plan_id = create_distribution_plan(self)
+        plan_id = DistributionPlanFactory().id
         consignee_id = create_consignee(self)['id']
         sales_order_item = create_sales_order_item(self)
         node_details = {'item': sales_order_item['id'], 'targeted_quantity': 10,
@@ -67,7 +66,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(expected_parent, returned_parent)
 
     def test_should_create_node_of_type_end_user(self):
-        plan_id = create_distribution_plan(self)
+        plan_id = DistributionPlanFactory().id
         consignee = create_consignee(self)
         sales_order_item = create_sales_order_item(self)
         node_details = {'item': sales_order_item['id'], 'targeted_quantity': 10,
@@ -82,7 +81,7 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'tree_position': node['tree_position']}, response.data)
 
     def test_should_not_create_node_with_bad_tree_position_parameter(self):
-        plan_id = create_distribution_plan(self)
+        plan_id = DistributionPlanFactory().id
         consignee = create_consignee(self)
         node_details = {'distribution_plan': plan_id, 'consignee': consignee['id'],
                         'tree_position': 'UNKNOWN POSITION', 'location': 'Kampala',

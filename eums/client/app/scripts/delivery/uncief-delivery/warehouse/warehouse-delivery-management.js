@@ -3,8 +3,8 @@
 angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
     'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
     .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DistributionPlanService,
-                                                             DistributionPlanNodeService, ReleaseOrderService, ReleaseOrderItemService,
-                                                             IPService, ngToast, ContactService) {
+                                                                   DistributionPlanNodeService, ReleaseOrderService, ReleaseOrderItemService,
+                                                                   IPService, ngToast, ContactService) {
         $scope.datepicker = {};
         $scope.districts = [];
         $scope.contact = {};
@@ -49,19 +49,19 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
             event.stopPropagation();
         });
 
-        $scope.addConsignee = function(node, nodeIndex) {
+        $scope.addConsignee = function (node, nodeIndex) {
             $scope.$broadcast('add-consignee', node, nodeIndex);
         };
 
-        $scope.$on('consignee-saved', function(event, consignee, node, nodeIndex) {
+        $scope.$on('consignee-saved', function (event, consignee, node, nodeIndex) {
             node.consignee = consignee;
             $scope.$broadcast('set-consignee-for-node', consignee, nodeIndex);
             event.stopPropagation();
         });
 
-        var setLocationAndContactFields = function(){
+        var setLocationAndContactFields = function () {
             ContactService.get($scope.contact.id)
-                .then(function(contact){
+                .then(function (contact) {
                     $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
                 });
 
@@ -76,7 +76,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
                         return parseFloat(orderItem.value);
                     });
-                    if(releaseOrder.delivery) {
+                    if (releaseOrder.delivery) {
                         $scope.delivery = releaseOrder.delivery.data;
                         if ($scope.delivery) {
                             var fields = ['consignee'];
@@ -120,13 +120,19 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                 createToast(message, 'success');
             }
             else {
-                DistributionPlanService.createPlan({programme: $scope.selectedReleaseOrder.salesOrder.programme.id})
-                    .then(function (createdDelivery) {
-                        $scope.delivery = createdDelivery;
-                        saveDeliveryNodes();
-                        var message = 'Warehouse Delivery Saved!';
-                        createToast(message, 'success');
-                    });
+                DistributionPlanService.createPlan({
+                    programme: $scope.selectedReleaseOrder.salesOrder.programme.id,
+                    consignee: $scope.selectedReleaseOrder.consignee.id,
+                    location: $scope.selectedLocation.id,
+                    contact_person_id: $scope.contact.id,
+                    delivery_date: $scope.selectedReleaseOrder.deliveryDate,
+                    track: false
+                }).then(function (createdDelivery) {
+                    $scope.delivery = createdDelivery;
+                    saveDeliveryNodes();
+                    var message = 'Warehouse Delivery Saved!';
+                    createToast(message, 'success');
+                });
             }
         };
 
