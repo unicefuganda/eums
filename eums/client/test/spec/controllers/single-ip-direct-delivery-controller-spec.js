@@ -28,13 +28,14 @@ describe('Single IP Direct Delivery Controller', function () {
         {quantityShipped: 11, id: 2, isInvalid: valid}
     ];
     var programmeId = 1;
-    var createdDelivery = {
+    var createdTrackedDelivery = {
         id: 10,
         programme: programmeId,
         contact_person_id: 1,
         consignee: 1,
         location: 'Kampala',
-        delivery_date: '2015-01-03'
+        delivery_date: '2015-01-03',
+        track: true
     };
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
@@ -67,7 +68,7 @@ describe('Single IP Direct Delivery Controller', function () {
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
             mockPurchaseOrderService.update.and.returnValue($q.when({}));
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
-            mockDeliveryService.createPlan.and.returnValue($q.when(createdDelivery));
+            mockDeliveryService.createPlan.and.returnValue($q.when(createdTrackedDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
@@ -200,7 +201,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 return true;
             };
             scope.purchaseOrderItems = [invalidItemOne, itemTwo];
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             expect(scope.errors).toBeTruthy();
@@ -210,7 +211,7 @@ describe('Single IP Direct Delivery Controller', function () {
             makeScopeFixture();
             setScopeData();
             scope.purchaseOrder = {};
-            scope.save();
+            scope.save(true);
             scope.$apply();
             expect(mockModal.modal).toHaveBeenCalled();
         });
@@ -219,7 +220,7 @@ describe('Single IP Direct Delivery Controller', function () {
             makeScopeFixture();
             setScopeData();
             scope.purchaseOrder = {isSingleIp: true};
-            scope.save();
+            scope.save(true);
             scope.$apply();
             expect(mockModal.modal).not.toHaveBeenCalled();
         });
@@ -229,7 +230,7 @@ describe('Single IP Direct Delivery Controller', function () {
             setScopeData();
             scope.delivery.delivery_date = undefined;
             scope.purchaseOrder = {isSingleIp: false};
-            scope.save();
+            scope.save(true);
             scope.$apply();
             expect(mockModal.modal).not.toHaveBeenCalled();
         });
@@ -244,7 +245,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope[scopeField] = nullState;
 
             scope.$apply();
-            scope.save();
+            scope.save(true);
             expect(scope.errors).toBeTruthy();
             expect(toast.create).toHaveBeenCalledWith({
                 content: 'Cannot save. Please fill out all fields marked in red first',
@@ -257,7 +258,7 @@ describe('Single IP Direct Delivery Controller', function () {
         beforeEach(function () {
             makeScopeFixture();
             var deliveryCommonFields = {
-                distributionPlan: createdDelivery,
+                distributionPlan: createdTrackedDelivery,
                 consignee: consignee.id,
                 location: district.id,
                 deliveryDate: formattedDeliveryDate,
@@ -282,7 +283,7 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should create a new delivery when there is no current delivery on scope', function () {
-            scope.save();
+            scope.save(true);
             scope.$apply();
             expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
                 programme: programmeId,
@@ -295,16 +296,30 @@ describe('Single IP Direct Delivery Controller', function () {
             });
         });
 
-        it('should not create a new delivery when there is a delivery in the scope', function () {
-            scope.delivery = createdDelivery;
+        it('should create a new untracked delivery when there is no current delivery on scope', function () {
             scope.save();
+            scope.$apply();
+            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+                programme: programmeId,
+                consignee: consignee.id,
+                location: district.id,
+                delivery_date: formattedDeliveryDate,
+                contact_person_id: contact.id,
+                remark: remark,
+                track: false
+            });
+        });
+
+        it('should not create a new delivery when there is a delivery in the scope', function () {
+            scope.delivery = createdTrackedDelivery;
+            scope.save(true);
             scope.$apply();
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
         it('should not create delivery if all purchase order items have quantityShipped as zero', function () {
             scope.purchaseOrderItems = [{quantityShipped: 0, isInvalid: valid}, {quantityShipped: 0, isInvalid: valid}];
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
@@ -315,15 +330,15 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should not throw zero-total-quantity error when total quantity is non zero and there is a delivery on scope', function () {
             makeScopeFixture();
             setScopeData();
-            scope.delivery = createdDelivery;
-            scope.save();
+            scope.delivery = createdTrackedDelivery;
+            scope.save(true);
             scope.$apply();
             expect(toast.create).not.toHaveBeenCalled();
         });
 
         it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
             scope.purchaseOrderItems = [{isInvalid: valid}, {quantityShipped: 10, isInvalid: valid}];
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
@@ -339,7 +354,7 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should create tracked delivery nodes for each purchase order item when delivery is empty', function () {
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
@@ -348,9 +363,25 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
         });
 
+        it('should create untracked nodes when save is called with falsy', function() {
+            var untrackedCreatedDelivery = Object.clone(createdTrackedDelivery);
+            untrackedCreatedDelivery.track = false;
+            var untrackedNodeOne = Object.merge(nodeOne, {track: false, distributionPlan: untrackedCreatedDelivery});
+            var untrackedNodeTwo = Object.merge(nodeTwo, {track: false, distributionPlan: untrackedCreatedDelivery});
+            mockDeliveryService.createPlan.and.returnValue(q.when(untrackedCreatedDelivery));
+
+            scope.save();
+            scope.$apply();
+
+            var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
+            expect(mockDeliveryNodeService.create.calls.count()).toBe(2);
+            expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(untrackedNodeOne));
+            expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(untrackedNodeTwo));
+        });
+
         it('should not create nodes for purchase order items with zero distributed quantity', function () {
             itemOne.quantityShipped = 0;
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
@@ -360,7 +391,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should alert user when creation of delivery fails', function () {
             mockDeliveryService.createPlan.and.returnValue(q.reject());
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
@@ -368,14 +399,14 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should alert user when creation of delivery nodes fails', function () {
             mockDeliveryNodeService.create.and.returnValue(q.reject());
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             expect(toast.create).toHaveBeenCalledWith({content: 'Save failed', class: 'danger'});
         });
 
         it('should mark purchase order as singleIP and save it', function () {
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             var purchaseOrderPatch = {id: purchaseOrder.id, isSingleIp: true};
@@ -383,7 +414,7 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should show loader during save and hide it after', function () {
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             expect(mockLoader.modal.calls.allArgs()).toContain([], ['hide']);
@@ -395,7 +426,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 var newPurchaseOrder = {id: 15, purchaseorderitemSet: []};
                 mockPurchaseOrderService.get.and.returnValue(q.when(newPurchaseOrder));
 
-                scope.save();
+                scope.save(true);
                 scope.$apply();
 
                 expect(mockPurchaseOrderService.get.calls.count()).toBe(2);

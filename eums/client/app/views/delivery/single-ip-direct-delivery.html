@@ -171,8 +171,13 @@
                     </div>
                     <div class="pad-20 row">
                         <div ng-show="purchaseOrderItems.length" class="pull-right">
-                            <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
+                            <button id="save-draft" type="button" class="btn btn-primary"
                                     ng-click="save()">
+                                <i class="glyphicon glyphicon-floppy-save"> </i>
+                                Save draft
+                            </button>
+                            <button id="save-and-track" type="button" class="btn btn-primary"
+                                    ng-click="save(true)">
                                 <i class="glyphicon glyphicon-floppy-save"> </i>
                                 Save & Track
                             </button>
