@@ -1,4 +1,4 @@
-from eums.models import DistributionPlanNode
+from eums.models import DistributionPlanNode, SalesOrder, DistributionPlan
 from eums.test.api.api_test_helpers import create_distribution_plan_node, \
     create_consignee, create_sales_order_item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -12,9 +12,17 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
 class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
+        self.clean_up()
         super(DistributionPlanNodeEndpointTest, self).setUp()
         self.MIDDLEMAN_POSITION = 'MIDDLE_MAN'
         self.END_USER_POSITION = 'END_USER'
+
+    def tearDown(self):
+        self.clean_up()
+
+    def clean_up(self):
+        SalesOrder.objects.all().delete()
+        DistributionPlan.objects.all().delete()
 
     def test_should_create_distribution_plan_node_without_parent_node(self):
         plan_id = DistributionPlanFactory().id

@@ -17,7 +17,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         $scope.save = function () {
             var someInputsAreEmpty = !($scope.contact.id && $scope.consignee.id && $scope.deliveryDate && $scope.district.id);
-            var someItemsAreInvalid = $scope.purchaseOrderItems.any(function(item) {
+            var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
                 return item.isInvalid();
             });
 
@@ -90,16 +90,28 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             });
         }
 
+        function loadPurchaseOrderValue(purchaseOrder) {
+            PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
+                purchaseOrder.totalValue = totalValue;
+                hideLoader();
+            });
+        }
+
         function loadOrderData() {
             showLoader();
-            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
-                PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
-                    purchaseOrder.totalValue = totalValue;
-                    hideLoader();
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item'])
+                .then(function (purchaseOrder) {
+                    loadPurchaseOrderValue(purchaseOrder);
+                    loadPurchaseOrderDeliveries(purchaseOrder);
+                    $scope.purchaseOrder = purchaseOrder;
+                    $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
                 });
-                $scope.purchaseOrder = purchaseOrder;
-                $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
-            });
+        }
+
+        function loadPurchaseOrderDeliveries (purchaseOrder) {
+            PurchaseOrderService.getDetail(purchaseOrder, 'deliveries').then (function (deliveries) {
+                $scope.deliveries = deliveries;
+            })
         }
 
         function createDeliveryNodes(createdDelivery) {

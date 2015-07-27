@@ -31,6 +31,7 @@
                         <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
                             Delivery Date
                         </label>
+
                         <div id="input-delivery-date" class="col-md-7 pad-small">
                             <span class="input-group" eums-date-picker>
                                 <input type="text" class="form-control" placeholder="Delivery Date"
@@ -71,7 +72,8 @@
                         </div>
                     </div>
 
-                    <div class="form-group col-md-2" ng-if="districtsLoaded" ng-class="{'has-error': !district.id && errors}">
+                    <div class="form-group col-md-2" ng-if="districtsLoaded"
+                         ng-class="{'has-error': !district.id && errors}">
                         <label class="col-md-4 control-label description-label pad-small">
                             District:
                         </label>
@@ -95,8 +97,8 @@
                         </button>
                     </div>
                 </div>
-                <div>
-                    <div class="well col-md-3 pull-right">
+                <div class="row pad-20">
+                    <div class="well well-sm col-md-3 pull-right">
                         <div class="col-md-12 no-side-padding">
                             <ul class="list-group">
                                 <li class="list-group-item">
@@ -104,13 +106,32 @@
                                     PO Type
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge" id="po-total-value">{{ purchaseOrder.totalValue | currency }}</span>
+                                    <span class="label label-success label-as-badge" id="po-total-value">
+                                        {{ purchaseOrder.totalValue | currency }}
+                                    </span>
                                     Total Value
                                 </li>
                             </ul>
                         </div>
                     </div>
+                    <div class="well well-sm col-md-3 pull-left" ng-show="deliveries">
+                        <h5>Previous Deliveries</h5>
+                        <table id="trackedDeliveriesTable"
+                               class="table table-bordered margin-bottom-none">
+                            <tr>
+                                <th class="item-list-col-header">#</th>
+                                <th class="item-list-col-header">Date</th>
+                                <th class="item-list-col-header">Total Value</th>
+                            </tr>
+                            <tr ng-repeat="(index, delivery) in deliveries">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ delivery.delivery_date }}</td>
+                                <td>{{ delivery.total_value | currency }}</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
+
                 <div>
                     <div ng-show="purchaseOrderItems.length">
                         <div class="panel-body ">

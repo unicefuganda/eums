@@ -4,7 +4,9 @@ from eums.models import DistributionPlan, Programme, Consignee
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
@@ -25,6 +27,15 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], delivery.id)
+
+    def test_should_provide_delivery_total_value_from_api(self):
+        po_item = PurchaseOrderItemFactory(value=200)
+        delivery = DistributionPlanFactory()
+        DistributionPlanNodeFactory(distribution_plan=delivery, item=po_item)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['total_value'], 200)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()

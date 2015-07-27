@@ -3,6 +3,14 @@ describe('Single IP Direct Delivery Controller', function () {
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
+    var deliveries = [{
+        id: 1,
+        location: 'Kampala',
+        consignee: {id: 10},
+        track: true,
+        delivery_date: '2015-01-02',
+        remark: 'some remarks'
+    }];
     var valid = function () {
         return false
     };
@@ -115,6 +123,14 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockPurchaseOrderService.get).toHaveBeenCalledWith(purchaseOrder.id, ['purchaseorderitem_set.item']);
             expect(scope.purchaseOrderItems).toEqual(purchaseOrderItems);
         });
+
+        it('should load purchase order deliveries and put them on the scope', function () {
+            mockPurchaseOrderService.getDetail.and.returnValue(q.when(deliveries));
+            scope.$apply();
+            expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries');
+            expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
+            expect(scope.deliveries).toEqual(deliveries);
+        });
     });
 
     describe('when save is called', function () {
@@ -133,7 +149,7 @@ describe('Single IP Direct Delivery Controller', function () {
             makeScopeFixture();
             setScopeData();
             var invalidItemOne = Object.clone(itemOne);
-            invalidItemOne.isInvalid = function() {
+            invalidItemOne.isInvalid = function () {
                 return true;
             };
             scope.purchaseOrderItems = [invalidItemOne, itemTwo];
