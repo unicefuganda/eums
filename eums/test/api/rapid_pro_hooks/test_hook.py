@@ -112,10 +112,10 @@ class HookTest(APITestCase):
 
         node = DistributionPlanNodeFactory()
 
-        RunFactory(node=node, phone=self.PHONE)
+        RunFactory(runnable=node, phone=self.PHONE)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
-            node=node,
+            runnable=node,
             contact_person_id=node.contact_person_id)
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
@@ -136,11 +136,11 @@ class HookTest(APITestCase):
                                                             label='amountReceived')
 
         node = DistributionPlanNodeFactory()
-        run = RunFactory(node=node, phone=self.PHONE,
+        run = RunFactory(runnable=node, phone=self.PHONE,
                               status=Run.STATUS.scheduled)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
-            node=node,
+            runnable=node,
             contact_person_id=node.contact_person_id)
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
@@ -163,10 +163,10 @@ class HookTest(APITestCase):
 
         node = DistributionPlanNodeFactory()
         original_status = Run.STATUS.scheduled
-        run = RunFactory(node=node, phone=self.PHONE,
+        run = RunFactory(runnable=node, phone=self.PHONE,
                               status=original_status)
         mock_run_queue_dequeue.return_value = RunQueueFactory(
-            node=node,
+            runnable=node,
             contact_person_id=node.contact_person_id)
 
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
@@ -187,9 +187,9 @@ class HookTest(APITestCase):
         node = DistributionPlanNodeFactory()
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
-        RunFactory(node=node, phone=self.PHONE)
+        RunFactory(runnable=node, phone=self.PHONE)
 
-        next_run = RunQueueFactory(node=node,
+        next_run = RunQueueFactory(runnable=node,
                                    contact_person_id=node.contact_person_id)
         mock_run_queue_dequeue.return_value = next_run
 

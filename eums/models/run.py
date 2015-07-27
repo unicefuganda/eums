@@ -4,15 +4,15 @@ from django.db import models
 from django.db.models import Q
 from model_utils.fields import StatusField
 from model_utils import Choices
-
 from eums import settings
-from eums.models import DistributionPlanNode
+
+from eums.models import Runnable
 
 
 class Run(models.Model):
     STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
-    node = models.ForeignKey(DistributionPlanNode)
+    runnable = models.ForeignKey(Runnable)
     status = StatusField()
     phone = models.CharField(max_length=255)
 
@@ -36,15 +36,7 @@ class Run(models.Model):
         return answer_collection
 
     def __unicode__(self):
-        return "Item: %s - Node - %s - Phone: %s Status %s" % (self.node.item.item.description,
-                                                               self.node.tree_position,
-                                                               self.phone, self.status)
-
-    @classmethod
-    def current_run_for_node(cls, node):
-        return Run.objects.filter(
-            Q(node=node) &
-            Q(status=Run.STATUS.scheduled)).first()
+        return "%s - Phone: %s Status %s" % (self.runnable, self.phone, self.status)
 
     @classmethod
     def overdue_runs(cls):
@@ -55,4 +47,4 @@ class Run(models.Model):
         latest_allowed_date = today - delivery_status_check_delay - max_allowed_reply_period
 
         return Run.objects.filter(Q(status=Run.STATUS.scheduled) &
-                                      Q(node__delivery_date__lt=latest_allowed_date))
+                                  Q(runnable__delivery_date__lt=latest_allowed_date))

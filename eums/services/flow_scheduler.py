@@ -6,54 +6,50 @@ from celery.task import periodic_task
 from django.conf import settings
 
 from eums.celery import app
-from eums.models import Run, RunQueue, DistributionPlanNode, Flow
+from eums.models import Run, RunQueue, Flow, Runnable, DistributionPlanNode, DistributionPlan
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 
 
-def schedule_run_for(node):
-    current_run = node.current_run()
+def schedule_run_for(runnable):
+    current_run = runnable.current_run()
+    run_delay = _calculate_delay(runnable)
     if current_run:
         _cancel_run(current_run)
+        RunQueue.enqueue(runnable, run_delay)
 
-    run_delay = _calculate_delay(node)
-    if Run.current_run_for_node(node):
-        RunQueue.enqueue(node, run_delay)
     else:
-        contact = node.build_contact()
-        task = _schedule_run.apply_async(args=[node.id], countdown=run_delay)
-        Run.objects.create(scheduled_message_task_id=task.id, node=node,
-                               status=Run.STATUS.scheduled, phone=contact['phone'])
+        contact = runnable.build_contact()
+        task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
+        Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
+                           status=Run.STATUS.scheduled, phone=contact['phone'])
+
 
 @app.task
-def _schedule_run(node_id):
-    node = DistributionPlanNode.objects.get(id=node_id)
-    flow = _select_flow_for(node)
+def _schedule_run(runnable_id):
+    runnable = Runnable.objects.get(id=runnable_id)
+    flow = _flow_for(runnable)
     start_delivery_run(
-        sender=_get_sender_name(node),
-        item_description=node.item.item.description,
-        contact_person=node.build_contact(),
+        sender=runnable.get_sender_name(),
+        item_description=runnable.get_description(),
+        contact_person=runnable.build_contact(),
         flow=flow.rapid_pro_id
     )
 
 
-def _select_flow_for(node):
-    if node.tree_position == DistributionPlanNode.END_USER:
-        return Flow.objects.get(for_node_type=DistributionPlanNode.END_USER)
-    return Flow.objects.get(for_node_type=DistributionPlanNode.MIDDLE_MAN)
-
-
-def _get_sender_name(node):
-    if not node.parent:
-        return "UNICEF"
-    else:
-        return node.parent.consignee.name
-
-
-def _calculate_delay(node):
-    expected_delivery_date = datetime.datetime.combine(node.delivery_date,
+def _calculate_delay(runnable):
+    expected_delivery_date = datetime.datetime.combine(runnable.delivery_date,
                                                        datetime.datetime.min.time())
     when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
     return (when_to_send_message - datetime.datetime.now()).total_seconds()
+
+
+def _flow_for(runnable):
+    if isinstance(runnable, DistributionPlanNode):
+        if runnable.tree_position == Runnable.END_USER:
+            return Flow.objects.get(for_runnable_type=Runnable.END_USER)
+        return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
+    elif isinstance(runnable, DistributionPlan):
+        Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
 
 
 def _cancel_run(run):
@@ -68,8 +64,8 @@ def expire_overdue_runs():
     for overdue_run in overdue_runs:
         overdue_run.status = Run.STATUS.expired
         overdue_run.save()
-        next_run = RunQueue.dequeue(overdue_run.node.contact_person_id)
+        next_run = RunQueue.dequeue(overdue_run.runnable.contact_person_id)
         if next_run:
-            schedule_run_for(next_run.node)
+            schedule_run_for(next_run.runnable)
             next_run.status = RunQueue.STATUS.started
             next_run.save()

@@ -13,6 +13,10 @@ class Runnable(PolymorphicModel):
     delivery_date = models.DateField(null=False)
     remark = models.TextField(blank=True, null=True)
 
+    IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
+    MIDDLE_MAN = 'MIDDLE_MAN'
+    END_USER = 'END_USER'
+
     def build_contact(self):
         response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))
         result = response.json() if response.status_code is 200 else None

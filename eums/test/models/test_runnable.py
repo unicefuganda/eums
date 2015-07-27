@@ -55,12 +55,12 @@ class DistributionPlanNodeTest(TestCase):
 
         salt_node = DistributionPlanNodeFactory(targeted_quantity=100,
                                                 item=item)
-        run = RunFactory(node=salt_node, status='completed')
+        run = RunFactory(runnable=salt_node, status='completed')
 
         sugar_item = SalesOrderItemFactory(item=sugar, description='10 bags of sugar')
         sugar_node = DistributionPlanNodeFactory(targeted_quantity=100,
                                                  item=sugar_item)
-        sugar_run = RunFactory(node=sugar_node, status='completed')
+        sugar_run = RunFactory(runnable=sugar_node, status='completed')
 
         multiple_answer_one = MultipleChoiceAnswerFactory(run=run, question=multichoice_question,
                                                           value=yes_option)
@@ -80,30 +80,30 @@ class DistributionPlanNodeTest(TestCase):
         self.assertIn(numeric_answer_two, sugar_node_responses[sugar_run])
 
     def test_should_get_run_with_status_scheduled(self):
-        run = RunFactory(node=self.node,
+        run = RunFactory(runnable=self.node,
                                   status=Run.STATUS.scheduled)
         self.assertEqual(self.node.current_run(), run)
 
     def test_should_not_get_run_with_status_completed(self):
-        RunFactory(node=self.node, status=Run.STATUS.completed)
+        RunFactory(runnable=self.node, status=Run.STATUS.completed)
         self.assertEqual(self.node.current_run(), None)
 
     def test_should_not_get_run_with_status_expired(self):
-        RunFactory(node=self.node, status=Run.STATUS.expired)
+        RunFactory(runnable=self.node, status=Run.STATUS.expired)
         self.assertEqual(self.node.current_run(), None)
 
     def test_should_not_get_run_with_status_cancelled(self):
-        RunFactory(node=self.node, status=Run.STATUS.cancelled)
+        RunFactory(runnable=self.node, status=Run.STATUS.cancelled)
         self.assertEqual(self.node.current_run(), None)
 
     def test_should_get_the_completed_run(self):
         self.assertIsNone(self.node.completed_run())
-        run = RunFactory(node=self.node, status=Run.STATUS.completed)
+        run = RunFactory(runnable=self.node, status=Run.STATUS.completed)
         self.assertEqual(self.node.completed_run(), run)
 
     def test_should_get_latest_run(self):
-        first_run = RunFactory(node=self.node)
+        first_run = RunFactory(runnable=self.node)
         self.assertEqual(self.node.latest_run(), first_run)
-        second_run = RunFactory(node=self.node)
+        second_run = RunFactory(runnable=self.node)
         self.assertEqual(self.node.latest_run(), second_run)
 

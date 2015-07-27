@@ -8,7 +8,7 @@ from eums.models import Run
 class RunSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Run
-        fields = ('id', 'scheduled_message_task_id', 'node', 'status', 'phone')
+        fields = ('id', 'scheduled_message_task_id', 'runnable', 'status', 'phone')
 
 
 class RunViewSet(ModelViewSet):

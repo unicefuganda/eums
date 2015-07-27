@@ -13,7 +13,7 @@ class RunQueueTest(TestCase):
         run = RunQueue()
         fields_in_run_queue = [field.attname for field in run._meta.fields]
 
-        for field in ['node_id', 'contact_person_id', 'status', 'run_delay']:
+        for field in ['runnable_id', 'contact_person_id', 'status', 'run_delay']:
             self.assertIn(field, fields_in_run_queue)
 
     def test_can_deque_next_run_for_a_particular_contact_person(self):

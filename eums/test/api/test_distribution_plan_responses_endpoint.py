@@ -30,10 +30,10 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
         child_node_three = DistributionPlanNodeFactory(parent=child_node_one, targeted_quantity=50,
                                                        item=item)
 
-        run = RunFactory(node=node, status='completed')
-        run_one = RunFactory(node=child_node_one, status='completed')
-        run_two = RunFactory(node=child_node_two, status='completed')
-        run_three = RunFactory(node=child_node_three, status='completed')
+        run = RunFactory(runnable=node, status='completed')
+        run_one = RunFactory(runnable=child_node_one, status='completed')
+        run_two = RunFactory(runnable=child_node_two, status='completed')
+        run_three = RunFactory(runnable=child_node_three, status='completed')
         NumericAnswerFactory(run=run, value=80, question=numeric_question)
         MultipleChoiceAnswerFactory(run=run_one,
                                     question=multichoice_question,

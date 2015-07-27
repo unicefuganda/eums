@@ -1,6 +1,6 @@
 import factory
 
-from eums.models import Flow, DistributionPlanNode as Node
+from eums.models import Flow, Runnable
 
 
 class FlowFactory(factory.DjangoModelFactory):
@@ -8,7 +8,7 @@ class FlowFactory(factory.DjangoModelFactory):
         model = Flow
 
     rapid_pro_id = 1234
-    for_node_type = Node.END_USER
+    for_runnable_type = Runnable.END_USER
 
     @factory.post_generation
     def questions(self, create, extracted, **_):

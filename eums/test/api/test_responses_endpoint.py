@@ -42,7 +42,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                                                          item=self.item)
 
     def create_runs_and_answers(self):
-        self.run_one = RunFactory(node=self.middle_man_node, status='completed')
+        self.run_one = RunFactory(runnable=self.middle_man_node, status='completed')
         self.run_one_multiple_answer_one = MultipleChoiceAnswerFactory(run=self.run_one,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)
@@ -52,7 +52,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.run_one_numeric_answer_one = NumericAnswerFactory(run=self.run_one, value=80,
                                                                question=self.numeric_question)
 
-        self.run_two = RunFactory(node=self.end_user_node, status='completed')
+        self.run_two = RunFactory(runnable=self.end_user_node, status='completed')
         self.run_two_multiple_answer_one = MultipleChoiceAnswerFactory(run=self.run_two,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)

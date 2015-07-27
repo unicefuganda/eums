@@ -9,6 +9,6 @@ class RunFactory(factory.DjangoModelFactory):
         model = Run
 
     scheduled_message_task_id = factory.Sequence(lambda n: '{0}'.format(n))
-    node = factory.SubFactory(DistributionPlanNodeFactory)
+    runnable = factory.SubFactory(DistributionPlanNodeFactory)
     status = Run.STATUS.scheduled
     phone = factory.Sequence(lambda n: '{0}'.format(n))
