@@ -110,7 +110,9 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function loadPurchaseOrderDeliveries (purchaseOrder) {
             PurchaseOrderService.getDetail(purchaseOrder, 'deliveries').then (function (deliveries) {
-                $scope.deliveries = deliveries;
+                $scope.trackedDeliveries = deliveries.filter(function(delivery) {
+                    return delivery.track;
+                });
             })
         }
 

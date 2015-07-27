@@ -3,14 +3,23 @@ describe('Single IP Direct Delivery Controller', function () {
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
-    var deliveries = [{
+    var trackedDelivery = {
         id: 1,
         location: 'Kampala',
         consignee: {id: 10},
         track: true,
         delivery_date: '2015-01-02',
         remark: 'some remarks'
-    }];
+    };
+    var untrackedDelivery = {
+        id: 2,
+        location: 'Khartoum',
+        consignee: {id: 2},
+        track: false,
+        delivery_date: '2015-03-15',
+        remark: 'no remarks'
+    };
+    var deliveries = [trackedDelivery, untrackedDelivery];
     var valid = function () {
         return false
     };
@@ -47,7 +56,7 @@ describe('Single IP Direct Delivery Controller', function () {
             toast = ngToast;
             q = $q;
 
-            mockPurchaseOrderService.getDetail.and.returnValue($q.when(0));
+            mockPurchaseOrderService.getDetail.and.callFake(fakeGetDetail);
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
             mockPurchaseOrderService.update.and.returnValue($q.when({}));
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
@@ -70,14 +79,24 @@ describe('Single IP Direct Delivery Controller', function () {
                 DeliveryNode: DeliveryNodeModel,
                 ngToast: toast
             });
+
+            function fakeGetDetail(_, detail_route) {
+                return detail_route === 'total_value' ? $q.when(0) : $q.when(deliveries)
+            }
         });
     });
 
     describe('on load', function () {
+        var totalValuePromise, deliveriesPromise;
+        beforeEach(function () {
+            totalValuePromise = q.defer();
+            deliveriesPromise = q.defer();
+        });
+
         it('should show loader while loading and hide it after', function () {
             var getPurchaseOrder = q.defer();
             mockPurchaseOrderService.get.and.returnValue(getPurchaseOrder.promise);
-            mockPurchaseOrderService.getDetail.and.returnValue(getPurchaseOrder.promise);
+            mockPurchaseOrderService.getDetail.and.callFake(fakeGetDetail);
 
             scope.$apply();
 
@@ -85,6 +104,8 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockLoader.modal.calls.count()).toBe(1);
 
             getPurchaseOrder.resolve({});
+            totalValuePromise.resolve(0);
+            deliveriesPromise.resolve(deliveries);
             scope.$apply();
             expect(mockLoader.modal).toHaveBeenCalledWith('hide');
         });
@@ -110,8 +131,9 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.purchaseOrder).toEqual(purchaseOrder);
         });
 
-        it('should put purchase order value on purchase order', function () {
-            mockPurchaseOrderService.getDetail.and.returnValue(q.when(purchaseOrderValue));
+        it('should put purchase order value on scope purchase order', function () {
+            totalValuePromise.resolve(purchaseOrderValue);
+            mockPurchaseOrderService.getDetail.and.callFake(fakeGetDetail);
             scope.$apply();
             expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'total_value');
             expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
@@ -124,13 +146,17 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.purchaseOrderItems).toEqual(purchaseOrderItems);
         });
 
-        it('should load purchase order deliveries and put them on the scope', function () {
+        it('should load purchase order deliveries and put tracked ones on the scope', function () {
             mockPurchaseOrderService.getDetail.and.returnValue(q.when(deliveries));
             scope.$apply();
             expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries');
             expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
-            expect(scope.deliveries).toEqual(deliveries);
+            expect(scope.trackedDeliveries).toEqual([trackedDelivery]);
         });
+
+        function fakeGetDetail(_, detail_route) {
+            return detail_route === 'total_value' ? totalValuePromise.promise : deliveriesPromise.promise;
+        }
     });
 
     describe('when save is called', function () {

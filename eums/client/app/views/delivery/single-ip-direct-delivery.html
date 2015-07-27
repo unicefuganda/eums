@@ -114,7 +114,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="well well-sm col-md-3 pull-left" ng-show="deliveries">
+                    <div class="well well-sm col-md-3 pull-left" ng-show="trackedDeliveries">
                         <h5>Previous Deliveries</h5>
                         <table id="trackedDeliveriesTable"
                                class="table table-bordered margin-bottom-none">
@@ -123,7 +123,7 @@
                                 <th class="item-list-col-header">Date</th>
                                 <th class="item-list-col-header">Total Value</th>
                             </tr>
-                            <tr ng-repeat="(index, delivery) in deliveries">
+                            <tr ng-repeat="(index, delivery) in trackedDeliveries">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ delivery.delivery_date }}</td>
                                 <td>{{ delivery.total_value | currency }}</td>
