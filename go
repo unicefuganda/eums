@@ -101,7 +101,7 @@ function testfunctional {
   if [ "$1" = "--headless" ]; then
     grunt prep-test-env
     python ../../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
-    grunt protractor:headless
+    grunt functional-headless
       else
     grunt functional
   fi

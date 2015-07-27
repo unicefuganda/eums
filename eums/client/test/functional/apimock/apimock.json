@@ -1,7 +1,7 @@
 {
   "mockDirectory": "./test/functional/apimock/mocks/",
 
-  "quiet": true,
+  "quiet": false,
   "port": "9005",
 
   "latency": 50,
