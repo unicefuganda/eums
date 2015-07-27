@@ -147,6 +147,16 @@ module.exports = function (grunt) {
             }
         },
 
+        run: {
+            options: {
+                wait: false,
+                quiet: Infinity
+            },
+            djangoServer: {
+                exec: 'python ../../manage.py runserver 0.0.0.0:9000 --settings=eums.test_settings'
+            }
+        },
+
         protractor: {
             options: {
                 keepAlive: false
@@ -165,17 +175,6 @@ module.exports = function (grunt) {
                 options: {
                     configFile: 'test/functional_selenium_conf.js'
                 }
-            }
-        },
-
-        run: {
-            options: {
-                wait: false,
-                quiet: Infinity
-            },
-            djangoServer: {
-                cmd: './start-server.sh',
-                args: [9000, 'eums.test_settings', 'eums_test']
             }
         },
 
@@ -333,7 +332,7 @@ module.exports = function (grunt) {
         'less'
     ]);
 
-    grunt.registerTask('start-test-server', 'Start test server for functional tests', [
+    grunt.registerTask('prep-test-env', 'Prepare test environment before running tests', [
         'build-test',
         'clean:server',
         'shell:dropDb',
@@ -342,17 +341,18 @@ module.exports = function (grunt) {
         'shell:seedData',
         'shell:mapData',
         'shell:setupPermissions',
-        'apimocker',
-        'run:djangoServer'
+        'apimocker'
     ]);
 
     grunt.registerTask('functional', 'Run functional tests using chrome', [
-        'start-test-server',
+        'prep-test-env',
+        'run:djangoServer',
         'protractor:chrome'
     ]);
 
     grunt.registerTask('functional-headless', 'Run functional tests in headless mode using selenium', [
-        'start-test-server',
+        'prep-test-env',
+        'run:djangoServer',
         'protractor:headless'
     ]);
 
