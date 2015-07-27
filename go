@@ -4,6 +4,9 @@ set -e
 function main {
   case "$1" in
 
+    "prep" )
+      prep;;
+
     "build" )
       build;;
 
@@ -26,7 +29,11 @@ function main {
       testjsunit;;
 
     "ft" )
-      testfunctional;;
+      if [ "$2" = "--headless" ]; then
+        testfunctional --headless
+      else
+        testfunctional
+      fi;;
 
     "at" )
       testbackend
@@ -45,6 +52,20 @@ function build {
   cd -
 }
 
+function prep {
+  if [ ! -d ~/.virtualenvs/eums ]; then
+    virtualenv ~/.virtualenvs/eums
+  fi
+  source ~/.virtualenvs/eums/bin/activate
+  pip install -r requirements.txt
+  sudo npm install -g grunt-cli
+  cd eums/client
+  npm install
+  sudo npm install -g bower
+  echo n | bower install
+  echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
+}
+
 function resetdb {
   if [ "$1" = "test" ]; then
     echo "+++ Resetting database eums_test..."
@@ -61,7 +82,7 @@ function resetdb {
 
 function testbackend {
   source ~/.virtualenvs/eums/bin/activate
-  python manage.py test -v 2
+  python manage.py test -v 2 --settings=eums.test_settings
 }
 
 function testjsunit {
@@ -74,7 +95,14 @@ function testfunctional {
   killtestdbconnections
   if [ $(lsof -t -i :9000) ]; then kill -9 $(lsof -t -i :9000); fi
   cd eums/client
-  grunt functional
+  source ~/.virtualenvs/eums/bin/activate
+
+  if [ "$1" = "--headless" ]; then
+    grunt functional-headless
+      else
+    grunt functional
+  fi
+
   cd -
 }
 

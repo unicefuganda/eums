@@ -15,9 +15,9 @@ exports.config = {
 
     directConnect: false,
 
-    specs: ['test/functional/*-spec.js'],
+    specs: ['functional/*-spec.js'],
 
-    baseUrl: 'http://localhost:8000',
+    baseUrl: 'http://localhost:9000',
 
     framework: 'jasmine2',
 

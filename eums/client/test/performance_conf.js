@@ -12,7 +12,7 @@ exports.config = {
 
     directConnect: false,
 
-    specs: ['test/performance/*-spec.js'],
+    specs: ['performance/*-spec.js'],
 
     baseUrl: process.env['PERFORMANCE_TEST_BASE_URL'],
 

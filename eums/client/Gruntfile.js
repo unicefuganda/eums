@@ -2,23 +2,18 @@
 
 module.exports = function (grunt) {
 
-    // Load grunt tasks automatically
     require('load-grunt-tasks')(grunt);
-
-    // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
     // Configurable paths for the application
+    var venvHome = grunt.option('venvHome') || '~/.virtualenvs/';
     var appConfig = {
         app: require('./bower.json').appPath || 'app',
         dist: 'dist'
     };
 
-    var venvHome = grunt.option('venvHome') || '~/.virtualenvs/';
-
-    // Define the configuration for all the tasks
     grunt.initConfig({
-        // The actual grunt server settings
+
         connect: {
             options: {
                 port: 9000,
@@ -31,10 +26,7 @@ module.exports = function (grunt) {
                     middleware: function (connect) {
                         return [
                             connect.static('.tmp'),
-                            connect().use(
-                                '/bower_components',
-                                connect.static('./bower_components')
-                            ),
+                            connect().use('/bower_components', connect.static('./bower_components')),
                             connect.static(appConfig.app)
                         ];
                     }
@@ -47,10 +39,7 @@ module.exports = function (grunt) {
                         return [
                             connect.static('.tmp'),
                             connect.static('/test'),
-                            connect().use(
-                                '/bower_components',
-                                connect.static('./bower_components')
-                            ),
+                            connect().use('/bower_components', connect.static('./bower_components')),
                             connect.static(require('./bower.json').appPath || 'app')
                         ];
                     }
@@ -113,7 +102,6 @@ module.exports = function (grunt) {
             }
         },
 
-        // Make sure code styles are up to par and there are no obvious mistakes
         jshint: {
             options: {
                 jshintrc: '.jshintrc',
@@ -136,7 +124,6 @@ module.exports = function (grunt) {
             }
         },
 
-        // Empties folders to start fresh
         clean: {
             dist: {
                 files: [
@@ -153,7 +140,6 @@ module.exports = function (grunt) {
             server: '.tmp'
         },
 
-        // Test settings
         karma: {
             unit: {
                 configFile: 'test/karma.conf.js',
@@ -162,44 +148,22 @@ module.exports = function (grunt) {
         },
 
         protractor: {
+            options: {
+                keepAlive: false
+            },
             performance: {
                 options: {
-                    configFile: 'test/performance_conf.js',
-                    keepAlive: false,
-                    args: {
-                        specs: ['test/performance/*-spec.js'],
-                        browser: 'chrome'
-                    }
+                    configFile: 'test/performance_conf.js'
+                }
+            },
+            chrome: {
+                options: {
+                    configFile: 'test/functional_conf.js'
                 }
             },
             headless: {
                 options: {
-                    configFile: 'test/functional_conf.js',
-                    keepAlive: false,
-                    args: {
-                        specs: ['test/functional/*-spec.js'],
-                        browser: 'chrome'
-                    }
-                }
-            },
-            headless_selenium: {
-                options: {
-                    configFile: 'test/functional_selenium_conf.js',
-                    keepAlive: false,
-                    args: {
-                        specs: ['test/functional/*-spec.js'],
-                        browser: 'chrome'
-                    }
-                }
-            },
-            firefox: {
-                options: {
-                    configFile: 'test/functional_conf.js',
-                    keepAlive: false,
-                    args: {
-                        specs: ['test/functional/*-spec.js'],
-                        browser: 'firefox'
-                    }
+                    configFile: 'test/functional_selenium_conf.js'
                 }
             }
         },
@@ -216,11 +180,11 @@ module.exports = function (grunt) {
         },
 
         shell: {
-            sourceEnv: {
-                command: 'source ' + venvHome + 'eums/bin/activate'
+            dropDb: {
+                command: 'echo "drop database eums_test" | psql -U postgres'
             },
             createDb: {
-                command: 'createdb eums_test'
+                command: 'echo "create database eums_test" | psql -U postgres'
             },
             runMigrations: {
                 command: 'python manage.py migrate --settings=eums.test_settings',
@@ -257,12 +221,6 @@ module.exports = function (grunt) {
                         cwd: '../..'
                     }
                 }
-            },
-            dropDb: {
-                command: 'dropdb eums_test --if-exists'
-            },
-            dropStagingDb: {
-                command: 'dropdb app_test --if-exists'
             },
             processConfigs: {
                 command: function (url) {
@@ -375,33 +333,31 @@ module.exports = function (grunt) {
         'less'
     ]);
 
-    grunt.registerTask('prepare-for-server-start', [
+    grunt.registerTask('start-test-server', 'Start test server for functional tests', [
         'build-test',
         'clean:server',
-        'shell:sourceEnv',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
         'shell:seedData',
         'shell:mapData',
         'shell:setupPermissions',
-        'apimocker'
+        'apimocker',
+        'run:djangoServer'
     ]);
 
-    grunt.registerTask('functional', [
-        'prepare-for-server-start',
-        'run:djangoServer',
-        'protractor:headless',
-        'stop:djangoServer'
+    grunt.registerTask('functional', 'Run functional tests using chrome', [
+        'start-test-server',
+        'protractor:chrome'
+    ]);
+
+    grunt.registerTask('functional-headless', 'Run functional tests in headless mode using selenium', [
+        'start-test-server',
+        'protractor:headless'
     ]);
 
     grunt.registerTask('performance', [
         'protractor:performance'
-    ]);
-
-    grunt.registerTask('functional-staging', [
-        'apimocker',
-        'protractor:headless_selenium'
     ]);
 
     grunt.registerTask('default', [
