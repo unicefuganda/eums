@@ -10,8 +10,8 @@ class RunQueueTest(TestCase):
         RunQueue.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
-        node_run = RunQueue()
-        fields_in_run_queue = [field.attname for field in node_run._meta.fields]
+        run = RunQueue()
+        fields_in_run_queue = [field.attname for field in run._meta.fields]
 
         for field in ['node_id', 'contact_person_id', 'status', 'run_delay']:
             self.assertIn(field, fields_in_run_queue)

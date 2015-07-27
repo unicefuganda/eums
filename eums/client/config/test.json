@@ -7,7 +7,7 @@
         "ITEM_UNIT": "/api/item-unit/",
         "CONSIGNEE": "/api/consignee/",
         "DISTRIBUTION_PLAN_LINE_ITEM": "/api/distribution-plan-line-item/",
-        "NODE_RUN": "/api/node-run/",
+        "RUN": "/api/run/",
         "SALES_ORDER": "/api/sales-order/",
         "SALES_ORDER_ITEM": "/api/sales-order-item/",
         "PURCHASE_ORDER": "/api/purchase-order/",

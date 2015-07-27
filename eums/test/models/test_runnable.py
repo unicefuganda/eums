@@ -3,8 +3,8 @@ from unittest import TestCase
 from django.conf import settings
 from mock import patch
 
-from eums.test.factories.node_run_factory import NodeRunFactory
-from eums.models import DistributionPlanNode, NodeRun, SalesOrderItem, PurchaseOrderItem, ReleaseOrderItem, \
+from eums.test.factories.run_factory import RunFactory
+from eums.models import DistributionPlanNode, Run, SalesOrderItem, PurchaseOrderItem, ReleaseOrderItem, \
     ReleaseOrder, PurchaseOrder, SalesOrder
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
@@ -55,55 +55,55 @@ class DistributionPlanNodeTest(TestCase):
 
         salt_node = DistributionPlanNodeFactory(targeted_quantity=100,
                                                 item=item)
-        node_run = NodeRunFactory(node=salt_node, status='completed')
+        run = RunFactory(node=salt_node, status='completed')
 
         sugar_item = SalesOrderItemFactory(item=sugar, description='10 bags of sugar')
         sugar_node = DistributionPlanNodeFactory(targeted_quantity=100,
                                                  item=sugar_item)
-        sugar_node_run = NodeRunFactory(node=sugar_node, status='completed')
+        sugar_run = RunFactory(node=sugar_node, status='completed')
 
-        multiple_answer_one = MultipleChoiceAnswerFactory(node_run=node_run, question=multichoice_question,
+        multiple_answer_one = MultipleChoiceAnswerFactory(run=run, question=multichoice_question,
                                                           value=yes_option)
-        numeric_answer_one = NumericAnswerFactory(node_run=node_run, value=80, question=numeric_question)
+        numeric_answer_one = NumericAnswerFactory(run=run, value=80, question=numeric_question)
 
-        multiple_answer_two = MultipleChoiceAnswerFactory(node_run=sugar_node_run,
+        multiple_answer_two = MultipleChoiceAnswerFactory(run=sugar_run,
                                                           question=multichoice_question, value=no_option)
-        numeric_answer_two = NumericAnswerFactory(node_run=sugar_node_run, value=80,
+        numeric_answer_two = NumericAnswerFactory(run=sugar_run, value=80,
                                                   question=numeric_question)
         salt_node_responses = salt_node.responses()
         sugar_node_responses = sugar_node.responses()
 
-        self.assertIn(multiple_answer_one, salt_node_responses[node_run])
-        self.assertIn(numeric_answer_one, salt_node_responses[node_run])
+        self.assertIn(multiple_answer_one, salt_node_responses[run])
+        self.assertIn(numeric_answer_one, salt_node_responses[run])
 
-        self.assertIn(multiple_answer_two, sugar_node_responses[sugar_node_run])
-        self.assertIn(numeric_answer_two, sugar_node_responses[sugar_node_run])
+        self.assertIn(multiple_answer_two, sugar_node_responses[sugar_run])
+        self.assertIn(numeric_answer_two, sugar_node_responses[sugar_run])
 
-    def test_should_get_node_run_with_status_scheduled(self):
-        node_run = NodeRunFactory(node=self.node,
-                                  status=NodeRun.STATUS.scheduled)
-        self.assertEqual(self.node.current_run(), node_run)
+    def test_should_get_run_with_status_scheduled(self):
+        run = RunFactory(node=self.node,
+                                  status=Run.STATUS.scheduled)
+        self.assertEqual(self.node.current_run(), run)
 
-    def test_should_not_get_node_run_with_status_completed(self):
-        NodeRunFactory(node=self.node, status=NodeRun.STATUS.completed)
+    def test_should_not_get_run_with_status_completed(self):
+        RunFactory(node=self.node, status=Run.STATUS.completed)
         self.assertEqual(self.node.current_run(), None)
 
-    def test_should_not_get_node_run_with_status_expired(self):
-        NodeRunFactory(node=self.node, status=NodeRun.STATUS.expired)
+    def test_should_not_get_run_with_status_expired(self):
+        RunFactory(node=self.node, status=Run.STATUS.expired)
         self.assertEqual(self.node.current_run(), None)
 
-    def test_should_not_get_node_run_with_status_cancelled(self):
-        NodeRunFactory(node=self.node, status=NodeRun.STATUS.cancelled)
+    def test_should_not_get_run_with_status_cancelled(self):
+        RunFactory(node=self.node, status=Run.STATUS.cancelled)
         self.assertEqual(self.node.current_run(), None)
 
-    def test_should_get_the_completed_node_run(self):
+    def test_should_get_the_completed_run(self):
         self.assertIsNone(self.node.completed_run())
-        node_run = NodeRunFactory(node=self.node, status=NodeRun.STATUS.completed)
-        self.assertEqual(self.node.completed_run(), node_run)
+        run = RunFactory(node=self.node, status=Run.STATUS.completed)
+        self.assertEqual(self.node.completed_run(), run)
 
     def test_should_get_latest_run(self):
-        first_run = NodeRunFactory(node=self.node)
+        first_run = RunFactory(node=self.node)
         self.assertEqual(self.node.latest_run(), first_run)
-        second_run = NodeRunFactory(node=self.node)
+        second_run = RunFactory(node=self.node)
         self.assertEqual(self.node.latest_run(), second_run)
 

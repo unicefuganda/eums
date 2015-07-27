@@ -22,7 +22,7 @@ RELEASE_ORDER_ENDPOINT_URL = BACKEND_URL + 'release-order/'
 RELEASE_ORDER_ITEM_ENDPOINT_URL = BACKEND_URL + 'release-order-item/'
 PROGRAMME_ENDPOINT_URL = BACKEND_URL + 'programme/'
 OPTION_ENDPOINT_URL = BACKEND_URL + 'option/'
-NODE_LINE_ITEM_RUN_ENDPOINT_URL = BACKEND_URL + 'node-run/'
+RUN_ENDPOINT_URL = BACKEND_URL + 'run/'
 
 
 def create_programme():
@@ -174,8 +174,8 @@ def create_option(test_case, option_details=None):
     return response.data
 
 
-def create_node_run(test_case, node_run_details=None):
-    response = test_case.client.post(NODE_LINE_ITEM_RUN_ENDPOINT_URL, node_run_details, format='json')
+def create_run(test_case, run_details=None):
+    response = test_case.client.post(RUN_ENDPOINT_URL, run_details, format='json')
 
     test_case.assertEqual(response.status_code, 201)
 

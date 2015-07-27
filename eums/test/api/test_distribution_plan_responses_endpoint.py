@@ -4,7 +4,7 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.node_run_factory import NodeRunFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, NumericQuestionFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
@@ -30,17 +30,17 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
         child_node_three = DistributionPlanNodeFactory(parent=child_node_one, targeted_quantity=50,
                                                        item=item)
 
-        node_run = NodeRunFactory(node=node, status='completed')
-        node_run_one = NodeRunFactory(node=child_node_one, status='completed')
-        node_run_two = NodeRunFactory(node=child_node_two, status='completed')
-        node_run_three = NodeRunFactory(node=child_node_three, status='completed')
-        NumericAnswerFactory(node_run=node_run, value=80, question=numeric_question)
-        MultipleChoiceAnswerFactory(node_run=node_run_one,
+        run = RunFactory(node=node, status='completed')
+        run_one = RunFactory(node=child_node_one, status='completed')
+        run_two = RunFactory(node=child_node_two, status='completed')
+        run_three = RunFactory(node=child_node_three, status='completed')
+        NumericAnswerFactory(run=run, value=80, question=numeric_question)
+        MultipleChoiceAnswerFactory(run=run_one,
                                     question=multichoice_question,
                                     value=yes)
-        MultipleChoiceAnswerFactory(node_run=node_run_two,
+        MultipleChoiceAnswerFactory(run=run_two,
                                     question=multichoice_question, value=yes)
-        NumericAnswerFactory(node_run=node_run_three, value=80, question=numeric_question)
+        NumericAnswerFactory(run=run_three, value=80, question=numeric_question)
 
         expected_data = {'node': node.consignee.name,
                          'children': [{'node': child_node_two.consignee.name,

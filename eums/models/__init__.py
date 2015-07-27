@@ -8,7 +8,7 @@ from eums.models.distribution_plan_node import DistributionPlanNode
 from eums.models.sales_order import SalesOrder
 from eums.models.sales_order_item import SalesOrderItem
 from eums.models.sales_order import SalesOrder
-from eums.models.node_run import NodeRun
+from eums.models.run import Run
 from eums.models.question import Question
 from eums.models.option import Option
 from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
@@ -33,7 +33,7 @@ __all__ = [
     'Item',
     'ItemUnit',
     'Programme',
-    'NodeRun',
+    'Run',
     'RunQueue',
     'DistributionPlanNode',
     'SalesOrder',

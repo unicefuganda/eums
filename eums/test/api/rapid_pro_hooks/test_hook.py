@@ -1,12 +1,10 @@
-from urllib import quote_plus
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
-from eums.test.factories.node_run_factory import NodeRunFactory
-
 from mock import patch
 from rest_framework.test import APITestCase
 
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.RunQueueFactory import RunQueueFactory
-from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, NodeRun, Flow, \
+from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, Run, Flow, \
     MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion
 from eums.test.config import BACKEND_URL
 from eums.test.factories.flow_factory import FlowFactory
@@ -31,7 +29,7 @@ class HookTest(APITestCase):
         Option.objects.get_or_create(text='Yes', question=question)
         Option.objects.get_or_create(text='No', question=question)
 
-        node_run = NodeRunFactory(phone=self.PHONE)
+        run = RunFactory(phone=self.PHONE)
 
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 'Yes', 'Yes', 'productReceived')
 
@@ -39,7 +37,7 @@ class HookTest(APITestCase):
         expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuid])
         yes_option = expected_question.option_set.get(text='Yes')
 
-        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuid], node_run=node_run)
+        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuid], run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -55,7 +53,7 @@ class HookTest(APITestCase):
         Option.objects.get_or_create(text='Yes', question=question)
         Option.objects.get_or_create(text='No', question=question)
 
-        node_run = NodeRunFactory(phone=self.PHONE)
+        run = RunFactory(phone=self.PHONE)
 
         uuid_for_no = uuidS[1]
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid_for_no, 'No', 'No', 'productReceived')
@@ -64,7 +62,7 @@ class HookTest(APITestCase):
         expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuidS])
         no_option = expected_question.option_set.get(text='No')
 
-        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuidS], node_run=node_run)
+        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuidS], run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -75,12 +73,12 @@ class HookTest(APITestCase):
 
         TextQuestion.objects.get_or_create(uuids=[uuid], text='What date was it received?', label='dateOfReceipt')
 
-        node_run = NodeRunFactory(phone=('%s' % self.PHONE))
+        run = RunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 'Some Text', None, 'dateOfReceipt')
 
         response = self.client.post(HOOK_URL, url_params)
 
-        answers = TextAnswer.objects.filter(question__uuids=[uuid], node_run=node_run)
+        answers = TextAnswer.objects.filter(question__uuids=[uuid], run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -91,12 +89,12 @@ class HookTest(APITestCase):
 
         NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
 
-        node_run = NodeRunFactory(phone=('%s' % self.PHONE))
+        run = RunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 42, None, 'amountReceived')
 
         response = self.client.post(HOOK_URL, url_params)
 
-        answers = NumericAnswer.objects.filter(question__uuids=[uuid], node_run=node_run)
+        answers = NumericAnswer.objects.filter(question__uuids=[uuid], run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -114,7 +112,7 @@ class HookTest(APITestCase):
 
         node = DistributionPlanNodeFactory()
 
-        NodeRunFactory(node=node, phone=self.PHONE)
+        RunFactory(node=node, phone=self.PHONE)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
@@ -129,7 +127,7 @@ class HookTest(APITestCase):
 
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
-    def test_should_mark_node_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue,
+    def test_should_mark_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue,
                                                                      mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
@@ -138,8 +136,8 @@ class HookTest(APITestCase):
                                                             label='amountReceived')
 
         node = DistributionPlanNodeFactory()
-        node_run = NodeRunFactory(node=node, phone=self.PHONE,
-                                  status=NodeRun.STATUS.scheduled)
+        run = RunFactory(node=node, phone=self.PHONE,
+                              status=Run.STATUS.scheduled)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
@@ -150,12 +148,12 @@ class HookTest(APITestCase):
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
-        node_run = NodeRun.objects.get(id=node_run.id)
-        self.assertEqual(node_run.status, NodeRun.STATUS.completed)
+        run = Run.objects.get(id=run.id)
+        self.assertEqual(run.status, Run.STATUS.completed)
 
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
-    def test_should_not_mark_node_run_as_complete_when_question_is_not_final(self, mock_run_queue_dequeue,
+    def test_should_not_mark_run_as_complete_when_question_is_not_final(self, mock_run_queue_dequeue,
                                                                              mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
 
@@ -164,9 +162,9 @@ class HookTest(APITestCase):
         NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
 
         node = DistributionPlanNodeFactory()
-        original_status = NodeRun.STATUS.scheduled
-        node_run = NodeRunFactory(node=node, phone=self.PHONE,
-                                  status=original_status)
+        original_status = Run.STATUS.scheduled
+        run = RunFactory(node=node, phone=self.PHONE,
+                              status=original_status)
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             node=node,
             contact_person_id=node.contact_person_id)
@@ -174,8 +172,8 @@ class HookTest(APITestCase):
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
-        node_run = NodeRun.objects.get(id=node_run.id)
-        self.assertEqual(node_run.status, original_status)
+        run = Run.objects.get(id=run.id)
+        self.assertEqual(run.status, original_status)
 
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
@@ -189,7 +187,7 @@ class HookTest(APITestCase):
         node = DistributionPlanNodeFactory()
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
-        NodeRunFactory(node=node, phone=self.PHONE)
+        RunFactory(node=node, phone=self.PHONE)
 
         next_run = RunQueueFactory(node=node,
                                    contact_person_id=node.contact_person_id)

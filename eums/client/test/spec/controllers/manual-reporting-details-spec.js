@@ -356,7 +356,7 @@ describe('ManualReportingDetailsController', function () {
                     id: 1,
                     location: 'Kampala'
                 },
-                node_run_id: 1,
+                run_id: 1,
                 responses: {
                     amountReceived: {
                         id: 1,
@@ -384,7 +384,7 @@ describe('ManualReportingDetailsController', function () {
 
         it('should set responses on the scope', function () {
             var expectedResponseDetails = [{
-                nodeRunId: nodeResponse.node_run_id,
+                runId: nodeResponse.run_id,
                 consignee: nodeResponse.node.consignee,
                 endUser: nodeResponse.node.contact_person_id,
                 location: nodeResponse.node.location,
@@ -585,7 +585,7 @@ describe('ManualReportingDetailsController', function () {
 
         it('should have document selected with default values', function () {
             var expectedResponse = [{
-                nodeRunId: '',
+                runId: '',
                 consignee: '',
                 endUser: '',
                 location: '',

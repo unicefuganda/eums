@@ -1,10 +1,10 @@
 from django.db import models
-from eums.models import NodeRun, Option
+from eums.models import Run, Option
 from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQuestion
 
 
 class TextAnswer(models.Model):
-    node_run = models.ForeignKey(NodeRun)
+    run = models.ForeignKey(Run)
     question = models.ForeignKey(TextQuestion)
     value = models.CharField(max_length=255)
 
@@ -16,7 +16,7 @@ class TextAnswer(models.Model):
 
 
 class NumericAnswer(models.Model):
-    node_run = models.ForeignKey(NodeRun)
+    run = models.ForeignKey(Run)
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
 
@@ -28,7 +28,7 @@ class NumericAnswer(models.Model):
 
 
 class MultipleChoiceAnswer(models.Model):
-    node_run = models.ForeignKey(NodeRun)
+    run = models.ForeignKey(Run)
     question = models.ForeignKey(MultipleChoiceQuestion)
     value = models.ForeignKey(Option)
 

@@ -17,21 +17,21 @@ jf.writeFile(destinationJsonFile, migrated, function(err) {
   }
 });
 
-function generateNodeRuns(dPlanNode, migrationSourceJson) {
-  var nodeRuns = [];
+function generateRuns(dPlanNode, migrationSourceJson) {
+  var runs = [];
 //Find rename and connect the nodelineitemrun objects
   for (var objectIx in migrationSourceJson) {
     var obj = migrationSourceJson[objectIx];
     if ((obj.model == 'eums.nodelineitemrun') && obj.fields.node_line_item == dPlanNode.fields["temp_lineitempk"]) {
       //copy fields to it
-      var nodeRun = obj;
-      nodeRun.model = "eums.noderun";
-      delete nodeRun.fields.node_line_item;
-      nodeRun.fields.node = dPlanNode.pk;
-      nodeRuns.push(nodeRun);
+      var run = obj;
+      run.model = "eums.run";
+      delete run.fields.node_line_item;
+      run.fields.node = dPlanNode.pk;
+      runs.push(run);
     }
   }
-  return nodeRuns;
+  return runs;
 }
 
 
@@ -67,7 +67,7 @@ function migrate(sourceJson) {
       var modelStr = String(object.model);
       //console.log(modelStr);
       if(modelStr.indexOf('answer')>0){
-        object.fields.node_run = object.fields.line_item_run;
+        object.fields.run = object.fields.line_item_run;
         delete object.fields.line_item_run;
       }
       migrated.push(object);
@@ -78,8 +78,8 @@ function migrate(sourceJson) {
     if(object.model == 'eums.distributionplanlineitem'){
       var dPlanNode = generateDistributionPlanNode(object, migrationSourceJson);
       if(dPlanNode){
-        var nodeRuns = generateNodeRuns(dPlanNode, migrationSourceJson);
-        Array.prototype.push.apply(migrated,nodeRuns);
+        var runs = generateRuns(dPlanNode, migrationSourceJson);
+        Array.prototype.push.apply(migrated,runs);
         delete dPlanNode.fields["temp_lineitempk"];
         migrated.push(dPlanNode);
       }

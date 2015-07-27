@@ -127,7 +127,7 @@
     },
     {
         "fields": {
-            "model": "noderun",
+            "model": "run",
             "name": "node run",
             "app_label": "eums"
         },
@@ -6160,7 +6160,7 @@
             "scheduled_message_task_id": "315b7e3a-f112-4beb-b367-bce2e1a66edb",
             "phone": "+256782854277"
         },
-        "model": "eums.noderun",
+        "model": "eums.run",
         "pk": 1
     },
     {
@@ -6170,7 +6170,7 @@
             "scheduled_message_task_id": "61dd1d68-fda1-4269-93af-22bc6fd5596c",
             "phone": "+256779500694"
         },
-        "model": "eums.noderun",
+        "model": "eums.run",
         "pk": 2
     },
     {
@@ -6180,7 +6180,7 @@
             "scheduled_message_task_id": "c5d89a6e-c8f9-4c36-be07-3027970d787e",
             "phone": "+256779500791"
         },
-        "model": "eums.noderun",
+        "model": "eums.run",
         "pk": 3
     },
     {
@@ -6190,7 +6190,7 @@
             "scheduled_message_task_id": "2672a646-5963-4a61-8a3f-d38ab454348b",
             "phone": "+256779500791"
         },
-        "model": "eums.noderun",
+        "model": "eums.run",
         "pk": 4
     },
     {
@@ -6200,7 +6200,7 @@
             "scheduled_message_task_id": "44cbc907-a68f-4485-ac6b-57b8fdbbc286",
             "phone": "+256779511165"
         },
-        "model": "eums.noderun",
+        "model": "eums.run",
         "pk": 5
     },
     {
@@ -6389,7 +6389,7 @@
     },
     {
         "fields": {
-            "node_run": 2,
+            "run": 2,
             "question": 2,
             "value": "02-02-2015"
         },
@@ -6398,7 +6398,7 @@
     },
     {
         "fields": {
-            "node_run": 3,
+            "run": 3,
             "question": 2,
             "value": "04-04-2015"
         },
@@ -6407,7 +6407,7 @@
     },
     {
         "fields": {
-            "node_run": 2,
+            "run": 2,
             "question": 3,
             "value": 2
         },
@@ -6416,7 +6416,7 @@
     },
     {
         "fields": {
-            "node_run": 3,
+            "run": 3,
             "question": 3,
             "value": 1
         },
@@ -6425,7 +6425,7 @@
     },
     {
         "fields": {
-            "node_run": 2,
+            "run": 2,
             "question": 1,
             "value": 1
         },
@@ -6434,7 +6434,7 @@
     },
     {
         "fields": {
-            "node_run": 2,
+            "run": 2,
             "question": 4,
             "value": 3
         },
@@ -6443,7 +6443,7 @@
     },
     {
         "fields": {
-            "node_run": 2,
+            "run": 2,
             "question": 5,
             "value": 1
         },
@@ -6452,7 +6452,7 @@
     },
     {
         "fields": {
-            "node_run": 3,
+            "run": 3,
             "question": 1,
             "value": 1
         },
@@ -6461,7 +6461,7 @@
     },
     {
         "fields": {
-            "node_run": 3,
+            "run": 3,
             "question": 4,
             "value": 2
         },
@@ -6470,7 +6470,7 @@
     },
     {
         "fields": {
-            "node_run": 3,
+            "run": 3,
             "question": 5,
             "value": 5
         },
@@ -6479,7 +6479,7 @@
     },
     {
         "fields": {
-            "node_run": 5,
+            "run": 5,
             "question": 1,
             "value": 7
         },
@@ -6488,7 +6488,7 @@
     },
     {
         "fields": {
-            "node_run": 5,
+            "run": 5,
             "question": 6,
             "value": 5
         },
@@ -7031,7 +7031,7 @@
     },
     {
         "fields": {
-            "codename": "add_noderun",
+            "codename": "add_run",
             "name": "Can add node run",
             "content_type": 15
         },
@@ -7040,7 +7040,7 @@
     },
     {
         "fields": {
-            "codename": "change_noderun",
+            "codename": "change_run",
             "name": "Can change node run",
             "content_type": 15
         },
@@ -7049,7 +7049,7 @@
     },
     {
         "fields": {
-            "codename": "delete_noderun",
+            "codename": "delete_run",
             "name": "Can delete node run",
             "content_type": 15
         },

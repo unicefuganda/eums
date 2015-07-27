@@ -8,7 +8,7 @@ from eums.models import MultipleChoiceAnswer
 class MultipleChoiceAnswerSerialiser(serializers.ModelSerializer):
     class Meta:
         model = MultipleChoiceAnswer
-        fields = ('id', 'question', 'value', 'node_run')
+        fields = ('id', 'question', 'value', 'run')
 
 
 class MultipleChoiceAnswerViewSet(ModelViewSet):

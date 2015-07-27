@@ -9,8 +9,8 @@ from eums.models import DistributionPlanNode
 def _generate_response_data(node):
     responses = node.responses()
     data = {'children': [], 'answers': {}}
-    for node_run, answers in responses.iteritems():
-        data.update({'node': node_run.node.consignee.name})
+    for run, answers in responses.iteritems():
+        data.update({'node': run.node.consignee.name})
         for answer in answers:
             data['answers'].update({answer.question.label: answer.format()})
     return data

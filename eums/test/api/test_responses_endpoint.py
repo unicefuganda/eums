@@ -4,7 +4,7 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.node_run_factory import NodeRunFactory
+from eums.test.factories.run_factory import RunFactory
 
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
@@ -41,25 +41,25 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                                                          targeted_quantity=100,
                                                          item=self.item)
 
-    def create_node_runs_and_answers(self):
-        self.node_run_one = NodeRunFactory(node=self.middle_man_node, status='completed')
-        self.run_one_multiple_answer_one = MultipleChoiceAnswerFactory(node_run=self.node_run_one,
+    def create_runs_and_answers(self):
+        self.run_one = RunFactory(node=self.middle_man_node, status='completed')
+        self.run_one_multiple_answer_one = MultipleChoiceAnswerFactory(run=self.run_one,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)
-        self.run_one_multiple_answer_two = MultipleChoiceAnswerFactory(node_run=self.node_run_one,
+        self.run_one_multiple_answer_two = MultipleChoiceAnswerFactory(run=self.run_one,
                                                                        question=self.multiple_choice_question_two,
                                                                        value=self.yes_option)
-        self.run_one_numeric_answer_one = NumericAnswerFactory(node_run=self.node_run_one, value=80,
+        self.run_one_numeric_answer_one = NumericAnswerFactory(run=self.run_one, value=80,
                                                                question=self.numeric_question)
 
-        self.node_run_two = NodeRunFactory(node=self.end_user_node, status='completed')
-        self.run_two_multiple_answer_one = MultipleChoiceAnswerFactory(node_run=self.node_run_two,
+        self.run_two = RunFactory(node=self.end_user_node, status='completed')
+        self.run_two_multiple_answer_one = MultipleChoiceAnswerFactory(run=self.run_two,
                                                                        question=self.multiple_choice_question,
                                                                        value=self.yes_option)
-        self.run_two_multiple_answer_two = MultipleChoiceAnswerFactory(node_run=self.node_run_two,
+        self.run_two_multiple_answer_two = MultipleChoiceAnswerFactory(run=self.run_two,
                                                                        question=self.multiple_choice_question_two,
                                                                        value=self.yes_option)
-        self.run_two_numeric_answer_one = NumericAnswerFactory(node_run=self.node_run_two, value=80,
+        self.run_two_numeric_answer_one = NumericAnswerFactory(run=self.run_two, value=80,
                                                                question=self.numeric_question)
 
     def expected_response_data(self, node, consignee, programme, type):
@@ -77,7 +77,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
     def test_should_provide_summary_data_from_node_response(self):
         self.create_questions_and_items()
         self.create_nodes()
-        self.create_node_runs_and_answers()
+        self.create_runs_and_answers()
 
         url = "%s%d/" % (ENDPOINT_URL, self.middle_man_node.consignee.id)
         response = self.client.get(url, format='json')
@@ -95,7 +95,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
     def test_should_provide_summary_data_from_all_node_responses(self):
         self.create_questions_and_items()
         self.create_nodes()
-        self.create_node_runs_and_answers()
+        self.create_runs_and_answers()
 
         response = self.client.get(ENDPOINT_URL, format='json')
         consignee_one = self.middle_man_node.consignee
@@ -117,7 +117,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
     def test_should_provide_summary_data_from_all_end_user_node_responses(self):
         self.create_questions_and_items()
         self.create_nodes()
-        self.create_node_runs_and_answers()
+        self.create_runs_and_answers()
 
         response = self.client.get(END_USER_ENDPOINT_URL, format='json')
         consignee = self.end_user_node.consignee
@@ -133,7 +133,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
     def test_should_provide_summary_data_from_node_response_for_end_user(self):
         self.create_questions_and_items()
         self.create_nodes()
-        self.create_node_runs_and_answers()
+        self.create_runs_and_answers()
 
         url = "%s%d/" % (NODE_ENDPOINT_URL, self.end_user_node.id)
         response = self.client.get(url, format='json')
@@ -146,7 +146,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                 "id": self.end_user_node.id,
                 "location": self.end_user_node.location
             },
-            "node_run_id": self.node_run_two.id,
+            "run_id": self.run_two.id,
             "responses": {
                 self.numeric_question.label: {
                     "id": self.run_two_numeric_answer_one.id,
@@ -173,9 +173,9 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
     def test_should_not_provide_summary_data_from_node_response_for_middleman_user(self):
         self.create_questions_and_items()
         self.create_nodes()
-        self.create_node_runs_and_answers()
+        self.create_runs_and_answers()
 
-        url = "%s%d/" % (NODE_ENDPOINT_URL, self.node_run_one.id)
+        url = "%s%d/" % (NODE_ENDPOINT_URL, self.run_one.id)
         response = self.client.get(url, format='json')
 
         expected_data = {}

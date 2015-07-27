@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from eums.models import NodeRun, MultipleChoiceQuestion
+from eums.models import Run, MultipleChoiceQuestion
 
 def create_received_no_answers(apps, schema_editor):
     """Forward data migration that creates no answers for completed runs where no was not saved
@@ -12,7 +12,7 @@ def create_received_no_answers(apps, schema_editor):
         product_received_question = product_received_question_filter[0]
         product_not_received_answer_option_filter = product_received_question.option_set.filter(text='No')
         if product_not_received_answer_option_filter:
-            completed_runs = NodeRun.objects.filter(status='completed')
+            completed_runs = Run.objects.filter(status='completed')
             for run in completed_runs:
                 product_received_answer = run.multiplechoiceanswer_set.filter(question=product_received_question)
                 if product_received_answer:
@@ -33,7 +33,7 @@ def remove_received_no_answers(apps, schema_editor):
         product_received_question = product_received_question_filter[0]
         product_not_received_answer_option_filter = product_received_question.option_set.filter(text='No')
         if product_not_received_answer_option_filter:
-            completed_runs = NodeRun.objects.filter(status='completed')
+            completed_runs = Run.objects.filter(status='completed')
             for run in completed_runs:
                 # Delete no answer for run
                 run.multiplechoiceanswer_set.filter(question=product_received_question,

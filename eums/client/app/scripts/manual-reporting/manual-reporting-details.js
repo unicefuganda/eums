@@ -2,11 +2,11 @@
 
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
     'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
-    'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'NodeRun', 'SalesOrder'])
+    'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
     .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService,
                                                               OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
                                                               ReleaseOrderItemService, ngToast, ContactService, DistributionPlanService,
-                                                              DistributionPlanNodeService, AnswerService, QuestionService, NodeRunService,
+                                                              DistributionPlanNodeService, AnswerService, QuestionService, RunService,
                                                               SalesOrderService, SalesOrderItemService) {
         $scope.datepicker = {};
         $scope.contact = {};
@@ -223,7 +223,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             responseNodes.forEach(function (responseNode) {
                 setDistributionPlan(responseNode);
                 var responseDetails = {
-                    nodeRunId: responseNode.node_run_id,
+                    runId: responseNode.run_id,
                     consignee: responseNode.node.consignee,
                     endUser: responseNode.node.contact_person_id,
                     location: responseNode.node.location,
@@ -254,7 +254,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         $scope.addResponse = function () {
             var newResponseItem = {
-                nodeRunId: '',
+                runId: '',
                 consignee: '',
                 endUser: '',
                 location: '',
@@ -299,15 +299,15 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }, true);
 
 
-        function saveNodeRun(response, nodeId) {
-            var nodeRun = {
+        function saveRun(response, nodeId) {
+            var run = {
                 scheduled_message_task_id: 'MANUAL',
                 node: nodeId,
                 status: 'completed',
                 phone: 'MANUAL'
             };
 
-            return NodeRunService.createNodeRun(nodeRun);
+            return RunService.createRun(run);
         }
 
         function saveNode(response) {
@@ -338,14 +338,14 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         function saveNewResponse(response) {
             return saveNode(response).then(function (createdNode) {
-                return saveNodeRun(response, createdNode.id).then(function (createdNodeRun) {
-                    response.nodeRunId = createdNodeRun.id;
+                return saveRun(response, createdNode.id).then(function (createdRun) {
+                    response.runId = createdRun.id;
                     return response;
                 });
             });
         }
 
-        function saveResponseReceived(nodeRunId, response) {
+        function saveResponseReceived(runId, response) {
             var received = response.received;
             var receivedDetails = response.received_answer;
 
@@ -355,7 +355,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         var answerDetails = {
                             question: question.id,
                             value: received,
-                            node_run: nodeRunId
+                            run: runId
                         };
                         return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer) {
                             response.received_answer = response_answer;
@@ -369,7 +369,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }
 
-        function saveResponseQuantity(nodeRunId, response) {
+        function saveResponseQuantity(runId, response) {
             var quantity = response.quantity;
             var quantityDetails = response.quantity_answer;
 
@@ -379,7 +379,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         var answerDetails = {
                             question: question.id,
                             value: quantity,
-                            node_run: nodeRunId
+                            run: runId
                         };
                         return AnswerService.createNumericAnswer(answerDetails).then(function (response_answer) {
                             response.quantity_answer = response_answer;
@@ -393,7 +393,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }
 
-        function saveResponseDateReceived(nodeRunId, response) {
+        function saveResponseDateReceived(runId, response) {
             var formatReceivedDate = function (date) {
                 return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
             };
@@ -414,7 +414,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         var answerDetails = {
                             question: question.id,
                             value: formatReceivedDate(plannedDate),
-                            line_item_run: nodeRunId
+                            line_item_run: runId
                         };
                         return AnswerService.createTextAnswer(answerDetails).then(function (response_answer) {
                             response.dateReceived_answer = response_answer;
@@ -428,7 +428,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             }
         }
 
-        function saveResponseQuality(nodeRunId, response) {
+        function saveResponseQuality(runId, response) {
             var quality = response.quality;
             var qualityDetails = response.quality_answer;
 
@@ -438,7 +438,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         var answerDetails = {
                             question: question.id,
                             value: quality,
-                            node_run: nodeRunId
+                            run: runId
                         };
                         return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer) {
                             response.quality_answer = response_answer;
@@ -453,7 +453,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }
 
 
-        function saveResponseSatisfied(nodeRunId, response) {
+        function saveResponseSatisfied(runId, response) {
             var satisfied = response.satisfied;
             var satisfiedDetails = response.satisfied_answer;
 
@@ -463,7 +463,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         var answerDetails = {
                             question: question.id,
                             value: satisfied,
-                            node_run: nodeRunId
+                            run: runId
                         };
                         return AnswerService.createMultipleChoiceAnswer(answerDetails).then(function (response_answer) {
                             response.satisfied_answer = response_answer;
@@ -478,7 +478,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         }
 
 
-        function saveResponseRemark(nodeRunId, response) {
+        function saveResponseRemark(runId, response) {
             var remark = response.remark;
             var remarkDetails = response.remark_answer;
 
@@ -488,7 +488,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                         var answerDetails = {
                             question: question.id,
                             value: remark,
-                            node_run: nodeRunId
+                            run: runId
                         };
                         return AnswerService.createTextAnswer(answerDetails).then(function (response_answer) {
                             response.remark_answer = response_answer;
@@ -504,12 +504,12 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
         function saveResponse(response) {
             var saveResponsePartsPromise = [];
-            saveResponsePartsPromise.push(saveResponseReceived(response.nodeRunId, response));
-            saveResponsePartsPromise.push(saveResponseQuantity(response.nodeRunId, response));
-            saveResponsePartsPromise.push(saveResponseDateReceived(response.nodeRunId, response));
-            saveResponsePartsPromise.push(saveResponseQuality(response.nodeRunId, response));
-            saveResponsePartsPromise.push(saveResponseSatisfied(response.nodeRunId, response));
-            saveResponsePartsPromise.push(saveResponseRemark(response.nodeRunId, response));
+            saveResponsePartsPromise.push(saveResponseReceived(response.runId, response));
+            saveResponsePartsPromise.push(saveResponseQuantity(response.runId, response));
+            saveResponsePartsPromise.push(saveResponseDateReceived(response.runId, response));
+            saveResponsePartsPromise.push(saveResponseQuality(response.runId, response));
+            saveResponsePartsPromise.push(saveResponseSatisfied(response.runId, response));
+            saveResponsePartsPromise.push(saveResponseRemark(response.runId, response));
             var squashedResponsesPartsPromises = $q.all(saveResponsePartsPromise);
             return squashedResponsesPartsPromises;
         }
@@ -517,7 +517,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         function saveResponseItems() {
             var saveResponseItemPromises = [];
             $scope.responses.forEach(function (response) {
-                if (response.nodeRunId) {
+                if (response.runId) {
                     saveResponseItemPromises.push(saveResponse(response));
                 }
                 else {

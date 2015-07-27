@@ -11,7 +11,7 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
-from eums.test.factories.node_run_factory import NodeRunFactory
+from eums.test.factories.run_factory import RunFactory
 
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -129,12 +129,12 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setup_quantity_received_answers(self):
         quantity_received_qn = NumericQuestion.objects.get(
             uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'])
-        quantity_received_qn.numericanswer_set.create(value=4, node_run=self.run_one)
-        quantity_received_qn.numericanswer_set.create(value=2, node_run=self.run_two)
-        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_three)
-        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_four)
-        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_five)
-        quantity_received_qn.numericanswer_set.create(value=1, node_run=self.run_six)
+        quantity_received_qn.numericanswer_set.create(value=4, run=self.run_one)
+        quantity_received_qn.numericanswer_set.create(value=2, run=self.run_two)
+        quantity_received_qn.numericanswer_set.create(value=1, run=self.run_three)
+        quantity_received_qn.numericanswer_set.create(value=1, run=self.run_four)
+        quantity_received_qn.numericanswer_set.create(value=1, run=self.run_five)
+        quantity_received_qn.numericanswer_set.create(value=1, run=self.run_six)
 
     def setup_answers(self):
         self.setup_quantity_received_answers()
@@ -143,17 +143,17 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setup_date_received_answers(self):
         date_received_question = TextQuestion.objects.get(
             uuids=['abc9c005-7a7c-44f8-b946-e970a361b6cf', '884ed6d8-1cef-4878-999d-bce7de85e27c'])
-        date_received_question.textanswer_set.create(value='2014-01-01', node_run=self.run_one)
-        date_received_question.textanswer_set.create(value='2014-01-02', node_run=self.run_two)
-        date_received_question.textanswer_set.create(value='2014-01-03', node_run=self.run_three)
+        date_received_question.textanswer_set.create(value='2014-01-01', run=self.run_one)
+        date_received_question.textanswer_set.create(value='2014-01-02', run=self.run_two)
+        date_received_question.textanswer_set.create(value='2014-01-03', run=self.run_three)
 
     def setup_runs(self):
-        self.run_one = NodeRunFactory(node=self.ip_node_one)
-        self.run_two = NodeRunFactory(node=self.ip_node_two)
-        self.run_three = NodeRunFactory(node=self.ip_node_three)
-        self.run_four = NodeRunFactory(node=self.middle_man_node_one)
-        self.run_five = NodeRunFactory(node=self.middle_man_node_two)
-        self.run_six = NodeRunFactory(node=self.end_user_node)
+        self.run_one = RunFactory(node=self.ip_node_one)
+        self.run_two = RunFactory(node=self.ip_node_two)
+        self.run_three = RunFactory(node=self.ip_node_three)
+        self.run_four = RunFactory(node=self.middle_man_node_one)
+        self.run_five = RunFactory(node=self.middle_man_node_two)
+        self.run_six = RunFactory(node=self.end_user_node)
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.po_one)

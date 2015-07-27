@@ -9,7 +9,7 @@ from eums import settings
 from eums.models import DistributionPlanNode
 
 
-class NodeRun(models.Model):
+class Run(models.Model):
     STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
     node = models.ForeignKey(DistributionPlanNode)
@@ -42,9 +42,9 @@ class NodeRun(models.Model):
 
     @classmethod
     def current_run_for_node(cls, node):
-        return NodeRun.objects.filter(
+        return Run.objects.filter(
             Q(node=node) &
-            Q(status=NodeRun.STATUS.scheduled)).first()
+            Q(status=Run.STATUS.scheduled)).first()
 
     @classmethod
     def overdue_runs(cls):
@@ -54,5 +54,5 @@ class NodeRun(models.Model):
         today = datetime.datetime.combine(datetime.date.today(), datetime.datetime.min.time())
         latest_allowed_date = today - delivery_status_check_delay - max_allowed_reply_period
 
-        return NodeRun.objects.filter(Q(status=NodeRun.STATUS.scheduled) &
+        return Run.objects.filter(Q(status=Run.STATUS.scheduled) &
                                       Q(node__delivery_date__lt=latest_allowed_date))

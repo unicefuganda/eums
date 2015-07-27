@@ -3,7 +3,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
-from eums.test.factories.node_run_factory import NodeRunFactory
+from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'multiple-choice-answers/'
 
@@ -17,7 +17,7 @@ class MultipleChoiceAnswerEndpointTest(AuthenticatedAPITestCase):
             "id": multiple_choice_answer.id,
             "value": multiple_choice_answer.value.id,
             "question": multiple_choice_answer.question_id,
-            "node_run": multiple_choice_answer.node_run_id
+            "run": multiple_choice_answer.run_id
         }
         response = self.client.get(ENDPOINT_URL)
 
@@ -27,11 +27,11 @@ class MultipleChoiceAnswerEndpointTest(AuthenticatedAPITestCase):
     def test_should_create_multiple_choice_answers(self):
         multiple_choice_question = MultipleChoiceQuestionFactory(label='productReceived')
         yes_option = multiple_choice_question.option_set.first()
-        node_run = NodeRunFactory()
+        run = RunFactory()
         multiple_choice_answer_details = {
             "value": yes_option.id,
             "question": multiple_choice_question.id,
-            "node_run": node_run.id
+            "run": run.id
         }
         response = self.client.post(ENDPOINT_URL, multiple_choice_answer_details, format='json')
 

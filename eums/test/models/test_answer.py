@@ -22,5 +22,5 @@ def test_expected_fields_exist(test_case, model_instance):
     instance = model_instance
     fields_in_item = [field for field in instance._meta._name_map]
 
-    for field in ['question', 'node_run', 'value']:
+    for field in ['question', 'run', 'value']:
         test_case.assertIn(field, fields_in_item)

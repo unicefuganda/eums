@@ -97,10 +97,10 @@ class NodeResponses(APIView):
         if planNode and planNode.tree_position == 'END_USER':
             node_responses = planNode.responses()
             if node_responses:
-                node_run = node_responses.keys()[0]
+                run = node_responses.keys()[0]
                 result = {
                     'node': self._get_node(planNode),
-                    'node_run_id': node_run.id,
+                    'run_id': run.id,
                     'responses': ResponseSerializer().detailed_node_responses(node_responses)
                 }
 
