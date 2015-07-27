@@ -21,6 +21,5 @@ class DistributionPlan(Runnable):
         return "delivery"
 
     def total_value(self):
-        return reduce(lambda total, node: total + node.item.value,
-                      self.distributionplannode_set.filter(parent__isnull=True),
-                      0)
+        return reduce(lambda total, node: total + node.item.unit_value() * node.targeted_quantity,
+                      self.distributionplannode_set.filter(parent__isnull=True), 0)

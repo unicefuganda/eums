@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import models
 from django.db.models import Sum
 
@@ -20,6 +21,9 @@ class PurchaseOrderItem(OrderItem):
     def quantity_shipped(self):
         result = DistributionPlanNode.objects.filter(item=self).aggregate(Sum('targeted_quantity'))
         return result['targeted_quantity__sum'] if result['targeted_quantity__sum'] else 0
+
+    def unit_value(self):
+        return self.value / Decimal(self.quantity)
 
     def __unicode__(self):
         return '%s %s %s.' \

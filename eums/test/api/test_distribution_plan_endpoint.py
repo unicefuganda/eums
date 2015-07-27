@@ -29,13 +29,13 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data[0]['id'], delivery.id)
 
     def test_should_provide_delivery_total_value_from_api(self):
-        po_item = PurchaseOrderItemFactory(value=200)
+        po_item = PurchaseOrderItemFactory(value=200, quantity=100)
         delivery = DistributionPlanFactory()
-        DistributionPlanNodeFactory(distribution_plan=delivery, item=po_item)
+        DistributionPlanNodeFactory(distribution_plan=delivery, item=po_item, targeted_quantity=10)
 
         response = self.client.get(ENDPOINT_URL)
 
-        self.assertEqual(response.data[0]['total_value'], 200)
+        self.assertEqual(response.data[0]['total_value'], 20)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()
