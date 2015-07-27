@@ -2,7 +2,8 @@ from unittest import TestCase
 
 from django.db import IntegrityError
 
-from eums.models import Consignee, DistributionPlan, DistributionPlanNode, SalesOrder, PurchaseOrderItem, PurchaseOrder, Programme, SalesOrderItem
+from eums.models import Consignee, DistributionPlan, DistributionPlanNode, SalesOrder, PurchaseOrderItem, PurchaseOrder, \
+    Programme, SalesOrderItem
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
@@ -54,24 +55,26 @@ class PurchaseOrderTest(TestCase):
 
         purchase_order_item_two = PurchaseOrderItemFactory(purchase_order=purchase_order_two, quantity=100)
         node_one = NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                    tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+                               tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         node_two = NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                    tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_one)
+                               tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_one)
         NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                               tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_two)
+                    tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_two)
         self.assertTrue(purchase_order_two.is_fully_delivered())
 
         purchase_order_item_three = PurchaseOrderItemFactory(purchase_order=purchase_order_three, quantity=100)
         purchase_order_item_four = PurchaseOrderItemFactory(purchase_order=purchase_order_three, quantity=50)
-        NodeFactory(item=purchase_order_item_three, consignee=consignee, targeted_quantity=100, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        NodeFactory(item=purchase_order_item_four, consignee=consignee, targeted_quantity=50, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        NodeFactory(item=purchase_order_item_three, consignee=consignee, targeted_quantity=100,
+                    tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        NodeFactory(item=purchase_order_item_four, consignee=consignee, targeted_quantity=50,
+                    tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         self.assertTrue(purchase_order_three.is_fully_delivered())
 
     def test_should_return_empty_list_when_no_deliveries_tied_to_any_purchase_order_items(self):
         order = PurchaseOrderFactory()
         PurchaseOrderItemFactory(purchase_order=order)
         PurchaseOrderItemFactory(purchase_order=order)
-        self.assertEqual(order.deliveries(), [])
+        self.assertListEqual(list(order.deliveries()), [])
 
     def test_should_return_multiple_deliveries_along_with_their_corresponding_nodes(self):
         order = PurchaseOrderFactory()
@@ -87,7 +90,8 @@ class PurchaseOrderTest(TestCase):
         deliveries = order.deliveries()
 
         self.assertEqual(len(deliveries), 2)
-        self.assertListEqual(deliveries, [delivery_one, delivery_two])
+        self.assertIn(delivery_one, list(deliveries))
+        self.assertIn(delivery_two, list(deliveries))
 
         first_delivery_nodes = delivery_one.distributionplannode_set.all()
         second_delivery_nodes = delivery_two.distributionplannode_set.all()

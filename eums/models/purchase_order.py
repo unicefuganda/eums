@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Count, Sum
 
-from eums.models import SalesOrder, DistributionPlanNode, PurchaseOrderItem
+from eums.models import SalesOrder, DistributionPlanNode, PurchaseOrderItem, DistributionPlan
 
 
 class PurchaseOrderManager(models.Manager):
@@ -38,16 +38,9 @@ class PurchaseOrder(models.Model):
             return False
 
     def deliveries(self):
-        nodes = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all())
-        distribution_plans = []
-        for node in nodes:
-            distribution_plan = node.distribution_plan
-            if distribution_plan in distribution_plans:
-                distribution_plan.distributionplannode_set.add(node)
-            else:
-                distribution_plan.distributionplannode_set = [node]
-                distribution_plans.append(distribution_plan)
-        return list(distribution_plans)
+        plan_ids = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list(
+            'distribution_plan_id').distinct()
+        return DistributionPlan.objects.filter(id__in=plan_ids)
 
     def total_value(self):
         return reduce(lambda total, item: total + item.value, self.purchaseorderitem_set.all(), 0)
