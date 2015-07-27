@@ -28,7 +28,14 @@ describe('Single IP Direct Delivery Controller', function () {
         {quantityShipped: 11, id: 2, isInvalid: valid}
     ];
     var programmeId = 1;
-    var createdDelivery = {id: 10, programme: programmeId};
+    var createdDelivery = {
+        id: 10,
+        programme: programmeId,
+        contact_person_id: 1,
+        consignee: 1,
+        location: 'Kampala',
+        delivery_date: '2015-01-03'
+    };
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
     var districts = [{name: 'Kampala', id: 'Kampala'}, {name: 'Jinja', id: 'Jinja'}];
@@ -117,6 +124,12 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.district).toEqual({});
         });
 
+        it('should default scope delivery to empty object if there is no untracked delivery for purchase order', function () {
+            mockPurchaseOrderService.getDetail.and.returnValue(q.when([]));
+            scope.$apply();
+            expect(scope.delivery).toEqual({});
+        });
+
         it('should load all districts and put them on scope and notify directive', function () {
             expect(scope.districtsLoaded).toBeFalsy();
             scope.$apply();
@@ -144,6 +157,14 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.$apply();
             expect(mockPurchaseOrderService.get).toHaveBeenCalledWith(purchaseOrder.id, ['purchaseorderitem_set.item']);
             expect(scope.purchaseOrderItems).toEqual(purchaseOrderItems);
+        });
+
+        it('should load purchase order deliveries and put untracked one on the scope', function () {
+            mockPurchaseOrderService.getDetail.and.returnValue(q.when(deliveries));
+            scope.$apply();
+            expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries');
+            expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
+            expect(scope.delivery).toEqual(untrackedDelivery);
         });
 
         it('should load purchase order deliveries and put tracked ones on the scope', function () {
@@ -195,6 +216,8 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should NOT show warning modal if purchase order is already in single IP mode', function () {
+            makeScopeFixture();
+            setScopeData();
             scope.purchaseOrder = {isSingleIp: true};
             scope.save();
             scope.$apply();
@@ -202,6 +225,9 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should NOT show warning modal if some data on scope is blank', function () {
+            makeScopeFixture();
+            setScopeData();
+            scope.delivery.delivery_date = undefined;
             scope.purchaseOrder = {isSingleIp: false};
             scope.save();
             scope.$apply();
@@ -232,10 +258,10 @@ describe('Single IP Direct Delivery Controller', function () {
             makeScopeFixture();
             var deliveryCommonFields = {
                 distributionPlan: createdDelivery,
-                consignee: consignee,
+                consignee: consignee.id,
                 location: district.id,
                 deliveryDate: formattedDeliveryDate,
-                contactPerson: contact,
+                contactPerson: contact.id,
                 remark: remark,
                 track: true,
                 isEndUser: false,
@@ -255,8 +281,7 @@ describe('Single IP Direct Delivery Controller', function () {
             setScopeData();
         });
 
-        it('should create a new delivery and put it on scope when there is no current delivery on scope', function () {
-            scope.delivery = undefined;
+        it('should create a new delivery when there is no current delivery on scope', function () {
             scope.save();
             scope.$apply();
             expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
@@ -268,7 +293,6 @@ describe('Single IP Direct Delivery Controller', function () {
                 remark: remark,
                 track: true
             });
-            expect(scope.delivery).toEqual(createdDelivery);
         });
 
         it('should not create a new delivery when there is a delivery in the scope', function () {
@@ -279,7 +303,6 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should not create delivery if all purchase order items have quantityShipped as zero', function () {
-            scope.delivery = undefined;
             scope.purchaseOrderItems = [{quantityShipped: 0, isInvalid: valid}, {quantityShipped: 0, isInvalid: valid}];
             scope.save();
             scope.$apply();
@@ -290,6 +313,8 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should not throw zero-total-quantity error when total quantity is non zero and there is a delivery on scope', function () {
+            makeScopeFixture();
+            setScopeData();
             scope.delivery = createdDelivery;
             scope.save();
             scope.$apply();
@@ -297,7 +322,6 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
-            scope.delivery = undefined;
             scope.purchaseOrderItems = [{isInvalid: valid}, {quantityShipped: 10, isInvalid: valid}];
             scope.save();
             scope.$apply();
@@ -314,7 +338,7 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(toast.create).toHaveBeenCalledWith({content: 'Delivery created', class: 'success'})
         });
 
-        it('should create tracked delivery nodes for each purchase order item when delivery is undefined', function () {
+        it('should create tracked delivery nodes for each purchase order item when delivery is empty', function () {
             scope.save();
             scope.$apply();
 
@@ -397,12 +421,12 @@ describe('Single IP Direct Delivery Controller', function () {
     }
 
     function setScopeData() {
-        scope.delivery = undefined;
-        scope.consignee = consignee;
-        scope.district = district;
-        scope.deliveryDate = deliveryDate;
-        scope.contact = contact;
-        scope.remark = remark;
+        scope.delivery = {};
+        scope.delivery.consignee = consignee.id;
+        scope.delivery.location = district.id;
+        scope.delivery.delivery_date = deliveryDate;
+        scope.delivery.contact_person_id = contact.id;
+        scope.delivery.remark = remark;
         scope.purchaseOrderItems = [itemOne, itemTwo];
     }
 });

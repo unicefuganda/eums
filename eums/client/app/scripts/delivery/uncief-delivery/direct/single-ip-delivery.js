@@ -16,11 +16,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         });
 
         $scope.save = function () {
-            var someInputsAreEmpty = !($scope.contact.id && $scope.consignee.id && $scope.deliveryDate && $scope.district.id);
+            var someInputsAreEmpty = !(
+                $scope.delivery.contact_person_id
+                && $scope.delivery.consignee
+                && $scope.delivery.delivery_date
+                && $scope.delivery.location
+            );
             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
                 return item.isInvalid();
             });
-
             if (someInputsAreEmpty || someItemsAreInvalid) {
                 $scope.errors = true;
                 createToast('Cannot save. Please fill out all fields marked in red first', 'danger')
@@ -39,7 +43,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
                 return item.quantityShipped || 0;
             });
-            if (!$scope.delivery && totalQuantityShipped) {
+            if (!$scope.delivery.id && totalQuantityShipped) {
                 showLoader();
                 createDelivery()
                     .then(createDeliveryNodes)
@@ -77,17 +81,14 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         function createDelivery() {
             var deliveryFields = {
                 programme: $scope.purchaseOrder.programme,
-                consignee: $scope.consignee.id,
-                location: $scope.district.id,
-                delivery_date: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
-                contact_person_id: $scope.contact.id,
-                remark: $scope.remark,
+                consignee: $scope.delivery.consignee,
+                location: $scope.delivery.location,
+                delivery_date: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
+                contact_person_id: $scope.delivery.contact_person_id,
+                remark: $scope.delivery.remark,
                 track: true
             };
-            return DistributionPlanService.createPlan(deliveryFields).then(function (createdDelivery) {
-                $scope.delivery = createdDelivery;
-                return createdDelivery;
-            });
+            return DistributionPlanService.createPlan(deliveryFields);
         }
 
         function loadPurchaseOrderValue(purchaseOrder) {
@@ -102,17 +103,22 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item'])
                 .then(function (purchaseOrder) {
                     loadPurchaseOrderValue(purchaseOrder);
-                    loadPurchaseOrderDeliveries(purchaseOrder);
+                    loadPurchaseOrderDeliveries(purchaseOrder).then(function () {
+                        $scope.contentLoaded = true;
+                    });
                     $scope.purchaseOrder = purchaseOrder;
                     $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
                 });
         }
 
-        function loadPurchaseOrderDeliveries (purchaseOrder) {
-            PurchaseOrderService.getDetail(purchaseOrder, 'deliveries').then (function (deliveries) {
-                $scope.trackedDeliveries = deliveries.filter(function(delivery) {
+        function loadPurchaseOrderDeliveries(purchaseOrder) {
+            return PurchaseOrderService.getDetail(purchaseOrder, 'deliveries').then(function (deliveries) {
+                $scope.trackedDeliveries = deliveries.filter(function (delivery) {
                     return delivery.track;
                 });
+                $scope.delivery = deliveries.filter(function (delivery) {
+                    return !delivery.track;
+                }).first() || {};
             })
         }
 
@@ -122,11 +128,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                     item: purchaseOrderItem,
                     targetedQuantity: purchaseOrderItem.quantityShipped,
                     distributionPlan: createdDelivery,
-                    consignee: $scope.consignee,
-                    location: $scope.district.id,
-                    deliveryDate: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
-                    contactPerson: $scope.contact,
-                    remark: $scope.remark,
+                    consignee: $scope.delivery.consignee,
+                    location: $scope.delivery.location,
+                    deliveryDate: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
+                    contactPerson: $scope.delivery.contact_person_id,
+                    remark: $scope.delivery.remark,
                     track: true,
                     isEndUser: false,
                     treePosition: 'IMPLEMENTING_PARTNER'
