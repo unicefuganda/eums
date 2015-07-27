@@ -219,10 +219,10 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.$apply();
             expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
                 programme: programmeId,
-                consignee: consignee,
+                consignee: consignee.id,
                 location: district.id,
-                deliveryDate: formattedDeliveryDate,
-                contactPersonId: contact,
+                delivery_date: formattedDeliveryDate,
+                contact_person_id: contact.id,
                 remark: remark,
                 track: true
             });
@@ -262,10 +262,10 @@ describe('Single IP Direct Delivery Controller', function () {
 
             expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
                 programme: programmeId,
-                consignee: consignee,
+                consignee: consignee.id,
                 location: district.id,
-                deliveryDate: formattedDeliveryDate,
-                contactPersonId: contact,
+                delivery_date: formattedDeliveryDate,
+                contact_person_id: contact.id,
                 remark: remark,
                 track: true
             });

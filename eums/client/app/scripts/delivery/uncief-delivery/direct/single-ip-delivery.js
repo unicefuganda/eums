@@ -77,10 +77,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         function createDelivery() {
             var deliveryFields = {
                 programme: $scope.purchaseOrder.programme,
-                consignee: $scope.consignee,
+                consignee: $scope.consignee.id,
                 location: $scope.district.id,
-                deliveryDate: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
-                contactPersonId: $scope.contact,
+                delivery_date: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
+                contact_person_id: $scope.contact.id,
                 remark: $scope.remark,
                 track: true
             };
