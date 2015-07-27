@@ -82,6 +82,7 @@ function resetdb {
 
 function testbackend {
   source ~/.virtualenvs/eums/bin/activate
+  python manage.py --settings=eums.test_settings
   python manage.py test -v 2 --settings=eums.test_settings
 }
 
