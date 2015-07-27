@@ -35,7 +35,8 @@ describe('Single IP Direct Delivery Controller', function () {
         consignee: 1,
         location: 'Kampala',
         delivery_date: '2015-01-03',
-        track: true
+        track: true,
+        remark: 'some remark'
     };
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
@@ -54,8 +55,8 @@ describe('Single IP Direct Delivery Controller', function () {
 
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail', 'update']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan']);
-        mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan', 'update']);
+        mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             DeliveryNodeModel = DeliveryNode;
@@ -68,7 +69,9 @@ describe('Single IP Direct Delivery Controller', function () {
             mockPurchaseOrderService.get.and.returnValue($q.when(purchaseOrder));
             mockPurchaseOrderService.update.and.returnValue($q.when({}));
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
+            mockDeliveryNodeService.update.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
             mockDeliveryService.createPlan.and.returnValue($q.when(createdTrackedDelivery));
+            mockDeliveryService.update.and.returnValue($q.when(createdTrackedDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
@@ -310,11 +313,12 @@ describe('Single IP Direct Delivery Controller', function () {
             });
         });
 
-        it('should not create a new delivery when there is a delivery in the scope', function () {
+        it('should update delivery when there is a delivery in the scope', function () {
             scope.delivery = createdTrackedDelivery;
             scope.save(true);
             scope.$apply();
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+            expect(mockDeliveryService.update).toHaveBeenCalledWith(createdTrackedDelivery);
         });
 
         it('should not create delivery if all purchase order items have quantityShipped as zero', function () {
@@ -325,15 +329,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
             expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
-        });
-
-        it('should not throw zero-total-quantity error when total quantity is non zero and there is a delivery on scope', function () {
-            makeScopeFixture();
-            setScopeData();
-            scope.delivery = createdTrackedDelivery;
-            scope.save(true);
-            scope.$apply();
-            expect(toast.create).not.toHaveBeenCalled();
         });
 
         it('should create delivery when one of the nodes has undefined quantityShipped but other have non-zero quantityShipped', function () {
@@ -359,6 +354,17 @@ describe('Single IP Direct Delivery Controller', function () {
 
             var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
             expect(mockDeliveryNodeService.create.calls.count()).toBe(2);
+            expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeOne));
+            expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
+        });
+
+        it('should update delivery nodes on scope when save is called with create = falsy', function () {
+            scope.delivery = createdTrackedDelivery;
+            scope.save();
+            scope.$apply();
+
+            var createNodeArgs = mockDeliveryNodeService.update.calls.allArgs();
+            expect(mockDeliveryNodeService.update.calls.count()).toBe(2);
             expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeOne));
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
         });

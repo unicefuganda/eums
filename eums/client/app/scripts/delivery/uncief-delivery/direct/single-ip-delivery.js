@@ -53,6 +53,17 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                     .catch(alertOnSaveFailure)
                     .finally(hideLoader)
             }
+            else if ($scope.delivery.id && totalQuantityShipped) {
+                showLoader();
+                updateDelivery(tracked)
+                    .then(updateOrCreateDeliveryNodes)
+                    .then(loadOrderData)
+                    .then(function () {
+                        notifyOnSuccess('Delivery updated');
+                    })
+                    .catch(alertOnSaveFailure)
+                    .finally(hideLoader);
+            }
             else if (!totalQuantityShipped) {
                 createToast('Cannot save delivery with zero quantity shipped', 'danger');
             }
@@ -74,12 +85,13 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true}, 'PATCH');
         }
 
-        function notifyOnSuccess() {
-            createToast('Delivery created', 'success');
+        function notifyOnSuccess(message) {
+            message = message || 'Delivery created';
+            createToast(message, 'success');
         }
 
-        function createDelivery(tracked) {
-            var deliveryFields = {
+        function getDeliveryFields(tracked) {
+            return {
                 programme: $scope.purchaseOrder.programme,
                 consignee: $scope.delivery.consignee,
                 location: $scope.delivery.location,
@@ -88,7 +100,17 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 remark: $scope.delivery.remark,
                 track: tracked || false
             };
+        }
+
+        function createDelivery(tracked) {
+            var deliveryFields = getDeliveryFields(tracked);
             return DistributionPlanService.createPlan(deliveryFields);
+        }
+
+        function updateDelivery(tracked) {
+            var deliveryFields = getDeliveryFields(tracked);
+            deliveryFields.id = $scope.delivery.id;
+            return DistributionPlanService.update(deliveryFields);
         }
 
         function loadPurchaseOrderValue(purchaseOrder) {
@@ -117,8 +139,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                     return delivery.track;
                 });
                 $scope.delivery = deliveries.filter(function (delivery) {
-                    return !delivery.track;
-                }).first() || {};
+                        return !delivery.track;
+                    }).first() || {};
             })
         }
 
@@ -144,6 +166,12 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 purchaseOrderItem.quantityShipped && createNodePromises.push(createNodeFrom(purchaseOrderItem));
             });
             return $q.all(createNodePromises);
+        }
+
+        function updateOrCreateDeliveryNodes() {
+            DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}).then(function (nodes) {
+
+            });
         }
 
         function createToast(message, klass) {
