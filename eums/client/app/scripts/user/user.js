@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('User', ['eums.config']).factory('UserService', function ($http, $q) {
+angular.module('User', ['eums.config']).factory('UserService', function ($http, $q, EumsConfig) {
     var currentUser;
     return {
         getCurrentUser: function () {
@@ -19,6 +19,11 @@ angular.module('User', ['eums.config']).factory('UserService', function ($http, 
                 return true;
             }).catch(function () {
                 return false;
+            });
+        },
+        retrieveUserPermissions: function() {
+            return $http.get(EumsConfig.BACKEND_URLS.PERMISSION + '/all').then(function (result) {
+                return result.data;
             });
         }
     };

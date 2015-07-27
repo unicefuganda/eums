@@ -14,6 +14,13 @@ GROUP_PERMISSIONS = {
         'change_consignee',
         'delete_consignee'
     ],
+    'UNICEF_editor': [
+        'can_view_dashboard',
+        'can_view_consignees',
+        'add_consignee',
+        'change_consignee',
+        'delete_consignee'  
+    ],
     'UNICEF_viewer': [
         'can_view_dashboard', 
         'can_view_consignees'
@@ -21,9 +28,17 @@ GROUP_PERMISSIONS = {
     'Implementing Partner_editor': [
         'can_view_delivery_reports', 
         'can_view_dashboard',
-        'add_consignee'
+        'can_view_consignees',
+        'add_consignee',
+        'change_consignee',
+        'delete_consignee'
+    ],
+    'Implementing Partner_viewer': [
+        'can_view_dashboard',
+        'can_view_consignees'
     ]
 }
+
 
 class Command(BaseCommand):
     help = 'Associates Auth_Groups with permissions'

@@ -1,6 +1,6 @@
 describe('User Service', function () {
 
-    var userService, mockBackend, userEndpointUrl, permissionEndpointUrl;
+    var userService, mockBackend, userEndpointUrl, permissionEndpointUrl, retrievePermissionsUrl;
 
     beforeEach(function () {
         module('User');
@@ -11,6 +11,16 @@ describe('User Service', function () {
             permissionEndpointUrl = EumsConfig.BACKEND_URLS.PERMISSION;
             userService = UserService;
         });
+    });
+
+    it('should retrieve all permissions for a user', function (done) {
+        var permissionsResponse = ['permission_one', 'permission_two'];
+        mockBackend.whenGET(permissionEndpointUrl + '/all').respond(200, permissionsResponse);
+        userService.retrieveUserPermissions().then(function (permissions) {
+            expect(permissions).toEqual(permissionsResponse)
+            done();
+        });
+        mockBackend.flush();
     });
 
     it('should be true if user permission exists', function (done) {

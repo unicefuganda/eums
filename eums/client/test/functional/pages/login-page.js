@@ -9,6 +9,11 @@ LoginPage.prototype = Object.create({}, {
         browser.get(this.url);
     }},
 
+    logout: { value: function () {
+        browser.ignoreSynchronization = true;
+        browser.get('logout');
+    }},
+
     welcomeMessage: { get: function () { return element(by.id('login-welcome')); }},
     username: { get: function () { return element(by.id('username')); }},
     password: { get: function () { return element(by.id('password')); }},

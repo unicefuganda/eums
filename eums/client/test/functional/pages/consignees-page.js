@@ -20,6 +20,10 @@ consigneesPage.prototype = Object.create({}, {
 
     addConsignee: { value: function () { element(by.id('add-consignee')).click(); }},
 
+    addConsigneeButton: { get: function () { return element(by.id('add-consignee')); }},
+    editConsigneeButton: { get: function () { return element.all(by.css('.editBtn')).get(0); }},
+    deleteConsigneeButton: { get: function () { return element.all(by.css('.deleteBtn')).get(0); }},
+
     editConsignee: { value: function () { element.all(by.css('.editBtn')).get(0).click(); }},
     deleteConsignee: { value: function () { element.all(by.css('.deleteBtn')).get(0).click(); }},
     saveConsignee: { value: function () { element.all(by.css('.saveBtn')).get(0).click(); }},

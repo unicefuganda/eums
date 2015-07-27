@@ -69,10 +69,10 @@
                         </td>
                         <td>
                             <span ng-show="!consignee.inEditMode">
-                                <button class="btn btn-sm btn-default blue-border-button editBtn" ng-click="edit(consignee)">
+                                <button ng-show="change_consignee" class="btn btn-sm btn-default blue-border-button editBtn" ng-click="edit(consignee)">
                                     Edit
                                 </button>
-                                <button class="btn btn-sm btn-default red-border-button deleteBtn"
+                                <button ng-show="delete_consignee" class="btn btn-sm btn-default red-border-button deleteBtn"
                                         ng-click="showDeleteDialog(consignee)" ng-class="{'invisible': consignee.importedFromVision}">
                                     Delete
                                 </button>
