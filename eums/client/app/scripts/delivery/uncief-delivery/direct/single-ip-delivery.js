@@ -75,8 +75,16 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function createDelivery() {
-            var programme = {programme: $scope.purchaseOrder.programme};
-            return DistributionPlanService.createPlan(programme).then(function (createdDelivery) {
+            var deliveryFields = {
+                programme: $scope.purchaseOrder.programme,
+                consignee: $scope.consignee,
+                location: $scope.district.id,
+                deliveryDate: moment(new Date($scope.deliveryDate)).format('YYYY-MM-DD'),
+                contactPersonId: $scope.contact,
+                remark: $scope.remark,
+                track: true
+            };
+            return DistributionPlanService.createPlan(deliveryFields).then(function (createdDelivery) {
                 $scope.delivery = createdDelivery;
                 return createdDelivery;
             });
@@ -86,7 +94,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             showLoader();
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
-                    //console.log('po', JSON.stringify(purchaseOrder), 'total', totalValue);
                     purchaseOrder.totalValue = totalValue;
                     hideLoader();
                 });

@@ -217,7 +217,15 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.delivery = undefined;
             scope.save();
             scope.$apply();
-            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+                programme: programmeId,
+                consignee: consignee,
+                location: district.id,
+                deliveryDate: formattedDeliveryDate,
+                contactPersonId: contact,
+                remark: remark,
+                track: true
+            });
             expect(scope.delivery).toEqual(createdDelivery);
         });
 
@@ -252,7 +260,15 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.save();
             scope.$apply();
 
-            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({programme: programmeId});
+            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+                programme: programmeId,
+                consignee: consignee,
+                location: district.id,
+                deliveryDate: formattedDeliveryDate,
+                contactPersonId: contact,
+                remark: remark,
+                track: true
+            });
             expect(toast.create).toHaveBeenCalledWith({content: 'Delivery created', class: 'success'})
         });
 
