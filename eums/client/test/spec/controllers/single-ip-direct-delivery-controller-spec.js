@@ -1,4 +1,4 @@
-describe('Single IP Direct Delivery Controller', function () {
+xdescribe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, scope, location, mockIpService,
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
