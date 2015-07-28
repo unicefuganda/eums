@@ -31,11 +31,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             saveDelivery();
         };
 
-        $scope.cannotChangeIp = function() {
+        $scope.cannotChangeIp = function () {
             return $scope.trackedDeliveries.length;
         };
 
-        $scope.addRemark = function() {
+        $scope.addRemark = function () {
             angular.element('#add-remark-modal').modal();
         };
 
@@ -71,17 +71,21 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function loadOrderData() {
             showLoader();
-            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item'])
-                .then(function (purchaseOrder) {
-                    $scope.purchaseOrder = purchaseOrder;
-                    loadPurchaseOrderValue(purchaseOrder);
-                    loadPurchaseOrderDeliveries(purchaseOrder).then(function () {
-                        attachNodesToItems(purchaseOrder.purchaseorderitemSet).then(function (items) {
-                            $scope.purchaseOrderItems = items.map(setItemQuantityShipped);
-                            $scope.contentLoaded = true;
-                        });
+            var fieldsToBuild = ['purchaseorderitem_set.item'];
+            PurchaseOrderService.get($routeParams.purchaseOrderId, fieldsToBuild).then(function (purchaseOrder) {
+                $scope.purchaseOrder = purchaseOrder;
+                var promises = [];
+                promises.push(loadPurchaseOrderValue(purchaseOrder));
+                promises.push(loadPurchaseOrderDeliveries(purchaseOrder).then(function () {
+                    return attachNodesToItems(purchaseOrder.purchaseorderitemSet).then(function (items) {
+                        $scope.purchaseOrderItems = items.map(setItemQuantityShipped);
+                        $scope.contentLoaded = true;
                     });
+                }));
+                $q.all(promises).then(function () {
+                    hideLoader();
                 });
+            });
         }
 
         function scopeDataIsValid() {
@@ -123,7 +127,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         function loadPurchaseOrderValue(purchaseOrder) {
             PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
                 purchaseOrder.totalValue = totalValue;
-                hideLoader();
             });
         }
 
@@ -221,8 +224,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         //Because remark partial sucks
         $scope.lineItem = {};
-        $scope.$watch('lineItem.remark', function(remark) {
-            if(remark) {
+        $scope.$watch('lineItem.remark', function (remark) {
+            if (remark) {
                 $scope.delivery.remark = remark;
             }
         });
@@ -238,11 +241,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function showLoader() {
-            angular.element('#loading').modal();
+            if (!angular.element('#loading').hasClass('in')) {
+                angular.element('#loading').modal();
+            }
         }
 
         function hideLoader() {
             angular.element('#loading').modal('hide');
+            angular.element('#loading.modal').removeClass('in');
+            angular.element('.modal-backdrop').remove();
         }
 
         function alertOnSaveFailure() {
