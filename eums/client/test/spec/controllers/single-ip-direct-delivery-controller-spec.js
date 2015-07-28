@@ -31,12 +31,12 @@ describe('Single IP Direct Delivery Controller', function () {
     var createdTrackedDelivery = {
         id: 10,
         programme: programmeId,
-        contact_person_id: 1,
+        contact_person_id: 3,
         consignee: 1,
         location: 'Kampala',
-        delivery_date: '2015-01-03',
+        delivery_date: '2015-06-29',
         track: true,
-        remark: 'some remark'
+        remark: 'Some remarks'
     };
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
@@ -56,7 +56,7 @@ describe('Single IP Direct Delivery Controller', function () {
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail', 'update']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan', 'update']);
-        mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update']);
+        mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
             DeliveryNodeModel = DeliveryNode;
@@ -70,6 +70,7 @@ describe('Single IP Direct Delivery Controller', function () {
             mockPurchaseOrderService.update.and.returnValue($q.when({}));
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
             mockDeliveryNodeService.update.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
+            mockDeliveryNodeService.filter.and.returnValue($q.when([new DeliveryNodeModel({id: 1})]));
             mockDeliveryService.createPlan.and.returnValue($q.when(createdTrackedDelivery));
             mockDeliveryService.update.and.returnValue($q.when(createdTrackedDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
@@ -358,18 +359,26 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
         });
 
-        xit('should update delivery nodes on scope when save is called with create = falsy', function () {
+        it('should update delivery nodes on scope when save is called with create = falsy', function () {
             scope.delivery = createdTrackedDelivery;
+            var nodeOneClone = Object.merge(nodeOne, {id: 1, item: itemOne.id});
+            var nodeTwoClone = Object.merge(nodeTwo, {id: 2, item: itemTwo.id});
+            mockDeliveryNodeService.filter.and.returnValue(q.when([nodeOneClone, nodeTwoClone]));
+
             scope.save();
             scope.$apply();
 
-            var createNodeArgs = mockDeliveryNodeService.update.calls.allArgs();
+            var updateNodeArgs = mockDeliveryNodeService.update.calls.allArgs();
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({
+                distribution_plan: createdTrackedDelivery.id,
+                parent__isnull: true
+            });
             expect(mockDeliveryNodeService.update.calls.count()).toBe(2);
-            expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeOne));
-            expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwo));
+            expect(JSON.stringify(updateNodeArgs.first().first())).toEqual(JSON.stringify(nodeOneClone));
+            expect(JSON.stringify(updateNodeArgs.last().first())).toEqual(JSON.stringify(nodeTwoClone));
         });
 
-        it('should create untracked nodes when save is called with falsy', function() {
+        it('should create untracked nodes when save is called with falsy', function () {
             var untrackedCreatedDelivery = Object.clone(createdTrackedDelivery);
             untrackedCreatedDelivery.track = false;
             var untrackedNodeOne = Object.merge(nodeOne, {track: false, distributionPlan: untrackedCreatedDelivery});

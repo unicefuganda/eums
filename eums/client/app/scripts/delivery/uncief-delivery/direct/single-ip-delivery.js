@@ -146,21 +146,25 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             })
         }
 
+        function getNodeFields(item, delivery) {
+            return {
+                item: item,
+                targetedQuantity: item.quantityShipped,
+                distributionPlan: delivery,
+                consignee: delivery.consignee,
+                location: delivery.location,
+                deliveryDate: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
+                contactPerson: delivery.contact_person_id,
+                remark: delivery.remark,
+                track: delivery.track,
+                isEndUser: false,
+                treePosition: 'IMPLEMENTING_PARTNER'
+            };
+        }
+
         function createDeliveryNodes(createdDelivery) {
             function createNodeFrom(purchaseOrderItem) {
-                return DistributionPlanNodeService.create(new DeliveryNode({
-                    item: purchaseOrderItem,
-                    targetedQuantity: purchaseOrderItem.quantityShipped,
-                    distributionPlan: createdDelivery,
-                    consignee: $scope.delivery.consignee,
-                    location: $scope.delivery.location,
-                    deliveryDate: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
-                    contactPerson: $scope.delivery.contact_person_id,
-                    remark: $scope.delivery.remark,
-                    track: createdDelivery.track,
-                    isEndUser: false,
-                    treePosition: 'IMPLEMENTING_PARTNER'
-                }));
+                return DistributionPlanNodeService.create(new DeliveryNode(getNodeFields(purchaseOrderItem, createdDelivery)));
             }
 
             var createNodePromises = [];
@@ -171,9 +175,26 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function updateOrCreateDeliveryNodes() {
-            //DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}).then(function (nodes) {
-            //
-            //});
+            var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
+            DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+                var mappedItems = $scope.purchaseOrderItems.map(function (item) {
+                    var matchingNode = findNodeForItem(item, nodes);
+                    return matchingNode ? Object.merge(item, {nodeId: matchingNode.id}) : item;
+                });
+                mappedItems.forEach(function (item) {
+                    if (item.nodeId) {
+                        var deliveryNode = new DeliveryNode(getNodeFields(item, $scope.delivery));
+                        DistributionPlanNodeService.update(Object.merge(deliveryNode, {id: item.nodeId, item: item.id}));
+                    }
+                    //else create a new node for that item because one has not been created yet
+                })
+            });
+        }
+
+        function findNodeForItem(item, nodes) {
+            return nodes.find(function (node) {
+                return node.item === item.id;
+            });
         }
 
         function createToast(message, klass) {
