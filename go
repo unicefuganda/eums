@@ -5,7 +5,14 @@ function main {
   case "$1" in
 
     "prep" )
-      prep;;
+      if [ "$2" = "--back" ]; then
+        prepbackend
+      elif [ "$2" = "--front" ]; then
+        prepfrontend
+      else
+        prepbackend
+        prepfrontend
+      fi;;
 
     "build" )
       build;;
@@ -55,19 +62,23 @@ function build {
   cd -
 }
 
-function prep {
+function prepbackend {
   if [ ! -d ~/.virtualenvs/eums ]; then
     virtualenv ~/.virtualenvs/eums
   fi
   source ~/.virtualenvs/eums/bin/activate
   pip install -r requirements.txt
-  sudo npm install -g grunt-cli
+  killtestdbconnections
+  echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
+}
+
+function prepfrontend {
   cd eums/client
+  sudo npm install -g grunt-cli
   npm install
   sudo npm install -g bower
   echo n | bower install
-  killtestdbconnections
-  echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
+  cd -
 }
 
 function resetdb {
@@ -75,12 +86,14 @@ function resetdb {
     echo "+++ Resetting database eums_test..."
     echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
     python manage.py migrate --settings=eums.test_settings
+    python manage.py setup_permissions --settings=eums.test_settings
     python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings
   else
     echo "+++ Resetting database eums..."
     echo "drop database
     eums; create database eums;" | psql -h localhost -U postgres
     python manage.py migrate
+    python manage.py setup_permissions
     python manage.py loaddata eums/client/test/functional/fixtures/user.json
   fi
 }
