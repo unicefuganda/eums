@@ -148,12 +148,12 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         date_received_question.textanswer_set.create(value='2014-01-03', run=self.run_three)
 
     def setup_runs(self):
-        self.run_one = RunFactory(node=self.ip_node_one)
-        self.run_two = RunFactory(node=self.ip_node_two)
-        self.run_three = RunFactory(node=self.ip_node_three)
-        self.run_four = RunFactory(node=self.middle_man_node_one)
-        self.run_five = RunFactory(node=self.middle_man_node_two)
-        self.run_six = RunFactory(node=self.end_user_node)
+        self.run_one = RunFactory(runnable=self.ip_node_one)
+        self.run_two = RunFactory(runnable=self.ip_node_two)
+        self.run_three = RunFactory(runnable=self.ip_node_three)
+        self.run_four = RunFactory(runnable=self.middle_man_node_one)
+        self.run_five = RunFactory(runnable=self.middle_man_node_two)
+        self.run_six = RunFactory(runnable=self.end_user_node)
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.po_one)

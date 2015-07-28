@@ -102,3 +102,16 @@ class RunTest(TestCase):
 
         expected_data = {'product_received': 'Yes', 'quantity_received': 12, 'date_received': '2014-01-01'}
         self.assertDictEqual(run.questions_and_responses(), expected_data)
+
+    def test_should_get_scheduled_runs_for_contact(self):
+        runnable = DistributionPlanNodeFactory(contact_person_id=2)
+        contact_person_id = 2
+
+        self.assertEqual(Run.has_scheduled_run(contact_person_id), False)
+
+        run = RunFactory(runnable=runnable)
+        self.assertEqual(Run.has_scheduled_run(contact_person_id), True)
+
+        run.status = Run.STATUS.completed
+        run.save()
+        self.assertEqual(Run.has_scheduled_run(contact_person_id), False)

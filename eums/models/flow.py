@@ -15,7 +15,8 @@ class Flow(models.Model):
     def is_end(self, answer):
         question_id = answer.question.id
         value_id = answer.value.id if type(answer.value) is Option else self.NO_OPTION
-        return self.end_nodes and [question_id, value_id] in self.end_nodes
+        return_value = self.end_nodes and [question_id, value_id] in self.end_nodes
+        return return_value
 
     def __unicode__(self):
         return '%s' % str(self.for_runnable_type)

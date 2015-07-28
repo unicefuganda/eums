@@ -15,14 +15,14 @@ def schedule_run_for(runnable):
     run_delay = _calculate_delay(runnable)
     if current_run:
         _cancel_run(current_run)
-        RunQueue.enqueue(runnable, run_delay)
 
+    if Run.has_scheduled_run(runnable.contact_person_id):
+        RunQueue.enqueue(runnable, run_delay)
     else:
         contact = runnable.build_contact()
         task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
         Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
                            status=Run.STATUS.scheduled, phone=contact['phone'])
-
 
 @app.task
 def _schedule_run(runnable_id):
@@ -49,7 +49,7 @@ def _flow_for(runnable):
             return Flow.objects.get(for_runnable_type=Runnable.END_USER)
         return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
     elif isinstance(runnable, DistributionPlan):
-        Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        return Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
 
 
 def _cancel_run(run):

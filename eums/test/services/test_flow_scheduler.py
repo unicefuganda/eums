@@ -9,7 +9,7 @@ from mock import MagicMock, ANY, patch
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
-from eums.models import DistributionPlanNode as Node, Flow, DistributionPlan, Runnable
+from eums.models import DistributionPlanNode as Node, Flow, Runnable
 from eums.models import Run, RunQueue
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
@@ -40,13 +40,17 @@ class FlowSchedulerTest(TestCase):
         local_celery.app.control.revoke = MagicMock(return_value=None)
         self.node.build_contact = MagicMock(return_value=self.contact)
         Node.objects.get = MagicMock(return_value=self.node)
+        Runnable.objects.get = MagicMock(return_value=self.node)
 
         self.MIDDLEMAN_FLOW_ID = FlowFactory(for_runnable_type=Runnable.MIDDLE_MAN).rapid_pro_id
         self.END_USER_FLOW_ID = FlowFactory(for_runnable_type=Runnable.END_USER).rapid_pro_id
         self.IMPLEMENTING_PARTNER_FLOW_ID = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER).rapid_pro_id
 
     def tearDown(self):
+        Run.objects.all().delete()
+        RunQueue.objects.all().delete()
         Flow.objects.all().delete()
+        Node.objects.all().delete()
 
     def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self):
         node = NodeFactory(tree_position=Node.MIDDLE_MAN)
@@ -70,18 +74,19 @@ class FlowSchedulerTest(TestCase):
         mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=self.END_USER_FLOW_ID,
                                                    item_description=ANY, sender=ANY)
 
-    # def test_should_schedule_implementing_partner_flow_if_runnable_is_delivery(self):
-    #     delivery = DistributionPlanFactory()
-    #     delivery.build_contact = MagicMock(return_value=self.contact)
-    #
-    #     DistributionPlan.objects.get = MagicMock(return_value=delivery)
-    #
-    #     schedule_run_for(delivery)
-    #
-    #     mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=self.IMPLEMENTING_PARTNER_FLOW_ID,
-    #                                                item_description=ANY, sender=ANY)
+    def test_should_schedule_implementing_partner_flow_if_runnable_is_delivery(self):
+        delivery = DistributionPlanFactory()
+        delivery.build_contact = MagicMock(return_value=self.contact)
+
+        Runnable.objects.get = MagicMock(return_value=delivery)
+
+        schedule_run_for(delivery)
+
+        mock_start_delivery_run.assert_called_with(contact_person=self.contact, flow=self.IMPLEMENTING_PARTNER_FLOW_ID,
+                                                   item_description=ANY, sender=ANY)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
+        self.node.build_contact = MagicMock(return_value=self.contact)
         schedule_run_for(self.node)
 
         mock_start_delivery_run.assert_called_with(sender='UNICEF', contact_person=self.contact, flow=ANY,
@@ -94,7 +99,7 @@ class FlowSchedulerTest(TestCase):
         node = NodeFactory(consignee=sender_org, parent=parent_node)
         node.build_contact = MagicMock(return_value=self.contact)
 
-        Node.objects.get = MagicMock(return_value=node)
+        Runnable.objects.get = MagicMock(return_value=node)
         node.consignee.build_contact = MagicMock(return_value=self.contact)
 
         schedule_run_for(node)
@@ -116,7 +121,7 @@ class FlowSchedulerTest(TestCase):
 
         self.assertEqual(mock_celery.invoked_after, 604800.0)
 
-    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node_line_item(self):
+    def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node(self):
         run = RunFactory(runnable=self.node)
 
         self.node.current_run = MagicMock(return_value=run)
@@ -129,14 +134,12 @@ class FlowSchedulerTest(TestCase):
         mock_start_delivery_run.assert_called()
 
     @patch('eums.models.RunQueue.enqueue')
-    @patch('eums.models.Runnable.current_run')
-    def test_should_queue_run_for_a_consignee_if_consignee_has_current_run_for_a_different_node_line_item(self,
-                                                                                                          mock_run_queue_enqueue, mock_runnable_current_run):
-        run = RunFactory(runnable=self.node)
-        node_two = NodeFactory()
-        mock_runnable_current_run.return_value = run
+    def test_should_queue_run_for_a_contact_if_contact_has_current_run_for_a_different_runnable(self,
+                                                                                                     mock_run_queue_enqueue):
+        RunFactory(runnable=self.node)
+        node_two = NodeFactory(contact_person_id=self.node.contact_person_id)
+        node_two.build_contact = MagicMock(return_value=self.contact)
         mock_run_queue_enqueue.return_value = None
-
         schedule_run_for(node_two)
 
         mock_run_queue_enqueue.assert_called_with(node_two, ANY)

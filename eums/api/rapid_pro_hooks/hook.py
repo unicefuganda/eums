@@ -21,23 +21,23 @@ def hook(request):
 
         if flow.is_end(answer):
             _mark_as_complete(run)
-            _dequeue_next_run(run)
+            _dequeue_next_run(run.runnable.contact_person_id)
         return HttpResponse(status=200)
 
     except StandardError:
         return HttpResponse(status=200)
 
 
-def _dequeue_next_run(run):
-    next_run = RunQueue.dequeue(contact_person_id=run.node.contact_person_id)
+def _dequeue_next_run(contact_person_id):
+    next_run = RunQueue.dequeue(contact_person_id=contact_person_id)
     if next_run:
-        _schedule_next_run(next_run.node)
+        _schedule_next_run(next_run.runnable)
         next_run.status = RunQueue.STATUS.started
         next_run.save()
 
 
-def _schedule_next_run(node):
-    schedule_run_for(node)
+def _schedule_next_run(runnable):
+    schedule_run_for(runnable)
 
 
 def _mark_as_complete(run):

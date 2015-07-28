@@ -48,3 +48,9 @@ class Run(models.Model):
 
         return Run.objects.filter(Q(status=Run.STATUS.scheduled) &
                                   Q(runnable__delivery_date__lt=latest_allowed_date))
+
+    @classmethod
+    def has_scheduled_run(cls, contact_person_id):
+        scheduled_runs = Run.objects.filter(Q(status=Run.STATUS.scheduled) &
+                           Q(runnable__contact_person_id=contact_person_id))
+        return len(scheduled_runs) > 0
