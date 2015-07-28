@@ -1,4 +1,6 @@
-from rest_framework import filters
+from eums.api.consignee.delivery_attached_permission import DeliveryAttachedPermission
+from eums.api.consignee.vision_imported_permission import VisionImportedPermission
+from eums.api.consignee.created_by_permission import CreatedByPermission
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.pagination import PageNumberPagination
@@ -21,7 +23,11 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 
 class ConsigneeViewSet(ModelViewSet):
-    permission_classes = (DjangoModelPermissions,)
+    permission_classes = (
+        DjangoModelPermissions,
+        VisionImportedPermission,
+        DeliveryAttachedPermission,
+        CreatedByPermission)
 
     queryset = Consignee.objects.all().order_by('name')
     serializer_class = ConsigneeSerialiser
@@ -45,6 +51,7 @@ class ConsigneeViewSet(ModelViewSet):
     def deliveries(self, _, pk=None):
         node_ids = DistributionPlanNode.objects.filter(consignee_id=pk).values_list('id', flat=True)
         return Response(list(node_ids))
+
 
 consigneeRouter = DefaultRouter()
 consigneeRouter.register(r'consignee', ConsigneeViewSet)

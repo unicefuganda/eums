@@ -74,12 +74,12 @@ describe('Consignees and subconsignees', function () {
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.addConsignee();
-            consigneesPage.setConsigneeName('IP Editor New Consignee');
-            consigneesPage.setConsigneeLocation('IP Editor New Consignee Location');
-            consigneesPage.setConsigneeRemarks('IP Editor New Consignee Remarks');
+            consigneesPage.setConsigneeName('IP Editor Consignee');
+            consigneesPage.setConsigneeLocation('IP Editor Location');
+            consigneesPage.setConsigneeRemarks('IP Editor Remarks');
             consigneesPage.saveConsignee();
 
-            consigneesPage.searchFor('IP Editor New Consignee');
+            consigneesPage.searchFor('IP Editor Consignee');
 
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
@@ -98,7 +98,7 @@ describe('Consignees and subconsignees', function () {
 
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeFalsy();
 
-            consigneesPage.searchFor('IP Editor New Consignee');
+            consigneesPage.searchFor('IP Editor Consignee');
 
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeFalsy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
@@ -112,12 +112,12 @@ describe('Consignees and subconsignees', function () {
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
             consigneesPage.addConsignee();
-            consigneesPage.setConsigneeName('UNICEF Admin New Consignee');
-            consigneesPage.setConsigneeLocation('UNICEF Admin New Consignee Location');
-            consigneesPage.setConsigneeRemarks('UNICEF Admin New Consignee Remarks');
+            consigneesPage.setConsigneeName('UNICEF Admin Consignee');
+            consigneesPage.setConsigneeLocation('UNICEF Admin Location');
+            consigneesPage.setConsigneeRemarks('UNICEF Admin Remarks');
             consigneesPage.saveConsignee();
 
-            consigneesPage.searchFor('UNICEF Admin New Consignee');
+            consigneesPage.searchFor('UNICEF Admin Consignee');
 
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
@@ -136,7 +136,7 @@ describe('Consignees and subconsignees', function () {
 
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeTruthy();
 
-            consigneesPage.searchFor('UNICEF Admin New Consignee');
+            consigneesPage.searchFor('UNICEF Admin Consignee');
 
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeTruthy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeTruthy();
@@ -155,7 +155,7 @@ describe('Consignees and subconsignees', function () {
 
             expect(consigneesPage.addConsigneeButton.isDisplayed()).toBeFalsy();
 
-            consigneesPage.searchFor('UNICEF Admin New Consignee');
+            consigneesPage.searchFor('UNICEF Admin Consignee');
 
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeFalsy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();                        

@@ -1,6 +1,6 @@
 import factory
-
 from eums.models import Consignee
+from eums.test.factories.user_factory import UserFactory
 
 
 class ConsigneeFactory(factory.DjangoModelFactory):
@@ -12,3 +12,4 @@ class ConsigneeFactory(factory.DjangoModelFactory):
     type = Consignee.TYPES.implementing_partner
     location = 'Kampala',
     imported_from_vision = False
+    created_by_user = factory.SubFactory(UserFactory)
