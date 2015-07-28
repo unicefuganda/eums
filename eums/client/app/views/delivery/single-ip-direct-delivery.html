@@ -11,7 +11,16 @@
         <ng-toast></ng-toast>
         <div>
             <div class="pad-left-5 pad-top-10">
-                <span class="section-header">Select an Implementing Partner and the Delivery details</span>
+                <span class="section-header" ng-if="!delivery.id && !trackedDeliveries.length">
+                    Select an Implementing Partner and the Delivery details
+                </span>
+                <span class="section-header" ng-if="delivery.id">
+                    You are editing a draft delivery.
+                </span>
+                <span class="section-header" ng-if="trackedDeliveries.length">
+                    You have already delivered items to this IP from this Purchase Order.
+                    You cannot change the IP, but you can deliver more items to them. Other fields are editable.
+                </span>
             </div>
             <div class="pad-left-5 pad-top-10">
                 <div class="col-md-12 form-horizontal">
@@ -24,7 +33,7 @@
                             <input type="hidden" search-consignees only-ips
                                    ng-model="delivery.consignee"
                                    ng-attr-id="{{ 'ip-select' }}"
-                                   ng-disabled="delivery.consignee && delivery.id"
+                                   ng-disabled="cannotChangeIp()"
                                    value="{{ delivery.consignee }}">
                         </div>
                     </div>

@@ -17,28 +17,22 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         $scope.save = function (tracked) {
             $scope.tracked = tracked || false;
-            var someInputsAreEmpty = !(
-                $scope.delivery.contact_person_id
-                && $scope.delivery.consignee
-                && $scope.delivery.delivery_date
-                && $scope.delivery.location
-            );
-            var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
-                return item.isInvalid(item.quantityShipped);
-            });
-
-            if (someInputsAreEmpty || someItemsAreInvalid) {
-                $scope.errors = true;
-                createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger')
+            if (scopeDataIsValid()) {
+                $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
             }
             else {
-                $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
+                $scope.errors = true;
+                createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger')
             }
         };
 
         $scope.warningAccepted = function () {
             angular.element('#confirmation-modal').modal('hide');
             saveDelivery();
+        };
+
+        $scope.cannotChangeIp = function() {
+            return $scope.trackedDeliveries.length;
         };
 
         var saveDelivery = function () {
@@ -71,25 +65,32 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             }
         };
 
-        function showLoader() {
-            angular.element('#loading').modal();
+        function loadOrderData() {
+            showLoader();
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item'])
+                .then(function (purchaseOrder) {
+                    $scope.purchaseOrder = purchaseOrder;
+                    loadPurchaseOrderValue(purchaseOrder);
+                    loadPurchaseOrderDeliveries(purchaseOrder).then(function () {
+                        attachNodesToItems(purchaseOrder.purchaseorderitemSet).then(function (items) {
+                            $scope.purchaseOrderItems = items.map(setItemQuantityShipped);
+                            $scope.contentLoaded = true;
+                        });
+                    });
+                });
         }
 
-        function hideLoader() {
-            angular.element('#loading').modal('hide');
-        }
-
-        function alertOnSaveFailure() {
-            createToast('Save failed', 'danger');
-        }
-
-        function updatePurchaseOrderDeliveryMode() {
-            return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true}, 'PATCH');
-        }
-
-        function notifyOnSuccess(message) {
-            message = message || 'Delivery created';
-            createToast(message, 'success');
+        function scopeDataIsValid() {
+            var someInputsAreEmpty = !(
+                $scope.delivery.contact_person_id
+                && $scope.delivery.consignee
+                && $scope.delivery.delivery_date
+                && $scope.delivery.location
+            );
+            var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
+                return item.isInvalid(item.quantityShipped);
+            });
+            return !someInputsAreEmpty && !someItemsAreInvalid;
         }
 
         function getDeliveryFields() {
@@ -122,17 +123,22 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             });
         }
 
-        function loadOrderData() {
-            showLoader();
-            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item'])
-                .then(function (purchaseOrder) {
-                    loadPurchaseOrderValue(purchaseOrder);
-                    loadPurchaseOrderDeliveries(purchaseOrder).then(function () {
-                        $scope.contentLoaded = true;
+        function attachNodesToItems(items) {
+            if ($scope.delivery && $scope.delivery.id) {
+                var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
+                return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+                    return items.map(function (item) {
+                        var matchingNode = findNodeForItem(item, nodes);
+                        return matchingNode ? Object.merge(item, {node: matchingNode}) : item;
                     });
-                    $scope.purchaseOrder = purchaseOrder;
-                    $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
                 });
+            }
+            return $q.when(items);
+        }
+
+        function setItemQuantityShipped(item) {
+            var quantityShipped = item.node ? item.node.targetedQuantity : item.availableBalance;
+            return Object.merge(item, {quantityShipped: quantityShipped})
         }
 
         function loadPurchaseOrderDeliveries(purchaseOrder) {
@@ -140,10 +146,22 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 $scope.trackedDeliveries = deliveries.filter(function (delivery) {
                     return delivery.track;
                 });
+
                 $scope.delivery = deliveries.filter(function (delivery) {
                         return !delivery.track;
                     }).first() || {};
-            })
+
+                setDeliveryDataFromPastDelivery($scope.trackedDeliveries);
+            });
+        }
+
+        function setDeliveryDataFromPastDelivery(trackedDeliveries) {
+            if (trackedDeliveries.length) {
+                var firstDelivery = trackedDeliveries.first();
+                $scope.delivery.consignee = firstDelivery.consignee;
+                $scope.delivery.contact_person_id = firstDelivery.contact_person_id;
+                $scope.delivery.location = firstDelivery.location;
+            }
         }
 
         function getNodeFields(item, delivery) {
@@ -184,7 +202,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 mappedItems.forEach(function (item) {
                     if (item.nodeId) {
                         var deliveryNode = new DeliveryNode(getNodeFields(item, $scope.delivery));
-                        DistributionPlanNodeService.update(Object.merge(deliveryNode, {id: item.nodeId, item: item.id}));
+                        DistributionPlanNodeService.update(Object.merge(deliveryNode, {
+                            id: item.nodeId,
+                            item: item.id
+                        }));
                     }
                     //else create a new node for that item because one has not been created yet
                 })
@@ -199,5 +220,26 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function createToast(message, klass) {
             ngToast.create({content: message, class: klass});
+        }
+
+        function showLoader() {
+            angular.element('#loading').modal();
+        }
+
+        function hideLoader() {
+            angular.element('#loading').modal('hide');
+        }
+
+        function alertOnSaveFailure() {
+            createToast('Save failed', 'danger');
+        }
+
+        function updatePurchaseOrderDeliveryMode() {
+            return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true}, 'PATCH');
+        }
+
+        function notifyOnSuccess(message) {
+            message = message || 'Delivery created';
+            createToast(message, 'success');
         }
     });

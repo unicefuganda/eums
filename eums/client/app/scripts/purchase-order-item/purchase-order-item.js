@@ -10,7 +10,6 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             this.itemNumber = json.itemNumber;
             this.quantity = json.quantity || 0;
             this.availableBalance = json.availableBalance || 0;
-            this.quantityShipped = this.availableBalance || 0;
             this.value = json.value || 0;
             this.salesOrderItem = json.salesOrderItem;
             this.item = json.item;
