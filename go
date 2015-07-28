@@ -104,7 +104,8 @@ function performance {
     echo "Measuring load time for EUMS at http://localhost"
     grunt performance --baseUrl=http://localhost
   fi
-  cd -
+  cd scripts
+  ant
 }
 
 function testfunctional {

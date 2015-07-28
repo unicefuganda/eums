@@ -168,7 +168,7 @@ module.exports = function (grunt) {
             },
             chrome: {
                 options: {
-                    configFile: 'test/functional_conf.js'
+                    configFile: 'test/functional_chrome_conf.js'
                 }
             },
             headless: {
