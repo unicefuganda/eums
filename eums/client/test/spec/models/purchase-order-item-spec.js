@@ -65,8 +65,7 @@ describe('Purchase Order Item Model', function () {
     it('should be invalid if quantityShipped is greater than availableBalance', function() {
         var attrs = {availableBalance: 37};
         var purchaseOrderItem = new PurchaseOrderItemModel(attrs);
-        purchaseOrderItem.quantityShipped = 100;
-        expect(purchaseOrderItem.isInvalid()).toBe(true);
+        expect(purchaseOrderItem.isInvalid(100)).toBe(true);
     });
 
     it('should be valid if quantityShipped is less or equal to availableBalance', function() {

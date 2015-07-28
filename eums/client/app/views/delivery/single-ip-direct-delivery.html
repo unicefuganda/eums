@@ -162,7 +162,8 @@
                                     <td>{{ item.availableBalance }}</td>
                                     <td class="table-row-input-column">
                                         <input type="text" id="quantity-shipped" class="form-control"
-                                               ng-model="item.quantityShipped" only-digits>
+                                               ng-model="item.quantityShipped" only-digits
+                                               ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
                                     </td>
                                     <td>{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
                                 </tr>

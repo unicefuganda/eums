@@ -4,6 +4,7 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
     .factory('PurchaseOrderItem', function () {
         return function (json) {
             !json && (json = {});
+
             this.id = json.id;
             this.purchaseOrder = json.purchaseOrder;
             this.itemNumber = json.itemNumber;
@@ -15,11 +16,10 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             this.item = json.item;
             this.distributionplannodeSet = json.distributionplannodeSet || [];
 
-
             this.quantityLeft = function (deliveryNodes) {
-                return this.quantity - deliveryNodes.sum(function(node) {
-                    return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
-                });
+                return this.quantity - deliveryNodes.sum(function (node) {
+                        return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
+                    });
             }.bind(this);
 
             this.deliveryValue = function (quantityShipped) {
@@ -27,9 +27,9 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
                 return (unitValue * quantityShipped).toFixed(2);
             }.bind(this);
 
-            this.isInvalid = function() {
-                return this.quantityShipped > this.availableBalance;
-            }.bind(this)
+            this.isInvalid = function (quantityShipped) {
+                return quantityShipped > this.availableBalance;
+            }.bind(this);
         };
     })
     .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, DistributionPlanNodeService, $q,

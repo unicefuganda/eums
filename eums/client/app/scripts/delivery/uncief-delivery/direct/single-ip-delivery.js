@@ -16,6 +16,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         });
 
         $scope.save = function (tracked) {
+            $scope.tracked = tracked || false;
             var someInputsAreEmpty = !(
                 $scope.delivery.contact_person_id
                 && $scope.delivery.consignee
@@ -23,14 +24,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 && $scope.delivery.location
             );
             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
-                return item.isInvalid();
+                return item.isInvalid(item.quantityShipped);
             });
+
             if (someInputsAreEmpty || someItemsAreInvalid) {
                 $scope.errors = true;
-                createToast('Cannot save. Please fill out all fields marked in red first', 'danger')
+                createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger')
             }
             else {
-                $scope.purchaseOrder.isSingleIp ? saveDelivery(tracked) : angular.element('#confirmation-modal').modal();
+                $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
             }
         };
 
@@ -39,13 +41,13 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             saveDelivery();
         };
 
-        var saveDelivery = function (tracked) {
+        var saveDelivery = function () {
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
                 return item.quantityShipped || 0;
             });
             if (!$scope.delivery.id && totalQuantityShipped) {
                 showLoader();
-                createDelivery(tracked)
+                createDelivery()
                     .then(createDeliveryNodes)
                     .then(updatePurchaseOrderDeliveryMode)
                     .then(loadOrderData)
@@ -55,7 +57,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             }
             else if ($scope.delivery.id && totalQuantityShipped) {
                 showLoader();
-                updateDelivery(tracked)
+                updateDelivery()
                     .then(updateOrCreateDeliveryNodes)
                     .then(loadOrderData)
                     .then(function () {
@@ -90,7 +92,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             createToast(message, 'success');
         }
 
-        function getDeliveryFields(tracked) {
+        function getDeliveryFields() {
             return {
                 programme: $scope.purchaseOrder.programme,
                 consignee: $scope.delivery.consignee,
@@ -98,17 +100,17 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 delivery_date: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
                 contact_person_id: $scope.delivery.contact_person_id,
                 remark: $scope.delivery.remark,
-                track: tracked || false
+                track: $scope.tracked
             };
         }
 
-        function createDelivery(tracked) {
-            var deliveryFields = getDeliveryFields(tracked);
+        function createDelivery() {
+            var deliveryFields = getDeliveryFields();
             return DistributionPlanService.createPlan(deliveryFields);
         }
 
-        function updateDelivery(tracked) {
-            var deliveryFields = getDeliveryFields(tracked);
+        function updateDelivery() {
+            var deliveryFields = getDeliveryFields();
             deliveryFields.id = $scope.delivery.id;
             return DistributionPlanService.update(deliveryFields);
         }
@@ -169,9 +171,9 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function updateOrCreateDeliveryNodes() {
-            DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}).then(function (nodes) {
-
-            });
+            //DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}).then(function (nodes) {
+            //
+            //});
         }
 
         function createToast(message, klass) {
