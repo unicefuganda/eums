@@ -35,6 +35,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             return $scope.trackedDeliveries.length;
         };
 
+        $scope.addRemark = function() {
+            angular.element('#add-remark-modal').modal();
+        };
+
         var saveDelivery = function () {
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
                 return item.quantityShipped || 0;
@@ -151,6 +155,9 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                         return !delivery.track;
                     }).first() || {};
 
+                //Because line item partial sucks
+                $scope.lineItem.remark = $scope.delivery.remark;
+
                 setDeliveryDataFromPastDelivery($scope.trackedDeliveries);
             });
         }
@@ -211,6 +218,14 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 })
             });
         }
+
+        //Because remark partial sucks
+        $scope.lineItem = {};
+        $scope.$watch('lineItem.remark', function(remark) {
+            if(remark) {
+                $scope.delivery.remark = remark;
+            }
+        });
 
         function findNodeForItem(item, nodes) {
             return nodes.find(function (node) {
