@@ -43,6 +43,9 @@ function main {
     "rs" )
       runserver;;
 
+    "performance" )
+      performance $2;;
+
     esac
 }
 
@@ -89,6 +92,18 @@ function testbackend {
 function testjsunit {
   cd eums/client
   grunt unit
+  cd -
+}
+
+function performance {
+  cd eums/client
+  if [ "$1" ]; then
+    echo "Measuring load time for EUMS at $1..."
+    grunt performance --baseUrl=$1
+  else
+    echo "Measuring load time for EUMS at http://localhost"
+    grunt performance --baseUrl=http://localhost
+  fi
   cd -
 }
 
