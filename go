@@ -66,6 +66,7 @@ function prep {
   npm install
   sudo npm install -g bower
   echo n | bower install
+  killtestdbconnections
   echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
 }
 
@@ -77,7 +78,8 @@ function resetdb {
     python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings
   else
     echo "+++ Resetting database eums..."
-    echo "drop database eums; create database eums;" | psql -h localhost -U postgres
+    echo "drop database
+    eums; create database eums;" | psql -h localhost -U postgres
     python manage.py migrate
     python manage.py loaddata eums/client/test/functional/fixtures/user.json
   fi
