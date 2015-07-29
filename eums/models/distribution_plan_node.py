@@ -15,6 +15,15 @@ class DistributionPlanNode(Runnable):
     def __unicode__(self):
         return "%s %s %s %s" % (self.consignee.name, self.tree_position, str(self.distribution_plan), self.item)
 
+    def quantity_in(self):
+        return reduce(lambda total, arc: total + arc.quantity, self.arcs_in.all(), 0)
+
+    def quantity_out(self):
+        return reduce(lambda total, arc: total + arc.quantity, self.arcs_out.all(), 0)
+
+    def balance(self):
+        return self.quantity_in() - self.quantity_out()
+
     def get_ip(self):
         if not self.parent:
             return {'id': self.id, 'location': self.location}
