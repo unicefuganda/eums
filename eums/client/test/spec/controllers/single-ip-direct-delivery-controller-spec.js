@@ -1,4 +1,4 @@
-xdescribe('Single IP Direct Delivery Controller', function () {
+describe('Single IP Direct Delivery Controller', function () {
     var mockPurchaseOrderService, scope, location, mockIpService,
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
@@ -24,8 +24,8 @@ xdescribe('Single IP Direct Delivery Controller', function () {
         return false
     };
     var purchaseOrderItems = [
-        {quantityShipped: 10, id: 1, isInvalid: valid},
-        {quantityShipped: 11, id: 2, isInvalid: valid}
+        {quantityShipped: 10, id: 1, isInvalid: valid, availableBalance: 10},
+        {quantityShipped: 11, id: 2, isInvalid: valid, availableBalance: 11}
     ];
     var programmeId = 1;
     var createdTrackedDelivery = {
@@ -44,8 +44,8 @@ xdescribe('Single IP Direct Delivery Controller', function () {
     var districtsResponse = {data: ['Kampala', 'Jinja']};
     var emptyFunction = function () {
     };
-    var mockModal = {modal: emptyFunction};
-    var mockLoader = {modal: emptyFunction};
+    var mockModal = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
+    var mockLoader = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
     var jqueryFake = function (selector) {
         return selector === '#confirmation-modal' ? mockModal : mockLoader;
     };

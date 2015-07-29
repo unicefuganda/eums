@@ -82,10 +82,21 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                         $scope.contentLoaded = true;
                     });
                 }));
-                $q.all(promises).then(function () {
-                    hideLoader();
-                });
+                $q.all(promises).then(hideLoader);
             });
+        }
+
+        function attachNodesToItems(items) {
+            if ($scope.delivery && $scope.delivery.id) {
+                var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
+                return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+                    return items.map(function (item) {
+                        var matchingNode = findNodeForItem(item, nodes);
+                        return matchingNode ? Object.merge(item, {node: matchingNode}) : item;
+                    });
+                });
+            }
+            return $q.when(items);
         }
 
         function scopeDataIsValid() {
@@ -128,19 +139,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             PurchaseOrderService.getDetail(purchaseOrder, 'total_value').then(function (totalValue) {
                 purchaseOrder.totalValue = totalValue;
             });
-        }
-
-        function attachNodesToItems(items) {
-            if ($scope.delivery && $scope.delivery.id) {
-                var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
-                return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
-                    return items.map(function (item) {
-                        var matchingNode = findNodeForItem(item, nodes);
-                        return matchingNode ? Object.merge(item, {node: matchingNode}) : item;
-                    });
-                });
-            }
-            return $q.when(items);
         }
 
         function setItemQuantityShipped(item) {
