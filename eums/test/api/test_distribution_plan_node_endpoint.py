@@ -4,8 +4,7 @@ from eums.test.api.api_test_helpers import create_distribution_plan_node, \
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
-
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
@@ -100,8 +99,8 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 400)
 
     def test_children_field_should_be_read_only_on_the_api(self):
-        parent = DistributionPlanNodeFactory()
-        child = DistributionPlanNodeFactory(parent=parent)
+        parent = DeliveryNodeFactory()
+        child = DeliveryNodeFactory(parent=parent)
         returned_parent = self.client.get("%s%d/" % (ENDPOINT_URL, parent.id)).data
         self.assertDictContainsSubset({'children': [child.id]}, returned_parent)
         self.client.patch("%s%d" % (ENDPOINT_URL, parent.id), {'children': []})
@@ -122,11 +121,11 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
         return created_parent_details, created_child_details
 
     def test_should_filter_nodes_by_delivery(self):
-        create_delivery = lambda id: DistributionPlanFactory(id=id)
+        create_delivery = lambda node_id: DistributionPlanFactory(id=node_id)
         first_delivery = create_delivery(1)
         second_delivery = create_delivery(2)
 
-        create_delivery_node = lambda delivery: DistributionPlanNodeFactory(distribution_plan=delivery)
+        create_delivery_node = lambda delivery: DeliveryNodeFactory(distribution_plan=delivery)
         node_one = create_delivery_node(first_delivery)
         node_two = create_delivery_node(first_delivery)
         create_delivery_node(second_delivery)
@@ -154,10 +153,13 @@ class DistributionPlanNodeEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_filter_distribution_plan_nodes_by_contact_person_id(self):
         contact_person_id = '8541BD02-E862-48FD-952D-470445347DAE'
-        DistributionPlanNodeFactory()
-        node = DistributionPlanNodeFactory(contact_person_id=contact_person_id)
+        DeliveryNodeFactory()
+        node = DeliveryNodeFactory(contact_person_id=contact_person_id)
         self.assertEqual(DistributionPlanNode.objects.count(), 2)
         response = self.client.get('%s?contact_person_id=%s' % (ENDPOINT_URL, contact_person_id))
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], node.id)
 
+    def test_should_create_null_source_arc_when_post_is_called_with_node_without_parent_deliveries(self):
+        # DistributionPlanNode.objects.create(plan=1, parents=[{'id': 1, 'quantity': 100}, {'id': 2, 'quantity': 10}])
+        pass

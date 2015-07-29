@@ -2,7 +2,7 @@ from unittest import TestCase
 from eums.models.purchase_order_item import PurchaseOrderItem
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory
 
 
 class PurchaseOrderItemTest(TestCase):

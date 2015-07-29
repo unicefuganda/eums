@@ -1,19 +1,35 @@
-from django.db import models
+from django.db import models, IntegrityError
+from polymorphic import PolymorphicManager
 
-from eums.models import DistributionPlan, Runnable
+from eums.models import DistributionPlan, Runnable, Arc
+
+
+class DeliveryNodeManager(PolymorphicManager):
+    def create(self, **kwargs):
+        quantity = kwargs.pop('quantity') if 'quantity' in kwargs else None
+        parents = kwargs.pop('parents') if 'parents' in kwargs else None
+        if not parents and not quantity:
+            raise IntegrityError('both parents and quantity cannot be null')
+        node = super(DeliveryNodeManager, self).create(**kwargs)
+        self._create_arcs(node, parents, quantity)
+        return node
+
+    @staticmethod
+    def _create_arcs(node, parents, quantity):
+        if parents and len(parents):
+            for parent_dict in parents:
+                Arc.objects.create(target=node, source_id=parent_dict['id'], quantity=parent_dict['quantity'])
+        elif quantity:
+            Arc.objects.create(target=node, quantity=quantity)
 
 
 class DistributionPlanNode(Runnable):
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
     distribution_plan = models.ForeignKey(DistributionPlan)
     item = models.ForeignKey('OrderItem')
-    targeted_quantity = models.IntegerField()
     tree_position = models.CharField(max_length=255,
                                      choices=((Runnable.MIDDLE_MAN, 'Middleman'), (Runnable.END_USER, 'End User'),
                                               (Runnable.IMPLEMENTING_PARTNER, 'Implementing Partner')))
-
-    def __unicode__(self):
-        return "%s %s %s %s" % (self.consignee.name, self.tree_position, str(self.distribution_plan), self.item)
+    objects = DeliveryNodeManager()
 
     def quantity_in(self):
         return reduce(lambda total, arc: total + arc.quantity, self.arcs_in.all(), 0)
@@ -38,3 +54,8 @@ class DistributionPlanNode(Runnable):
 
     def get_description(self):
         return self.item.item.description
+
+    def __unicode__(self):
+        return "%s %s %s %s" % (self.consignee.name, self.tree_position, str(self.distribution_plan), self.item)
+
+

@@ -5,7 +5,7 @@ from eums import settings
 from eums.models import Run, DistributionPlanNode
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
@@ -15,7 +15,7 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, 
 class RunTest(TestCase):
     def setUp(self):
         self.consignee = ConsigneeFactory()
-        self.runnable = DistributionPlanNodeFactory(consignee=self.consignee)
+        self.runnable = DeliveryNodeFactory(consignee=self.consignee)
 
     def tearDown(self):
         Run.objects.all().delete()
@@ -50,10 +50,10 @@ class RunTest(TestCase):
         valid_run_date = today - delivery_status_check_delay - max_allowed_reply_period + one_day
 
         expired_run = RunFactory(status=Run.STATUS.scheduled,
-                                 runnable=DistributionPlanNodeFactory(
+                                 runnable=DeliveryNodeFactory(
                                      delivery_date=expired_run_date))
         RunFactory(status=Run.STATUS.scheduled,
-                   runnable=DistributionPlanNodeFactory(
+                   runnable=DeliveryNodeFactory(
                        delivery_date=valid_run_date))
 
         overdue_runs = Run.overdue_runs()
@@ -65,13 +65,13 @@ class RunTest(TestCase):
         expired_run_date = datetime.date(1990, 1, 1)
 
         RunFactory(status=Run.STATUS.completed,
-                   runnable=DistributionPlanNodeFactory(
+                   runnable=DeliveryNodeFactory(
                        delivery_date=expired_run_date))
         RunFactory(status=Run.STATUS.expired,
-                   runnable=DistributionPlanNodeFactory(
+                   runnable=DeliveryNodeFactory(
                        delivery_date=expired_run_date))
         RunFactory(status=Run.STATUS.cancelled,
-                   runnable=DistributionPlanNodeFactory(
+                   runnable=DeliveryNodeFactory(
                        delivery_date=expired_run_date))
 
         overdue_runs = Run.overdue_runs()
@@ -104,7 +104,7 @@ class RunTest(TestCase):
         self.assertDictEqual(run.questions_and_responses(), expected_data)
 
     def test_should_get_scheduled_runs_for_contact(self):
-        runnable = DistributionPlanNodeFactory(contact_person_id=2)
+        runnable = DeliveryNodeFactory(contact_person_id=2)
         contact_person_id = 2
 
         self.assertEqual(Run.has_scheduled_run(contact_person_id), False)

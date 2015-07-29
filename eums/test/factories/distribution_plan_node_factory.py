@@ -7,11 +7,10 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 
 
-class DistributionPlanNodeFactory(factory.DjangoModelFactory):
+class DeliveryNodeFactory(factory.DjangoModelFactory):
     class Meta:
         model = DistributionPlanNode
 
-    parent = None
     distribution_plan = factory.SubFactory(DistributionPlanFactory)
     consignee = factory.SubFactory(ConsigneeFactory)
     tree_position = DistributionPlanNode.END_USER
@@ -19,6 +18,6 @@ class DistributionPlanNodeFactory(factory.DjangoModelFactory):
     contact_person_id = factory.Sequence(lambda n: "{0}".format(n))
     item = factory.SubFactory(OrderItemFactory)
     track = False
-    targeted_quantity = 10
     delivery_date = FakeDate.today()
     remark = "In good condition"
+    quantity = 10

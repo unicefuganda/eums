@@ -8,8 +8,8 @@ from eums.models import DistributionPlanNode, Run, SalesOrderItem, PurchaseOrder
     ReleaseOrder, PurchaseOrder, SalesOrder
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory, \
-    DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory, \
+    DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import NumericQuestionFactory, MultipleChoiceQuestionFactory
@@ -18,7 +18,7 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 class DistributionPlanNodeTest(TestCase):
     def setUp(self):
-        self.node = DistributionPlanNodeFactory()
+        self.node = DeliveryNodeFactory()
 
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
@@ -53,12 +53,12 @@ class DistributionPlanNodeTest(TestCase):
         numeric_question = NumericQuestionFactory(label='AmountReceived')
         item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
 
-        salt_node = DistributionPlanNodeFactory(targeted_quantity=100,
+        salt_node = DeliveryNodeFactory(targeted_quantity=100,
                                                 item=item)
         run = RunFactory(runnable=salt_node, status='completed')
 
         sugar_item = SalesOrderItemFactory(item=sugar, description='10 bags of sugar')
-        sugar_node = DistributionPlanNodeFactory(targeted_quantity=100,
+        sugar_node = DeliveryNodeFactory(targeted_quantity=100,
                                                  item=sugar_item)
         sugar_run = RunFactory(runnable=sugar_node, status='completed')
 

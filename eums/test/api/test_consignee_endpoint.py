@@ -6,7 +6,7 @@ from eums.test.api.api_test_helpers import create_consignee, create_distribution
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as DeliveryNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as DeliveryNodeFactory
 
 ENDPOINT_URL = BACKEND_URL + 'consignee/'
 

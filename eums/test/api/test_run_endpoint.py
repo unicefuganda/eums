@@ -1,7 +1,7 @@
 from eums.test.api.api_test_helpers import create_run
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 
 
 ENDPOINT_URL = BACKEND_URL + 'run/'
@@ -9,7 +9,7 @@ ENDPOINT_URL = BACKEND_URL + 'run/'
 
 class RunTest(AuthenticatedAPITestCase):
     def test_should_create_run(self):
-        node = DistributionPlanNodeFactory()
+        node = DeliveryNodeFactory()
 
         run_details = {'scheduled_message_task_id': '33hd762',
                                       'runnable': node.id,

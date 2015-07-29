@@ -15,8 +15,8 @@ from eums.models import Run, RunQueue
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory as NodeFactory, \
-    DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory, \
+    DeliveryNodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
@@ -163,7 +163,7 @@ class FlowSchedulerTest(TestCase):
                                                                                       mock_schedule_run_for,
                                                                                       mock_deque):
         overdue_run = RunFactory(runnable=self.node)
-        node = DistributionPlanNodeFactory()
+        node = DeliveryNodeFactory()
         run_queue_item = RunQueueFactory(runnable=node,
                                          contact_person_id=self.node.contact_person_id)
 

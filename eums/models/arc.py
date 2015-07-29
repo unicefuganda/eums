@@ -1,13 +1,14 @@
 from django.db import models, IntegrityError
-from eums.models import DistributionPlanNode as DeliveryNode
 
 
 class Arc(models.Model):
-    source = models.ForeignKey(DeliveryNode, null=True, blank=True, related_name='arcs_out')
-    target = models.ForeignKey(DeliveryNode, related_name='arcs_in')
+    source = models.ForeignKey('DistributionPlanNode', null=True, blank=True, related_name='arcs_out')
+    target = models.ForeignKey('DistributionPlanNode', related_name='arcs_in')
     quantity = models.IntegerField()
 
     def save(self, **kwargs):
-        if self.source and self.source.id == self.target.id:
+        quantity_is_invalid = self.source and self.source.balance() < self.quantity
+        arc_is_cyclic = self.source and self.source.id == self.target.id
+        if arc_is_cyclic or quantity_is_invalid:
             raise IntegrityError('Arc source node cannot be the same as target')
         super(Arc, self).save(kwargs)

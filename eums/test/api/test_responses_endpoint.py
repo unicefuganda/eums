@@ -2,7 +2,7 @@ from eums.models import DistributionPlanNode
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.run_factory import RunFactory
 
@@ -29,13 +29,13 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
 
     def create_nodes(self):
-        self.ip_node = DistributionPlanNodeFactory()
-        self.middle_man_node = DistributionPlanNodeFactory(parent=self.ip_node,
+        self.ip_node = DeliveryNodeFactory()
+        self.middle_man_node = DeliveryNodeFactory(parent=self.ip_node,
                                                            tree_position=DistributionPlanNode.MIDDLE_MAN,
                                                            distribution_plan=self.ip_node.distribution_plan,
                                                            targeted_quantity=100,
                                                            item=self.item)
-        self.end_user_node = DistributionPlanNodeFactory(parent=self.middle_man_node,
+        self.end_user_node = DeliveryNodeFactory(parent=self.middle_man_node,
                                                          tree_position=DistributionPlanNode.END_USER,
                                                          distribution_plan=self.ip_node.distribution_plan,
                                                          targeted_quantity=100,

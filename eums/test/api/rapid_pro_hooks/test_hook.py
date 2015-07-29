@@ -1,7 +1,7 @@
 from mock import patch
 from rest_framework.test import APITestCase
 
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, Run, Flow, \
@@ -110,7 +110,7 @@ class HookTest(APITestCase):
         question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
                                                             label='amountReceived')
 
-        node = DistributionPlanNodeFactory()
+        node = DeliveryNodeFactory()
 
         RunFactory(runnable=node, phone=self.PHONE)
 
@@ -135,7 +135,7 @@ class HookTest(APITestCase):
         question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
                                                             label='amountReceived')
 
-        node = DistributionPlanNodeFactory()
+        node = DeliveryNodeFactory()
         run = RunFactory(runnable=node, phone=self.PHONE,
                               status=Run.STATUS.scheduled)
 
@@ -161,7 +161,7 @@ class HookTest(APITestCase):
 
         NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
 
-        node = DistributionPlanNodeFactory()
+        node = DeliveryNodeFactory()
         original_status = Run.STATUS.scheduled
         run = RunFactory(runnable=node, phone=self.PHONE,
                               status=original_status)
@@ -184,7 +184,7 @@ class HookTest(APITestCase):
         question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
                                                             label='amountReceived')
 
-        node = DistributionPlanNodeFactory()
+        node = DeliveryNodeFactory()
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
         RunFactory(runnable=node, phone=self.PHONE)

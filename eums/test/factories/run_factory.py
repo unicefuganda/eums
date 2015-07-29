@@ -1,4 +1,4 @@
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 import factory
 
 from eums.models import Run
@@ -9,6 +9,6 @@ class RunFactory(factory.DjangoModelFactory):
         model = Run
 
     scheduled_message_task_id = factory.Sequence(lambda n: '{0}'.format(n))
-    runnable = factory.SubFactory(DistributionPlanNodeFactory)
+    runnable = factory.SubFactory(DeliveryNodeFactory)
     status = Run.STATUS.scheduled
     phone = factory.Sequence(lambda n: '{0}'.format(n))

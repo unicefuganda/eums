@@ -2,7 +2,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, NumericQuestionFactory
@@ -21,13 +21,13 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
         sales_order = SalesOrderFactory()
         item = SalesOrderItemFactory(item=salt, description='10 bags of salt', sales_order=sales_order)
 
-        node = DistributionPlanNodeFactory(targeted_quantity=100,
+        node = DeliveryNodeFactory(targeted_quantity=100,
                                            item=item)
-        child_node_one = DistributionPlanNodeFactory(parent=node, targeted_quantity=50,
+        child_node_one = DeliveryNodeFactory(parent=node, targeted_quantity=50,
                                                      item=item)
-        child_node_two = DistributionPlanNodeFactory(parent=node, targeted_quantity=50,
+        child_node_two = DeliveryNodeFactory(parent=node, targeted_quantity=50,
                                                      item=item)
-        child_node_three = DistributionPlanNodeFactory(parent=child_node_one, targeted_quantity=50,
+        child_node_three = DeliveryNodeFactory(parent=child_node_one, targeted_quantity=50,
                                                        item=item)
 
         run = RunFactory(runnable=node, status='completed')

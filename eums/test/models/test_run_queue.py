@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from eums.models import RunQueue
 from eums.test.factories.RunQueueFactory import RunQueueFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 
 
 class RunQueueTest(TestCase):
@@ -36,7 +36,7 @@ class RunQueueTest(TestCase):
         contact_person_id = 'id'
         run_delay = 1000
 
-        node = DistributionPlanNodeFactory(contact_person_id=contact_person_id)
+        node = DeliveryNodeFactory(contact_person_id=contact_person_id)
 
         RunQueue.enqueue(node, run_delay)
         queued_run = RunQueue.dequeue(contact_person_id)

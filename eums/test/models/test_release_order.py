@@ -4,7 +4,7 @@ from eums.models import ReleaseOrderItem, DistributionPlan, DistributionPlanNode
 from eums.models.release_order import ReleaseOrder
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
@@ -41,7 +41,7 @@ class ReleaseOrderTest(TestCase):
         create_delivery = lambda: DistributionPlanFactory(id = 343)
         delivery = create_delivery()
 
-        create_delivery_node = lambda: DistributionPlanNodeFactory(distribution_plan = delivery, item = release_order_item)
+        create_delivery_node = lambda: DeliveryNodeFactory(distribution_plan = delivery, item = release_order_item)
         create_delivery_node()
 
         returned_release_order = ReleaseOrder.objects.get(order_number=2342)
@@ -64,8 +64,8 @@ class ReleaseOrderTest(TestCase):
         order_three = ReleaseOrderFactory()
         order_item_one = ReleaseOrderItemFactory(release_order=order_one)
         order_item_two = ReleaseOrderItemFactory(release_order=order_two)
-        DistributionPlanNodeFactory(item=order_item_one, consignee=consignee)
-        DistributionPlanNodeFactory(item=order_item_two, consignee=consignee)
+        DeliveryNodeFactory(item=order_item_one, consignee=consignee)
+        DeliveryNodeFactory(item=order_item_two, consignee=consignee)
 
         consignee_orders = ReleaseOrder.objects.for_consignee(consignee.id).order_by('id')
 
@@ -78,8 +78,8 @@ class ReleaseOrderTest(TestCase):
         order_three = ReleaseOrderFactory()
         order_item_one = ReleaseOrderItemFactory(release_order=order_one)
         order_item_two = ReleaseOrderItemFactory(release_order=order_two)
-        DistributionPlanNodeFactory(item=order_item_one)
-        DistributionPlanNodeFactory(item=order_item_two)
+        DeliveryNodeFactory(item=order_item_one)
+        DeliveryNodeFactory(item=order_item_two)
 
         delivered_orders = ReleaseOrder.objects.delivered().order_by('id')
 
