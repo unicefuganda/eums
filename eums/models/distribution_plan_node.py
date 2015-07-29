@@ -27,5 +27,5 @@ class DistributionPlanNode(Runnable):
         else:
             return self.parent.consignee.name
 
-    def description(self):
+    def get_description(self):
         return self.item.item.description
