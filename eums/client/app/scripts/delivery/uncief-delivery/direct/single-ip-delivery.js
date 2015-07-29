@@ -188,35 +188,39 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             };
         }
 
-        function createDeliveryNodes(createdDelivery) {
-            function createNodeFrom(purchaseOrderItem) {
-                return DistributionPlanNodeService.create(new DeliveryNode(getNodeFields(purchaseOrderItem, createdDelivery)));
-            }
+        function createNodeFrom(purchaseOrderItem, delivery) {
+            return DistributionPlanNodeService.create(new DeliveryNode(getNodeFields(purchaseOrderItem, delivery)));
+        }
 
+        function createDeliveryNodes(createdDelivery) {
             var createNodePromises = [];
             $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                purchaseOrderItem.quantityShipped && createNodePromises.push(createNodeFrom(purchaseOrderItem));
+                purchaseOrderItem.quantityShipped && createNodePromises.push(createNodeFrom(purchaseOrderItem, createdDelivery));
             });
             return $q.all(createNodePromises);
         }
 
         function updateOrCreateDeliveryNodes() {
             var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
-            DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+            return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
                 var mappedItems = $scope.purchaseOrderItems.map(function (item) {
                     var matchingNode = findNodeForItem(item, nodes);
                     return matchingNode ? Object.merge(item, {nodeId: matchingNode.id}) : item;
                 });
+                var promises = [];
                 mappedItems.forEach(function (item) {
                     if (item.nodeId) {
                         var deliveryNode = new DeliveryNode(getNodeFields(item, $scope.delivery));
-                        DistributionPlanNodeService.update(Object.merge(deliveryNode, {
+                        promises.push(DistributionPlanNodeService.update(Object.merge(deliveryNode, {
                             id: item.nodeId,
                             item: item.id
-                        }));
+                        })));
                     }
-                    //else create a new node for that item because one has not been created yet
-                })
+                    else {
+                        promises.push(createNodeFrom(item, $scope.delivery));
+                    }
+                });
+                return $q.all(promises);
             });
         }
 
