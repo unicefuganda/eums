@@ -102,6 +102,20 @@ describe('Consignees and subconsignees', function () {
 
             expect(consigneesPage.editConsigneeButton.isDisplayed()).toBeFalsy();
             expect(consigneesPage.deleteConsigneeButton.isDisplayed()).toBeFalsy();
+
+            loginPage.logout();
+
+            loginPage.visit();
+            loginPage.loginAs('wakiso', 'wakiso');
+            consigneesPage.visit();
+
+            consigneesPage.searchFor('IP Editor Consignee');
+
+            consigneesPage.deleteConsignee();
+            consigneesPage.confirmDeleteConsignee();
+
+            consigneesPage.searchFor('IP Editor Consignee');
+            expect(consigneesPage.consigneeCount).toEqual(0);
         });
 
         it('should give add, edit and delete consignees permissions to appropriate UNICEF roles', function() {

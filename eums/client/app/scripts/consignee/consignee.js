@@ -91,23 +91,22 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         $scope.consignees = [];
         $scope.searching = false;
 
-        UserService.checkUserPermission('auth.can_view_consignees').then(function(value){
-            $scope.can_view_consignees = value;
-        });
-        UserService.checkUserPermission('eums.add_consignee').then(function(value){
-            $scope.add_consignee = value;
-        });
-        UserService.checkUserPermission('eums.change_consignee').then(function(value){
-            $scope.change_consignee = value;
-        });
-        UserService.checkUserPermission('eums.delete_consignee').then(function(value){
-            $scope.delete_consignee = value;
+        UserService.retrieveUserPermissions().then(function (permissions) {
+            $scope.userPermissions = permissions;
         });
 
         showLoader();
         fetchConsignees().catch(function () {
             createToast('Failed to fetch consignees', 'danger');
         }).finally(hideLoader);
+
+        $scope.hasPermissionTo = function (permissionToCheck) {
+            if (permissionToCheck && $scope.userPermissions) {
+                return ($scope.userPermissions.indexOf(permissionToCheck) > -1);
+            } else {
+                return false;
+            }
+        };
 
         $scope.addConsignee = function () {
             $scope.consignees.insert(new Consignee(), 0);

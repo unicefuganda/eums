@@ -1,4 +1,4 @@
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
 from rest_framework.test import APITestCase
 from django.core.management import call_command
 from django.contrib.auth.models import User
@@ -29,6 +29,18 @@ class ConsigneeEndpointTest(APITestCase):
         response = self.client.delete(ENDPOINT_URL + str(consignee.id) + '/')
 
         self.assertEqual(response.status_code, 204)
+
+    def test_should_save_the_user_who_creates_the_consignee(self):
+        user = User.objects.create_user(username='created_by_test', email='admin@email.com', password='pass')
+        user.groups = [Group.objects.get(name="UNICEF_admin")]
+        user.save()
+
+        self.client.login(username='created_by_test', password='pass')
+        response = self.client.post(ENDPOINT_URL, {'name': 'Created By Test Consignee'})
+
+        self.assertEqual(response.status_code, 201)
+        consignee = Consignee.objects.get(name='Created By Test Consignee')
+        self.assertEqual(consignee.created_by_user, user)
 
     # UNICEF Admins
 
@@ -69,7 +81,7 @@ class ConsigneeEndpointTest(APITestCase):
 
     def test_should_disallow_unicef_admin_to_change_consignee_that_is_attached_to_delivery(self):
         consignee = ConsigneeFactory(name='New Consignee', imported_from_vision=False)
-        DistributionPlanFactory(consignee=consignee)
+        DistributionPlanNodeFactory(consignee=consignee)
 
         self._login_as('UNICEF_admin')
         response = self.client.put(ENDPOINT_URL + str(consignee.id) + '/', {'name': 'Updated Consignee'})
@@ -78,7 +90,7 @@ class ConsigneeEndpointTest(APITestCase):
 
     def test_should_allow_unicef_admin_to_change_remarks_for_consignee_attached_to_delivery(self):
         consignee = ConsigneeFactory(name='New Consignee', remarks='New Remark', imported_from_vision=True)
-        DistributionPlanFactory(consignee=consignee)
+        DistributionPlanNodeFactory(consignee=consignee)
 
         self._login_as('UNICEF_admin')
         response = self.client.put(ENDPOINT_URL + str(consignee.id) + '/',
@@ -107,13 +119,22 @@ class ConsigneeEndpointTest(APITestCase):
 
     def test_should_disallow_unicef_admin_to_delete_consignee_that_is_attached_to_delivery(self):
         consignee = ConsigneeFactory(name='New Consignee', imported_from_vision=False)
-        DistributionPlanFactory(consignee=consignee)
+        DistributionPlanNodeFactory(consignee=consignee)
 
         self._login_as('UNICEF_admin')
         response = self.client.delete(ENDPOINT_URL + str(consignee.id) + '/')
 
         self.assertEqual(response.status_code, 403)
-        self.assertEqual(Consignee.objects.count(), 1)
+        self.assertEqual(Consignee.objects.filter(name='New Consignee').count(), 1)
+
+    def test_should_allow_unicef_admin_to_delete_consignees_without_a_user(self):
+        consignee = ConsigneeFactory(name='New Consignee', created_by_user=None, imported_from_vision=False)
+
+        self._login_as('UNICEF_admin')
+        response = self.client.delete(ENDPOINT_URL + str(consignee.id) + '/')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Consignee.objects.count(), 0)
 
     # UNICEF Editors
 
@@ -183,15 +204,77 @@ class ConsigneeEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 201)
 
-    def test_should_allow_ip_editor_to_change_consignee(self):
-        consignee = ConsigneeFactory(name='New Consignee')
+    def test_should_allow_ip_editor_to_change_consignee_if_created_by_them(self):
+        consignee = ConsigneeFactory(name='New Consignee', imported_from_vision=False)
 
-        self._login_as('Implementing Partner_editor')
+        user = User.objects.create_user(username='user_name_one', password='pass')
+        user_profile = UserProfile(user=user, consignee=consignee)
+        user_profile.save()
+        user.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user.save()
+
+        consignee_to_update = ConsigneeFactory(
+            name='Original Name', 
+            imported_from_vision=False,
+            created_by_user=user)
+        self.client.login(username='user_name_one', password='pass')
+        response = self.client.put(ENDPOINT_URL + str(consignee_to_update.id) + '/', {'name': 'New Name'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Consignee.objects.filter(name='Original Name').count(), 0)
+        self.assertEqual(Consignee.objects.filter(name='New Name').count(), 1)
+
+    def test_should_allow_ip_editor_to_change_consignee_only_if_created_within_same_ip(self):
+        user_consignee = ConsigneeFactory(name='Created Consignee')
+
+        user_one = User.objects.create_user(username='user_name_one', password='pass')
+        user_profile = UserProfile(user=user_one, consignee=user_consignee)
+        user_profile.save()
+        user_one.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_one.save()
+
+        user_two = User.objects.create_user(username='user_name_two', password='pass')
+        user_profile = UserProfile(user=user_two, consignee=user_consignee)
+        user_profile.save()
+        user_two.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_two.save()
+
+        consignee = ConsigneeFactory(name='New Consignee', imported_from_vision=False, created_by_user=user_one)
+        self.client.login(username='user_name_two', password='pass')
         response = self.client.put(ENDPOINT_URL + str(consignee.id) + '/', {'name': 'Updated Consignee'})
 
         self.assertEqual(response.status_code, 200)
-        updated_name = Consignee.objects.get(id=consignee.id).name
-        self.assertEqual(updated_name, 'Updated Consignee')
+        self.assertEqual(Consignee.objects.filter(name='New Consignee').count(), 0)
+        self.assertEqual(Consignee.objects.filter(name='Updated Consignee').count(), 1)
+
+    def test_should_not_allow_ip_editor_to_change_consignee_only_if_consignee_created_by_another_ip(self):
+        profile_consignee_one = ConsigneeFactory(name='Consignee 1')
+        profile_consignee_two = ConsigneeFactory(name='Consignee 2')
+
+        user_one = User.objects.create_user(username='user_name_one', password='pass')
+        user_profile_one = UserProfile(user=user_one, consignee=profile_consignee_one)
+        user_profile_one.save()
+        user_one.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_one.save()
+
+        user_two = User.objects.create_user(username='user_name_two', password='pass')
+        user_profile_two = UserProfile(user=user_two, consignee=profile_consignee_two)
+        user_profile_two.save()
+        user_two.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_two.save()
+
+        user_two_created_consignee = ConsigneeFactory(
+            name='Another New Consignee', 
+            imported_from_vision=False, 
+            created_by_user=user_two)
+        self.client.login(username='user_name_one', password='pass')
+        response = self.client.put(
+            ENDPOINT_URL + str(user_two_created_consignee.id) + '/', 
+            {'name': 'Updated New Consignee'})
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Consignee.objects.filter(name='Another New Consignee').count(), 1)
+        self.assertEqual(Consignee.objects.filter(name='Updated New Consignee').count(), 0)
 
     def test_should_allow_ip_editor_to_delete_consignee_that_is_not_vision_imported_and_created_by_same_user(self):
         user = User.objects.create_user(username='some_user_name', password='pass')

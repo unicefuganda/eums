@@ -1,6 +1,6 @@
 describe('Consignees Controller', function () {
-    var mockConsigneeService, mockUserService, scope, mockConsigneeModel, saveConsigneePromise,
-        updateConsigneePromise, deleteConsigneePromise, toast, deferredSearchResults, elementSpy;
+    var mockConsigneeService, mockUserService, scope, mockConsigneeModel,
+        toast, deferredSearchResults, deferredPermissionsResults, elementSpy;
     var emptyFunction = function () {
     };
     var fakeElement = {modal: emptyFunction, hasClass: emptyFunction};
@@ -15,21 +15,22 @@ describe('Consignees Controller', function () {
     beforeEach(function () {
         module('Consignee');
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'search']);
-        mockUserService = jasmine.createSpyObj('mockUserService', ['checkUserPermission']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['retrieveUserPermissions']);
         mockConsigneeModel = function () {
             this.properties = emptyConsignee.properties;
         };
 
         inject(function ($controller, $rootScope, $q, ngToast) {
-            deferredSearchResults = $q.defer();
-
             mockConsigneeService.all.and.returnValue($q.when(consigneesResponse));
             mockConsigneeService.create.and.returnValue($q.when(savedConsignee));
             mockConsigneeService.update.and.returnValue($q.when(savedConsignee));
             mockConsigneeService.del.and.returnValue($q.defer());
+
+            deferredSearchResults = $q.defer();
             mockConsigneeService.search.and.returnValue(deferredSearchResults.promise);
 
-            mockUserService.checkUserPermission.and.returnValue($q.when(true));
+            deferredPermissionsResults = $q.defer();
+            mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResults.promise);
 
             toast = ngToast;
             scope = $rootScope.$new();
@@ -120,6 +121,45 @@ describe('Consignees Controller', function () {
         scope.cancelEditOrCreate(consignee);
         scope.$apply();
         expect(scope.consignees).not.toContain(consignee);
+    });
+
+    describe('permissions', function () {
+
+        it('should set the list of permissions on the scope when controller executes', function () {
+            deferredPermissionsResults.resolve(['permission_one', 'permission_two']);
+            scope.$apply();
+            expect(scope.userPermissions).toEqual(['permission_one', 'permission_two']);
+        });
+
+        it('should return back true when first permission in list exists for user', function () {
+            scope.userPermissions = ['permission_one', 'permission_two'];
+            expect(scope.hasPermissionTo('permission_one')).toBeTruthy();
+        });
+
+        it('should return back true when second permission in list exists for user', function () {
+            scope.userPermissions = ['permission_one', 'permission_two'];
+            expect(scope.hasPermissionTo('permission_two')).toBeTruthy();
+        });
+
+        it('should return back false when permissions do not exist for user', function () {
+            scope.userPermissions = ['permission_one', 'permission_two'];
+            expect(scope.hasPermissionTo('permission_three')).toBeFalsy();
+        });
+
+        it('should return back false when scope permissions is empty', function () {
+            scope.userPermissions = [];
+            expect(scope.hasPermissionTo('some_permission')).toBeFalsy();
+        });
+
+        it('should return back false when scope permissions is undefined', function () {
+            scope.userPermissions = undefined;
+            expect(scope.hasPermissionTo('some_permission')).toBeFalsy();
+        });
+
+        it('should return back false when permission to check is undefined', function () {
+            scope.userPermissions = ['permission_one', 'permission_two'];
+            expect(scope.hasPermissionTo(undefined)).toBeFalsy();
+        });
     });
 
     describe('when consigneeDeleted event is received', function () {

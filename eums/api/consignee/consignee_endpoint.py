@@ -8,7 +8,6 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
-
 from eums.models import Consignee, DistributionPlanNode
 
 
@@ -46,6 +45,9 @@ class ConsigneeViewSet(ModelViewSet):
         if paginate != 'true':
             self.paginator.page_size = 0
         return super(ConsigneeViewSet, self).list(request, args, kwargs)
+
+    def perform_create(self, serializer):
+        serializer.save(created_by_user=self.request.user)
 
     @detail_route()
     def deliveries(self, _, pk=None):

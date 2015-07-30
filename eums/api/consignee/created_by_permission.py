@@ -1,4 +1,4 @@
-from eums.models import DistributionPlan, UserProfile
+from eums.models import UserProfile
 from rest_framework import permissions
 
 
@@ -6,7 +6,10 @@ class CreatedByPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True
-        if request.method == 'DELETE':
+        if request.method in ['DELETE', 'PUT']:
+            # Need this check until we can create vision import user
+            if obj.created_by_user is None:
+                return True
             request_user_group = request.user.groups.first()
             obj_user_group = obj.created_by_user.groups.first()
             if request_user_group.name == 'Implementing Partner_editor':
