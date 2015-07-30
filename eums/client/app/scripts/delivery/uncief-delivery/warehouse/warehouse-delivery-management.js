@@ -123,8 +123,8 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
         };
 
         $scope.saveDelivery = function () {
-            if (validate($scope.contact.id, 'Fill in Contact field!') === false ||
-                validate($scope.selectedLocation.id, 'Fill in Location field!') === false) {
+            if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id)) {
+                createToast('Please fill in required field!', 'danger');
                 return;
             }
             showLoadingModal(true);
@@ -150,11 +150,9 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
             }
         };
 
-        var validate = function (field, message) {
-            if (!field) {
-                createToast(message, 'danger');
-                return false;
-            }
+        var isInvalid = function (field) {
+            $scope.errors = field ? false : true;
+            return field ? false : true;
         };
 
         var getNodeForItem = function (releaseOrderItem) {
