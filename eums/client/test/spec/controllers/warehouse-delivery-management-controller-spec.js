@@ -51,6 +51,7 @@ describe('Warehouse Delivery Management Controller', function () {
             };
 
             mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
+            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
             mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService, ['filter']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockIPService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
@@ -95,6 +96,7 @@ describe('Warehouse Delivery Management Controller', function () {
 
             expect(scope.errors).toBe(true);
             expect(toast.create).toHaveBeenCalledWith({ content : 'Please fill in required field!', class : 'danger', maxNumber : 1, dismissOnTimeout : true });
+            expect(mockDistributionPlanService.createPlan).not.toHaveBeenCalled();
         });
     });
 });
