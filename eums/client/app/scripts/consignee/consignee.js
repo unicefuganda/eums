@@ -16,6 +16,15 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                 }.bind(this)
             });
 
+            Object.defineProperty(this, 'inEditRemarkMode', {
+                get: function () {
+                    if (this._inEditRemarkMode) {
+                        return true;
+                    }
+                    return this.id === undefined || this.id === null;
+                }.bind(this)
+            });
+
             Object.defineProperty(this, 'isValid', {
                 get: function() {
                     return this.name && this.name.length;
@@ -29,14 +38,22 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             this.remarks = json.remarks || null;
 
             this._inEditMode = false;
+            this._inEditRemarkMode = false;
+
             this.switchToEditMode = function () {
                 this._inEditMode = true;
+                this._inEditRemarkMode = true;
+            };
+            this.switchToEditRemarkMode = function () {
+                this._inEditMode = false;
+                this._inEditRemarkMode = true;
             };
             this.switchToReadMode = function () {
                 if (!this.id) {
                     throw new Error('cannot switch consignee without id to read mode');
                 }
                 this._inEditMode = false;
+                this._inEditRemarkMode = false;
             };
         };
     })
@@ -47,6 +64,9 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             methods: {
                 getTopLevelConsignees: function () {
                     return this.filter({node: 'top'});
+                },
+                userCanFullyEdit: function(consignee) {
+                    return this.getDetail(consignee, 'permission_to_edit');
                 },
                 del: function (consignee) {
                     return this._del(consignee);
@@ -125,7 +145,12 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         };
 
         $scope.edit = function (consignee) {
-            consignee.switchToEditMode();
+
+            ConsigneeService.userCanFullyEdit(consignee).then(function () {
+                consignee.switchToEditMode();
+            }).catch(function (result) {
+                consignee.switchToEditRemarkMode();
+            });
         };
 
         $scope.$on('consigneeDeleted', function (_, consignee) {

@@ -62,13 +62,13 @@
                             </span>
                         </td>
                         <td>
-                            <span ng-show="!consignee.inEditMode">{{ consignee.remarks }}</span>
-                            <span ng-show="consignee.inEditMode">
+                            <span ng-show="!consignee.inEditRemarkMode">{{ consignee.remarks }}</span>
+                            <span ng-show="consignee.inEditRemarkMode">
                                 <input class="table-input form-control" ng-model="consignee.remarks">
                             </span>
                         </td>
                         <td>
-                            <span ng-show="!consignee.inEditMode">
+                            <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
                                 <button ng-show="hasPermissionTo('eums.change_consignee')" class="btn btn-sm btn-default blue-border-button editBtn" ng-click="edit(consignee)">
                                     Edit
                                 </button>
@@ -77,13 +77,13 @@
                                     Delete
                                 </button>
                             </span>
-                            <span ng-show="consignee.inEditMode">
+                            <span ng-show="consignee.inEditMode || consignee.inEditRemarkMode">
                                 <button class="btn btn-sm btn-default blue-border-button saveBtn"
-                                        ng-click="save(consignee)" ng-show="consignee.inEditMode"
+                                        ng-click="save(consignee)"
                                         ng-disabled="!consignee.isValid">Save
                                 </button>
                                 <button class="btn btn-sm btn-default cancelBtn"
-                                        ng-click="cancelEditOrCreate(consignee)" ng-show="consignee.inEditMode">Cancel
+                                        ng-click="cancelEditOrCreate(consignee)">Cancel
                                 </button>
                             </span>
                         </td>

@@ -43,15 +43,28 @@ describe('Consignee Model', function () {
     it('should switch to edit mode upon request', function () {
         var consignee = new ConsigneeModel({id: 11});
         expect(consignee.inEditMode).toBe(false);
+        expect(consignee.inEditRemarkMode).toBe(false);
         consignee.switchToEditMode();
         expect(consignee.inEditMode).toBe(true);
+        expect(consignee.inEditRemarkMode).toBe(true);
     });
 
     it('should switch to read mode upon request', function () {
         var consignee = new ConsigneeModel();
         expect(consignee.inEditMode).toBe(true);
+        expect(consignee.inEditRemarkMode).toBe(true);
         consignee.id = 12;
         consignee.switchToReadMode();
+        expect(consignee.inEditMode).toBe(false);
+        expect(consignee.inEditRemarkMode).toBe(false);
+    });
+
+    it('should switch to edit remark mode upon request', function () {
+        var consignee = new ConsigneeModel({id: 12});
+        expect(consignee.inEditRemarkMode).toBe(false);
+        expect(consignee.inEditMode).toBe(false);
+        consignee.switchToEditRemarkMode();
+        expect(consignee.inEditRemarkMode).toBe(true);
         expect(consignee.inEditMode).toBe(false);
     });
 

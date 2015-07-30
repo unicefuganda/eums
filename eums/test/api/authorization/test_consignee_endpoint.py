@@ -44,6 +44,22 @@ class ConsigneeEndpointTest(APITestCase):
 
     # UNICEF Admins
 
+    def test_should_give_unicef_user_permission_to_edit_non_vision_consignee(self):
+        consignee = ConsigneeFactory(imported_from_vision=False)
+
+        self._login_as('UNICEF_admin')
+        response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_should_not_give_unicef_user_permission_to_edit_when_vision_consignee(self):
+        consignee = ConsigneeFactory(imported_from_vision=True)
+
+        self._login_as('UNICEF_admin')
+        response = self.client.get(ENDPOINT_URL + str(consignee.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.status_code, 403)    
+
     def test_should_allow_unicef_admin_to_add_consignee(self):
         self._login_as('UNICEF_admin')
         response = self.client.post(ENDPOINT_URL, {'name': 'Some Consignee Name'})
@@ -197,6 +213,55 @@ class ConsigneeEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     # IP Editors
+
+    def test_should_not_give_ip_user_permission_to_fully_edit_consignee_created_by_other(self):
+        profile_consignee_one = ConsigneeFactory(name='Consignee 1')
+        profile_consignee_two = ConsigneeFactory(name='Consignee 2')
+
+        user_one = User.objects.create_user(username='user_name_one', password='pass')
+        user_profile_one = UserProfile(user=user_one, consignee=profile_consignee_one)
+        user_profile_one.save()
+        user_one.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_one.save()
+
+        user_two = User.objects.create_user(username='user_name_two', password='pass')
+        user_profile_two = UserProfile(user=user_two, consignee=profile_consignee_two)
+        user_profile_two.save()
+        user_two.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_two.save()
+
+        consignee_to_check = ConsigneeFactory(
+            name='Original Name', 
+            imported_from_vision=False,
+            created_by_user=user_two)
+        self.client.login(username='user_name_one', password='pass')
+        response = self.client.get(ENDPOINT_URL + str(consignee_to_check.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_should_give_ip_user_permission_to_fully_edit_consignee_created_by_same_ip(self):
+        profile_consignee_one = ConsigneeFactory(name='Consignee 1')
+
+        user_one = User.objects.create_user(username='user_name_one', password='pass')
+        user_profile_one = UserProfile(user=user_one, consignee=profile_consignee_one)
+        user_profile_one.save()
+        user_one.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_one.save()
+
+        user_two = User.objects.create_user(username='user_name_two', password='pass')
+        user_profile_two = UserProfile(user=user_two, consignee=profile_consignee_one)
+        user_profile_two.save()
+        user_two.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_two.save()
+
+        consignee_to_check = ConsigneeFactory(
+            name='Original Name', 
+            imported_from_vision=False,
+            created_by_user=user_two)
+        self.client.login(username='user_name_one', password='pass')
+        response = self.client.get(ENDPOINT_URL + str(consignee_to_check.id) + '/permission_to_edit/')
+
+        self.assertEqual(response.status_code, 200)            
 
     def test_should_allow_ip_editor_to_add_consignee(self):
         self._login_as('Implementing Partner_editor')

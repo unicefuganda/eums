@@ -1,6 +1,3 @@
-from eums.api.consignee.delivery_attached_permission import DeliveryAttachedPermission
-from eums.api.consignee.vision_imported_permission import VisionImportedPermission
-from eums.api.consignee.created_by_permission import CreatedByPermission
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.pagination import PageNumberPagination
@@ -8,7 +5,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
-from eums.models import Consignee, DistributionPlanNode
+from eums.models import Consignee, DistributionPlanNode, UserProfile
+from eums.api.consignee import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission, CanFullyEditPermission
 
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
@@ -53,6 +51,19 @@ class ConsigneeViewSet(ModelViewSet):
     def deliveries(self, _, pk=None):
         node_ids = DistributionPlanNode.objects.filter(consignee_id=pk).values_list('id', flat=True)
         return Response(list(node_ids))
+
+    @detail_route()
+    def permission_to_edit(self, request, pk=None):
+        consignee = self.get_object()
+        if consignee.imported_from_vision:
+            return Response(status=403)
+        if request.user.groups.first().name in ['UNICEF_admin', 'UNICEF_editor']:
+            return Response(status=200)
+        request_ip = UserProfile.objects.get(user=request.user).consignee
+        consignee_ip = UserProfile.objects.get(user=consignee.created_by_user).consignee
+        if consignee_ip != request_ip:
+            return Response(status=403)
+        return Response(status=200)
 
 
 consigneeRouter = DefaultRouter()

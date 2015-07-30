@@ -7,14 +7,14 @@ describe('Consignees Controller', function () {
     var savedConsignee = {
         id: 1, name: 'Dwelling Places', switchToReadMode: emptyFunction, switchToEditMode: emptyFunction
     };
-    var emptyConsignee = {properties: null, switchToEditMode: emptyFunction};
+    var emptyConsignee = {properties: null, switchToEditMode: emptyFunction, switchToEditRemarkMode: emptyFunction};
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
     var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page'};
     var searchResults = consignees.first(2);
 
     beforeEach(function () {
         module('Consignee');
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'search']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['all', 'create', 'update', 'del', 'search', 'userCanFullyEdit']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['retrieveUserPermissions']);
         mockConsigneeModel = function () {
             this.properties = emptyConsignee.properties;
@@ -27,7 +27,9 @@ describe('Consignees Controller', function () {
             mockConsigneeService.del.and.returnValue($q.defer());
 
             deferredSearchResults = $q.defer();
+            deferredCanFullyEdit = $q.defer();
             mockConsigneeService.search.and.returnValue(deferredSearchResults.promise);
+            mockConsigneeService.userCanFullyEdit.and.returnValue(deferredCanFullyEdit.promise);
 
             deferredPermissionsResults = $q.defer();
             mockUserService.retrieveUserPermissions.and.returnValue(deferredPermissionsResults.promise);
@@ -90,12 +92,21 @@ describe('Consignees Controller', function () {
         expect(savedConsignee.switchToReadMode).toHaveBeenCalled();
     });
 
-    it('should switch consignee to edit mode when edit is called', function () {
-        scope.$apply();
+    it('should switch consignee to edit mode on edit when user has permission to fully edit', function () {
+        deferredCanFullyEdit.resolve(true);
         spyOn(emptyConsignee, 'switchToEditMode');
         scope.edit(emptyConsignee);
+        scope.$apply()
         expect(emptyConsignee.switchToEditMode).toHaveBeenCalled();
     });
+
+    it('should switch consignee to edit remark mode on edit when user does not have permission to fully edit', function () {
+        deferredCanFullyEdit.reject(false);
+        spyOn(emptyConsignee, 'switchToEditRemarkMode');
+        scope.edit(emptyConsignee);
+        scope.$apply()
+        expect(emptyConsignee.switchToEditRemarkMode).toHaveBeenCalled();
+    });    
 
     it('should broadcast deleteConsignee event when showDeleteDialog is called', function () {
         var consignee = {id: 1};
