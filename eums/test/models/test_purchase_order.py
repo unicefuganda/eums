@@ -40,35 +40,29 @@ class PurchaseOrderTest(TestCase):
         NodeFactory(item=purchase_order_item)
         self.assertTrue(purchase_order.has_plan())
 
-    def test_should_know_if_it_is_fully_delivered_or_not(self):
-        consignee = ConsigneeFactory()
-        purchase_order_one = PurchaseOrderFactory()
-        purchase_order_two = PurchaseOrderFactory()
-        purchase_order_three = PurchaseOrderFactory()
+    def test_should_know_if_it_is_fully_delivered_or_not_using_only_tracked_nodes(self):
+        purchase_order = PurchaseOrderFactory()
 
-        purchase_order_item_one = PurchaseOrderItemFactory(purchase_order=purchase_order_one, quantity=100)
-        self.assertFalse(purchase_order_one.is_fully_delivered())
+        item_one = PurchaseOrderItemFactory(purchase_order=purchase_order, quantity=100)
+        item_two = PurchaseOrderItemFactory(purchase_order=purchase_order, quantity=100)
+        self.assertFalse(purchase_order.is_fully_delivered())
 
-        NodeFactory(item=purchase_order_item_one, consignee=consignee, targeted_quantity=50,
-                    tree_position=DistributionPlanNode.END_USER)
-        self.assertFalse(purchase_order_one.is_fully_delivered())
+        node_one = NodeFactory(item=item_one, targeted_quantity=100)
+        self.assertFalse(purchase_order.is_fully_delivered())
 
-        purchase_order_item_two = PurchaseOrderItemFactory(purchase_order=purchase_order_two, quantity=100)
-        node_one = NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                               tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        node_two = NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                               tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_one)
-        NodeFactory(item=purchase_order_item_two, consignee=consignee, targeted_quantity=100,
-                    tree_position=DistributionPlanNode.MIDDLE_MAN, parent=node_two)
-        self.assertTrue(purchase_order_two.is_fully_delivered())
+        node_two = NodeFactory(item=item_two, targeted_quantity=100)
+        self.assertFalse(purchase_order.is_fully_delivered())
 
-        purchase_order_item_three = PurchaseOrderItemFactory(purchase_order=purchase_order_three, quantity=100)
-        purchase_order_item_four = PurchaseOrderItemFactory(purchase_order=purchase_order_three, quantity=50)
-        NodeFactory(item=purchase_order_item_three, consignee=consignee, targeted_quantity=100,
-                    tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        NodeFactory(item=purchase_order_item_four, consignee=consignee, targeted_quantity=50,
-                    tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        self.assertTrue(purchase_order_three.is_fully_delivered())
+        node_one.track = True
+        node_one.save()
+        node_two.track = True
+        node_two.targeted_quantity = 50
+        node_two.save()
+        self.assertFalse(purchase_order.is_fully_delivered())
+
+        node_two.targeted_quantity = 100
+        node_two.save()
+        self.assertTrue(purchase_order.is_fully_delivered())
 
     def test_should_return_empty_list_when_no_deliveries_tied_to_any_purchase_order_items(self):
         order = PurchaseOrderFactory()

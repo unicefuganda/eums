@@ -30,8 +30,9 @@ class PurchaseOrder(models.Model):
         if self.has_plan():
             total_purchase_order_items = self.purchaseorderitem_set.aggregate(Sum('quantity'))
             total_node_items = DistributionPlanNode.objects.filter(
+                track=True,
                 item__in=self.purchaseorderitem_set.all(),
-                tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER
+                parent__isnull=True
             ).aggregate(Sum('targeted_quantity'))
             return total_node_items['targeted_quantity__sum'] == total_purchase_order_items['quantity__sum']
         else:
