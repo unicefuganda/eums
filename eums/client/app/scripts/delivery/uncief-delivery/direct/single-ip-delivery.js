@@ -5,6 +5,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         $scope.consignee = {};
         $scope.contact = {};
         $scope.district = {};
+        $scope.errors = false;
 
         loadOrderData();
 
@@ -18,6 +19,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         $scope.save = function (tracked) {
             $scope.tracked = tracked || false;
             if (scopeDataIsValid()) {
+                $scope.errors = false;
                 $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
             }
             else {

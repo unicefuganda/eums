@@ -127,6 +127,7 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.consignee).toEqual({});
             expect(scope.contact).toEqual({});
             expect(scope.district).toEqual({});
+            expect(scope.errors).toEqual(false);
         });
 
         it('should default scope delivery to empty object if there is no untracked delivery for purchase order', function () {
@@ -361,11 +362,11 @@ describe('Single IP Direct Delivery Controller', function () {
 
         it('should update delivery nodes on scope when save is called with create = falsy', function () {
             scope.delivery = createdTrackedDelivery;
-            var nodeOneClone = Object.merge(nodeOne, {id: 1, item: itemOne.id});
-            var nodeTwoClone = Object.merge(nodeTwo, {id: 2, item: itemTwo.id});
+            var nodeOneClone = Object.merge(nodeOne, {id: 1, item: itemOne.id, track: true});
+            var nodeTwoClone = Object.merge(nodeTwo, {id: 2, item: itemTwo.id, track: true});
             mockDeliveryNodeService.filter.and.returnValue(q.when([nodeOneClone, nodeTwoClone]));
 
-            scope.save();
+            scope.save(true);
             scope.$apply();
 
             var updateNodeArgs = mockDeliveryNodeService.update.calls.allArgs();
