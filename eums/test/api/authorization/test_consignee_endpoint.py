@@ -341,6 +341,35 @@ class ConsigneeEndpointTest(APITestCase):
         self.assertEqual(Consignee.objects.filter(name='Another New Consignee').count(), 1)
         self.assertEqual(Consignee.objects.filter(name='Updated New Consignee').count(), 0)
 
+    def test_should_allow_ip_editor_to_change_consignee_remarks_even_if_created_by_another(self):
+        profile_consignee_one = ConsigneeFactory(name='Consignee 1')
+        profile_consignee_two = ConsigneeFactory(name='Consignee 2')
+
+        user_one = User.objects.create_user(username='user_name_one', password='pass')
+        user_profile_one = UserProfile(user=user_one, consignee=profile_consignee_one)
+        user_profile_one.save()
+        user_one.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_one.save()
+
+        user_two = User.objects.create_user(username='user_name_two', password='pass')
+        user_profile_two = UserProfile(user=user_two, consignee=profile_consignee_two)
+        user_profile_two.save()
+        user_two.groups = [Group.objects.get(name='Implementing Partner_editor')]
+        user_two.save()
+
+        user_two_created_consignee = ConsigneeFactory(
+            name='Some Consignee',
+            remarks='Original Remark',
+            imported_from_vision=False, 
+            created_by_user=user_two)
+        self.client.login(username='user_name_one', password='pass')
+        response = self.client.put(
+            ENDPOINT_URL + str(user_two_created_consignee.id) + '/', 
+            {'name': 'Some Consignee', 'remarks': 'Updated Remark'})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Consignee.objects.get(name='Some Consignee').remarks, 'Updated Remark')
+
     def test_should_allow_ip_editor_to_delete_consignee_that_is_not_vision_imported_and_created_by_same_user(self):
         user = User.objects.create_user(username='some_user_name', password='pass')
         consignee = ConsigneeFactory(name="User Attached Consignee")

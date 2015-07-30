@@ -12,6 +12,8 @@ class CreatedByPermission(permissions.BasePermission):
             # Need this check until we can create vision import user
             if obj.created_by_user is None:
                 return True
+            if obj.has_only_dirty_remarks(request.data) and request.method == 'PUT':
+                return True
             request_user_group = request.user.groups.first()
             obj_user_group = obj.created_by_user.groups.first()
             if request_user_group.name == 'Implementing Partner_editor':
