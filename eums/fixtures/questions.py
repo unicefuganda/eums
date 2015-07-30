@@ -82,19 +82,20 @@ def seed_questions():
 
     question_8, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['372c8732-d8a8-45cf-9d3b-f060a467cf77', 'de4c7ea8-568e-40ef-be3f-5307754c47a8'],
-        text='Was delivery received?', label='productReceived')
+        text='Was delivery received?', label='deliveryReceived')
     Option.objects.get_or_create(text='Yes', question=question_8)
     no_delivery, _ = Option.objects.get_or_create(text='No', question=question_8)
+    IMPLEMENTING_PARTNER.end_nodes = []
     IMPLEMENTING_PARTNER.end_nodes.append([question_8.id, no_delivery.id])
     IMPLEMENTING_PARTNER.save()
 
     question_9, _ = TextQuestion.objects.get_or_create(
         uuids=['48941e9a-5914-46ec-822f-3595f9aa1fef'],
-        text='When was delivery received?', label='dateOfReceipt')
+        text='When was delivery received?', label='dateOfReceiptOfDelivery')
 
     question_10, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['0b16b05d-19c1-4c01-a336-ce26bd134dde', '877553e7-241f-4a7e-852c-7b6307c4b018'],
-        text='Was delivery received?', label='isProductInGoodShape')
+        text='Was delivery received?', label='isDeliveryInGoodOrder')
     yes_delivery, _ = Option.objects.get_or_create(text='Yes', question=question_10)
     no_delivery, _ = Option.objects.get_or_create(text='No', question=question_10)
     IMPLEMENTING_PARTNER.end_nodes.append([question_10.id, yes_delivery.id])
