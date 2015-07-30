@@ -79,7 +79,7 @@ describe('Warehouse Delivery Management Controller', function () {
                 q = $q;
 
                 mockReleaseOrderService.get.and.returnValue(q.when(releaseOrder));
-                mockDistributionPlanNodeService.filter.and.returnValue(q.when());
+                mockDistributionPlanNodeService.filter.and.returnValue(q.when([{location: 'Kampala', id: 1}]));
                 mockDistributionPlanNodeService.create.and.returnValue(q.when());
                 mockDistributionPlanNodeService.update.and.returnValue(q.when({}));
                 mockContactService.get.and.returnValue(q.when(contact));
@@ -120,6 +120,7 @@ describe('Warehouse Delivery Management Controller', function () {
         it('should call distribution plan service when fields are valid', function () {
             scope.$apply();
             scope.contact = contact;
+            scope.track = false;
             scope.selectedLocation = locations.first();
             scope.saveDelivery();
             scope.$apply();

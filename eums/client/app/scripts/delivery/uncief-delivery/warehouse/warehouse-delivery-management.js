@@ -85,7 +85,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     $scope.selectedReleaseOrder.totalValue = 0.0;
                     $scope.releaseOrderItems = releaseOrder.items;
                     $scope.selectedReleaseOrder.totalValue = releaseOrderItemsTotalValue();
-                    $scope.delivery = releaseOrder.delivery? releaseOrder.delivery.data : {};
+                    $scope.delivery = releaseOrder.delivery? releaseOrder.delivery : {};
 
                     if ($scope.delivery) {
                         $scope.track = $scope.delivery.track;
