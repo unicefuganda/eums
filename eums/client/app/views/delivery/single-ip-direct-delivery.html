@@ -24,12 +24,12 @@
             </div>
             <div class="pad-left-5 pad-top-10">
                 <div class="col-md-12 form-horizontal">
-                    <div class="form-group col-md-4" ng-class="{'has-error': !delivery.consignee && errors}">
-                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
-                            Implementing Partner:
+                    <div class="form-group col-md-2" ng-class="{'has-error': !delivery.consignee && errors}">
+                        <label for="input-consignee" class="col-md-2 control-label description-label pad-small">
+                            IP:
                         </label>
 
-                        <div id='input-consignee' class="col-md-7 pad-small" ng-if="contentLoaded">
+                        <div id='input-consignee' class="col-md-10 pad-small" ng-if="contentLoaded">
                             <input type="hidden" search-consignees only-ips
                                    ng-model="delivery.consignee"
                                    ng-attr-id="{{ 'ip-select' }}"
@@ -37,7 +37,7 @@
                                    value="{{ delivery.consignee }}">
                         </div>
                     </div>
-                    <div class="form-group col-md-2" ng-class="{'has-error': !delivery.delivery_date && errors}">
+                    <div class="form-group col-md-3" ng-class="{'has-error': !delivery.delivery_date && errors}">
                         <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
                             Delivery Date
                         </label>
@@ -87,7 +87,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group col-md-2" ng-if="districtsLoaded"
                          ng-class="{'has-error': !delivery.location && errors}">
                         <label class="col-md-4 control-label description-label pad-small">
@@ -103,7 +102,7 @@
                                    value="{{ delivery.location }}">
                         </div>
                     </div>
-                    <div class="text-center col-md-1">
+                    <div class="text-center col-md-2">
                         <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
                             Remarks
                         </label>
