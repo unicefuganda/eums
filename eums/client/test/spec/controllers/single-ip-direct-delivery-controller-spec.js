@@ -45,9 +45,12 @@ describe('Single IP Direct Delivery Controller', function () {
     var emptyFunction = function () {
     };
     var mockModal = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
+    var viewDeliveryModal = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
     var mockLoader = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
     var jqueryFake = function (selector) {
-        return selector === '#confirmation-modal' ? mockModal : mockLoader;
+        if (selector === '#confirmation-modal') return mockModal;
+        else if (selector === '#view-delivery-modal') return viewDeliveryModal;
+        else return mockLoader;
     };
 
     beforeEach(function () {
@@ -454,6 +457,32 @@ describe('Single IP Direct Delivery Controller', function () {
             });
         });
 
+    });
+
+    describe('when past delivery is clicked', function() {
+        it('should show modal with delivery details', function() {
+            spyOn(viewDeliveryModal, 'modal');
+            scope.$apply();
+            scope.viewDelivery({id: 1});
+
+            expect(viewDeliveryModal.modal).toHaveBeenCalled();
+        });
+
+        xit('should load delivery details and put them on scope', function() {
+            var delivery = {id: 1, distributionplannodeSet: [
+                {
+                    item: {
+                        quantity: 100,
+                        value: 1000,
+                        item: {materialCode: 'SL8765', description: 'Books', unit: {name: 'kg'}}
+                    }
+                }
+            ]};
+            mockDeliveryService.get.and.returnValue(q.when());
+            scope.viewDelivery({id: 1});
+            scope.$apply();
+            expect(mockDeliveryService.get).toHaveBeenCalledWith(1, ['distributionplannode_set.item.item.unit']);
+        });
     });
 
     function makeScopeFixture() {

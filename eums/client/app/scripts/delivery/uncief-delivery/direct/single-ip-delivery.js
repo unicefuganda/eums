@@ -41,6 +41,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             angular.element('#add-remark-modal').modal();
         };
 
+        $scope.viewDelivery = function(delivery) {
+            angular.element('#view-delivery-modal').modal();
+        };
+
         var saveDelivery = function () {
             var totalQuantityShipped = $scope.purchaseOrderItems.sum(function (item) {
                 return item.quantityShipped || 0;
