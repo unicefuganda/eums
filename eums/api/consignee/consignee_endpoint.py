@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
 from eums.models import Consignee, DistributionPlanNode, UserProfile
-from eums.api.consignee import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission, CanFullyEditPermission
+from eums.api.consignee import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission
 
 
 class ConsigneeSerialiser(serializers.ModelSerializer):
