@@ -2,10 +2,11 @@ describe('Warehouse Delivery Management Controller', function () {
 
     var scope, location, q, routeParams, mockDistributionPlanService,
         mockDistributionPlanNodeService, mockReleaseOrderService, mockReleaseOrderItemService,
-        mockIPService, toast, mockContactService, contact, locations;
+        mockIPService, toast, mockContactService, contact, locations, releaseOrderItem;
 
     var programId = 23123;
-    var consigneeId = 1;
+    var consigneeId = 1
+    var releaseOrderItemId = 430;
 
     beforeEach(function () {
         module('WarehouseDeliveryManagement');
@@ -27,9 +28,9 @@ describe('Warehouse Delivery Management Controller', function () {
                     id: 'Jinga'
                 }
             ];
-            var releaseOrderItem = {
+            releaseOrderItem = {
                 distributionplannode_set: [44],
-                id: 430,
+                id: releaseOrderItemId,
                 item: 174,
                 item_number: 10,
                 purchase_order_item: 429,
@@ -44,7 +45,7 @@ describe('Warehouse Delivery Management Controller', function () {
                 deliveryDate: '2014-08-19',
                 id: 1,
                 items: [releaseOrderItem],
-                0: 430,
+                0: releaseOrderItemId,
                 orderNumber: 54102852,
                 programme: '',
                 purchaseOrder: 106,
@@ -63,7 +64,8 @@ describe('Warehouse Delivery Management Controller', function () {
 
             mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
             mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
-            mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService, ['filter', 'create']);
+            mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService,
+                ['filter', 'create', 'update']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockIPService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
 
@@ -77,6 +79,7 @@ describe('Warehouse Delivery Management Controller', function () {
                 mockReleaseOrderService.get.and.returnValue(q.when(releaseOrder));
                 mockDistributionPlanNodeService.filter.and.returnValue(q.when());
                 mockDistributionPlanNodeService.create.and.returnValue(q.when());
+                mockDistributionPlanNodeService.update.and.returnValue(q.when({}));
                 mockContactService.get.and.returnValue(q.when(contact));
                 mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
                 mockDistributionPlanService.createPlan.and.returnValue(q.when({id: 232}));
@@ -128,7 +131,32 @@ describe('Warehouse Delivery Management Controller', function () {
                 track: false
             });
             expect(mockDistributionPlanNodeService.create.calls.count()).toEqual(1);
-            expect(toast.create).toHaveBeenCalledWith({ content : 'Warehouse Delivery Saved!', class : 'success', maxNumber : 1, dismissOnTimeout : true });
+            expect(toast.create).toHaveBeenCalledWith({
+                content: 'Warehouse Delivery Saved!',
+                class: 'success',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        });
+
+        it('should update deliveries when has a delivery in the scope', function () {
+            scope.$apply();
+            scope.delivery = {id: 1};
+            scope.contact = contact;
+            scope.deliveryNodes = [{item: releaseOrderItemId}];
+            scope.selectedLocation = locations.first();
+            scope.saveDelivery();
+            scope.$apply();
+
+            expect(scope.errors).toBe(false);
+            expect(mockDistributionPlanNodeService.create.calls.count()).toEqual(0);
+            expect(mockDistributionPlanNodeService.update.calls.count()).toEqual(1);
+            expect(toast.create).toHaveBeenCalledWith({
+                content: 'Warehouse Delivery Saved!',
+                class: 'success',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
         });
 
     });
