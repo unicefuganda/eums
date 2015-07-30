@@ -13,6 +13,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
         $scope.delivery = {};
         $scope.releaseOrderItems = [];
         $scope.districtsLoaded = false;
+        $scope.track = $scope.track ? true : false;
 
         function createToast(message, klass) {
             ngToast.create({
@@ -67,31 +68,44 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
 
             $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
         };
+
+        function releaseOrderItemsTotalValue() {
+            return $scope.releaseOrderItems.sum(function (orderItem) {
+                return parseFloat(orderItem.value);
+            });
+        }
+
         var getDelivery = function () {
-            ReleaseOrderService.get($routeParams.releaseOrderId,
-                ['consignee', 'sales_order.programme', 'delivery', 'items.item.unit']).then(function (releaseOrder) {
+            var deliveryParams = ['consignee', 'sales_order.programme', 'delivery', 'items.item.unit'];
+            var deliveryNodeParams = ['consignee'];
+
+            ReleaseOrderService.get($routeParams.releaseOrderId, deliveryParams)
+                .then(function (releaseOrder) {
                     $scope.selectedReleaseOrder = releaseOrder;
                     $scope.selectedReleaseOrder.totalValue = 0.0;
                     $scope.releaseOrderItems = releaseOrder.items;
-                    $scope.selectedReleaseOrder.totalValue = $scope.releaseOrderItems.sum(function (orderItem) {
-                        return parseFloat(orderItem.value);
-                    });
-                    if (releaseOrder.delivery) {
-                        $scope.delivery = releaseOrder.delivery.data;
-                        if ($scope.delivery) {
-                            var fields = ['consignee'];
-                            DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}, fields).then(function (childNodes) {
-                                $scope.deliveryNodes.add(childNodes);
-                                $scope.selectedLocation.id = childNodes[0].location;
-                                $scope.contact.id = childNodes[0].contactPersonId;
-                                setLocationAndContactFields();
+                    $scope.selectedReleaseOrder.totalValue = releaseOrderItemsTotalValue();
+                    $scope.delivery = releaseOrder.delivery? releaseOrder.delivery.data : {};
+
+                    if ($scope.delivery) {
+                        $scope.track = $scope.delivery.track;
+                        DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}, deliveryNodeParams)
+                            .then(function (childNodes) {
+                                var firstChildNode = childNodes.first();
+                                if (childNodes && firstChildNode) {
+                                    $scope.deliveryNodes.add(childNodes);
+                                    $scope.selectedLocation.id = firstChildNode.location;
+                                    $scope.contact.id = firstChildNode.contactPersonId;
+                                    setLocationAndContactFields();
+                                }
                             });
-                        }
                     }
+
                 });
         };
 
         showLoadingModal(true);
+
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
@@ -126,7 +140,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     location: $scope.selectedLocation.id,
                     contact_person_id: $scope.contact.id,
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
-                    track: false
+                    track: $scope.track
                 }).then(function (createdDelivery) {
                     $scope.delivery = createdDelivery;
                     saveDeliveryNodes();
@@ -155,6 +169,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                 node.location = $scope.selectedLocation.id;
                 node.contact_person_id = $scope.contact.id;
                 node.delivery_date = $scope.selectedReleaseOrder.deliveryDate;
+                node.track = $scope.track;
                 DistributionPlanNodeService.update(node)
                     .then(function () {
                         getDelivery();
@@ -173,7 +188,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     item: releaseOrderItem,
                     targeted_quantity: parseInt(releaseOrderItem.quantity),
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
-                    track: false
+                    track: $scope.track
                 };
                 DistributionPlanNodeService.create(node)
                     .then(function () {

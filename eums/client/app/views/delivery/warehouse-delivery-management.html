@@ -10,7 +10,7 @@
         </h4>
         <div class="row">
             <div class="form-horizontal">
-                <div class="form-group col-lg-4">
+                <div class="form-group col-lg-3">
                     <label class="col-lg-4 control-label description-label">
                         Shipment Date:
                     </label>
@@ -18,7 +18,7 @@
                         <label class="col-lg-4 control-label text-success">{{ selectedReleaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}</label>
                     </div>
                 </div>
-                <div class="form-group col-lg-4">
+                <div class="form-group col-lg-3">
                     <label class="col-lg-4 control-label description-label">
                         Contact Person:
                     </label>
@@ -46,6 +46,14 @@
                            ng-attr-id="{{ 'location-select' }}"
                            value="{{ selectedLocation.id }}">
                     </div>
+                </div>
+
+                <div class="checkbox lg form-group col-lg-3">
+                    <label class="col-lg-4 control-label description-label">
+                        <input type="checkbox"
+                               ng-model="track">
+                        Track delivery
+                    </label>
                 </div>
             </div>
             <div class="material-items well col-lg-7 pull-left">
