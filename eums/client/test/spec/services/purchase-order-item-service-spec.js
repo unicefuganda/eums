@@ -24,9 +24,8 @@ describe('Purchase Order Item Service', function () {
     it('should invoke create on Factory Service with right params', function () {
         expect(mockServiceFactory.create).toHaveBeenCalledWith({
             uri: endpointUrl,
-            propertyServiceMap: {distributionplannode_set: distributionPlanNodeService, item: itemService},
-            model: mockPurchaseOrderItemModel,
-            methods: jasmine.any(Object)
+            propertyServiceMap: {item: itemService},
+            model: mockPurchaseOrderItemModel
         });
     });
 });

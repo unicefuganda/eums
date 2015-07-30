@@ -31,40 +31,10 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
             }.bind(this);
         };
     })
-    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, DistributionPlanNodeService, $q,
-                                                   ItemService, PurchaseOrderItem) {
+    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, $q,ItemService, PurchaseOrderItem) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM,
-            propertyServiceMap: {distributionplannode_set: DistributionPlanNodeService, item: ItemService},
-            model: PurchaseOrderItem,
-            methods: {
-                //TODO Remove this and replace with a backend filter on the delivery node endpoint by parent and item.
-                getTopLevelDistributionPlanNodes: function (purchaseOrderItem) {
-                    var allDistributionPlanNodes = purchaseOrderItem.distributionplannodeSet;
-
-                    var planNodePromises = [],
-                        planNodes = [];
-
-                    allDistributionPlanNodes.forEach(function (node) {
-                        var planNodePromise = DistributionPlanNodeService.getPlanNodeDetails(node.id)
-                            .then(function (planNodeResponse) {
-                                return planNodeResponse;
-                            });
-                        planNodePromises.push(planNodePromise);
-                    });
-
-                    planNodePromises.forEach(function (promise) {
-                        promise.then(function (plaNode) {
-                            planNodes.push(plaNode);
-                        });
-                    });
-
-                    return $q.all(planNodePromises).then(function () {
-                        return planNodes.filter(function (planNode) {
-                            return !planNode.parent;
-                        });
-                    });
-                }
-            }
+            propertyServiceMap: {item: ItemService},
+            model: PurchaseOrderItem
         });
     });

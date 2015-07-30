@@ -59,7 +59,6 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             };
 
 
-
             this.quantityLeft = function (children) {
                 !children && (children = this.children);
                 return this.targetedQuantity - children.sum(function (node) {
