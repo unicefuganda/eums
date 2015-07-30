@@ -128,7 +128,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                 return;
             }
             showLoadingModal(true);
-            if ($scope.delivery.id) {
+            if ($scope.delivery && $scope.delivery.id) {
                 saveDeliveryNodes();
                 var message = 'Warehouse Delivery updated!';
                 createToast(message, 'success');
