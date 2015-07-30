@@ -136,7 +136,11 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
 
         function createOrUpdateDeliveries() {
             if ($scope.delivery && $scope.delivery.id) {
-                return updateDeliveryNodes();
+                return DistributionPlanService.update($scope.delivery)
+                    .then(function (createdDelivery) {
+                        $scope.delivery = createdDelivery;
+                        return updateDeliveryNodes();
+                });
             }
             else {
                 var deliveryDetails = {

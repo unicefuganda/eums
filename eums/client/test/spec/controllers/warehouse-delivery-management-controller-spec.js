@@ -5,8 +5,9 @@ describe('Warehouse Delivery Management Controller', function () {
         mockIPService, toast, mockContactService, contact, locations, releaseOrderItem;
 
     var programId = 23123;
-    var consigneeId = 1
+    var consigneeId = 1;
     var releaseOrderItemId = 430;
+    var updatedDelivery = {id: 1, item: 2};
 
     beforeEach(function () {
         module('WarehouseDeliveryManagement');
@@ -63,7 +64,8 @@ describe('Warehouse Delivery Management Controller', function () {
             };
 
             mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['createPlan']);
+            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService',
+                ['createPlan', 'update']);
             mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService,
                 ['filter', 'create', 'update']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
@@ -83,6 +85,7 @@ describe('Warehouse Delivery Management Controller', function () {
                 mockContactService.get.and.returnValue(q.when(contact));
                 mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
                 mockDistributionPlanService.createPlan.and.returnValue(q.when({id: 232}));
+                mockDistributionPlanService.update.and.returnValue(q.when(updatedDelivery));
 
                 spyOn(angular, 'element').and.callFake(jqueryFake);
                 spyOn(mockModal, 'modal');
@@ -139,9 +142,10 @@ describe('Warehouse Delivery Management Controller', function () {
             });
         });
 
-        it('should update deliveries when has a delivery in the scope', function () {
+        it('should update deliveries and nodes when has a delivery in the scope', function () {
             scope.$apply();
-            scope.delivery = {id: 1};
+            var delivery = {id: 1};
+            scope.delivery = delivery;
             scope.contact = contact;
             scope.deliveryNodes = [{item: releaseOrderItemId}];
             scope.selectedLocation = locations.first();
@@ -150,6 +154,7 @@ describe('Warehouse Delivery Management Controller', function () {
 
             expect(scope.errors).toBe(false);
             expect(mockDistributionPlanNodeService.create.calls.count()).toEqual(0);
+            expect(mockDistributionPlanService.update).toHaveBeenCalledWith(delivery);
             expect(mockDistributionPlanNodeService.update.calls.count()).toEqual(1);
             expect(toast.create).toHaveBeenCalledWith({
                 content: 'Warehouse Delivery Saved!',
