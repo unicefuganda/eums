@@ -149,7 +149,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                              description=u'SQFlex 3-10 Pump C/W 1.4KW')
 
         item = SalesOrderItem.objects.get(description='SQFlex 3-10 Pump C/W 1.4KW', sales_order=first_sales_order)
-        self.assert_sales_order_items_are_equal(expected_order_item, item)
+        self.assertEqual(expected_order_item, item)
 
     def test_should_create_sales_order_items_with_different_item_numbers(self):
         num_sales_order_imports = SalesOrderItem.objects.count()
@@ -208,7 +208,7 @@ class TestSalesOrdersVisionFacade(TestCase):
                                         issue_date=datetime.date(2014, 1, 3), delivery_date=datetime.date(2014, 1, 3),
                                         description=u'SQFlex 3-10 Pump C/W 1.4KW')
 
-        self.assert_sales_order_items_are_equal(order_item_one, SalesOrderItem.objects.all()[0])
+        self.assertEqual(order_item_one, SalesOrderItem.objects.first())
 
     def assert_sales_orders_were_created(self, programme_one, programme_two):
         sales_order_one = SalesOrder(order_number=20146879, programme=programme_one,
@@ -233,26 +233,16 @@ class TestSalesOrdersVisionFacade(TestCase):
                                           issue_date=datetime.date(2014, 1, 9), delivery_date=datetime.date(2014, 1, 9),
                                           description=u'Retinol 100,000IU soft gel.caps/PAC-500')
 
-        self.assert_sales_order_items_are_equal(order_item_one, SalesOrderItem.objects.all()[0])
-        self.assert_sales_order_items_are_equal(order_item_two, SalesOrderItem.objects.all()[1])
-        self.assert_sales_order_items_are_equal(order_item_three, SalesOrderItem.objects.all()[2])
+        sales_order_items = SalesOrderItem.objects.all()
+        self.assertIn(order_item_one, sales_order_items)
+        self.assertIn(order_item_two, sales_order_items)
+        self.assertIn(order_item_three, sales_order_items)
 
     def assert_sales_orders_are_equal(self, order_one, order_two):
         self.assertEqual(order_one.order_number, order_two.order_number)
         self.assertEqual(order_one.programme_id, order_two.programme_id)
         self.assertEqual(order_one.date, order_two.date)
         self.assertEqual(order_one.description, order_two.description)
-
-    def assert_sales_order_items_are_equal(self, order_item_one, order_item_two):
-        self.assertEqual(order_item_one.sales_order_id, order_item_two.sales_order_id)
-        self.assertEqual(order_item_one.item_number, order_item_two.item_number)
-        self.assertEqual(order_item_one.item_id, order_item_two.item_id)
-        self.assertEqual(order_item_one.quantity, order_item_two.quantity)
-        self.assertEqual(order_item_one.issue_date, order_item_two.issue_date)
-        self.assertEqual(order_item_one.delivery_date, order_item_two.delivery_date)
-        self.assertEqual(order_item_one.net_price, order_item_two.net_price)
-        self.assertEqual(order_item_one.net_value, order_item_two.net_value)
-        self.assertEqual(order_item_one.description, order_item_two.description)
 
     def create_sales_order_workbook(self):
         work_book = Workbook()

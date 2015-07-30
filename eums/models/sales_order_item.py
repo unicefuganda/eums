@@ -18,6 +18,18 @@ class SalesOrderItem(OrderItem):
     def purchase_order_item(self):
         return self.purchaseorderitem_set.all().first()
 
+    def __eq__(self, other):
+        if not isinstance(other, SalesOrderItem):
+            return False
+        return (self.sales_order_id == other.sales_order_id
+                and self.item_number == other.item_number
+                and self.item_id == other.item_id
+                and self.quantity == other.quantity
+                and self.issue_date == other.issue_date
+                and self.delivery_date == other.delivery_date
+                and self.net_price == other.net_price
+                and self.net_value == other.net_value
+                and self.description == other.description)
+
     def __unicode__(self):
         return '%s' % self.description
-
