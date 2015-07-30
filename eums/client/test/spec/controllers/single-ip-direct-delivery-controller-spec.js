@@ -58,7 +58,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail', 'update']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan', 'update']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan', 'update', 'get']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
@@ -459,8 +459,34 @@ describe('Single IP Direct Delivery Controller', function () {
 
     });
 
-    describe('when past delivery is clicked', function() {
-        it('should show modal with delivery details', function() {
+    describe('when past delivery is clicked', function () {
+        var delivery;
+        beforeEach(function() {
+            delivery = {
+                id: 1,
+                distributionplannodeSet: [
+                    {
+                        targetedQuantity: 100,
+                        item: {
+                            quantity: 100,
+                            value: 1000,
+                            item: {materialCode: 'SL200', description: 'Sugar', unit: {name: 'kg'}}
+                        }
+                    },
+                    {
+                        targetedQuantity: 10,
+                        item: {
+                            quantity: 10,
+                            value: 500,
+                            item: {materialCode: 'SL100', description: 'Chairs', unit: {name: 'each'}}
+                        }
+                    }
+                ]
+            };
+            mockDeliveryService.get.and.returnValue(q.when(delivery));
+        });
+
+        it('should show modal with delivery details', function () {
             spyOn(viewDeliveryModal, 'modal');
             scope.$apply();
             scope.viewDelivery({id: 1});
@@ -468,20 +494,12 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(viewDeliveryModal.modal).toHaveBeenCalled();
         });
 
-        xit('should load delivery details and put them on scope', function() {
-            var delivery = {id: 1, distributionplannodeSet: [
-                {
-                    item: {
-                        quantity: 100,
-                        value: 1000,
-                        item: {materialCode: 'SL8765', description: 'Books', unit: {name: 'kg'}}
-                    }
-                }
-            ]};
-            mockDeliveryService.get.and.returnValue(q.when());
+        it('should load delivery details and put them on scope', function () {
+            mockDeliveryService.get.and.returnValue(q.when(delivery));
             scope.viewDelivery({id: 1});
             scope.$apply();
-            expect(mockDeliveryService.get).toHaveBeenCalledWith(1, ['distributionplannode_set.item.item.unit']);
+            expect(mockDeliveryService.get).toHaveBeenCalledWith(1, ['contact_person_id', 'distributionplannode_set.item.item.unit']);
+            expect(scope.deliveryInView).toEqual(delivery);
         });
     });
 

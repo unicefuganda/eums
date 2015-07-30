@@ -2,9 +2,13 @@
 
 
 angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
-    .factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService, ServiceFactory) {
+    .factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService, ServiceFactory, ContactService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN,
+            propertyServiceMap: {
+                contact_person_id: ContactService,
+                distributionplannode_set: DistributionPlanNodeService
+            },
             methods: {
                 aggregateStats: function (data, location) {
                     //TODO Remove. This should happen at the backend
@@ -110,18 +114,13 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                         });
                     });
                 },
-                get: function (planId) {
-                    return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + planId + '/', {cache: true});
-                },
                 //TODO Remove. Make clients ask to build node_set
                 getPlanDetails: function (planId) {
-                    var getPlanPromise = this.get(planId);
-                    return getPlanPromise.then(function (response) {
-                        var plan = response.data;
+                    return this.get(planId).then(function (plan) {
                         var nodeFillOutPromises = [];
 
                         plan.nodeList = [];
-                        plan.distributionplannode_set.forEach(function (nodeId) {
+                        plan.distributionplannodeSet.forEach(function (nodeId) {
                             nodeFillOutPromises.push(fillOutNode(nodeId, plan));
                         });
 
@@ -143,16 +142,12 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                     });
                 },
                 updatePlanTracking: function (planId, tracking) {
-                    var getPlanPromise = this.get(planId);
-                    return getPlanPromise.then(function (response) {
-                        var plan = response.data;
+                    return this.get(planId).then(function (plan) {
                         var nodeUpdatePromises = [];
-
-                        plan.distributionplannode_set.forEach(function (nodeId) {
+                        plan.distributionplannodeSet.forEach(function (nodeId) {
                             //TODO Simplified in node service by removal of line item
                             nodeUpdatePromises.push(DistributionPlanNodeService.updateNodeTracking(nodeId, tracking));
                         });
-
                         return $q.all(nodeUpdatePromises);
                     });
                 }

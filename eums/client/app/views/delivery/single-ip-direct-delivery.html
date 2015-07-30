@@ -139,7 +139,7 @@
                             </tr>
                             <tr ng-repeat="(index, delivery) in trackedDeliveries">
                                 <td>{{ index + 1 }}</td>
-                                <td>{{ delivery.delivery_date }}</td>
+                                <td  ng-click="viewDelivery(delivery)" class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy'  }}</td>
                                 <td>{{ delivery.total_value | currency }}</td>
                             </tr>
                         </table>
@@ -196,7 +196,8 @@
         </div>
         <eums-contact></eums-contact>
         <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>
-        <ng-include src="'/static/app/views/delivery/partials/add-remark-modal.html'"></ng-include>
+        <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>
+        <ng-include src="'/static/app/views/delivery/partials/view-delivery-modal.html'"></ng-include>
     </div>
 </div>
 </div>

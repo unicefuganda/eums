@@ -1,5 +1,5 @@
 describe('Distribution Plan Service', function () {
-    var distributionPlanService, mockBackend, distPlanEndpointUrl, salesOrdersEndpointUrl, mockNodeService, q, http, config;
+    var distributionPlanService, mockBackend, distPlanEndpointUrl, salesOrdersEndpointUrl, mockNodeService, q, http, config, mockContactService;
     var planId = 1;
 
     var stubPlanOne = {
@@ -74,7 +74,7 @@ describe('Distribution Plan Service', function () {
     var expectedPlan = {
         id: planId,
         programme: 1,
-        distributionplannode_set: [1, 2, 3, 4],
+        distributionplannodeSet: [1, 2, 3, 4],
         nodeTree: expectedNodeTree
     };
 
@@ -82,9 +82,11 @@ describe('Distribution Plan Service', function () {
         module('DistributionPlan');
 
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'updateNodeTracking']);
+        mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
 
         module(function ($provide) {
             $provide.value('DistributionPlanNodeService', mockNodeService);
+            $provide.value('ContactService', mockContactService);
         });
 
         inject(function (DistributionPlanService, $httpBackend, $q, EumsConfig, $http) {
@@ -297,7 +299,7 @@ describe('UNICEF IP', function () {
                 'id': 3,
                 'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
             },
-            location:'Mbarara'
+            location: 'Mbarara'
         },
         {
             'node': planNodeOne,
@@ -403,7 +405,7 @@ describe('UNICEF IP', function () {
             distributionPlanService.aggregateResponses().then(function (aggregates) {
                 // TODO: Change back to this when using all responses, not just end user responses
                 // expect(aggregates).toEqual({ location: 'UGANDA', totalSent: 3, totalReceived: 1, totalNotReceived: 2 });
-                expect(aggregates).toEqual({ location: undefined, totalSent: 2, totalReceived: 1, totalNotReceived: 1 });
+                expect(aggregates).toEqual({location: undefined, totalSent: 2, totalReceived: 1, totalNotReceived: 1});
                 done();
             });
             httpBackend.flush();
@@ -414,7 +416,7 @@ describe('UNICEF IP', function () {
             distributionPlanService.aggregateResponsesForDistrict(district).then(function (aggregates) {
                 // TODO: Change back to this when using all responses, not just end user responses
                 // expect(aggregates).toEqual({location: 'Gulu', totalSent: 1, totalReceived: 0, totalNotReceived: 1});
-                expect(aggregates).toEqual({ });
+                expect(aggregates).toEqual({});
                 done();
             });
             httpBackend.flush();

@@ -42,7 +42,13 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         };
 
         $scope.viewDelivery = function(delivery) {
+            showLoader();
             angular.element('#view-delivery-modal').modal();
+            var fieldsToBuild = ['contact_person_id', 'distributionplannode_set.item.item.unit'];
+            DistributionPlanService.get(delivery.id, fieldsToBuild).then(function(delivery) {
+                $scope.deliveryInView = delivery;
+                hideLoader();
+            }).finally(hideLoader);
         };
 
         var saveDelivery = function () {

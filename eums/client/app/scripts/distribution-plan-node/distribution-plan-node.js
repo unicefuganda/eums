@@ -67,10 +67,15 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             }.bind(this);
         };
     })
-    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode) {
+    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
-            propertyServiceMap: {consignee: ConsigneeService, contact_person_id: ContactService, children: 'self'},
+            propertyServiceMap: {
+                consignee: ConsigneeService,
+                contact_person_id: ContactService,
+                children: 'self',
+                item: PurchaseOrderItemService
+            },
             model: DeliveryNode,
             methods: {
                 getNodeResponse: function (nodeId) {

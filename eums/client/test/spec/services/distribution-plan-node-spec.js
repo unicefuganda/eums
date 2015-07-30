@@ -1,6 +1,6 @@
 describe('Distribution Plan Node Service', function () {
 
-    var planNodeService, mockConsigneeService, mockContactService;
+    var planNodeService, mockConsigneeService, mockContactService, mockPurchaseOrderItemService;
     var mockBackend, q;
     var planNodeEndpointUrl;
     var nodeResponsesEndpointUrl;
@@ -103,10 +103,12 @@ describe('Distribution Plan Node Service', function () {
 
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
+        mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
 
         module(function ($provide) {
             $provide.value('ConsigneeService', mockConsigneeService);
             $provide.value('ContactService', mockContactService);
+            $provide.value('PurchaseOrderItemService', mockPurchaseOrderItemService);
         });
 
         inject(function (DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {

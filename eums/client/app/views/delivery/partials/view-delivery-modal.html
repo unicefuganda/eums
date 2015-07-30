@@ -1,0 +1,49 @@
+<div class="modal fade" id="view-delivery-modal">
+    <div class="modal-dialog">
+        <div class="modal-content wide">
+            <h4 class="modal-title eums page-header pad-left-15">
+                Previous Delivery Details for {{ deliveryInView.deliveryDate | date : 'dd MMM yyyy'}}
+            </h4>
+
+            <div class="modal-body">
+                <div>
+                    <div class="col-md-4"><strong>Date of Delivery</strong></div>
+                    <div class="col-md-4">Contact Person</div>
+                    <div class="col-md-4">Location</div>
+                </div>
+                <div>
+                    <div class="col-md-4"><span class="label label-success label-round">{{ deliveryInView.deliveryDate }}</span></div>
+                    <div class="col-md-4">
+                        <span class="label label-success label-round">
+                            {{ deliveryInView.contactPersonId.firstName }} {{ deliveryInView.contactPersonId.lastName }}
+                        </span>
+                    </div>
+                    <div class="col-md-4"><span class="label label-success label-round">{{ delivery.location }}</span></div>
+                </div>
+                <div class=pad-top-70>
+                    <table id="past-delivery-view" class="table table-bordered table-striped table-hover table-condensed">
+                        <tr>
+                            <th class="item-list-col-header">No.</th>
+                            <th class="item-list-col-header">Material No.</th>
+                            <th class="item-list-col-header">Item Description</th>
+                            <th class="item-list-col-header">Units</th>
+                            <th class="item-list-col-header">Qty Delivered</th>
+                            <th class="item-list-col-header">Value</th>
+                        </tr>
+                        <tr ng-repeat="(index, node) in deliveryInView.distributionplannodeSet">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ node.item.item.materialCode }}</td>
+                            <td>{{ node.item.item.description }}</td>
+                            <td>{{ node.item.item.unit.name }}</td>
+                            <td>{{ node.targetedQuantity }}</td>
+                            <td>{{ node.item.deliveryValue(node.targetedQuantity) | currency }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
