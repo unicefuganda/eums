@@ -49,13 +49,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
                     return this.filter({node: 'top'});
                 },
                 del: function (consignee) {
-                    if (!consignee.importedFromVision) {
-                        return this.getDetail(consignee, 'deliveries/').then(function (deliveries) {
-                            return deliveries.length ?
-                                $q.reject('Cannot delete consignee that has deliveries') : this._del(consignee);
-                        }.bind(this));
-                    }
-                    return $q.reject('Cannot delete consignee imported from vision');
+                    return this._del(consignee);
                 }
             }
         });
@@ -198,8 +192,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         $scope.del = function (consignee) {
             ConsigneeService.del(consignee).then(function () {
                 $scope.$emit('consigneeDeleted', consignee);
-            }).catch(function (reason) {
-                createToast(reason, 'danger');
+            }).catch(function (result) {
+                createToast(result.data.detail, 'danger');
             }).finally(function () {
                 angular.element('#delete-consignee-modal').modal('hide');
             });

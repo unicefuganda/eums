@@ -60,14 +60,14 @@ describe('Delete Consignee Controller', function () {
         });
 
         it('should show error message on delete failure', function () {
-            var reason = 'Some error message';
+            var result = {data: {detail: 'Some error message'}};
             spyOn(toast, 'create');
-            deleteConsigneePromise.reject(reason);
+            deleteConsigneePromise.reject(result);
             scope.$apply();
             scope.del(consignee);
             scope.$apply();
             expect(toast.create).toHaveBeenCalledWith({
-                content: reason, class: 'danger', maxNumber: 1, dismissOnTimeout: true
+                content: result.data.detail, class: 'danger', maxNumber: 1, dismissOnTimeout: true
             });
         });
 

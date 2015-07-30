@@ -1,13 +1,17 @@
 from eums.models import DistributionPlanNode
+from eums.exceptions import ForbiddenException
 from rest_framework import permissions
 
 
 class DeliveryAttachedPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
+        forbidden_message = "Permission Denied: Consignee has an attached delivery"
         if request.method == 'PUT':
-            if len(DistributionPlanNode.objects.filter(consignee=obj.id)) > 0:
-                return obj.has_only_dirty_remarks(request.data)
+            if DistributionPlanNode.objects.filter(consignee=obj.id).exists():
+                if not obj.has_only_dirty_remarks(request.data):
+                    raise ForbiddenException(forbidden_message)
         elif request.method == 'DELETE':
-            return len(DistributionPlanNode.objects.filter(consignee=obj.id)) == 0
+            if DistributionPlanNode.objects.filter(consignee=obj.id).exists():
+                raise ForbiddenException(forbidden_message)
 
         return True
