@@ -213,7 +213,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                         var deliveryNode = new DeliveryNode(getNodeFields(item, $scope.delivery));
                         promises.push(DistributionPlanNodeService.update(Object.merge(deliveryNode, {
                             id: item.nodeId,
-                            item: item.id
+                            item: item.id,
+                            track: $scope.tracked
                         })));
                     }
                     else {

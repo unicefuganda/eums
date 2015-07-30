@@ -19,12 +19,17 @@ class PurchaseOrderItemTest(TestCase):
             quantity=500)
         self.assertEquals(purchase_order_item.available_balance(), 500)
 
-    def test_balance_should_decrease_when_nodes_exist(self):
+    def test_balance_should_decrease_when_tracked_nodes_exist(self):
         purchase_order = PurchaseOrderFactory()
-        purchase_order_item = PurchaseOrderItemFactory(
-            purchase_order=purchase_order,
-            quantity=500)
-        NodeFactory(item=purchase_order_item, targeted_quantity=200)
-        NodeFactory(item=purchase_order_item, targeted_quantity=120)
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order, quantity=500)
+
+        node_one = NodeFactory(item=purchase_order_item, targeted_quantity=200)
+        self.assertEquals(purchase_order_item.available_balance(), 500)
+
+        node_one.track = True
+        node_one.save()
+        self.assertEquals(purchase_order_item.available_balance(), 300)
+
+        NodeFactory(item=purchase_order_item, targeted_quantity=120, track=True)
         self.assertEquals(purchase_order_item.available_balance(), 180)
 
