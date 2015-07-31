@@ -42,17 +42,41 @@ describe('Consignee Service', function () {
             });
         });
 
-        it('should get all consignees by node level ', function () {
-            spyOn(consigneeService, 'filter');
-            consigneeService.getTopLevelConsignees();
-            expect(consigneeService.filter).toHaveBeenCalledWith({node: 'top'});
-        });
-
         it('should delegate delete down on to factory', function () {
-            var consignee = {name: 'some consignee'}
+            var consignee = {name: 'some consignee'};
             spyOn(consigneeService, '_del');
             consigneeService.del(consignee);
             expect(consigneeService._del).toHaveBeenCalledWith(consignee);
+        });
+
+        it('should delete consignee that is not imported from vision and has no deliveries attached to them', function (done) {
+            var consignee = {id: 1, importedFromVision: false};
+            mockBackend.expectGET(endpointUrl + consignee.id + '/deliveries/').respond([]);
+            mockBackend.whenDELETE(endpointUrl + consignee.id + '/').respond(200);
+            consigneeService.del(consignee).then(function (status) {
+                expect(status).toEqual(200);
+                done();
+            });
+            mockBackend.flush();
+        });
+
+        it('should reject deletion of consignee imported from vision', function (done) {
+            var consignee = {id: 1, importedFromVision: true};
+            consigneeService.del(consignee).catch(function (reason) {
+                expect(reason).toEqual('Cannot delete consignee imported from vision');
+                done();
+            });
+            scope.$apply();
+        });
+
+        it('should reject deletion of consignee that has deliveries attached to them', function (done) {
+            var consignee = {id: 1, importedFromVision: false};
+            mockBackend.expectGET(endpointUrl + consignee.id + '/deliveries/').respond([{id: 1}]);
+            consigneeService.del(consignee).catch(function (reason) {
+                expect(reason).toEqual('Cannot delete consignee that has deliveries');
+                done();
+            });
+            mockBackend.flush();
         });
     });
 });

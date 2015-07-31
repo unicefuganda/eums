@@ -32,12 +32,6 @@ class ConsigneeViewSet(ModelViewSet):
     filter_fields = ('imported_from_vision',)
     pagination_class = StandardResultsSetPagination
 
-    def get_queryset(self):
-        if self.request.GET.get('node') == 'top':
-            consignee_ids = DistributionPlanNode.objects.filter(parent=None).values_list('consignee')
-            return self.queryset.filter(id__in=consignee_ids)
-        return self.queryset._clone()
-
     def list(self, request, *args, **kwargs):
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':

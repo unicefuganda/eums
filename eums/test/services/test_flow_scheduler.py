@@ -6,8 +6,8 @@ from celery.schedules import crontab
 
 from mock import MagicMock, ANY, patch
 
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
 from eums.models import DistributionPlanNode as Node, Flow, Runnable
@@ -76,8 +76,8 @@ class FlowSchedulerTest(TestCase):
                                                    item_description=ANY, sender=ANY)
 
     def test_should_schedule_implementing_partner_flow_if_runnable_is_delivery(self):
-        delivery = DistributionPlanFactory()
-        DistributionPlanNodeFactory(distribution_plan=delivery, item=PurchaseOrderItemFactory())
+        delivery = DeliveryFactory()
+        DeliveryFactory(distribution_plan=delivery, item=PurchaseOrderItemFactory())
         delivery.build_contact = MagicMock(return_value=self.contact)
 
         Runnable.objects.get = MagicMock(return_value=delivery)

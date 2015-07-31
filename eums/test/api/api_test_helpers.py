@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 from eums.models import Programme, ItemUnit, Item
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
@@ -44,7 +44,7 @@ def create_consignee(_, consignee_details=None):
 
 def create_distribution_plan_node(test_case, node_details=None):
     if not node_details:
-        plan_id = DistributionPlanFactory().id
+        plan_id = DeliveryFactory().id
         node_details = make_node_details(test_case, plan_id)
 
     response = test_case.client.post(DISTRIBUTION_PLAN_NODE_ENDPOINT_URL, node_details, format='json')
@@ -69,7 +69,7 @@ def make_node_details(test_case, plan_id=None):
     consignee_id = create_consignee(test_case)['id']
 
     if not plan_id:
-        plan_id = DistributionPlanFactory().id
+        plan_id = DeliveryFactory().id
 
     node = {'item': sales_item_id, 'targeted_quantity': 10, 'delivery_date': '2014-01-21',
             'location': 'GULU', 'consignee': consignee_id, 'distribution_plan': plan_id,

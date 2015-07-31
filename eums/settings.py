@@ -23,7 +23,8 @@ INSTALLED_APPS = (
     'eums',
     'rest_framework',
     'password_reset',
-    'django_extensions'
+    'django_extensions',
+    'test_without_migrations'
 )
 
 MIDDLEWARE_CLASSES = (

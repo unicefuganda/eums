@@ -6,7 +6,7 @@ from eums.models import Consignee, DistributionPlan, DistributionPlanNode, Sales
     Programme, SalesOrderItem
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
@@ -74,8 +74,8 @@ class PurchaseOrderTest(TestCase):
         order = PurchaseOrderFactory()
         order_item_one = PurchaseOrderItemFactory(purchase_order=order)
         order_item_two = PurchaseOrderItemFactory(purchase_order=order)
-        delivery_one = DistributionPlanFactory()
-        delivery_two = DistributionPlanFactory()
+        delivery_one = DeliveryFactory()
+        delivery_two = DeliveryFactory()
         node_one = NodeFactory(item=order_item_one, distribution_plan=delivery_one)
         node_two = NodeFactory(item=order_item_two, distribution_plan=delivery_one)
         node_three = NodeFactory(item=order_item_one, distribution_plan=delivery_two)

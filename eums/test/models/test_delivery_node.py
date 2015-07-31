@@ -3,6 +3,7 @@ from django.db import IntegrityError
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc
 from eums.test.factories.arc_factory import ArcFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
@@ -97,6 +98,81 @@ class DeliveryNodeTest(TestCase):
         self.assertIn(5, arc_quantities)
         self.assertIn(parent_one.id, arc_sources)
         self.assertIn(parent_two.id, arc_sources)
+
+    def test_should_list_all_root_nodes_for_a_delivery(self):
+        delivery = DeliveryFactory()
+        root_node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        root_node_two = DeliveryNodeFactory(distribution_plan=delivery)
+        child_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[{'id': root_node_one.id, 'quantity': 5}])
+
+        root_nodes = DeliveryNode.objects.root_nodes_for(delivery)
+        self.assertEqual(root_nodes.count(), 2)
+
+        root_node_ids = [node.id for node in root_nodes]
+        self.assertIn(root_node_one.id, root_node_ids)
+        self.assertIn(root_node_two.id, root_node_ids)
+        self.assertNotIn(child_node.id, root_node_ids)
+
+    def test_update_should_override_parents_when_parents_list_is_passed(self):
+        node_one = DeliveryNodeFactory()
+        node_two = DeliveryNodeFactory()
+
+        node = DeliveryNodeFactory(parents=[{'id': node_one.id, 'quantity': 8}, {'id': node_two.id, 'quantity': 10}])
+        self.assertEqual(node.quantity_in(), 18)
+
+        node.parents = [{'id': node_one.id, 'quantity': 7}]
+        node.save()
+        self.assertEqual(node.quantity_in(), 7)
+
+        node.parents = []
+        node.save()
+        self.assertEqual(node.quantity_in(), 0)
+
+    def test_update_should_leave_parents_intact_if_parents_are_not_specified(self):
+        node_one = DeliveryNodeFactory()
+        node_two = DeliveryNodeFactory()
+
+        node = DeliveryNodeFactory(parents=[{'id': node_one.id, 'quantity': 8}, {'id': node_two.id, 'quantity': 10}])
+
+        node.location = 'Changed'
+        node.save()
+        self.assertEqual(node.quantity_in(), 18)
+        self.assertEqual(node.location, 'Changed')
+
+    def test_update_quantity_on_root_node_should_update_quantity(self):
+        node = DeliveryNodeFactory(quantity=100)
+        node.quantity = 50
+        node.save()
+        self.assertEqual(node.quantity_in(), 50)
+
+    def test_update_quantity_to__zero_on_root_node(self):
+        node = DeliveryNodeFactory(quantity=100)
+        node.quantity = 0
+        node.save()
+        self.assertEqual(node.quantity_in(), 0)
+
+    def test_should_ignore_updates_to_quantity_on_non_root_node(self):
+        node_one = DeliveryNodeFactory()
+        node = DeliveryNodeFactory(parents=[{'id': node_one.id, 'quantity': 7}])
+
+        node.quantity = 50
+        node.save()
+
+        self.assertEqual(node.quantity_in(), 7)
+
+    def test_should_ignore_quantity_on_update_if_parents_are_specified(self):
+        node_one = DeliveryNodeFactory()
+
+        node = DeliveryNodeFactory(quantity=0)
+
+        node.parents = [{'id': node_one.id, 'quantity': 7}]
+        node.quantity = 50
+        node.save()
+        self.assertEqual(node.quantity_in(), 7)
+
+        node.parents = []
+        node.save()
+        self.assertEqual(node.quantity_in(), 0)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()

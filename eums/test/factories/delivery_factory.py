@@ -6,7 +6,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 
 
-class DistributionPlanFactory(factory.DjangoModelFactory):
+class DeliveryFactory(factory.DjangoModelFactory):
     class Meta:
         model = DistributionPlan
 

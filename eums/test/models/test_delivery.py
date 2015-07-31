@@ -1,8 +1,8 @@
 from unittest import TestCase
 
-from eums.models import DistributionPlan, SalesOrder, Option, MultipleChoiceQuestion, MultipleChoiceAnswer, Run
+from eums.models import DistributionPlan, SalesOrder, MultipleChoiceQuestion, MultipleChoiceAnswer, Option, Run
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -15,7 +15,7 @@ class DistributionPlanTest(TestCase):
         self.po_item_one = PurchaseOrderItemFactory(value=400, quantity=200)  # val = 2
         self.po_item_two = PurchaseOrderItemFactory(value=600, quantity=100)  # val = 6
 
-        self.delivery = DistributionPlanFactory()
+        self.delivery = DeliveryFactory()
         self.node_one = DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_one,
                                             targeted_quantity=50)
         DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_two, targeted_quantity=30)
@@ -42,7 +42,7 @@ class DistributionPlanTest(TestCase):
         self.assertEqual(self.delivery.total_value(), 280)
 
     def test_should_return_true_when_delivery_is_received(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         question = MultipleChoiceQuestionFactory(label='deliveryReceived')
         option = OptionFactory(text='Yes', question=question)
         run = RunFactory(runnable=delivery)
@@ -52,7 +52,7 @@ class DistributionPlanTest(TestCase):
         self.assertTrue(delivery.is_received())
 
     def test_should_return_false_when_delivery_is_not_received(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         question = MultipleChoiceQuestionFactory(label='deliveryReceived')
         option = OptionFactory(text='No', question=question)
         run = RunFactory(runnable=delivery)

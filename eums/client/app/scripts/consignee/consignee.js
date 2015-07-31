@@ -26,7 +26,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             });
 
             Object.defineProperty(this, 'isValid', {
-                get: function() {
+                get: function () {
                     return this.name && this.name.length;
                 }.bind(this)
             });
@@ -62,10 +62,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             uri: EumsConfig.BACKEND_URLS.CONSIGNEE,
             model: Consignee,
             methods: {
-                getTopLevelConsignees: function () {
-                    return this.filter({node: 'top'});
-                },
-                userCanFullyEdit: function(consignee) {
+                userCanFullyEdit: function (consignee) {
                     return this.getDetail(consignee, 'permission_to_edit');
                 },
                 del: function (consignee) {
@@ -74,7 +71,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             }
         });
     })
-    .controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
+    .
+    controller('ConsigneesController', function ($scope, ConsigneeService, Consignee, ngToast, UserService) {
         function createToast(message, klass) {
             ngToast.create({content: message, class: klass});
         }

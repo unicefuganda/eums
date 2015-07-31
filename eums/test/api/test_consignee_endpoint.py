@@ -1,11 +1,9 @@
 from eums.models import Consignee, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
-from eums.test.api.api_test_helpers import create_consignee, create_distribution_plan_node, \
-    create_sales_order_item
+from eums.test.api.api_test_helpers import create_consignee
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as DeliveryNodeFactory
 
 ENDPOINT_URL = BACKEND_URL + 'consignee/'
@@ -86,28 +84,6 @@ class ConsigneeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(Consignee.objects.count(), 2)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], vision_consignee.id)
-
-    def test_should_search_for_consignee_at_top_level(self):
-        partner = ConsigneeFactory(name='Save the Children', type='implementing_partner')
-        consignee = ConsigneeFactory(name='Kibuli DHO', type='middle_man')
-        plan_id = DistributionPlanFactory(consignee=consignee).id
-        item = create_sales_order_item(self)
-        node_details = {'item': item['id'], 'targeted_quantity': 1, 'distribution_plan': plan_id,
-                        'delivery_date': '2015-04-23', 'consignee': partner.id,
-                        'tree_position': 'END_USER',
-                        'location': 'Kampala', 'contact_person_id': u'1234', }
-
-        create_distribution_plan_node(self, node_details)
-
-        get_response = self.client.get(ENDPOINT_URL + '?node=top')
-
-        self.assertEqual(get_response.status_code, 200)
-        self.assertDictContainsSubset({'id': partner.id, 'name': partner.name}, get_response.data[0])
-        self.assertEqual(1, len(get_response.data))
-
-        get_response = self.client.get(ENDPOINT_URL + '?node=1')
-        self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(2, len(get_response.data))
 
     def test_should_not_cache_consignees(self):
         first_consignee = create_consignee({'name': "Save the Children", 'type': 'implementing_partner'})

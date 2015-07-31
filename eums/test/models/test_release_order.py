@@ -3,7 +3,7 @@ from django.db import IntegrityError
 from eums.models import ReleaseOrderItem, DistributionPlan, DistributionPlanNode, Programme
 from eums.models.release_order import ReleaseOrder
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
@@ -38,7 +38,7 @@ class ReleaseOrderTest(TestCase):
         create_release_order_item = lambda: ReleaseOrderItemFactory(release_order = release_order)
         release_order_item = create_release_order_item()
 
-        create_delivery = lambda: DistributionPlanFactory(id = 343)
+        create_delivery = lambda: DeliveryFactory(id = 343)
         delivery = create_delivery()
 
         create_delivery_node = lambda: DeliveryNodeFactory(distribution_plan = delivery, item = release_order_item)

@@ -9,6 +9,7 @@ from eums.models.item import Item
 from eums.models.programme import Programme
 from eums.models.arc import Arc
 from eums.models.distribution_plan_node import DistributionPlanNode
+from eums.models.distribution_plan import DistributionPlan
 from eums.models.sales_order import SalesOrder
 from eums.models.sales_order_item import SalesOrderItem
 from eums.models.sales_order import SalesOrder
@@ -25,7 +26,6 @@ from eums.models.release_order_item import ReleaseOrderItem
 from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
-
 
 __all__ = [
     'Consignee',
@@ -57,4 +57,3 @@ __all__ = [
     'PurchaseOrderItem',
     'PurchaseOrder'
 ]
-

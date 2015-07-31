@@ -9,7 +9,7 @@ from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQu
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 
@@ -190,9 +190,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                                       sales_order_item=so_item_three)
 
     def setup_distribution_plans(self):
-        self.plan_one = DistributionPlanFactory()
-        self.plan_two = DistributionPlanFactory()
-        self.plan_three = DistributionPlanFactory()
+        self.plan_one = DeliveryFactory()
+        self.plan_two = DeliveryFactory()
+        self.plan_three = DeliveryFactory()
         self.setup_nodes()
 
     def setup_nodes(self):

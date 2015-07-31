@@ -7,12 +7,14 @@ from eums.models import DistributionPlanNode
 
 
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
-    children = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    quantity = serializers.IntegerField(write_only=True, required=False)
+    parents = serializers.ListField(write_only=True, required=False)
 
     class Meta:
         model = DistributionPlanNode
-        fields = ('id', 'parent', 'distribution_plan', 'children', 'location', 'consignee', 'tree_position',
-                  'contact_person_id', 'item', 'targeted_quantity', 'delivery_date', 'remark', 'track')
+        fields = ('id', 'distribution_plan', 'location', 'consignee', 'tree_position', 'parents', 'quantity_in',
+                  'contact_person_id', 'item', 'delivery_date', 'remark', 'track', 'quantity', 'quantity_out',
+                  'balance')
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):
@@ -20,16 +22,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     serializer_class = DistributionPlanNodeSerialiser
     filter_backends = (filters.DjangoFilterBackend,)
     search_fields = ('tree_position',)
-    filter_fields = ('consignee', 'item', 'distribution_plan', 'parent', 'contact_person_id')
-
-    def get_queryset(self):
-        parent_is_null = self.request.GET.get('parent__isnull', None)
-        if parent_is_null == 'true':
-            return self.queryset.filter(parent__isnull=True)
-        else:
-            if parent_is_null == 'false':
-                return self.queryset.filter(parent__isnull=False)
-        return self.queryset
+    filter_fields = ('consignee', 'item', 'distribution_plan', 'contact_person_id')
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)

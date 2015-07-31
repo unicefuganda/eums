@@ -3,7 +3,7 @@ import datetime
 from eums.models import DistributionPlan, Programme, Consignee
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -22,7 +22,7 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
     def test_should_create_delivery(self):
         today = datetime.date.today()
         programme = ProgrammeFactory()
-        delivery = DistributionPlanFactory(programme=programme, date=today)
+        delivery = DeliveryFactory(programme=programme, date=today)
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
@@ -30,8 +30,8 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_provide_delivery_total_value_from_api(self):
         po_item = PurchaseOrderItemFactory(value=200, quantity=100)
-        delivery = DistributionPlanFactory()
-        DeliveryNodeFactory(distribution_plan=delivery, item=po_item, targeted_quantity=10)
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item, quantity=10)
 
         response = self.client.get(ENDPOINT_URL)
 
