@@ -3,30 +3,31 @@ from django.contrib.auth.models import Group, Permission
 
 GROUP_PERMISSIONS = {
     'UNICEF_admin': [
-        'can_view_users', 
-        'can_view_dashboard', 
-        'can_view_distribution_plans', 
+        'can_view_users',
+        'can_view_dashboard',
+        'can_view_distribution_plans',
         'can_view_delivery_reports',
         'can_view_reports',
         'can_view_contacts',
         'can_view_consignees',
         'add_consignee',
         'change_consignee',
-        'delete_consignee'
+        'delete_consignee',
+        'can_import_data'
     ],
     'UNICEF_editor': [
         'can_view_dashboard',
         'can_view_consignees',
         'add_consignee',
         'change_consignee',
-        'delete_consignee'  
+        'delete_consignee'
     ],
     'UNICEF_viewer': [
-        'can_view_dashboard', 
+        'can_view_dashboard',
         'can_view_consignees'
     ],
     'Implementing Partner_editor': [
-        'can_view_delivery_reports', 
+        'can_view_delivery_reports',
         'can_view_dashboard',
         'can_view_consignees',
         'add_consignee',

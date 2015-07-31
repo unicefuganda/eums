@@ -9,8 +9,12 @@ angular.module('ImportData', ['eums.config', 'angularFileUpload'])
             var theUploader = new FileUploader({
                 url: apiUrl
             });
-            theUploader.onErrorItem = function () {
-                $scope[errProp] = 'Failed to submit file to backend. Please ensure its not too big';
+            theUploader.onErrorItem = function (item, response, status) {
+                if (status === 403) {
+                    $scope[errProp] = 'You are not authorised to perform this action!';
+                } else {
+                    $scope[errProp] = 'Failed to submit file to backend. Please ensure its not too big';
+                }
             };
             theUploader.onSuccessItem = function (item, response) {
                 $scope[errProp] = response.error;
@@ -31,7 +35,7 @@ angular.module('ImportData', ['eums.config', 'angularFileUpload'])
             $scope[errorMessage] = '';
             $scope.$apply();
 
-            fileUploader.queue[fileUploader.queue.length-1].upload();
+            fileUploader.queue[fileUploader.queue.length - 1].upload();
         };
 
     });

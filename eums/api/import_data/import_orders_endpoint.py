@@ -1,17 +1,20 @@
-import os
 from tempfile import NamedTemporaryFile
 
+from django.contrib.auth.decorators import permission_required
+from django.core.exceptions import PermissionDenied
+import os
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import parser_classes
 from rest_framework.parsers import MultiPartParser
-
 from eums.vision.vision_facade import SalesOrderFacade, ReleaseOrderFacade, PurchaseOrderFacade, ConsigneeFacade, \
     ProgrammeFacade
 
 
 @csrf_exempt
 @parser_classes((MultiPartParser,))
+@permission_required('auth.can_import_data',
+                     raise_exception=PermissionDenied())
 def import_sales_orders(request):
     return _import_records(request, SalesOrderFacade)
 
@@ -27,10 +30,12 @@ def import_release_orders(request):
 def import_purchase_orders(request):
     return _import_records(request, PurchaseOrderFacade)
 
+
 @csrf_exempt
 @parser_classes((MultiPartParser,))
 def import_consignees(request):
     return _import_records(request, ConsigneeFacade)
+
 
 @csrf_exempt
 @parser_classes((MultiPartParser,))
