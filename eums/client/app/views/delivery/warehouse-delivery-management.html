@@ -11,14 +11,14 @@
         <div class="row">
             <div class="form-horizontal">
                 <div class="form-group col-lg-3">
-                    <label class="col-lg-4 control-label description-label">
+                    <label class="col-lg-6 control-label description-label">
                         Shipment Date:
                     </label>
-                    <div class="col-lg-8">
-                        <label class="col-lg-4 control-label text-success">{{ selectedReleaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}</label>
+                    <div class="col-lg-6">
+                        <label class="control-label text-success">{{ selectedReleaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}</label>
                     </div>
                 </div>
-                <div class="form-group col-lg-3">
+                <div class="form-group col-lg-4">
                     <label class="col-lg-4 control-label description-label">
                         Contact Person:
                     </label>
@@ -48,8 +48,8 @@
                     </div>
                 </div>
 
-                <div class="checkbox lg form-group col-lg-3">
-                    <label class="col-lg-4 control-label description-label">
+                <div class="checkbox">
+                    <label class="control-label description-label">
                         <input type="checkbox"
                                ng-model="track">
                         Track delivery
