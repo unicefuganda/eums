@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User, Group
 from eums.models import Item, SalesOrder, SalesOrderItem, Programme
+from eums.test.api.api_test_helpers import create_user_with_group
 from eums.test.config import BACKEND_URL
 from eums.management.commands.setup_permissions import Command
 import os
@@ -11,7 +12,7 @@ from xlwt import Workbook
 ENDPOINT_URL = BACKEND_URL + 'import-data/'
 
 
-class TestImportSalesOrder(APITestCase):
+class TestImportSalesOrderEndpoint(APITestCase):
     def setUp(self):
         self.sales_order_file_location = 'sales_orders.xlsx'
         self.create_sales_order_workbook()
@@ -28,9 +29,8 @@ class TestImportSalesOrder(APITestCase):
     def test_should_allow_authorised_user_to_import_sales_orders(self):
         username = 'unicef_admin1'
         password = 'password'
-        user = User.objects.create_user(username=username, email='admin@mail.com', password=password)
-        user.groups = [Group.objects.get(name='UNICEF_admin')]
-        user.save()
+
+        create_user_with_group(username=username, password=password, email='admin@email.com', group='UNICEF_admin')
 
         self.client.login(username=username, password=password)
 
@@ -49,9 +49,7 @@ class TestImportSalesOrder(APITestCase):
     def test_should_not_allow_unauthorised_user_to_import_sales_orders(self):
         username = 'IP editor'
         password = 'password'
-        user = User.objects.create_user(username=username, email='ip_editor@mail.com', password=password)
-        user.groups = [Group.objects.get(name='Implementing Partner_editor')]
-        user.save()
+        create_user_with_group(username=username, password=password, email='ip_editor@mail.com', group='Implementing Partner_editor')
 
         self.client.login(username=username, password=password)
 

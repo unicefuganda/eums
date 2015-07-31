@@ -13,8 +13,7 @@ from eums.vision.vision_facade import SalesOrderFacade, ReleaseOrderFacade, Purc
 
 @csrf_exempt
 @parser_classes((MultiPartParser,))
-@permission_required('auth.can_import_data',
-                     raise_exception=PermissionDenied())
+@permission_required('auth.can_import_data', raise_exception=PermissionDenied())
 def import_sales_orders(request):
     return _import_records(request, SalesOrderFacade)
 
@@ -27,6 +26,7 @@ def import_release_orders(request):
 
 @csrf_exempt
 @parser_classes((MultiPartParser,))
+@permission_required('auth.can_import_data', raise_exception=PermissionDenied())
 def import_purchase_orders(request):
     return _import_records(request, PurchaseOrderFacade)
 

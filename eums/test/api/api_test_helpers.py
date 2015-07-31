@@ -1,4 +1,5 @@
 import datetime
+from django.contrib.auth.models import User, Group
 
 from eums.models import Programme, ItemUnit, Item
 from eums.test.config import BACKEND_URL
@@ -180,3 +181,9 @@ def create_run(test_case, run_details=None):
     test_case.assertEqual(response.status_code, 201)
 
     return response.data
+
+
+def create_user_with_group(username, password, email, group):
+    user = User.objects.create_user(username=username, email=email, password=password)
+    user.groups = [Group.objects.get(name=group)]
+    user.save()
