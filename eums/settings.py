@@ -115,6 +115,45 @@ MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY', '')
 MAILGUN_SERVER_NAME = 'sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org'
 MAILGUN_SENDER = "UNICEF EUM <postmaster@sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org>"
 
+LOGGING_CONFIG = None
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+            },
+        },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+            },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.WatchedFileHandler',
+            'filename': "debug.log",
+            'formatter': 'standard',
+            'mode': 'a'
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'standard'
+            },
+        },
+    'loggers': {
+        '': {
+              'handlers': ['file', 'console'],
+              'level': 'INFO', # re-defined in settings_dev
+              'propagate': True
+            },
+        }
+    }
+
+import logging.config
+logging.config.dictConfig(LOGGING)
 
 try:
     from local_settings import *
