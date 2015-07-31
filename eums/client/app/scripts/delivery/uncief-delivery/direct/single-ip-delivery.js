@@ -194,7 +194,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 deliveryDate: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
                 contactPerson: delivery.contact_person_id,
                 remark: delivery.remark,
-                track: delivery.track,
+                track: $scope.tracked,
                 isEndUser: false,
                 treePosition: 'IMPLEMENTING_PARTNER'
             };
@@ -225,8 +225,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                         var deliveryNode = new DeliveryNode(getNodeFields(item, $scope.delivery));
                         promises.push(DistributionPlanNodeService.update(Object.merge(deliveryNode, {
                             id: item.nodeId,
-                            item: item.id,
-                            track: $scope.tracked
+                            item: item.id
                         })));
                     }
                     else {
