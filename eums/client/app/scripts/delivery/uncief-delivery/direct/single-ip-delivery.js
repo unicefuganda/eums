@@ -41,11 +41,11 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             angular.element('#add-remark-modal').modal();
         };
 
-        $scope.viewDelivery = function(delivery) {
+        $scope.viewDelivery = function (delivery) {
             showLoader();
             angular.element('#view-delivery-modal').modal();
             var fieldsToBuild = ['contact_person_id', 'distributionplannode_set.item.item.unit'];
-            DistributionPlanService.get(delivery.id, fieldsToBuild).then(function(delivery) {
+            DistributionPlanService.get(delivery.id, fieldsToBuild).then(function (delivery) {
                 $scope.deliveryInView = delivery;
                 hideLoader();
             }).finally(hideLoader);
@@ -113,10 +113,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function scopeDataIsValid() {
             var someInputsAreEmpty = !(
-                $scope.delivery.contact_person_id
-                && $scope.delivery.consignee
-                && $scope.delivery.delivery_date
-                && $scope.delivery.location
+            $scope.delivery.contact_person_id
+            && $scope.delivery.consignee
+            && $scope.delivery.delivery_date
+            && $scope.delivery.location
             );
             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
                 return item.isInvalid(item.quantityShipped);
@@ -165,8 +165,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 });
 
                 $scope.delivery = deliveries.filter(function (delivery) {
-                        return !delivery.track;
-                    }).first() || {};
+                    return !delivery.track;
+                }).first() || {};
 
                 //Because line item partial sucks
                 $scope.lineItem.remark = $scope.delivery.remark;
@@ -185,6 +185,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function getNodeFields(item, delivery) {
+            var tracked = $scope.tracked && item.quantityShipped ? true : false;
             return {
                 item: item,
                 targetedQuantity: item.quantityShipped,
@@ -194,7 +195,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 deliveryDate: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
                 contactPerson: delivery.contact_person_id,
                 remark: delivery.remark,
-                track: $scope.tracked,
+                track: tracked,
                 isEndUser: false,
                 treePosition: 'IMPLEMENTING_PARTNER'
             };
@@ -207,7 +208,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         function createDeliveryNodes(createdDelivery) {
             var createNodePromises = [];
             $scope.purchaseOrderItems.forEach(function (purchaseOrderItem) {
-                purchaseOrderItem.quantityShipped && createNodePromises.push(createNodeFrom(purchaseOrderItem, createdDelivery));
+                createNodePromises.push(createNodeFrom(purchaseOrderItem, createdDelivery));
             });
             return $q.all(createNodePromises);
         }

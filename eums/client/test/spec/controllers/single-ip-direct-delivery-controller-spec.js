@@ -398,14 +398,24 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(untrackedNodeTwo));
         });
 
-        it('should not create nodes for purchase order items with zero distributed quantity', function () {
-            itemOne.quantityShipped = 0;
+        it('should create nodes for purchase order items with zero distributed quantity but not tracked', function () {
+            var nodeOneClone = angular.copy(nodeOne);
+            nodeOneClone.track = false;
+            nodeOneClone.item.quantityShipped = 0;
+            nodeOneClone.item.targetedQuantity = 0;
+            scope.purchaseOrderItems = [
+                {quantityShipped: 0, id: 1, isInvalid: valid, availableBalance: 10},
+                {quantityShipped: 11, id: 2, isInvalid: valid, availableBalance: 11}
+            ];
+
             scope.save(true);
             scope.$apply();
 
             var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
-            expect(mockDeliveryNodeService.create.calls.count()).toBe(1);
-            expect(JSON.stringify(createNodeArgs.first().first())).toEqual(JSON.stringify(nodeTwo));
+
+            expect(mockDeliveryNodeService.create.calls.count()).toBe(2);
+            expect(createNodeArgs.first().first().track).toEqual(false);
+            expect(createNodeArgs.last().first().track).toEqual(true);
         });
 
         it('should alert user when creation of delivery fails', function () {
