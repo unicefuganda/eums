@@ -91,7 +91,7 @@ except KeyError:
 # TODO figure out a way to use environment variable with supervisor
 token = 'token'
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', token)
-RAPIDPRO_URL = 'https://rapidpro.io/api/v1/'
+RAPIDPRO_URL = 'https://api.rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
     'RUNS': "%sruns.json" % RAPIDPRO_URL
@@ -123,15 +123,15 @@ LOGGING = {
         'standard': {
             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
             'datefmt': "%d/%b/%Y %H:%M:%S"
-            },
         },
+    },
     'handlers': {
         'null': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'django.utils.log.NullHandler',
-            },
+        },
         'file': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.handlers.WatchedFileHandler',
             'filename': "debug.log",
             'formatter': 'standard',
@@ -141,18 +141,26 @@ LOGGING = {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'standard'
-            },
         },
+        'celery': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': 'celery.log',
+            'formatter': 'standard',
+            'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        },
+    },
     'loggers': {
         '': {
-              'handlers': ['file', 'console'],
-              'level': 'INFO', # re-defined in settings_dev
-              'propagate': True
-            },
-        }
+            'handlers': ['file', 'celery', 'console'],
+            'level': 'INFO',
+            'propagate': True
+        },
     }
+}
 
 import logging.config
+
 logging.config.dictConfig(LOGGING)
 
 try:
