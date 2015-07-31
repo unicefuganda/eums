@@ -89,9 +89,8 @@ except KeyError:
 
 # RapidPro settings
 # TODO figure out a way to use environment variable with supervisor
-token = 'token'
-RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', token)
-RAPIDPRO_URL = 'https://api.rapidpro.io/api/v1/'
+RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
+RAPIDPRO_URL = 'https://app.rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
     'RUNS': "%sruns.json" % RAPIDPRO_URL
