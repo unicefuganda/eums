@@ -40,7 +40,7 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(DeliveryNode.objects.get(item=release_order_item), node_with_ro_item)
 
     def test_should_compute_quantity_in_from_incoming_arcs(self):
-        node = DeliveryNodeFactory()
+        node = DeliveryNodeFactory(quantity=0)
         ArcFactory(source=None, target=node, quantity=50)
         self.assertEqual(node.quantity_in(), 50)
 
@@ -51,7 +51,7 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(node.quantity_in(), 0)
 
     def test_should_compute_quantity_out_from_outgoing_arcs(self):
-        node_one = DeliveryNodeFactory()
+        node_one = DeliveryNodeFactory(quantity=50)
         node_two = DeliveryNodeFactory()
         ArcFactory(source=node_one, target=node_two, quantity=50)
         self.assertEqual(node_one.quantity_out(), 50)
@@ -61,7 +61,7 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(node_one.quantity_out(), 0)
 
     def test_should_compute_balance_from_incoming_and_outgoing_arcs(self):
-        node_one = DeliveryNodeFactory()
+        node_one = DeliveryNodeFactory(quantity=0)
         ArcFactory(source=None, target=node_one, quantity=50)
         node_two = DeliveryNodeFactory()
         ArcFactory(source=node_one, target=node_two, quantity=30)
@@ -75,6 +75,10 @@ class DeliveryNodeTest(TestCase):
         arc = Arc.objects.filter(target=root_node).first()
         self.assertEqual(arc.quantity, 70)
         self.assertIsNone(arc.source)
+
+    def test_should_allow_zero_quantity_nodes_to_be_saved(self):
+        node = DeliveryNodeFactory(quantity=0)
+        self.assertEqual(node.id, DeliveryNode.objects.get(pk=node.id).id)
 
     def test_should_not_create_node_when_parents_and_quantity_are_not_specified(self):
         create_node = lambda: DeliveryNodeFactory(quantity=None, parents=None)

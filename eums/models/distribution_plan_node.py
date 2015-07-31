@@ -8,7 +8,7 @@ class DeliveryNodeManager(PolymorphicManager):
     def create(self, **kwargs):
         quantity = kwargs.pop('quantity') if 'quantity' in kwargs else None
         parents = kwargs.pop('parents') if 'parents' in kwargs else None
-        if not parents and not quantity:
+        if not parents and not quantity >= 0:
             raise IntegrityError('both parents and quantity cannot be null')
         node = super(DeliveryNodeManager, self).create(**kwargs)
         self._create_arcs(node, parents, quantity)

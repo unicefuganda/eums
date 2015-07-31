@@ -9,6 +9,8 @@ class Arc(models.Model):
     def save(self, **kwargs):
         quantity_is_invalid = self.source and self.source.balance() < self.quantity
         arc_is_cyclic = self.source and self.source.id == self.target.id
-        if arc_is_cyclic or quantity_is_invalid:
+        if arc_is_cyclic:
             raise IntegrityError('Arc source node cannot be the same as target')
+        if quantity_is_invalid:
+            raise IntegrityError('Arc quantity cannot be more than available quantity on source node')
         super(Arc, self).save(kwargs)
