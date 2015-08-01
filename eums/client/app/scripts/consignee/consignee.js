@@ -64,9 +64,6 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             methods: {
                 userCanFullyEdit: function (consignee) {
                     return this.getDetail(consignee, 'permission_to_edit');
-                },
-                del: function (consignee) {
-                    return this._del(consignee);
                 }
             }
         });
