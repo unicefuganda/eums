@@ -62,10 +62,7 @@ class DistributionPlanNode(Runnable):
         return {'id': root_node.id, 'location': root_node.location}
 
     def sender_name(self):
-        if not self.parent:
-            return "UNICEF"
-        else:
-            return self.parent.consignee.name
+        return "UNICEF" if self._is_root_node() else self._parents().first().consignee.name
 
     def get_description(self):
         return self.item.item.description
@@ -82,6 +79,10 @@ class DistributionPlanNode(Runnable):
 
     def _is_root_node(self):
         return self.arcs_in.exists() and not self.arcs_in.first().source
+
+    def _parents(self):
+        source_ids = self.arcs_in.all().values_list('source_id')
+        return DistributionPlanNode.objects.filter(pk__in=source_ids)
 
     def __unicode__(self):
         return "%s %s %s %s" % (self.consignee.name, self.tree_position, str(self.distribution_plan), self.item)

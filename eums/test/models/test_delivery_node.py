@@ -3,6 +3,7 @@ from django.db import IntegrityError
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc
 from eums.test.factories.arc_factory import ArcFactory
+from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -195,6 +196,14 @@ class DeliveryNodeTest(TestCase):
 
         leaf_node = DeliveryNodeFactory(parents=[(intermediary_node, 3)], distribution_plan=delivery)
         self.assertEqual(leaf_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+
+    def test_should_get_sender_name(self):
+        sender_name = 'Save the children'
+        root_node = DeliveryNodeFactory(consignee=ConsigneeFactory(name=sender_name))
+        self.assertEqual(root_node.sender_name(), 'UNICEF')
+
+        node = DeliveryNodeFactory(parents=[(root_node, 5)])
+        self.assertEqual(node.sender_name(), sender_name)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()
