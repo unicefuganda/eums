@@ -40,6 +40,16 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(DeliveryNode.objects.get(item=purchase_order_item), node_with_po_item)
         self.assertEqual(DeliveryNode.objects.get(item=release_order_item), node_with_ro_item)
 
+    def test_should_create_itself_with_parent_as_list_of_parent_quantity_tuples(self):
+        parent_one = DeliveryNodeFactory(quantity=100)
+        parent_two = DeliveryNodeFactory(quantity=40)
+
+        node = DeliveryNodeFactory(parents=[(parent_one, 50), (parent_two, 40)])
+
+        self.assertEqual(node.quantity_in(), 90)
+        self.assertEqual(parent_one.quantity_out(), 50)
+        self.assertEqual(parent_two.quantity_out(), 40)
+
     def test_should_compute_quantity_in_from_incoming_arcs(self):
         node = DeliveryNodeFactory(quantity=0)
         ArcFactory(source=None, target=node, quantity=50)

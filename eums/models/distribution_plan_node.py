@@ -23,8 +23,12 @@ class DeliveryNodeManager(PolymorphicManager):
     @staticmethod
     def _create_arcs(node, parents, quantity):
         if parents and len(parents):
-            for parent_dict in parents:
-                Arc.objects.create(target=node, source_id=parent_dict['id'], quantity=parent_dict['quantity'])
+            if type(parents[0]) == dict:
+                for parent_dict in parents:
+                    Arc.objects.create(target=node, source_id=parent_dict['id'], quantity=parent_dict['quantity'])
+            elif type(parents[0]) == tuple:
+                for parent_tuple in parents:
+                    Arc.objects.create(target=node, source=parent_tuple[0], quantity=parent_tuple[1])
         elif quantity:
             Arc.objects.create(target=node, quantity=quantity)
 
