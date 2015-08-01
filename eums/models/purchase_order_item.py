@@ -19,8 +19,8 @@ class PurchaseOrderItem(OrderItem):
         return self.quantity - self.quantity_shipped()
 
     def quantity_shipped(self):
-        result = DistributionPlanNode.objects.filter(item=self, track=True).aggregate(Sum('targeted_quantity'))
-        return result['targeted_quantity__sum'] if result['targeted_quantity__sum'] else 0
+        nodes = DistributionPlanNode.objects.filter(item=self, track=True)
+        return reduce(lambda total, node: total + node.quantity_in(), nodes, 0)
 
     def unit_value(self):
         return self.value / Decimal(self.quantity)
