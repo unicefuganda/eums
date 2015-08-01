@@ -98,7 +98,7 @@ class FlowSchedulerTest(TestCase):
         sender_org_name = "Dwelling Places"
         sender_org = ConsigneeFactory(name=sender_org_name)
         parent_node = NodeFactory(consignee=sender_org)
-        node = NodeFactory(consignee=sender_org, parent=parent_node)
+        node = NodeFactory(consignee=sender_org, parents=[(parent_node, 10)])
         node.build_contact = MagicMock(return_value=self.contact)
 
         Runnable.objects.get = MagicMock(return_value=node)

@@ -49,7 +49,8 @@ class ResponseSerializer(object):
             node_results.append(self.add_product_satisfied_field(formatted_run_responses))
         return node_results
 
-    def detailed_node_responses(self, node_responses):
+    @staticmethod
+    def detailed_node_responses(node_responses):
         node_results = {}
         for item_run, responses in node_responses.iteritems():
             for response in responses:

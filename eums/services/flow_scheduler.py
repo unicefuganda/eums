@@ -25,6 +25,7 @@ def schedule_run_for(runnable):
         Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
                            status=Run.STATUS.scheduled, phone=contact['phone'])
 
+
 @app.task
 def _schedule_run(runnable_id):
     runnable = Runnable.objects.get(id=runnable_id)
