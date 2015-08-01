@@ -184,6 +184,18 @@ class DeliveryNodeTest(TestCase):
         node.save()
         self.assertEqual(node.quantity_in(), 0)
 
+    def test_should_get_a_nodes_ip_from_the_root_node_of_the_node_delivery(self):
+        delivery = DeliveryFactory()
+
+        root_node = DeliveryNodeFactory(distribution_plan=delivery)
+        self.assertEqual(root_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+
+        intermediary_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[(root_node, 5)])
+        self.assertEqual(intermediary_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+
+        leaf_node = DeliveryNodeFactory(parents=[(intermediary_node, 3)], distribution_plan=delivery)
+        self.assertEqual(leaf_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+
     def clean_up(self):
         DistributionPlan.objects.all().delete()
         SalesOrder.objects.all().delete()

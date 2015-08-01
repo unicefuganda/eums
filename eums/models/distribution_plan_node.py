@@ -58,10 +58,8 @@ class DistributionPlanNode(Runnable):
         return self.quantity_in() - self.quantity_out()
 
     def get_ip(self):
-        if not self.parent:
-            return {'id': self.id, 'location': self.location}
-        else:
-            return self.parent.get_ip()
+        root_node = DistributionPlanNode.objects.root_nodes_for(self.distribution_plan).first()
+        return {'id': root_node.id, 'location': root_node.location}
 
     def sender_name(self):
         if not self.parent:
