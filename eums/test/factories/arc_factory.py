@@ -10,4 +10,4 @@ class ArcFactory(factory.DjangoModelFactory):
 
     source = factory.SubFactory(DeliveryNodeFactory)
     target = factory.SubFactory(DeliveryNodeFactory)
-    quantity = 100
+    quantity = 5

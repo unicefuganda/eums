@@ -1,4 +1,5 @@
-from eums.test.factories.distribution_plan_node_factory import DistributionPlanNodeFactory
+from eums.auth import create_groups, create_permissions
+from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
 from rest_framework.test import APITestCase
 from django.core.management import call_command
 from django.contrib.auth.models import User
@@ -12,7 +13,11 @@ ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 
 class ConsigneeEndpointTest(APITestCase):
-    def setUp(self):
+
+    @classmethod
+    def setUpClass(cls):
+        create_groups()
+        create_permissions()
         call_command('setup_permissions')
 
     def tearDown(self):
@@ -97,7 +102,7 @@ class ConsigneeEndpointTest(APITestCase):
 
     def test_should_disallow_unicef_admin_to_change_consignee_that_is_attached_to_delivery(self):
         consignee = ConsigneeFactory(name='New Consignee', imported_from_vision=False)
-        DistributionPlanNodeFactory(consignee=consignee)
+        DeliveryNodeFactory(consignee=consignee)
 
         self._login_as('UNICEF_admin')
         response = self.client.put(ENDPOINT_URL + str(consignee.id) + '/', {'name': 'Updated Consignee'})
@@ -106,7 +111,7 @@ class ConsigneeEndpointTest(APITestCase):
 
     def test_should_allow_unicef_admin_to_change_remarks_for_consignee_attached_to_delivery(self):
         consignee = ConsigneeFactory(name='New Consignee', remarks='New Remark', imported_from_vision=True)
-        DistributionPlanNodeFactory(consignee=consignee)
+        DeliveryNodeFactory(consignee=consignee)
 
         self._login_as('UNICEF_admin')
         response = self.client.put(ENDPOINT_URL + str(consignee.id) + '/',
@@ -135,7 +140,7 @@ class ConsigneeEndpointTest(APITestCase):
 
     def test_should_disallow_unicef_admin_to_delete_consignee_that_is_attached_to_delivery(self):
         consignee = ConsigneeFactory(name='New Consignee', imported_from_vision=False)
-        DistributionPlanNodeFactory(consignee=consignee)
+        DeliveryNodeFactory(consignee=consignee)
 
         self._login_as('UNICEF_admin')
         response = self.client.delete(ENDPOINT_URL + str(consignee.id) + '/')

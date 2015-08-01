@@ -197,25 +197,24 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
     def setup_nodes(self):
         self.ip_node_one = DeliveryNodeFactory(distribution_plan=self.plan_one, consignee=self.ip,
-                                                       tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
-                                                       item=self.po_item_one, targeted_quantity=5)
+                                               tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                               item=self.po_item_one, quantity=5)
         self.ip_node_two = DeliveryNodeFactory(distribution_plan=self.plan_two, consignee=self.ip,
-                                                       tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
-                                                       item=self.po_item_two, targeted_quantity=3)
+                                               tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                               item=self.po_item_two, quantity=3)
         self.ip_node_three = DeliveryNodeFactory(distribution_plan=self.plan_three, consignee=self.ip,
-                                                         tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
-                                                         item=self.po_item_three, targeted_quantity=2)
+                                                 tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                                 item=self.po_item_three, quantity=2)
 
         self.middle_man_node_one = DeliveryNodeFactory(distribution_plan=self.plan_three,
-                                                               consignee=self.middle_man_one,
-                                                               tree_position=DistributionPlanNode.MIDDLE_MAN,
-                                                               parent=self.ip_node_one, item=self.po_item_one,
-                                                               targeted_quantity=2)
+                                                       consignee=self.middle_man_one,
+                                                       tree_position=DistributionPlanNode.MIDDLE_MAN,
+                                                       parents=[(self.ip_node_one, 2)], item=self.po_item_one)
         self.middle_man_node_two = DeliveryNodeFactory(distribution_plan=self.plan_three,
-                                                               consignee=self.middle_man_two, parent=self.ip_node_two,
-                                                               tree_position=DistributionPlanNode.MIDDLE_MAN,
-                                                               item=self.po_item_two, targeted_quantity=2)
+                                                       consignee=self.middle_man_two,
+                                                       parents=[(self.ip_node_two, 2)],
+                                                       tree_position=DistributionPlanNode.MIDDLE_MAN,
+                                                       item=self.po_item_two)
         self.end_user_node = DeliveryNodeFactory(distribution_plan=self.plan_three, consignee=self.end_user,
-                                                         tree_position=DistributionPlanNode.END_USER,
-                                                         parent=self.ip_node_three, item=self.po_item_three,
-                                                         targeted_quantity=2)
+                                                 tree_position=DistributionPlanNode.END_USER,
+                                                 parents=[(self.ip_node_three, 2)], item=self.po_item_three)

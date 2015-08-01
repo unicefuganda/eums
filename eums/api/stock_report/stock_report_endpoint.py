@@ -37,7 +37,7 @@ def _get_report_details_for_node(node):
         'balance': (total_value_received - value_dispensed),
         'items': [{'code': node.item.item.material_code,
                    'description': node.item.item.description,
-                   'quantity_delivered': node.targeted_quantity,
+                   'quantity_delivered': node.quantity_in(),
                    'date_delivered': str(node.delivery_date),
                    'quantity_confirmed': quantity_received,
                    'date_confirmed': str(_get_date_received(node)),
@@ -65,7 +65,7 @@ def _get_date_received(node):
 
 def _compute_quantity_dispensed(node):
     total_quantity_dispensed = 0
-    for child_node in node.children.all():
+    for child_node in node.children():
         responses = _get_responses(child_node)
         total_quantity_dispensed += responses.get('amountReceived', 0)
     return total_quantity_dispensed
