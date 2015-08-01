@@ -67,6 +67,10 @@ class DistributionPlanNode(Runnable):
     def get_description(self):
         return self.item.item.description
 
+    def children(self):
+        children_ids = self.arcs_out.all().values_list('target_id')
+        return DistributionPlanNode.objects.filter(pk__in=children_ids)
+
     def _update_arcs(self):
         self.arcs_in.all().delete()
         for parent_dict in self.parents:

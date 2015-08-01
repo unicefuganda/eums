@@ -205,6 +205,16 @@ class DeliveryNodeTest(TestCase):
         node = DeliveryNodeFactory(parents=[(root_node, 5)])
         self.assertEqual(node.sender_name(), sender_name)
 
+    def test_should_return_list_of_children(self):
+        parent_node = DeliveryNodeFactory(quantity=100)
+        child_one = DeliveryNodeFactory(parents=[(parent_node, 30)])
+        child_two = DeliveryNodeFactory(parents=[(parent_node, 20)])
+
+        children = parent_node.children()
+        self.assertEqual(children.count(), 2)
+        self.assertIn(child_one, children)
+        self.assertIn(child_two, children)
+
     def clean_up(self):
         DistributionPlan.objects.all().delete()
         SalesOrder.objects.all().delete()
