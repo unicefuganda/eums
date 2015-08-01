@@ -12,13 +12,13 @@ from eums.test.factories.run_factory import RunFactory
 
 class DistributionPlanTest(TestCase):
     def setUp(self):
-        self.po_item_one = PurchaseOrderItemFactory(value=400, quantity=200)  # val = 2
-        self.po_item_two = PurchaseOrderItemFactory(value=600, quantity=100)  # val = 6
+        self.clean_up()
+        self.po_item_one = PurchaseOrderItemFactory(value=400, quantity=200)
+        self.po_item_two = PurchaseOrderItemFactory(value=600, quantity=100)
 
         self.delivery = DeliveryFactory()
-        self.node_one = DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_one,
-                                            targeted_quantity=50)
-        DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_two, targeted_quantity=30)
+        self.node_one = DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_one, quantity=50)
+        DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_two, quantity=30)
 
     def tearDown(self):
         SalesOrder.objects.all().delete()
@@ -38,7 +38,7 @@ class DistributionPlanTest(TestCase):
         self.assertEqual(self.delivery.total_value(), 280)
 
     def test_should_ignore_child_nodes_value_when_computing_total_value(self):
-        DeliveryNodeFactory(parent=self.node_one, item=self.po_item_one, distribution_plan=self.delivery)
+        DeliveryNodeFactory(parents=[(self.node_one, 10)], item=self.po_item_one, distribution_plan=self.delivery)
         self.assertEqual(self.delivery.total_value(), 280)
 
     def test_should_return_true_when_delivery_is_received(self):

@@ -17,8 +17,13 @@ class DeliveryNodeManager(PolymorphicManager):
         self._create_arcs(node, parents, quantity)
         return node
 
-    def root_nodes_for(self, delivery):
-        return self.model.objects.filter(distribution_plan=delivery, arcs_in__source__isnull=True)
+    def root_nodes_for(self, delivery=None, order_items=None, **kwargs):
+        kwargs['arcs_in__source__isnull'] = True
+        if delivery:
+            return self.model.objects.filter(distribution_plan=delivery, **kwargs)
+        elif order_items:
+            return self.model.objects.filter(item__in=order_items, **kwargs)
+        raise TypeError('both delivery and order items cannot be null')
 
     @staticmethod
     def _create_arcs(node, parents, quantity):
@@ -58,7 +63,7 @@ class DistributionPlanNode(Runnable):
         return self.quantity_in() - self.quantity_out()
 
     def get_ip(self):
-        root_node = DistributionPlanNode.objects.root_nodes_for(self.distribution_plan).first()
+        root_node = DistributionPlanNode.objects.root_nodes_for(delivery=self.distribution_plan).first()
         return {'id': root_node.id, 'location': root_node.location}
 
     def sender_name(self):

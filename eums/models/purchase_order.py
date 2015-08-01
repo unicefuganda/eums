@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Count, Sum
 
-from eums.models import SalesOrder, DistributionPlanNode, PurchaseOrderItem, DistributionPlan
+from eums.models import SalesOrder, DistributionPlanNode as DeliveryNode, PurchaseOrderItem, DistributionPlan
 
 
 class PurchaseOrderManager(models.Manager):
@@ -9,7 +9,7 @@ class PurchaseOrderManager(models.Manager):
         return self.model.objects.annotate(release_order_count=Count('release_orders')).filter(release_order_count=0)
 
     def for_consignee(self, consignee_id):
-        order_item_ids = DistributionPlanNode.objects.filter(consignee__id=consignee_id).values_list('item')
+        order_item_ids = DeliveryNode.objects.filter(consignee__id=consignee_id).values_list('item')
         order_ids = PurchaseOrderItem.objects.filter(id__in=order_item_ids).values_list('purchase_order')
         return self.model.objects.filter(id__in=order_ids)
 
@@ -24,22 +24,18 @@ class PurchaseOrder(models.Model):
     objects = PurchaseOrderManager()
 
     def has_plan(self):
-        return DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all()).exists()
+        return DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all()).exists()
 
     def is_fully_delivered(self):
         if self.has_plan():
-            total_purchase_order_items = self.purchaseorderitem_set.aggregate(Sum('quantity'))
-            total_node_items = DistributionPlanNode.objects.filter(
-                track=True,
-                item__in=self.purchaseorderitem_set.all(),
-                parent__isnull=True
-            ).aggregate(Sum('targeted_quantity'))
-            return total_node_items['targeted_quantity__sum'] == total_purchase_order_items['quantity__sum']
-        else:
-            return False
+            total_quantity = self.purchaseorderitem_set.aggregate(Sum('quantity')).get('quantity__sum')
+            root_nodes = DeliveryNode.objects.root_nodes_for(order_items=self.purchaseorderitem_set.all(), track=True)
+            total_quantity_distributed = reduce(lambda total, node: total + node.quantity_in(), root_nodes, 0)
+            return total_quantity_distributed == total_quantity
+        return False
 
     def deliveries(self):
-        plan_ids = DistributionPlanNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list(
+        plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list(
             'distribution_plan_id').distinct()
         return DistributionPlan.objects.filter(id__in=plan_ids)
 

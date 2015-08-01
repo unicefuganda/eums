@@ -24,7 +24,7 @@ class DistributionPlan(Runnable):
         return answer.value.text == 'Yes'
 
     def total_value(self):
-        delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(self)
+        delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(delivery=self)
         return reduce(lambda total, node: total + node.item.unit_value() * node.quantity_in(), delivery_root_nodes, 0)
 
     def __unicode__(self):

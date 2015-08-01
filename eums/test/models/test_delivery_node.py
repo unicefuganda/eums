@@ -1,7 +1,7 @@
 from unittest import TestCase
 from django.db import IntegrityError
 
-from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc
+from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -116,7 +116,7 @@ class DeliveryNodeTest(TestCase):
         root_node_two = DeliveryNodeFactory(distribution_plan=delivery)
         child_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[{'id': root_node_one.id, 'quantity': 5}])
 
-        root_nodes = DeliveryNode.objects.root_nodes_for(delivery)
+        root_nodes = DeliveryNode.objects.root_nodes_for(delivery=delivery)
         self.assertEqual(root_nodes.count(), 2)
 
         root_node_ids = [node.id for node in root_nodes]
@@ -214,6 +214,21 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(children.count(), 2)
         self.assertIn(child_one, children)
         self.assertIn(child_two, children)
+
+    def test_should_get_root_nodes_for_an_order_item_list(self):
+        purchase_order_item_one = PurchaseOrderItemFactory()
+        purchase_order_item_two = PurchaseOrderItemFactory()
+        root_node_one = DeliveryNodeFactory(item=purchase_order_item_one)
+        root_node_two = DeliveryNodeFactory(item=purchase_order_item_two)
+        DeliveryNodeFactory(item=purchase_order_item_one, parents=[(root_node_one, 5)])
+
+        item_list = PurchaseOrderItem.objects.filter(pk__in=[purchase_order_item_one.pk, purchase_order_item_two.pk])
+
+        root_nodes = DeliveryNode.objects.root_nodes_for(order_items=item_list)
+
+        self.assertEqual(root_nodes.count(), 2)
+        self.assertIn(root_node_one, root_nodes)
+        self.assertIn(root_node_two, root_nodes)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()

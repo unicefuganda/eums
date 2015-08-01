@@ -47,20 +47,20 @@ class PurchaseOrderTest(TestCase):
         item_two = PurchaseOrderItemFactory(purchase_order=purchase_order, quantity=100)
         self.assertFalse(purchase_order.is_fully_delivered())
 
-        node_one = NodeFactory(item=item_one, targeted_quantity=100)
+        node_one = NodeFactory(item=item_one, quantity=100)
         self.assertFalse(purchase_order.is_fully_delivered())
 
-        node_two = NodeFactory(item=item_two, targeted_quantity=100)
+        node_two = NodeFactory(item=item_two, quantity=100)
         self.assertFalse(purchase_order.is_fully_delivered())
 
         node_one.track = True
         node_one.save()
         node_two.track = True
-        node_two.targeted_quantity = 50
+        node_two.quantity = 50
         node_two.save()
         self.assertFalse(purchase_order.is_fully_delivered())
 
-        node_two.targeted_quantity = 100
+        node_two.quantity = 100
         node_two.save()
         self.assertTrue(purchase_order.is_fully_delivered())
 
