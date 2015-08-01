@@ -29,17 +29,15 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
 
     def create_nodes(self):
-        self.ip_node = DeliveryNodeFactory()
-        self.middle_man_node = DeliveryNodeFactory(parent=self.ip_node,
-                                                           tree_position=DistributionPlanNode.MIDDLE_MAN,
-                                                           distribution_plan=self.ip_node.distribution_plan,
-                                                           targeted_quantity=100,
-                                                           item=self.item)
-        self.end_user_node = DeliveryNodeFactory(parent=self.middle_man_node,
-                                                         tree_position=DistributionPlanNode.END_USER,
-                                                         distribution_plan=self.ip_node.distribution_plan,
-                                                         targeted_quantity=100,
-                                                         item=self.item)
+        self.ip_node = DeliveryNodeFactory(quantity=100)
+        self.middle_man_node = DeliveryNodeFactory(parents=[(self.ip_node, 100)],
+                                                   tree_position=DistributionPlanNode.MIDDLE_MAN,
+                                                   distribution_plan=self.ip_node.distribution_plan,
+                                                   item=self.item)
+        self.end_user_node = DeliveryNodeFactory(parents=[(self.middle_man_node, 100)],
+                                                 tree_position=DistributionPlanNode.END_USER,
+                                                 distribution_plan=self.ip_node.distribution_plan,
+                                                 item=self.item)
 
     def create_runs_and_answers(self):
         self.run_one = RunFactory(runnable=self.middle_man_node, status='completed')
