@@ -71,6 +71,11 @@ class DistributionPlanNode(Runnable):
         children_ids = self.arcs_out.all().values_list('target_id')
         return DistributionPlanNode.objects.filter(pk__in=children_ids)
 
+    @classmethod
+    def get_delivery_for(cls, release_order_item):
+        first_node = cls.objects.filter(item=release_order_item, arcs_in__source__isnull=True).first()
+        return getattr(first_node, 'distribution_plan', None)
+
     def _update_arcs(self):
         self.arcs_in.all().delete()
         for parent_dict in self.parents:

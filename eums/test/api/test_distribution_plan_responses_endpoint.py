@@ -21,14 +21,10 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
         sales_order = SalesOrderFactory()
         item = SalesOrderItemFactory(item=salt, description='10 bags of salt', sales_order=sales_order)
 
-        node = DeliveryNodeFactory(targeted_quantity=100,
-                                           item=item)
-        child_node_one = DeliveryNodeFactory(parent=node, targeted_quantity=50,
-                                                     item=item)
-        child_node_two = DeliveryNodeFactory(parent=node, targeted_quantity=50,
-                                                     item=item)
-        child_node_three = DeliveryNodeFactory(parent=child_node_one, targeted_quantity=50,
-                                                       item=item)
+        node = DeliveryNodeFactory(quantity=100, item=item)
+        child_node_one = DeliveryNodeFactory(parents=[(node, 50)], item=item)
+        child_node_two = DeliveryNodeFactory(parents=[(node, 50)], item=item)
+        child_node_three = DeliveryNodeFactory(parents=[(child_node_one, 50)], item=item)
 
         run = RunFactory(runnable=node, status='completed')
         run_one = RunFactory(runnable=child_node_one, status='completed')

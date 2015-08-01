@@ -12,9 +12,6 @@ class DistributionPlan(Runnable):
     class Meta:
         app_label = 'eums'
 
-    def __unicode__(self):
-        return "%s, %s" % (self.programme.name, str(self.date))
-
     def sender_name(self):
         return "UNICEF"
 
@@ -29,3 +26,6 @@ class DistributionPlan(Runnable):
     def total_value(self):
         delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(self)
         return reduce(lambda total, node: total + node.item.unit_value() * node.quantity_in(), delivery_root_nodes, 0)
+
+    def __unicode__(self):
+        return "%s, %s" % (self.programme.name, str(self.date))

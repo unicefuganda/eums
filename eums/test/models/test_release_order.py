@@ -10,7 +10,6 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 
 
 class ReleaseOrderTest(TestCase):
-
     def tearDown(self):
         ReleaseOrderItem.objects.all().delete()
         ReleaseOrder.objects.all().delete()
@@ -23,7 +22,8 @@ class ReleaseOrderTest(TestCase):
 
         self.assertEquals(len(ReleaseOrder._meta.fields), 7)
 
-        for field in ['order_number', 'waybill', 'delivery_date', 'sales_order_id', 'purchase_order_id', 'consignee_id']:
+        for field in ['order_number', 'waybill', 'delivery_date', 'sales_order_id', 'purchase_order_id',
+                      'consignee_id']:
             self.assertIn(field, fields_in_order)
 
     def test_no_two_release_orders_should_have_the_same_order_number(self):
@@ -32,30 +32,19 @@ class ReleaseOrderTest(TestCase):
         self.assertRaises(IntegrityError, create_release_order)
 
     def test_should_get_correct_delivery_if_exists(self):
-        create_release_order = lambda: ReleaseOrderFactory(order_number=2342)
-        release_order = create_release_order()
+        release_order = ReleaseOrderFactory(order_number=2342)
+        release_order_item = ReleaseOrderItemFactory(release_order=release_order)
+        delivery = DeliveryFactory(id=343)
 
-        create_release_order_item = lambda: ReleaseOrderItemFactory(release_order = release_order)
-        release_order_item = create_release_order_item()
+        DeliveryNodeFactory(distribution_plan=delivery, item=release_order_item)
 
-        create_delivery = lambda: DeliveryFactory(id = 343)
-        delivery = create_delivery()
-
-        create_delivery_node = lambda: DeliveryNodeFactory(distribution_plan = delivery, item = release_order_item)
-        create_delivery_node()
-
-        returned_release_order = ReleaseOrder.objects.get(order_number=2342)
-        self.assertEqual(returned_release_order.delivery(), delivery.id)
+        self.assertEqual(release_order.delivery(), delivery.id)
 
     def test_should_return_null_delivery_if_it_doesnt_exist(self):
-        create_release_order = lambda: ReleaseOrderFactory(order_number=2342)
-        release_order = create_release_order()
+        release_order = ReleaseOrderFactory(order_number=2342)
+        ReleaseOrderItemFactory(release_order=release_order)
 
-        create_release_order_item = lambda: ReleaseOrderItemFactory(release_order = release_order)
-        create_release_order_item()
-
-        returned_release_order = ReleaseOrder.objects.get(order_number=2342)
-        self.assertEqual(returned_release_order.delivery(), None)
+        self.assertEqual(release_order.delivery(), None)
 
     def test_should_get_orders__as_a_queryset__whose_items_have_been_delivered_to_a_specific_consignee(self):
         consignee = ConsigneeFactory()

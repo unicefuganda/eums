@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, ReleaseOrderItem
+from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, ReleaseOrderItem, DistributionPlan
 
 
 class ReleaseOrderManager(models.Manager):
@@ -31,10 +31,7 @@ class ReleaseOrder(models.Model):
 
     def delivery(self):
         item = self.items.first()
-        try:
-            return DistributionPlanNode.objects.get(item=item, parent=None).distribution_plan.id
-        except ObjectDoesNotExist:
-            return None
+        return getattr(DistributionPlanNode.get_delivery_for(item), 'id', None)
 
     class Meta:
         app_label = 'eums'
