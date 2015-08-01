@@ -38,23 +38,29 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
                                     question=multichoice_question, value=yes)
         NumericAnswerFactory(run=run_three, value=80, question=numeric_question)
 
+        self.maxDiff = None
         expected_data = {'node': node.consignee.name,
-                         'children': [{'node': child_node_two.consignee.name,
-                                       'children': [],
-                                       'answers': {
-                                           u'productReceived': u'UNCATEGORISED'}},
-                                      {'node': child_node_one.consignee.name,
-                                       'children': [
-                                           {
-                                               'node': child_node_three.consignee.name,
-                                               'children': [],
-                                               'answers': {
-                                                   u'AmountReceived': '80'}}
-                                       ],
-                                       'answers': {u'productReceived': u'UNCATEGORISED'}}],
-                         'answers': {u'AmountReceived': '80'}}
+                         'children': [
+                             {'node': child_node_one.consignee.name,
+                              'children': [
+                                  {
+                                      'node': child_node_three.consignee.name,
+                                      'children': [],
+                                      'answers': {u'AmountReceived': u'80'}
+                                  }
+                              ],
+                              'answers': {u'productReceived': u'UNCATEGORISED'}
+                              },
+                             {'node': child_node_two.consignee.name, 'children': [],
+                              'answers': {u'productReceived': u'UNCATEGORISED'}
+                              }
+                         ],
+                         'answers': {u'AmountReceived': u'80'}
+                         }
 
-        endpoint_url = BACKEND_URL + 'distribution-plan-responses/%s/sales_order_item/%s/' % (
-            node.consignee.id, item.id)
+        response_details_route = 'distribution-plan-responses/%s/sales_order_item/%s/'
+        endpoint_url = BACKEND_URL + response_details_route % (node.consignee.id, item.id)
+
         response = self.client.get(endpoint_url)
+
         self.assertDictEqual(response.data, expected_data)
