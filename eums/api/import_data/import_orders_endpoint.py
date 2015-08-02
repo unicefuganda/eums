@@ -41,6 +41,7 @@ def import_consignees(request):
 
 @csrf_exempt
 @parser_classes((MultiPartParser,))
+@permission_required('auth.can_import_data', raise_exception=PermissionDenied())
 def import_programmes(request):
     return _import_records(request, ProgrammeFacade)
 
