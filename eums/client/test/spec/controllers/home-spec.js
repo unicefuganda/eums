@@ -88,7 +88,7 @@ describe('Module: Home', function () {
         beforeEach(inject(function ($controller, $rootScope, $q) {
             q = $q;
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['orderAllResponsesByDate']);
-            mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getPlanNodeDetails']);
+            mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['get']);
             mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
             mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
             params = {district: 'Gulu'};
@@ -98,7 +98,7 @@ describe('Module: Home', function () {
             deferredPurchaseOrder = $q.defer();
             scope = $rootScope.$new();
             mockDeliveryService.orderAllResponsesByDate.and.returnValue(deferredDistributionPlanPromise.promise);
-            mockDistributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredDistributionPlanNodePromise.promise);
+            mockDistributionPlanNodeService.get.and.returnValue(deferredDistributionPlanNodePromise.promise);
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
             $controller('ResponseController', {

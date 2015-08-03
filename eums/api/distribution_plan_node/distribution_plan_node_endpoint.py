@@ -8,7 +8,7 @@ from eums.models import DistributionPlanNode
 
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
     quantity = serializers.IntegerField(write_only=True, required=False)
-    parents = serializers.ListField(write_only=True, required=False)
+    parents = serializers.ListField(required=False)
 
     class Meta:
         model = DistributionPlanNode

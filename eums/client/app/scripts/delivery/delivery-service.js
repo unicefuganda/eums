@@ -121,26 +121,6 @@ angular.module('Delivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 's
             }
         });
 
-        function addChildrenDetail(node, plan) {
-            if (node) {
-                node.temporaryChildrenList = [];
-                node.children.forEach(function (childNodeId) {
-                    var descendant = findDetailedNode(childNodeId, plan);
-                    node.temporaryChildrenList.push(descendant);
-                    addChildrenDetail(descendant, plan);
-                });
-                node.children = node.temporaryChildrenList;
-                delete node.temporaryChildrenList;
-                return node;
-            }
-        }
-
-        function findDetailedNode(nodeId, plan) {
-            return plan.nodeList.filter(function (node) {
-                return node.id === nodeId;
-            })[0];
-        }
-
         function getUniqueLocations(consigneesResponsesWithNodeLocation) {
             return _.uniq(consigneesResponsesWithNodeLocation, function (responseWithNodeLocation) {
                 return responseWithNodeLocation.location.toLowerCase();

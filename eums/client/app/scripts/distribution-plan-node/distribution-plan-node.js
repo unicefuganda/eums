@@ -42,29 +42,20 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.consignee = json.consignee;
             this.location = json.location;
             this.parent = json.parent;
-            this.children = json.children;
             this.distributionPlan = json.distributionPlan;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
             }.bind(this);
 
-            this.hasSubConsignees = function () {
-                return this.children && this.children.length > 0;
-            };
+            this.hasChildren = json.hasChildren;
 
             this.isInvalid = function () {
                 return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location
                     || !this.contactPerson || !this.deliveryDate;
             };
 
-
-            this.quantityLeft = function (children) {
-                !children && (children = this.children);
-                return this.targetedQuantity - children.sum(function (node) {
-                        return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
-                    });
-            }.bind(this);
+            this.balance = json.balance;
         };
     })
     .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
@@ -82,30 +73,6 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
                     return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
                         return response.data;
                     });
-                },
-                getPlanNodeDetails: function (planNodeId) {
-                    var fieldsToBuild = ['consignee', 'contact_person_id', 'children'];
-                    return this.get(planNodeId, fieldsToBuild).then(function (planNode) {
-                        planNode.contactPerson = planNode.contactPersonId;
-                        var buildChildren = [];
-                        if (planNode.children) {
-                            planNode.children.forEach(function (child) {
-                                buildChildren.push(this.get(child.id, ['consignee', 'contact_person_id']));
-                            }.bind(this));
-                            return $q.all(buildChildren).then(function (builtChildren) {
-                                planNode.children = builtChildren;
-                                return planNode;
-                            });
-                        } else {
-                            return planNode;
-                        }
-                    }.bind(this));
-                },
-                getNodesByDelivery: function (deliveryId) {
-                    return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?distribution_plan=' + deliveryId)
-                        .then(function (deliveryNodes) {
-                            return deliveryNodes;
-                        });
                 }
             }
         });

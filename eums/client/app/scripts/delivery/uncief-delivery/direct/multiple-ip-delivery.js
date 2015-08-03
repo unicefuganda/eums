@@ -137,7 +137,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         if ($routeParams.deliveryNodeId) {
             $scope.consigneeButtonText = 'Add Sub-Consignee';
 
-            DistributionPlanNodeService.getPlanNodeDetails($routeParams.deliveryNodeId).then(function (planNode) {
+            DistributionPlanNodeService.get($routeParams.deliveryNodeId, ['consignee', 'contact_person_id']).then(function (planNode) {
                 $scope.parentNode = planNode;
                 $scope.distributionPlanNodes = planNode.children;
 

@@ -11,7 +11,7 @@ angular.module('ReleaseOrderItem', ['eums.config', 'eums.service-factory', 'Item
                 distributionplannode_set: DistributionPlanNodeService
             },
             methods: {
-                getTopLevelDistributionPlanNodes: function (releaseOrderItem) {
+                 getTopLevelDistributionPlanNodes: function (releaseOrderItem) {
                     var allDistributionPlanNodes = releaseOrderItem.distributionplannodeSet;
 
                     var planNodePromises = [],

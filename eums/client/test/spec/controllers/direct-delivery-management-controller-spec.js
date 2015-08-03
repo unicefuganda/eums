@@ -101,7 +101,7 @@ describe('DirectDeliveryController', function () {
 
     var setUp = function (routeParams) {
         mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'all', 'createPlan', 'updatePlanTracking']);
-        mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update', 'filter']);
+        mockNodeService = jasmine.createSpyObj('mockNodeService', ['get', 'create', 'update', 'filter']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
@@ -122,9 +122,8 @@ describe('DirectDeliveryController', function () {
             deferredPurchaseOrderItem = $q.defer();
             deferredUserPromise = $q.defer();
             deferredItemPromise = $q.defer();
-            mockPlanService.createPlan.and.returnValue(deferredPlan.promise);
-            mockNodeService.create.and.returnValue(deferredPlanNode.promise);
-            mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
+            mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
+            mockNodeService.get.and.returnValue(deferredPlanNode.promise);
             mockNodeService.filter.and.returnValue(deferredTopLevelNodes.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
@@ -447,7 +446,7 @@ describe('DirectDeliveryController', function () {
             deferred.resolve({distribution_plan_node: 1});
             scope.selectedPurchaseOrderItem = {information: {distributionplannode_set: ['1']}};
             scope.$apply();
-            expect(mockNodeService.getPlanNodeDetails).toHaveBeenCalledWith(1);
+            expect(mockNodeService.get).toHaveBeenCalledWith(1, [ 'consignee', 'contact_person_id' ]);
         });
 
         it('should put a distribution plan on the scope if distribution plan node exists', function () {
