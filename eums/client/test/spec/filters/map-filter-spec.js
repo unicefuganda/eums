@@ -125,19 +125,19 @@ describe('Map Filter Service', function () {
     });
 
     describe('filter by ip', function () {
-        var mockDistributionPlanService, deferredNodes;
+        var mockDistributionPlanNodeService, deferredNodes;
         beforeEach(function () {
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['getNodesBy']);
+            mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['filter']);
 
             module(function ($provide) {
-                $provide.value('DistributionPlanService', mockDistributionPlanService);
+                $provide.value('DistributionPlanNodeService', mockDistributionPlanNodeService);
             });
 
             inject(function ($q, MapFilterService, $rootScope) {
                 deferredNodes = $q.defer();
                 scope = $rootScope.$new();
                 mapFilterService = MapFilterService;
-                mockDistributionPlanService.getNodesBy.and.returnValue(deferredNodes.promise);
+                mockDistributionPlanNodeService.filter.and.returnValue(deferredNodes.promise);
             });
         });
 
@@ -146,9 +146,7 @@ describe('Map Filter Service', function () {
             mapFilterService.setMapMarker(markerMapTwo);
             var ip = 1;
 
-            deferredNodes.resolve([
-                {data: distributionPlanNodeOne}
-            ]);
+            deferredNodes.resolve([distributionPlanNodeOne]);
             mapFilterService.filterMarkersByIp(ip, mapFilterService.getAllMarkerMaps()).then(function (markers) {
                 expect(markers).toEqual([markerMapOne]);
                 done();

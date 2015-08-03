@@ -2,7 +2,7 @@ describe('DirectDeliveryController', function () {
 
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
-    var mockContactService, mockPlanService, mockProgrammeService, mockPurchaseOrderService;
+    var mockContactService, mockProgrammeService, mockPurchaseOrderService;
     var deferred, deferredPlan, deferredPurchaseOrder;
 
     var programmeOne = {
@@ -15,7 +15,6 @@ describe('DirectDeliveryController', function () {
     beforeEach(function () {
         module('DirectDelivery');
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['getPlanDetails']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
 
@@ -26,7 +25,6 @@ describe('DirectDeliveryController', function () {
             mockContactService.create.and.returnValue(deferred.promise);
             mockProgrammeService.get.and.returnValue(deferred.promise);
             mockProgrammeService.all.and.returnValue(deferred.promise);
-            mockPlanService.getPlanDetails.and.returnValue(deferredPlan.promise);
             mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrder.promise);
             mockPurchaseOrderService.forDirectDelivery.and.returnValue(deferredPurchaseOrder.promise);
 
@@ -47,7 +45,6 @@ describe('DirectDeliveryController', function () {
             $controller('DirectDeliveryController',
                 {
                     $scope: scope, ContactService: mockContactService,
-                    DistributionPlanService: mockPlanService,
                     ProgrammeService: mockProgrammeService,
                     PurchaseOrderService: mockPurchaseOrderService,
                     $sorter: sorter,

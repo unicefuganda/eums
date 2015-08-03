@@ -1,10 +1,7 @@
 'use strict';
 
-
-angular.module('DirectDelivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User',
-    'Directives', 'EumsFilters'])
-    .controller('DirectDeliveryController', function ($scope, $location, DistributionPlanService, ProgrammeService, PurchaseOrderService,
-                                                      UserService, $sorter) {
+angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'EumsFilters'])
+    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter) {
 
         $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'date'];

@@ -1,5 +1,5 @@
 angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
-    .factory('MapFilterService', function (FilterService, DistributionPlanService, $q) {
+    .factory('MapFilterService', function (FilterService, DistributionPlanService, DistributionPlanNodeService, $q) {
         var allMarkers = [];
         var noneEmptyNodes = function (filteredNodes) {
             return filteredNodes.filter(function (nodes) {
@@ -36,11 +36,10 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
                 });
             },
             filterMarkersByIp: function (ip, markerMaps) {
-                return DistributionPlanService.getNodesBy(ip).then(function (data) {
-
-                    var markers = data.map(function (node) {
+                return DistributionPlanNodeService.filter({consignee: ip.id}).then(function(nodes) {
+                    var markers = nodes.map(function (node) {
                         return markerMaps.map(function (markerMap) {
-                            if (markerMap.consigneeResponse[0].node === node.data.id) {
+                            if (markerMap.consigneeResponse[0].node === node.id) {
                                 return markerMap;
                             }
                         });

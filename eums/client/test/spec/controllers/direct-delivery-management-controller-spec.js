@@ -100,7 +100,7 @@ describe('DirectDeliveryController', function () {
     };
 
     var setUp = function (routeParams) {
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'getPlanDetails', 'all', 'createPlan', 'updatePlanTracking']);
+        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'all', 'createPlan', 'updatePlanTracking']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'create', 'update', 'filter']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);

@@ -122,15 +122,6 @@ describe('Distribution Plan Service', function () {
         mockBackend.flush();
     });
 
-    it('should get distribution plan details, with node tree built out', function (done) {
-        mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanOne);
-        distributionPlanService.getPlanDetails(planId).then(function (detailedPlan) {
-            expect(detailedPlan).toEqual(expectedPlan);
-            done();
-        });
-        mockBackend.flush();
-    });
-
     var fakeGetNodeDetails = function () {
         var nodeId = arguments[0];
         var deferred = q.defer();
@@ -315,7 +306,7 @@ describe('UNICEF IP', function () {
 
     beforeEach(function () {
         module('DistributionPlan');
-        distributionPlanNodeService = jasmine.createSpyObj('distributionPlanNodeService', ['getPlanNodeDetails', 'getPlanNodeById']);
+        distributionPlanNodeService = jasmine.createSpyObj('distributionPlanNodeService', ['getPlanNodeDetails', 'get']);
 
         module(function ($provide) {
             $provide.value('DistributionPlanNodeService', distributionPlanNodeService);
@@ -329,7 +320,7 @@ describe('UNICEF IP', function () {
             deferredNodePromise = $q.defer();
             distributionPlanService = DistributionPlanService;
             distributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNodePromise.promise);
-            distributionPlanNodeService.getPlanNodeById.and.returnValue(deferredNodePromise.promise);
+            distributionPlanNodeService.get.and.returnValue(deferredNodePromise.promise);
         });
 
     });

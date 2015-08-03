@@ -21,7 +21,7 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 //TODO Remove. Clients should get nodes when they get the plan
                 getNodes: function (plan) {
                     var distributionPlanNodesPromises = plan.distributionplannode_set.map(function (nodeId) {
-                        return DistributionPlanNodeService.getPlanNodeById(nodeId);
+                        return DistributionPlanNodeService.get(nodeId);
                     });
                     return $q.all(distributionPlanNodesPromises);
                 },
@@ -107,29 +107,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                         return response.data;
                     });
                 },
-                getNodesBy: function (ipId) {
-                    return this.getAllPlansNodes().then(function (nodes) {
-                        return nodes.filter(function (node) {
-                            return parseInt(node.data.parent) === parseInt(ipId);
-                        });
-                    });
-                },
-                //TODO Remove. Make clients ask to build node_set
-                getPlanDetails: function (planId) {
-                    return this.get(planId).then(function (plan) {
-                        var nodeFillOutPromises = [];
-
-                        plan.nodeList = [];
-                        plan.distributionplannodeSet.forEach(function (nodeId) {
-                            nodeFillOutPromises.push(fillOutNode(nodeId, plan));
-                        });
-
-                        return $q.all(nodeFillOutPromises).then(function () {
-                            buildNodeTree(plan);
-                            return plan;
-                        });
-                    });
-                },
                 //TODO Remove
                 createPlan: function (planDetails) {
                     return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function (response) {
@@ -143,25 +120,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                 }
             }
         });
-
-        //TODO remove this
-        function fillOutNode(nodeId, plan) {
-            return DistributionPlanNodeService.getPlanNodeDetails(nodeId)
-                .then(function (nodeDetails) {
-                    plan.nodeList.push(nodeDetails);
-                });
-        }
-
-        function buildNodeTree(plan) {
-            var rootNode = plan.nodeList.filter(function (node) {
-                return node.parent === null;
-            })[0];
-
-            if (rootNode) {
-                plan.nodeTree = addChildrenDetail(rootNode, plan);
-                delete plan.nodeList;
-            }
-        }
 
         function addChildrenDetail(node, plan) {
             if (node) {
