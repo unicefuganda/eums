@@ -1,12 +1,12 @@
 from eums.models import Programme
 from eums.test.api.api_test_helpers import create_user_with_group
+from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 import os
-from rest_framework.test import APITestCase
 from xlwt import Workbook
 from eums.management.commands.setup_permissions import Command
 
 
-class TestImportProgrammesEndpoint(APITestCase):
+class TestImportProgrammesEndpoint(PermissionsTestCase):
     def setUp(self):
         self.programme_file_location = 'programmes.xlsx'
         self.create_programme_workbook()

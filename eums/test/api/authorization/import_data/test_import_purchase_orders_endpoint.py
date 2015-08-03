@@ -1,24 +1,16 @@
 from django.contrib.auth.models import User
-from django.core.management import call_command
-from eums.auth import create_groups, create_permissions
 from eums.models import SalesOrderItem, PurchaseOrderItem, Item, PurchaseOrder, SalesOrder
 from eums.test.api.api_test_helpers import create_user_with_group
+from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 import os
 from eums.management.commands.setup_permissions import Command
-from rest_framework.test import APITestCase
 from xlwt import Workbook
 
 
-class TestImportPurchaseOrdersEndpoint(APITestCase):
-    @classmethod
-    def setUpClass(cls):
-        create_groups()
-        create_permissions()
-        call_command('setup_permissions')
-
+class TestImportPurchaseOrdersEndpoint(PermissionsTestCase):
     def setUp(self):
         self.purchase_order_file_location = 'purchase_orders.xlsx'
         self.create_purchase_order_workbook()

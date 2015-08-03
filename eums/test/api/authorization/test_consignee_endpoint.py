@@ -1,7 +1,5 @@
-from eums.auth import create_groups, create_permissions
+from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
-from rest_framework.test import APITestCase
-from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from eums.models import Consignee, DistributionPlan, UserProfile
@@ -12,14 +10,7 @@ from eums.test.config import BACKEND_URL
 ENDPOINT_URL = BACKEND_URL + 'consignee/'
 
 
-class ConsigneeEndpointTest(APITestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        create_groups()
-        create_permissions()
-        call_command('setup_permissions')
-
+class ConsigneeEndpointTest(PermissionsTestCase):
     def tearDown(self):
         UserProfile.objects.all().delete()
         User.objects.all().delete()

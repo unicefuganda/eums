@@ -1,12 +1,12 @@
+from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 import os
 from eums.models import Consignee
 from eums.test.api.api_test_helpers import create_user_with_group
-from rest_framework.test import APITestCase
 from xlwt import Workbook
 from eums.management.commands.setup_permissions import Command
 
 
-class TestImportConsigneesEndpoint(APITestCase):
+class TestImportConsigneesEndpoint(PermissionsTestCase):
     def setUp(self):
         self.consignee_file_location = 'consignees.xlsx'
         self.create_consignee_workbook()
