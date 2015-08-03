@@ -234,12 +234,12 @@ describe('DirectDeliveryController', function () {
             scope.selectedPurchaseOrderItem = {quantity: 100, information: stubPurchaseOrderItem};
             scope.$apply();
 
-            scope.distributionPlanNodes.push({targetedQuantity: 50});
+            scope.distributionPlanNodes.push({quantityIn: 50});
             scope.$apply();
             expect(scope.computeQuantityLeft(scope.distributionPlanNodes)).toBe(50);
 
-            scope.distributionPlanNodes[0].targetedQuantity = 25;
-            scope.distributionPlanNodes.push({targetedQuantity: 55});
+            scope.distributionPlanNodes[0].quantityIn = 25;
+            scope.distributionPlanNodes.push({quantityIn: 55});
             scope.$apply();
             expect(scope.computeQuantityLeft(scope.distributionPlanNodes)).toBe(20);
 
@@ -250,7 +250,7 @@ describe('DirectDeliveryController', function () {
             var validNode = {
                 item: 1,
                 deliveryDate: '2014-11-31',
-                targetedQuantity: 42,
+                quantityIn: 42,
                 consignee: 4,
                 location: 'Adjumani',
                 contactPerson: '5444d433ec8e8257ae48dc73',
@@ -278,7 +278,7 @@ describe('DirectDeliveryController', function () {
 
             it('sets the invalidNodes field to true when there are nodes with invalid target Quantities', function () {
                 invalidNode = angular.copy(validNode);
-                invalidNode.targetedQuantity = -1;
+                invalidNode.quantityIn = -1;
                 scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
@@ -323,7 +323,7 @@ describe('DirectDeliveryController', function () {
 
             it('sets the invalidNodes field to true when the quantity left of salesitems is less than 0', function () {
                 invalidNode = angular.copy(validNode);
-                invalidNode.targetedQuantity = 101;
+                invalidNode.quantityIn = 101;
                 scope.distributionPlanNodes.push(invalidNode);
                 scope.$apply();
 
@@ -558,7 +558,7 @@ describe('DirectDeliveryController', function () {
             var expectedPlanNode = {
                 item: stubPurchaseOrderItem.item.id,
                 deliveryDate: '',
-                targetedQuantity: 0,
+                quantityIn: 0,
                 destinationLocation: '',
                 contactPerson: '',
                 remark: '',
@@ -651,7 +651,7 @@ describe('DirectDeliveryController', function () {
                     consignee: {id: 1 },
                     item: scope.selectedPurchaseOrderItem.id,
                     deliveryDate: '10/10/2015',
-                    targetedQuantity: 5,
+                    quantityIn: 5,
                     location: 'Kampala',
                     contactPerson: {id: '559281d40c42914aad3d6006'},
                     remark: '',
@@ -663,7 +663,7 @@ describe('DirectDeliveryController', function () {
                         consignee: {id: 1 },
                         item: scope.selectedPurchaseOrderItem.id,
                         deliveryDate: '10/10/2015',
-                        targetedQuantity: 4,
+                        quantityIn: 4,
                         destinationLocation: 'Wakiso',
                         contactPerson: {id: '559281d40c42914aad3d6006'},
                         remark: '',
@@ -691,7 +691,7 @@ describe('DirectDeliveryController', function () {
                     distributionPlan: 1,
                     tree_position: 'MIDDLE_MAN',
                     item: 1,
-                    targetedQuantity: 10,
+                    quantityIn: 10,
                     deliveryDate: '02/03/2014',
                     remark: 'Remark',
                     track: false
@@ -724,7 +724,7 @@ describe('DirectDeliveryController', function () {
                         tree_position: 'END_USER',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
@@ -744,7 +744,7 @@ describe('DirectDeliveryController', function () {
                         tree_position: 'IMPLEMENTING_PARTNER',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
@@ -766,7 +766,7 @@ describe('DirectDeliveryController', function () {
                         tree_position: 'MIDDLE_MAN',
                         parent: 1,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
@@ -786,7 +786,7 @@ describe('DirectDeliveryController', function () {
                         tree_position: 'IMPLEMENTING_PARTNER',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
@@ -798,30 +798,27 @@ describe('DirectDeliveryController', function () {
 
             it('should set track to true if node is tracked', function () {
                 deferredPlanNode.resolve({id: 1});
-                deferredPlan.resolve({id: 1})
+                deferredPlan.resolve({id: 1});
                 scope.inMultipleIpMode = true;
 
-                scope.distributionPlanNodes[0].track = true
+                scope.distributionPlanNodes[0].track = true;
 
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockPlanService.createPlan).toHaveBeenCalledWith(jasmine.objectContaining({track: true}));
-                expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
-            });
-
-            it('should set track to true if node is tracked', function () {
-                deferredPlanNode.resolve({id: 1});
-                deferredPlan.resolve({id: 1})
-                scope.inMultipleIpMode = true;
-
-                scope.distributionPlanNodes[0].track = false
-
-                scope.saveDistributionPlanNodes();
-                scope.$apply();
-
-                expect(mockPlanService.createPlan).toHaveBeenCalledWith(jasmine.objectContaining({track: false}));
-                expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
+                expect(mockNodeService.create).toHaveBeenCalledWith({
+                    consignee: 1,
+                    location: 'Kampala',
+                    contact_person_id: '0489284',
+                    tree_position: 'IMPLEMENTING_PARTNER',
+                    parent: null,
+                    item: uiPlanNode.item,
+                    quantity: uiPlanNode.quantityIn,
+                    delivery_date: distributionDateFormattedForSave,
+                    remark: uiPlanNode.remark,
+                    track: false,
+                    distribution_plan: 1
+                });
             });
 
             describe(' and a distribution plan node has already been saved, ', function () {
@@ -852,7 +849,7 @@ describe('DirectDeliveryController', function () {
                         tree_position: 'IMPLEMENTING_PARTNER',
                         parent: null,
                         item: uiPlanNode.item,
-                        targeted_quantity: uiPlanNode.targetedQuantity,
+                        quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
                         remark: uiPlanNode.remark,
                         track: false,
@@ -876,7 +873,7 @@ describe('DirectDeliveryController', function () {
                     contactPerson: {id: '0489284'},
                     tree_position: 'MIDDLE_MAN',
                     item: 1,
-                    targetedQuantity: 10,
+                    quantityIn: 10,
                     deliveryDate: '2014-02-03',
                     remark: 'Remark',
                     parent: 42,
@@ -903,7 +900,7 @@ describe('DirectDeliveryController', function () {
                     tree_position: 'MIDDLE_MAN',
                     parent: scope.parentNode.id,
                     item: 1,
-                    targeted_quantity: 10,
+                    quantity: 10,
                     delivery_date: '2014-2-3',
                     remark: 'Remark',
                     track: false,

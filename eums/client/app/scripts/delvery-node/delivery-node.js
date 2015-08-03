@@ -31,7 +31,9 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.id = json.id;
             this.item = json.item;
             this.deliveryDate = json.deliveryDate || '';
-            this.targetedQuantity = json.targetedQuantity || 0;
+            this.quantityIn = json.quantityIn || 0;
+            this.quantity = json.quantity;
+            this.quantityIn = json.quantityIn;
             this.contactPerson = json.contactPersonId || json.contactPerson;
             this.contactPersonId = json.contactPersonId || json.contactPerson;
             this.remark = json.remark || '';
@@ -51,7 +53,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.hasChildren = json.hasChildren;
 
             this.isInvalid = function () {
-                return this.targetedQuantity <= 0 || isNaN(this.targetedQuantity) || !this.consignee || !this.location
+                return this.quantityIn <= 0 || isNaN(this.quantityIn) || !this.consignee || !this.location
                     || !this.contactPerson || !this.deliveryDate;
             };
 

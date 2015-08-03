@@ -281,11 +281,11 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.purchaseOrderItems = purchaseOrderItems;
             nodeOne = new DeliveryNodeModel(Object.merge({
                 item: itemOne,
-                targetedQuantity: itemOne.quantityShipped
+                quantityIn: itemOne.quantityShipped
             }, deliveryCommonFields));
             nodeTwo = new DeliveryNodeModel(Object.merge({
                 item: itemTwo,
-                targetedQuantity: itemTwo.quantityShipped
+                quantityIn: itemTwo.quantityShipped
             }, deliveryCommonFields));
             setScopeData();
         });
@@ -402,7 +402,7 @@ describe('Single IP Direct Delivery Controller', function () {
             var nodeOneClone = angular.copy(nodeOne);
             nodeOneClone.track = false;
             nodeOneClone.item.quantityShipped = 0;
-            nodeOneClone.item.targetedQuantity = 0;
+            nodeOneClone.item.quantityIn = 0;
             scope.purchaseOrderItems = [
                 {quantityShipped: 0, id: 1, isInvalid: valid, availableBalance: 10},
                 {quantityShipped: 11, id: 2, isInvalid: valid, availableBalance: 11}
@@ -476,7 +476,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 id: 1,
                 distributionplannodeSet: [
                     {
-                        targetedQuantity: 100,
+                        quantityIn: 100,
                         item: {
                             quantity: 100,
                             value: 1000,
@@ -484,7 +484,7 @@ describe('Single IP Direct Delivery Controller', function () {
                         }
                     },
                     {
-                        targetedQuantity: 10,
+                        quantityIn: 10,
                         item: {
                             quantity: 10,
                             value: 500,

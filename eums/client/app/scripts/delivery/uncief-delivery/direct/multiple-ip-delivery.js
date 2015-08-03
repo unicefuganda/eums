@@ -73,15 +73,15 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.implementingPartners = [];
 
         $scope.getTotalQuantity = function () {
-            return !$scope.parentNode ? !$scope.selectedPurchaseOrderItem ? NaN : $scope.selectedPurchaseOrderItem.quantity : $scope.parentNode.targetedQuantity;
+            return !$scope.parentNode ? !$scope.selectedPurchaseOrderItem ? NaN : $scope.selectedPurchaseOrderItem.quantity : $scope.parentNode.quantityIn;
         };
 
         $scope.computeQuantityLeft = function (deliveryNodes) {
             var reduced = deliveryNodes.reduce(function (previous, current) {
-                return {targetedQuantity: isNaN(current.targetedQuantity) ? previous.targetedQuantity : (previous.targetedQuantity + current.targetedQuantity)};
-            }, {targetedQuantity: 0});
+                return {quantityIn: isNaN(current.quantityIn) ? previous.quantityIn : (previous.quantityIn + current.quantityIn)};
+            }, {quantityIn: 0});
 
-            return $scope.getTotalQuantity() - reduced.targetedQuantity;
+            return $scope.getTotalQuantity() - reduced.quantityIn;
         };
 
         if ($routeParams.purchaseOrderId) {
@@ -182,7 +182,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         function invalidFields(item) {
-            return item.targetedQuantity <= 0 || isNaN(item.targetedQuantity) || !item.consignee || !item.location || !item.contactPerson || !item.deliveryDate;
+            return item.quantityIn <= 0 || isNaN(item.quantityIn) || !item.consignee || !item.location || !item.contactPerson || !item.deliveryDate;
         }
 
         function anyInvalidFields(lineItems) {
@@ -200,7 +200,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             var distributionPlanNode = {
                 item: $scope.selectedPurchaseOrderItem.id,
                 deliveryDate: '',
-                targetedQuantity: 0,
+                quantityIn: 0,
                 destinationLocation: '',
                 contactPerson: '',
                 remark: '',
@@ -256,14 +256,15 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 tree_position: uiPlanNode.isEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
                 parent: parentNodeId(),
                 item: uiPlanNode.item,
-                targeted_quantity: uiPlanNode.targetedQuantity,
+                quantity: uiPlanNode.quantityIn,
                 delivery_date: formatDateForSave(plannedDate),
                 remark: uiPlanNode.remark,
                 track: uiPlanNode.track,
                 distribution_plan: uiPlanNode.distributionPlan
             };
 
-            savePurchaseOrderIPMode();
+            PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false}, 'PATCH');
+
             if (nodeId) {
                 node.id = nodeId;
                 node.children = uiPlanNode.children ? uiPlanNode.children : [];
@@ -323,12 +324,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 createToast('Save failed', 'danger');
             });
         };
-
-        function savePurchaseOrderIPMode() {
-            var purchaseOrder = $scope.selectedPurchaseOrder;
-            purchaseOrder.isSingleIp = false;
-            PurchaseOrderService.update(purchaseOrder, 'PATCH');
-        }
 
         $scope.addSubConsignee = function (node) {
             $location.path(

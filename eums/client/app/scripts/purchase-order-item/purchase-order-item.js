@@ -17,7 +17,7 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Dis
 
             this.quantityLeft = function (deliveryNodes) {
                 return this.quantity - deliveryNodes.sum(function (node) {
-                        return !isNaN(node.targetedQuantity) ? node.targetedQuantity : 0;
+                        return !isNaN(node.quantityIn) ? node.quantityIn : 0;
                     });
             }.bind(this);
 

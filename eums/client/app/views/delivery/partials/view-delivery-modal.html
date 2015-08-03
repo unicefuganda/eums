@@ -35,8 +35,8 @@
                             <td>{{ node.item.item.materialCode }}</td>
                             <td>{{ node.item.item.description }}</td>
                             <td>{{ node.item.item.unit.name }}</td>
-                            <td>{{ node.targetedQuantity }}</td>
-                            <td>{{ node.item.deliveryValue(node.targetedQuantity) | currency }}</td>
+                            <td>{{ node.quantityIn }}</td>
+                            <td>{{ node.item.deliveryValue(node.quantityIn) | currency }}</td>
                         </tr>
                     </table>
                 </div>

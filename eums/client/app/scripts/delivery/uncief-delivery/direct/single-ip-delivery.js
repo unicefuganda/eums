@@ -154,7 +154,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function setItemQuantityShipped(item) {
-            var quantityShipped = item.node ? item.node.targetedQuantity : item.availableBalance;
+            var quantityShipped = item.node ? item.node.quantityIn : item.availableBalance;
             return Object.merge(item, {quantityShipped: quantityShipped})
         }
 
@@ -188,7 +188,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             var tracked = $scope.tracked && item.quantityShipped ? true : false;
             return {
                 item: item,
-                targetedQuantity: item.quantityShipped,
+                quantityIn: item.quantityShipped,
                 distributionPlan: delivery,
                 consignee: delivery.consignee,
                 location: delivery.location,

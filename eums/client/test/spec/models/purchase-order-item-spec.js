@@ -38,7 +38,7 @@ describe('Purchase Order Item Model', function () {
 
     it('should calculate quantity left from a list of delivery nodes filtering out NaNs', function () {
         var purchaseOrderItem = new PurchaseOrderItemModel(itemJson);
-        var nodes = [{targetedQuantity: 10}, {targetedQuantity: 30}, {targetedQuantity: NaN}];
+        var nodes = [{quantityIn: 10}, {quantityIn: 30}, {quantityIn: NaN}];
         expect(purchaseOrderItem.quantityLeft(nodes)).toBe(60);
     });
 
