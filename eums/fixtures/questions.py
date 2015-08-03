@@ -81,7 +81,7 @@ def seed_questions():
     END_USER_FLOW.save()
 
     question_8, _ = MultipleChoiceQuestion.objects.get_or_create(
-        uuids=['372c8732-d8a8-45cf-9d3b-f060a467cf77', 'de4c7ea8-568e-40ef-be3f-5307754c47a8'],
+        uuids=['2e2006cb-dc98-42ed-9df8-1e31ec6c6909', '7ac53029-eafe-4346-924f-4cb9e4bed949'],
         text='Was delivery received?', label='deliveryReceived')
     Option.objects.get_or_create(text='Yes', question=question_8)
     no_delivery, _ = Option.objects.get_or_create(text='No', question=question_8)
@@ -90,14 +90,17 @@ def seed_questions():
     IMPLEMENTING_PARTNER.save()
 
     question_9, _ = TextQuestion.objects.get_or_create(
-        uuids=['48941e9a-5914-46ec-822f-3595f9aa1fef'],
+        uuids=[' 5d281023-92a9-4c61-849d-0f8a706626a3'],
         text='When was delivery received?', label='dateOfReceiptOfDelivery')
 
     question_10, _ = MultipleChoiceQuestion.objects.get_or_create(
-        uuids=['0b16b05d-19c1-4c01-a336-ce26bd134dde', '877553e7-241f-4a7e-852c-7b6307c4b018'],
-        text='Was delivery received?', label='isDeliveryInGoodOrder')
+        uuids=['80fca7ae-6415-46a3-9b67-6fd1d1b23281'],
+        text='Was delivery in good order?', label='isDeliveryInGoodOrder')
     yes_delivery, _ = Option.objects.get_or_create(text='Yes', question=question_10)
     no_delivery, _ = Option.objects.get_or_create(text='No', question=question_10)
-    IMPLEMENTING_PARTNER.end_nodes.append([question_10.id, yes_delivery.id])
-    IMPLEMENTING_PARTNER.end_nodes.append([question_10.id, no_delivery.id])
+
+    question_11, _ = TextQuestion.objects.get_or_create(
+        uuids=['5d5728d6-8bd9-42d3-9f7d-423360dcd370'],
+        text='Additional Remarks', label='additionalDeliveryComments')
+    IMPLEMENTING_PARTNER.end_nodes.append([question_11.id, Flow.NO_OPTION])
     IMPLEMENTING_PARTNER.save()

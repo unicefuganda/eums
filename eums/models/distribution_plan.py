@@ -14,6 +14,12 @@ class DistributionPlan(Runnable):
     def __unicode__(self):
         return "%s, %s" % (self.programme.name, str(self.date))
 
+    def sender_name(self):
+        return "UNICEF"
+
+    def get_description(self):
+        return "delivery"
+
     def total_value(self):
         return reduce(lambda total, node: total + node.item.unit_value() * node.targeted_quantity,
                       self.distributionplannode_set.filter(parent__isnull=True), 0)

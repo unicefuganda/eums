@@ -20,3 +20,12 @@ class DistributionPlanNode(Runnable):
             return {'id': self.id, 'location': self.location}
         else:
             return self.parent.get_ip()
+
+    def sender_name(self):
+        if not self.parent:
+            return "UNICEF"
+        else:
+            return self.parent.consignee.name
+
+    def description(self):
+        return self.item.item.description
