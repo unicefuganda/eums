@@ -141,7 +141,6 @@ RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower
 COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./eums/scripts/supervisor/celeryd.conf /etc/supervisor/conf.d/celeryd.conf
 RUN mkdir /var/log/celery && touch /var/log/celery/workers.log
-RUN echo export RAPIDPRO_API_TOKEN=b7aec884334247efd48d87f1498f6d35e1519224 >> ~/.bashrc
 
 VOLUME /var/lib/postgresql
 VOLUME /data

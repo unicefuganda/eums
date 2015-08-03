@@ -88,7 +88,6 @@ except KeyError:
     CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
-# TODO figure out a way to use environment variable with supervisor
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
 RAPIDPRO_URL = 'https://app.rapidpro.io/api/v1/'
 RAPIDPRO_URLS = {
