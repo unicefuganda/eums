@@ -31,7 +31,7 @@ def _schedule_run(runnable_id):
     flow = _flow_for(runnable)
     message = DeliveryRunMessage(runnable)
     start_delivery_run(
-        sender=runnable.sender_name(),
+        sender=message.sender_name(),
         item_description=message.description(),
         contact_person=runnable.build_contact(),
         flow=flow.rapid_pro_id
