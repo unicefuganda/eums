@@ -1,11 +1,23 @@
 'use strict';
 
+var interceptor = ['ngToast', '$q', function (ngToast, $q) {
+    return {
+        responseError: function (response) {
+            if (response.status === 403 || response.status === 401) {
+                ngToast.create({content: 'Unauthorized', class: 'danger'})
+            }
+            return $q.reject(response.data);
+        }
+    }
+}];
+
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'IPDirectDelivery', 'IPDirectDeliveryManagement',
     'IPWarehouseDelivery', 'IPWarehouseDeliveryManagement', 'SingleIpDirectDelivery'])
     .config(function ($routeProvider, $httpProvider) {
+        $httpProvider.interceptors.push(interceptor);
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
         $routeProvider
