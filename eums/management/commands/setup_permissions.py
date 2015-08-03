@@ -15,18 +15,24 @@ GROUP_PERMISSIONS = {
         'delete_consignee',
         'can_import_data',
         'add_user',
-        'change_user'
+        'change_user',
+        'add_distributionplan'
     ],
     'UNICEF_editor': [
         'can_view_dashboard',
         'can_view_consignees',
         'add_consignee',
         'change_consignee',
-        'delete_consignee'
+        'delete_consignee',
+        'add_distributionplan',
+        'can_view_distribution_plans',
+
     ],
     'UNICEF_viewer': [
         'can_view_dashboard',
-        'can_view_consignees'
+        'can_view_consignees',
+        'can_view_distribution_plans'
+
     ],
     'Implementing Partner_editor': [
         'can_view_delivery_reports',

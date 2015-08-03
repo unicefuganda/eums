@@ -1,4 +1,6 @@
+from eums.permissions.view_delivery_permission import ViewDeliveryPermission
 from rest_framework import serializers
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 
@@ -15,6 +17,8 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
 
 
 class DistributionPlanViewSet(ModelViewSet):
+    permission_classes = (DjangoModelPermissions, ViewDeliveryPermission)
+
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerialiser
 
