@@ -14,8 +14,7 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
 angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
-    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'IPDirectDelivery', 'IPDirectDeliveryManagement',
-    'IPWarehouseDelivery', 'IPWarehouseDeliveryManagement', 'SingleIpDirectDelivery'])
+    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery'])
     .config(function ($routeProvider, $httpProvider) {
         $httpProvider.interceptors.push(interceptor);
         $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -90,78 +89,6 @@ angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryMa
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');
-                    }
-                }
-            })
-            .when('/ip-direct-delivery', {
-                templateUrl: '/static/app/views/reported-by-ip/direct-delivery.html',
-                controller: 'IPDirectDeliveryController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-warehouse-delivery', {
-                templateUrl: '/static/app/views/reported-by-ip/warehouse-delivery.html',
-                controller: 'IPWarehouseDeliveryController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-warehouse-delivery/new/:releaseOrderId', {
-                templateUrl: '/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html',
-                controller: 'IPWarehouseDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId', {
-                templateUrl: '/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html',
-                controller: 'IPWarehouseDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId', {
-                templateUrl: '/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html',
-                controller: 'IPWarehouseDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-direct-delivery/new/:purchaseOrderId', {
-                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
-                controller: 'IPDirectDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-direct-delivery/new/:purchaseOrderId/:purchaseOrderItemId', {
-                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
-                controller: 'IPDirectDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
-                    }
-                }
-            })
-            .when('/ip-direct-delivery/new/:purchaseOrderId/:purchaseOrderItemId/:deliveryNodeId', {
-                templateUrl: '/static/app/views/reported-by-ip/new-ip-delivery-report.html',
-                controller: 'IPDirectDeliveryManagementController',
-                resolve: {
-                    permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_delivery_reports');
                     }
                 }
             })

@@ -58,36 +58,6 @@ describe('Route Provider', function () {
         expect(routes.routes['/warehouse-delivery/new/:releaseOrderId'].templateUrl).toBe('/static/app/views/delivery/warehouse-delivery-management.html');
     });
 
-    it('should know reported by ip direct-delivery route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/ip-direct-delivery');
-        expect(routes.routes['/ip-direct-delivery'].controller).toBe('IPDirectDeliveryController');
-        expect(routes.routes['/ip-direct-delivery'].templateUrl).toBe('/static/app/views/reported-by-ip/direct-delivery.html');
-    });
-
-    it('should know reported by ip warehouse-delivery route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/ip-direct-delivery');
-        expect(routes.routes['/ip-warehouse-delivery'].controller).toBe('IPWarehouseDeliveryController');
-        expect(routes.routes['/ip-warehouse-delivery'].templateUrl).toBe('/static/app/views/reported-by-ip/warehouse-delivery.html');
-    });
-
-    it('should know new ip warehouse delivery report route exists', function(){
-        expect(Object.keys(routes.routes)).toContain('/ip-warehouse-delivery/new/:releaseOrderId');
-        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId'].controller).toBe('IPWarehouseDeliveryManagementController');
-        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId'].templateUrl).toBe('/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html');
-    });
-
-    it('should know new ip warehouse delivery report with release order item Id route exists', function(){
-        expect(Object.keys(routes.routes)).toContain('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId');
-        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId'].controller).toBe('IPWarehouseDeliveryManagementController');
-        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId'].templateUrl).toBe('/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html');
-    });
-
-    it('should know new ip warehouse delivery report with release order item Id and delivery node Id route exists', function(){
-        expect(Object.keys(routes.routes)).toContain('/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId');
-        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId'].controller).toBe('IPWarehouseDeliveryManagementController');
-        expect(routes.routes['/ip-warehouse-delivery/new/:releaseOrderId/:releaseOrderItemId/:deliveryNodeId'].templateUrl).toBe('/static/app/views/reported-by-ip/new-ip-warehouse-delivery-report.html');
-    });
-
     it('should know distribution reporting route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/field-verification-reports');
         expect(routes.routes['/field-verification-reports'].controller).toBe('ManualReportingController');
