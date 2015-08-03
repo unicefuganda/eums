@@ -1,8 +1,10 @@
 from rest_framework import serializers
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 
 from django.contrib.auth.models import User
+
 
 class UserSerialiser(serializers.ModelSerializer):
     consignee = serializers.PrimaryKeyRelatedField(source='user_profile.consignee.id', read_only=True)
@@ -13,6 +15,8 @@ class UserSerialiser(serializers.ModelSerializer):
 
 
 class UserViewSet(ModelViewSet):
+    permission_classes = (DjangoModelPermissions,)
+
     queryset = User.objects.all()
     serializer_class = UserSerialiser
 

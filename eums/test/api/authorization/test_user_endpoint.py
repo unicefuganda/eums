@@ -55,6 +55,41 @@ class UserEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    # UNICEF editor
+
+    def test_should_not_allow_unicef_editors_to_create_users(self):
+        self._login_as('UNICEF_editor')
+        response = self.client.post(ENDPOINT_URL,
+                                    {'username': 'name', 'password': 'password',
+                                     'email': 'email@email.email',
+                                     'first_name': 'f name', 'last_name': 'l name'
+                                     }
+                                    )
+
+        self.assertEqual(response.status_code, 403)
+
+    def _test_should_not_allow_unicef_editors_to_view_users(self):
+        user = UserFactory()
+        self._login_as('UNICEF_editor')
+
+        response = self.client.get(ENDPOINT_URL + str(user.id) + '/')
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_should_not_allow_unicef_editors_to_edit_users(self):
+        user = UserFactory()
+        self._login_as('UNICEF_editor')
+
+        response = self.client.put(ENDPOINT_URL + str(user.id) + '/', {
+            'id': str(user.id),
+            'username': 'newName',
+            'email': 'email@email.email',
+            'first_name': 'f name',
+            'last_name': 'l name'
+        })
+
+        self.assertEqual(response.status_code, 403)
+
     # Helper methods
 
     def _login_as(self, group_name):

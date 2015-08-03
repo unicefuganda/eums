@@ -13,7 +13,9 @@ GROUP_PERMISSIONS = {
         'add_consignee',
         'change_consignee',
         'delete_consignee',
-        'can_import_data'
+        'can_import_data',
+        'add_user',
+        'change_user'
     ],
     'UNICEF_editor': [
         'can_view_dashboard',
