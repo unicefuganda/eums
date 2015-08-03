@@ -12,5 +12,8 @@ class ReleaseOrderItem(OrderItem):
     def unit_value(self):
         return self.value / Decimal(self.quantity)
 
+    def number(self):
+        return self.release_order.waybill
+
     class Meta:
         app_label = 'eums'

@@ -8,6 +8,7 @@ from django.conf import settings
 from eums.celery import app
 from eums.models import Run, RunQueue, Flow, Runnable, DistributionPlanNode, DistributionPlan
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
+from eums.services.delivery_run_message import DeliveryRunMessage
 
 
 def schedule_run_for(runnable):
@@ -28,9 +29,10 @@ def schedule_run_for(runnable):
 def _schedule_run(runnable_id):
     runnable = Runnable.objects.get(id=runnable_id)
     flow = _flow_for(runnable)
+    message = DeliveryRunMessage(runnable)
     start_delivery_run(
-        sender=runnable.get_sender_name(),
-        item_description=runnable.get_description(),
+        sender=runnable.sender_name(),
+        item_description=message.description(),
         contact_person=runnable.build_contact(),
         flow=flow.rapid_pro_id
     )

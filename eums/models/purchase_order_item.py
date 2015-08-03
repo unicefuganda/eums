@@ -25,6 +25,9 @@ class PurchaseOrderItem(OrderItem):
     def unit_value(self):
         return self.value / Decimal(self.quantity)
 
+    def number(self):
+        return self.purchase_order.order_number
+
     def __unicode__(self):
         return '%s %s %s.' \
                % (self.purchase_order.order_number, str(self.item_number), self.sales_order_item.description)

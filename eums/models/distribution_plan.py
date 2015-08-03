@@ -14,7 +14,7 @@ class DistributionPlan(Runnable):
     def __unicode__(self):
         return "%s, %s" % (self.programme.name, str(self.date))
 
-    def get_sender_name(self):
+    def sender_name(self):
         return "UNICEF"
 
     def get_description(self):

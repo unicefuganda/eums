@@ -8,7 +8,6 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 
 class DistributionPlanTest(TestCase):
     def setUp(self):
-        self.clean_up()
         self.po_item_one = PurchaseOrderItemFactory(value=400, quantity=200) #val = 2
         self.po_item_two = PurchaseOrderItemFactory(value=600, quantity=100) #val = 6
 
@@ -18,9 +17,6 @@ class DistributionPlanTest(TestCase):
         DistributionPlanNodeFactory(distribution_plan=self.delivery, item=self.po_item_two, targeted_quantity=30)
 
     def tearDown(self):
-        self.clean_up()
-
-    def clean_up(self):
         SalesOrder.objects.all().delete()
         DistributionPlan.objects.all().delete()
 

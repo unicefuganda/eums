@@ -21,11 +21,11 @@ class DistributionPlanNode(Runnable):
         else:
             return self.parent.get_ip()
 
-    def get_sender_name(self):
+    def sender_name(self):
         if not self.parent:
             return "UNICEF"
         else:
             return self.parent.consignee.name
 
-    def get_description(self):
+    def description(self):
         return self.item.item.description
