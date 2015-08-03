@@ -210,7 +210,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 distribution_plan: $scope.delivery.id,
                 tree_position: 'IMPLEMENTING_PARTNER',
                 item: releaseOrderItem,
-                targeted_quantity: parseInt(releaseOrderItem.quantity)
+                quantity: parseInt(releaseOrderItem.quantity)
             };
 
             return DistributionPlanNodeService.create(node)
