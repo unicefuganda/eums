@@ -49,7 +49,7 @@ class DistributionPlanNode(Runnable):
     def save(self, *args, **kwargs):
         if self.parents or self.parents == []:
             self._update_arcs()
-        if self.quantity >= 0 and self._is_root_node():
+        if self.quantity >= 0 and self.is_root():
             self._update_root_node_arc()
         super(DistributionPlanNode, self).save(*args, **kwargs)
 
@@ -67,7 +67,7 @@ class DistributionPlanNode(Runnable):
         return {'id': root_node.id, 'location': root_node.location}
 
     def sender_name(self):
-        return "UNICEF" if self._is_root_node() else self._parents().first().consignee.name
+        return "UNICEF" if self.is_root() else self._parents().first().consignee.name
 
     def get_description(self):
         return self.item.item.description
@@ -81,6 +81,9 @@ class DistributionPlanNode(Runnable):
         first_node = cls.objects.filter(item=release_order_item, arcs_in__source__isnull=True).first()
         return getattr(first_node, 'distribution_plan', None)
 
+    def is_root(self):
+        return self.arcs_in.exists() and not self.arcs_in.first().source
+
     def _update_arcs(self):
         self.arcs_in.all().delete()
         for parent_dict in self.parents:
@@ -90,9 +93,6 @@ class DistributionPlanNode(Runnable):
         arc = Arc.objects.get(target=self)
         arc.quantity = self.quantity
         arc.save()
-
-    def _is_root_node(self):
-        return self.arcs_in.exists() and not self.arcs_in.first().source
 
     def _parents(self):
         source_ids = self.arcs_in.all().values_list('source_id')
