@@ -325,7 +325,7 @@ describe('UNICEF IP', function () {
         });
         scope.$apply();
     });
-    
+
     describe('consignee responses', function () {
         beforeEach(function () {
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);

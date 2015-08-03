@@ -1,6 +1,6 @@
 import datetime
 
-from eums.models import DistributionPlan, Programme, Consignee
+from eums.models import DistributionPlan as Delivery, Programme, Consignee
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -11,9 +11,9 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
 
-class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
+class DeliveryEndPointTest(AuthenticatedAPITestCase):
     def setUp(self):
-        super(DistributionPlanEndPointTest, self).setUp()
+        super(DeliveryEndPointTest, self).setUp()
         self.clean_up()
 
     def tearDown(self):
@@ -37,7 +37,17 @@ class DistributionPlanEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.data[0]['total_value'], 20)
 
+    def test_should_filter_deliveries_by_programme(self):
+        programme = ProgrammeFactory()
+        delivery = DeliveryFactory(programme=programme)
+        DeliveryFactory()
+
+        response = self.client.get('%s?programme=%d' % (ENDPOINT_URL, programme.id))
+
+        self.assertEqual(Delivery.objects.count(), 2)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+
     def clean_up(self):
-        DistributionPlan.objects.all().delete()
         Programme.objects.all().delete()
         Consignee.objects.all().delete()

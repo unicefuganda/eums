@@ -22,6 +22,7 @@ class DistributionPlanViewSet(ModelViewSet):
 
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerialiser
+    filter_fields = ('programme',)
 
 
 distributionPlanRouter = DefaultRouter()
