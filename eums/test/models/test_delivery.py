@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from eums.models import DistributionPlan, SalesOrder, MultipleChoiceQuestion, MultipleChoiceAnswer, Option, Run
+from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
@@ -10,7 +10,7 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 
-class DistributionPlanTest(TestCase):
+class DeliveryTest(TestCase):
     def setUp(self):
         self.clean_up()
         self.po_item_one = PurchaseOrderItemFactory(value=400, quantity=200)
@@ -22,14 +22,10 @@ class DistributionPlanTest(TestCase):
 
     def tearDown(self):
         SalesOrder.objects.all().delete()
-        MultipleChoiceQuestion.objects.all().delete()
-        Option.objects.all().delete()
-        MultipleChoiceAnswer.objects.all().delete()
-        Run.objects.all().delete()
-        DistributionPlan.objects.all().delete()
+        Delivery.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
-        fields_in_plan = DistributionPlan()._meta._name_map
+        fields_in_plan = Delivery()._meta._name_map
 
         for expected_field in ['programme_id']:
             self.assertIn(expected_field, fields_in_plan)
@@ -60,3 +56,22 @@ class DistributionPlanTest(TestCase):
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
         self.assertFalse(delivery.is_received())
+
+    def test_should_mirror_delivery_tracked_status_on_all_nodes_when_tracked_status_changes_on_delivery(self):
+        Delivery.objects.all().delete()
+        delivery = DeliveryFactory(track=False)
+        root_node = DeliveryNodeFactory(distribution_plan=delivery)
+        child_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[(root_node, 5)])
+
+        self.assertFalse(root_node.track)
+        self.assertFalse(child_node.track)
+
+        delivery.track = True
+        delivery.save()
+        self.assertTrue(DeliveryNode.objects.get(pk=root_node.id).track)
+        self.assertTrue(DeliveryNode.objects.get(pk=child_node.id).track)
+
+        delivery.track = False
+        delivery.save()
+        self.assertFalse(DeliveryNode.objects.get(pk=root_node.id).track)
+        self.assertFalse(DeliveryNode.objects.get(pk=child_node.id).track)

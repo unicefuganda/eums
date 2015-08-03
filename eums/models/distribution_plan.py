@@ -12,6 +12,10 @@ class DistributionPlan(Runnable):
     class Meta:
         app_label = 'eums'
 
+    def save(self, *args, **kwargs):
+        super(DistributionPlan, self).save(*args, **kwargs)
+        DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
+
     def sender_name(self):
         return "UNICEF"
 
