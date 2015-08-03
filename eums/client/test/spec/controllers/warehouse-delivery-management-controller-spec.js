@@ -65,7 +65,7 @@ describe('Warehouse Delivery Management Controller', function () {
 
             mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService',
-                ['createPlan', 'update']);
+                ['create', 'update']);
             mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService,
                 ['filter', 'create', 'update']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
@@ -84,7 +84,7 @@ describe('Warehouse Delivery Management Controller', function () {
                 mockDistributionPlanNodeService.update.and.returnValue(q.when({}));
                 mockContactService.get.and.returnValue(q.when(contact));
                 mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
-                mockDeliveryService.createPlan.and.returnValue(q.when({id: 232}));
+                mockDeliveryService.create.and.returnValue(q.when({id: 232}));
                 mockDeliveryService.update.and.returnValue(q.when(updatedDelivery));
 
                 spyOn(angular, 'element').and.callFake(jqueryFake);
@@ -114,7 +114,7 @@ describe('Warehouse Delivery Management Controller', function () {
 
             expect(scope.errors).toBe(true);
             expect(toast.create).toHaveBeenCalledWith({ content : 'Please fill in required field!', class : 'danger', maxNumber : 1, dismissOnTimeout : true });
-            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+            expect(mockDeliveryService.create).not.toHaveBeenCalled();
         });
 
         it('should call distribution plan service when fields are valid', function () {
@@ -126,7 +126,7 @@ describe('Warehouse Delivery Management Controller', function () {
             scope.$apply();
 
             expect(scope.errors).toBe(false);
-            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+            expect(mockDeliveryService.create).toHaveBeenCalledWith({
                 programme: programId,
                 consignee: consigneeId,
                 location: 'Kampala',

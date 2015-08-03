@@ -25,19 +25,6 @@ angular.module('Delivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 's
                     });
                     return $q.all(distributionPlanNodesPromises);
                 },
-                getAllPlansNodes: function () {
-                    var mergedPromises = [];
-                    return this.fetchPlans().then(function (response) {
-                        var nodePlanPromises = response.data.map(function (plan) {
-                            return this.getNodes(plan);
-                        }.bind(this));
-
-                        return $q.all(nodePlanPromises).then(function (nodePlans) {
-                            return mergedPromises.concat.apply(mergedPromises, nodePlans);
-                        });
-                    }.bind(this));
-                },
-
                 getConsigneeDetails: function (consigneeId) {
                     return $http.get(EumsConfig.BACKEND_URLS.RESPONSES + consigneeId + '/', {cache: true});
                 },
@@ -105,17 +92,6 @@ angular.module('Delivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 's
                 getMiddleMen: function () {
                     return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=MIDDLE_MAN', {cache: true}).then(function (response) {
                         return response.data;
-                    });
-                },
-                //TODO Remove
-                createPlan: function (planDetails) {
-                    return $http.post(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN, planDetails).then(function (response) {
-                        if (response.status === 201) {
-                            return response.data;
-                        }
-                        else {
-                            return {error: response};
-                        }
                     });
                 }
             }

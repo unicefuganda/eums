@@ -1,7 +1,7 @@
 describe('DirectDeliveryController', function () {
 
     beforeEach(module('DirectDeliveryManagement'));
-    var mockNodeService, mockIPService, mockPlanService, mockPurchaseOrderItemService,
+    var mockNodeService, mockIPService, mockDeliveryService, mockPurchaseOrderItemService,
         mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
         deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredUserPromise, deferredItemPromise;
@@ -100,11 +100,11 @@ describe('DirectDeliveryController', function () {
     };
 
     var setUp = function (routeParams) {
-        mockPlanService = jasmine.createSpyObj('mockPlanService', ['fetchPlans', 'all', 'createPlan', 'updatePlanTracking']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['fetchPlans', 'all', 'create', 'update']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['get', 'create', 'update', 'filter']);
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get', 'all']);
         mockIPService = jasmine.createSpyObj('mockIPService', ['loadAllDistricts']);
-        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
+        mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'update']);
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
@@ -122,7 +122,7 @@ describe('DirectDeliveryController', function () {
             deferredPurchaseOrderItem = $q.defer();
             deferredUserPromise = $q.defer();
             deferredItemPromise = $q.defer();
-            mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
+            mockDeliveryService.update.and.returnValue(deferredPlan.promise);
             mockNodeService.get.and.returnValue(deferredPlanNode.promise);
             mockNodeService.filter.and.returnValue(deferredTopLevelNodes.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
@@ -161,7 +161,7 @@ describe('DirectDeliveryController', function () {
                     $q: q,
                     $routeParams: routeParams,
                     PurchaseOrderItemService: mockPurchaseOrderItemService,
-                    DeliveryService: mockPlanService,
+                    DeliveryService: mockDeliveryService,
                     DistributionPlanNodeService: mockNodeService,
                     ConsigneeService: mockConsigneeService,
                     PurchaseOrderService: mockPurchaseOrderService,
@@ -501,6 +501,55 @@ describe('DirectDeliveryController', function () {
         });
     });
 
+    describe('when track item checkbox changes, ', function () {
+        beforeEach(function () {
+            scope.track = true;
+            scope.distributionPlan = 1;
+        });
+
+        it('should set the invalidNodes value', function () {
+            scope.$apply();
+            scope.trackPurchaseOrderItem();
+            expect(scope.invalidNodes).toEqual(false);
+        });
+
+        it('should NOT call update if track is set to true and plan Node is set', function () {
+            scope.parentNode = 1;
+
+            scope.trackPurchaseOrderItem();
+            scope.$apply();
+
+            expect(mockDeliveryService.update).not.toHaveBeenCalled();
+        });
+
+        it('should call update if track is set to true and on first Level', function () {
+            scope.consigneeLevel = true;
+
+            scope.trackPurchaseOrderItem();
+            scope.$apply();
+
+            expect(mockDeliveryService.update).toHaveBeenCalledWith({ id : 1, track : true }, 'PATCH');
+        });
+
+        it('should not call update if track is set to true and not on first Level', function () {
+            scope.consigneeLevel = false;
+
+            scope.trackPurchaseOrderItem();
+            scope.$apply();
+
+            expect(mockDeliveryService.update).not.toHaveBeenCalledWith();
+        });
+
+        it('should call update if track is set to true and no plan Node', function () {
+            scope.parentNode = NaN;
+
+            scope.trackPurchaseOrderItem();
+            scope.$apply();
+
+            expect(mockDeliveryService.update).toHaveBeenCalledWith({ id : 1, track : true }, 'PATCH');
+        });
+    });
+
     describe('when Add Consignee button is clicked', function () {
         it('should add a default distribution plan line item to the selectedPurchaseOrderItem', function () {
             scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
@@ -570,10 +619,10 @@ describe('DirectDeliveryController', function () {
         var programmeId, distributionPlan;
 
         beforeEach(function () {
-            var createPlanPromise = q.defer();
+            var createPromise = q.defer();
             distributionPlan = {id: 1};
-            createPlanPromise.resolve(distributionPlan);
-            mockPlanService.createPlan.and.returnValue(createPlanPromise.promise);
+            createPromise.resolve(distributionPlan);
+            mockDeliveryService.create.and.returnValue(createPromise.promise);
 
             programmeId = 42;
             scope.selectedPurchaseOrder = {programme: programmeId};
@@ -625,7 +674,7 @@ describe('DirectDeliveryController', function () {
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockPlanService.createPlan.calls.count()).toBe(2);
+                expect(mockDeliveryService.create.calls.count()).toBe(2);
             });
         });
 

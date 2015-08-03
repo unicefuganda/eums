@@ -58,7 +58,7 @@ describe('Single IP Direct Delivery Controller', function () {
 
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get', 'getDetail', 'update']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['createPlan', 'update', 'get']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create', 'update', 'get']);
         mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['create', 'update', 'filter']);
 
         inject(function ($controller, $rootScope, $location, $q, ngToast, DeliveryNode) {
@@ -74,7 +74,7 @@ describe('Single IP Direct Delivery Controller', function () {
             mockDeliveryNodeService.create.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
             mockDeliveryNodeService.update.and.returnValue($q.when(new DeliveryNodeModel({id: 1})));
             mockDeliveryNodeService.filter.and.returnValue($q.when([new DeliveryNodeModel({id: 1})]));
-            mockDeliveryService.createPlan.and.returnValue($q.when(createdTrackedDelivery));
+            mockDeliveryService.create.and.returnValue($q.when(createdTrackedDelivery));
             mockDeliveryService.update.and.returnValue($q.when(createdTrackedDelivery));
             mockIpService.loadAllDistricts.and.returnValue($q.when(districtsResponse));
 
@@ -293,7 +293,7 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should create a new delivery when there is no current delivery on scope', function () {
             scope.save(true);
             scope.$apply();
-            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+            expect(mockDeliveryService.create).toHaveBeenCalledWith({
                 programme: programmeId,
                 consignee: consignee.id,
                 location: district.id,
@@ -307,7 +307,7 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should create a new untracked delivery when there is no current delivery on scope', function () {
             scope.save();
             scope.$apply();
-            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+            expect(mockDeliveryService.create).toHaveBeenCalledWith({
                 programme: programmeId,
                 consignee: consignee.id,
                 location: district.id,
@@ -322,7 +322,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.delivery = createdTrackedDelivery;
             scope.save(true);
             scope.$apply();
-            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+            expect(mockDeliveryService.create).not.toHaveBeenCalled();
             expect(mockDeliveryService.update).toHaveBeenCalledWith(createdTrackedDelivery);
         });
 
@@ -331,7 +331,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.save(true);
             scope.$apply();
 
-            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
+            expect(mockDeliveryService.create).not.toHaveBeenCalled();
             var errorMessage = 'Cannot save delivery with zero quantity shipped';
             expect(toast.create).toHaveBeenCalledWith({content: errorMessage, class: 'danger'});
         });
@@ -341,7 +341,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.save(true);
             scope.$apply();
 
-            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
+            expect(mockDeliveryService.create).toHaveBeenCalledWith({
                 programme: programmeId,
                 consignee: consignee.id,
                 location: district.id,
@@ -387,7 +387,7 @@ describe('Single IP Direct Delivery Controller', function () {
             untrackedCreatedDelivery.track = false;
             var untrackedNodeOne = Object.merge(nodeOne, {track: false, distributionPlan: untrackedCreatedDelivery});
             var untrackedNodeTwo = Object.merge(nodeTwo, {track: false, distributionPlan: untrackedCreatedDelivery});
-            mockDeliveryService.createPlan.and.returnValue(q.when(untrackedCreatedDelivery));
+            mockDeliveryService.create.and.returnValue(q.when(untrackedCreatedDelivery));
 
             scope.save();
             scope.$apply();
@@ -419,7 +419,7 @@ describe('Single IP Direct Delivery Controller', function () {
         });
 
         it('should alert user when creation of delivery fails', function () {
-            mockDeliveryService.createPlan.and.returnValue(q.reject());
+            mockDeliveryService.create.and.returnValue(q.reject());
             scope.save(true);
             scope.$apply();
 

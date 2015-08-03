@@ -138,7 +138,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function createDelivery() {
             var deliveryFields = getDeliveryFields();
-            return DeliveryService.createPlan(deliveryFields);
+            return DeliveryService.create(deliveryFields);
         }
 
         function updateDelivery() {

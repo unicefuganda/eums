@@ -71,7 +71,7 @@
 
     function getHeatMapLayerColourForLocation(responsesWithLocation) {
         return responsesWithLocation.map(function (responseWithLocation) {
-            return{
+            return {
                 district: responseWithLocation.location,
                 color: getHeatMapColor(responseWithLocation.consigneeResponses),
                 messages: getHeatMapResponsePercentage(responseWithLocation.consigneeResponses)
@@ -150,13 +150,13 @@
             return map;
         }
 
-        function showLoadingModal(show){
-            if (show && !angular.element('#loading').hasClass('in')){
+        function showLoadingModal(show) {
+            if (show && !angular.element('#loading').hasClass('in')) {
                 angular.element('#loading').modal();
             }
-            else if (!show){
-                 angular.element('#loading').modal('hide');
-                 angular.element('#loading.modal').removeClass('in');
+            else if (!show) {
+                angular.element('#loading').modal('hide');
+                angular.element('#loading.modal').removeClass('in');
             }
         }
 
@@ -165,7 +165,7 @@
         function addHeatMapLayer(map, scope) {
             var allMarkers = [];
             DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
-                 filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
+                filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
                     scope.reponsesFromDb = filteredResponses;
                     markersGroup.clearLayers && markersGroup.clearLayers();
 
@@ -185,7 +185,7 @@
                     markersGroup.addTo(map);
                     scope.data.totalStats = DeliveryService.aggregateStats(scope.allResponsesMap);
                     showLoadingModal(false);
-                 });
+                });
             });
         }
 
@@ -202,9 +202,9 @@
             });
         }
 
-        function filterResponsesForUser(responsesToPlot){
-             return UserService.getCurrentUser().then(function (user){
-                if(user.consignee_id){
+        function filterResponsesForUser(responsesToPlot) {
+            return UserService.getCurrentUser().then(function (user) {
+                if (user.consignee_id) {
                     var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
                         return responsesWithLocation.consigneeResponses.filter(function (response) {
                             return parseInt(response.consignee.id) === parseInt(user.consignee_id);
@@ -212,7 +212,7 @@
                     });
                     return DeliveryService.groupResponsesByLocation(_.flatten(filteredIPResponses));
                 }
-                else{
+                else {
                     return responsesToPlot;
                 }
             });
@@ -381,13 +381,13 @@
             }
         }
     }).directive('mapFilter', function () {
-        return{
+        return {
             restrict: 'E',
             scope: false,
             templateUrl: '/static/app/views/partials/filters.html'
         }
     }).directive('mapSummary', function () {
-        return{
+        return {
             restrict: 'A',
             scope: false,
             templateUrl: '/static/app/views/partials/marker-summary.html'
@@ -491,13 +491,13 @@
                 }
             }
         }
-    ).directive('selectIP', function (ProgrammeService, FilterService, DeliveryService, ConsigneeService) {
+    ).directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
             return {
                 restrict: 'A',
                 link: function (scope, elem) {
 
-                    ConsigneeService.getTopLevelConsignees().then(function (displayedData){
-                        var data = displayedData.map(function(consignee){
+                    ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
+                        var data = displayedData.map(function (consignee) {
                             return {id: consignee.id, text: consignee.name}
                         });
 
@@ -512,9 +512,9 @@
                 }
             }
         }).directive('deliveryStatus', function (DeliveryService, UserService) {
-            function filterResponsesForUser(responsesToPlot){
-                 return UserService.getCurrentUser().then(function (user){
-                    if(user.consignee_id){
+            function filterResponsesForUser(responsesToPlot) {
+                return UserService.getCurrentUser().then(function (user) {
+                    if (user.consignee_id) {
                         var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
                             return responsesWithLocation.consigneeResponses.filter(function (response) {
                                 return parseInt(response.consignee.id) === parseInt(user.consignee_id);
@@ -522,13 +522,13 @@
                         });
                         return DeliveryService.groupResponsesByLocation(_.flatten(filteredIPResponses));
                     }
-                    else{
+                    else {
                         return responsesToPlot;
                     }
                 });
             }
 
-            function getReceivedResponses(responsesToPlot){
+            function getReceivedResponses(responsesToPlot) {
                 return responsesToPlot.map(function (responseLocationMap) {
                     var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
                     var percentageReceivedWithIssues = getPercentageReceivedWithIssues(responseLocationMap.consigneeResponses);
@@ -538,14 +538,14 @@
                 });
             }
 
-            function getNotReceivedResponses(responsesToPlot){
+            function getNotReceivedResponses(responsesToPlot) {
                 return responsesToPlot.map(function (responseLocationMap) {
                     var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
                     return percentageReceived < FIFTY_PERCENT ? responseLocationMap.consigneeResponses : [];
                 });
             }
 
-            function getReceivedResponsesWithIssues(responsesToPlot){
+            function getReceivedResponsesWithIssues(responsesToPlot) {
                 return responsesToPlot.map(function (responseLocationMap) {
                     var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
                     var percentageReceivedWithIssues = getPercentageReceivedWithIssues(responseLocationMap.consigneeResponses);
@@ -618,9 +618,9 @@
                 });
             }
 
-            function filterResponsesForUser(responsesToPlot){
-                 return UserService.getCurrentUser().then(function (user){
-                    if(user.consignee_id){
+            function filterResponsesForUser(responsesToPlot) {
+                return UserService.getCurrentUser().then(function (user) {
+                    if (user.consignee_id) {
                         var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
                             return responsesWithLocation.consigneeResponses.filter(function (response) {
                                 return parseInt(response.consignee.id) === parseInt(user.consignee_id);
@@ -628,7 +628,7 @@
                         });
                         return DeliveryService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredIPResponses)));
                     }
-                    else{
+                    else {
                         return responsesToPlot;
                     }
                 });
@@ -650,46 +650,27 @@
                         function isWithinDateRange(dateOfReceipt) {
 
                             var dateRange = moment().range(fromDate, toDate);
-                            return  dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD/MM/YYYY'));
+                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD/MM/YYYY'));
                         }
 
                         if (newDates[0] && newDates[1]) {
                             scope.isFiltered = true;
                             receivedResponses = responsesToPlot.map(function (responseLocationMap) {
                                 return responseLocationMap.consigneeResponses.filter(function (response) {
-                                    return  isWithinDateRange(response.dateOfReceipt);
+                                    return isWithinDateRange(response.dateOfReceipt);
                                 });
                             });
                         }
                         var cleanedResponses = removeEmptyArray(receivedResponses);
                         scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(cleanedResponses));
-                        filterResponsesForUser(scope.data.allResponsesLocationMap).then(function (filteredResponses){
+                        filterResponsesForUser(scope.data.allResponsesLocationMap).then(function (filteredResponses) {
                             scope.data.allResponsesLocationMap = filteredResponses;
                         });
                     });
                 }
             }
 
-        }).factory('FilterService', function (DeliveryService, $http, EumsConfig) {
-
-            var filterPlanById = function (distributionPlans, programmeId) {
-                return distributionPlans.data.filter(function (plan) {
-                    return plan.programme == programmeId;
-                });
-            };
-
-            return {
-                getDistributionPlansBy: function (programmeId) {
-                    return DeliveryService.fetchPlans().then(function (allDistributionPlans) {
-                        return filterPlanById(allDistributionPlans, programmeId);
-                    });
-                },
-                getDateAnswers: function () {
-                    return $http.get(EumsConfig.BACKEND_URLS.DATE_ANSWERS);
-                }
-            }
         });
-
 })
 (angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'eums.mapFilter', 'map.layers']));
 

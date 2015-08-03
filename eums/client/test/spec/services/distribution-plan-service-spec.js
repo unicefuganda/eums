@@ -102,17 +102,6 @@ describe('Distribution Plan Service', function () {
         });
     });
 
-    it('should create distribution plan', function (done) {
-        var programmeId = 1;
-        var stubCreatedPlan = {id: planId, programme: programmeId, distributionplannode_set: []};
-        mockBackend.whenPOST(distPlanEndpointUrl).respond(201, stubCreatedPlan);
-        distributionPlanService.createPlan({programme: programmeId}).then(function (createdPlan) {
-            expect(stubCreatedPlan).toEqual(createdPlan);
-            done();
-        });
-        mockBackend.flush();
-    });
-
     it('should fetch all distribution plans', function (done) {
         mockBackend.whenGET(distPlanEndpointUrl).respond(stubDistributionPlans);
         distributionPlanService.fetchPlans().then(function (response) {
@@ -336,27 +325,7 @@ describe('UNICEF IP', function () {
         });
         scope.$apply();
     });
-
-
-    it('should get all plan nodes', function (done) {
-
-        var stubPlans = [
-            {id: 1, distributionplannode_set: [2]}
-        ];
-        var expectedPlanNode = stubDistributionPlanNodes[0];
-
-        deferredNodePromise.resolve(expectedPlanNode);
-        httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN).respond(stubPlans);
-        httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(expectedPlanNode);
-
-        distributionPlanService.getAllPlansNodes().then(function (unicefIps) {
-            expect(unicefIps).toEqual([expectedPlanNode]);
-            done();
-        });
-        scope.$apply();
-        httpBackend.flush();
-    });
-
+    
     describe('consignee responses', function () {
         beforeEach(function () {
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);

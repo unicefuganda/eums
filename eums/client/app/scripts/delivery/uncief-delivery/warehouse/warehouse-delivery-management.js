@@ -152,7 +152,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
                     track: $scope.track
                 };
-                return DeliveryService.createPlan(deliveryDetails)
+                return DeliveryService.create(deliveryDetails)
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
                         return saveDeliveryNodes();

@@ -105,23 +105,6 @@ describe('Map Filter Service', function () {
             mapFilterService.setMapMarker(markerMapOne);
             expect(mapFilterService.getAllMarkerMaps()).toEqual([markerMapOne]);
         });
-
-        xit('should filter markers based on programme', function (done) {
-            mapFilterService.setMapMarker(markerMapOne);
-            mapFilterService.setMapMarker(markerMapTwo);
-            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + distributionPlanNodeOne.id + '/')
-                .respond(distributionPlanNodeOne);
-            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + distributionPlanNodetwo.id + '/')
-                .respond(distributionPlanNodetwo);
-            deferredPlans.resolve([distributionPlanTwo, distributionPlanThree]);
-            var programmeId = 1;
-            mapFilterService.filterMarkersByProgramme(programmeId).then(function (markers) {
-                expect(markers).toEqual([markerMapOne]);
-                done();
-            });
-            scope.$apply();
-            httpBackend.flush();
-        });
     });
 
     describe('filter by ip', function () {
