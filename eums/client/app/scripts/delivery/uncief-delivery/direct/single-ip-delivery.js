@@ -83,8 +83,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function loadOrderData() {
             showLoader();
-            var fieldsToBuild = ['purchaseorderitem_set.item'];
-            PurchaseOrderService.get($routeParams.purchaseOrderId, fieldsToBuild).then(function (purchaseOrder) {
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 $scope.purchaseOrder = purchaseOrder;
                 var promises = [];
                 promises.push(loadPurchaseOrderValue(purchaseOrder));
@@ -188,7 +187,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             var tracked = $scope.tracked && item.quantityShipped ? true : false;
             return {
                 item: item,
-                quantityIn: item.quantityShipped,
+                quantity: item.quantityShipped,
                 distributionPlan: delivery,
                 consignee: delivery.consignee,
                 location: delivery.location,
