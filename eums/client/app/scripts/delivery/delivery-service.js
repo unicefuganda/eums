@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
-    .factory('DistributionPlanService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService, ServiceFactory, ContactService) {
+angular.module('Delivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
+    .factory('DeliveryService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService, ServiceFactory, ContactService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN,
             propertyServiceMap: {

@@ -162,7 +162,7 @@ describe('DirectDeliveryController', function () {
                     $q: q,
                     $routeParams: routeParams,
                     PurchaseOrderItemService: mockPurchaseOrderItemService,
-                    DistributionPlanService: mockPlanService,
+                    DeliveryService: mockPlanService,
                     DistributionPlanNodeService: mockNodeService,
                     ConsigneeService: mockConsigneeService,
                     PurchaseOrderService: mockPurchaseOrderService,

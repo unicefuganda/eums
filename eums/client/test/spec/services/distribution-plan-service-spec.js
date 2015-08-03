@@ -79,7 +79,7 @@ describe('Distribution Plan Service', function () {
     };
 
     beforeEach(function () {
-        module('DistributionPlan');
+        module('Delivery');
 
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['getPlanNodeDetails', 'updateNodeTracking']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
@@ -89,7 +89,7 @@ describe('Distribution Plan Service', function () {
             $provide.value('ContactService', mockContactService);
         });
 
-        inject(function (DistributionPlanService, $httpBackend, $q, EumsConfig, $http) {
+        inject(function (DeliveryService, $httpBackend, $q, EumsConfig, $http) {
             mockNodeService.getPlanNodeDetails.and.callFake(fakeGetNodeDetails);
             q = $q;
             http = $http;
@@ -98,7 +98,7 @@ describe('Distribution Plan Service', function () {
             mockBackend = $httpBackend;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
             salesOrdersEndpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER;
-            distributionPlanService = DistributionPlanService;
+            distributionPlanService = DeliveryService;
         });
     });
 
@@ -305,20 +305,20 @@ describe('UNICEF IP', function () {
     var scope, distributionPlanNodeService, distributionPlanService, deferredPlanNodePromise, httpBackend, eumsConfig, deferredNodePromise;
 
     beforeEach(function () {
-        module('DistributionPlan');
+        module('Delivery');
         distributionPlanNodeService = jasmine.createSpyObj('distributionPlanNodeService', ['getPlanNodeDetails', 'get']);
 
         module(function ($provide) {
             $provide.value('DistributionPlanNodeService', distributionPlanNodeService);
         });
 
-        inject(function (DistributionPlanService, DistributionPlanNodeService, $q, $httpBackend, EumsConfig, $rootScope) {
+        inject(function (DeliveryService, DistributionPlanNodeService, $q, $httpBackend, EumsConfig, $rootScope) {
             scope = $rootScope.$new();
             eumsConfig = EumsConfig;
             httpBackend = $httpBackend;
             deferredPlanNodePromise = $q.defer();
             deferredNodePromise = $q.defer();
-            distributionPlanService = DistributionPlanService;
+            distributionPlanService = DeliveryService;
             distributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNodePromise.promise);
             distributionPlanNodeService.get.and.returnValue(deferredNodePromise.promise);
         });

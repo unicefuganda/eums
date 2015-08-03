@@ -1,5 +1,5 @@
-angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
-    .factory('MapFilterService', function (FilterService, DistributionPlanService, DistributionPlanNodeService, $q) {
+angular.module('eums.mapFilter', ['eums.map', 'Delivery'])
+    .factory('MapFilterService', function (FilterService, DeliveryService, DistributionPlanNodeService, $q) {
         var allMarkers = [];
         var noneEmptyNodes = function (filteredNodes) {
             return filteredNodes.filter(function (nodes) {
@@ -21,7 +21,7 @@ angular.module('eums.mapFilter', ['eums.map', 'DistributionPlan'])
             filterMarkersByProgramme: function (programmeId, markerMaps) {
                 return FilterService.getDistributionPlansBy(programmeId).then(function (plans) {
                     var nodesSelected = plans.map(function (plan) {
-                        return DistributionPlanService.getNodes(plan);
+                        return DeliveryService.getNodes(plan);
                     });
 
                     var filteredMarkers = $q.all(nodesSelected).then(function (nodes) {

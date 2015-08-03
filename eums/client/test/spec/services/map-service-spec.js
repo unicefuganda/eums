@@ -63,7 +63,7 @@ describe('eums.layers', function () {
     });
 
     describe('Layer', function () {
-        var layer, mockDistributionPlanService, scope, deferredAggregates;
+        var layer, mockDeliveryService, scope, deferredAggregates;
         var mockMap, mockMapLayer;
 
         beforeEach(function () {
@@ -71,23 +71,20 @@ describe('eums.layers', function () {
             mockMap = jasmine.createSpyObj('mockMap', ['fitBounds', 'removeLayer']);
             mockMapLayer = jasmine.createSpyObj('mockMapLayer', ['on', 'setStyle', 'getBounds']);
             mockMapLayer.on.and.returnValue(mockMapLayer);
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate', 'orderResponsesByDate', 'aggregateStats']);
+            mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate', 'orderResponsesByDate', 'aggregateStats']);
 
             module(function ($provide) {
-                $provide.value('DistributionPlanService', mockDistributionPlanService);
+                $provide.value('DeliveryService', mockDeliveryService);
             });
 
             inject(function (Layer, $q, $rootScope) {
                 scope = $rootScope.$new();
                 layer = Layer;
                 deferredAggregates = $q.defer();
-                mockDistributionPlanService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
-                mockDistributionPlanService.orderAllResponsesByDate.and.returnValue(deferredAggregates.promise);
-                mockDistributionPlanService.aggregateStats.and.returnValue({});
-                mockDistributionPlanService.orderResponsesByDate.and.returnValue([
-                    {},
-                    {}
-                ]);
+                mockDeliveryService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
+                mockDeliveryService.orderAllResponsesByDate.and.returnValue(deferredAggregates.promise);
+                mockDeliveryService.aggregateStats.and.returnValue({});
+                mockDeliveryService.orderResponsesByDate.and.returnValue([{}, {}]);
             });
         });
 
@@ -108,8 +105,8 @@ describe('eums.layers', function () {
                 var optionsMock = jasmine.createSpyObj('optionsMock', ['districtLayerStyle', 'selectedLayerStyle']),
                     districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
                 districtLayer.click();
-//                expect(mockDistributionPlanService.aggregateResponsesForDistrict).toHaveBeenCalledWith('Gulu');
-                expect(mockDistributionPlanService.orderResponsesByDate).toHaveBeenCalledWith({}, 'Gulu');
+//                expect(mockDeliveryService.aggregateResponsesForDistrict).toHaveBeenCalledWith('Gulu');
+                expect(mockDeliveryService.orderResponsesByDate).toHaveBeenCalledWith({}, 'Gulu');
             });
         });
 

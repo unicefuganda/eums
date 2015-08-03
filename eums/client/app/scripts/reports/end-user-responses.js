@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programme', 'Consignee', 'PurchaseOrder', 'Item', 'DistributionPlanNode', 'SalesOrderItem'])
-    .controller('EndUserResponsesController', function ($scope, $q, $location, DistributionPlanService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
+angular.module('EndUserResponses', ['eums.config', 'Delivery', 'Programme', 'Consignee', 'PurchaseOrder', 'Item', 'DistributionPlanNode', 'SalesOrderItem'])
+    .controller('EndUserResponsesController', function ($scope, $q, $location, DeliveryService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
         $scope.allResponses = [];
         $scope.filteredResponses = [];
         $scope.programmeResponses = [];
@@ -44,7 +44,7 @@ angular.module('EndUserResponses', ['eums.config', 'DistributionPlan', 'Programm
         };
 
         function getAllEndUserResponses() {
-            return DistributionPlanService.getAllEndUserResponses().then(function (allResponses) {
+            return DeliveryService.getAllEndUserResponses().then(function (allResponses) {
                 var nodePromises = [];
                 var poItemPromises = [];
 

@@ -1,4 +1,4 @@
-angular.module('map.layers', ['DistributionPlan'])
+angular.module('map.layers', ['Delivery'])
     .factory('LayerMap', function () {
         var layerList = {};
         var highlightedLayerName = '';
@@ -44,17 +44,17 @@ angular.module('map.layers', ['DistributionPlan'])
                 layerList[layerName].click();
             }
         };
-    }).factory('Layer', function (DistributionPlanService) {
+    }).factory('Layer', function (DeliveryService) {
         function changeGlobalStats(layerName, responses, scope) {
             scope.$apply(function () {
-                scope.data.totalStats = DistributionPlanService.aggregateStats(responses, layerName);
+                scope.data.totalStats = DeliveryService.aggregateStats(responses, layerName);
             });
 
         }
 
 
         function showResponsesForDistrict(layerName, responses, scope) {
-            var allResponses = DistributionPlanService.orderResponsesByDate(responses, layerName);
+            var allResponses = DeliveryService.orderResponsesByDate(responses, layerName);
             scope.$apply(function () {
                 scope.data.responses = allResponses.slice(0, 5);
                 scope.data.district = layerName;

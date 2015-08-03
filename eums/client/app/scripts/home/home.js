@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode', 'PurchaseOrderItem', 'PurchaseOrder'])
+angular.module('Home', ['GlobalStats', 'Delivery', 'DistributionPlanNode', 'PurchaseOrderItem', 'PurchaseOrder'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService) {
         $scope.filter = {programme: '', ip: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
@@ -23,10 +23,10 @@ angular.module('Home', ['GlobalStats', 'DistributionPlan', 'DistributionPlanNode
         };
 
     })
-    .controller('ResponseController', function ($scope, $q, $routeParams, DistributionPlanService, PurchaseOrderService,
+    .controller('ResponseController', function ($scope, $q, $routeParams, DeliveryService, PurchaseOrderService,
                                                 DistributionPlanNodeService, PurchaseOrderItemService) {
         function getAllResponsesByDate() {
-            return DistributionPlanService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
+            return DeliveryService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
                 var nodePromises = [];
                 var poItemPromises = [];
 

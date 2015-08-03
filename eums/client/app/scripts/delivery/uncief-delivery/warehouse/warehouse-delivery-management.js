@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
+angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
     'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
-    .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DistributionPlanService,
+    .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DeliveryService,
                                                                    DistributionPlanNodeService, ReleaseOrderService, ReleaseOrderItemService,
                                                                    IPService, ngToast, ContactService) {
         $scope.datepicker = {};
@@ -137,7 +137,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
         function createOrUpdateDeliveries() {
             if ($scope.delivery && $scope.delivery.id) {
                 $scope.delivery.track = $scope.track;
-                return DistributionPlanService.update($scope.delivery)
+                return DeliveryService.update($scope.delivery)
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
                         return updateDeliveryNodes();
@@ -152,7 +152,7 @@ angular.module('WarehouseDeliveryManagement', ['DistributionPlan', 'ngTable', 's
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
                     track: $scope.track
                 };
-                return DistributionPlanService.createPlan(deliveryDetails)
+                return DeliveryService.createPlan(deliveryDetails)
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
                         return saveDeliveryNodes();

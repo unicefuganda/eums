@@ -1,6 +1,6 @@
 describe('Warehouse Delivery Management Controller', function () {
 
-    var scope, location, q, routeParams, mockDistributionPlanService,
+    var scope, location, q, routeParams, mockDeliveryService,
         mockDistributionPlanNodeService, mockReleaseOrderService, mockReleaseOrderItemService,
         mockIPService, toast, mockContactService, contact, locations, releaseOrderItem;
 
@@ -64,7 +64,7 @@ describe('Warehouse Delivery Management Controller', function () {
             };
 
             mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
-            mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService',
+            mockDeliveryService = jasmine.createSpyObj('mockDeliveryService',
                 ['createPlan', 'update']);
             mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService,
                 ['filter', 'create', 'update']);
@@ -84,8 +84,8 @@ describe('Warehouse Delivery Management Controller', function () {
                 mockDistributionPlanNodeService.update.and.returnValue(q.when({}));
                 mockContactService.get.and.returnValue(q.when(contact));
                 mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
-                mockDistributionPlanService.createPlan.and.returnValue(q.when({id: 232}));
-                mockDistributionPlanService.update.and.returnValue(q.when(updatedDelivery));
+                mockDeliveryService.createPlan.and.returnValue(q.when({id: 232}));
+                mockDeliveryService.update.and.returnValue(q.when(updatedDelivery));
 
                 spyOn(angular, 'element').and.callFake(jqueryFake);
                 spyOn(mockModal, 'modal');
@@ -97,7 +97,7 @@ describe('Warehouse Delivery Management Controller', function () {
                     $location: location,
                     $q: q,
                     $routeParams: routeParams,
-                    DistributionPlanService: mockDistributionPlanService,
+                    DeliveryService: mockDeliveryService,
                     DistributionPlanNodeService: mockDistributionPlanNodeService,
                     ReleaseOrderService: mockReleaseOrderService,
                     ReleaseOrderItemService: mockReleaseOrderItemService,
@@ -114,7 +114,7 @@ describe('Warehouse Delivery Management Controller', function () {
 
             expect(scope.errors).toBe(true);
             expect(toast.create).toHaveBeenCalledWith({ content : 'Please fill in required field!', class : 'danger', maxNumber : 1, dismissOnTimeout : true });
-            expect(mockDistributionPlanService.createPlan).not.toHaveBeenCalled();
+            expect(mockDeliveryService.createPlan).not.toHaveBeenCalled();
         });
 
         it('should call distribution plan service when fields are valid', function () {
@@ -126,7 +126,7 @@ describe('Warehouse Delivery Management Controller', function () {
             scope.$apply();
 
             expect(scope.errors).toBe(false);
-            expect(mockDistributionPlanService.createPlan).toHaveBeenCalledWith({
+            expect(mockDeliveryService.createPlan).toHaveBeenCalledWith({
                 programme: programId,
                 consignee: consigneeId,
                 location: 'Kampala',
@@ -155,7 +155,7 @@ describe('Warehouse Delivery Management Controller', function () {
 
             expect(scope.errors).toBe(false);
             expect(mockDistributionPlanNodeService.create.calls.count()).toEqual(0);
-            expect(mockDistributionPlanService.update).toHaveBeenCalledWith(delivery);
+            expect(mockDeliveryService.update).toHaveBeenCalledWith(delivery);
             expect(mockDistributionPlanNodeService.update.calls.count()).toEqual(1);
             expect(toast.create).toHaveBeenCalledWith({
                 content: 'Warehouse Delivery Saved!',

@@ -1,6 +1,6 @@
 angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
-                                                              ngToast, DistributionPlanService, DeliveryNode, $q,
+                                                              ngToast, DeliveryService, DeliveryNode, $q,
                                                               DistributionPlanNodeService) {
         $scope.consignee = {};
         $scope.contact = {};
@@ -45,7 +45,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
             showLoader();
             angular.element('#view-delivery-modal').modal();
             var fieldsToBuild = ['contact_person_id', 'distributionplannode_set.item.item.unit'];
-            DistributionPlanService.get(delivery.id, fieldsToBuild).then(function (delivery) {
+            DeliveryService.get(delivery.id, fieldsToBuild).then(function (delivery) {
                 $scope.deliveryInView = delivery;
                 hideLoader();
             }).finally(hideLoader);
@@ -138,13 +138,13 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function createDelivery() {
             var deliveryFields = getDeliveryFields();
-            return DistributionPlanService.createPlan(deliveryFields);
+            return DeliveryService.createPlan(deliveryFields);
         }
 
         function updateDelivery() {
             var deliveryFields = getDeliveryFields();
             deliveryFields.id = $scope.delivery.id;
-            return DistributionPlanService.update(deliveryFields);
+            return DeliveryService.update(deliveryFields);
         }
 
         function loadPurchaseOrderValue(purchaseOrder) {

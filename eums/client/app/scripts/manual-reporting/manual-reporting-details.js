@@ -2,10 +2,10 @@
 
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
     'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
-    'DistributionPlan', 'DistributionPlanNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
+    'Delivery', 'DistributionPlanNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
     .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService,
                                                               OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
-                                                              ReleaseOrderItemService, ngToast, ContactService, DistributionPlanService,
+                                                              ReleaseOrderItemService, ngToast, ContactService, DeliveryService,
                                                               DistributionPlanNodeService, AnswerService, QuestionService, RunService,
                                                               SalesOrderService, SalesOrderItemService) {
         $scope.datepicker = {};
@@ -538,7 +538,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
         };
 
         function createDistributionPlan() {
-            return DistributionPlanService.create({programme: $scope.salesOrder.programme.id})
+            return DeliveryService.create({programme: $scope.salesOrder.programme.id})
                 .then(function (createdPlan) {
                     return createdPlan;
                 });

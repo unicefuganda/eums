@@ -2,7 +2,7 @@
 
 
 angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DistributionPlanNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
-    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DistributionPlanService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
+    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DeliveryService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
 
         function showLoadingModal(show) {
             if (show && !angular.element('#loading').hasClass('in')) {
@@ -197,6 +197,17 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/') + purchaseOrderItem.id);
         };
 
+        function savePlanTracking() {
+            if ($scope.track && $scope.distributionPlan && (!$scope.parentNode || $scope.consigneeLevel)) {
+                DeliveryService.updatePlanTracking($scope.distributionPlan, $scope.track);
+            }
+        }
+
+        $scope.trackPurchaseOrderItem = function () {
+            $scope.invalidNodes = anyInvalidFields($scope.distributionPlanNodes);
+            savePlanTracking();
+        };
+
         function invalidFields(item) {
             return item.targetedQuantity <= 0 || isNaN(item.targetedQuantity) || !item.consignee || !item.location || !item.contactPerson || !item.deliveryDate;
         }
@@ -290,7 +301,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 });
             }
             else {
-                DistributionPlanService.createPlan({
+                DeliveryService.createPlan({
                     programme: $scope.selectedPurchaseOrder.programme,
                     consignee: uiPlanNode.consignee.id,
                     location: uiPlanNode.location,
@@ -353,7 +364,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.saveDistributionPlanNodes = function () {
             if ($scope.inSingleIpMode) {
                 if (!$scope.distributionPlanId) {
-                    DistributionPlanService.createPlan({programme: $scope.selectedPurchaseOrder.programme})
+                    DeliveryService.createPlan({programme: $scope.selectedPurchaseOrder.programme})
                         .then(function (createdPlan) {
                             $scope.distributionPlan = createdPlan;
                             $scope.distributionPlanId = createdPlan.id;
@@ -400,7 +411,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.saveSingleIPDistributionPlanNodes = function () {
             if (!$scope.distributionPlanId) {
-                DistributionPlanService.createPlan({programme: $scope.selectedPurchaseOrder.programme})
+                DeliveryService.createPlan({programme: $scope.selectedPurchaseOrder.programme})
                     .then(function (createdPlan) {
                         $scope.distributionPlan = createdPlan;
                         $scope.distributionPlanId = createdPlan.id;

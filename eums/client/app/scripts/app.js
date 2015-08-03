@@ -1,5 +1,6 @@
 'use strict';
 
+
 var interceptor = ['ngToast', '$q', function (ngToast, $q) {
     return {
         responseError: function (response) {
@@ -11,7 +12,7 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
     }
 }];
 
-angular.module('eums', ['ngRoute', 'Home', 'DistributionPlan', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery',
+angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery'])

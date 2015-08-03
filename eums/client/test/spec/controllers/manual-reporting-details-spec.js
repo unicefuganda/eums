@@ -3,7 +3,7 @@ describe('ManualReportingDetailsController', function () {
 
     var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
         mockReleaseOrderService, mockReleaseOrderItemService, mockSalesOrderService,
-        mockDistributionPlanService, mockDistributionPlanNodeService, mockSalesOrderItemService;
+        mockDeliveryService, mockDistributionPlanNodeService, mockSalesOrderItemService;
     var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
         deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
         deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredNodeResponsePromise,
@@ -110,7 +110,7 @@ describe('ManualReportingDetailsController', function () {
         mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
         mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
-        mockDistributionPlanService = jasmine.createSpyObj('mockDistributionPlanService', ['create']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create']);
         mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getNodeResponse']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
@@ -140,7 +140,7 @@ describe('ManualReportingDetailsController', function () {
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
             mockReleaseOrderService.get.and.returnValue(deferredReleaseOrderPromise.promise);
             mockReleaseOrderItemService.get.and.returnValue(deferredReleaseOrderItemPromise.promise);
-            mockDistributionPlanService.create.and.returnValue(deferredDistributionPlanPromise.promise);
+            mockDeliveryService.create.and.returnValue(deferredDistributionPlanPromise.promise);
             mockDistributionPlanNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemPromise.promise);
@@ -175,7 +175,7 @@ describe('ManualReportingDetailsController', function () {
                     ReleaseOrderService: mockReleaseOrderService,
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     ngToast: mockToastProvider,
-                    DistributionPlanService: mockDistributionPlanService,
+                    DeliveryService: mockDeliveryService,
                     DistributionPlanNodeService: mockDistributionPlanNodeService,
                     SalesOrderItemService: mockSalesOrderItemService,
                     SalesOrderService: mockSalesOrderService
@@ -525,7 +525,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.saveResponses();
                 scope.$apply();
 
-                expect(mockDistributionPlanService.create).toHaveBeenCalledWith({programme: programmeId});
+                expect(mockDeliveryService.create).toHaveBeenCalledWith({programme: programmeId});
             });
 
             it('the created distribution plan should be put on the scope', function () {
@@ -544,7 +544,7 @@ describe('ManualReportingDetailsController', function () {
                 scope.saveResponses();
                 scope.$apply();
 
-                expect(mockDistributionPlanService.create).not.toHaveBeenCalled();
+                expect(mockDeliveryService.create).not.toHaveBeenCalled();
             });
         });
 
