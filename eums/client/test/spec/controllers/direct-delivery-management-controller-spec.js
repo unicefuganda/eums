@@ -122,10 +122,10 @@ describe('DirectDeliveryController', function () {
             deferredPurchaseOrderItem = $q.defer();
             deferredUserPromise = $q.defer();
             deferredItemPromise = $q.defer();
-            mockPlanService.updatePlanTracking.and.returnValue(deferredPlan.promise);
+            mockPlanService.createPlan.and.returnValue(deferredPlan.promise);
+            mockNodeService.create.and.returnValue(deferredPlanNode.promise);
             mockNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNode.promise);
             mockNodeService.filter.and.returnValue(deferredTopLevelNodes.promise);
-            mockNodeService.create.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
@@ -748,29 +748,32 @@ describe('DirectDeliveryController', function () {
 
             });
 
-            it('should setting track to true if user is an IP user', function () {
-                var nodeId = 1;
-                deferredPlanNode.resolve({id: nodeId});
-                deferredUserPromise.resolve(stubIPUser);
-                scope.track = false;
+            it('should set track to true if node is tracked', function () {
+                deferredPlanNode.resolve({id: 1});
+                deferredPlan.resolve({id: 1})
                 scope.inMultipleIpMode = true;
+
+                scope.distributionPlanNodes[0].track = true
 
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockNodeService.create).toHaveBeenCalledWith({
-                    consignee: 1,
-                    location: 'Kampala',
-                    contact_person_id: '0489284',
-                    tree_position: 'IMPLEMENTING_PARTNER',
-                    parent: null,
-                    item: uiPlanNode.item,
-                    targeted_quantity: uiPlanNode.targetedQuantity,
-                    delivery_date: distributionDateFormattedForSave,
-                    remark: uiPlanNode.remark,
-                    track: false,
-                    distribution_plan: 1
-                });
+                expect(mockPlanService.createPlan).toHaveBeenCalledWith(jasmine.objectContaining({track: true}));
+                expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
+            });
+
+            it('should set track to true if node is tracked', function () {
+                deferredPlanNode.resolve({id: 1});
+                deferredPlan.resolve({id: 1})
+                scope.inMultipleIpMode = true;
+
+                scope.distributionPlanNodes[0].track = false
+
+                scope.saveDistributionPlanNodes();
+                scope.$apply();
+
+                expect(mockPlanService.createPlan).toHaveBeenCalledWith(jasmine.objectContaining({track: false}));
+                expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
             });
 
             describe(' and a distribution plan node has already been saved, ', function () {
