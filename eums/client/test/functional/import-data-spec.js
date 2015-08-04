@@ -53,7 +53,7 @@ describe('Vision Data Imports', function () {
         expect(directDeliveryPage.purchaseOrderItemDescriptions).toContain('Acrylic glass scratch proof, 3mm');
         expect(directDeliveryPage.purchaseOrderItemDescriptions).toContain('Cariage bolt M6x25 A2');
 
-        expect(directDeliveryPage.purchaseOrderQuantities).toContain('8.00');
+        expect(directDeliveryPage.purchaseOrderQuantities).toContain('8');
         expect(directDeliveryPage.purchaseOrderValues).toContain('$227.84');
 
 
@@ -121,7 +121,7 @@ describe('Vision Data Imports', function () {
         directDeliveryPage.selectPurchaseOrderByNumber('81020737');
         directDeliveryPage.selectSingleIP();
 
-        expect(directDeliveryPage.purchaseOrderQuantities).toContain('999.00');
+        expect(directDeliveryPage.purchaseOrderQuantities).toContain('999');
         expect(directDeliveryPage.purchaseOrderValues).toContain('$8,900.00');
     });
 

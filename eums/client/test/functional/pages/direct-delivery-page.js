@@ -18,7 +18,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
     selectSingleIP: { value: function () { element(by.id('single-ip')).click(); }},
     selectMultipleIP: { value: function () { element(by.id('multiple-ip')).click(); }},
 
-    implementingPartner: { get: function () { return element(by.css('#input-consignee-single-ip')).getText(); }},
+    implementingPartner: { get: function () { return element(by.css('#input-consignee')).getText(); }},
 
     programmeName: { get: function () { return element(by.className('secondary-header')).getText(); }},
     purchaseOrderType: { get: function () { return element(by.id('po-type')).getText(); }},
@@ -33,7 +33,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
     purchaseOrderItemValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.value')).getText(); }},
     purchaseOrderItemBalances: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.availableBalance')).getText(); }},
     purchaseOrderItemDeliveryValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.deliveryValue')).getText(); }},
-    purchaseOrderQuantities: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.quantity')).getText(); }},
+    purchaseOrderQuantities: { get: function () { return element.all(by.id('quantity-shipped')).getAttribute('value'); }},
     purchaseOrderValues: { get: function () { return element.all(by.repeater('(index, item) in purchaseOrderItems').column('item.value')).getText(); }},
 
     searchBar: { get:  function () { return element(by.id('filter')); }},
@@ -72,10 +72,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
         fillSelect2Chosen('input-consignee', input)
     }},
 
-    setConsigneeForSingleIP: { value: function (input) {
-        fillSelect2Chosen('input-consignee-single-ip', input)
-    }},
-
     setContact: { value: function (input) {
         fillSelect2Chosen('input-contact', input)
     }},
@@ -96,14 +92,18 @@ DirectDeliveryPage.prototype = Object.create({}, {
         element(by.id('directDeliverySaveBtn')).click();
     }},
 
-    saveDeliverySingleIP: { value: function () {
-        element(by.id('directDeliverySingleIPSaveBtn')).click();
+    saveDraftDelivery: { value: function () {
+        element(by.id('save-draft')).click();
+    }},
+
+    saveAndTrackDelivery: { value: function () {
+        element(by.id('save-and-track')).click();
     }},
 
     confirmDelivery: { value: function () {
         var EC = protractor.ExpectedConditions;
 
-        var confirmButton = element(by.id('deliveryConfirmYes'));
+        var confirmButton = element.all(by.id('deliveryConfirmYes')).get(0);
         var confirmationIsVisible = EC.visibilityOf(confirmButton);
         browser.wait(confirmationIsVisible, 5000, "Timeout exceeded while waiting for visibility of confirmation modal");
 
@@ -112,7 +112,28 @@ DirectDeliveryPage.prototype = Object.create({}, {
         var successToast = element(by.repeater('message in messages'));
         var deliveryIsSaved = EC.stalenessOf(successToast);
         browser.wait(deliveryIsSaved, 5000, "Timeout exceeded while while waiting for delivery saved notifcation");
-    }}
+    }},
+
+    toastMessage: { get: function () { return element(by.repeater('message in messages')).getText(); }},
+
+    viewFirstPreviousDelivery: { value: function () {
+        element.all(by.repeater('(index, delivery) in trackedDeliveries')).get(0).click();
+
+        var EC = protractor.ExpectedConditions;
+        var loadingModal = element(by.id('loading'));
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
+        var deliveriesModalHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
+
+        browser.wait(deliveriesModalHasLoaded, 5000, "Timeout exceeded while loading previous deliveries modal");
+    }},
+
+    previousDeliveryDates: { get: function () { return element(by.repeater('(index, delivery) in trackedDeliveries').column('delivery.delivery_date')).getText(); }},
+    previousDeliveryTotalValues: { get: function () { return element(by.repeater('(index, delivery) in trackedDeliveries').column('delivery.total_value')).getText(); }},
+
+    deliveryModalMaterialNumbers: { get: function () { return element.all(by.repeater('(index, node) in deliveryInView.distributionplannodeSet').column('node.item.item.materialCode')).getText(); }},
+    deliveryModalItemDescriptions: { get: function () { return element.all(by.repeater('(index, node) in deliveryInView.distributionplannodeSet').column('node.item.item.description')).getText(); }},
+    deliveryModalDeliveriedQuantities: { get: function () { return element.all(by.repeater('(index, node) in deliveryInView.distributionplannodeSet').column('node.targetedQuantity')).getText(); }},
+    deliveryModalItemValues: { get: function () { return element.all(by.repeater('(index, node) in deliveryInView.distributionplannodeSet').column('node.item.deliveryValue(node.targetedQuantity)')).getText(); }}
 
 });
 
