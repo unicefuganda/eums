@@ -8,4 +8,4 @@ class ViewDeliveryPermission(permissions.BasePermission):
             if not request.user.has_perm('auth.can_view_distribution_plans'):
                 raise ForbiddenException('Unauthorised!')
 
-            return True
+        return True

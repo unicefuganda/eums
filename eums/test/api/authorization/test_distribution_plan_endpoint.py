@@ -1,4 +1,3 @@
-from django.db.models.sql.datastructures import DateTime
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -36,7 +35,7 @@ class DistributionPlanEndpointTest(APITestCase):
             'location': 'Kampala',
             'delivery_date': '2015-12-12',
             'contact_person_id': 'some_id'
-            })
+        })
 
         self.assertEqual(response.status_code, 201)
 
@@ -51,17 +50,11 @@ class DistributionPlanEndpointTest(APITestCase):
     def _test_should_allow_unicef_admin_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
+        delivery = DistributionPlanFactory(programme=programme, consignee=consignee, location='Kampala',
+                                           delivery_date='2015-12-12')
         self._login_as('UNICEF_admin')
 
-        response = self.client.put(ENDPOINT_URL, {
-            'programme': str(programme.id),
-            'consignee': str(consignee.id),
-            'location': 'Kampala',
-            'delivery_date': '2015-12-12',
-            'contact_person_id': 'some_id',
-            'track': 'true'
-        })
-
+        response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {'id': str(delivery.id), 'track': 'true'})
         self.assertEqual(response.status_code, 200)
 
     # UNICEF Editor:
@@ -128,19 +121,14 @@ class DistributionPlanEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def _test_should_not_allow_unicef_viewer_to_track_delivery(self):
+    def test_should_not_allow_unicef_viewer_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
+        delivery = DistributionPlanFactory(programme=programme, consignee=consignee, location='Kampala',
+                                           delivery_date='2015-12-12')
         self._login_as('UNICEF_viewer')
 
-        response = self.client.put(ENDPOINT_URL, {
-            'programme': str(programme.id),
-            'consignee': str(consignee.id),
-            'location': 'Kampala',
-            'delivery_date': '2015-12-12',
-            'contact_person_id': 'some_id',
-            'track': 'true'
-        })
+        response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {'id': str(delivery.id), 'track': 'true'})
 
         self.assertEqual(response.status_code, 403)
 
@@ -168,7 +156,7 @@ class DistributionPlanEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def _test_should_not_allow_implementing_partner_editors_to_track_delivery(self):
+    def test_should_not_allow_implementing_partner_editors_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
         self._login_as('Implementing Partner_editor')
@@ -208,7 +196,7 @@ class DistributionPlanEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def _test_should_not_allow_implementing_partner_viewers_to_track_delivery(self):
+    def test_should_not_allow_implementing_partner_viewers_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
         self._login_as('Implementing Partner_viewer')

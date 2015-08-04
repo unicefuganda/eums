@@ -16,7 +16,8 @@ GROUP_PERMISSIONS = {
         'can_import_data',
         'add_user',
         'change_user',
-        'add_distributionplan'
+        'add_distributionplan',
+        'can_track_deliveries'
     ],
     'UNICEF_editor': [
         'can_view_dashboard',
@@ -26,6 +27,7 @@ GROUP_PERMISSIONS = {
         'delete_consignee',
         'add_distributionplan',
         'can_view_distribution_plans',
+        'can_track_deliveries'
 
     ],
     'UNICEF_viewer': [
