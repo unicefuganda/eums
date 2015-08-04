@@ -68,7 +68,7 @@ class UserEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def _test_should_not_allow_unicef_editors_to_view_users(self):
+    def test_should_not_allow_unicef_editors_to_view_users(self):
         user = UserFactory()
         self._login_as('UNICEF_editor')
 
@@ -103,7 +103,7 @@ class UserEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def _test_should_not_allow_unicef_viewers_to_view_users(self):
+    def test_should_not_allow_unicef_viewers_to_view_users(self):
         user = UserFactory()
         self._login_as('UNICEF_viewer')
 
@@ -138,7 +138,7 @@ class UserEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def _test_should_not_allow_implementing_partner_editors_to_view_users(self):
+    def test_should_not_allow_implementing_partner_editors_to_view_users(self):
         user = UserFactory()
         self._login_as('Implementing Partner_editor')
 
@@ -173,7 +173,7 @@ class UserEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def _test_should_not_allow_implementing_partner_viewers_to_view_users(self):
+    def test_should_not_allow_implementing_partner_viewers_to_view_users(self):
         user = UserFactory()
         self._login_as('Implementing Partner_viewer')
 

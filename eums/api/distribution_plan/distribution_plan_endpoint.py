@@ -18,7 +18,7 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
 
 
 class DistributionPlanViewSet(ModelViewSet):
-    permission_classes = (DjangoModelPermissions, ViewDeliveryPermission, TrackDeliveryPermission)
+    permission_classes = (DjangoModelPermissions, ViewDeliveryPermission)
 
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerialiser

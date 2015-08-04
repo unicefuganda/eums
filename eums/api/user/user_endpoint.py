@@ -1,3 +1,4 @@
+from eums.permissions.view_user_permission import ViewUserPermission
 from rest_framework import serializers
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
@@ -15,7 +16,7 @@ class UserSerialiser(serializers.ModelSerializer):
 
 
 class UserViewSet(ModelViewSet):
-    permission_classes = (DjangoModelPermissions,)
+    permission_classes = (DjangoModelPermissions, ViewUserPermission)
 
     queryset = User.objects.all()
     serializer_class = UserSerialiser
