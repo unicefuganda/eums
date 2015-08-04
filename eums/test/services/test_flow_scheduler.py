@@ -121,7 +121,7 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         schedule_run_for(self.node)
 
-        self.assertEqual(mock_celery.invoked_after, 604800.0)
+        self.assertEqual(mock_celery.invoked_after, 604810.0)
 
     def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node(self):
         run = RunFactory(runnable=self.node)
