@@ -275,7 +275,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 targeted_quantity: uiPlanNode.targetedQuantity,
                 delivery_date: formatDateForSave(plannedDate),
                 remark: uiPlanNode.remark,
-                track: false,
+                track: uiPlanNode.track,
                 distribution_plan: uiPlanNode.distributionPlan
             };
             if ($scope.selectedPurchaseOrder.isSingleIp === null) {
@@ -297,7 +297,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     contact_person_id: uiPlanNode.contactPerson.id,
                     delivery_date: formatDateForSave(plannedDate),
                     remark: uiPlanNode.remark,
-                    track: false
+                    track: uiPlanNode.track
                 }).then(function (createdPlan) {
                     node.distribution_plan = createdPlan.id;
                     DistributionPlanNodeService.create(node).then(function (retNode) {
