@@ -17,7 +17,17 @@ output_file.write('from eums.models import SalesOrderItem\n')
 output_file.write('from eums.models import PurchaseOrderItem\n')
 output_file.write('from eums.models import ReleaseOrderItem\n')
 output_file.write('from eums.models import Item\n')
-output_file.write('from eums.models import Programme\n\n')
+output_file.write('from eums.models import Programme\n')
+output_file.write('from eums.models import DistributionReport\n')
+output_file.write('from eums.models import Run\n')
+output_file.write('from eums.models import Question\n')
+output_file.write('from eums.models import NumericAnswer\n')
+output_file.write('from eums.models import NumericQuestion\n')
+output_file.write('from eums.models import TextAnswer\n')
+output_file.write('from eums.models import TextQuestion\n')
+output_file.write('from eums.models import MultipleChoiceAnswer\n')
+output_file.write('from eums.models import MultipleChoiceQuestion\n')
+output_file.write('from eums.models import Option\n\n')
 
 
 # Consignees
@@ -137,7 +147,6 @@ for order_item in so_items:
 # Purchase Order Items
 output_file.write('\n\n')
 po_items = filter(lambda fixture: fixture['model'] == 'eums.purchaseorderitem', fixtures)
-output_file.write('last_so_item_id = getattr(OrderItem.objects.order_by("id").last(), "id", 0)\n')
 for order_item in po_items:
     fields = order_item['fields']
     order_item_fields = find_order_item_for(order_item)['fields']
@@ -184,6 +193,92 @@ for node in delivery_nodes:
     output_file.write('node_%d = DistributionPlanNode.objects.create(%s) \n' % (node['pk'], fields_string))
 
 
+# Runs
+output_file.write('\n\n')
+runs = filter(lambda fixture: fixture['model'] == 'eums.run', fixtures)
+for run in runs:
+    fields = run['fields']
+    fields_string = 'runnable=%s, status="%s", scheduled_message_task_id="%s", phone="%s"' % (
+        'node_%d' % fields['runnable'], fields['status'], fields['scheduled_message_task_id'], fields['phone'])
+    output_file.write('run_%d = Run.objects.create(%s) \n' % (run['pk'], fields_string))
 
+
+# Questions
+output_file.write('\n\n')
+questions = filter(lambda fixture: fixture['model'] == 'eums.question', fixtures)
+for question in questions:
+    fields = question['fields']
+    fields_string = 'text="%s", uuids=%s, label="%s"' % (
+        fields['text'], fields['uuids'], fields['label'])
+    output_file.write('question_%d = Question.objects.create(%s) \n' % (question['pk'], fields_string))
+
+
+# Multiple Choice Questions
+output_file.write('\n\n')
+mc_questions = filter(lambda fixture: fixture['model'] == 'eums.multiplechoicequestion', fixtures)
+for question in mc_questions:
+    output_file.write(
+        'mc_question_%d = MultipleChoiceQuestion.objects.create(label="%s") \n' % (question['pk'], question['pk']))
+
+
+# Numeric Questions
+output_file.write('\n\n')
+numeric_questions = filter(lambda fixture: fixture['model'] == 'eums.numericquestion', fixtures)
+for question in numeric_questions:
+    output_file.write(
+        'numeric_question_%d = NumericQuestion.objects.create(label="%s") \n' % (question['pk'], question['pk']))
+
+
+# Text Questions
+output_file.write('\n\n')
+text_questions = filter(lambda fixture: fixture['model'] == 'eums.textquestion', fixtures)
+for question in text_questions:
+    output_file.write(
+        'text_question_%d = TextQuestion.objects.create(label="%s") \n' % (question['pk'], question['pk']))
+
+
+# Numeric Answers
+output_file.write('\n\n')
+numeric_answers = filter(lambda fixture: fixture['model'] == 'eums.numericanswer', fixtures)
+for answer in numeric_answers:
+    fields = answer['fields']
+    fields_string = 'run=%s, question=%s, value=%d' % (
+        'run_%d' % fields['run'], 'numeric_question_%d' % fields['question'], fields['value'])
+    output_file.write('NumericAnswer.objects.create(%s) \n' % fields_string)
+
+
+# Text Answers
+output_file.write('\n\n')
+text_answers = filter(lambda fixture: fixture['model'] == 'eums.textanswer', fixtures)
+for answer in text_answers:
+    fields = answer['fields']
+    fields_string = 'run=%s, question=%s, value="%s"' % (
+        'run_%d' % fields['run'], 'text_question_%d' % fields['question'], fields['value'])
+    output_file.write('TextAnswer.objects.create(%s) \n' % fields_string)
+
+
+# Options
+output_file.write('\n\n')
+options = filter(lambda fixture: fixture['model'] == 'eums.option', fixtures)
+for option in options:
+    fields = option['fields']
+    fields_string = 'text="%s", question=%s' % (fields['text'], 'mc_question_%d' % fields['question'])
+    output_file.write('option_%d = Option.objects.create(%s) \n' % (option['pk'], fields_string))
+
+
+# Multiple Choice Answers
+output_file.write('\n\n')
+mc_answers = filter(lambda fixture: fixture['model'] == 'eums.multiplechoiceanswer', fixtures)
+for answer in mc_answers:
+    fields = answer['fields']
+    fields_string = 'run=%s, question=%s, value=%s' % (
+        'run_%d' % fields['run'], 'mc_question_%d' % fields['question'], 'option_%d' % fields['value'])
+    output_file.write('MultipleChoiceAnswer.objects.create(%s) \n' % fields_string)
+
+
+# Distribution report
+output_file.write('\n\n')
+output_file.write('DistributionReport.objects.create(total_distributed=80, total_not_received=67, '
+                  'consignee=consignee_32, total_received=100, programme=programme_3)')
 
 output_file.close()
