@@ -1,9 +1,10 @@
 from unittest import TestCase
 
-from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode
+from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
+    MultipleChoiceQuestion
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
@@ -11,8 +12,17 @@ from eums.test.factories.run_factory import RunFactory
 
 
 class DeliveryTest(TestCase):
+    @classmethod
+    def clean_up(cls):
+        SalesOrder.objects.all().delete()
+        Delivery.objects.all().delete()
+        MultipleChoiceQuestion.objects.all().delete()
+
+    @classmethod
+    def setUpClass(cls):
+        cls.clean_up()
+
     def setUp(self):
-        self.clean_up()
         self.po_item_one = PurchaseOrderItemFactory(value=400, quantity=200)
         self.po_item_two = PurchaseOrderItemFactory(value=600, quantity=100)
 
@@ -21,8 +31,7 @@ class DeliveryTest(TestCase):
         DeliveryNodeFactory(distribution_plan=self.delivery, item=self.po_item_two, quantity=30)
 
     def tearDown(self):
-        SalesOrder.objects.all().delete()
-        Delivery.objects.all().delete()
+        self.clean_up()
 
     def test_should_have_all_expected_fields(self):
         fields_in_plan = Delivery()._meta._name_map

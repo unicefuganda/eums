@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from eums.models import RunQueue
 from eums.test.factories.RunQueueFactory import RunQueueFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 
 
 class RunQueueTest(TestCase):

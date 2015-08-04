@@ -1,7 +1,7 @@
 import factory
 
 from eums.models import Arc
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 
 
 class ArcFactory(factory.DjangoModelFactory):

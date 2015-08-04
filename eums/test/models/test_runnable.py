@@ -8,7 +8,7 @@ from eums.models import DistributionPlanNode, Run, SalesOrderItem, PurchaseOrder
     ReleaseOrder, PurchaseOrder, SalesOrder
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory, \
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, \
     DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory

@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from django.db import IntegrityError
 from eums.models import SalesOrder
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 

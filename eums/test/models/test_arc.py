@@ -3,7 +3,7 @@ from django.db import IntegrityError
 
 from eums.models import SalesOrder, DistributionPlan, Arc
 from eums.test.factories.arc_factory import ArcFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 
 
 class ArcTest(TestCase):

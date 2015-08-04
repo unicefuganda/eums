@@ -2,7 +2,6 @@ from eums.models import ReleaseOrderItem, DistributionPlan
 
 
 class DeliveryRunMessage():
-
     UNICEF_SENDER = 'UNICEF'
 
     def __init__(self, runnable):
@@ -39,6 +38,4 @@ class DeliveryNodeRunnableWrapper():
         return self.runnable.item.item.description
 
     def sender_name(self):
-        if self.runnable.parent:
-            return self.runnable.parent.consignee.name
-        return DeliveryRunMessage.UNICEF_SENDER
+        return self.runnable.sender_name()

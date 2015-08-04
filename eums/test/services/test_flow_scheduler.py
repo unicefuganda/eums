@@ -15,8 +15,7 @@ from eums.models import Run, RunQueue
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory, \
-    DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
@@ -77,7 +76,7 @@ class FlowSchedulerTest(TestCase):
 
     def test_should_schedule_implementing_partner_flow_if_runnable_is_delivery(self):
         delivery = DeliveryFactory()
-        DeliveryFactory(distribution_plan=delivery, item=PurchaseOrderItemFactory())
+        NodeFactory(distribution_plan=delivery, item=PurchaseOrderItemFactory())
         delivery.build_contact = MagicMock(return_value=self.contact)
 
         Runnable.objects.get = MagicMock(return_value=delivery)
@@ -163,7 +162,7 @@ class FlowSchedulerTest(TestCase):
                                                                                       mock_schedule_run_for,
                                                                                       mock_deque):
         overdue_run = RunFactory(runnable=self.node)
-        node = DeliveryNodeFactory()
+        node = NodeFactory()
         run_queue_item = RunQueueFactory(runnable=node,
                                          contact_person_id=self.node.contact_person_id)
 

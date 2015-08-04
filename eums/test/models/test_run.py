@@ -5,7 +5,7 @@ from eums import settings
 from eums.models import Run, DistributionPlanNode
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \

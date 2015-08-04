@@ -5,7 +5,7 @@ from django.db import IntegrityError
 from eums.models import Consignee, DistributionPlan, DistributionPlanNode, SalesOrder, PurchaseOrderItem, PurchaseOrder, \
     Programme, SalesOrderItem
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory as NodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory

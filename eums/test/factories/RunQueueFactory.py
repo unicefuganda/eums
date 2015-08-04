@@ -1,4 +1,4 @@
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 import factory
 
 from eums.models import RunQueue

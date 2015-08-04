@@ -123,8 +123,10 @@ describe('DirectDeliveryController', function () {
             deferredUserPromise = $q.defer();
             deferredItemPromise = $q.defer();
             mockDeliveryService.update.and.returnValue(deferredPlan.promise);
+            mockDeliveryService.create.and.returnValue(deferredPlan.promise);
             mockNodeService.get.and.returnValue(deferredPlanNode.promise);
             mockNodeService.filter.and.returnValue(deferredTopLevelNodes.promise);
+            mockNodeService.create.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
@@ -806,19 +808,22 @@ describe('DirectDeliveryController', function () {
                 scope.saveDistributionPlanNodes();
                 scope.$apply();
 
-                expect(mockNodeService.create).toHaveBeenCalledWith({
-                    consignee: 1,
-                    location: 'Kampala',
-                    contact_person_id: '0489284',
-                    tree_position: 'IMPLEMENTING_PARTNER',
-                    parent: null,
-                    item: uiPlanNode.item,
-                    quantity: uiPlanNode.quantityIn,
-                    delivery_date: distributionDateFormattedForSave,
-                    remark: uiPlanNode.remark,
-                    track: false,
-                    distribution_plan: 1
-                });
+                expect(mockDeliveryService.create).toHaveBeenCalledWith(jasmine.objectContaining({track: true}));
+                expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
+            });
+
+            it('should set track to true if node is tracked', function () {
+                deferredPlanNode.resolve({id: 1});
+                deferredPlan.resolve({id: 1});
+                scope.inMultipleIpMode = true;
+
+                scope.distributionPlanNodes[0].track = false;
+
+                scope.saveDistributionPlanNodes();
+                scope.$apply();
+
+                expect(mockDeliveryService.create).toHaveBeenCalledWith(jasmine.objectContaining({track: false}));
+                expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
             });
 
             describe(' and a distribution plan node has already been saved, ', function () {

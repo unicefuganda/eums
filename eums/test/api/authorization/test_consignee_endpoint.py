@@ -1,5 +1,5 @@
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
 from eums.models import Consignee, DistributionPlan, UserProfile

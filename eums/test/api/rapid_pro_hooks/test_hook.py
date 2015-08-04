@@ -1,7 +1,7 @@
 from mock import patch
 from rest_framework.test import APITestCase
 
-from eums.test.factories.distribution_plan_node_factory import DeliveryNodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, Run, Flow, \
