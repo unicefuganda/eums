@@ -1,5 +1,8 @@
 from eums.models.consignee import Consignee
 from eums.models.runnable import Runnable
+from eums.models.run import Run
+from eums.models.option import Option
+from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
 from eums.models.distribution_plan import DistributionPlan
 from eums.models.item_unit import ItemUnit
 from eums.models.item import Item
@@ -8,10 +11,7 @@ from eums.models.distribution_plan_node import DistributionPlanNode
 from eums.models.sales_order import SalesOrder
 from eums.models.sales_order_item import SalesOrderItem
 from eums.models.sales_order import SalesOrder
-from eums.models.run import Run
 from eums.models.question import Question
-from eums.models.option import Option
-from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
 from eums.models.question import TextQuestion, MultipleChoiceQuestion, NumericQuestion, Question
 from eums.models.option import Option
 from eums.models.answers import TextAnswer, MultipleChoiceAnswer, NumericAnswer
@@ -29,19 +29,19 @@ from eums.models.users import UserProfile
 __all__ = [
     'Consignee',
     'Runnable',
+    'Run',
+    'Option',
+    'MultipleChoiceAnswer',
     'DistributionPlan',
     'Item',
     'ItemUnit',
     'Programme',
-    'Run',
     'RunQueue',
     'DistributionPlanNode',
     'SalesOrder',
     'SalesOrderItem',
     'Question',
-    'Option',
     'TextAnswer',
-    'MultipleChoiceAnswer',
     'NumericAnswer',
     'TextQuestion',
     'MultipleChoiceQuestion',

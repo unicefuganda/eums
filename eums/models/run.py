@@ -6,13 +6,11 @@ from model_utils.fields import StatusField
 from model_utils import Choices
 from eums import settings
 
-from eums.models import Runnable
-
 
 class Run(models.Model):
     STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
-    runnable = models.ForeignKey(Runnable)
+    runnable = models.ForeignKey('Runnable')
     status = StatusField()
     phone = models.CharField(max_length=255)
 
