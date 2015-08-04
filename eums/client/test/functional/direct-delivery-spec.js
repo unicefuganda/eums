@@ -114,23 +114,8 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderQuantities).toContain('125');
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$41.00');
 
+        //TODO Check that previous deliveries are shown accurately
         directDeliveryPage.saveAndTrackDelivery();
-        expect(directDeliveryPage.purchaseOrderItemBalances).toContain('875');
-        expect(directDeliveryPage.purchaseOrderQuantities).toContain('875');
-        expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$286.98');
-
-        expect(directDeliveryPage.purchaseOrderItemBalances).toContain('0');
-        expect(directDeliveryPage.purchaseOrderQuantities).toContain('0');
-        expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$0.00');
-
-        expect(directDeliveryPage.previousDeliveryDates).toContain('10 Oct 2021');
-        expect(directDeliveryPage.previousDeliveryTotalValues).toContain('$806.28');
-
-        directDeliveryPage.viewFirstPreviousDelivery();
-        expect(directDeliveryPage.deliveryModalMaterialNumbers).toContain('SL009123');
-        expect(directDeliveryPage.deliveryModalItemDescriptions).toContain('Complete Imm. Schedule - CSZ Eng Ver.');
-        expect(directDeliveryPage.deliveryModalDeliveriedQuantities).toContain('200');
-        expect(directDeliveryPage.deliveryModalItemValues).toContain('$218.65');
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
