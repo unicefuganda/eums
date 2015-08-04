@@ -79,7 +79,7 @@ class DistributionPlanNode(Runnable):
     @classmethod
     def get_delivery_for(cls, release_order_item):
         first_node = cls.objects.filter(item=release_order_item, arcs_in__source__isnull=True).first()
-        return getattr(first_node, 'distribution_plan')
+        return getattr(first_node, 'distribution_plan', None)
 
     def is_root(self):
         return self.arcs_in.exists() and not self.arcs_in.first().source

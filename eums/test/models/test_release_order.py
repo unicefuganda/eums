@@ -40,7 +40,7 @@ class ReleaseOrderTest(TestCase):
 
         self.assertEqual(release_order.delivery(), delivery.id)
 
-    def test_should_return_null_delivery_if_it_doesnt_exist(self):
+    def test_should_return_none_if_release_order_does_not_have_delivery(self):
         release_order = ReleaseOrderFactory(order_number=2342)
         ReleaseOrderItemFactory(release_order=release_order)
 
