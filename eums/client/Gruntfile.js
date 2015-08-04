@@ -204,7 +204,7 @@ module.exports = function (grunt) {
                 }
             },
             mapData: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json --settings=eums.test_settings',
+                command: 'python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
