@@ -131,18 +131,6 @@ describe('Distribution Plan Service', function () {
         mockBackend.flush();
     });
 
-    it('should update plan tracking details', function (done) {
-        var tracking = true;
-        mockBackend.whenGET(distPlanEndpointUrl + planId + '/').respond(stubPlanTwo);
-        mockNodeService.updateNodeTracking.and.returnValue(fullNodeOne);
-
-        distributionPlanService.updatePlanTracking(planId, tracking).then(function (returnedNodeItem) {
-            expect(returnedNodeItem).toEqual([fullNodeOne]);
-            done();
-        });
-        mockBackend.flush();
-    });
-
     var fakeGetNodeDetails = function () {
         var nodeId = arguments[0];
         var deferred = q.defer();

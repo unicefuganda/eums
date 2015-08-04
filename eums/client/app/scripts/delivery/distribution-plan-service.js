@@ -140,16 +140,6 @@ angular.module('DistributionPlan', ['eums.config', 'DistributionPlanNode', 'ngTa
                             return {error: response};
                         }
                     });
-                },
-                updatePlanTracking: function (planId, tracking) {
-                    return this.get(planId).then(function (plan) {
-                        var nodeUpdatePromises = [];
-                        plan.distributionplannodeSet.forEach(function (nodeId) {
-                            //TODO Simplified in node service by removal of line item
-                            nodeUpdatePromises.push(DistributionPlanNodeService.updateNodeTracking(nodeId, tracking));
-                        });
-                        return $q.all(nodeUpdatePromises);
-                    });
                 }
             }
         });

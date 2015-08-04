@@ -197,17 +197,6 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/') + purchaseOrderItem.id);
         };
 
-        function savePlanTracking() {
-            if ($scope.track && $scope.distributionPlan && (!$scope.parentNode || $scope.consigneeLevel)) {
-                DistributionPlanService.updatePlanTracking($scope.distributionPlan, $scope.track);
-            }
-        }
-
-        $scope.trackPurchaseOrderItem = function () {
-            $scope.invalidNodes = anyInvalidFields($scope.distributionPlanNodes);
-            savePlanTracking();
-        };
-
         function invalidFields(item) {
             return item.targetedQuantity <= 0 || isNaN(item.targetedQuantity) || !item.consignee || !item.location || !item.contactPerson || !item.deliveryDate;
         }

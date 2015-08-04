@@ -502,61 +502,6 @@ describe('DirectDeliveryController', function () {
         });
     });
 
-    describe('when track item checkbox changes, ', function () {
-        beforeEach(function () {
-            scope.track = true;
-            scope.distributionPlan = 1;
-        });
-
-        it('should set the invalidNodes value', function () {
-            scope.$apply();
-            scope.trackPurchaseOrderItem();
-            expect(scope.invalidNodes).toEqual(false);
-        });
-
-        it('should NOT call updatePlanTracking if track is set to true and plan Node is set', function () {
-            scope.parentNode = 1;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalled();
-        });
-
-        it('should call updatePlanTracking if track is set to true and on first Level', function () {
-            scope.consigneeLevel = true;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
-                1,
-                true
-            );
-        });
-
-        it('should not call updatePlanTracking if track is set to true and not on first Level', function () {
-            scope.consigneeLevel = false;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockPlanService.updatePlanTracking).not.toHaveBeenCalledWith();
-        });
-
-        it('should call updatePlanTracking if track is set to true and no plan Node', function () {
-            scope.parentNode = NaN;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockPlanService.updatePlanTracking).toHaveBeenCalledWith(
-                1,
-                true
-            );
-        });
-    });
-
     describe('when Add Consignee button is clicked', function () {
         it('should add a default distribution plan line item to the selectedPurchaseOrderItem', function () {
             scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;

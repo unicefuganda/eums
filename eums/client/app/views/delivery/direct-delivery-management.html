@@ -48,19 +48,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-lg-12 pad-top-20"
-                                 ng-show="selectedPurchaseOrderItem && distributionPlanNodes.length && !user.consignee_id && isReport">
-                                <label for="select-sales-order" class="col-lg-4 control-label description-label">
-                                    Track Item:
-                                </label>
-
-                                <div class="col-lg-4">
-                                    <input type="checkbox" id="track-checkbox"
-                                           value="{{ track }}"
-                                           ng-model="track"
-                                           ng-change="trackpurchaseOrderItem()">
-                                </div>
-                            </div>
                         </div>
 
                         <div class="form-group col-lg-4" ng-show="parentNode && !consigneeLevel">
