@@ -31,7 +31,7 @@ angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Ite
             }.bind(this);
         };
     })
-    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, $q,ItemService, PurchaseOrderItem) {
+    .factory('PurchaseOrderItemService', function (EumsConfig, ServiceFactory, $q, ItemService, PurchaseOrderItem) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM,
             propertyServiceMap: {item: ItemService},

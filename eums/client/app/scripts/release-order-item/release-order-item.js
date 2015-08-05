@@ -37,7 +37,6 @@ angular.module('ReleaseOrderItem', ['eums.config', 'eums.service-factory', 'Item
                     return $q.all(planNodePromises).then(function () {
                         return planNodes.filter(hasNoParent);
                     });
-
                 }
             }
         });
