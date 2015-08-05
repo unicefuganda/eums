@@ -84,3 +84,8 @@ class DeliveryTest(TestCase):
         delivery.save()
         self.assertFalse(DeliveryNode.objects.get(pk=root_node.id).track)
         self.assertFalse(DeliveryNode.objects.get(pk=child_node.id).track)
+
+    def test_should_return_false_when_delivery_has_no_answer_at_all(self):
+        delivery = DeliveryFactory()
+
+        self.assertFalse(delivery.is_received())

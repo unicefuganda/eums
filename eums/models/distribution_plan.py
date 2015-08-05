@@ -22,14 +22,17 @@ class DistributionPlan(Runnable):
     def get_description(self):
         return "delivery"
 
-    def is_received(self):
-        answer = MultipleChoiceAnswer.objects.filter(run__runnable__id=self.id,
-                                                     question__label='deliveryReceived').first()
-        return answer.value.text == 'Yes'
-
     def total_value(self):
         delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(delivery=self)
         return reduce(lambda total, node: total + node.item.unit_value() * node.quantity_in(), delivery_root_nodes, 0)
 
     def __unicode__(self):
         return "%s, %s" % (self.programme.name, str(self.date))
+
+    def is_received(self):
+        answer = MultipleChoiceAnswer.objects.filter(run__runnable__id=self.id,
+                                                     question__label='deliveryReceived').first()
+        if answer and answer.value.text == 'Yes':
+            return True
+        return False
+

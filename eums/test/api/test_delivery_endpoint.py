@@ -5,8 +5,12 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
+from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
@@ -24,11 +28,12 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         programme = ProgrammeFactory()
         delivery = DeliveryFactory(programme=programme, date=today)
         response = self.client.get(ENDPOINT_URL)
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], delivery.id)
 
-    def test_should_provide_delivery_total_value_from_api(self):
+    def _test_should_provide_delivery_total_value_from_api(self):
         po_item = PurchaseOrderItemFactory(value=200, quantity=100)
         delivery = DeliveryFactory()
         DeliveryNodeFactory(distribution_plan=delivery, item=po_item, quantity=10)
@@ -47,6 +52,17 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(Delivery.objects.count(), 2)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], delivery.id)
+
+    def test_should_provide_delivery_is_received_value_from_api(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['is_received'], True)
 
     def clean_up(self):
         Programme.objects.all().delete()
