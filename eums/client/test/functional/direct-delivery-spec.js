@@ -2,8 +2,6 @@
 
 var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
-var ipDirectDeliveryPage = require('./pages/ip-direct-delivery-page.js');
-var consigneesPage = require('./pages/consignees-page.js');
 
 describe('Direct Delivery', function () {
 
@@ -15,7 +13,6 @@ describe('Direct Delivery', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         directDeliveryPage.visit();
-
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-danger');
 
@@ -37,31 +34,6 @@ describe('Direct Delivery', function () {
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
-    });
-
-    it('IP should be able to see direct delivery created by admin and add consignees while reporting', function () {
-        loginPage.visit();
-        loginPage.loginAs('wakiso', 'wakiso');
-
-        ipDirectDeliveryPage.visit();
-        ipDirectDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
-        expect(ipDirectDeliveryPage.purchaseOrderCount).toEqual(1);
-
-        ipDirectDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
-        ipDirectDeliveryPage.selectItem('How Business Affects Us');
-        ipDirectDeliveryPage.addNewConsignee();
-
-        ipDirectDeliveryPage.setConsigneeName('Fresh Consignee');
-        ipDirectDeliveryPage.setConsigneeLocation('Fresh Location');
-        ipDirectDeliveryPage.setConsigneeRemarks('Fresh Remarks');
-        ipDirectDeliveryPage.saveConsignee();
-
-        consigneesPage.visit();
-        consigneesPage.searchFor('Fresh Consignee');
-        expect(consigneesPage.consigneeNames).toContain('Fresh Consignee');
-        expect(consigneesPage.consigneeLocations).toContain('Fresh Location');
-        expect(consigneesPage.consigneeIDs).toContain('');
-        expect(consigneesPage.consigneeRemarks).toContain('Fresh Remarks');
     });
 
     it('Admin should be able to create a direct delivery to a single IP', function () {

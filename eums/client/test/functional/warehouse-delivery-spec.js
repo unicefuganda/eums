@@ -2,7 +2,6 @@
 
 var loginPage = require('./pages/login-page.js');
 var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
-var ipWarehouseDeliveryPage = require('./pages/ip-warehouse-delivery-page.js');
 var header = require('./pages/header.js');
 
 describe('Warehouse Delivery', function () {
@@ -28,14 +27,6 @@ describe('Warehouse Delivery', function () {
         warehouseDeliveryPage.visit();
         warehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-success');
-
-        header.logout();
-        loginPage.visit();
-        loginPage.loginAs('wakiso', 'wakiso');
-
-        ipWarehouseDeliveryPage.visit();
-        ipWarehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
-        expect(warehouseDeliveryPage.waybillCount).toEqual(1);
     });
 
 });
