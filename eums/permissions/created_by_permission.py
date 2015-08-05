@@ -20,6 +20,7 @@ class CreatedByPermission(permissions.BasePermission):
                 if obj_user_group.name in ['UNICEF_admin', 'UNICEF_editor']:
                     raise ForbiddenException(forbidden_message)
 
+                print '*' * 50, 'user', request.user, '*' * 50
                 request_profile = UserProfile.objects.get(user=request.user)
                 obj_profile = UserProfile.objects.get(user=obj.created_by_user)
                 if request_profile.consignee != obj_profile.consignee:

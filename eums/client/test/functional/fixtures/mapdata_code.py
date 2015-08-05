@@ -22,7 +22,8 @@ from eums.models import MultipleChoiceAnswer
 from eums.models import MultipleChoiceQuestion
 from eums.models import Option
 
-consignee_1 = Consignee.objects.create(name="WAKISO DHO", imported_from_vision=True, location=None, remarks="", customer_id="L438000484", type="implementing_partner") 
+
+consignee_1 = Consignee.objects.get(customer_id="L438000484")
 consignee_2 = Consignee.objects.create(name="second consigne", imported_from_vision=False, location=None, remarks="", customer_id="", type="implementing_partner") 
 consignee_3 = Consignee.objects.create(name="end user consignee", imported_from_vision=False, location=None, remarks="", customer_id="", type="implementing_partner") 
 consignee_4 = Consignee.objects.create(name="ARUA DHO DR. ANGUZU PATRICK", imported_from_vision=False, location=None, remarks="", customer_id="L438000580", type="implementing_partner") 

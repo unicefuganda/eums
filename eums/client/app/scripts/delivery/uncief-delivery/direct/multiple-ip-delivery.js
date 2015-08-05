@@ -119,7 +119,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         var loadDeliveryDataFor = function (purchaseOrderItem) {
             var filterParams = {item: purchaseOrderItem.id, parent__isnull: 'true'};
-            return DeliveryNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
+            return DeliveryNodeService.filter(filterParams, ['consignee', 'contact_person_id']).then(function (nodes) {
                 $scope.distributionPlanNodes = nodes;
                 resetFields();
             });

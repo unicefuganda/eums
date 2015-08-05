@@ -161,7 +161,7 @@ function runserver {
 }
 
 function seed {
-  python manage.py loaddata eums/client/test/functional/fixtures/mapdata.json
+  python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py
 }
 
 main $@
