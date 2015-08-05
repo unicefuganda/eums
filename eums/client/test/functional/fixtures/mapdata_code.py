@@ -314,7 +314,7 @@ po_101 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147381, 
 po_102 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147188, is_single_ip=False, sales_order=sales_order_102, po_type="") 
 po_103 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147028, is_single_ip=False, sales_order=sales_order_103, po_type="") 
 po_104 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20146879, is_single_ip=False, sales_order=sales_order_104, po_type="") 
-po_105 = PurchaseOrder.objects.create(date="2014-12-03", order_number=81026395, is_single_ip=False, sales_order=sales_order_106, po_type="ZLC") 
+po_105 = PurchaseOrder.objects.create(date="2014-12-03", order_number=81026395, is_single_ip=None, sales_order=sales_order_106, po_type="ZLC")
 po_106 = PurchaseOrder.objects.create(date="2014-04-07", order_number=81019250, is_single_ip=False, sales_order=sales_order_105, po_type="ZLC") 
 
 # release orders
