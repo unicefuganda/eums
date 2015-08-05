@@ -3,7 +3,6 @@ import datetime
 
 import celery
 from celery.schedules import crontab
-
 from mock import MagicMock, ANY, patch
 
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -132,11 +131,18 @@ class FlowSchedulerTest(TestCase):
         self.assertEqual(run.status, Run.STATUS.cancelled)
 
         local_celery.app.control.revoke.assert_called()
-        mock_start_delivery_run.assert_called()
+
+    def test_should_not_create_new_run_for_runnables_with_completed_run(self):
+        RunFactory(runnable=self.node, status=Run.STATUS.completed)
+        self.assertEqual(Run.objects.count(), 1)
+
+        schedule_run_for(self.node)
+        self.assertEqual(Run.objects.count(), 1)
+        self.assertEqual(Run.objects.filter(runnable=self.node, status=Run.STATUS.scheduled).count(), 0)
 
     @patch('eums.models.RunQueue.enqueue')
     def test_should_queue_run_for_a_contact_if_contact_has_current_run_for_a_different_runnable(self,
-                                                                                                     mock_run_queue_enqueue):
+                                                                                                mock_run_queue_enqueue):
         RunFactory(runnable=self.node)
         node_two = NodeFactory(contact_person_id=self.node.contact_person_id)
         node_two.build_contact = MagicMock(return_value=self.contact)

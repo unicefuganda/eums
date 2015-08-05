@@ -17,12 +17,6 @@ class DistributionPlan(Runnable):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
 
-    def sender_name(self):
-        return "UNICEF"
-
-    def get_description(self):
-        return "delivery"
-
     def total_value(self):
         delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(delivery=self)
         return reduce(lambda total, node: total + node.item.unit_value() * node.quantity_in(), delivery_root_nodes, 0)

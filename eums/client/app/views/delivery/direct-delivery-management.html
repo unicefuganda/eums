@@ -14,11 +14,15 @@
         <ng-toast></ng-toast>
         <div ng-hide="inSingleIpMode || inMultipleIpMode" class="pad-left-5">
             <ul class="nav nav-pills" style="margin-top: 1em;">
-                <li role="presentation" >
-                    <button id="single-ip" class="btn btn-default blue-border-button" ng-click="showSingleIpMode()">Single IP</button>
+                <li role="presentation">
+                    <button id="single-ip" class="btn btn-default blue-border-button" ng-click="showSingleIpMode()">
+                        Single IP
+                    </button>
                 </li>
-                <li role="presentation" >
-                    <button id="multiple-ip" class="btn btn-default blue-border-button" ng-click="showMultipleIpMode()">Multiple IPs</button>
+                <li role="presentation">
+                    <button id="multiple-ip" class="btn btn-default blue-border-button" ng-click="showMultipleIpMode()">
+                        Multiple IPs
+                    </button>
                 </li>
             </ul>
         </div>
@@ -29,7 +33,8 @@
             <div class="row pad-left-5 pad-top-10">
 
                 <div ng-show="selectedPurchaseOrderItem">
-                    <alert ng-show="quantityLeft <= 0" type="warning">All quantities have been assigned for this item.</alert>
+                    <alert ng-show="quantityLeft <= 0" type="warning">All quantities have been assigned for this item.
+                    </alert>
                 </div>
                 <div class="row">
                     <div class="form-horizontal">
@@ -42,7 +47,8 @@
                                 <div class="col-lg-8">
                                     <select id="select-sales-order" ng-model="selectedPurchaseOrderItem"
                                             required="required"
-                                            class="form-control" ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
+                                            class="form-control"
+                                            ng-change="selectPurchaseOrderItem(selectedPurchaseOrderItem)"
                                             ng-options="purchaseOrderItem.item.description for purchaseOrderItem in purchaseOrderItems | orderBy: 'item.description' track by purchaseOrderItem.id ">
                                         <option value="">Select Item</option>
                                     </select>
@@ -101,7 +107,8 @@
                                 <th class="table-header-width" id="input-header">Unit</th>
                                 <th id="input-quantity-header">Delivered Qty</th>
                                 <th id="input-planned-distribution-date-header">Date Delivered</th>
-                                <th class="table-select-header-width">{{ parentNode ? 'Sub-Consignee' : 'Consignee'}}</th>
+                                <th class="table-select-header-width">{{ parentNode ? 'Sub-Consignee' : 'Consignee'}}
+                                </th>
                                 <th class="table-contact-select-header-width">Contact Person</th>
                                 <th class="table-select-header-width">District</th>
                                 <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
@@ -110,29 +117,32 @@
                                 <th class="table-sub-consignee-header-width"></th>
 
                                 <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
-                                    <td id="input-available-quantity">{{ computeQuantityLeft(distributionPlanNodes) }}</td>
+                                    <td id="input-available-quantity">{{ computeQuantityLeft(distributionPlanNodes) }}
+                                    </td>
                                     <td id="input-unit">{{ selectedPurchaseOrderItem.item.unit.name }}</td>
                                     <td>
                                         <input type="text" id="input-quantity" class="form-control"
-                                               ng-disabled="item.flowTriggered"
-                                               ng-model="item.quantityIn" only-digits>
+                                               ng-model="item.quantityIn"
+                                               ng-disabled="item.trackSubmitted()" only-digits>
+
                                     </td>
-                                    <td id="input-delivery-date" >
+                                    <td id="input-delivery-date">
                                         <p class="table-date-width input-group" eums-date-picker>
                                             <input type="text"
                                                    class="form-control"
                                                    datepicker-popup="dd/MM/yyyy"
                                                    ng-model="item.deliveryDate"
-                                                   ng-disabled="item.flowTriggered"
+                                                   ng-required="true"
+                                                   ng-disabled="item.trackSubmitted()"
                                                    is-open="datepicker[$index]"
                                                    datepicker-options="dateOptions" show-button-bar="false"
-                                                   ng-required="true"
                                                    value="{{ item.deliveryDate | date : 'dd/MM/yyyy' }}"
                                                    required="required"/>
                                           <span class="input-group-btn">
 
                                             <button type="button" class="btn btn-default"
-                                                    ng-click="open($event, $index )" ng-disabled="item.flowTriggered">
+                                                    ng-click="open($event, $index )"
+                                                    ng-disabled="item.trackSubmitted()">
                                                 <i class="glyphicon glyphicon-calendar"></i></button>
                                           </span>
                                         </p>
@@ -140,7 +150,7 @@
                                     <td id="input-consignee" class="table-select-max-width">
                                         <input type="hidden" search-consignees only-ips
                                                ng-model="item.consignee.id"
-                                               ng-disabled="item.flowTriggered"
+                                               ng-disabled="item.trackSubmitted()"
                                                value="{{ item.consignee.id }}">
                                     </td>
 
@@ -148,13 +158,14 @@
                                         <div class="form-inline">
                                             <div class="form-group table-contact-form-group col-md-10">
                                                 <input type="hidden" search-contacts required="required"
-                                                       value="{{ item.contactPerson.id }}" ng-model="item.contactPerson.id"
-                                                       ng-attr-id="{{ 'contact-select-for-node-' + $index }}"
-                                                       ng-disabled="item.flowTriggered">
+                                                       value="{{ item.contactPerson.id }}"
+                                                       ng-model="item.contactPerson.id"
+                                                       ng-attr-id="{{ 'contact-select-for-node-' + $index }}">
                                             </div>
                                             <div class="form-group table-contact-form-group col-md-2">
                                                 <button type="button" class="btn btn-default "
-                                                        ng-click="addContact(item, $index)" ng-disabled="item.flowTriggered">
+                                                        ng-click="addContact(item, $index)"
+                                                        ng-disabled="item.trackSubmitted()">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </button>
                                             </div>
@@ -164,14 +175,14 @@
                                     <td id="input-location" class="table-select-max-width">
                                         <input type="hidden" search-from-list list="{{ districts }}"
                                                ng-model="item.location"
-                                               ng-disabled="item.flowTriggered"
+                                               ng-disabled="item.trackSubmitted()"
                                                value="{{ item.location }}">
                                     </td>
                                     <td ng-show="distributionPlanReport">
                                         <div class="text-center">
                                             <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
-                                                    ng-click="addRemark($index, item)"
-                                                    ng-disabled="item.flowTriggered">
+                                                    ng-disabled="item.trackSubmitted()"
+                                                    ng-click="addRemark($index, item)">
                                             </button>
                                         </div>
                                     </td>
@@ -180,14 +191,15 @@
                                             <input type="checkbox" class="end-user-checkbox"
                                                    value="{{ item.isEndUser }}"
                                                    ng-model="item.isEndUser"
-                                                   ng-disabled="item.flowTriggered">
+                                                   ng-disabled="item.trackSubmitted()">
                                         </div>
                                     </td>
                                     <td>
                                         <div class="text-center">
                                             <input type="checkbox" class="end-user-checkbox"
                                                    value="{{ item.track }}"
-                                                   ng-model="item.track">
+                                                   ng-model="item.track"
+                                                   ng-disabled="item.trackSubmitted()">
                                         </div>
                                     </td>
                                     <td>
@@ -195,7 +207,7 @@
                                             <button class="btn
                                                     {{ item.canReceiveSubConsignees() ? 'btn-primary' : 'btn-default'}}"
                                                     title="Consignees"
-                                                    ng-disabled="!item.canReceiveSubConsignees()"
+                                                    ng-disabled="!item.canReceiveSubConsignees() || item.trackSubmitted()"
                                                     ng-click="addSubConsignee(item)">Sub-Consignees
                                             </button>
                                         </div>

@@ -565,8 +565,7 @@ describe('DirectDeliveryController', function () {
                 contactPerson: '',
                 remark: '',
                 track: false,
-                isEndUser: false,
-                flowTriggered: false
+                isEndUser: false
             };
 
             scope.addDeliveryNode();
@@ -658,8 +657,7 @@ describe('DirectDeliveryController', function () {
                     contactPerson: {id: '559281d40c42914aad3d6006'},
                     remark: '',
                     track: false,
-                    isEndUser: false,
-                    flowTriggered: false
+                    isEndUser: false
                 },
                     {
                         consignee: {id: 1 },
@@ -670,8 +668,7 @@ describe('DirectDeliveryController', function () {
                         contactPerson: {id: '559281d40c42914aad3d6006'},
                         remark: '',
                         track: false,
-                        isEndUser: false,
-                        flowTriggered: false
+                        isEndUser: false
                     }];
                 scope.saveDeliveryNodes();
                 scope.$apply();
@@ -826,7 +823,7 @@ describe('DirectDeliveryController', function () {
                 expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
             });
 
-            describe(' and a distribution plan node has already been saved, ', function () {
+            describe(' and a distribution plan node has already been created, ', function () {
                 var nodeId, deferred;
 
                 beforeEach(inject(function ($q) {
@@ -839,13 +836,26 @@ describe('DirectDeliveryController', function () {
                     mockNodeService.update.and.returnValue(deferred.promise);
                 }));
 
-                it('the node for the ui plan node should be updated and not saved', function () {
+                it('the delivery node should be updated along with its delivery', function () {
                     uiPlanNode.id = nodeId;
                     uiPlanNode.distributionPlan = 1;
                     scope.inMultipleIpMode = true;
+                    deferredPlan.resolve({});
+                    scope.selectedPurchaseOrder.programme = 11;
 
                     scope.saveDeliveryNodes();
                     scope.$apply();
+
+                    expect(mockDeliveryService.update).toHaveBeenCalledWith({
+                        id: 1,
+                        programme: 11,
+                        consignee: 1,
+                        location: 'Kampala',
+                        contact_person_id: '0489284',
+                        delivery_date: distributionDateFormattedForSave,
+                        remark: uiPlanNode.remark,
+                        track: false
+                    });
 
                     expect(mockNodeService.update).toHaveBeenCalledWith({
                         consignee: 1,

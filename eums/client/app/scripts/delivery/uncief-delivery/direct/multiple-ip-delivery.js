@@ -205,8 +205,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 contactPerson: '',
                 remark: '',
                 track: false,
-                isEndUser: false,
-                flowTriggered: false
+                isEndUser: false
             };
 
             $scope.distributionPlanNodes.push(distributionPlanNode);
@@ -265,24 +264,34 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
             PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false}, 'PATCH');
 
+            var delivery = {
+                programme: $scope.selectedPurchaseOrder.programme,
+                consignee: uiPlanNode.consignee.id,
+                location: uiPlanNode.location,
+                contact_person_id: uiPlanNode.contactPerson.id,
+                delivery_date: formatDateForSave(plannedDate),
+                remark: uiPlanNode.remark,
+                track: uiPlanNode.track
+            }
+            if ($scope.selectedPurchaseOrder.isSingleIp === null) {
+                savePurchaseOrderIPMode();
+            }
+            // Update
             if (nodeId) {
                 node.id = nodeId;
                 node.children = uiPlanNode.children ? uiPlanNode.children : [];
-
-                DeliveryNodeService.update(node).then(function () {
-                    deferred.resolve(uiPlanNode);
+                delivery.id = node.distribution_plan;
+                DeliveryService.update(delivery).then(function () {
+                    DeliveryNodeService.update(node).then(function () {
+                        deferred.resolve(uiPlanNode);
+                    });
                 });
             }
+            // Create
             else {
-                DeliveryService.create({
-                    programme: $scope.selectedPurchaseOrder.programme,
-                    consignee: uiPlanNode.consignee.id,
-                    location: uiPlanNode.location,
-                    contact_person_id: uiPlanNode.contactPerson.id,
-                    delivery_date: formatDateForSave(plannedDate),
-                    remark: uiPlanNode.remark,
-                    track: uiPlanNode.track
-                }).then(function (createdPlan) {
+
+                DeliveryService.create(delivery).then(function (createdPlan) {
+                    uiPlanNode.distributionPlan = createdPlan.id;
                     node.distribution_plan = createdPlan.id;
                     DeliveryNodeService.create(node).then(function (retNode) {
                         uiPlanNode.id = retNode.id;
