@@ -7,6 +7,7 @@
                 <span class="text-primary">{{ selectedReleaseOrder.programmeName }}</span>
             </span>
         </h4>
+
         <div ng-show="selectedReleaseOrderItem">
             <alert ng-show="parentNode.quantityLeft(deliveryNodes) <= 0" type="warning">
                 All quantities have been assigned for this item.
@@ -98,7 +99,6 @@
                             </td>
                             <td id="input-unit">{{ selectedReleaseOrderItem.item.unit.name }}</td>
                             <td><input type="text" id="input-quantity" class="form-control"
-                                       ng-disabled="node.flowTriggered"
                                        ng-model="node.quantityIn" only-digits>
                             </td>
                             <td>
@@ -107,15 +107,13 @@
                                            class="form-control"
                                            datepicker-popup="dd/MM/yyyy"
                                            ng-model="node.deliveryDate"
-                                           ng-disabled="node.flowTriggered"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
                                            ng-required="true"
                                            value="{{ node.deliveryDate = (node.deliveryDate | date: 'yyyy-MM-dd') }}"
                                            required="required"/>
                                     <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="open($event, $index)"
-                                                ng-disabled="node.flowTriggered">
+                                        <button type="button" class="btn btn-default" ng-click="open($event, $index)">
                                             <i class="glyphicon glyphicon-calendar"></i>
                                         </button>
                                     </span>
@@ -126,12 +124,11 @@
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-consignees
                                                ng-model="node.consignee.id"
-                                               ng-disabled="node.flowTriggered"
                                                value="{{ node.consignee.id }}">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button" class="btn btn-default "
-                                                ng-click="addConsignee(node, $index)" ng-disabled="node.flowTriggered">
+                                                ng-click="addConsignee(node, $index)">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
                                     </div>
@@ -143,12 +140,11 @@
                                     <div class="form-group table-contact-form-group col-md-10">
                                         <input type="hidden" search-contacts required="required"
                                                value="{{ node.contactPerson.id }}" ng-model="node.contactPerson.id"
-                                               ng-attr-id="{{ 'contact-select-for-node-' + $index }}"
-                                               ng-disabled="node.flowTriggered">
+                                               ng-attr-id="{{ 'contact-select-for-node-' + $index }}">
                                     </div>
                                     <div class="form-group table-contact-form-group col-md-2">
                                         <button type="button" class="btn btn-default "
-                                                ng-click="addContact(node, $index)" ng-disabled="node.flowTriggered">
+                                                ng-click="addContact(node, $index)">
                                             <i class="glyphicon glyphicon-plus"></i>
                                         </button>
                                     </div>
@@ -158,7 +154,6 @@
                             <td class="table-select-max-width">
                                 <input type="hidden" search-from-list list="{{ districts }}"
                                        ng-model="node.location"
-                                       ng-disabled="node.flowTriggered"
                                        value="{{ node.location }}">
                             </td>
                             <td>
@@ -166,7 +161,7 @@
                                     <input type="checkbox" class="end-user-checkbox"
                                            value="{{ node.isEndUser }}"
                                            ng-model="node.isEndUser"
-                                           ng-disabled="node.flowTriggered || node.hasSubConsignees()">
+                                           ng-disabled="node.hasSubConsignees()">
                                 </div>
                             </td>
                             <td>

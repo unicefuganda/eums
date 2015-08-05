@@ -12,18 +12,19 @@ from eums.services.delivery_run_message import DeliveryRunMessage
 
 
 def schedule_run_for(runnable):
-    current_run = runnable.current_run()
-    run_delay = _calculate_delay(runnable)
-    if current_run:
-        _cancel_run(current_run)
+    if runnable.completed_run() is None:
+        current_run = runnable.current_run()
+        run_delay = _calculate_delay(runnable)
+        if current_run:
+            _cancel_run(current_run)
 
-    if Run.has_scheduled_run(runnable.contact_person_id):
-        RunQueue.enqueue(runnable, run_delay)
-    else:
-        contact = runnable.build_contact()
-        task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
-        Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
-                           status=Run.STATUS.scheduled, phone=contact['phone'])
+        if Run.has_scheduled_run(runnable.contact_person_id):
+            RunQueue.enqueue(runnable, run_delay)
+        else:
+            contact = runnable.build_contact()
+            task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
+            Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
+                               status=Run.STATUS.scheduled, phone=contact['phone'])
 
 
 @app.task

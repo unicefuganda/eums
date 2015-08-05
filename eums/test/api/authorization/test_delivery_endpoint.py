@@ -46,14 +46,22 @@ class DeliveryEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def _test_should_allow_unicef_admin_to_track_delivery(self):
+    def test_should_allow_unicef_admin_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
         delivery = DeliveryFactory(programme=programme, consignee=consignee, location='Kampala',
                                    delivery_date='2015-12-12')
         self._login_as('UNICEF_admin')
 
-        response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {'id': str(delivery.id), 'track': 'true'})
+        response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {
+            'programme': str(programme.id),
+            'consignee': str(consignee.id),
+            'location': 'Kampala',
+            'delivery_date': '2015-12-12',
+            'contact_person_id': 'some_id',
+            'track': 'true'
+        })
+
         self.assertEqual(response.status_code, 200)
 
     # UNICEF Editor:
@@ -80,12 +88,15 @@ class DeliveryEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def _test_should_allow_unicef_editor_to_track_delivery(self):
+    def test_should_allow_unicef_editor_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
+        delivery = DeliveryFactory(programme=programme, consignee=consignee, location='Kampala',
+                                           delivery_date='2015-12-12')
+
         self._login_as('UNICEF_editor')
 
-        response = self.client.put(ENDPOINT_URL, {
+        response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {
             'programme': str(programme.id),
             'consignee': str(consignee.id),
             'location': 'Kampala',

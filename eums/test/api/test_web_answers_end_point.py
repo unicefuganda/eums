@@ -4,7 +4,7 @@ from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, Multiple
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import TextQuestionFactory, MultipleChoiceQuestionFactory
 
@@ -41,7 +41,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         Runnable.build_contact = self.build_contact
 
     def test_should_save_answers(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         date_of_receipt = '10-10-2014'
         good_comment = "All is good"
 
