@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
-    MultipleChoiceQuestion
+    MultipleChoiceQuestion, Run
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -91,7 +91,7 @@ class DeliveryTest(TestCase):
         self.assertFalse(delivery.is_received())
 
     def test_should_return_false_when_delivery_run_was_cancelled(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         question = MultipleChoiceQuestionFactory(label='deliveryReceived')
         option = OptionFactory(text='Yes', question=question)
         run = RunFactory(runnable=delivery, status=Run.STATUS.cancelled)
