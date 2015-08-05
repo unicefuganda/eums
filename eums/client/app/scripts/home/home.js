@@ -33,8 +33,8 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
                 allResponses.forEach(function (response) {
                     if (response.node) {
                         nodePromises.push(
-                            DeliveryNodeService.get(['contact_person_id']).then(function (planNode) {
-                                response.contactPerson = planNode.contactPersonId;
+                            DeliveryNodeService.get(response.node, ['contact_person_id']).then(function (planNode) {
+                                response.contactPerson = planNode.contactPerson;
                                 var purchaseOrderItemId = planNode.item;
                                 poItemPromises.push(
                                     PurchaseOrderItemService.get(purchaseOrderItemId).then(function (purchaseOrderItem) {
