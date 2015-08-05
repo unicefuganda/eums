@@ -89,3 +89,12 @@ class DeliveryTest(TestCase):
         delivery = DeliveryFactory()
 
         self.assertFalse(delivery.is_received())
+
+    def test_should_return_false_when_delivery_run_was_cancelled(self):
+        delivery = DistributionPlanFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery, status=Run.STATUS.cancelled)
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+        self.assertFalse(delivery.is_received())

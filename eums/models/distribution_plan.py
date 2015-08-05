@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from eums.models import MultipleChoiceAnswer
 from eums.models import Runnable, DistributionPlanNode
@@ -30,8 +31,10 @@ class DistributionPlan(Runnable):
         return "%s, %s" % (self.programme.name, str(self.date))
 
     def is_received(self):
-        answer = MultipleChoiceAnswer.objects.filter(run__runnable__id=self.id,
-                                                     question__label='deliveryReceived').first()
+        answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
+                                                     Q(question__label='deliveryReceived'),
+                                                     ~ Q(run__status='cancelled')).first()
+
         if answer and answer.value.text == 'Yes':
             return True
         return False
