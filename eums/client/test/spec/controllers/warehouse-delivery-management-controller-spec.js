@@ -1,7 +1,7 @@
 describe('Warehouse Delivery Management Controller', function () {
 
     var scope, location, q, routeParams, mockDeliveryService,
-        mockDistributionPlanNodeService, mockReleaseOrderService, mockReleaseOrderItemService,
+        mockDeliveryNodeService, mockReleaseOrderService, mockReleaseOrderItemService,
         mockIPService, toast, mockContactService, contact, locations, releaseOrderItem;
 
     var programId = 23123;
@@ -66,7 +66,7 @@ describe('Warehouse Delivery Management Controller', function () {
             mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService',
                 ['create', 'update']);
-            mockDistributionPlanNodeService = jasmine.createSpyObj(mockDistributionPlanNodeService,
+            mockDeliveryNodeService = jasmine.createSpyObj(mockDeliveryNodeService,
                 ['filter', 'create', 'update']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockIPService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
@@ -79,9 +79,9 @@ describe('Warehouse Delivery Management Controller', function () {
                 q = $q;
 
                 mockReleaseOrderService.get.and.returnValue(q.when(releaseOrder));
-                mockDistributionPlanNodeService.filter.and.returnValue(q.when([{location: 'Kampala', id: 1}]));
-                mockDistributionPlanNodeService.create.and.returnValue(q.when());
-                mockDistributionPlanNodeService.update.and.returnValue(q.when({}));
+                mockDeliveryNodeService.filter.and.returnValue(q.when([{location: 'Kampala', id: 1}]));
+                mockDeliveryNodeService.create.and.returnValue(q.when());
+                mockDeliveryNodeService.update.and.returnValue(q.when({}));
                 mockContactService.get.and.returnValue(q.when(contact));
                 mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
                 mockDeliveryService.create.and.returnValue(q.when({id: 232}));
@@ -98,7 +98,7 @@ describe('Warehouse Delivery Management Controller', function () {
                     $q: q,
                     $routeParams: routeParams,
                     DeliveryService: mockDeliveryService,
-                    DistributionPlanNodeService: mockDistributionPlanNodeService,
+                    DeliveryNodeService: mockDeliveryNodeService,
                     ReleaseOrderService: mockReleaseOrderService,
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     IPService: mockIPService,
@@ -134,7 +134,7 @@ describe('Warehouse Delivery Management Controller', function () {
                 delivery_date: '2014-08-19',
                 track: false
             });
-            expect(mockDistributionPlanNodeService.create.calls.count()).toEqual(1);
+            expect(mockDeliveryNodeService.create.calls.count()).toEqual(1);
             expect(toast.create).toHaveBeenCalledWith({
                 content: 'Warehouse Delivery Saved!',
                 class: 'success',
@@ -154,9 +154,9 @@ describe('Warehouse Delivery Management Controller', function () {
             scope.$apply();
 
             expect(scope.errors).toBe(false);
-            expect(mockDistributionPlanNodeService.create.calls.count()).toEqual(0);
+            expect(mockDeliveryNodeService.create.calls.count()).toEqual(0);
             expect(mockDeliveryService.update).toHaveBeenCalledWith(delivery);
-            expect(mockDistributionPlanNodeService.update.calls.count()).toEqual(1);
+            expect(mockDeliveryNodeService.update.calls.count()).toEqual(1);
             expect(toast.create).toHaveBeenCalledWith({
                 content: 'Warehouse Delivery Saved!',
                 class: 'success',

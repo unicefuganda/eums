@@ -99,7 +99,7 @@ describe('Distribution Plan Node Service', function () {
     };
 
     beforeEach(function () {
-        module('DistributionPlanNode');
+        module('DeliveryNode');
 
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
@@ -111,7 +111,7 @@ describe('Distribution Plan Node Service', function () {
             $provide.value('PurchaseOrderItemService', mockPurchaseOrderItemService);
         });
 
-        inject(function (DistributionPlanNodeService, $httpBackend, EumsConfig, $q) {
+        inject(function (DeliveryNodeService, $httpBackend, EumsConfig, $q) {
             q = $q;
 
             var deferredConsigneeRequest = q.defer();
@@ -125,7 +125,7 @@ describe('Distribution Plan Node Service', function () {
             mockBackend = $httpBackend;
             planNodeEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE;
             nodeResponsesEndpointUrl = EumsConfig.BACKEND_URLS.NODE_RESPONSES;
-            planNodeService = DistributionPlanNodeService;
+            planNodeService = DeliveryNodeService;
         });
     });
 

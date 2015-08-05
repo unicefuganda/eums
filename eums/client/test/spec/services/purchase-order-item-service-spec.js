@@ -1,6 +1,6 @@
 describe('Purchase Order Item Service', function () {
 
-    var purchaseOrderItemService, endpointUrl, distributionPlanNodeService, itemService, mockServiceFactory,
+    var purchaseOrderItemService, endpointUrl, itemService, mockServiceFactory,
         mockPurchaseOrderItemModel;
 
     beforeEach(function () {
@@ -13,9 +13,8 @@ describe('Purchase Order Item Service', function () {
             $provide.value('PurchaseOrderItem', mockPurchaseOrderItemModel);
         });
 
-        inject(function (PurchaseOrderItemService, EumsConfig, DistributionPlanNodeService, ItemService) {
+        inject(function (PurchaseOrderItemService, EumsConfig, ItemService) {
             purchaseOrderItemService = PurchaseOrderItemService;
-            distributionPlanNodeService = DistributionPlanNodeService;
             itemService = ItemService;
             endpointUrl = EumsConfig.BACKEND_URLS.PURCHASE_ORDER_ITEM;
         });

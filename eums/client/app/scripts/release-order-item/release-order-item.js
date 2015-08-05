@@ -1,24 +1,24 @@
 'use strict';
 
-angular.module('ReleaseOrderItem', ['eums.config', 'eums.service-factory', 'Item', 'DistributionPlanNode', 'PurchaseOrderItem'])
+angular.module('ReleaseOrderItem', ['eums.config', 'eums.service-factory', 'Item', 'DeliveryNode', 'PurchaseOrderItem'])
     .factory('ReleaseOrderItemService', function ($http, $q, EumsConfig, ServiceFactory, ItemService,
-                                                  DistributionPlanNodeService, PurchaseOrderItemService) {
+                                                  DeliveryNodeService, PurchaseOrderItemService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.RELEASE_ORDER_ITEM,
             propertyServiceMap: {
                 item: ItemService,
                 purchase_order_item: PurchaseOrderItemService,
-                distributionplannode_set: DistributionPlanNodeService
+                distributionplannode_set: DeliveryNodeService
             },
             methods: {
-                 getTopLevelDistributionPlanNodes: function (releaseOrderItem) {
-                    var allDistributionPlanNodes = releaseOrderItem.distributionplannodeSet;
+                 getTopLevelDeliveryNodes: function (releaseOrderItem) {
+                    var allDeliveryNodes = releaseOrderItem.distributionplannodeSet;
 
                     var planNodePromises = [],
                         planNodes = [];
 
-                    allDistributionPlanNodes.forEach(function (node) {
-                        var planNodePromise = DistributionPlanNodeService.getPlanNodeDetails(node.id).then(function (planNodeResponse) {
+                    allDeliveryNodes.forEach(function (node) {
+                        var planNodePromise = DeliveryNodeService.getPlanNodeDetails(node.id).then(function (planNodeResponse) {
                             return planNodeResponse;
                         });
                         planNodePromises.push(planNodePromise);

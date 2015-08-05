@@ -2,11 +2,11 @@
 
 angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Consignee', 'Option', 'PurchaseOrder',
     'PurchaseOrderItem', 'ReleaseOrder', 'ReleaseOrderItem', 'ngToast', 'Contact',
-    'Delivery', 'DistributionPlanNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
+    'Delivery', 'DeliveryNode', 'Answer', 'Question', 'Run', 'SalesOrder'])
     .controller('ManualReportingDetailsController', function ($scope, $q, $location, $routeParams, IPService, ConsigneeService,
                                                               OptionService, PurchaseOrderService, PurchaseOrderItemService, ReleaseOrderService,
                                                               ReleaseOrderItemService, ngToast, ContactService, DeliveryService,
-                                                              DistributionPlanNodeService, AnswerService, QuestionService, RunService,
+                                                              DeliveryNodeService, AnswerService, QuestionService, RunService,
                                                               SalesOrderService, SalesOrderItemService) {
         $scope.datepicker = {};
         $scope.contact = {};
@@ -198,7 +198,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             var responsePromises = [];
             distributionPlanNodes.forEach(function (node) {
                 responsePromises.push(
-                    DistributionPlanNodeService.getNodeResponse(node.id).then(function (response) {
+                    DeliveryNodeService.getNodeResponse(node.id).then(function (response) {
                         if (!_.isEmpty(response)) {
                             responses.push(response);
                         }
@@ -333,7 +333,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                 track: false
             };
 
-            return DistributionPlanNodeService.create(node);
+            return DeliveryNodeService.create(node);
         }
 
         function saveNewResponse(response) {

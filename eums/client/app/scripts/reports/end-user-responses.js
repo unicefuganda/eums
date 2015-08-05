@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('EndUserResponses', ['eums.config', 'Delivery', 'Programme', 'Consignee', 'PurchaseOrder', 'Item', 'DistributionPlanNode', 'SalesOrderItem'])
-    .controller('EndUserResponsesController', function ($scope, $q, $location, DeliveryService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DistributionPlanNodeService, SalesOrderItemService) {
+angular.module('EndUserResponses', ['eums.config', 'Delivery', 'Programme', 'Consignee', 'PurchaseOrder', 'Item', 'DeliveryNode'])
+    .controller('EndUserResponsesController', function ($scope, $q, $location, DeliveryService, ProgrammeService, ConsigneeService, PurchaseOrderService, ItemService, DeliveryNodeService) {
         $scope.allResponses = [];
         $scope.filteredResponses = [];
         $scope.programmeResponses = [];
@@ -51,12 +51,10 @@ angular.module('EndUserResponses', ['eums.config', 'Delivery', 'Programme', 'Con
                 allResponses.data.forEach(function (response) {
                     if (response.node) {
                         nodePromises.push(
-                            DistributionPlanNodeService.getPlanNodeDetails(response.node).then(function (planNode) {
+                            DeliveryNodeService.get(response.node).then(function (planNode) {
                                 response.contact_person = planNode.contact_person;
-
-                                var sales_order_item_id = planNode.item;
                                 poItemPromises.push(
-                                    SalesOrderItemService.getPOItemforSOItem(sales_order_item_id).then(function (poItem) {
+                                    PurchaseOrderService.get(planNode.item).then(function (poItem) {
                                         response.purchase_order = poItem.purchase_order;
                                     })
                                 );

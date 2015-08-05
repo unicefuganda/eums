@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DistributionPlanNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
-    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DeliveryService, DistributionPlanNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
+angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DeliveryNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
+    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DeliveryService, DeliveryNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
 
         function showLoadingModal(show) {
             if (show && !angular.element('#loading').hasClass('in')) {
@@ -119,7 +119,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         var loadDeliveryDataFor = function (purchaseOrderItem) {
             var filterParams = {item: purchaseOrderItem.id, parent__isnull: 'true'};
-            return DistributionPlanNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
+            return DeliveryNodeService.filter(filterParams, ['consignee', 'contact_person_id', 'children']).then(function (nodes) {
                 $scope.distributionPlanNodes = nodes;
                 resetFields();
             });
@@ -136,7 +136,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
         if ($routeParams.deliveryNodeId) {
             $scope.consigneeButtonText = 'Add Sub-Consignee';
 
-            DistributionPlanNodeService.get($routeParams.deliveryNodeId, ['consignee', 'contact_person_id']).then(function (planNode) {
+            DeliveryNodeService.get($routeParams.deliveryNodeId, ['consignee', 'contact_person_id']).then(function (planNode) {
                 $scope.parentNode = planNode;
                 $scope.distributionPlanNodes = planNode.children;
 
@@ -196,7 +196,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
             return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
         };
 
-        $scope.addDistributionPlanNode = function () {
+        $scope.addDeliveryNode = function () {
             var distributionPlanNode = {
                 item: $scope.selectedPurchaseOrderItem.id,
                 deliveryDate: '',
@@ -269,7 +269,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 node.id = nodeId;
                 node.children = uiPlanNode.children ? uiPlanNode.children : [];
 
-                DistributionPlanNodeService.update(node).then(function () {
+                DeliveryNodeService.update(node).then(function () {
                     deferred.resolve(uiPlanNode);
                 });
             }
@@ -284,7 +284,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     track: uiPlanNode.track
                 }).then(function (createdPlan) {
                     node.distribution_plan = createdPlan.id;
-                    DistributionPlanNodeService.create(node).then(function (retNode) {
+                    DeliveryNodeService.create(node).then(function (retNode) {
                         uiPlanNode.id = retNode.id;
                         uiPlanNode.canReceiveSubConsignees = function () {
                             return this.id && !this.isEndUser;
@@ -309,10 +309,10 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.warningAccepted = function () {
             $('#confirmation-modal').modal('hide');
-            $scope.saveDistributionPlanNodes();
+            $scope.saveDeliveryNodes();
         };
 
-        $scope.saveDistributionPlanNodes = function () {
+        $scope.saveDeliveryNodes = function () {
             var saveNodePromises = [];
             $scope.distributionPlanNodes.forEach(function (node) {
                 saveNodePromises.push(saveMultipleIPNode(node));

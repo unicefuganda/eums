@@ -1,5 +1,5 @@
 angular.module('eums.mapFilter', ['eums.map', 'Delivery'])
-    .factory('MapFilterService', function (DeliveryService, DistributionPlanNodeService, $q) {
+    .factory('MapFilterService', function (DeliveryService, DeliveryNodeService, $q) {
         var allMarkers = [];
         var noneEmptyNodes = function (filteredNodes) {
             return filteredNodes.filter(function (nodes) {
@@ -36,7 +36,7 @@ angular.module('eums.mapFilter', ['eums.map', 'Delivery'])
                 });
             },
             filterMarkersByIp: function (ip, markerMaps) {
-                return DistributionPlanNodeService.filter({consignee: ip.id}).then(function(nodes) {
+                return DeliveryNodeService.filter({consignee: ip.id}).then(function(nodes) {
                     var markers = nodes.map(function (node) {
                         return markerMaps.map(function (markerMap) {
                             if (markerMap.consigneeResponse[0].node === node.id) {

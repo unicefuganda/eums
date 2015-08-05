@@ -3,10 +3,10 @@ describe('ManualReportingDetailsController', function () {
 
     var mockIPService, mockConsigneeService, mockOptionService, mockPurchaseOrderService, mockPurchaseOrderItemService,
         mockReleaseOrderService, mockReleaseOrderItemService, mockSalesOrderService,
-        mockDeliveryService, mockDistributionPlanNodeService, mockSalesOrderItemService;
+        mockDeliveryService, mockDeliveryNodeService, mockSalesOrderItemService;
     var deferredDistrictPromise, deferredConsigneePromise, deferredOptionPromise, deferredPurchaseOrderPromise,
         deferredPurchaseOrderItemPromise, deferredReleaseOrderPromise, deferredReleaseOrderItemPromise,
-        deferredLineItemPromise, deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredNodeResponsePromise,
+        deferredLineItemPromise, deferredDistributionPlanPromise, deferredDeliveryNodePromise, deferredNodeResponsePromise,
         deferredSalesOrderItemPromise, deferredSalesOrderPromise;
     var scope, q, mockToastProvider, location;
     var stubSalesOrder, stubPurchaseOrder, stubReleaseOrder, stubSalesOrderItem, stubPurchaseOrderItem, stubReleaseOrderItem;
@@ -111,7 +111,7 @@ describe('ManualReportingDetailsController', function () {
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
         mockReleaseOrderItemService = jasmine.createSpyObj('mockReleaseOrderService', ['get']);
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['create']);
-        mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['getNodeResponse']);
+        mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['getNodeResponse']);
         mockSalesOrderItemService = jasmine.createSpyObj('mockSalesOrderItemService', ['get']);
         mockSalesOrderService = jasmine.createSpyObj('mockSalesOrderService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
@@ -127,7 +127,7 @@ describe('ManualReportingDetailsController', function () {
             deferredReleaseOrderItemPromise = $q.defer();
             deferredLineItemPromise = $q.defer();
             deferredDistributionPlanPromise = $q.defer();
-            deferredDistributionPlanNodePromise = $q.defer();
+            deferredDeliveryNodePromise = $q.defer();
             deferredNodeResponsePromise = $q.defer();
             deferredSalesOrderItemPromise = $q.defer();
             deferredSalesOrderPromise = $q.defer();
@@ -141,7 +141,7 @@ describe('ManualReportingDetailsController', function () {
             mockReleaseOrderService.get.and.returnValue(deferredReleaseOrderPromise.promise);
             mockReleaseOrderItemService.get.and.returnValue(deferredReleaseOrderItemPromise.promise);
             mockDeliveryService.create.and.returnValue(deferredDistributionPlanPromise.promise);
-            mockDistributionPlanNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
+            mockDeliveryNodeService.getNodeResponse.and.returnValue(deferredNodeResponsePromise.promise);
             mockSalesOrderService.get.and.returnValue(deferredSalesOrderPromise.promise);
             mockSalesOrderItemService.get.and.returnValue(deferredSalesOrderItemPromise.promise);
             location = $location;
@@ -176,7 +176,7 @@ describe('ManualReportingDetailsController', function () {
                     ReleaseOrderItemService: mockReleaseOrderItemService,
                     ngToast: mockToastProvider,
                     DeliveryService: mockDeliveryService,
-                    DistributionPlanNodeService: mockDistributionPlanNodeService,
+                    DeliveryNodeService: mockDeliveryNodeService,
                     SalesOrderItemService: mockSalesOrderItemService,
                     SalesOrderService: mockSalesOrderService
                 });

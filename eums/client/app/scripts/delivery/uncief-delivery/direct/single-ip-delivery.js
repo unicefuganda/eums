@@ -1,7 +1,7 @@
-angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
+angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
     .controller('SingleIpDirectDeliveryController', function ($scope, PurchaseOrderService, $routeParams, IPService,
                                                               ngToast, DeliveryService, DeliveryNode, $q,
-                                                              DistributionPlanNodeService) {
+                                                              DeliveryNodeService) {
         $scope.consignee = {};
         $scope.contact = {};
         $scope.district = {};
@@ -100,7 +100,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         function attachNodesToItems(items) {
             if ($scope.delivery && $scope.delivery.id) {
                 var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
-                return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+                return DeliveryNodeService.filter(filterParams).then(function (nodes) {
                     return items.map(function (item) {
                         var matchingNode = findNodeForItem(item, nodes);
                         return matchingNode ? Object.merge(item, {node: matchingNode}) : item;
@@ -201,7 +201,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
         }
 
         function createNodeFrom(purchaseOrderItem, delivery) {
-            return DistributionPlanNodeService.create(new DeliveryNode(getNodeFields(purchaseOrderItem, delivery)));
+            return DeliveryNodeService.create(new DeliveryNode(getNodeFields(purchaseOrderItem, delivery)));
         }
 
         function createDeliveryNodes(createdDelivery) {
@@ -214,7 +214,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
 
         function updateOrCreateDeliveryNodes() {
             var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
-            return DistributionPlanNodeService.filter(filterParams).then(function (nodes) {
+            return DeliveryNodeService.filter(filterParams).then(function (nodes) {
                 var mappedItems = $scope.purchaseOrderItems.map(function (item) {
                     var matchingNode = findNodeForItem(item, nodes);
                     return matchingNode ? Object.merge(item, {nodeId: matchingNode.id}) : item;
@@ -223,7 +223,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DistributionPlanNode'])
                 mappedItems.forEach(function (item) {
                     if (item.nodeId) {
                         var deliveryNode = new DeliveryNode(getNodeFields(item, $scope.delivery));
-                        promises.push(DistributionPlanNodeService.update(Object.merge(deliveryNode, {
+                        promises.push(DeliveryNodeService.update(Object.merge(deliveryNode, {
                             id: item.nodeId,
                             item: item.id
                         })));

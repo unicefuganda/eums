@@ -102,7 +102,7 @@ angular.module('Responses', ['eums.config', 'Programme', 'SalesOrder', 'SalesOrd
 
             if ($scope.selectedSalesOrderItem) {
                 SalesOrderItemService.get($scope.selectedSalesOrderItem.information.id).then(function (salesOrderItem) {
-                    SalesOrderItemService.getTopLevelDistributionPlanNodes(salesOrderItem).then(function (topLevelNodes) {
+                    SalesOrderItemService.getTopLevelDeliveryNodes(salesOrderItem).then(function (topLevelNodes) {
                         $scope.salesOrderItemConsignees = topLevelNodes;
 
                         if(topLevelNodes.length > 0){

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Home', ['GlobalStats', 'Delivery', 'DistributionPlanNode', 'PurchaseOrderItem', 'PurchaseOrder'])
+angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrderItem', 'PurchaseOrder'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService) {
         $scope.filter = {programme: '', ip: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
@@ -24,7 +24,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DistributionPlanNode', 'Purc
 
     })
     .controller('ResponseController', function ($scope, $q, $routeParams, DeliveryService, PurchaseOrderService,
-                                                DistributionPlanNodeService, PurchaseOrderItemService) {
+                                                DeliveryNodeService, PurchaseOrderItemService) {
         function getAllResponsesByDate() {
             return DeliveryService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
                 var nodePromises = [];
@@ -33,7 +33,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DistributionPlanNode', 'Purc
                 allResponses.forEach(function (response) {
                     if (response.node) {
                         nodePromises.push(
-                            DistributionPlanNodeService.get(['contact_person_id']).then(function (planNode) {
+                            DeliveryNodeService.get(['contact_person_id']).then(function (planNode) {
                                 response.contactPerson = planNode.contactPersonId;
                                 var purchaseOrderItemId = planNode.item;
                                 poItemPromises.push(

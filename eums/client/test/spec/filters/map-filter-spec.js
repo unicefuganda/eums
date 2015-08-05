@@ -108,19 +108,19 @@ describe('Map Filter Service', function () {
     });
 
     describe('filter by ip', function () {
-        var mockDistributionPlanNodeService, deferredNodes;
+        var mockDeliveryNodeService, deferredNodes;
         beforeEach(function () {
-            mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['filter']);
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter']);
 
             module(function ($provide) {
-                $provide.value('DistributionPlanNodeService', mockDistributionPlanNodeService);
+                $provide.value('DeliveryNodeService', mockDeliveryNodeService);
             });
 
             inject(function ($q, MapFilterService, $rootScope) {
                 deferredNodes = $q.defer();
                 scope = $rootScope.$new();
                 mapFilterService = MapFilterService;
-                mockDistributionPlanNodeService.filter.and.returnValue(deferredNodes.promise);
+                mockDeliveryNodeService.filter.and.returnValue(deferredNodes.promise);
             });
         });
 

@@ -1,13 +1,13 @@
 'use strict';
 
 
-angular.module('Delivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
-    .factory('DeliveryService', function ($http, $q, $timeout, EumsConfig, DistributionPlanNodeService, ServiceFactory, ContactService) {
+angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives'])
+    .factory('DeliveryService', function ($http, $q, $timeout, EumsConfig, DeliveryNodeService, ServiceFactory, ContactService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN,
             propertyServiceMap: {
                 contact_person_id: ContactService,
-                distributionplannode_set: DistributionPlanNodeService
+                distributionplannode_set: DeliveryNodeService
             },
             methods: {
                 aggregateStats: function (data, location) {
@@ -21,7 +21,7 @@ angular.module('Delivery', ['eums.config', 'DistributionPlanNode', 'ngTable', 's
                 //TODO Remove. Clients should get nodes when they get the plan
                 getNodes: function (plan) {
                     var distributionPlanNodesPromises = plan.distributionplannode_set.map(function (nodeId) {
-                        return DistributionPlanNodeService.get(nodeId);
+                        return DeliveryNodeService.get(nodeId);
                     });
                     return $q.all(distributionPlanNodesPromises);
                 },

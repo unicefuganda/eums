@@ -27,9 +27,9 @@ describe('Module: Home', function () {
     });
 
     describe('Controller:Response', function () {
-        var params, mockDeliveryService, mockDistributionPlanNodeService, mockPurchaseOrderItemService,
+        var params, mockDeliveryService, mockDeliveryNodeService, mockPurchaseOrderItemService,
             mockPurchaseOrderService;
-        var deferredDistributionPlanPromise, deferredDistributionPlanNodePromise, deferredPurchaseOrderItemPromise,
+        var deferredDistributionPlanPromise, deferredDeliveryNodePromise, deferredPurchaseOrderItemPromise,
             deferredPurchaseOrder;
 
         var stubResponse = [{
@@ -88,24 +88,24 @@ describe('Module: Home', function () {
         beforeEach(inject(function ($controller, $rootScope, $q) {
             q = $q;
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['orderAllResponsesByDate']);
-            mockDistributionPlanNodeService = jasmine.createSpyObj('mockDistributionPlanNodeService', ['get']);
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['get']);
             mockPurchaseOrderItemService = jasmine.createSpyObj('mockPurchaseOrderItemService', ['get']);
             mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['get']);
             params = {district: 'Gulu'};
             deferredDistributionPlanPromise = $q.defer();
-            deferredDistributionPlanNodePromise = $q.defer();
+            deferredDeliveryNodePromise = $q.defer();
             deferredPurchaseOrderItemPromise = $q.defer();
             deferredPurchaseOrder = $q.defer();
             scope = $rootScope.$new();
             mockDeliveryService.orderAllResponsesByDate.and.returnValue(deferredDistributionPlanPromise.promise);
-            mockDistributionPlanNodeService.get.and.returnValue(deferredDistributionPlanNodePromise.promise);
+            mockDeliveryNodeService.get.and.returnValue(deferredDeliveryNodePromise.promise);
             mockPurchaseOrderItemService.get.and.returnValue(deferredPurchaseOrderItemPromise.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
             $controller('ResponseController', {
                 $scope: scope,
                 $routeParams: params,
                 DeliveryService: mockDeliveryService,
-                DistributionPlanNodeService: mockDistributionPlanNodeService,
+                DeliveryNodeService: mockDeliveryNodeService,
                 PurchaseOrderItemService: mockPurchaseOrderItemService,
                 PurchaseOrderService: mockPurchaseOrderService
             });
@@ -113,7 +113,7 @@ describe('Module: Home', function () {
 
         it('should have params object with district', function () {
             deferredDistributionPlanPromise.resolve(stubResponse);
-            deferredDistributionPlanNodePromise.resolve(stubNodeDetails);
+            deferredDeliveryNodePromise.resolve(stubNodeDetails);
             deferredPurchaseOrderItemPromise.resolve(stubPurchaseOrderItem);
             deferredPurchaseOrder.resolve(stubPurchaseOrder);
 

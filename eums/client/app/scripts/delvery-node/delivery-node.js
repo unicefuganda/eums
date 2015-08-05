@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', 'eums.service-factory'])
+angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.service-factory'])
     .factory('DeliveryNode', function () {
         return function (json) {
             !json && (json = {});
@@ -60,7 +60,7 @@ angular.module('DistributionPlanNode', ['eums.config', 'Contact', 'Consignee', '
             this.balance = json.balance;
         };
     })
-    .factory('DistributionPlanNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
+    .factory('DeliveryNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
             propertyServiceMap: {

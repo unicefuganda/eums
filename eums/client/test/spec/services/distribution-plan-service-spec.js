@@ -85,7 +85,7 @@ describe('Distribution Plan Service', function () {
         mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
 
         module(function ($provide) {
-            $provide.value('DistributionPlanNodeService', mockNodeService);
+            $provide.value('DeliveryNodeService', mockNodeService);
             $provide.value('ContactService', mockContactService);
         });
 
@@ -137,7 +137,7 @@ describe('Distribution Plan Service', function () {
 
 describe('UNICEF IP', function () {
     var planId = 1, planNodeOne = 3, planNodeTwo = 4, planNodeThree = 2;
-    var stubDistributionPlanNodes = [
+    var stubDeliveryNodes = [
         {
             'id': planNodeOne,
             'parent': 2,
@@ -298,10 +298,10 @@ describe('UNICEF IP', function () {
         distributionPlanNodeService = jasmine.createSpyObj('distributionPlanNodeService', ['getPlanNodeDetails', 'get']);
 
         module(function ($provide) {
-            $provide.value('DistributionPlanNodeService', distributionPlanNodeService);
+            $provide.value('DeliveryNodeService', distributionPlanNodeService);
         });
 
-        inject(function (DeliveryService, DistributionPlanNodeService, $q, $httpBackend, EumsConfig, $rootScope) {
+        inject(function (DeliveryService, DeliveryNodeService, $q, $httpBackend, EumsConfig, $rootScope) {
             scope = $rootScope.$new();
             eumsConfig = EumsConfig;
             httpBackend = $httpBackend;
@@ -316,11 +316,11 @@ describe('UNICEF IP', function () {
 
     it('should get the nodes for a plan', function (done) {
         var stubPlan = {id: 1, distributionplannode_set: [2]};
-        var expectedPlanNode = stubDistributionPlanNodes[0];
+        var expectedPlanNode = stubDeliveryNodes[0];
         deferredNodePromise.resolve(expectedPlanNode);
         httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(expectedPlanNode);
-        distributionPlanService.getNodes(stubPlan).then(function (expectedDistributionPlanNodes) {
-            expect(expectedDistributionPlanNodes).toEqual([expectedPlanNode]);
+        distributionPlanService.getNodes(stubPlan).then(function (expectedDeliveryNodes) {
+            expect(expectedDeliveryNodes).toEqual([expectedPlanNode]);
             done();
         });
         scope.$apply();
@@ -330,9 +330,9 @@ describe('UNICEF IP', function () {
         beforeEach(function () {
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.RESPONSES).respond(stubConsigneeResponses);
             httpBackend.whenGET(eumsConfig.BACKEND_URLS.END_USER_RESPONSES).respond(stubEndUserResponses);
-            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(stubDistributionPlanNodes[0]);
-            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeTwo + '/').respond(stubDistributionPlanNodes[1]);
-            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER').respond([stubDistributionPlanNodes[2]]);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(stubDeliveryNodes[0]);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeTwo + '/').respond(stubDeliveryNodes[1]);
+            httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=IMPLEMENTING_PARTNER').respond([stubDeliveryNodes[2]]);
         });
 
         it('should get all consignee responses', function () {
@@ -372,32 +372,32 @@ describe('UNICEF IP', function () {
 
         it('should map all consignee responses to node location', function (done) {
             distributionPlanService.mapConsigneesResponsesToNodeLocation().then(function (consigneesWithLocation) {
-                expect(consigneesWithLocation[0].location).toBe(stubDistributionPlanNodes[0].location);
+                expect(consigneesWithLocation[0].location).toBe(stubDeliveryNodes[0].location);
                 done();
             });
             httpBackend.flush();
         });
 
         it('should group responses by location', function (done) {
-            stubConsigneeResponses[0].location = stubDistributionPlanNodes[0].location;
-            stubConsigneeResponses[1].location = stubDistributionPlanNodes[0].location;
-            stubConsigneeResponses[2].location = stubDistributionPlanNodes[1].location;
+            stubConsigneeResponses[0].location = stubDeliveryNodes[0].location;
+            stubConsigneeResponses[1].location = stubDeliveryNodes[0].location;
+            stubConsigneeResponses[2].location = stubDeliveryNodes[1].location;
             distributionPlanService.groupAllResponsesByLocation().then(function (responsesByLocation) {
 //                TODO: Replace lower expectation with this when getAllUserResponses is replaced with getAllResponses
 //                expect(responsesByLocation).toEqual([
 //                    {
-//                        location: stubDistributionPlanNodes[0].location.toLowerCase(),
+//                        location: stubDeliveryNodes[0].location.toLowerCase(),
 //                        consigneeResponses: [stubConsigneeResponses[0], stubConsigneeResponses[1]]
 //                    },
 //                    {
-//                        location: stubDistributionPlanNodes[1].location.toLowerCase(),
+//                        location: stubDeliveryNodes[1].location.toLowerCase(),
 //                        consigneeResponses: [stubConsigneeResponses[2]]
 //                    }
 //                ]);
 
                 expect(responsesByLocation).toEqual([
                     {
-                        location: stubDistributionPlanNodes[0].location.toLowerCase(),
+                        location: stubDeliveryNodes[0].location.toLowerCase(),
                         consigneeResponses: [stubConsigneeResponses[0], stubConsigneeResponses[1]]
                     }
                 ]);

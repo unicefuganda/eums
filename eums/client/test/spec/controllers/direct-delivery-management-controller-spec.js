@@ -80,7 +80,7 @@ describe('DirectDeliveryController', function () {
         distributionplannodeSet: [1, 2]
     };
 
-    var stubPurchaseOrderItemNoDistributionPlanNodes = {
+    var stubPurchaseOrderItemNoDeliveryNodes = {
         id: 1,
         purchase_order: '1',
         information: {
@@ -164,7 +164,7 @@ describe('DirectDeliveryController', function () {
                     $routeParams: routeParams,
                     PurchaseOrderItemService: mockPurchaseOrderItemService,
                     DeliveryService: mockDeliveryService,
-                    DistributionPlanNodeService: mockNodeService,
+                    DeliveryNodeService: mockNodeService,
                     ConsigneeService: mockConsigneeService,
                     PurchaseOrderService: mockPurchaseOrderService,
                     IPService: mockIPService,
@@ -484,11 +484,11 @@ describe('DirectDeliveryController', function () {
         it('should not get distribution plan nodes if there are no ui nodes', function () {
 
             scope.selectedPurchaseOrderItem = {
-                display: stubPurchaseOrderItemNoDistributionPlanNodes.information.item.description,
-                material_code: stubPurchaseOrderItemNoDistributionPlanNodes.information.item.material_code,
-                quantity: stubPurchaseOrderItemNoDistributionPlanNodes.quantity,
-                unit: stubPurchaseOrderItemNoDistributionPlanNodes.information.item.unit.name,
-                information: stubPurchaseOrderItemNoDistributionPlanNodes
+                display: stubPurchaseOrderItemNoDeliveryNodes.information.item.description,
+                material_code: stubPurchaseOrderItemNoDeliveryNodes.information.item.material_code,
+                quantity: stubPurchaseOrderItemNoDeliveryNodes.quantity,
+                unit: stubPurchaseOrderItemNoDeliveryNodes.information.item.unit.name,
+                information: stubPurchaseOrderItemNoDeliveryNodes
             };
             scope.$apply();
 
@@ -569,7 +569,7 @@ describe('DirectDeliveryController', function () {
                 flowTriggered: false
             };
 
-            scope.addDistributionPlanNode();
+            scope.addDeliveryNode();
             scope.$apply();
 
             expect(scope.distributionPlanNodes).toEqual([expectedPlanNode]);
@@ -635,7 +635,7 @@ describe('DirectDeliveryController', function () {
         describe('and the plan is successfully saved, ', function () {
             it('a toast confirming the save action should be created', function () {
                 scope.inMultipleIpMode = true;
-                scope.saveDistributionPlanNodes();
+                scope.saveDeliveryNodes();
                 scope.$apply();
 
                 var expectedToastArguments = {
@@ -673,7 +673,7 @@ describe('DirectDeliveryController', function () {
                         isEndUser: false,
                         flowTriggered: false
                     }];
-                scope.saveDistributionPlanNodes();
+                scope.saveDeliveryNodes();
                 scope.$apply();
 
                 expect(mockDeliveryService.create.calls.count()).toBe(2);
@@ -716,7 +716,7 @@ describe('DirectDeliveryController', function () {
                 it('should save node with end user tree position', function () {
                     uiPlanNode.isEndUser = true;
                     scope.inMultipleIpMode = true;
-                    scope.saveDistributionPlanNodes();
+                    scope.saveDeliveryNodes();
                     scope.$apply();
 
                     expect(mockNodeService.create).toHaveBeenCalledWith({
@@ -736,7 +736,7 @@ describe('DirectDeliveryController', function () {
 
                 it('a node should be saved with no parent id as implementing partner', function () {
                     scope.inMultipleIpMode = true;
-                    scope.saveDistributionPlanNodes();
+                    scope.saveDeliveryNodes();
                     scope.$apply();
 
                     expect(mockNodeService.create).toHaveBeenCalledWith({
@@ -758,7 +758,7 @@ describe('DirectDeliveryController', function () {
                     uiPlanNode.isEndUser = false;
                     scope.parentNode = {id: 1};
                     scope.inMultipleIpMode = true;
-                    scope.saveDistributionPlanNodes();
+                    scope.saveDeliveryNodes();
                     scope.$apply();
 
                     expect(mockNodeService.create).toHaveBeenCalledWith({
@@ -778,7 +778,7 @@ describe('DirectDeliveryController', function () {
 
                 it('a distribution plan node should be saved, with it\'s track property picked from the scope', function () {
                     scope.inMultipleIpMode = true;
-                    scope.saveDistributionPlanNodes();
+                    scope.saveDeliveryNodes();
                     scope.$apply();
 
                     expect(mockNodeService.create).toHaveBeenCalledWith({
@@ -805,7 +805,7 @@ describe('DirectDeliveryController', function () {
 
                 scope.distributionPlanNodes[0].track = true;
 
-                scope.saveDistributionPlanNodes();
+                scope.saveDeliveryNodes();
                 scope.$apply();
 
                 expect(mockDeliveryService.create).toHaveBeenCalledWith(jasmine.objectContaining({track: true}));
@@ -819,7 +819,7 @@ describe('DirectDeliveryController', function () {
 
                 scope.distributionPlanNodes[0].track = false;
 
-                scope.saveDistributionPlanNodes();
+                scope.saveDeliveryNodes();
                 scope.$apply();
 
                 expect(mockDeliveryService.create).toHaveBeenCalledWith(jasmine.objectContaining({track: false}));
@@ -844,7 +844,7 @@ describe('DirectDeliveryController', function () {
                     uiPlanNode.distributionPlan = 1;
                     scope.inMultipleIpMode = true;
 
-                    scope.saveDistributionPlanNodes();
+                    scope.saveDeliveryNodes();
                     scope.$apply();
 
                     expect(mockNodeService.update).toHaveBeenCalledWith({
@@ -895,7 +895,7 @@ describe('DirectDeliveryController', function () {
 
             it('a node be saved with parent node', function () {
                 scope.inMultipleIpMode = true;
-                scope.saveDistributionPlanNodes();
+                scope.saveDeliveryNodes();
                 scope.$apply();
 
                 expect(mockNodeService.create).toHaveBeenCalledWith({

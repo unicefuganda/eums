@@ -1,6 +1,6 @@
 describe('Sales Order Service', function () {
 
-    var mockProgrammeService, mockSalesOrderItemService, mockDistributionPlanNodeService, mockServiceFactory, config;
+    var mockProgrammeService, mockSalesOrderItemService, mockDeliveryNodeService, mockServiceFactory, config;
 
     beforeEach(function () {
         module('SalesOrder');
@@ -9,7 +9,7 @@ describe('Sales Order Service', function () {
             $provide.value('ServiceFactory', mockServiceFactory);
             $provide.value('ProgrammeService', mockProgrammeService);
             $provide.value('SalesOrderItemService', mockSalesOrderItemService);
-            $provide.value('DistributionPlanNodeService', mockDistributionPlanNodeService);
+            $provide.value('DeliveryNodeService', mockDeliveryNodeService);
         });
 
         inject(function (SalesOrderService, EumsConfig) {
@@ -24,7 +24,7 @@ describe('Sales Order Service', function () {
             propertyServiceMap: {
                 programme: mockProgrammeService,
                 salesorderitem_set: mockSalesOrderItemService,
-                distributionplannode_set: mockDistributionPlanNodeService
+                distributionplannode_set: mockDeliveryNodeService
             }
         });
     });

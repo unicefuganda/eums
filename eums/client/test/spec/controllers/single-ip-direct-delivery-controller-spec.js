@@ -90,7 +90,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 PurchaseOrderService: mockPurchaseOrderService,
                 IPService: mockIpService,
                 DeliveryService: mockDeliveryService,
-                DistributionPlanNodeService: mockDeliveryNodeService,
+                DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: DeliveryNodeModel,
                 ngToast: toast
             });

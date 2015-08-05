@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'DistributionPlanNode', 'Item'])
+angular.module('PurchaseOrderItem', ['eums.config', 'eums.service-factory', 'Item'])
     .factory('PurchaseOrderItem', function () {
         return function (json) {
             !json && (json = {});

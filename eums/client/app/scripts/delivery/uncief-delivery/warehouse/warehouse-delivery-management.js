@@ -1,9 +1,9 @@
 'use strict';
 
-angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable', 'DistributionPlanNode', 'ui.bootstrap',
+angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable', 'DeliveryNode', 'ui.bootstrap',
     'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
     .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DeliveryService,
-                                                                   DistributionPlanNodeService, ReleaseOrderService, ReleaseOrderItemService,
+                                                                   DeliveryNodeService, ReleaseOrderService, ReleaseOrderItemService,
                                                                    IPService, ngToast, ContactService) {
         $scope.datepicker = {};
         $scope.districts = [];
@@ -89,7 +89,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                     if ($scope.delivery) {
                         $scope.track = $scope.delivery.track;
-                        DistributionPlanNodeService.filter({distribution_plan: $scope.delivery.id}, deliveryNodeParams)
+                        DeliveryNodeService.filter({distribution_plan: $scope.delivery.id}, deliveryNodeParams)
                             .then(function (childNodes) {
                                 var firstChildNode = childNodes.first();
                                 if (childNodes && firstChildNode) {
@@ -196,7 +196,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             node.delivery_date = $scope.selectedReleaseOrder.deliveryDate;
             node.track = $scope.track;
 
-            return DistributionPlanNodeService.update(node)
+            return DeliveryNodeService.update(node)
 
         };
 
@@ -213,7 +213,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 quantity: parseInt(releaseOrderItem.quantity)
             };
 
-            return DistributionPlanNodeService.create(node)
+            return DeliveryNodeService.create(node)
         };
 
         var handleErrors = function () {
