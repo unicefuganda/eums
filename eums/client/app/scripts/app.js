@@ -12,7 +12,7 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
     }
 }];
 
-angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement', 'DirectDelivery', 'WarehouseDelivery',
+angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery',
@@ -50,8 +50,8 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId', {
-                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
-                controller: 'DirectDeliveryManagementController',
+                templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
+                controller: 'MultipleIpDirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');
@@ -59,8 +59,8 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType', {
-                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
-                controller: 'DirectDeliveryManagementController',
+                templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
+                controller: 'MultipleIpDirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');
@@ -68,8 +68,8 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId', {
-                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
-                controller: 'DirectDeliveryManagementController',
+                templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
+                controller: 'MultipleIpDirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');
@@ -77,8 +77,8 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement
                 }
             })
             .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId', {
-                templateUrl: '/static/app/views/delivery/direct-delivery-management.html',
-                controller: 'DirectDeliveryManagementController',
+                templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
+                controller: 'MultipleIpDirectDeliveryController',
                 resolve: {
                     permission: function (UserService) {
                         return UserService.checkUserPermission('auth.can_view_dashboard');

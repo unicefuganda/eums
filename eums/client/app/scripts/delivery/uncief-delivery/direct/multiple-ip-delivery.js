@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DeliveryNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
-    .controller('DirectDeliveryManagementController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DeliveryService, DeliveryNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
+angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseOrderItem', 'DeliveryNode', 'User', 'Consignee', 'ngTable', 'ngToast', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'Contact', 'Item'])
+    .controller('MultipleIpDirectDeliveryController', function ($scope, $location, $q, IPService, UserService, PurchaseOrderItemService, ConsigneeService, DeliveryService, DeliveryNodeService, ProgrammeService, PurchaseOrderService, $routeParams, ngToast) {
 
         function showLoadingModal(show) {
             if (show && !angular.element('#loading').hasClass('in')) {

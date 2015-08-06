@@ -1,6 +1,6 @@
-describe('DirectDeliveryController', function () {
+describe('MultipleIpDirectDeliveryController', function () {
 
-    beforeEach(module('DirectDeliveryManagement'));
+    beforeEach(module('MultipleIpDirectDelivery'));
     var mockNodeService, mockIPService, mockDeliveryService, mockPurchaseOrderItemService,
         mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
@@ -157,7 +157,7 @@ describe('DirectDeliveryController', function () {
             location = $location;
             scope = $rootScope.$new();
 
-            $controller('DirectDeliveryManagementController',
+            $controller('MultipleIpDirectDeliveryController',
                 {
                     $scope: scope,
                     $location: location,
