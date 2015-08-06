@@ -1,0 +1,13 @@
+<div class="container-fluid">
+    <div class="eums page-header">Report Deliveries</div>
+    <div class="content">
+        <ul class="nav nav-pills" style="margin-top: 1em;" ng-controller="NavigationTabsController">
+            <li role="presentation" ng-class="{active : isActive('/direct-delivery')}">
+                <a href="#/direct-delivery" class="btn btn-default blue-border-button btn-xs">UNICEF Shipments</a>
+            </li>
+            <li role="presentation" ng-class="{active : isActive('/ip-items')}">
+                <a href="#/ip-items" class="btn btn-default blue-border-button btn-xs">My Warehouse</a>
+            </li>
+        </ul>
+    </div>
+</div>

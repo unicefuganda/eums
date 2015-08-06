@@ -1,5 +1,5 @@
 describe('Consignees Controller', function () {
-    var mockConsigneeService, mockUserService, scope, mockConsigneeModel,
+    var mockConsigneeService, mockUserService, scope, mockConsigneeModel, deferredCanFullyEdit,
         toast, deferredSearchResults, deferredPermissionsResults, elementSpy;
     var emptyFunction = function () {
     };

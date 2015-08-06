@@ -22,6 +22,6 @@ class ItemViewSet(ModelViewSet):
         if user_profile:
             return Item.objects.delivered_to_consignee(user_profile.consignee)
         return super(ItemViewSet, self).get_queryset()
-    
+
 itemRouter = DefaultRouter()
 itemRouter.register(r'item', ItemViewSet)

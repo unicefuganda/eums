@@ -88,17 +88,22 @@ describe('Route Provider', function () {
         expect(routes.routes['/consignees'].templateUrl).toBe('/static/app/views/consignees/consignees.html');
     });
 
-    it('should route to single ip direct delivery controller for single delivery to one IP', function() {
+    it('should route to single ip direct delivery controller for single delivery to one IP', function () {
         var route = '/single-ip-direct-delivery/:purchaseOrderId';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('SingleIpDirectDeliveryController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/single-ip-direct-delivery.html');
     });
-
-    it('should route to ip deliveries page', function() {
+    it('should route to ip deliveries page', function () {
         var route = '/ip-deliveries';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('IpDeliveryController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/delivery.html');
+    });
+    it('should have ip item list route pointing to the right controller', function () {
+        var route = '/ip-items';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('IpItemsController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-items.html');
     });
 });

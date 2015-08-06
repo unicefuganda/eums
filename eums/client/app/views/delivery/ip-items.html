@@ -1,0 +1,53 @@
+<ng-include src="'/static/app/views/delivery/partials/ip-delivery-header.html'"></ng-include>
+
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-xs-3 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon glyphicon-search"></i>
+                <input type="text"
+                       id="filter"
+                       class="form-control"
+                       name="filter"
+                       ng-model="query"
+                       placeholder="Search item description"/>
+            </div>
+        </div>
+    </div>
+    <span class="well-sm"></span>
+
+    <div class="table-wrapper">
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <thead ng-init="initialize()">
+            <tr>
+                <th>#</th>
+                <th>Item Description</th>
+                <th>Available Qty</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="($index, item) in items">
+                <td>$index</td>
+                <td>item.description</td>
+                <td>item.balance</td>
+                <td>
+                    <button class="btn btn-sm btn-success" ng-click="view(item)">View</button>
+                    <button class="btn btn-sm btn-info" ng-click="reportOn(item)">Report</button>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+
+            </tfoot>
+                <span class="information message"
+                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | orderFilter: query:dateQuery:searchFields ).length == 0">
+                There are no matches to your search criteria.
+                </span>
+            <span class="information message" ng-show="purchaseOrders.length == 0">There are no deliveries available right now.</span>
+        </table>
+    </div>
+</div>
+

@@ -11,8 +11,6 @@
     <a href="#" class="dropdown-toggle">Delivery Reporting <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
         <li><a href="#/field-verification-reports">Field Verification</a></li>
-        <li class="divider"></li>
-        <li><a href="#/ip-direct-delivery">Reported By IP</a></li>
     </ul>
 </li>
 <li class="dropdown" ng-class="{ active: isActive('/reports,/distribution-plan-responses,/end-user-responses')}">
@@ -28,8 +26,8 @@
 </li>
 
 {% else %}
-<li ng-class="{ active: isActive('/delivery-reports,/delivery-reports/new')}">
-    <a href="#/ip-direct-delivery">Reported by IP</a>
+<li ng-class="{ active: isActive('/ip-items')}">
+    <a href="#/ip-items">Report Deliveries</a>
 </li>
 <li ng-class="{ active: isActive('/consignees')}">
     <a href="#/consignees">Consignees</a>
