@@ -1,5 +1,5 @@
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.distribution_plan_factory import DistributionPlanFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from rest_framework.test import APITestCase
 from django.core.management import call_command
@@ -8,11 +8,10 @@ from django.contrib.auth.models import Group
 from eums.models import Consignee, DistributionPlan, UserProfile
 from eums.test.config import BACKEND_URL
 
-
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
 
-class DistributionPlanEndpointTest(APITestCase):
+class DeliveryEndpointTest(APITestCase):
     def setUp(self):
         call_command('setup_permissions')
 
@@ -40,7 +39,7 @@ class DistributionPlanEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_should_allow_unicef_admin_to_view_deliveries(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         self._login_as('UNICEF_admin')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
@@ -50,8 +49,8 @@ class DistributionPlanEndpointTest(APITestCase):
     def _test_should_allow_unicef_admin_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
-        delivery = DistributionPlanFactory(programme=programme, consignee=consignee, location='Kampala',
-                                           delivery_date='2015-12-12')
+        delivery = DeliveryFactory(programme=programme, consignee=consignee, location='Kampala',
+                                   delivery_date='2015-12-12')
         self._login_as('UNICEF_admin')
 
         response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {'id': str(delivery.id), 'track': 'true'})
@@ -74,7 +73,7 @@ class DistributionPlanEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 201)
 
     def test_should_allow_unicef_editor_to_view_deliveries(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         self._login_as('UNICEF_editor')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
@@ -114,7 +113,7 @@ class DistributionPlanEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_should_allow_unicef_viewer_to_view_deliveries(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         self._login_as('UNICEF_viewer')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
@@ -124,8 +123,8 @@ class DistributionPlanEndpointTest(APITestCase):
     def test_should_not_allow_unicef_viewer_to_track_delivery(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
-        delivery = DistributionPlanFactory(programme=programme, consignee=consignee, location='Kampala',
-                                           delivery_date='2015-12-12')
+        delivery = DeliveryFactory(programme=programme, consignee=consignee, location='Kampala',
+                                   delivery_date='2015-12-12')
         self._login_as('UNICEF_viewer')
 
         response = self.client.put(ENDPOINT_URL + str(delivery.id) + '/', {'id': str(delivery.id), 'track': 'true'})
@@ -149,7 +148,7 @@ class DistributionPlanEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_should_not_allow_implementing_partner_editors_to_view_deliveries(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         self._login_as('Implementing Partner_editor')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
@@ -189,7 +188,7 @@ class DistributionPlanEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_should_not_allow_implementing_partner_viewers_to_view_deliveries(self):
-        delivery = DistributionPlanFactory()
+        delivery = DeliveryFactory()
         self._login_as('Implementing Partner_viewer')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
@@ -222,4 +221,3 @@ class DistributionPlanEndpointTest(APITestCase):
         user = User.objects.create_user(username=username, email='user@email.com', password=password)
         user.groups = [Group.objects.get(name=group_name)]
         user.save()
-

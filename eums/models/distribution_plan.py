@@ -35,7 +35,5 @@ class DistributionPlan(Runnable):
                                                      Q(question__label='deliveryReceived'),
                                                      ~ Q(run__status='cancelled')).first()
 
-        if answer and answer.value.text == 'Yes':
-            return True
-        return False
+        return answer and answer.value.text == 'Yes'
 

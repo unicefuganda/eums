@@ -1,10 +1,9 @@
-from eums.permissions.track_delivery_permission import TrackDeliveryPermission
-from eums.permissions.view_delivery_permission import ViewDeliveryPermission
 from rest_framework import serializers
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 
+from eums.permissions.view_delivery_permission import ViewDeliveryPermission
 from eums.models import DistributionPlan
 
 
