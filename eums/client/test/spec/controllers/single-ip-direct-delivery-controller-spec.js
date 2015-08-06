@@ -273,6 +273,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 contactPerson: contact.id,
                 remark: remark,
                 track: true,
+                trackSubmitted: true,
                 isEndUser: false,
                 treePosition: 'IMPLEMENTING_PARTNER'
             };
@@ -381,8 +382,8 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should create untracked nodes when save is called with falsy', function () {
             var untrackedCreatedDelivery = Object.clone(createdTrackedDelivery);
             untrackedCreatedDelivery.track = false;
-            var untrackedNodeOne = Object.merge(nodeOne, {track: false, distributionPlan: untrackedCreatedDelivery});
-            var untrackedNodeTwo = Object.merge(nodeTwo, {track: false, distributionPlan: untrackedCreatedDelivery});
+            var untrackedNodeOne = Object.merge(nodeOne, {track: false, trackSubmitted: false, distributionPlan: untrackedCreatedDelivery});
+            var untrackedNodeTwo = Object.merge(nodeTwo, {track: false, trackSubmitted: false, distributionPlan: untrackedCreatedDelivery});
             mockDeliveryService.create.and.returnValue(q.when(untrackedCreatedDelivery));
 
             scope.save();

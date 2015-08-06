@@ -38,6 +38,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.contactPersonId = json.contactPersonId || json.contactPerson;
             this.remark = json.remark || '';
             this.track = json.track || false;
+            this.trackSubmitted = json.track || false;
             this.isEndUser = json.isEndUser || false;
             this.treePosition = json.treePosition || 'MIDDLE_MAN';
             this.consignee = json.consignee;
@@ -50,10 +51,6 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             }.bind(this);
 
             this.hasChildren = json.hasChildren;
-
-            this.trackSubmitted = function(){
-                return this.id && this.track; 
-            }
 
             this.isInvalid = function () {
                 return this.quantityIn <= 0 || isNaN(this.quantityIn) || !this.consignee || !this.location

@@ -127,6 +127,7 @@ describe('DirectDeliveryController', function () {
             mockNodeService.get.and.returnValue(deferredPlanNode.promise);
             mockNodeService.filter.and.returnValue(deferredTopLevelNodes.promise);
             mockNodeService.create.and.returnValue(deferredPlanNode.promise);
+            mockNodeService.update.and.returnValue(deferredPlanNode.promise);
             mockConsigneeService.get.and.returnValue(deferred.promise);
             mockConsigneeService.all.and.returnValue(deferred.promise);
             mockPurchaseOrderService.get.and.returnValue(deferredPurchaseOrder.promise);
@@ -798,7 +799,6 @@ describe('DirectDeliveryController', function () {
             it('should set track to true if node is tracked', function () {
                 deferredPlanNode.resolve({id: 1});
                 deferredPlan.resolve({id: 1});
-                scope.inMultipleIpMode = true;
 
                 scope.distributionPlanNodes[0].track = true;
 
@@ -809,10 +809,9 @@ describe('DirectDeliveryController', function () {
                 expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
             });
 
-            it('should set track to true if node is tracked', function () {
+            it('should set track to false if node is not tracked', function () {
                 deferredPlanNode.resolve({id: 1});
                 deferredPlan.resolve({id: 1});
-                scope.inMultipleIpMode = true;
 
                 scope.distributionPlanNodes[0].track = false;
 
@@ -821,6 +820,66 @@ describe('DirectDeliveryController', function () {
 
                 expect(mockDeliveryService.create).toHaveBeenCalledWith(jasmine.objectContaining({track: false}));
                 expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
+            });
+
+            it('should set trackSubmitted to true when node is created with track', function() {
+                deferredPlan.resolve({id: 1});
+                deferredPlanNode.resolve({id: 1});
+
+                var node = scope.distributionPlanNodes[0];
+                node.track = true;
+
+                scope.saveDeliveryNodes();
+                scope.$apply();
+
+                expect(scope.distributionPlanNodes[0].trackSubmitted).toBeTruthy();
+            });
+
+            it('should set trackSubmitted to false when node is created with not tracked', function() {
+                deferredPlan.resolve({id: 1});
+                deferredPlanNode.resolve({id: 1});
+
+                var node = scope.distributionPlanNodes[0];
+                node.track = false;
+
+                scope.saveDeliveryNodes();
+                scope.$apply();
+
+                expect(scope.distributionPlanNodes[0].trackSubmitted).toBeFalsy();
+            });
+
+            it('should set trackSubmitted to true when node is updated with track', function() {
+                deferredPlan.resolve({id: 1});
+                deferredPlanNode.resolve({});
+
+                var node = scope.distributionPlanNodes[0];
+                node.id = '1';
+                node.track = true;
+
+                scope.saveDeliveryNodes();
+                scope.$apply();
+
+                expect(scope.distributionPlanNodes[0].trackSubmitted).toBeTruthy();
+            });
+
+            it('should set trackSubmitted to false when node is updated without track', function() {
+                deferredPlan.resolve({id: 2});
+                deferredPlanNode.resolve({id: 2});
+
+                scope.saveDeliveryNodes();
+                scope.$apply();
+
+                expect(scope.distributionPlanNodes[0].id).toBe(2);
+            });
+
+            it('should set ui node id after creating a node', function() {
+                deferredPlan.resolve({id: 1});
+                deferredPlanNode.resolve({});
+
+                scope.saveDeliveryNodes();
+                scope.$apply();
+
+                expect(scope.distributionPlanNodes[0].trackSubmitted).toBeFalsy();
             });
 
             describe(' and a distribution plan node has already been created, ', function () {

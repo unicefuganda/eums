@@ -123,7 +123,7 @@
                                     <td>
                                         <input type="text" id="input-quantity" class="form-control"
                                                ng-model="item.quantityIn"
-                                               ng-disabled="item.trackSubmitted()" only-digits>
+                                               ng-disabled="item.trackSubmitted" only-digits>
 
                                     </td>
                                     <td id="input-delivery-date">
@@ -133,7 +133,7 @@
                                                    datepicker-popup="dd/MM/yyyy"
                                                    ng-model="item.deliveryDate"
                                                    ng-required="true"
-                                                   ng-disabled="item.trackSubmitted()"
+                                                   ng-disabled="item.trackSubmitted"
                                                    is-open="datepicker[$index]"
                                                    datepicker-options="dateOptions" show-button-bar="false"
                                                    value="{{ item.deliveryDate | date : 'dd/MM/yyyy' }}"
@@ -142,7 +142,7 @@
 
                                             <button type="button" class="btn btn-default"
                                                     ng-click="open($event, $index )"
-                                                    ng-disabled="item.trackSubmitted()">
+                                                    ng-disabled="item.trackSubmitted">
                                                 <i class="glyphicon glyphicon-calendar"></i></button>
                                           </span>
                                         </p>
@@ -150,7 +150,7 @@
                                     <td id="input-consignee" class="table-select-max-width">
                                         <input type="hidden" search-consignees only-ips
                                                ng-model="item.consignee.id"
-                                               ng-disabled="item.trackSubmitted()"
+                                               ng-disabled="item.trackSubmitted"
                                                value="{{ item.consignee.id }}">
                                     </td>
 
@@ -165,7 +165,7 @@
                                             <div class="form-group table-contact-form-group col-md-2">
                                                 <button type="button" class="btn btn-default "
                                                         ng-click="addContact(item, $index)"
-                                                        ng-disabled="item.trackSubmitted()">
+                                                        ng-disabled="item.trackSubmitted">
                                                     <i class="glyphicon glyphicon-plus"></i>
                                                 </button>
                                             </div>
@@ -175,13 +175,13 @@
                                     <td id="input-location" class="table-select-max-width">
                                         <input type="hidden" search-from-list list="{{ districts }}"
                                                ng-model="item.location"
-                                               ng-disabled="item.trackSubmitted()"
+                                               ng-disabled="item.trackSubmitted"
                                                value="{{ item.location }}">
                                     </td>
                                     <td ng-show="distributionPlanReport">
                                         <div class="text-center">
                                             <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
-                                                    ng-disabled="item.trackSubmitted()"
+                                                    ng-disabled="item.trackSubmitted"
                                                     ng-click="addRemark($index, item)">
                                             </button>
                                         </div>
@@ -191,7 +191,7 @@
                                             <input type="checkbox" class="end-user-checkbox"
                                                    value="{{ item.isEndUser }}"
                                                    ng-model="item.isEndUser"
-                                                   ng-disabled="item.trackSubmitted()">
+                                                   ng-disabled="item.trackSubmitted">
                                         </div>
                                     </td>
                                     <td>
@@ -199,7 +199,7 @@
                                             <input type="checkbox" class="end-user-checkbox"
                                                    value="{{ item.track }}"
                                                    ng-model="item.track"
-                                                   ng-disabled="item.trackSubmitted()">
+                                                   ng-disabled="item.trackSubmitted">
                                         </div>
                                     </td>
                                     <td>
@@ -207,7 +207,7 @@
                                             <button class="btn
                                                     {{ item.canReceiveSubConsignees() ? 'btn-primary' : 'btn-default'}}"
                                                     title="Consignees"
-                                                    ng-disabled="!item.canReceiveSubConsignees() || item.trackSubmitted()"
+                                                    ng-disabled="!item.canReceiveSubConsignees() || item.trackSubmitted"
                                                     ng-click="addSubConsignee(item)">Sub-Consignees
                                             </button>
                                         </div>

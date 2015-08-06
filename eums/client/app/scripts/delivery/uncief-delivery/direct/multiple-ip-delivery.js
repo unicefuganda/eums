@@ -281,6 +281,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                 delivery.id = node.distribution_plan;
                 DeliveryService.update(delivery).then(function () {
                     DeliveryNodeService.update(node).then(function () {
+                        uiPlanNode.trackSubmitted = node.track;
                         deferred.resolve(uiPlanNode);
                     });
                 });
@@ -293,6 +294,7 @@ angular.module('DirectDeliveryManagement', ['eums.config', 'eums.ip', 'PurchaseO
                     node.distribution_plan = createdPlan.id;
                     DeliveryNodeService.create(node).then(function (retNode) {
                         uiPlanNode.id = retNode.id;
+                        uiPlanNode.trackSubmitted = node.track;
                         uiPlanNode.canReceiveSubConsignees = function () {
                             return this.id && !this.isEndUser;
                         }.bind(uiPlanNode);
