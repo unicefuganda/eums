@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
@@ -16,12 +17,11 @@ class ItemViewSet(ModelViewSet):
     queryset = Item.objects.all().order_by('description')
     serializer_class = ItemSerialiser
 
-    def list(self, request, *args, **kwargs):
-        user_profile = UserProfile.objects.filter(user_id=request.user.id).first()
-        items = self.queryset
+    def get_queryset(self):
+        user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
         if user_profile:
-            items = Item.objects.delivered_to_consignee(user_profile.consignee)
-        return Response(self.get_serializer(items, many=True).data)
-
+            return Item.objects.delivered_to_consignee(user_profile.consignee)
+        return super(ItemViewSet, self).get_queryset()
+    
 itemRouter = DefaultRouter()
 itemRouter.register(r'item', ItemViewSet)
