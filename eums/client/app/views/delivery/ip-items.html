@@ -17,7 +17,7 @@
     </div>
     <span class="well-sm"></span>
 
-    <div class="table-wrapper">
+    <div>
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead ng-init="initialize()">
             <tr>
@@ -30,9 +30,9 @@
 
             <tbody>
             <tr ng-repeat="($index, item) in items">
-                <td>$index</td>
-                <td>item.description</td>
-                <td>item.balance</td>
+                <td class="centered">{{ $index + 1 }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.balance }}</td>
                 <td>
                     <button class="btn btn-sm btn-success" ng-click="view(item)">View</button>
                     <button class="btn btn-sm btn-info" ng-click="reportOn(item)">Report</button>
