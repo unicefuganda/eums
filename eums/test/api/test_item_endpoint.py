@@ -65,6 +65,7 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
         self.assertIn('count', response.data)
         self.assertIn('next', response.data)
         self.assertIn('previous', response.data)
+        self.assertIn('pageSize', response.data)
         self.assertEqual(len(response.data['results']), 2)
 
     def test_should_not_paginate_consignee_list_when_paginate_is_not_true(self):

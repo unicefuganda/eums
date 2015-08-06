@@ -40,7 +40,13 @@
             </tr>
             </tbody>
             <tfoot>
-
+            <tr>
+                <td colspan="6" class="centered">
+                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false" items-per-page="pageSize">
+                    </pagination>
+                </td>
+            </tr>
             </tfoot>
                 <span class="information message"
                       ng-show="purchaseOrders.length > 0 && (purchaseOrders | orderFilter: query:dateQuery:searchFields ).length == 0">

@@ -1,9 +1,8 @@
 from rest_framework import serializers
-from rest_framework.decorators import list_route
-from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-from eums.api.pagination import StandardResultsSetPagination
+
+from eums.api.standard_pagination import StandardResultsSetPagination
 
 from eums.models import Item, UserProfile
 
@@ -26,10 +25,11 @@ class ItemViewSet(ModelViewSet):
         return super(ItemViewSet, self).get_queryset()
 
     def list(self, request, *args, **kwargs):
-            paginate = request.GET.get('paginate', None)
-            if paginate != 'true':
-                self.paginator.page_size = 0
-            return super(ItemViewSet, self).list(request, args, kwargs)
+        paginate = request.GET.get('paginate', None)
+        if paginate != 'true':
+            self.paginator.page_size = 0
+        return super(ItemViewSet, self).list(request, args, kwargs)
+
 
 itemRouter = DefaultRouter()
 itemRouter.register(r'item', ItemViewSet)
