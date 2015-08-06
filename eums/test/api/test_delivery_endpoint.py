@@ -80,7 +80,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         second_delivery = DeliveryFactory(consignee=first_consignee)
         third_delivery = DeliveryFactory(consignee=second_consignee)
 
-        self.log_user_out()
+        self.logout()
         self.log_consignee_in(consignee=first_consignee)
 
         response = self.client.get(ENDPOINT_URL)

@@ -8,14 +8,12 @@ class AuthenticatedAPITestCase(APITestCase):
         log_test_user_in(self)
 
     def log_consignee_in(self, consignee):
-        user = User.objects.create_user(username='testconignee',
-                                        email='someconignee@email.com',
-                                        password='test')
+        user = User.objects.create_user(username='test_consignee', email='someconignee@email.com', password='test')
         user.save()
         UserProfile.objects.create(user=user, consignee=consignee)
-        self.client.login(username='testconignee', password='test')
+        self.client.login(username='test_consignee', password='test')
 
-    def log_user_out(self):
+    def logout(self):
         self.client.logout()
 
 

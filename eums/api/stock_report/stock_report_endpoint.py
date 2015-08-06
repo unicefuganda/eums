@@ -97,10 +97,3 @@ def _update_report_item(matching_report_item, report_item):
     matching_report_item['balance'] = matching_report_item['total_value_received'] - matching_report_item[
         'total_value_dispensed']
     matching_report_item['items'].append(report_item['items'][0])
-
-
-
-
-    
-
-
