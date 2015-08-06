@@ -11,15 +11,15 @@
                        class="form-control"
                        name="filter"
                        ng-model="query"
-                       placeholder="Search item description"/>
+                       placeholder="Search by item description"/>
             </div>
         </div>
     </div>
     <span class="well-sm"></span>
 
     <div>
-        <table si-table class="table table-bordered table-hover table-striped table-condensed">
-            <thead ng-init="initialize()">
+        <table si-table class="table table-hover table-striped table-condensed">
+            <thead>
             <tr>
                 <th>#</th>
                 <th>Item Description</th>
@@ -43,7 +43,8 @@
             <tr>
                 <td colspan="6" class="centered">
                     <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                ng-change="goToPage(currentPage)" max-size="5" rotate="false" items-per-page="pageSize">
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
                     </pagination>
                 </td>
             </tr>
