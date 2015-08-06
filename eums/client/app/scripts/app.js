@@ -193,6 +193,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'DirectDeliveryManagement
                     }
                 }
             })
+            .when('/ip-deliveries', {
+                templateUrl: '/static/app/views/delivery/ip-delivery/delivery.html',
+                controller: 'IpDeliveryController',
+                resolve: {
+                    permission: function (UserService) {
+                        return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                    }
+                }
+            })
             .otherwise({
                 redirectTo: '/'
             });

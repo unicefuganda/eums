@@ -94,4 +94,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('SingleIpDirectDeliveryController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/single-ip-direct-delivery.html');
     });
+
+    it('should route to ip deliveries page', function() {
+        var route = '/ip-deliveries';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('IpDeliveryController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/delivery.html');
+    });
 });
