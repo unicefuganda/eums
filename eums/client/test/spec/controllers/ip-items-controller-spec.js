@@ -6,7 +6,7 @@ describe('IP Items Controller', function () {
         inject(function($controller, $rootScope, $q){
             mockItemService = jasmine.createSpyObj('mockItemService', ['all']);
 
-            mockItemService.all.and.returnValue($q.when(items));
+            mockItemService.all.and.returnValue($q.when({results: items, count: items.length}));
 
             scope = $rootScope.$new();
             q = $q;
@@ -17,9 +17,10 @@ describe('IP Items Controller', function () {
         });
     });
 
-    it('should fetch all items ever delivered to the consignee', function() {
+    it('should fetch all items ever delivered to the consignee with pagination', function() {
         scope.$apply();
-        expect(mockItemService.all).toHaveBeenCalled();
+        expect(mockItemService.all).toHaveBeenCalledWith([], {paginate: 'true'});
         expect(scope.items).toEqual(items);
+        expect(scope.count).toEqual(1);
     });
 });
