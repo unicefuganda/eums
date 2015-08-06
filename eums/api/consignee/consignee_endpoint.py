@@ -1,10 +1,11 @@
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
+
+from eums.api.pagination import StandardResultsSetPagination
 from eums.models import Consignee, DistributionPlanNode, UserProfile
 from eums.permissions import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission
 
@@ -13,10 +14,6 @@ class ConsigneeSerialiser(serializers.ModelSerializer):
     class Meta:
         model = Consignee
         fields = ('id', 'name', 'type', 'imported_from_vision', 'customer_id', 'location', 'remarks')
-
-
-class StandardResultsSetPagination(PageNumberPagination):
-    page_size = 10
 
 
 class ConsigneeViewSet(ModelViewSet):
