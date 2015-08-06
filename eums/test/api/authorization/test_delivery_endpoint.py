@@ -158,13 +158,13 @@ class DeliveryEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_should_not_allow_implementing_partner_editors_to_view_deliveries(self):
+    def test_should_allow_implementing_partner_editors_to_view_deliveries(self):
         delivery = DeliveryFactory()
         self._login_as('Implementing Partner_editor')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     def test_should_not_allow_implementing_partner_editors_to_track_delivery(self):
         programme = ProgrammeFactory()
@@ -198,13 +198,13 @@ class DeliveryEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_should_not_allow_implementing_partner_viewers_to_view_deliveries(self):
+    def test_should_allow_implementing_partner_viewers_to_view_deliveries(self):
         delivery = DeliveryFactory()
         self._login_as('Implementing Partner_viewer')
 
         response = self.client.get(ENDPOINT_URL + str(delivery.id) + '/')
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     def test_should_not_allow_implementing_partner_viewers_to_track_delivery(self):
         programme = ProgrammeFactory()
