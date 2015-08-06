@@ -57,7 +57,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             };
         };
     })
-    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee, $q) {
+    .factory('ConsigneeService', function ($http, EumsConfig, ServiceFactory, Consignee) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.CONSIGNEE,
             model: Consignee,
@@ -77,6 +77,7 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         function setScopeDataFromResponse(response) {
             $scope.consignees = response.results;
             $scope.count = response.count;
+            $scope.pageSize = response.pageSize;
         }
 
         function fetchConsignees() {

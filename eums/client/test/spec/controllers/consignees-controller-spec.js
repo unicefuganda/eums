@@ -9,7 +9,7 @@ describe('Consignees Controller', function () {
     };
     var emptyConsignee = {properties: null, switchToEditMode: emptyFunction, switchToEditRemarkMode: emptyFunction};
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
-    var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page'};
+    var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page', pageSize: 1};
     var searchResults = consignees.first(2);
 
     beforeEach(function () {
@@ -62,6 +62,7 @@ describe('Consignees Controller', function () {
         scope.$apply();
         expect(mockConsigneeService.all.calls.mostRecent().args).toEqual([[], {paginate: 'true'}]);
         expect(scope.count).toEqual(consignees.length);
+        expect(scope.pageSize).toEqual(1);
     });
 
     it('should add empty consignee at the top of the list when add method is called', function () {

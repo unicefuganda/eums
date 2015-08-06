@@ -2,7 +2,9 @@
     <div class="content">
         <h4 class="page-header">Consignees</h4>
         <ng-toast></ng-toast>
-        <button id="add-consignee" ng-show="hasPermissionTo('eums.add_consignee')" class="btn btn-primary" ng-click="addConsignee()">Add Consignee</button>
+        <button id="add-consignee" ng-show="hasPermissionTo('eums.add_consignee')" class="btn btn-primary"
+                ng-click="addConsignee()">Add Consignee
+        </button>
         <div class="panel panel-default line-order-panel">
             <div class="row">
                 <div class="text-muted pad-top-10 col-xs-4 pull-left">
@@ -14,7 +16,8 @@
                 </div>
                 <div class="col-xs-4 pull-right">
                     <div class="inner-addon left-addon">
-                        <i class="glyphicon " ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <i class="glyphicon "
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                         <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
                                placeholder="Search by name, location or vision ID"/>
                     </div>
@@ -69,11 +72,15 @@
                         </td>
                         <td>
                             <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
-                                <button ng-show="hasPermissionTo('eums.change_consignee')" class="btn btn-sm btn-default blue-border-button editBtn" ng-click="edit(consignee)">
+                                <button ng-show="hasPermissionTo('eums.change_consignee')"
+                                        class="btn btn-sm btn-default blue-border-button editBtn"
+                                        ng-click="edit(consignee)">
                                     Edit
                                 </button>
-                                <button ng-show="hasPermissionTo('eums.delete_consignee')" class="btn btn-sm btn-default red-border-button deleteBtn"
-                                        ng-click="showDeleteDialog(consignee)" ng-class="{'invisible': consignee.importedFromVision}">
+                                <button ng-show="hasPermissionTo('eums.delete_consignee')"
+                                        class="btn btn-sm btn-default red-border-button deleteBtn"
+                                        ng-click="showDeleteDialog(consignee)"
+                                        ng-class="{'invisible': consignee.importedFromVision}">
                                     Delete
                                 </button>
                             </span>
@@ -93,7 +100,8 @@
                     <tr>
                         <td colspan="6">
                             <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                    ng-change="goToPage(currentPage)" max-size="5" rotate="false">
+                                        ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                        items-per-page="pageSize">
                             </pagination>
                         </td>
                     </tr>

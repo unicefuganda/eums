@@ -109,7 +109,13 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
 
         function makePaginatedResponse(response, results) {
             var data = response.data;
-            return {results: results, next: data.next, previous: data.previous, count: data.count};
+            return {
+                results: results,
+                next: data.next,
+                previous: data.previous,
+                count: data.count,
+                pageSize: data.pageSize
+            };
         }
 
         function queryStringFrom(filterParams) {

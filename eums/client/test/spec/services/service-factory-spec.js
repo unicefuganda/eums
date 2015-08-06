@@ -239,13 +239,14 @@ describe('Service Factory', function () {
     });
 
     it('should get results from paginated response', function() {
-        var expected = {results: [], count: 10, next: '?page=3', previous: '?page=1'};
+        var expected = {results: [], count: 10, next: '?page=3', previous: '?page=1', pageSize: 10};
         mockBackend.whenGET(levelOneEndpoint).respond(expected);
         levelOneService.all().then(function(response) {
             expect(response.results).toEqual(expected.results);
             expect(response.next).toEqual(expected.next);
             expect(response.count).toEqual(expected.count);
             expect(response.previous).toEqual(expected.previous);
+            expect(response.pageSize).toEqual(expected.pageSize);
         });
         mockBackend.flush();
     });

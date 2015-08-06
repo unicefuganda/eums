@@ -4,8 +4,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissions
-
-from eums.api.pagination import StandardResultsSetPagination
+from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Consignee, DistributionPlanNode, UserProfile
 from eums.permissions import DeliveryAttachedPermission, VisionImportedPermission, CreatedByPermission
 
