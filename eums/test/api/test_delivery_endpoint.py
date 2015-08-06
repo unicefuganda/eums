@@ -1,8 +1,12 @@
 import datetime
 
-from eums.models import DistributionPlan as Delivery, Programme, Consignee
+from django.contrib.auth.models import Group, Permission
+
+from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
+from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
@@ -15,7 +19,12 @@ from eums.test.factories.run_factory import RunFactory
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
 
-class DeliveryEndPointTest(AuthenticatedAPITestCase):
+class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        PermissionsTestCase.setUpClass()
+
     def setUp(self):
         super(DeliveryEndPointTest, self).setUp()
         self.clean_up()
@@ -64,6 +73,26 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.data[0]['is_received'], True)
 
+    def test_should_filter_deliveries_by_ip(self):
+        first_consignee = ConsigneeFactory()
+        second_consignee = ConsigneeFactory()
+        first_delivery = DeliveryFactory(consignee=first_consignee)
+        second_delivery = DeliveryFactory(consignee=first_consignee)
+        third_delivery = DeliveryFactory(consignee=second_consignee)
+
+        self.log_user_out()
+        self.log_consignee_in(consignee=first_consignee, group_name='Implementing Partner_editor')
+
+        response = self.client.get(ENDPOINT_URL)
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertIn(second_delivery.id, ids)
+        self.assertNotIn(third_delivery.id, ids)
+
     def clean_up(self):
         Programme.objects.all().delete()
         Consignee.objects.all().delete()
+        UserProfile.objects.all().delete()
