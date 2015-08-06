@@ -160,6 +160,7 @@
                                                 <input type="hidden" search-contacts required="required"
                                                        value="{{ item.contactPerson.id }}"
                                                        ng-model="item.contactPerson.id"
+                                                       ng-disabled="item.trackSubmitted"
                                                        ng-attr-id="{{ 'contact-select-for-node-' + $index }}">
                                             </div>
                                             <div class="form-group table-contact-form-group col-md-2">
@@ -194,7 +195,7 @@
                                                    ng-disabled="item.trackSubmitted">
                                         </div>
                                     </td>
-                                    <td>
+                                    <td id="input-track">
                                         <div class="text-center">
                                             <input type="checkbox" class="end-user-checkbox"
                                                    value="{{ item.track }}"
