@@ -8,7 +8,7 @@ describe('Direct Delivery', function () {
     var PURCHASE_ORDER_NUMBER1 = '81026395';
     var PURCHASE_ORDER_NUMBER2 = '81029906';
 
-    it('Admin should be able to create direct deliveries to multiple IPs', function () {
+    fit('Admin should be able to create direct deliveries to multiple IPs', function () {
 
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
@@ -28,12 +28,17 @@ describe('Direct Delivery', function () {
         directDeliveryPage.setContact('John');
         directDeliveryPage.setDistrict('Wakiso');
 
+        directDeliveryPage.setTrack();
+        browser.pause();
         directDeliveryPage.saveDelivery();
         directDeliveryPage.confirmDelivery();
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
+
+        expect(directDeliveryPage.contactInputAttributes).toBeTruthy();
+
     });
 
     it('Admin should be able to create a direct delivery to a single IP', function () {
