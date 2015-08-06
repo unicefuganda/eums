@@ -11,6 +11,7 @@ def on_post_save_node(sender, **kwargs):
     if node.track and not node.is_root() and node.latest_run() is None:
         schedule_run_for(node)
 
+
 @receiver(post_save, sender=DistributionPlan)
 def on_post_save_delivery(sender, **kwargs):
     delivery = kwargs['instance']
