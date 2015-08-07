@@ -113,4 +113,21 @@ describe('IP Delivery Controller', function () {
             expect(scope.canConfirm).toBe(false);
         });
     });
+
+    ddescribe('on confirm', function () {
+        it('should set is confirming delivery to false when initializing the controller', function () {
+            initializeController();
+            scope.$apply();
+
+            expect(scope.isConfirmingDelivery).toBe(false);
+        });
+
+        it('should set is confirming delivery to true when click on confirm', function () {
+            initializeController();
+            scope.confirm();
+            scope.$apply();
+
+            expect(scope.isConfirmingDelivery).toBe(true);
+        });
+    })
 });

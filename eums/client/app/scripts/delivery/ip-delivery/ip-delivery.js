@@ -5,6 +5,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Us
         LoaderService.showLoader();
 
         $scope.deliveries = [];
+        $scope.isConfirmingDelivery = false;
 
         DeliveryService.all().then(function (deliveries) {
             $scope.deliveries = deliveries;
@@ -20,6 +21,10 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Us
                 "auth.change_nimericanswer"
             ]);
         });
+
+        $scope.confirm = function() {
+            $scope.isConfirmingDelivery = true;
+        };
 
         function _isSubarray(mainArray, testArray) {
             var found = [];
