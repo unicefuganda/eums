@@ -7,6 +7,9 @@ from eums.models.item_unit import ItemUnit
 from eums.models.programme import Programme
 from eums.models.arc import Arc
 from eums.models.distribution_plan_node import DistributionPlanNode
+from eums.models.order_item import OrderItem
+from eums.models.purchase_order_item import PurchaseOrderItem
+from eums.models.release_order_item import ReleaseOrderItem
 from eums.models.distribution_plan import DistributionPlan
 from eums.models.sales_order import SalesOrder
 from eums.models.item import Item
@@ -16,10 +19,7 @@ from eums.models.flow import Flow
 from eums.models.question import Question
 from eums.models.question import TextQuestion, MultipleChoiceQuestion, NumericQuestion, Question
 from eums.models.run_queue import RunQueue
-from eums.models.order_item import OrderItem
-from eums.models.purchase_order_item import PurchaseOrderItem
 from eums.models.purchase_order import PurchaseOrder
-from eums.models.release_order_item import ReleaseOrderItem
 from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
@@ -30,6 +30,9 @@ __all__ = [
     'Run',
     'Option',
     'MultipleChoiceAnswer',
+    'OrderItem',
+    'ReleaseOrderItem',
+    'PurchaseOrderItem',
     'DistributionPlan',
     'Item',
     'ItemUnit',
@@ -47,10 +50,7 @@ __all__ = [
     'NumericQuestion',
     'Flow',
     'ReleaseOrder',
-    'ReleaseOrderItem',
-    'OrderItem',
     'DistributionReport',
     'UserProfile',
-    'PurchaseOrderItem',
     'PurchaseOrder'
 ]

@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 
-from eums.models import MultipleChoiceAnswer
+from eums.models import MultipleChoiceAnswer, PurchaseOrderItem
 from eums.models import Runnable, DistributionPlanNode
 from eums.models.programme import Programme
 
@@ -30,4 +30,11 @@ class DistributionPlan(Runnable):
                                                      ~ Q(run__status='cancelled')).first()
 
         return answer and answer.value.text == 'Yes'
+
+    def type(self):
+        delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()
+
+        if delivery_node:
+            return 'Purchase Order' if isinstance(delivery_node.item, PurchaseOrderItem) else 'Waybill'
+        return 'Unknown'
 

@@ -92,6 +92,15 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertIn(second_delivery.id, ids)
         self.assertNotIn(third_delivery.id, ids)
 
+    def test_should_return_type_of_delivery(self):
+        po_item = PurchaseOrderItemFactory()
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['type'], 'Purchase Order')
+
     def clean_up(self):
         Programme.objects.all().delete()
         Consignee.objects.all().delete()
