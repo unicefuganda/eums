@@ -1,5 +1,6 @@
 describe('IP Delivery Controller', function () {
-    var mockDeliveryService, scope, location, mockLoaderService, q, mockUserService, controller;
+    var mockDeliveryService, scope, location, mockLoaderService, q,
+        mockUserService, controller, mockAnswerService;
 
     var firstDelivery = {
         id: 1,
@@ -29,7 +30,12 @@ describe('IP Delivery Controller', function () {
     var emptyFunction = function () {
     };
     var mockModal = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
-    var viewDeliveryModal = {modal: emptyFunction, hasClass: emptyFunction, removeClass: emptyFunction, remove: emptyFunction};
+    var viewDeliveryModal = {
+        modal: emptyFunction,
+        hasClass: emptyFunction,
+        removeClass: emptyFunction,
+        remove: emptyFunction
+    };
     var jqueryFake = function (selector) {
         if (selector === '#confirmation-modal') return mockModal;
         else if (selector === '#view-delivery-modal') return viewDeliveryModal;
@@ -41,7 +47,8 @@ describe('IP Delivery Controller', function () {
             $scope: scope,
             DeliveryService: mockDeliveryService,
             LoaderService: mockLoaderService,
-            UserService: userService || mockUserService
+            UserService: userService || mockUserService,
+            AnswerService: mockAnswerService
         });
     }
 
@@ -51,13 +58,15 @@ describe('IP Delivery Controller', function () {
 
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['all']);
 
-        inject(function ($controller, $rootScope, $location, $q, LoaderService, UserService) {
+        inject(function ($controller, $rootScope, $location, $q,
+                         LoaderService, UserService, AnswerService) {
             controller = $controller;
             scope = $rootScope.$new();
             location = $location;
             q = $q;
             mockLoaderService = LoaderService;
             mockUserService = UserService;
+            mockAnswerService = AnswerService;
 
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
 
@@ -66,6 +75,8 @@ describe('IP Delivery Controller', function () {
             spyOn(mockLoaderService, 'showLoader');
             spyOn(mockLoaderService, 'hideLoader');
             spyOn(mockUserService, 'retrieveUserPermissions');
+            spyOn(mockAnswerService, 'createWebAnswer');
+            spyOn(location, 'path');
 
             mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
         });
@@ -128,6 +139,93 @@ describe('IP Delivery Controller', function () {
             scope.$apply();
 
             expect(scope.isConfirmingDelivery).toBe(true);
+        });
+
+        describe('on save answers', function () {
+            var answersPromise;
+            beforeEach(function () {
+                answersPromise = q.defer();
+
+            });
+
+            it('should show loader', function () {
+                mockAnswerService.createWebAnswer.and.returnValue(q.when());
+                scope.activeDelivery = {id: 1};
+                scope.answers = [{questionLabel: 'deliveryReceived', value: 'Yes'}];
+                initializeController();
+                scope.saveAnswers();
+                scope.$apply();
+
+                expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            });
+
+            it('should call create answer service', function () {
+                mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
+                initializeController();
+                scope.activeDelivery = {id: 1};
+                scope.answers = [
+                    {
+                        questionLabel: 'deliveryReceived',
+                        type:'multipleChoice',
+                        text: "Was delivery received?",
+                        value: 'Yes',
+                        options: ['Yes', 'No']
+                    },
+                    {
+                        questionLabel: 'dateOfReceipt',
+                        type:'text',
+                        text: "When was delivery received?",
+                        value: '2014-12-12'
+                    }
+
+                ];
+
+                scope.saveAnswers();
+                scope.$apply();
+
+                expect(mockAnswerService.createWebAnswer).toHaveBeenCalledWith(scope.activeDelivery, scope.answers)
+            });
+
+            it('should navigate to delivery items page upon successful save and  delivery is received', function () {
+                mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
+                initializeController();
+                scope.activeDelivery = {id: 1};
+                scope.answers = [
+                    {
+                        questionLabel: 'deliveryReceived',
+                        type:'multipleChoice',
+                        text: "Was delivery received?",
+                        value: 'Yes',
+                        options: ['Yes', 'No']
+                    }
+                ];
+
+                scope.saveAnswers();
+                scope.$apply();
+
+                expect(location.path).toHaveBeenCalledWith('/ip-delivery-items/' + scope.activeDelivery.id);
+            });
+
+            it('should not navigate to delivery items page upon successful save and delivery is NOT received', function () {
+                mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
+                initializeController();
+                scope.activeDelivery = {id: 1};
+                scope.answers = [
+                    {
+                        questionLabel: 'deliveryReceived',
+                        type:'multipleChoice',
+                        text: "Was delivery received?",
+                        value: 'No',
+                        options: ['Yes', 'No']
+                    }
+                ];
+
+                scope.saveAnswers();
+                scope.$apply();
+
+                expect(location.path).not.toHaveBeenCalled();
+
+            })
         });
     })
 });

@@ -36,14 +36,29 @@ describe('Answer Service', function () {
     });
 
     it('should know how to create web answer', function () {
-        var deliveryId = 1;
-        var answers = [{questionLabel: 'received', value: 'Yes'}];
+        var delivery = {id: 1};
+        var answers = [
+            {
+                questionLabel: 'deliveryReceived',
+                type:'multipleChoice',
+                text: "Was delivery received?",
+                value: 'Yes',
+                options: ['Yes', 'No']
+            },
+            {
+                questionLabel: 'dateOfReceipt',
+                type:'text',
+                text: "When was delivery received?",
+                value: '2014-12-12'
+            }
 
-        answerService.createWebAnswer(deliveryId, answers);
+        ];
+
+        answerService.createWebAnswer(delivery, answers);
 
         expect(mockService.create).toHaveBeenCalledWith(
             {
-                delivery: deliveryId,
+                delivery: delivery.id,
                 answers: answers
             });
     });
