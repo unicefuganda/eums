@@ -16,7 +16,7 @@
     "moment": "~2.8.3",
     "ngtoast": "1.2.0",
     "angular-busy": "~4.1.1",
-    "angular-file-upload": "~1.1.5",
+    "angular-file-upload": "1.1.5",
     "angular-chosen-localytics": "~1.0.6",
     "sugar": "~1.4.1",
     "angular-gs-to-snake-case": "~0.1.1",
