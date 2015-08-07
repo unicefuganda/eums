@@ -2,6 +2,7 @@
 
 var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
+var contactsPage = require('./pages/contacts-page.js');
 
 describe('Direct Delivery', function () {
 
@@ -56,6 +57,10 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderItemBalances).toContain('1000');
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$327.98');
 
+        contactsPage.clickAddContact();
+        expect(contactsPage.contactModal.isDisplayed()).toBeTruthy();
+        contactsPage.closeContactModal();
+        expect(contactsPage.contactModal.isDisplayed()).toBeFalsy();
 
         directDeliveryPage.saveDraftDelivery();
         expect(directDeliveryPage.toastMessage).toContain('Cannot save. Please fill out or fix values for all fields marked in red');

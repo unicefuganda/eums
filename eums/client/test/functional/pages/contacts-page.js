@@ -15,7 +15,34 @@ ContactsPage.prototype = Object.create({}, {
     searchBar: { get: function () { return element(by.id('filter')); }},
     searchForThisContact: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
-    }}
+    }},
+
+    clickAddContact: { value: function() {
+        element(by.css('#input-contact button')).click();
+        waitForContactModalCondition(visibilityFunction);
+    }},
+
+    closeContactModal: {value: function () {
+        element(by.css('#add-contact-modal button.close')).click();
+        waitForContactModalCondition(invisibilityFunction);
+    }},
+
+    contactModal: {get: function () { return element(by.css('#add-contact-modal .modal-header')); }}
 });
 
 module.exports = new ContactsPage;
+
+var visibilityFunction = function (conditions, modal) {
+    return conditions.visibilityOf(modal);
+};
+
+var invisibilityFunction = function (conditions, modal) {
+    return conditions.invisibilityOf(modal);
+};
+
+var waitForContactModalCondition = function (conditionFunction) {
+    var EC = protractor.ExpectedConditions;
+    var contactModal = element(by.id('add-contact-modal'));
+    var modalCondition = conditionFunction(EC, contactModal);
+    browser.wait(modalCondition, 5000, "Timeout exceeded while waiting for modal condition");
+};

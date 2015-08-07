@@ -41,6 +41,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             angular.element('#add-remark-modal').modal();
         };
 
+        $scope.addContact = function (node, nodeIndex) {
+            $scope.$broadcast('add-contact', node, nodeIndex);
+        };
+
         $scope.viewDelivery = function (delivery) {
             showLoader();
             angular.element('#view-delivery-modal').modal();
