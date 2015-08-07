@@ -1,6 +1,6 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, ReleaseOrderItem, DistributionPlan
+
+from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, ReleaseOrderItem
 
 
 class ReleaseOrderManager(models.Manager):

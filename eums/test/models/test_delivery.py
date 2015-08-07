@@ -6,8 +6,10 @@ from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
+from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
@@ -118,3 +120,19 @@ class DeliveryTest(TestCase):
         delivery = DeliveryFactory()
 
         self.assertEqual(delivery.type(), 'Unknown')
+
+    def test_should_return_delivery_with_order_number(self):
+        po = PurchaseOrderFactory(order_number=123456)
+        po_item = PurchaseOrderItemFactory(purchase_order=po)
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item)
+
+        self.assertEqual(delivery.number(), 123456)
+
+    def test_should_return_delivery_with_waybill_number(self):
+        release_order = ReleaseOrderFactory(waybill=98765)
+        release_order_item = ReleaseOrderItemFactory(release_order=release_order)
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=release_order_item)
+
+        self.assertEqual(delivery.number(), 98765)

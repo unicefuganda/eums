@@ -12,6 +12,7 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.run_factory import RunFactory
@@ -100,6 +101,16 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         response = self.client.get(ENDPOINT_URL)
 
         self.assertEqual(response.data[0]['type'], 'Purchase Order')
+
+    def test_should_return_number_of_delivery(self):
+        purchase_order = PurchaseOrderFactory(order_number=98765)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['number'], 98765)
 
     def clean_up(self):
         Programme.objects.all().delete()

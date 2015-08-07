@@ -38,3 +38,6 @@ class DistributionPlan(Runnable):
             return 'Purchase Order' if isinstance(delivery_node.item, PurchaseOrderItem) else 'Waybill'
         return 'Unknown'
 
+    def number(self):
+        delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()
+        return delivery_node.item.number() if delivery_node and delivery_node.item else 'Unknown'
