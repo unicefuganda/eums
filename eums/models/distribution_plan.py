@@ -29,7 +29,7 @@ class DistributionPlan(Runnable):
                                                      Q(question__label='deliveryReceived'),
                                                      ~ Q(run__status='cancelled')).first()
 
-        return answer and answer.value.text == 'Yes'
+        return True if answer and answer.value.text == 'Yes' else False
 
     def type(self):
         delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()

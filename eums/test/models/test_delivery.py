@@ -55,6 +55,8 @@ class DeliveryTest(TestCase):
         option = OptionFactory(text='Yes', question=question)
         run = RunFactory(runnable=delivery)
 
+        self.assertFalse(delivery.is_received())
+
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
         self.assertTrue(delivery.is_received())
