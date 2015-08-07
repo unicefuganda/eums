@@ -4,7 +4,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
     .controller('IpDeliveryController', function ($scope, $location, DeliveryService, LoaderService,
                                                   UserService, AnswerService) {
         $scope.deliveries = [];
-
+        $scope.answers = [];
         $scope.activeDelivery = undefined;
         $scope.hasReceivedDelivery = undefined;
 
@@ -22,19 +22,21 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         UserService.retrieveUserPermissions()
             .then(function (userPermissions) {
                 $scope.canConfirm = _isSubarray(userPermissions, [
-                    "auth.can_view_distribution_plans",
-                    "auth.can_add_textanswer",
-                    "auth.change_textanswer",
-                    "auth.add_nimericanswer",
-                    "auth.change_nimericanswer"
+                    'auth.can_view_distribution_plans',
+                    'auth.can_add_textanswer',
+                    'auth.change_textanswer',
+                    'auth.add_nimericanswer',
+                    'auth.change_nimericanswer'
                 ]);
             });
 
         $scope.confirm = function (delivery) {
+            LoaderService.showLoader();
             DeliveryService.getDetail(delivery, 'answers')
                 .then(function (answers) {
                     $scope.activeDelivery = delivery;
                     $scope.answers = answers;
+                    LoaderService.hideLoader();
                 });
         };
 
@@ -45,7 +47,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     if (isDeliveryReceived('deliveryReceived', $scope.answers)) {
                         $location.path('/ip-delivery-items/' + $scope.activeDelivery.id);
                     }
-                    $scope.answers = undefined;
+                    $scope.answers = [];
                     $scope.activeDelivery = undefined;
                 });
         };

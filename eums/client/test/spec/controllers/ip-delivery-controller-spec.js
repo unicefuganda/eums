@@ -132,6 +132,7 @@ describe('IP Delivery Controller', function () {
             scope.$apply();
 
             expect(scope.activeDelivery).toBe(undefined);
+            expect(scope.answers).toEqual([]);
         });
 
         it('should load answers when click on confirm', function () {
@@ -151,6 +152,8 @@ describe('IP Delivery Controller', function () {
             scope.confirm(delivery);
             scope.$apply();
 
+            expect(mockLoaderService.showLoader.calls.count()).toBe(2);
+            expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
             expect(scope.activeDelivery).toBe(delivery);
             expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(delivery, 'answers');
             expect(scope.answers).toBe(answers);
@@ -243,7 +246,7 @@ describe('IP Delivery Controller', function () {
 
                 expect(location.path).not.toHaveBeenCalled();
                 expect(scope.activeDelivery).toBe(undefined);
-                expect(scope.answers).toBe(undefined)
+                expect(scope.answers).toEqual([])
             });
         });
     })
