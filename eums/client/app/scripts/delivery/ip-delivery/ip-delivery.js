@@ -1,11 +1,12 @@
 'use strict';
 
-angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Loader', 'User', 'Answer'])
-    .controller('IpDeliveryController', function ($scope, DeliveryService, LoaderService,
-                                                  UserService, AnswerService, $location) {
+angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer'])
+    .controller('IpDeliveryController', function ($scope, $location, DeliveryService, LoaderService,
+                                                  UserService, AnswerService) {
         $scope.deliveries = [];
 
-        $scope.isConfirmingDelivery = false;
+        $scope.activeDelivery = undefined;
+        $scope.hasReceivedDelivery = undefined;
 
         function loadDeliveries() {
             LoaderService.showLoader();
@@ -29,8 +30,12 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Us
                 ]);
             });
 
-        $scope.confirm = function () {
-            $scope.isConfirmingDelivery = true;
+        $scope.confirm = function (delivery) {
+            DeliveryService.getDetail(delivery, 'answers')
+                .then(function (answers) {
+                    $scope.activeDelivery = delivery;
+                    $scope.answers = answers;
+                });
         };
 
         $scope.saveAnswers = function () {
@@ -40,6 +45,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Us
                     if (isDeliveryReceived('deliveryReceived', $scope.answers)) {
                         $location.path('/ip-delivery-items/' + $scope.activeDelivery.id);
                     }
+                    $scope.answers = undefined;
+                    $scope.activeDelivery = undefined;
                 });
         };
 
@@ -48,7 +55,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Us
                 return answer.questionLabel === questionLabel && answer.value === 'Yes';
             });
 
-            return received? true :false;
+            return received ? true : false;
         }
 
         function _isSubarray(mainArray, testArray) {

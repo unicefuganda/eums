@@ -56,10 +56,8 @@ describe('IP Delivery Controller', function () {
 
         module('IpDelivery');
 
-        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['all']);
-
         inject(function ($controller, $rootScope, $location, $q,
-                         LoaderService, UserService, AnswerService) {
+                         LoaderService, UserService, AnswerService, DeliveryService) {
             controller = $controller;
             scope = $rootScope.$new();
             location = $location;
@@ -67,17 +65,20 @@ describe('IP Delivery Controller', function () {
             mockLoaderService = LoaderService;
             mockUserService = UserService;
             mockAnswerService = AnswerService;
-
-            mockDeliveryService.all.and.returnValue(q.when(deliveries));
+            mockDeliveryService = DeliveryService;
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
+
             spyOn(mockModal, 'modal');
             spyOn(mockLoaderService, 'showLoader');
             spyOn(mockLoaderService, 'hideLoader');
             spyOn(mockUserService, 'retrieveUserPermissions');
             spyOn(mockAnswerService, 'createWebAnswer');
+            spyOn(mockDeliveryService, 'all');
+            spyOn(mockDeliveryService, 'getDetail');
             spyOn(location, 'path');
 
+            mockDeliveryService.all.and.returnValue(q.when(deliveries));
             mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
         });
     });
@@ -126,19 +127,33 @@ describe('IP Delivery Controller', function () {
     });
 
     describe('on confirm', function () {
-        it('should set is confirming delivery to false when initializing the controller', function () {
+        it('should set active delivery to undefined when initializing the controller', function () {
             initializeController();
             scope.$apply();
 
-            expect(scope.isConfirmingDelivery).toBe(false);
+            expect(scope.activeDelivery).toBe(undefined);
         });
 
-        it('should set is confirming delivery to true when click on confirm', function () {
+        it('should load answers when click on confirm', function () {
+            var answers = [
+                {
+                    questionLabel: 'deliveryReceived',
+                    type:'multipleChoice',
+                    text: "Was delivery received?",
+                    value: 'No',
+                    options: ['Yes', 'No']
+                }
+            ];
+
+            mockDeliveryService.getDetail.and.returnValue(q.when(answers));
             initializeController();
-            scope.confirm();
+            var delivery = {id: 1};
+            scope.confirm(delivery);
             scope.$apply();
 
-            expect(scope.isConfirmingDelivery).toBe(true);
+            expect(scope.activeDelivery).toBe(delivery);
+            expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(delivery, 'answers');
+            expect(scope.answers).toBe(answers);
         });
 
         describe('on save answers', function () {
@@ -150,9 +165,9 @@ describe('IP Delivery Controller', function () {
 
             it('should show loader', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when());
-                scope.activeDelivery = {id: 1};
                 scope.answers = [{questionLabel: 'deliveryReceived', value: 'Yes'}];
                 initializeController();
+                scope.activeDelivery = {id: 1};
                 scope.saveAnswers();
                 scope.$apply();
 
@@ -162,34 +177,37 @@ describe('IP Delivery Controller', function () {
             it('should call create answer service', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
-                scope.activeDelivery = {id: 1};
-                scope.answers = [
+                var delivery = {id: 1};
+                scope.activeDelivery = delivery;
+                var answers = [
                     {
                         questionLabel: 'deliveryReceived',
-                        type:'multipleChoice',
+                        type: 'multipleChoice',
                         text: "Was delivery received?",
                         value: 'Yes',
                         options: ['Yes', 'No']
                     },
                     {
                         questionLabel: 'dateOfReceipt',
-                        type:'text',
+                        type: 'text',
                         text: "When was delivery received?",
                         value: '2014-12-12'
                     }
 
                 ];
+                scope.answers = answers;
 
                 scope.saveAnswers();
                 scope.$apply();
 
-                expect(mockAnswerService.createWebAnswer).toHaveBeenCalledWith(scope.activeDelivery, scope.answers)
+                expect(mockAnswerService.createWebAnswer).toHaveBeenCalledWith(delivery, answers)
             });
 
             it('should navigate to delivery items page upon successful save and  delivery is received', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
-                scope.activeDelivery = {id: 1};
+                var delivery = {id: 1};
+                scope.activeDelivery = delivery;
                 scope.answers = [
                     {
                         questionLabel: 'deliveryReceived',
@@ -203,7 +221,7 @@ describe('IP Delivery Controller', function () {
                 scope.saveAnswers();
                 scope.$apply();
 
-                expect(location.path).toHaveBeenCalledWith('/ip-delivery-items/' + scope.activeDelivery.id);
+                expect(location.path).toHaveBeenCalledWith('/ip-delivery-items/' + delivery.id);
             });
 
             it('should not navigate to delivery items page upon successful save and delivery is NOT received', function () {
@@ -224,8 +242,9 @@ describe('IP Delivery Controller', function () {
                 scope.$apply();
 
                 expect(location.path).not.toHaveBeenCalled();
-
-            })
+                expect(scope.activeDelivery).toBe(undefined);
+                expect(scope.answers).toBe(undefined)
+            });
         });
     })
 });
