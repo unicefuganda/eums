@@ -45,7 +45,6 @@
                         <div id="input-delivery-date" class="col-md-7 pad-small" ng-if="contentLoaded">
                             <span class="input-group" eums-date-picker>
                                 <input type="text" class="form-control"
-                                       placeholder="Delivery Date"
                                        datepicker-popup="dd/MM/yyyy"
                                        ng-model="delivery.delivery_date"
                                        is-open="datepicker[$index]"
@@ -132,7 +131,7 @@
                             <tr>
                                 <th class="item-list-col-header">#</th>
                                 <th class="item-list-col-header">Date</th>
-                                <th class="item-list-col-header">Total Value</th>
+                                <th class="item-list-col-header">Approximate Total Value</th>
                             </tr>
                             <tr ng-repeat="(index, delivery) in trackedDeliveries">
                                 <td>{{ index + 1 }}</td>
@@ -156,7 +155,7 @@
                                     <th class="item-list-col-header">Value in PO</th>
                                     <th class="item-list-col-header">Avail. Balance</th>
                                     <th class="item-list-col-header">Qty Shipped</th>
-                                    <th class="item-list-col-header">Value of Delivery</th>
+                                    <th class="item-list-col-header">Approximate Value</th>
                                 </tr>
                                 <tr ng-repeat="(index, item) in purchaseOrderItems">
                                     <td>{{ index + 1 }}</td>

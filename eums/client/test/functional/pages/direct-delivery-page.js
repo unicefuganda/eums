@@ -16,7 +16,13 @@ DirectDeliveryPage.prototype = Object.create({}, {
 
     selectPurchaseOrderByNumber: { value: function (text) { element(by.linkText(text)).click(); }},
     selectSingleIP: { value: function () { element(by.id('single-ip')).click(); }},
-    selectMultipleIP: { value: function () { element(by.id('multiple-ip')).click(); }},
+    selectMultipleIP: { value: function() {
+        var EC = protractor.ExpectedConditions;
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
+        var screenHasLoaded = EC.stalenessOf(fadingModal);
+        browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
+        element(by.id('multiple-ip')).click();
+    }},
 
     implementingPartner: { get: function () { return element(by.css('#input-consignee')).getText(); }},
 
