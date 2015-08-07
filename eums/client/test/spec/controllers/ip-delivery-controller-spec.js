@@ -159,6 +159,28 @@ describe('IP Delivery Controller', function () {
             expect(scope.answers).toBe(answers);
         });
 
+        it('should set has received delivery based on the answer of delivery received', function(){
+            mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
+            initializeController();
+            scope.answers = [
+                {
+                    questionLabel: 'deliveryReceived',
+                    type:'multipleChoice',
+                    text: "Was delivery received?",
+                    value: 'No',
+                    options: ['Yes', 'No']
+                }
+            ];
+            scope.$apply();
+
+            expect(scope.hasReceivedDelivery).toBe(false);
+
+            scope.answers.first().value = 'Yes';
+            scope.$apply();
+
+            expect(scope.hasReceivedDelivery).toBe(true);
+        });
+
         describe('on save answers', function () {
             var answersPromise;
             beforeEach(function () {

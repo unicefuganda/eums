@@ -52,6 +52,10 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 });
         };
 
+        $scope.$watch('answers', function () {
+            $scope.hasReceivedDelivery = $scope.answers && isDeliveryReceived('deliveryReceived', $scope.answers);
+        }, true);
+
         function isDeliveryReceived(questionLabel, answers) {
             var received = answers.find(function (answer) {
                 return answer.questionLabel === questionLabel && answer.value === 'Yes';
