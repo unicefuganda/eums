@@ -73,3 +73,10 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn('results', response.data)
         self.assertEqual(response.data, [])
+
+    def test_should_search_item_by_description(self):
+        item = ItemFactory(description='Plumpynut')
+        ItemFactory(description='AA')
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'Plum'))
+        self.assertEqual(len(response.data), 1)
+        self.assertIn(item.id, [item['id'] for item in response.data])

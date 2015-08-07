@@ -17,6 +17,7 @@ class ItemViewSet(ModelViewSet):
     queryset = Item.objects.all().order_by('description')
     serializer_class = ItemSerialiser
     pagination_class = StandardResultsSetPagination
+    search_fields = ('description',)
 
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
