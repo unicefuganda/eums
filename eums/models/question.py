@@ -7,9 +7,13 @@ class Question(models.Model):
     text = models.TextField()
     label = models.CharField(max_length=255, unique=True)
     uuids = TextArrayField(dimension=1)
+    flow = models.ForeignKey('Flow', related_name='questions')
 
     def __unicode__(self):
         return '%s' % self.text
+
+    class Meta:
+        unique_together = ('flow', 'label')
 
 
 class NumericQuestion(Question):

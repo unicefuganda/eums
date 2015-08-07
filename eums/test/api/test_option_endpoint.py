@@ -4,7 +4,6 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.models.question import MultipleChoiceQuestion
 
-
 ENDPOINT_URL = BACKEND_URL + 'option/'
 RECEIVED_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'received-options/'
 QUALITY_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'quality-options/'
@@ -35,9 +34,10 @@ class OptionsEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(option_two_details, get_response.data[0])
         self.assertDictContainsSubset(option_one_details, get_response.data[1])
 
+
 class ReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_received_options(self):
-        received_question,_ = MultipleChoiceQuestion.objects.get_or_create(
+        received_question = MultipleChoiceQuestionFactory(
             uuids=['6c1cf97d-59b8-4bd3-815b-783abd3dfad9'],
             text='Was product received?', label='productReceived'
         )
@@ -58,9 +58,10 @@ class ReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(option_two_details, get_response.data[2])
         self.assertNotIn(option_three_details, get_response.data)
 
+
 class QualityOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_quality_options_sorted_by_text(self):
-        quality_question,_ = MultipleChoiceQuestion.objects.get_or_create(
+        quality_question = MultipleChoiceQuestionFactory(
             uuids=['6c1cf92d-59b8-4bd3-815b-783abd3dfad9'],
             text='What is the quality of the product?', label='qualityOfProduct'
         )
@@ -81,9 +82,10 @@ class QualityOptionsEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(option_one_details, get_response.data[1])
         self.assertNotIn(option_three_details, get_response.data)
 
+
 class SatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_satisfied_options(self):
-        satisfied_question,_ = MultipleChoiceQuestion.objects.get_or_create(
+        satisfied_question = MultipleChoiceQuestionFactory(
             uuids=['6c1cf27d-59b8-4bd3-815b-783abd3dfad9'],
             text='Are you satisfied with the product?', label='satisfiedWithProduct'
         )

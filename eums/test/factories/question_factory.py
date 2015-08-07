@@ -1,6 +1,7 @@
 import factory
 
 from eums.models import NumericQuestion, MultipleChoiceQuestion, TextQuestion
+from eums.test.factories.flow_factory import FlowFactory
 
 
 class NumericQuestionFactory(factory.DjangoModelFactory):
@@ -10,6 +11,7 @@ class NumericQuestionFactory(factory.DjangoModelFactory):
     text = 'How old are you?'
     label = factory.Sequence(lambda n: 'numeric_label {0}'.format(n))
     uuids = [factory.Sequence(lambda n: '{0}'.format(n))]
+    flow = factory.SubFactory(FlowFactory)
 
 
 class TextQuestionFactory(factory.DjangoModelFactory):
@@ -19,6 +21,7 @@ class TextQuestionFactory(factory.DjangoModelFactory):
     text = 'What is your name'
     label = factory.Sequence(lambda n: 'text_label {0}'.format(n))
     uuids = [factory.Sequence(lambda n: '{0}'.format(n))]
+    flow = factory.SubFactory(FlowFactory)
 
 
 class MultipleChoiceQuestionFactory(factory.DjangoModelFactory):
@@ -28,3 +31,4 @@ class MultipleChoiceQuestionFactory(factory.DjangoModelFactory):
     text = 'What is your name'
     label = factory.Sequence(lambda n: 'multiple_choice_label {0}'.format(n))
     uuids = [factory.Sequence(lambda n: '{0}'.format(n))]
+    flow = factory.SubFactory(FlowFactory)

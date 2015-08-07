@@ -1,14 +1,16 @@
 from unittest import TestCase
 
 from eums.models import Option
-from eums.models.question import Question, MultipleChoiceQuestion, TextQuestion, NumericQuestion
+from eums.models.question import Question
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
+    NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 
 class QuestionTest(TestCase):
     def setUp(self):
-        self.multiple_choice_question = MultipleChoiceQuestion.objects.create(text='Whats your gender?', label='gender')
-        self.text_question = TextQuestion.objects.create(text='Are you happy?', label="happiness")
+        self.multiple_choice_question = MultipleChoiceQuestionFactory(text='Whats your gender?', label='gender')
+        self.text_question = TextQuestionFactory(text='Are you happy?', label="happiness")
 
     def test_should_have_all_expected_fields(self):
         question = Question()
@@ -68,7 +70,7 @@ class MultipleChoiceQuestionTest(QuestionTest):
 
 class NumericQuestionTest(QuestionTest):
     def test_should_save_numeric_answer(self):
-        numeric_question = NumericQuestion.objects.create(text='How old are you?')
+        numeric_question = NumericQuestionFactory(text='How old are you?')
         number = 20
         params = {'text': number}
         run = RunFactory()

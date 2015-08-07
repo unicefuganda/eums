@@ -11,10 +11,6 @@ class PurchaseOrderItem(OrderItem):
     sales_order_item = models.ForeignKey('SalesOrderItem')
     value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
 
-    # class Meta:
-    #     app_label = 'eums'
-    #     unique_together = ('purchase_order', 'item_number', 'sales_order_item')
-
     def available_balance(self):
         return self.quantity - self.quantity_shipped()
 

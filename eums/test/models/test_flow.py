@@ -9,8 +9,8 @@ class FlowTest(TestCase):
         flow = Flow()
         fields = [field for field in flow._meta._name_map]
 
-        self.assertEqual(len(fields), 4)
-        for field in ['id', 'rapid_pro_id', 'end_nodes']:
+        self.assertEqual(len(fields), 5)
+        for field in ['id', 'rapid_pro_id', 'end_nodes', 'questions']:
             self.assertIn(field, fields)
 
     def test_should_tell_if_question_answer_combination_ends_the_flow(self):

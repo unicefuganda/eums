@@ -4,7 +4,7 @@ from eums.fixtures.flows import seed_flows
 
 seed_flows()
 
-from eums.fixtures.questions import seed_questions
+from eums.fixtures.questions import seed_questions_and_flows
 from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -123,7 +123,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
     def setup_responses(self):
         self.setup_runs()
-        seed_questions()
+        seed_questions_and_flows()
         self.setup_answers()
 
     def setup_quantity_received_answers(self):

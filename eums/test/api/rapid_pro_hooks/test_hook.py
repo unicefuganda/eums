@@ -2,13 +2,14 @@ from mock import patch
 from rest_framework.test import APITestCase
 
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory, \
+    MultipleChoiceQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, Run, Flow, \
     MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion
 from eums.test.config import BACKEND_URL
 from eums.test.factories.flow_factory import FlowFactory
-
 
 HOOK_URL = BACKEND_URL + 'hook/'
 
@@ -17,12 +18,12 @@ class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
-        self.flow = FlowFactory.create(rapid_pro_id=self.flow_id)
+        self.flow = FlowFactory(rapid_pro_id=self.flow_id)
 
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self):
         uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
-        question, _ = MultipleChoiceQuestion.objects.get_or_create(
+        question = MultipleChoiceQuestionFactory(
             uuids=[uuid], text='Was item received?', label='productReceived'
         )
 
@@ -46,7 +47,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self):
         uuidS = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
 
-        question, _ = MultipleChoiceQuestion.objects.get_or_create(
+        question = MultipleChoiceQuestionFactory(
             uuids=[uuidS], text='Was item received?', label='productReceived'
         )
 
@@ -71,7 +72,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self):
         uuid = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
 
-        TextQuestion.objects.get_or_create(uuids=[uuid], text='What date was it received?', label='dateOfReceipt')
+        TextQuestionFactory(uuids=[uuid], text='What date was it received?', label='dateOfReceipt')
 
         run = RunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 'Some Text', None, 'dateOfReceipt')
@@ -87,7 +88,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self):
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
+        NumericQuestionFactory(uuids=[uuid], text='How much was received?', label='amountReceived')
 
         run = RunFactory(phone=('%s' % self.PHONE))
         url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 42, None, 'amountReceived')
@@ -107,8 +108,8 @@ class HookTest(APITestCase):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
-                                                            label='amountReceived')
+        question = NumericQuestionFactory(uuids=[uuid], text='How much was received?',
+                                             label='amountReceived')
 
         node = DeliveryNodeFactory()
 
@@ -128,16 +129,16 @@ class HookTest(APITestCase):
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_mark_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue,
-                                                                     mock_schedule_next_run):
+                                                                mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
+        question = NumericQuestionFactory(uuids=[uuid], text='How much was received?',
                                                             label='amountReceived')
 
         node = DeliveryNodeFactory()
         run = RunFactory(runnable=node, phone=self.PHONE,
-                              status=Run.STATUS.scheduled)
+                         status=Run.STATUS.scheduled)
 
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             runnable=node,
@@ -154,17 +155,17 @@ class HookTest(APITestCase):
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_not_mark_run_as_complete_when_question_is_not_final(self, mock_run_queue_dequeue,
-                                                                             mock_schedule_next_run):
+                                                                        mock_schedule_next_run):
         mock_schedule_next_run.return_value = None
 
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?', label='amountReceived')
+        NumericQuestionFactory(uuids=[uuid], text='How much was received?', label='amountReceived')
 
         node = DeliveryNodeFactory()
         original_status = Run.STATUS.scheduled
         run = RunFactory(runnable=node, phone=self.PHONE,
-                              status=original_status)
+                         status=original_status)
         mock_run_queue_dequeue.return_value = RunQueueFactory(
             runnable=node,
             contact_person_id=node.contact_person_id)
@@ -181,7 +182,7 @@ class HookTest(APITestCase):
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         mock_schedule_next_run.return_value = None
-        question, _ = NumericQuestion.objects.get_or_create(uuids=[uuid], text='How much was received?',
+        question = NumericQuestionFactory(uuids=[uuid], text='How much was received?',
                                                             label='amountReceived')
 
         node = DeliveryNodeFactory()

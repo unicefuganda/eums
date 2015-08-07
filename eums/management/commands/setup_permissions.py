@@ -1,5 +1,9 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
+from eums.auth import create_groups, create_permissions
+
+create_groups()
+create_permissions()
 
 GROUP_PERMISSIONS = {
     'UNICEF_admin': [

@@ -1,3 +1,4 @@
+from eums.fixtures.flows import seed_flows
 from eums.models import Consignee
 from eums.models import DistributionPlan
 from eums.models import DistributionPlanNode
@@ -21,6 +22,9 @@ from eums.models import MultipleChoiceQuestion
 from eums.models import Option
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+
+
+flows = seed_flows()
 
 # Consignees
 consignee_1 = Consignee.objects.get(customer_id="L438000484")
@@ -1588,16 +1592,16 @@ run_75 = Run.objects.create(runnable=node_22, status="scheduled", scheduled_mess
 run_76 = Run.objects.create(runnable=node_24, status="scheduled", scheduled_message_task_id="d4196d31-1bdf-43c3-a7f0-8c45f8ce63cc", phone="+256 773 196588") 
 
 
-mc_question_1 = MultipleChoiceQuestion.objects.create(text="Was product received?", uuids=["2ff9fab3-4c12-400e-a2fe-4551fa1ebc18", "93bbd12e-417c-4789-9c42-6dc6959c03be", "53a31c08-896e-43b2-bd1f-e5a527d389b9", "b8189435-a6b5-42a0-b5b0-91c95484dae1"], label="productReceived")
-mc_question_4 = MultipleChoiceQuestion.objects.create(text="What is the quality of the product?", uuids=["6c1cf92d-59b8-4bd3-815b-783abd3dfad9", "fe368546-1b9c-4a15-926d-68b7caaa0380"], label="qualityOfProduct")
-mc_question_5 = MultipleChoiceQuestion.objects.create(text="Are you satisfied with the product?", uuids=["7a5c8f57-5c3f-4659-b717-0de556898157", "dc27480e-4931-46a8-9bea-ad0dadbec1d8"], label="satisfiedWithProduct")
-mc_question_6 = MultipleChoiceQuestion.objects.create(text="Have you been informed of the delay?", uuids=["18b2ea96-cb63-40d8-8c26-1985a944ff1c", "84150f15-b18b-4efa-be6b-ad24bc68a08f", "4e46a52d-8ea1-4bc4-824c-f8da74ce7ad0", "269aa1f7-7ca5-46f6-9bc0-6ad3fb7a5629"], label="informedOfDelay")
+mc_question_1 = MultipleChoiceQuestion.objects.create(text="Was product received?", uuids=["2ff9fab3-4c12-400e-a2fe-4551fa1ebc18", "93bbd12e-417c-4789-9c42-6dc6959c03be", "53a31c08-896e-43b2-bd1f-e5a527d389b9", "b8189435-a6b5-42a0-b5b0-91c95484dae1"], label="productReceived", flow=flows['END_USER_FLOW'])
+mc_question_4 = MultipleChoiceQuestion.objects.create(text="What is the quality of the product?", uuids=["6c1cf92d-59b8-4bd3-815b-783abd3dfad9", "fe368546-1b9c-4a15-926d-68b7caaa0380"], label="qualityOfProduct", flow=flows['END_USER_FLOW'])
+mc_question_5 = MultipleChoiceQuestion.objects.create(text="Are you satisfied with the product?", uuids=["7a5c8f57-5c3f-4659-b717-0de556898157", "dc27480e-4931-46a8-9bea-ad0dadbec1d8"], label="satisfiedWithProduct", flow=flows['END_USER_FLOW'])
+mc_question_6 = MultipleChoiceQuestion.objects.create(text="Have you been informed of the delay?", uuids=["18b2ea96-cb63-40d8-8c26-1985a944ff1c", "84150f15-b18b-4efa-be6b-ad24bc68a08f", "4e46a52d-8ea1-4bc4-824c-f8da74ce7ad0", "269aa1f7-7ca5-46f6-9bc0-6ad3fb7a5629"], label="informedOfDelay", flow=flows['END_USER_FLOW'])
 
-numeric_question_3 = NumericQuestion.objects.create(text="How much was received?", uuids=["69de6032-f4de-412a-9c9e-ed98fb9bca93", "9af2907a-d3a6-41ee-8a12-0b3197d30baf"], label="amountReceived")
+numeric_question_3 = NumericQuestion.objects.create(text="How much was received?", uuids=["69de6032-f4de-412a-9c9e-ed98fb9bca93", "9af2907a-d3a6-41ee-8a12-0b3197d30baf"], label="amountReceived", flow=flows['END_USER_FLOW'])
 
-text_question_2 = TextQuestion.objects.create(text="What date was it received?", uuids=["abc9c005-7a7c-44f8-b946-e970a361b6cf", "884ed6d8-1cef-4878-999d-bce7de85e27c"], label="dateOfReceipt")
-text_question_7 = TextQuestion.objects.create(text="What did the partner say is the revised delivery date?", uuids=["e9c35020-e751-4611-b222-5573b7040c49", "3f5d290a-067d-4cb9-bb09-ed7c424a6abd"], label="revisedDeliveryDate")
-text_question_8 = TextQuestion.objects.create(text="Feedback about Dissatisfaction", uuids=["4dd1a813-27d4-4511-82e3-cc470fcd3baa"], label="feedbackAboutDissatisfaction")
+text_question_2 = TextQuestion.objects.create(text="What date was it received?", uuids=["abc9c005-7a7c-44f8-b946-e970a361b6cf", "884ed6d8-1cef-4878-999d-bce7de85e27c"], label="dateOfReceipt", flow=flows['END_USER_FLOW'])
+text_question_7 = TextQuestion.objects.create(text="What did the partner say is the revised delivery date?", uuids=["e9c35020-e751-4611-b222-5573b7040c49", "3f5d290a-067d-4cb9-bb09-ed7c424a6abd"], label="revisedDeliveryDate", flow=flows['END_USER_FLOW'])
+text_question_8 = TextQuestion.objects.create(text="Feedback about Dissatisfaction", uuids=["4dd1a813-27d4-4511-82e3-cc470fcd3baa"], label="feedbackAboutDissatisfaction", flow=flows['END_USER_FLOW'])
 
 
 NumericAnswer.objects.create(run=run_7, question=numeric_question_3, value=50)

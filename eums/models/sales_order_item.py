@@ -11,10 +11,6 @@ class SalesOrderItem(OrderItem):
     delivery_date = models.DateField(null=True)
     description = models.CharField(max_length=255)
 
-    # class Meta:
-        # app_label = 'eums'
-        # unique_together = ('item', 'item_number', 'sales_order')
-
     def purchase_order_item(self):
         return self.purchaseorderitem_set.all().first()
 

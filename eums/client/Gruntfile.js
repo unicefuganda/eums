@@ -338,9 +338,9 @@ module.exports = function (grunt) {
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
+        'shell:setupPermissions',
         'shell:seedData',
         'shell:mapData',
-        'shell:setupPermissions',
         'apimocker'
     ]);
 

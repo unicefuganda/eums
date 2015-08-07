@@ -16,12 +16,9 @@ def teardown_groups():
 
 def create_groups():
     Group.objects.get_or_create(name='UNICEF_admin')
-    Group.objects.filter(name='UNICEF').delete()
-
     Group.objects.get_or_create(name='UNICEF_editor')
     Group.objects.get_or_create(name='UNICEF_viewer')
     Group.objects.get_or_create(name='Implementing Partner_editor')
-    Group.objects.filter(name='Implementing Partner').delete()
     Group.objects.get_or_create(name='Implementing Partner_viewer')
 
 perm_code_names = [
