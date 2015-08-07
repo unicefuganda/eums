@@ -76,7 +76,7 @@ def seed_questions_and_flows():
     END_USER_FLOW.save()
 
     question_8, _ = MultipleChoiceQuestion.objects.get_or_create(
-        uuids=['b0901183-6066-40db-8a31-0b43e190bed1', '76b64b48-1cf6-4ade-9747-69a8aff8cd2a'],
+        uuids=['b0901183-6066-40db-8a31-0b43e190bed1', '31e426cd-6934-4252-869f-4e1843691d4a'],
         text='Was delivery received?', label='deliveryReceived', flow=IMPLEMENTING_PARTNER)
 
     Option.objects.get_or_create(text='Yes', question=question_8)

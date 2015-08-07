@@ -1,3 +1,5 @@
+from celery.utils.log import get_task_logger
+
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
@@ -5,12 +7,14 @@ from eums.models import Run, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
 
+logger = get_task_logger(__name__)
 
 @csrf_exempt
 def hook(request):
     # TODO: Remove the try catch. This suppresses the errors and was added due to rapidPro flakiness
     try:
         params = request.POST
+        logger.info("params %s:" % params)
         flow = Flow.objects.get(rapid_pro_id=params['flow'])
         run = Run.objects.filter(
             phone=params['phone'],
