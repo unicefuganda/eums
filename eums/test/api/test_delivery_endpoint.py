@@ -112,6 +112,23 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(response.data[0]['number'], 98765)
 
+    def test_should_return_number_of_items_on_the_delivery(self):
+        purchase_order = PurchaseOrderFactory(order_number=98765)
+        po_item_one = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        po_item_two = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item_one)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['number_of_items'], 1)
+
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item_two)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['number_of_items'], 2)
+
     def clean_up(self):
         Programme.objects.all().delete()
         Consignee.objects.all().delete()

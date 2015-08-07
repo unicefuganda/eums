@@ -41,3 +41,6 @@ class DistributionPlan(Runnable):
     def number(self):
         delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()
         return delivery_node.item.number() if delivery_node and delivery_node.item else 'Unknown'
+
+    def number_of_items(self):
+        return DistributionPlanNode.objects.filter(distribution_plan=self).count()

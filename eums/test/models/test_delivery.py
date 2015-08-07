@@ -136,3 +136,15 @@ class DeliveryTest(TestCase):
         DeliveryNodeFactory(distribution_plan=delivery, item=release_order_item)
 
         self.assertEqual(delivery.number(), 98765)
+
+    def test_should_return_number_of_items_on_a_delivery(self):
+        po = PurchaseOrderFactory(order_number=123456)
+        po_item_one = PurchaseOrderItemFactory(purchase_order=po)
+        po_item_two = PurchaseOrderItemFactory(purchase_order=po)
+        delivery = DeliveryFactory()
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item_one)
+
+        self.assertEqual(delivery.number_of_items(), 1)
+
+        DeliveryNodeFactory(distribution_plan=delivery, item=po_item_two)
+        self.assertEqual(delivery.number_of_items(), 2)
