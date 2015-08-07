@@ -29,6 +29,7 @@
         "TEXT_ANSWERS": "/api/text-answers/",
         "NUMERIC_ANSWERS": "/api/numeric-answers/",
         "MULTIPLE_CHOICE_ANSWERS": "/api/multiple-choice-answers/",
+        "WEB_ANSWERS": "/api/web-answers/",
         "IMPORT_SALES_ORDERS": "/api/import-sales-orders/",
         "IMPORT_RELEASE_ORDERS": "/api/import-release-orders/",
         "IMPORT_PURCHASE_ORDERS": "/api/import-purchase-orders/",

@@ -114,7 +114,7 @@ describe('IP Delivery Controller', function () {
         });
     });
 
-    ddescribe('on confirm', function () {
+    describe('on confirm', function () {
         it('should set is confirming delivery to false when initializing the controller', function () {
             initializeController();
             scope.$apply();

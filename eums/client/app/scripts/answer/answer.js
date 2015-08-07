@@ -5,6 +5,7 @@ angular.module('Answer', ['eums.config', 'eums.service-factory'])
         var multipleChoiceAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.MULTIPLE_CHOICE_ANSWERS});
         var textAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.TEXT_ANSWERS});
         var numericAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.NUMERIC_ANSWERS});
+        var webAnswerService = ServiceFactory.create({uri: EumsConfig.BACKEND_URLS.WEB_ANSWERS});
         var method = 'PATCH';
 
         return {
@@ -19,6 +20,14 @@ angular.module('Answer', ['eums.config', 'eums.service-factory'])
             createNumericAnswer: numericAnswerService.create,
             updateNumericAnswer: function (answerId, answerDetails) {
                 return numericAnswerService.update(Object.merge({id: answerId}, answerDetails), method);
+            },
+            createWebAnswer: function (deliveryId, answers) {
+                return webAnswerService.create(Object.merge(
+                    {
+                        delivery: deliveryId,
+                        answers: answers
+                    })
+                );
             }
         };
     });

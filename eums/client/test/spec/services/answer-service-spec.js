@@ -34,4 +34,17 @@ describe('Answer Service', function () {
         answerService.updateNumericAnswer(answerId, answer);
         expect(mockService.update).toHaveBeenCalledWith(data, 'PATCH');
     });
+
+    it('should know how to create web answer', function () {
+        var deliveryId = 1;
+        var answers = [{questionLabel: 'received', value: 'Yes'}];
+
+        answerService.createWebAnswer(deliveryId, answers);
+
+        expect(mockService.create).toHaveBeenCalledWith(
+            {
+                delivery: deliveryId,
+                answers: answers
+            });
+    });
 });
