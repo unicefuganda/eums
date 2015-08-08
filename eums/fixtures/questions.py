@@ -110,10 +110,13 @@ def seed_questions_and_flows():
     implementing_partner_flow.end_nodes.append([ip_question_5.id, Flow.NO_OPTION])
     implementing_partner_flow.save()
 
+    # Web questions
     qn_item_received_web, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=[], text='Was the item received?', label='itemReceived', flow=web_flow)
-
     Option.objects.get_or_create(text='Yes', question=qn_item_received_web)
     Option.objects.get_or_create(text='No', question=qn_item_received_web)
+
+    NumericQuestion.objects.get_or_create(
+        uuids=[], text='How much was received?', label='amountReceived', flow=web_flow)
 
     return flows

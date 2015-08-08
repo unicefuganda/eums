@@ -3,8 +3,8 @@ from unittest import TestCase
 from django.db import IntegrityError
 
 from eums.fixtures.questions import seed_questions_and_flows
-from eums.models import Item, Consignee, Option, MultipleChoiceQuestion, Question
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.models import Item, Consignee, Option, MultipleChoiceQuestion, Question, NumericQuestion
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
@@ -30,6 +30,7 @@ class ItemTest(TestCase):
         self.was_item_received = MultipleChoiceQuestion.objects.get(label='itemReceived', flow=self.web_flow)
         self.yes = Option.objects.get(text='Yes', question=self.was_item_received)
         self.no = Option.objects.get(text='No', question=self.was_item_received)
+        self.amount_received = NumericQuestion.objects.get(label='amountReceived', flow=self.web_flow)
 
     def test_should_have_all_expected_fields(self):
         fields_in_item = [field for field in Item._meta._name_map]
@@ -72,16 +73,27 @@ class ItemTest(TestCase):
         self.assertNotIn(item_four, consignee_items)
 
     def test_should_use_latest_run_when_determining_if_item_was_received_by_consignee(self):
-        item_one = ItemFactory()
-        po_item = PurchaseOrderItemFactory(item=item_one)
+        item = ItemFactory()
+        po_item = PurchaseOrderItemFactory(item=item)
         consignee = ConsigneeFactory()
-        node_one = DeliveryNodeFactory(item=po_item, consignee=consignee)
-        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.yes, run=RunFactory(runnable=node_one))
+        node = DeliveryNodeFactory(item=po_item, consignee=consignee)
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.yes, run=RunFactory(runnable=node))
 
         consignee_items = Item.objects.received_by_consignee(consignee)
         self.assertEqual(consignee_items.count(), 1)
-        self.assertIn(item_one, consignee_items)
+        self.assertIn(item, consignee_items)
 
-        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.no, run=RunFactory(runnable=node_one))
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.no, run=RunFactory(runnable=node))
         consignee_items = Item.objects.received_by_consignee(consignee)
         self.assertEqual(consignee_items.count(), 0)
+
+    def xtest_should_include_amount_received_when_listing_items_received_by_consignee(self):
+        amount_received = 100
+        item = ItemFactory()
+        po_item = PurchaseOrderItemFactory(item=item)
+        consignee = ConsigneeFactory()
+        node = DeliveryNodeFactory(item=po_item, consignee=consignee, quantity=150)
+        NumericAnswerFactory(question=self.amount_received, value=amount_received, run=RunFactory(runnable=node))
+
+        consignee_items = Item.objects.received_by_consignee(consignee)
+        self.assertEqual(consignee_items.first().amount_received, amount_received)
