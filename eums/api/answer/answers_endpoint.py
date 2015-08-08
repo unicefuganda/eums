@@ -17,9 +17,11 @@ class ResponseSerializer(object):
                 responses['satisfiedWithProduct'] = 'No'
         return responses
 
-    def get_all_nodes(self, for_end_user):
-        if for_end_user:
-            all_nodes = DistributionPlanNode.objects.filter(tree_position='END_USER')
+    def get_all_nodes(self, for_user):
+        if for_user is DistributionPlanNode.END_USER:
+            all_nodes = DistributionPlanNode.objects.filter(tree_position=DistributionPlanNode.END_USER)
+        elif for_user is DistributionPlanNode.IMPLEMENTING_PARTNER:
+            all_nodes = DistributionPlanNode.objects.filter(tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         else:
             all_nodes = DistributionPlanNode.objects.all()
         if self.consignee_id:
@@ -65,8 +67,8 @@ class ResponseSerializer(object):
                 }
         return node_results
 
-    def serialize_responses(self, for_end_user=False):
-        all_nodes = self.get_all_nodes(for_end_user)
+    def serialize_responses(self, for_user=None):
+        all_nodes = self.get_all_nodes(for_user)
         result = []
         for node in all_nodes:
             result = result + self.node_responses(node)
@@ -87,7 +89,7 @@ class AllConsigneeResponses(APIView):
 
 class AllEndUserResponses(APIView):
     def get(self, request, *args, **kwargs):
-        result = ResponseSerializer().serialize_responses(for_end_user=True)
+        result = ResponseSerializer().serialize_responses(for_user=DistributionPlanNode.END_USER)
         return Response(result, status=status.HTTP_200_OK)
 
 
