@@ -1,7 +1,5 @@
 from unittest import TestCase
 
-from mock import patch
-
 from eums.models import Option
 from eums.models.question import Question
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
@@ -36,12 +34,6 @@ class QuestionTest(TestCase):
         text = self.text_question.text
         self.assertEqual(str(self.text_question), text)
 
-    @patch('eums.fixtures.question_hooks.update_consignee_stock_level')
-    def test_should_not_call_post_create_answer_hook_for_questions_that_have_none(self, fake_post_create_hook):
-        question = TextQuestionFactory()
-        question.create_answer({'text': 'some text'}, self.run)
-        self.assertEqual(fake_post_create_hook.call_count, 0)
-
     def tearDown(self):
         Question.objects.all().delete()
 
@@ -56,17 +48,9 @@ class TextQuestionTest(QuestionTest):
         self.assertEqual(answers.count(), 1)
         self.assertEqual(answers.first().value, text)
 
-    @patch('eums.fixtures.question_hooks.update_consignee_stock_level')
-    def test_should_call_post_create_answer_hook_for_questions_that_specify_it(self, fake_post_create_hook):
-        question = TextQuestionFactory(when_answered='update_consignee_stock_level')
-        answer_string = 'some text'
-        question.create_answer({'text': answer_string}, self.run)
-        self.assertEqual(fake_post_create_hook.call_count, 1)
-        self.assertEqual(fake_post_create_hook.call_args[0][0].value, answer_string)
-
 
 class MultipleChoiceQuestionTest(QuestionTest):
-    # TODO Figure out why this test fails and test that post_create_answer_hook is called.
+    # TODO Figure out why this test fails
     def xtest_should_save_multiple_choice_answer(self):
         text = "Yes"
         option = self.multiple_choice_question.option_set.create(text=text)
@@ -95,11 +79,3 @@ class NumericQuestionTest(QuestionTest):
 
         self.assertEqual(answers.count(), 1)
         self.assertEqual(answers.first().value, number)
-
-    @patch('eums.fixtures.question_hooks.update_consignee_stock_level')
-    def test_should_call_post_create_answer_hook_for_questions_that_specify_it(self, fake_post_create_hook):
-        question = NumericQuestionFactory(when_answered='update_consignee_stock_level')
-        answer = '10'
-        question.create_answer({'text': answer}, self.run)
-        self.assertEqual(fake_post_create_hook.call_count, 1)
-        self.assertEqual(fake_post_create_hook.call_args[0][0], answer)

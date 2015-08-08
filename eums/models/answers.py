@@ -1,9 +1,28 @@
 from django.db import models
 from eums.models import Run, Option
 from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQuestion
+from eums.models import question_hooks
 
 
-class TextAnswer(models.Model):
+class Answer(models.Model):
+    class Meta:
+        abstract = True
+
+    def save(self, **kwargs):
+        super(Answer, self).save(**kwargs)
+        self._post_create_hook()(self.value)
+
+    def delete(self, using=None):
+        super(Answer, self).delete()
+        self._post_create_hook()(self.value, rollback=True)
+
+    def _post_create_hook(self):
+        hook_name = self.question.when_answered or ''
+        null_function = lambda *args, **kwargs: None
+        return getattr(question_hooks, hook_name, null_function)
+
+
+class TextAnswer(Answer):
     run = models.ForeignKey(Run)
     question = models.ForeignKey(TextQuestion)
     value = models.CharField(max_length=255)
@@ -15,7 +34,7 @@ class TextAnswer(models.Model):
         return '%s' % self.value
 
 
-class NumericAnswer(models.Model):
+class NumericAnswer(Answer):
     run = models.ForeignKey(Run)
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
@@ -27,7 +46,7 @@ class NumericAnswer(models.Model):
         return '%s' % self.value
 
 
-class MultipleChoiceAnswer(models.Model):
+class MultipleChoiceAnswer(Answer):
     run = models.ForeignKey(Run)
     question = models.ForeignKey(MultipleChoiceQuestion)
     value = models.ForeignKey(Option)
