@@ -5,7 +5,7 @@ from djorm_pgarray.fields import TextArrayField
 
 class Question(models.Model):
     text = models.TextField()
-    label = models.CharField(max_length=255, unique=True)
+    label = models.CharField(max_length=255)
     uuids = TextArrayField(dimension=1)
     flow = models.ForeignKey('Flow', related_name='questions')
 
