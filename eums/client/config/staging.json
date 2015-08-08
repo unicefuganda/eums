@@ -22,6 +22,7 @@
         "QUESTION": "/api/question/",
         "RESPONSES": "/api/responses/",
         "END_USER_RESPONSES": "/api/end-user-responses/",
+        "IP_RESPONSES": "/api/ip-responses/",
         "NODE_RESPONSES": "/api/node-responses/",
         "STOCK_REPORT": "/api/stock-report/",
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",
