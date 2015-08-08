@@ -13,6 +13,7 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 ENDPOINT_URL = BACKEND_URL + 'responses/'
 NODE_ENDPOINT_URL = BACKEND_URL + 'node-responses/'
 END_USER_ENDPOINT_URL = BACKEND_URL + 'end-user-responses/'
+IP_ENDPOINT_URL = BACKEND_URL + 'ip-responses/'
 
 
 class ResponsesEndPointTest(AuthenticatedAPITestCase):
@@ -181,3 +182,34 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(expected_data, response.data)
         self.assertEquals(len(response.data), 0)
+
+    def test_should_only_return_implementing_partner_responses(self):
+        question = MultipleChoiceQuestionFactory(label='productReceived')
+        yes_option = OptionFactory(text='Yes', question=question)
+
+        item = ItemFactory(description='Salt')
+        order_item = SalesOrderItemFactory(item=item, description='10 bags of salt')
+
+        node_ip_one = DeliveryNodeFactory(tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER, item=order_item)
+        node_end_user = DeliveryNodeFactory(tree_position=DistributionPlanNode.END_USER, item=order_item)
+
+        run_one = RunFactory(runnable=node_ip_one, status='completed')
+        run_two = RunFactory(runnable=node_end_user, status='completed')
+
+        answer_one = MultipleChoiceAnswerFactory(run=run_one, question=question, value=yes_option)
+        MultipleChoiceAnswerFactory(run=run_two, question=question, value=yes_option)
+
+        response = self.client.get(IP_ENDPOINT_URL, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+
+        node_item = response.data[0]
+
+        self.assertEqual(node_item['item'], 'Salt')
+        self.assertEqual(node_item['programme'], {'id': node_ip_one.distribution_plan.programme.id,
+                                                  'name': node_ip_one.distribution_plan.programme.name})
+        self.assertEqual(node_item['ip'], node_ip_one.get_ip())
+        self.assertEqual(node_item[question.label], answer_one.format())
+
+

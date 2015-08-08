@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
-    NodeResponses
+    NodeResponses, AllIPResponses
 from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
@@ -67,6 +67,7 @@ urlpatterns = patterns(
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
     url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
+    url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
     url(r'^admin/', include(admin.site.urls)),

@@ -93,6 +93,11 @@ class AllEndUserResponses(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
 
+class AllIPResponses(APIView):
+    def get(self, request, *args, **kwargs):
+        result = ResponseSerializer().serialize_responses(for_user=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        return Response(result, status=status.HTTP_200_OK)
+
 class NodeResponses(APIView):
     def get(self, request, node_id, *args, **kwargs):
         planNode = DistributionPlanNode.objects.filter(id=node_id).first()
