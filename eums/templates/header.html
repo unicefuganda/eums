@@ -1,7 +1,7 @@
 {% extends 'base/header.html' %}
 
 {% block nav %}
-{% if perms.auth.can_view_distribution_plans %}
+{% if perms.auth.can_view_unicef_menu %}
 <li id="distribution-plan-nav"
     ng-class="{ active: isActive('/direct-delivery,/warehouse-delivery,/delivery-report/new/')} ">
     <a href="#/direct-delivery">Delivery</a>

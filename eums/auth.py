@@ -3,14 +3,10 @@ from django.contrib.contenttypes.models import ContentType
 
 
 def teardown_groups():
-    unicef_group = Group.objects.get(name='UNICEF_admin')
-    unicef_group.name = 'UNICEF'
-    unicef_group.save()
+    Group.objects.get(name='UNICEF_admin').delete()
     Group.objects.get(name='UNICEF_editor').delete()
     Group.objects.get(name='UNICEF_viewer').delete()
-    implementing_partner_group = Group.objects.get(name='Implementing Partner_editor')
-    implementing_partner_group.name = 'Implementing Partner'
-    implementing_partner_group.save()
+    Group.objects.get(name='Implementing Partner_editor').delete()
     Group.objects.get(name='Implementing Partner_viewer').delete()
 
 
@@ -30,6 +26,7 @@ perm_code_names = [
     {'name': 'Can view deliveries', 'codename': 'can_view_deliveries'},
     {'name': 'Can create deliveries', 'codename': 'can_create_deliveries'},
     {'name': 'Can track deliveries', 'codename': 'can_track_deliveries'},
+    {'name': 'Can view unicef menu', 'codename': 'can_view_unicef_menu'},
 
     {'name': 'Can view delivery reports', 'codename': 'can_view_delivery_reports'},
     {'name': 'Can create delivery reports', 'codename': 'can_create_delivery_reports'},

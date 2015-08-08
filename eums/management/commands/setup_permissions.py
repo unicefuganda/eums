@@ -22,7 +22,8 @@ GROUP_PERMISSIONS = {
         'change_user',
         'add_distributionplan',
         'change_distributionplan',
-        'can_track_deliveries'
+        'can_track_deliveries',
+        'can_view_unicef_menu'
     ],
     'UNICEF_editor': [
         'can_view_dashboard',
@@ -33,13 +34,14 @@ GROUP_PERMISSIONS = {
         'add_distributionplan',
         'change_distributionplan',
         'can_view_distribution_plans',
-        'can_track_deliveries'
+        'can_track_deliveries',
+        'can_view_unicef_menu'
     ],
     'UNICEF_viewer': [
         'can_view_dashboard',
         'can_view_consignees',
-        'can_view_distribution_plans'
-
+        'can_view_distribution_plans',
+        'can_view_unicef_menu'
     ],
     'Implementing Partner_editor': [
         'can_view_delivery_reports',
@@ -47,11 +49,13 @@ GROUP_PERMISSIONS = {
         'can_view_consignees',
         'add_consignee',
         'change_consignee',
-        'delete_consignee'
+        'delete_consignee',
+        'can_view_distribution_plans'
     ],
     'Implementing Partner_viewer': [
         'can_view_dashboard',
-        'can_view_consignees'
+        'can_view_consignees',
+        'can_view_distribution_plans'
     ]
 }
 
