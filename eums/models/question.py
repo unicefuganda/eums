@@ -1,6 +1,7 @@
 import ast
 from django.db import models
 from djorm_pgarray.fields import TextArrayField
+from eums.fixtures import question_hooks
 
 
 class Question(models.Model):
@@ -8,6 +9,7 @@ class Question(models.Model):
     label = models.CharField(max_length=255)
     uuids = TextArrayField(dimension=1)
     flow = models.ForeignKey('Flow', related_name='questions')
+    when_answered = models.CharField(max_length=255, null=True)
 
     def __unicode__(self):
         return '%s' % self.text
@@ -15,17 +17,26 @@ class Question(models.Model):
     class Meta:
         unique_together = ('flow', 'label')
 
+    def post_create_answer(self, answer):
+        if self.when_answered and len(self.when_answered):
+            post_create_answer_hook = getattr(question_hooks, self.when_answered)
+            post_create_answer_hook(answer)
+
 
 class NumericQuestion(Question):
     def create_answer(self, params, run):
         value = params['text']
-        return self.numericanswer_set.create(question=self, value=value, run=run)
+        answer = self.numericanswer_set.create(question=self, value=value, run=run)
+        self.post_create_answer(value)
+        return answer
 
 
 class TextQuestion(Question):
     def create_answer(self, params, run):
         value = params['text']
-        return self.textanswer_set.create(question=self, value=value, run=run)
+        answer = self.textanswer_set.create(question=self, value=value, run=run)
+        self.post_create_answer(answer)
+        return answer
 
 
 class MultipleChoiceQuestion(Question):
@@ -43,4 +54,6 @@ class MultipleChoiceQuestion(Question):
 
         params = filter(lambda v: self.label == v['label'], values)[0]
         matching_option = self.option_set.get(text=params['category']['eng'])
-        return self.multiplechoiceanswer_set.create(question=self, value=matching_option, run=run)
+        answer = self.multiplechoiceanswer_set.create(question=self, value=matching_option, run=run)
+        self.post_create_answer(answer)
+        return answer

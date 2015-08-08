@@ -112,11 +112,13 @@ def seed_questions_and_flows():
 
     # Web questions
     qn_item_received_web, _ = MultipleChoiceQuestion.objects.get_or_create(
-        uuids=[], text='Was the item received?', label='itemReceived', flow=web_flow)
+        uuids=[], text='Was the item received?', label='itemReceived', flow=web_flow,
+        when_answered='update_consignee_inventory')
     Option.objects.get_or_create(text='Yes', question=qn_item_received_web)
     Option.objects.get_or_create(text='No', question=qn_item_received_web)
 
     NumericQuestion.objects.get_or_create(
-        uuids=[], text='How much was received?', label='amountReceived', flow=web_flow)
+        uuids=[], text='How much was received?', label='amountReceived', flow=web_flow,
+        when_answered='update_consignee_stock_level')
 
     return flows

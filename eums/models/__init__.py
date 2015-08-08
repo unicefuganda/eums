@@ -22,6 +22,7 @@ from eums.models.purchase_order import PurchaseOrder
 from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
+from eums.models.consignee_item import ConsigneeItem
 
 __all__ = [
     'Consignee',
@@ -51,5 +52,6 @@ __all__ = [
     'ReleaseOrder',
     'DistributionReport',
     'UserProfile',
+    'ConsigneeItem',
     'PurchaseOrder'
 ]
