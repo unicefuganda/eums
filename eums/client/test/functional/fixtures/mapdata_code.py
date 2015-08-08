@@ -1603,7 +1603,7 @@ text_question_2 = TextQuestion.objects.create(text="What date was it received?",
 text_question_7 = TextQuestion.objects.create(text="What did the partner say is the revised delivery date?", label="revisedDeliveryDate", flow=flows['END_USER_FLOW'], uuids=["e9c35020-e751-4611-b222-5573b7040c49", "3f5d290a-067d-4cb9-bb09-ed7c424a6abd"])
 text_question_8 = TextQuestion.objects.create(text="Feedback about Dissatisfaction", label="feedbackAboutDissatisfaction", flow=flows['END_USER_FLOW'], uuids=["4dd1a813-27d4-4511-82e3-cc470fcd3baa"])
 
-implementing_partner_flow = flows['IMPLEMENTING_PARTNER']
+implementing_partner_flow = flows['IP_FLOW']
 question_9, _ = MultipleChoiceQuestion.objects.get_or_create(text='Was delivery received?', label='deliveryReceived', flow=implementing_partner_flow, uuids=['3ce26959-1e21-4cf6-98a1-c460b57e7ba5', '31e426cd-6934-4252-869f-4e1843691d4a'])
 Option.objects.get_or_create(text='Yes', question=question_9)
 no_delivery, _ = Option.objects.get_or_create(text='No', question=question_9)

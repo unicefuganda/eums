@@ -1,10 +1,11 @@
 import json
 from mock import MagicMock
-from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable
+from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
 from eums.test.factories.delivery_factory import DeliveryFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import TextQuestionFactory, MultipleChoiceQuestionFactory
 
@@ -15,22 +16,23 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
     def setUp(self):
         super(WebAnswerEndpointTest, self).setUp()
-        delivery_received_qn = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        delivery_received_qn = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow)
         OptionFactory(question=delivery_received_qn, text='Yes')
         OptionFactory(question=delivery_received_qn, text='No')
 
-        TextQuestionFactory(label='dateOfReceiptOfDelivery')
+        TextQuestionFactory(label='dateOfReceipt', flow=flow)
 
-        good_order_qn = MultipleChoiceQuestionFactory(label='isDeliveryInGoodOrder')
+        good_order_qn = MultipleChoiceQuestionFactory(label='isDeliveryInGoodOrder', flow=flow)
         OptionFactory(question=good_order_qn, text='Yes')
         OptionFactory(question=good_order_qn, text='No')
         OptionFactory(question=good_order_qn, text='Incomplete')
 
-        satisfied_qn = MultipleChoiceQuestionFactory(label='areYouSatisfied')
+        satisfied_qn = MultipleChoiceQuestionFactory(label='areYouSatisfied', flow=flow)
         OptionFactory(question=satisfied_qn, text='Yes')
         OptionFactory(question=satisfied_qn, text='No')
 
-        TextQuestionFactory(label='additionalDeliveryComments')
+        TextQuestionFactory(label='additionalDeliveryComments', flow=flow)
         self.build_contact = Runnable.build_contact
         contact = {'name': 'Some name', 'phone': '098765433'}
         Runnable.build_contact = MagicMock(return_value=contact)
@@ -38,6 +40,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def tearDown(self):
         MultipleChoiceQuestion.objects.all().delete()
         TextQuestion.objects.all().delete()
+        Flow.objects.all().delete()
         Runnable.build_contact = self.build_contact
 
     def test_should_save_answers(self):
@@ -48,7 +51,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         data = {
             'delivery': delivery.id, 'answers': [
             {'question_label': 'deliveryReceived', 'value': 'Yes'},
-            {'question_label': 'dateOfReceiptOfDelivery', 'value': date_of_receipt},
+            {'question_label': 'dateOfReceipt', 'value': date_of_receipt},
             {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
             {'question_label': 'areYouSatisfied', 'value': 'Yes'},
             {'question_label': 'additionalDeliveryComments', 'value': good_comment}
@@ -57,7 +60,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
 
         answer_for_delivery_received = self._get_answer_for(MultipleChoiceAnswer, delivery.id, 'deliveryReceived')
-        answer_for_date_of_receipt = self._get_answer_for(TextAnswer, delivery.id, 'dateOfReceiptOfDelivery')
+        answer_for_date_of_receipt = self._get_answer_for(TextAnswer, delivery.id, 'dateOfReceipt')
         answer_for_delivery_order= self._get_answer_for(MultipleChoiceAnswer, delivery.id, 'isDeliveryInGoodOrder')
         answer_for_satisfaction = self._get_answer_for(MultipleChoiceAnswer, delivery.id, 'areYouSatisfied')
         answer_for_additional_comments = self._get_answer_for(TextAnswer, delivery.id, 'additionalDeliveryComments')
