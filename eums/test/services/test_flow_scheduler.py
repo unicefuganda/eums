@@ -5,6 +5,7 @@ import celery
 from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
 
+from eums.fixtures.questions import seed_questions_and_flows
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
@@ -15,10 +16,8 @@ from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
-from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
-
 
 datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
@@ -32,6 +31,10 @@ from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
 
 
 class FlowSchedulerTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.flows = seed_questions_and_flows()
+
     def setUp(self):
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
@@ -41,21 +44,24 @@ class FlowSchedulerTest(TestCase):
         Node.objects.get = MagicMock(return_value=self.node)
         Runnable.objects.get = MagicMock(return_value=self.node)
 
-        self.MIDDLEMAN_FLOW_ID = FlowFactory(for_runnable_type=Runnable.MIDDLE_MAN).rapid_pro_id
-        self.END_USER_FLOW_ID = FlowFactory(for_runnable_type=Runnable.END_USER).rapid_pro_id
-        self.IMPLEMENTING_PARTNER_FLOW_ID = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER).rapid_pro_id
+        self.MIDDLEMAN_FLOW_ID = self.flows['MIDDLE_MAN_FLOW'].rapid_pro_id
+        self.END_USER_FLOW_ID = self.flows['END_USER_FLOW'].rapid_pro_id
+        self.IMPLEMENTING_PARTNER_FLOW_ID = self.flows['IP_FLOW'].rapid_pro_id
+
+    @classmethod
+    def tearDownClass(cls):
+        Flow.objects.all().delete()
 
     def tearDown(self):
         Run.objects.all().delete()
         RunQueue.objects.all().delete()
-        Flow.objects.all().delete()
         Node.objects.all().delete()
 
     def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self):
         node = NodeFactory(tree_position=Node.MIDDLE_MAN)
         node.build_contact = MagicMock(return_value=self.contact)
 
-        Node.objects.get = MagicMock(return_value=node)
+        Runnable.objects.get = MagicMock(return_value=node)
 
         schedule_run_for(node)
 
@@ -66,7 +72,7 @@ class FlowSchedulerTest(TestCase):
         node = NodeFactory(tree_position=Node.END_USER)
         node.build_contact = MagicMock(return_value=self.contact)
 
-        Node.objects.get = MagicMock(return_value=node)
+        Runnable.objects.get = MagicMock(return_value=node)
 
         schedule_run_for(node)
 
@@ -108,6 +114,7 @@ class FlowSchedulerTest(TestCase):
                                                    item_description=node.item.item.description)
 
     def test_should_save_a_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
+
         schedule_run_for(self.node)
 
         run_set = self.node.run_set.all()

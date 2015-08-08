@@ -14,6 +14,7 @@ class Runnable(PolymorphicModel):
     remark = models.TextField(blank=True, null=True)
 
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
+    WEB = 'WEB'
     MIDDLE_MAN = 'MIDDLE_MAN'
     END_USER = 'END_USER'
 

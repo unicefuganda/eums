@@ -1,3 +1,4 @@
+from eums.auth import create_groups, create_permissions, teardown_groups, teardown_permissions
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -12,16 +13,22 @@ ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
 
 class DeliveryEndpointTest(APITestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        create_groups()
+        create_permissions()
         call_command('setup_permissions')
+
+    @classmethod
+    def tearDownClass(cls):
+        teardown_groups()
+        teardown_permissions()
 
     def tearDown(self):
         UserProfile.objects.all().delete()
         User.objects.all().delete()
         Consignee.objects.all().delete()
         DistributionPlan.objects.all().delete()
-
-    # UNICEF Admin
 
     def test_should_allow_unicef_admin_to_create_deliveries(self):
         programme = ProgrammeFactory()

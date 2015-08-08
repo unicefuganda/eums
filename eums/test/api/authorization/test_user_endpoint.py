@@ -1,3 +1,4 @@
+from eums.auth import create_groups, create_permissions, teardown_groups, teardown_permissions
 from eums.test.factories.user_factory import UserFactory
 from rest_framework.test import APITestCase
 from django.core.management import call_command
@@ -11,8 +12,16 @@ ENDPOINT_URL = BACKEND_URL + 'user/'
 
 
 class UserEndpointTest(APITestCase):
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
+        create_groups()
+        create_permissions()
         call_command('setup_permissions')
+
+    @classmethod
+    def tearDownClass(cls):
+        teardown_groups()
+        teardown_permissions()
 
     def tearDown(self):
         UserProfile.objects.all().delete()
