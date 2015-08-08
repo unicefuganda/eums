@@ -34,7 +34,7 @@ class ReleaseOrderTest(TestCase):
     def test_should_get_correct_delivery_if_exists(self):
         release_order = ReleaseOrderFactory(order_number=2342)
         release_order_item = ReleaseOrderItemFactory(release_order=release_order)
-        delivery = DeliveryFactory(id=343)
+        delivery = DeliveryFactory()
 
         DeliveryNodeFactory(distribution_plan=delivery, item=release_order_item)
 
