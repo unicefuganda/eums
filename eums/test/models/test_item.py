@@ -3,7 +3,7 @@ from unittest import TestCase
 from django.db import IntegrityError
 
 from eums.fixtures.questions import seed_questions_and_flows
-from eums.models import Item, Consignee, Option, MultipleChoiceQuestion
+from eums.models import Item, Consignee, Option, MultipleChoiceQuestion, Question
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -22,6 +22,7 @@ class ItemTest(TestCase):
     def tearDownClass(cls):
         Item.objects.all().delete()
         Consignee.objects.all().delete()
+        Question.objects.all().delete()
 
     def setUp(self):
         Item.objects.all().delete()
