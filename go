@@ -87,6 +87,7 @@ function resetdb {
     echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
     python manage.py migrate --settings=eums.test_settings
     python manage.py setup_permissions --settings=eums.test_settings
+    python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
     python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings
   else
     echo "+++ Resetting database eums..."
@@ -94,6 +95,7 @@ function resetdb {
     eums; create database eums;" | psql -h localhost -U postgres
     python manage.py migrate
     python manage.py setup_permissions
+    python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
     python manage.py loaddata eums/client/test/functional/fixtures/user.json
   fi
 }
