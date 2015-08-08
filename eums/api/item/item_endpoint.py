@@ -22,7 +22,7 @@ class ItemViewSet(ModelViewSet):
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
         if user_profile:
-            return Item.objects.delivered_to_consignee(user_profile.consignee)
+            return Item.objects.received_by_consignee(user_profile.consignee)
         return super(ItemViewSet, self).get_queryset()
 
     def list(self, request, *args, **kwargs):

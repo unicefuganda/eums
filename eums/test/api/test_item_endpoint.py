@@ -40,7 +40,7 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset(item_two_details, get_response.data[0])
         self.assertDictContainsSubset(item_one_details, get_response.data[1])
 
-    @patch('eums.models.Item.objects.delivered_to_consignee')
+    @patch('eums.models.Item.objects.received_by_consignee')
     def test_should_list_items_distributed_to_the_logged_in_users_ip_for_ip_user(self, mock_items_filter):
         consignee = ConsigneeFactory()
         item = ItemFactory()
