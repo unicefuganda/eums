@@ -9,10 +9,13 @@ class ItemManager(models.Manager):
         web_flow = Flow.objects.get(for_runnable_type=Runnable.WEB)
         was_item_received = MultipleChoiceQuestion.objects.get(label='itemReceived', flow=web_flow)
         yes = Option.objects.get(text='Yes', question=was_item_received)
-        was_item_received_answers = MultipleChoiceAnswer.objects.filter(question=was_item_received, value=yes,
-                                                                        run__runnable__consignee=consignee)
-        received_node_ids = was_item_received_answers.values_list('run__runnable_id')
+
+        received_nodes = DistributionPlanNode.objects.filter(consignee=consignee)
+        latest_runs = [node.latest_run() for node in received_nodes]
+        answers = MultipleChoiceAnswer.objects.filter(question=was_item_received, value=yes, run__in=latest_runs)
+        received_node_ids = answers.values_list('run__runnable_id')
         received_nodes = DistributionPlanNode.objects.filter(id__in=received_node_ids)
+
         item_ids = received_nodes.distinct('item__item').values_list('item__item__id')
         return self.model.objects.filter(pk__in=item_ids)
 

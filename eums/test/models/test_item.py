@@ -26,6 +26,10 @@ class ItemTest(TestCase):
 
     def setUp(self):
         Item.objects.all().delete()
+        self.web_flow = self.flows['WEB_FLOW']
+        self.was_item_received = MultipleChoiceQuestion.objects.get(label='itemReceived', flow=self.web_flow)
+        self.yes = Option.objects.get(text='Yes', question=self.was_item_received)
+        self.no = Option.objects.get(text='No', question=self.was_item_received)
 
     def test_should_have_all_expected_fields(self):
         fields_in_item = [field for field in Item._meta._name_map]
@@ -55,14 +59,9 @@ class ItemTest(TestCase):
         node_two = DeliveryNodeFactory(item=po_item_two, consignee=consignee)
         node_three = DeliveryNodeFactory(item=ro_item, consignee=consignee)
 
-        web_flow = self.flows['WEB_FLOW']
-        was_item_received = MultipleChoiceQuestion.objects.get(label='itemReceived', flow=web_flow)
-        yes_delivery = Option.objects.get(text='Yes', question=was_item_received)
-        no_delivery = Option.objects.get(text='No', question=was_item_received)
-
-        MultipleChoiceAnswerFactory(question=was_item_received, value=yes_delivery, run=RunFactory(runnable=node_one))
-        MultipleChoiceAnswerFactory(question=was_item_received, value=yes_delivery, run=RunFactory(runnable=node_two))
-        MultipleChoiceAnswerFactory(question=was_item_received, value=no_delivery, run=RunFactory(runnable=node_three))
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.yes, run=RunFactory(runnable=node_one))
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.yes, run=RunFactory(runnable=node_two))
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.no, run=RunFactory(runnable=node_three))
 
         consignee_items = Item.objects.received_by_consignee(consignee)
 
@@ -72,3 +71,17 @@ class ItemTest(TestCase):
         self.assertNotIn(item_three, consignee_items)
         self.assertNotIn(item_four, consignee_items)
 
+    def test_should_use_latest_run_when_determining_if_item_was_received_by_consignee(self):
+        item_one = ItemFactory()
+        po_item = PurchaseOrderItemFactory(item=item_one)
+        consignee = ConsigneeFactory()
+        node_one = DeliveryNodeFactory(item=po_item, consignee=consignee)
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.yes, run=RunFactory(runnable=node_one))
+
+        consignee_items = Item.objects.received_by_consignee(consignee)
+        self.assertEqual(consignee_items.count(), 1)
+        self.assertIn(item_one, consignee_items)
+
+        MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.no, run=RunFactory(runnable=node_one))
+        consignee_items = Item.objects.received_by_consignee(consignee)
+        self.assertEqual(consignee_items.count(), 0)
