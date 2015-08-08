@@ -1,5 +1,7 @@
 from unittest import TestCase
 
+from mock import patch
+
 from eums.models import Option
 from eums.models.question import Question
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
@@ -9,6 +11,7 @@ from eums.test.factories.run_factory import RunFactory
 
 class QuestionTest(TestCase):
     def setUp(self):
+        self.run = RunFactory()
         self.multiple_choice_question = MultipleChoiceQuestionFactory(text='Whats your gender?', label='gender')
         self.text_question = TextQuestionFactory(text='Are you happy?', label="happiness")
 
@@ -33,6 +36,12 @@ class QuestionTest(TestCase):
         text = self.text_question.text
         self.assertEqual(str(self.text_question), text)
 
+    @patch('eums.fixtures.question_hooks.update_consignee_stock_level')
+    def test_should_not_call_post_create_answer_hook_for_questions_that_have_none(self, fake_post_create_hook):
+        question = TextQuestionFactory()
+        question.create_answer({'text': 'some text'}, self.run)
+        self.assertEqual(fake_post_create_hook.call_count, 0)
+
     def tearDown(self):
         Question.objects.all().delete()
 
@@ -41,15 +50,23 @@ class TextQuestionTest(QuestionTest):
     def test_should_save_text_answer(self):
         text = 'Some text'
         params = {'text': text}
-        run = RunFactory()
-        self.text_question.create_answer(params, run)
+        self.text_question.create_answer(params, self.run)
         answers = self.text_question.textanswer_set.all()
 
         self.assertEqual(answers.count(), 1)
         self.assertEqual(answers.first().value, text)
 
+    @patch('eums.fixtures.question_hooks.update_consignee_stock_level')
+    def test_should_call_post_create_answer_hook_for_questions_that_specify_it(self, fake_post_create_hook):
+        question = TextQuestionFactory(when_answered='update_consignee_stock_level')
+        answer_string = 'some text'
+        question.create_answer({'text': answer_string}, self.run)
+        self.assertEqual(fake_post_create_hook.call_count, 1)
+        self.assertEqual(fake_post_create_hook.call_args[0][0].value, answer_string)
+
 
 class MultipleChoiceQuestionTest(QuestionTest):
+    # TODO Figure out why this test fails and test that post_create_answer_hook is called.
     def xtest_should_save_multiple_choice_answer(self):
         text = "Yes"
         option = self.multiple_choice_question.option_set.create(text=text)
@@ -58,10 +75,9 @@ class MultipleChoiceQuestionTest(QuestionTest):
         label = 'gender'
         params = [{u'values': [u'[{"category": "%s", "time": "2014-10-22T11:56:52.836354Z", '
                                u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (category, label)],
-                  u'time': [u'2014-10-22T11:57:35.606372Z']}]
+                   u'time': [u'2014-10-22T11:57:35.606372Z']}]
 
-        run = RunFactory()
-        self.multiple_choice_question.create_answer(params, run)
+        self.multiple_choice_question.create_answer(params, self.run)
         answers = self.multiple_choice_question.multiplechoiceanswer_set.all()
 
         self.assertEqual(answers.count(), 1)
@@ -73,9 +89,17 @@ class NumericQuestionTest(QuestionTest):
         numeric_question = NumericQuestionFactory(text='How old are you?')
         number = 20
         params = {'text': number}
-        run = RunFactory()
-        numeric_question.create_answer(params, run)
+
+        numeric_question.create_answer(params, self.run)
         answers = numeric_question.numericanswer_set.all()
 
         self.assertEqual(answers.count(), 1)
         self.assertEqual(answers.first().value, number)
+
+    @patch('eums.fixtures.question_hooks.update_consignee_stock_level')
+    def test_should_call_post_create_answer_hook_for_questions_that_specify_it(self, fake_post_create_hook):
+        question = NumericQuestionFactory(when_answered='update_consignee_stock_level')
+        answer = '10'
+        question.create_answer({'text': answer}, self.run)
+        self.assertEqual(fake_post_create_hook.call_count, 1)
+        self.assertEqual(fake_post_create_hook.call_args[0][0], answer)
