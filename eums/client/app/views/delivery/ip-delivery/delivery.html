@@ -79,5 +79,10 @@
             <span class="information message" ng-show="deliveries.length == 0">There are no deliveries available right now.</span>
         </table>
     </div>
+    <div ng-show="activeDelivery">
+        <ng-include
+                src="'/static/app/views/delivery/partials/ip-acknowledgement-dialog.html'">
+        </ng-include>
+    </div>
 </div>
 

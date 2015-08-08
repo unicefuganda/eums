@@ -1,0 +1,69 @@
+<div class="modal fade" ng-show="activeDelivery" id="ip-acknowledgement-modal">
+    <div class="modal-dialog">
+        <div class="modal-content col-md-offset-3 col-md-10">
+            <div class="modal-header">
+                <h4 class="modal-title"><span
+                        class="text-warning glyphicon glyphicon-plus glyphicon-warning-sign"></span>
+                    Confirm delivery: {{ activeDelivery.number}}
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">No</span>
+                    </button>
+                </h4>
+
+            </div>
+            <div class="modal-body">
+                <div>Items will only appear in your stock upon confirmation of delivery</div>
+
+                <div>
+                    <table>
+                        <tr ng-repeat="answer in answers">
+                            <td>{{answer.text}}</td>
+                            <td>
+                                <span ng-if="answer.type == 'multipleChoice'">
+                                    <select ng-model="answer.value"
+                                            required="required"
+                                            class="form-control"
+                                            ng-options="option for option in answers[0].options ">
+                                        <option value="">Select Item</option>
+                                    </select>
+                                </span>
+                                <span ng-if="answer.type == 'text'">
+                                    <input type="text" ng-model="answer.value"
+                                           required="required"
+                                           class="form-control">
+                                    </input>
+                                </span>
+                                <p class="table-date-width input-group" ng-if="answer.type == 'date'" eums-date-picker>
+                                    <input type="text"
+                                           class="form-control"
+                                           datepicker-popup="dd/MM/yyyy"
+                                           ng-model="answer.value"
+                                           ng-required="true"
+                                           is-open="datepicker[$index]"
+                                           datepicker-options="dateOptions" show-button-bar="false"
+                                           value="{{ answer.value | date : 'dd/MM/yyyy' }}"
+                                           required="required"/>
+                                          <span class="input-group-btn">
+
+                                            <button type="button" class="btn btn-default"
+                                                    ng-click="open($event, $index )">
+                                                <i class="glyphicon glyphicon-calendar"></i></button>
+                                          </span>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="deliveryConfirmYes" type="button" class="btn btn-primary" ng-click="saveAnswers()">Yes
+                </button>
+                &nbsp;&nbsp;
+                <button id="deliveryConfirmNo" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -9,19 +9,18 @@ from eums.models import DistributionPlan, Run, MultipleChoiceQuestion, Option, T
 
 @api_view(['POST', ])
 def save_answers(request):
-    request = dict(request.data.iterlists())
-    delivery_id = request['delivery'][0]
+    request = request.data
+    delivery_id = request['delivery']
     answers = request['answers']
     delivery = DistributionPlan.objects.get(pk=delivery_id)
     contact = delivery.build_contact()
 
     run = Run.objects.create(runnable=delivery,
                              status=Run.STATUS.completed,
-                             phone=contact['phone'],
+                             phone=contact['phone'] if contact else None,
                              scheduled_message_task_id='Web')
 
     for answer in answers:
-        answer = ast.literal_eval(answer)
         question = _get_matching_question(answer['question_label'])
 
         if isinstance(question, MultipleChoiceQuestion):

@@ -45,13 +45,16 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         date_of_receipt = '10-10-2014'
         good_comment = "All is good"
 
-        response = self.client.post(ENDPOINT_URL, {'delivery': delivery.id, 'answers': [
+        data = {
+            'delivery': delivery.id, 'answers': [
             {'question_label': 'deliveryReceived', 'value': 'Yes'},
             {'question_label': 'dateOfReceiptOfDelivery', 'value': date_of_receipt},
             {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
             {'question_label': 'areYouSatisfied', 'value': 'Yes'},
             {'question_label': 'additionalDeliveryComments', 'value': good_comment}
-        ]})
+        ]}
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
 
         answer_for_delivery_received = self._get_answer_for(MultipleChoiceAnswer, delivery.id, 'deliveryReceived')
         answer_for_date_of_receipt = self._get_answer_for(TextAnswer, delivery.id, 'dateOfReceiptOfDelivery')
