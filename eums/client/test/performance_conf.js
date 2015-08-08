@@ -1,5 +1,3 @@
-var SpecReporter = require('jasmine-spec-reporter');
-
 exports.config = {
 
     allScriptsTimeout: 15000,
@@ -16,22 +14,10 @@ exports.config = {
 
     baseUrl: process.env['PERFORMANCE_TEST_BASE_URL'],
 
-    framework: 'jasmine2',
+    framework: 'jasmine',
 
     jasmineNodeOpts: {
         defaultTimeoutInterval: 30000,
         showColors: true
-    },
-
-    onPrepare: function () {
-        jasmine.getEnv().addReporter(new SpecReporter({
-            displayFailuresSummary: true,
-            displaySpecDuration: true,
-            displayStacktrace: 'summary'
-        }));
     }
-
 };
-
-
-
