@@ -130,6 +130,24 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(response.data[0]['number_of_items'], 2)
 
+    def test_should_return_a_deliveries_answers(self):
+        delivery = DeliveryFactory()
+        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+
+        question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow, text='Was Delivery Received?')
+        question_2 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
+
+        option_yes = OptionFactory(text='Yes', question=question_1)
+
+        run = RunFactory(runnable=delivery)
+
+        MultipleChoiceAnswerFactory(run=run, question=question_1, value=option_yes)
+        TextAnswerFactory(run=run, question=question_2, value='2015-10-10')
+
+        response = self.client.get('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'answers'))
+
+        self.assertEqual(len(response.data), 2)
+
     def clean_up(self):
         Programme.objects.all().delete()
         Consignee.objects.all().delete()

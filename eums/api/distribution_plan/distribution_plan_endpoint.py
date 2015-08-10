@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.decorators import detail_route
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
@@ -24,6 +25,11 @@ class DistributionPlanViewSet(ModelViewSet):
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerialiser
     filter_fields = ('programme',)
+
+    @detail_route(['GET', ])
+    def answers(self, request, *args, **kwargs):
+        delivery = DistributionPlan.objects.get(pk=(kwargs['pk']))
+        return Response(delivery.answers())
 
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
