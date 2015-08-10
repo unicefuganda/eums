@@ -15,7 +15,8 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
 angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
-    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery', 'Loader'
+    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery', 'Loader',
+    'IPResponses'
 ]).config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -105,6 +106,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
         .when('/end-user-responses', {
             templateUrl: '/static/app/views/reports/end-user-responses.html',
             controller: 'EndUserResponsesController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_reports');
+                }
+            }
+        })
+        .when('/ip-responses', {
+            templateUrl: '/static/app/views/reports/ip-responses.html',
+            controller: 'IPResponsesController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_reports');
