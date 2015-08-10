@@ -168,17 +168,19 @@ class DeliveryTest(TestCase):
         text_answer = TextAnswerFactory(run=run, question=question_2, value='2015-10-10')
 
         expected_multiple_choice_answer = {
-            'questionLabel': multiple_choice_answer.question.label,
+            'question_label': question_1.label,
             'type': 'multipleChoice',
-            'text': multiple_choice_answer.question.text,
+            'text': question_1.text,
             'value': multiple_choice_answer.value.text,
-            'options': ['Yes']
+            'options': ['Yes'],
+            'position':question_1.position
         }
         expected_text_answer = {
-            'questionLabel': text_answer.question.label,
+            'question_label': question_2.label,
             'type': 'text',
-            'text': text_answer.question.text,
+            'text': question_2.text,
             'value': text_answer.value,
+            'position': question_2.position
         }
         answers = delivery.answers()
 
@@ -199,21 +201,46 @@ class DeliveryTest(TestCase):
         RunFactory(runnable=delivery)
 
         expected_multiple_choice_answer = {
-            'questionLabel': question_1.label,
+            'question_label': question_1.label,
             'type': 'multipleChoice',
             'text': question_1.text,
             'value': '',
-            'options': ['Yes', 'No']
+            'options': ['Yes', 'No'],
+            'position': question_1.position
         }
         expected_text_answer = {
-            'questionLabel': question_2.label,
+            'question_label': question_2.label,
             'type': 'text',
             'text': question_2.text,
             'value': '',
+            'position': question_2.position
         }
         answers = delivery.answers()
 
         self.assertEqual(len(answers), 2)
         self.assertIn(expected_multiple_choice_answer, answers)
         self.assertIn(expected_text_answer, answers)
+
+    def test_should_return_answers_for_delivery_in_the_same_order_as_flow(self):
+        delivery = DeliveryFactory()
+        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+
+        question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived',
+                                                   flow=flow, text='Was Delivery Received?', position=3)
+        question_2 = TextQuestionFactory(label='dateOfReceipt',
+                                         flow=flow, text='When was Delivery Received?', position=1)
+        question_3 = TextQuestionFactory(label='satisfiedWithProduct',
+                                         flow=flow, text='Are you satisfied with product?', position=2)
+
+        OptionFactory(text='No', question=question_1)
+        OptionFactory(text='Yes', question=question_1)
+
+        RunFactory(runnable=delivery)
+
+        answers = delivery.answers()
+
+        self.assertEqual(len(answers), 3)
+        self.assertEqual(question_2.label, answers[0]['question_label'])
+        self.assertEqual(question_3.label, answers[1]['question_label'])
+        self.assertEqual(question_1.label, answers[2]['question_label'])
 

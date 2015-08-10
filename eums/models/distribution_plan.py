@@ -54,7 +54,8 @@ class DistributionPlan(Runnable):
         text_answers = self._build_text_answers(text_questions)
         multiple_choice_answers = self._build_multiple_choice_answers(multiple_choice_questions)
 
-        return text_answers + multiple_choice_answers
+        answers = text_answers + multiple_choice_answers
+        return sorted(answers, key=lambda field: field['position'])
 
     def _build_multiple_choice_answers(self, multiple_choice_questions):
         answers = []
@@ -63,11 +64,12 @@ class DistributionPlan(Runnable):
             options = DistributionPlan._build_options(question)
             answers.append(
                 {
-                    'questionLabel': question.label,
+                    'question_label': question.label,
                     'type': 'multipleChoice',
                     'text': question.text,
                     'value': answer.first().value.text if answer else '',
-                    'options': options
+                    'options': options,
+                    'position': question.position
                 }
             )
         return answers
@@ -78,10 +80,11 @@ class DistributionPlan(Runnable):
             answer = TextAnswer.objects.filter(run__runnable_id=self.id, question=question)
             answers.append(
                 {
-                    'questionLabel': question.label,
+                    'question_label': question.label,
                     'type': 'text',
                     'text': question.text,
                     'value': answer.first().value if answer else "",
+                    'position': question.position
                 }
             )
         return answers

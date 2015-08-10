@@ -10,6 +10,7 @@ class Question(models.Model):
     uuids = TextArrayField(dimension=1)
     flow = models.ForeignKey('Flow', related_name='questions')
     when_answered = models.CharField(max_length=255, null=True)
+    position = models.IntegerField(default=1)
 
     def __unicode__(self):
         return '%s' % self.text

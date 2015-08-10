@@ -17,7 +17,7 @@ class QuestionTest(TestCase):
         question = Question()
         fields_in_item = [field.attname for field in question._meta.fields]
 
-        for field in ['text', 'label', 'uuids']:
+        for field in ['text', 'label', 'uuids', 'position']:
             self.assertIn(field, fields_in_item)
 
     def test_should_create_a_default_option_for_multiple_choice_question(self):
