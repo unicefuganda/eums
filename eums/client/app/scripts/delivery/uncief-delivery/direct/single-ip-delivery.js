@@ -3,7 +3,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                                                               ngToast, DeliveryService, DeliveryNode, $q,
                                                               DeliveryNodeService) {
         $scope.consignee = {};
-        $scope.contact = {};
         $scope.district = {};
         $scope.errors = false;
 
@@ -44,6 +43,16 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         $scope.addContact = function (node, nodeIndex) {
             $scope.$broadcast('add-contact', node, nodeIndex);
         };
+
+        $scope.$on('contact-saved', function (event, contact) {
+            var contactInput = $('#contact-select');
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+            $scope.delivery.contact_person_id = contact._id;
+
+            event.stopPropagation();
+        });
 
         $scope.viewDelivery = function (delivery) {
             showLoader();
