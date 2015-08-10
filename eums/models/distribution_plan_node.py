@@ -15,6 +15,8 @@ class DeliveryNodeManager(PolymorphicManager):
             raise IntegrityError('both parents and quantity cannot be null')
         node = super(DeliveryNodeManager, self).create(**kwargs)
         self._create_arcs(node, parents, quantity)
+        if quantity == 0 and kwargs.get('track', False):
+            node.delete()
         return node
 
     def root_nodes_for(self, delivery=None, order_items=None, **kwargs):
@@ -51,6 +53,9 @@ class DistributionPlanNode(Runnable):
             self._update_arcs()
         if self.quantity >= 0 and self.is_root():
             self._update_root_node_arc()
+        if self.id and self.quantity_in() == 0 and self.track:
+            self.delete()
+            return self
         super(DistributionPlanNode, self).save(*args, **kwargs)
 
     def quantity_in(self):

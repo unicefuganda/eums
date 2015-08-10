@@ -230,6 +230,30 @@ class DeliveryNodeTest(TestCase):
         self.assertIn(root_node_one, root_nodes)
         self.assertIn(root_node_two, root_nodes)
 
+    def test_should_not_save_tracked_nodes_with_quantity_delivered_equal_to_zero(self):
+        self.assertEqual(DeliveryNode.objects.count(), 0)
+        node = DeliveryNodeFactory(quantity=0, track=True)
+        self.assertEqual(DeliveryNode.objects.count(), 0)
+        self.assertTrue(isinstance(node, DeliveryNode))
+
+    def test_should_delete_zero_quantity_nodes_on_update_with_track_true(self):
+        node = DeliveryNodeFactory(quantity=0, track=False)
+        self.assertEqual(DeliveryNode.objects.count(), 1)
+
+        node.track = True
+        returned_node = node.save()
+        self.assertEqual(DeliveryNode.objects.count(), 0)
+        self.assertTrue(isinstance(returned_node, DeliveryNode))
+
+    def test_should_delete_tracked_node_on_update_with_zero_quantity(self):
+        node = DeliveryNodeFactory(quantity=10, track=True)
+        self.assertEqual(DeliveryNode.objects.count(), 1)
+
+        node.quantity = 0
+        returned_node = node.save()
+        self.assertEqual(DeliveryNode.objects.count(), 0)
+        self.assertTrue(isinstance(returned_node, DeliveryNode))
+
     def clean_up(self):
         DistributionPlan.objects.all().delete()
         SalesOrder.objects.all().delete()
