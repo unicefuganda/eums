@@ -191,7 +191,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             var tracked = $scope.tracked && item.quantityShipped ? true : false;
             return {
                 item: item,
-                quantity: item.quantityShipped,
+                quantity: item.quantityShipped || 0,
                 distributionPlan: delivery,
                 consignee: delivery.consignee,
                 location: delivery.location,

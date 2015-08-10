@@ -415,6 +415,19 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(createNodeArgs.last().first().track).toEqual(true);
         });
 
+        it('should save node quantity as 0 when item.quantityShipped is undefined and track is false', function() {
+            scope.purchaseOrderItems = [
+                {quantityShipped: 10, id: 1, isInvalid: valid, availableBalance: 10},
+                {quantityShipped: undefined, id: 1, isInvalid: valid, availableBalance: 10}
+            ];
+            scope.save(false);
+            scope.$apply();
+
+            var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
+            expect(createNodeArgs.last().first().quantity).toEqual(0);
+            expect(createNodeArgs.first().first().quantity).toEqual(10);
+        });
+
         it('should alert user when creation of delivery fails', function () {
             mockDeliveryService.create.and.returnValue(q.reject());
             scope.save(true);
