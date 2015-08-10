@@ -76,32 +76,38 @@ def seed_questions_and_flows():
     end_user_flow.end_nodes.append([question_8.id, Flow.NO_OPTION])
     end_user_flow.save()
 
-    question_9, _ = MultipleChoiceQuestion.objects.get_or_create(
+    ip_question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['3ce26959-1e21-4cf6-98a1-c460b57e7ba5', '31e426cd-6934-4252-869f-4e1843691d4a'],
         text='Was delivery received?', label='deliveryReceived', flow=implementing_partner_flow)
 
-    Option.objects.get_or_create(text='Yes', question=question_9)
-    no_delivery, _ = Option.objects.get_or_create(text='No', question=question_9)
+    Option.objects.get_or_create(text='Yes', question=ip_question_1)
+    no_delivery, _ = Option.objects.get_or_create(text='No', question=ip_question_1)
     implementing_partner_flow.end_nodes = []
-    implementing_partner_flow.end_nodes.append([question_9.id, no_delivery.id])
+    implementing_partner_flow.end_nodes.append([ip_question_1.id, no_delivery.id])
     implementing_partner_flow.save()
 
-    question_10, _ = TextQuestion.objects.get_or_create(
+    ip_question_2, _ = TextQuestion.objects.get_or_create(
         uuids=['0f49db8d-432e-4d18-b596-408a0bb2eaa8'],
         text='When was delivery received?', label='dateOfReceipt', flow=implementing_partner_flow)
 
-    question_11, _ = MultipleChoiceQuestion.objects.get_or_create(
+    ip_question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['3762e25b-20e2-49fd-ad4f-0ccec08b4426'],
         text='Was delivery in good order?', label='isDeliveryInGoodOrder', flow=implementing_partner_flow)
+    Option.objects.get_or_create(text='Yes', question=ip_question_3)
+    Option.objects.get_or_create(text='No', question=ip_question_3)
 
-    yes_delivery, _ = Option.objects.get_or_create(text='Yes', question=question_11)
-    no_delivery, _ = Option.objects.get_or_create(text='No', question=question_11)
+    ip_question_4 = MultipleChoiceQuestion.objects.create(
+        text="Are you satisfied with the product?",
+        label="satisfiedWithProduct",
+        flow=implementing_partner_flow, uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'])
+    Option.objects.create(text="No", question=ip_question_4)
+    Option.objects.create(text="Yes", question=ip_question_4)
 
-    question_12, _ = TextQuestion.objects.get_or_create(
+    ip_question_5, _ = TextQuestion.objects.get_or_create(
         uuids=['2fccd250-00a1-4740-b30e-3593b8f147a1'],
         text='Additional Remarks', label='additionalDeliveryComments', flow=implementing_partner_flow)
 
-    implementing_partner_flow.end_nodes.append([question_12.id, Flow.NO_OPTION])
+    implementing_partner_flow.end_nodes.append([ip_question_5.id, Flow.NO_OPTION])
     implementing_partner_flow.save()
 
     qn_item_received_web, _ = MultipleChoiceQuestion.objects.get_or_create(
