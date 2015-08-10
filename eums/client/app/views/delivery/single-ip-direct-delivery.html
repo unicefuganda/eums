@@ -112,7 +112,8 @@
                         <div class="col-md-12 no-side-padding">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge" id="po-type">{{ purchaseOrder.poType }}</span>
+                                    <span class="label label-success label-as-badge"
+                                          id="po-type">{{ purchaseOrder.poType }}</span>
                                     PO Type
                                 </li>
                                 <li class="list-group-item">
@@ -135,7 +136,8 @@
                             </tr>
                             <tr ng-repeat="(index, delivery) in trackedDeliveries">
                                 <td>{{ index + 1 }}</td>
-                                <td  ng-click="viewDelivery(delivery)" class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy'  }}</td>
+                                <td ng-click="viewDelivery(delivery)"
+                                    class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy' }}</td>
                                 <td>{{ delivery.total_value | currency }}</td>
                             </tr>
                         </table>

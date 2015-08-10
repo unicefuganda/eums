@@ -395,26 +395,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(JSON.stringify(createNodeArgs.last().first())).toEqual(JSON.stringify(untrackedNodeTwo));
         });
 
-        it('should create nodes for purchase order items with zero distributed quantity but not tracked', function () {
-            var nodeOneClone = angular.copy(nodeOne);
-            nodeOneClone.track = false;
-            nodeOneClone.item.quantityShipped = 0;
-            nodeOneClone.item.quantityIn = 0;
-            scope.purchaseOrderItems = [
-                {quantityShipped: 0, id: 1, isInvalid: valid, availableBalance: 10},
-                {quantityShipped: 11, id: 2, isInvalid: valid, availableBalance: 11}
-            ];
-
-            scope.save(true);
-            scope.$apply();
-
-            var createNodeArgs = mockDeliveryNodeService.create.calls.allArgs();
-
-            expect(mockDeliveryNodeService.create.calls.count()).toBe(2);
-            expect(createNodeArgs.first().first().track).toEqual(false);
-            expect(createNodeArgs.last().first().track).toEqual(true);
-        });
-
         it('should save node quantity as 0 when item.quantityShipped is undefined and track is false', function() {
             scope.purchaseOrderItems = [
                 {quantityShipped: 10, id: 1, isInvalid: valid, availableBalance: 10},

@@ -51,7 +51,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             var fieldsToBuild = ['contact_person_id', 'distributionplannode_set.item.item.unit'];
             DeliveryService.get(delivery.id, fieldsToBuild).then(function (delivery) {
                 $scope.deliveryInView = delivery;
-                hideLoader();
             }).finally(hideLoader);
         };
 
@@ -188,7 +187,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         }
 
         function getNodeFields(item, delivery) {
-            var tracked = $scope.tracked && item.quantityShipped ? true : false;
             return {
                 item: item,
                 quantity: item.quantityShipped || 0,
@@ -198,7 +196,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                 deliveryDate: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
                 contactPerson: delivery.contact_person_id,
                 remark: delivery.remark,
-                track: tracked,
+                track: $scope.tracked,
                 isEndUser: false,
                 treePosition: 'IMPLEMENTING_PARTNER'
             };
@@ -267,7 +265,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         function hideLoader() {
             angular.element('#loading').modal('hide');
             angular.element('#loading.modal').removeClass('in');
-            angular.element('.modal-backdrop').remove();
         }
 
         function alertOnSaveFailure() {
