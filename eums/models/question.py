@@ -47,5 +47,4 @@ class MultipleChoiceQuestion(Question):
 
         params = filter(lambda v: self.label == v['label'], values)[0]
         matching_option = self.option_set.get(text=params['category']['eng'])
-        answer = self.multiplechoiceanswer_set.create(question=self, value=matching_option, run=run)
-        return answer
+        return self.answers.create(question=self, value=matching_option, run=run)

@@ -9,12 +9,13 @@ class Answer(models.Model):
         abstract = True
 
     def save(self, **kwargs):
-        super(Answer, self).save(**kwargs)
-        self._post_create_hook()(self.value)
+        answer = super(Answer, self).save(**kwargs)
+        self._post_create_hook()(self)
+        return answer
 
     def delete(self, using=None):
         super(Answer, self).delete()
-        self._post_create_hook()(self.value, rollback=True)
+        self._post_create_hook()(self, rollback=True)
 
     def _post_create_hook(self):
         hook_name = self.question.when_answered or ''
@@ -48,7 +49,7 @@ class NumericAnswer(Answer):
 
 class MultipleChoiceAnswer(Answer):
     run = models.ForeignKey(Run)
-    question = models.ForeignKey(MultipleChoiceQuestion)
+    question = models.ForeignKey(MultipleChoiceQuestion, related_name='answers')
     value = models.ForeignKey(Option)
 
     def format(self):

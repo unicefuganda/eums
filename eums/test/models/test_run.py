@@ -92,7 +92,7 @@ class RunTest(TestCase):
 
         item_received_question = MultipleChoiceQuestionFactory(label='product_received')
         yes = OptionFactory(question=item_received_question, text='Yes')
-        item_received_question.multiplechoiceanswer_set.create(value=yes, run=run)
+        item_received_question.answers.create(value=yes, run=run)
 
         date_received_question = TextQuestionFactory(label='date_received')
         date_received_question.textanswer_set.create(value='2014-01-01', run=run)

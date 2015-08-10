@@ -9,6 +9,7 @@ from eums.services.flow_scheduler import schedule_run_for
 
 logger = get_task_logger(__name__)
 
+
 @csrf_exempt
 def hook(request):
     # TODO: Remove the try catch. This suppresses the errors and was added due to rapidPro flakiness

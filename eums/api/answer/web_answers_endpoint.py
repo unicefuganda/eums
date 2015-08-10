@@ -25,7 +25,7 @@ def save_answers(request):
 
         if isinstance(question, MultipleChoiceQuestion):
             option = Option.objects.filter(text=answer['value'], question=question.id).first()
-            question.multiplechoiceanswer_set.create(question=question, value=option, run=run)
+            question.answers.create(question=question, value=option, run=run)
         else:
             params = {'text': answer['value']}
             question.create_answer(params, run)

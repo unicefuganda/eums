@@ -32,9 +32,10 @@ class HookTest(APITestCase):
 
         run = RunFactory(phone=self.PHONE)
 
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 'Yes', 'Yes', 'productReceived')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, 'Yes', 'Yes', 'productReceived')
 
         response = self.client.post(HOOK_URL, url_params)
+
         expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuid])
         yes_option = expected_question.option_set.get(text='Yes')
 
@@ -45,10 +46,10 @@ class HookTest(APITestCase):
         self.assertEqual(created_answer.value, yes_option)
 
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self):
-        uuidS = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
+        uuids = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
 
         question = MultipleChoiceQuestionFactory(
-            uuids=[uuidS], text='Was item received?', label='productReceived'
+            uuids=[uuids], text='Was item received?', label='productReceived'
         )
 
         Option.objects.get_or_create(text='Yes', question=question)
@@ -56,14 +57,14 @@ class HookTest(APITestCase):
 
         run = RunFactory(phone=self.PHONE)
 
-        uuid_for_no = uuidS[1]
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid_for_no, 'No', 'No', 'productReceived')
+        uuid_for_no = uuids[1]
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid_for_no, 'No', 'No', 'productReceived')
 
         response = self.client.post(HOOK_URL, url_params)
-        expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuidS])
+        expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuids])
         no_option = expected_question.option_set.get(text='No')
 
-        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuidS], run=run)
+        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuids], run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -75,7 +76,7 @@ class HookTest(APITestCase):
         TextQuestionFactory(uuids=[uuid], text='What date was it received?', label='dateOfReceipt')
 
         run = RunFactory(phone=('%s' % self.PHONE))
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 'Some Text', None, 'dateOfReceipt')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, 'Some Text', None, 'dateOfReceipt')
 
         response = self.client.post(HOOK_URL, url_params)
 
@@ -91,7 +92,7 @@ class HookTest(APITestCase):
         NumericQuestionFactory(uuids=[uuid], text='How much was received?', label='amountReceived')
 
         run = RunFactory(phone=('%s' % self.PHONE))
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, 42, None, 'amountReceived')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, 42, None, 'amountReceived')
 
         response = self.client.post(HOOK_URL, url_params)
 
@@ -121,7 +122,7 @@ class HookTest(APITestCase):
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
         mock_schedule_next_run.assert_called_with(node)
@@ -146,7 +147,7 @@ class HookTest(APITestCase):
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
         self.flow.save()
 
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
         run = Run.objects.get(id=run.id)
@@ -170,7 +171,7 @@ class HookTest(APITestCase):
             runnable=node,
             contact_person_id=node.contact_person_id)
 
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
         self.client.post(HOOK_URL, url_params)
 
         run = Run.objects.get(id=run.id)
@@ -186,7 +187,7 @@ class HookTest(APITestCase):
                                                             label='amountReceived')
 
         node = DeliveryNodeFactory()
-        url_params = self.__create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
+        url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
         RunFactory(runnable=node, phone=self.PHONE)
 
@@ -203,7 +204,7 @@ class HookTest(APITestCase):
 
         self.assertEqual(run_returned_by_dequeue.status, RunQueue.STATUS.started)
 
-    def __create_rapid_pro_url_params(self, phone, uuid, text="Yes", category=None, label=""):
+    def _create_rapid_pro_url_params(self, phone, uuid, text="Yes", category=None, label=""):
         return {u'run': [u'4621789'], u'relayer': [u'138'], u'text': [u'%s' % text], u'flow': [u'%s' % self.flow_id],
                 u'phone': [u'%s' % phone], u'step': [u'%s' % uuid],
                 u'values': [u'[{"category": {"eng": "%s"}, "time": "2014-10-22T11:56:52.836354Z", '
