@@ -1,7 +1,8 @@
 from django.db import models
 from django.db.models import Q
 
-from eums.models import MultipleChoiceAnswer, PurchaseOrderItem
+from eums.models import MultipleChoiceAnswer, PurchaseOrderItem, Flow, Question, TextQuestion, TextAnswer, \
+    MultipleChoiceQuestion
 from eums.models import Runnable, DistributionPlanNode
 from eums.models.programme import Programme
 
@@ -44,3 +45,50 @@ class DistributionPlan(Runnable):
 
     def number_of_items(self):
         return DistributionPlanNode.objects.filter(distribution_plan=self).count()
+
+    def answers(self):
+        ip_flow = Flow.objects.get(for_runnable_type='IMPLEMENTING_PARTNER')
+        text_questions = TextQuestion.objects.filter(flow=ip_flow)
+        multiple_choice_questions = MultipleChoiceQuestion.objects.filter(flow=ip_flow)
+
+        text_answers = self._build_text_answers(text_questions)
+        multiple_choice_answers = self._build_multiple_choice_answers(multiple_choice_questions)
+
+        return text_answers + multiple_choice_answers
+
+    def _build_multiple_choice_answers(self, multiple_choice_questions):
+        answers = []
+        for question in multiple_choice_questions:
+            answer = MultipleChoiceAnswer.objects.filter(run__runnable_id=self.id, question=question)
+            options = DistributionPlan._build_options(question)
+            answers.append(
+                {
+                    'questionLabel': question.label,
+                    'type': 'multipleChoice',
+                    'text': question.text,
+                    'value': answer.first().value.text if answer else '',
+                    'options': options
+                }
+            )
+        return answers
+
+    def _build_text_answers(self, text_questions):
+        answers = []
+        for question in text_questions:
+            answer = TextAnswer.objects.filter(run__runnable_id=self.id, question=question)
+            answers.append(
+                {
+                    'questionLabel': question.label,
+                    'type': 'text',
+                    'text': question.text,
+                    'value': answer.first().value if answer else "",
+                }
+            )
+        return answers
+
+    @staticmethod
+    def _build_options(question):
+        options = []
+        for option in question.option_set.all():
+            options.append(option.text) if option.text != 'UNCATEGORISED' else None
+        return options

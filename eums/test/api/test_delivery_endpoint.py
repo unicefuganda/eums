@@ -2,19 +2,20 @@ import datetime
 
 from django.contrib.auth.models import Group, Permission
 
-from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile
+from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
