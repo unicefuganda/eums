@@ -2,7 +2,7 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     beforeEach(module('MultipleIpDirectDelivery'));
     var mockNodeService, mockIPService, mockDeliveryService, mockPurchaseOrderItemService,
-        mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService;
+        mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService, mockConfirmationModal, otherModal;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
         deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredUserPromise, deferredItemPromise;
     var scope, q, mockToastProvider, location;
@@ -99,6 +99,9 @@ describe('MultipleIpDirectDeliveryController', function () {
         distributionplannode_set: []
     };
 
+    var emptyFunction = function () {
+    };
+
     var setUp = function (routeParams) {
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['fetchPlans', 'all', 'create', 'update']);
         mockNodeService = jasmine.createSpyObj('mockNodeService', ['get', 'create', 'update', 'filter']);
@@ -109,6 +112,26 @@ describe('MultipleIpDirectDeliveryController', function () {
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
+        mockConfirmationModal = {
+            modal: jasmine.createSpy('modal').and.callFake(function(value){
+                if(value === 'hide') return;
+                scope.warningAccepted(); //simulate accept
+            }),
+            hasClass: emptyFunction,
+            removeClass: emptyFunction,
+            remove: emptyFunction
+        };
+        otherModal = {
+            modal: jasmine.createSpy('modal').and.callFake(function (status) {
+                return status;
+            }),
+            hasClass: jasmine.createSpy('hasClass').and.callFake(function (status) {
+                return status;
+            }),
+            removeClass: jasmine.createSpy('removeClass').and.callFake(function (status) {
+                return status;
+            })
+        };
 
         inject(function ($controller, $rootScope, $q, $location) {
             q = $q;
@@ -139,18 +162,13 @@ describe('MultipleIpDirectDeliveryController', function () {
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
             if (!routeParams.deliveryNodeId && !routeParams.purchaseOrderItemId && !routeParams.purchaseOrderType) {
-                spyOn(angular, 'element').and.callFake(function () {
-                    return {
-                        modal: jasmine.createSpy('modal').and.callFake(function (status) {
-                            return status;
-                        }),
-                        hasClass: jasmine.createSpy('hasClass').and.callFake(function (status) {
-                            return status;
-                        }),
-                        removeClass: jasmine.createSpy('removeClass').and.callFake(function (status) {
-                            return status;
-                        })
-                    };
+                spyOn(angular, 'element').and.callFake(function (element) {
+                    if (element === '#confirmation-modal') {
+                        return mockConfirmationModal;
+                    } else {
+                        return otherModal;
+                    }
+
                 });
             }
 
@@ -449,7 +467,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             deferred.resolve({distribution_plan_node: 1});
             scope.selectedPurchaseOrderItem = {information: {distributionplannode_set: ['1']}};
             scope.$apply();
-            expect(mockNodeService.get).toHaveBeenCalledWith(1, [ 'consignee', 'contact_person_id' ]);
+            expect(mockNodeService.get).toHaveBeenCalledWith(1, ['consignee', 'contact_person_id']);
         });
 
         it('should put a distribution plan on the scope if distribution plan node exists', function () {
@@ -531,7 +549,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.trackPurchaseOrderItem();
             scope.$apply();
 
-            expect(mockDeliveryService.update).toHaveBeenCalledWith({ id : 1, track : true }, 'PATCH');
+            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 1, track: true}, 'PATCH');
         });
 
         it('should not call update if track is set to true and not on first Level', function () {
@@ -549,7 +567,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.trackPurchaseOrderItem();
             scope.$apply();
 
-            expect(mockDeliveryService.update).toHaveBeenCalledWith({ id : 1, track : true }, 'PATCH');
+            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 1, track: true}, 'PATCH');
         });
     });
 
@@ -650,7 +668,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             it('two distribution plans should be created', function () {
                 scope.inMultipleIpMode = true;
                 scope.distributionPlanNodes = [{
-                    consignee: {id: 1 },
+                    consignee: {id: 1},
                     item: scope.selectedPurchaseOrderItem.id,
                     deliveryDate: '10/10/2015',
                     quantityIn: 5,
@@ -661,7 +679,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                     isEndUser: false
                 },
                     {
-                        consignee: {id: 1 },
+                        consignee: {id: 1},
                         item: scope.selectedPurchaseOrderItem.id,
                         deliveryDate: '10/10/2015',
                         quantityIn: 4,
@@ -822,7 +840,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 expect(mockNodeService.create).toHaveBeenCalledWith(jasmine.objectContaining({distribution_plan: 1}));
             });
 
-            it('should set trackSubmitted to true when node is created with track', function() {
+            it('should set trackSubmitted to true when node is created with track', function () {
                 deferredPlan.resolve({id: 1});
                 deferredPlanNode.resolve({id: 1});
 
@@ -835,7 +853,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 expect(scope.distributionPlanNodes[0].trackSubmitted).toBeTruthy();
             });
 
-            it('should set trackSubmitted to false when node is created with not tracked', function() {
+            it('should set trackSubmitted to false when node is created with not tracked', function () {
                 deferredPlan.resolve({id: 1});
                 deferredPlanNode.resolve({id: 1});
 
@@ -848,7 +866,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 expect(scope.distributionPlanNodes[0].trackSubmitted).toBeFalsy();
             });
 
-            it('should set trackSubmitted to true when node is updated with track', function() {
+            it('should set trackSubmitted to true when node is updated with track', function () {
                 deferredPlan.resolve({id: 1});
                 deferredPlanNode.resolve({});
 
@@ -862,7 +880,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 expect(scope.distributionPlanNodes[0].trackSubmitted).toBeTruthy();
             });
 
-            it('should set trackSubmitted to false when node is updated without track', function() {
+            it('should set trackSubmitted to false when node is updated without track', function () {
                 deferredPlan.resolve({id: 2});
                 deferredPlanNode.resolve({id: 2});
 
@@ -872,7 +890,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 expect(scope.distributionPlanNodes[0].id).toBe(2);
             });
 
-            it('should set ui node id after creating a node', function() {
+            it('should set ui node id after creating a node', function () {
                 deferredPlan.resolve({id: 1});
                 deferredPlanNode.resolve({});
 
@@ -983,5 +1001,47 @@ describe('MultipleIpDirectDeliveryController', function () {
 
             });
         });
+    });
+
+    describe('isSingleIp modal', function () {
+        it('Should show a confirmation modal if isSingleIp on purchase order not yet set ', function () {
+            deferredPurchaseOrder.resolve({id:1, purchaseorderitemSet:[{id:2, value:50}]});
+            scope.purchaseOrderItems = {sum: 50};
+            scope.$apply();
+
+            scope.warnBeforeSaving();
+            scope.$apply();
+
+            expect(mockConfirmationModal.modal).toHaveBeenCalled();
+            expect(mockPurchaseOrderService.update).toHaveBeenCalled();
+            expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
+        });
+
+        it('should not show confirmation modal if single IP on purchase order is already set to single', function () {
+            deferredPurchaseOrder.resolve({id:1, isSingleIp: true, purchaseorderitemSet:[{id:2, value:50}]});
+            scope.purchaseOrderItems = {sum: 50};
+            scope.$apply();
+
+            scope.warnBeforeSaving();
+            scope.$apply();
+
+            expect(mockConfirmationModal.modal).not.toHaveBeenCalled();
+            expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
+            expect(scope.selectedPurchaseOrder.isSingleIp).toBeTruthy();
+        });
+
+        it('should not show confirmation modal if single IP on purchase order is already set to multiple', function () {
+            deferredPurchaseOrder.resolve({id:1, isSingleIp: false, purchaseorderitemSet:[{id:2, value:50}]});
+            scope.purchaseOrderItems = {sum: 50};
+            scope.$apply();
+
+            scope.warnBeforeSaving();
+            scope.$apply();
+
+            expect(mockConfirmationModal.modal).not.toHaveBeenCalled();
+            expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
+            expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
+        });
+
     });
 });

@@ -262,8 +262,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 distribution_plan: uiPlanNode.distributionPlan
             };
 
-            PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false}, 'PATCH');
-
             var delivery = {
                 programme: $scope.selectedPurchaseOrder.programme,
                 consignee: uiPlanNode.consignee.id,
@@ -272,7 +270,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 delivery_date: formatDateForSave(plannedDate),
                 remark: uiPlanNode.remark,
                 track: uiPlanNode.track
-            }
+            };
 
             // Update
             if (nodeId) {
@@ -309,15 +307,16 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         $scope.warnBeforeSaving = function () {
-            if ($scope.selectedPurchaseOrder.isSingleIp === null) {
-                $('#confirmation-modal').modal();
+            if ($scope.selectedPurchaseOrder.isSingleIp || $scope.selectedPurchaseOrder.isSingleIp == false) {
+                $scope.saveDeliveryNodes();
             } else {
-                $scope.warningAccepted();
+                angular.element('#confirmation-modal').modal();
             }
         };
 
         $scope.warningAccepted = function () {
-            $('#confirmation-modal').modal('hide');
+            angular.element('#confirmation-modal').modal('hide');
+            updateDeliveryStatus();
             $scope.saveDeliveryNodes();
         };
 
@@ -333,6 +332,11 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 createToast('Save failed', 'danger');
             });
         };
+
+        var updateDeliveryStatus = function () {
+            PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false}, 'PATCH');
+            $scope.selectedPurchaseOrder.isSingleIp = false;
+        }
 
         $scope.addSubConsignee = function (node) {
             $location.path(
