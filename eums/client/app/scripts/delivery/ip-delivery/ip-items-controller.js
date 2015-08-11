@@ -1,5 +1,5 @@
-angular.module('IpItems', ['Item', 'ui.bootstrap'])
-    .controller('IpItemsController', function ($scope, $q, ItemService) {
+angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
+    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService) {
         $scope.items = [];
         $scope.searching = false;
 
@@ -9,7 +9,7 @@ angular.module('IpItems', ['Item', 'ui.bootstrap'])
             if ($scope.searchTerm && $scope.searchTerm.length) {
                 urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
             }
-            ItemService.all([], urlArgs).then(function (response) {
+            ConsigneeItemService.all([], urlArgs).then(function (response) {
                 setScopeDataFromResponse(response);
             });
         };
@@ -17,7 +17,7 @@ angular.module('IpItems', ['Item', 'ui.bootstrap'])
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
                 $scope.searching = true;
-                ItemService.search(term, [], {paginate: true}).then(function (response) {
+                ConsigneeItemService.search(term, [], {paginate: true}).then(function (response) {
                     setScopeDataFromResponse(response);
                 }).catch(function () {
                     //createToast('Search failed', 'danger');
@@ -31,7 +31,7 @@ angular.module('IpItems', ['Item', 'ui.bootstrap'])
         });
 
         function fetchItems() {
-            ItemService.all([], {paginate: 'true'}).then(function (response) {
+            ConsigneeItemService.all([], {paginate: 'true'}).then(function (response) {
                 setScopeDataFromResponse(response);
             });
         }

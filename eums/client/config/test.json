@@ -16,6 +16,7 @@
         "RELEASE_ORDER_ITEM": "/api/release-order-item/",
         "PO_ITEM_FOR_SO_ITEM": "/api/so-item-po-item/",
         "CONSIGNEE_PURCHASE_ORDERS": "/api/consignee-purchase-orders/",
+        "CONSIGNEE_ITEM": "/api/consignee-item/",
         "CONSIGNEE_PURCHASE_ORDER_ITEMS": "/api/consignee-purchase-order-items/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
@@ -41,7 +42,7 @@
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission"
     },
-    "CONTACT_SERVICE_URL": "http://localhost:9005/api/contacts/",
+    "CONTACT_SERVICE_URL": "http://localhost:8005/api/contacts/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",
     "DISTRICTJSONURL": "static/app/data/district_name.json",
     "districtLayerStyle": {
