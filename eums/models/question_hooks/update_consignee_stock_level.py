@@ -22,4 +22,6 @@ class UpdateConsigneeStockLevel:
         entry.save()
 
     def _get_item_entry(self):
-        return ConsigneeItem.objects.get(consignee=self.consignee, item=self.item)
+        consignee_item = ConsigneeItem.objects.filter(consignee=self.consignee, item=self.item)
+        assert consignee_item.exists()
+        return consignee_item.first()

@@ -47,3 +47,25 @@ class UpdateConsigneeStockLevelTest(TestCase):
 
     def _get_consignee_item(self):
         return ConsigneeItem.objects.get(consignee=self.consignee, item=self.item)
+
+
+class UpdateConsigneeStockLevelTestWithoutAnsweringItemReceivedQuestion(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.flows = seed_questions_and_flows()
+
+    def setUp(self):
+        self.consignee = ConsigneeFactory()
+        self.item = ItemFactory()
+        self.node = DeliveryNodeFactory(consignee=self.consignee, item=PurchaseOrderItemFactory(item=self.item))
+        self.amount_received = NumericQuestion.objects.get(label='amountReceived', flow=self.flows['WEB_FLOW'])
+        self.run = RunFactory(runnable=self.node)
+
+    def test_should_throw_an_error_when_amount_received_question_is_answered_before_the_item_received_question(self):
+        create_answer = lambda: NumericAnswerFactory(question=self.amount_received, value=100, run=self.run)
+        self.assertRaises(AssertionError, create_answer)
+
+    def tearDown(self):
+        Item.objects.all().delete()
+        ConsigneeItem.objects.all().delete()
+        NumericAnswer.objects.all().delete()
