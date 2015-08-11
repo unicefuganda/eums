@@ -62,11 +62,8 @@
                 <td>{{ delivery.number }}</td>
                 <td>{{ delivery.numberOfItems }}</td>
                 <td>{{ delivery.totalValue | currency : '$' }}</td>
-                <td ng-hide="delivery.isReceived">
+                <td>
                     <button ng-click="confirm(delivery)" class="btn btn-default blue-border-button">Confirm</button>
-                </td>
-                <td ng-show="delivery.isReceived">
-                    <button ng-disabled="true" class="btn btn-default blue-border-button active">Confirm</button>
                 </td>
             </tr>
             </tbody>

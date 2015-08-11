@@ -69,7 +69,7 @@
 
                 </div>
 
-                <div ng-hide=" hasReceivedDelivery" class="pad-top-20">
+                <div ng-hide="hasReceivedDelivery" class="pad-top-20">
                     <table>
                         <tr>
                             <td class="pad-10">{{answers[0].text}}</td>
@@ -86,7 +86,8 @@
                         </tr>
                     </table>
 
-                    <div class="margin-top-20 pad-top-10 table-bordered border-radius-10">
+                    <div class="margin-top-20 pad-top-10 table-bordered border-radius-10"
+                         ng-show="!hasReceivedDelivery && isValidChoice">
                         <div class="centered">
                             <span class="text-warning glyphicon glyphicon-plus glyphicon-warning-sign font-size-x-large"></span>
                         </div>
