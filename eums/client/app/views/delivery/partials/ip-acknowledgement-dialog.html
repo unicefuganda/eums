@@ -120,6 +120,7 @@
                 <button id="deliveryConfirmYes"
                         ng-show="hasReceivedDelivery"
                         type="button"
+                        ng-disabled="!isValidChoice"
                         class="btn btn-primary"
                         ng-click="saveAnswers()">
                     Confirm items in shipment
