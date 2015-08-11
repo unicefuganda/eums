@@ -7,6 +7,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         $scope.answers = [];
         $scope.activeDelivery = undefined;
         $scope.hasReceivedDelivery = undefined;
+        var questionLabel = 'deliveryReceived';
 
         function loadDeliveries() {
             LoaderService.showLoader();
@@ -43,20 +44,22 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         };
 
         $scope.saveAnswers = function () {
+            var answers;
             LoaderService.showLoader();
-            AnswerService.createWebAnswer($scope.activeDelivery, $scope.answers)
+            answers = isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
+            AnswerService.createWebAnswer($scope.activeDelivery, answers)
                 .then(function () {
-                    if (isDeliveryReceived('deliveryReceived', $scope.answers)) {
+                    if (isDeliveryReceived(questionLabel, $scope.answers)) {
                         $location.path('/ip-delivery-items/' + $scope.activeDelivery.id);
                     }
                     $scope.answers = [];
                     $scope.activeDelivery = undefined;
+                    LoaderService.hideLoader();
                 });
-            LoaderService.showModal('ip-acknowledgement-modal');
         };
 
         $scope.$watch('answers', function () {
-            $scope.hasReceivedDelivery = $scope.answers && isDeliveryReceived('deliveryReceived', $scope.answers);
+            $scope.hasReceivedDelivery = $scope.answers && isDeliveryReceived(questionLabel, $scope.answers);
         }, true);
 
         function isDeliveryReceived(questionLabel, answers) {

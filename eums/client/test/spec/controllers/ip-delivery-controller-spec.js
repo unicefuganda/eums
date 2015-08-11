@@ -208,14 +208,14 @@ describe('IP Delivery Controller', function () {
                 scope.activeDelivery = delivery;
                 var answers = [
                     {
-                        questionLabel: 'deliveryReceived',
+                        question_label: 'deliveryReceived',
                         type: 'multipleChoice',
                         text: "Was delivery received?",
                         value: 'Yes',
                         options: ['Yes', 'No']
                     },
                     {
-                        questionLabel: 'dateOfReceipt',
+                        question_label: 'dateOfReceipt',
                         type: 'text',
                         text: "When was delivery received?",
                         value: '2014-12-12'
@@ -228,6 +228,35 @@ describe('IP Delivery Controller', function () {
                 scope.$apply();
 
                 expect(mockAnswerService.createWebAnswer).toHaveBeenCalledWith(delivery, answers)
+            });
+
+            it('should call create answer service with only the first answer when delivery is not received', function () {
+                mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
+                initializeController();
+                var delivery = {id: 1};
+                scope.activeDelivery = delivery;
+                var answers = [
+                    {
+                        question_label: 'deliveryReceived',
+                        type: 'multipleChoice',
+                        text: "Was delivery received?",
+                        value: 'No',
+                        options: ['Yes', 'No']
+                    },
+                    {
+                        question_label: 'dateOfReceipt',
+                        type: 'text',
+                        text: "When was delivery received?",
+                        value: '2014-12-12'
+                    }
+
+                ];
+                scope.answers = answers;
+
+                scope.saveAnswers();
+                scope.$apply();
+
+                expect(mockAnswerService.createWebAnswer).toHaveBeenCalledWith(delivery, [answers.first()])
             });
 
             it('should navigate to delivery items page upon successful save and  delivery is received', function () {
