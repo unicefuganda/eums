@@ -63,7 +63,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             $scope.hasReceivedDelivery = $scope.answers && _isDeliveryReceived(questionLabel, $scope.answers);
 
             if ($scope.answers.length > 0) {
-                $scope.isValidChoice = _isValidChoice($scope.answers.first().value, $scope.answers.first().options);
+                $scope.isValidChoice = _isValidChoice($scope.answers);
             } else {
                 $scope.isValidChoice = false;
             }
@@ -88,8 +88,16 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             return found.length === testArray.length;
         }
 
-        function _isValidChoice(choice, answers) {
-            return answers.indexOf(choice) > -1;
+        function _isValidChoice(answers) {
+            var isValid = [];
+            answers.forEach(function (answer) {
+                if (answer.type == 'multipleChoice') {
+                    isValid.add(answer.options.indexOf(answer.value) > -1);
+                } else if (answer.type == 'text') {
+                    isValid.add(answer.value != '');
+                }
+            });
+            return isValid.indexOf(false) <= -1;
         }
     });
 

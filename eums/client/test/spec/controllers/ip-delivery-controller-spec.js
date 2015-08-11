@@ -297,6 +297,31 @@ describe('IP Delivery Controller', function () {
                 expect(scope.isValidChoice).toBe(true);
             });
 
+            it('should set is valid choice to false when value is invalid when shipment was received', function () {
+                mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
+                initializeController();
+                scope.activeDelivery = {id: 1};
+                scope.answers = [
+                    {
+                        question_label: 'deliveryReceived',
+                        type: 'multipleChoice',
+                        text: "Was delivery received?",
+                        value: 'Yes',
+                        options: ['Yes', 'No']
+                    },
+                    {
+                        question_label: 'dateOfReceipt',
+                        type: 'text',
+                        text: "Was delivery received?",
+                        value: ''
+                    }
+                ];
+
+                scope.$apply();
+
+                expect(scope.isValidChoice).toBe(false);
+            });
+
             it('should navigate to delivery items page upon successful save and  delivery is received', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
