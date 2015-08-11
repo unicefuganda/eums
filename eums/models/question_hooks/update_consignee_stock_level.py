@@ -9,7 +9,6 @@ class UpdateConsigneeStockLevel:
         self.question = self.answer.question
         self.item = self.answer.run.runnable.item.item
         self.amount_received = self.answer.value
-    #   TODO assert that item entry exists
 
     def run(self):
         entry = self._get_item_entry()
