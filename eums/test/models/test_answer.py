@@ -24,15 +24,13 @@ class AnswerTest(TestCase):
         self.assertEqual(mock_run.call_count, 0)
 
     @patch('eums.models.question_hooks.update_consignee_stock_level.rollback')
-    @patch('eums.models.question_hooks.update_consignee_stock_level.__init__')
-    def test_should_roll_back_hook_effect_when_answer_is_deleted(self, mock_constructor, mock_run):
-        mock_constructor.return_value = None
-        question = TextQuestionFactory(when_answered='update_consignee_stock_level')
-        answer = TextAnswerFactory(question=question)
-        mock_run.reset_mock()
+    @patch('eums.models.question_hooks.update_consignee_stock_level.run')
+    def test_should_roll_back_hook_effect_when_answer_is_deleted(self, mock_rollback, mock_run):
+        question = MultipleChoiceQuestionFactory(when_answered='update_consignee_stock_level')
+        answer = MultipleChoiceAnswerFactory(question=question)
+        mock_run.return_value = None
         answer.delete()
-        mock_constructor.assert_called_with(answer)
-        mock_run.assert_called()
+        mock_rollback.assert_called()
 
     @patch('eums.models.question_hooks.update_consignee_stock_level.run')
     @patch('eums.models.question_hooks.update_consignee_stock_level.__init__')

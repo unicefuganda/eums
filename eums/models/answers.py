@@ -9,6 +9,10 @@ class Answer(models.Model):
         abstract = True
 
     def save(self, **kwargs):
+        if self.id:
+            previous_answer = type(self).objects.get(pk=self.id)
+            self._post_create_hook()(previous_answer).rollback()
+
         answer = super(Answer, self).save(**kwargs)
         self._post_create_hook()(self).run()
         return answer
