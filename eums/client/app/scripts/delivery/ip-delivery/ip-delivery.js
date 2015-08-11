@@ -86,10 +86,15 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function _areValidAnswers(answers) {
             var isValid = [];
             answers.forEach(function (answer) {
-                if (answer.type == 'multipleChoice') {
-                    isValid.add(answer.options.indexOf(answer.value) > -1);
-                } else if (answer.type == 'text') {
-                    isValid.add(answer.value != '');
+                if (answer.question_label == 'additionalDeliveryComments') {
+                    isValid.add(true);
+                }
+                else{
+                    if (answer.type == 'multipleChoice') {
+                        isValid.add(answer.options.indexOf(answer.value) > -1);
+                    } else if (answer.type == 'text') {
+                        isValid.add(answer.value != '');
+                    }
                 }
             });
             return isValid.indexOf(false) <= -1;
