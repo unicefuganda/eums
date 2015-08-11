@@ -2,8 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content col-md-offset-3 col-md-10">
             <div class="modal-header">
-                <h4 class="modal-title"><span
-                        class="text-warning glyphicon glyphicon-plus glyphicon-warning-sign"></span>
+                <h4 class="modal-title">
                     Confirm delivery: {{ activeDelivery.number}}
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
@@ -13,9 +12,11 @@
 
             </div>
             <div class="modal-body">
-                <div>Items will only appear in your stock upon confirmation of delivery</div>
+                <div class="text-warning pad-bottom-5">Items will only appear in your stock upon confirmation of
+                    delivery
+                </div>
 
-                <div ng-show=" hasReceivedDelivery">
+                <div ng-show=" hasReceivedDelivery" class="pad-top-20">
                     <table>
                         <tr ng-repeat="answer in answers">
                             <td>{{answer.text}}</td>
@@ -60,10 +61,10 @@
 
                 </div>
 
-                <div ng-hide=" hasReceivedDelivery">
+                <div ng-hide=" hasReceivedDelivery" class="pad-top-20">
                     <table>
                         <tr>
-                            <td>{{answers[0].text}}</td>
+                            <td class="pad-10">{{answers[0].text}}</td>
                             <td>
                                 <span>
                                     <select ng-model="answers[0].value"
@@ -77,24 +78,29 @@
                         </tr>
                     </table>
 
-                    <div>
-                        UNICEF will be notified that you have not received this shipment
-                        and get back to you at the earliest opportunity.
-                        You will still be able to come back and confirm once you have received the shipment.
+                    <div class="margin-top-20 pad-top-10 table-bordered border-radius-10">
+                        <div class="centered">
+                            <span class="text-warning glyphicon glyphicon-plus glyphicon-warning-sign font-size-x-large"></span>
+                        </div>
+                        <div class="pad-10 text-muted">
+                            UNICEF will be notified that you have not received this shipment
+                            and get back to you at the earliest opportunity.
+                            You will still be able to come back and confirm once you have received the shipment.
+                        </div>
                     </div>
 
                 </div>
             </div>
             <div class="modal-footer">
 
-                <button id="deliveryConfirmNo"
+                <button id="deliveryConfirmCancel"
                         type="button"
                         class="btn btn-default"
                         data-dismiss="modal">
                     Cancel
                 </button>
                 &nbsp;&nbsp;
-                <button id="deliveryConfirmYes"
+                <button id="deliveryConfirmNo"
                         ng-hide="hasReceivedDelivery"
                         type="button"
                         class="btn btn-primary"
@@ -109,7 +115,6 @@
                         ng-click="saveAnswers()">
                     Confirm items in shipment
                 </button>
-
 
             </div>
         </div>
