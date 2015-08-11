@@ -12,4 +12,4 @@ class ConsigneeItemFactory(factory.DjangoModelFactory):
 
     consignee = factory.SubFactory(ConsigneeFactory)
     item = factory.SubFactory(ItemFactory)
-    latest_delivery = factory.SubFactory(DeliveryNodeFactory)
+    deliveries = [DeliveryNodeFactory().id]

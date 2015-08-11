@@ -39,33 +39,3 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(get_response.status_code, 200)
         self.assertDictContainsSubset(item_two_details, get_response.data[0])
         self.assertDictContainsSubset(item_one_details, get_response.data[1])
-
-    def test_should_list_items_distributed_to_the_logged_in_users_ip_for_ip_user(self):
-        # TODO Add this test
-        pass
-
-    def test_should_paginate_items_list_on_request(self):
-        ItemFactory()
-        ItemFactory()
-
-        response = self.client.get('%s?paginate=true' % ENDPOINT_URL)
-
-        self.assertIn('results', response.data)
-        self.assertIn('count', response.data)
-        self.assertIn('next', response.data)
-        self.assertIn('previous', response.data)
-        self.assertIn('pageSize', response.data)
-        self.assertEqual(len(response.data['results']), 2)
-
-    def test_should_not_paginate_consignee_list_when_paginate_is_not_true(self):
-        response = self.client.get('%s?paginate=falsy' % ENDPOINT_URL)
-        self.assertEqual(response.status_code, 200)
-        self.assertNotIn('results', response.data)
-        self.assertEqual(response.data, [])
-
-    def test_should_search_item_by_description(self):
-        item = ItemFactory(description='Plumpynut')
-        ItemFactory(description='AA')
-        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'Plum'))
-        self.assertEqual(len(response.data), 1)
-        self.assertIn(item.id, [item['id'] for item in response.data])
