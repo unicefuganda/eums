@@ -27,7 +27,7 @@
                                             ng-options="option for option in answers[0].options ">
                                     </select>
                                 </span>
-                                <span ng-if="answer.type == 'text'">
+                                <span ng-if="answer.type == 'text' && answer.question_label != 'dateOfReceipt'">
                                     <input type="text" ng-model="answer.value"
                                            required="required"
                                            class="form-control">
@@ -35,7 +35,7 @@
                                 </span>
 
                                 <p class="table-date-width input-group"
-                                   ng-if="answer.type == 'date'" eums-date-picker>
+                                   ng-if="answer.question_label == 'dateOfReceipt'" eums-date-picker>
                                     <input type="text"
                                            class="form-control"
                                            datepicker-popup="dd/MM/yyyy"
