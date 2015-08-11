@@ -52,6 +52,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 .then(function () {
                     if (_isDeliveryReceived(questionLabel, $scope.answers)) {
                         $location.path('/ip-delivery-items/' + $scope.activeDelivery.id);
+                    } else {
+                        loadDeliveries();
                     }
                     $scope.answers = [];
                     $scope.activeDelivery = undefined;

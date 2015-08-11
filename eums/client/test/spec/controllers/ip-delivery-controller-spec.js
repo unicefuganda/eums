@@ -399,7 +399,7 @@ describe('IP Delivery Controller', function () {
                 expect(location.path).toHaveBeenCalledWith('/ip-delivery-items/' + delivery.id);
             });
 
-            it('should not navigate to delivery items page upon successful save and delivery is NOT received', function () {
+            it('should load deliveries upon successful save and delivery is NOT received', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
                 scope.activeDelivery = {id: 1};
@@ -417,6 +417,7 @@ describe('IP Delivery Controller', function () {
                 scope.$apply();
 
                 expect(location.path).not.toHaveBeenCalled();
+                expect(mockDeliveryService.all.calls.count()).toBe(2);
                 expect(scope.activeDelivery).toBe(undefined);
                 expect(scope.answers).toEqual([])
             });
