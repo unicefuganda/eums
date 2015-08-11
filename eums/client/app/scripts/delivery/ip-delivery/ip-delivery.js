@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer'])
+angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters'])
     .controller('IpDeliveryController', function ($scope, $location, DeliveryService, LoaderService,
                                                   UserService, AnswerService) {
         $scope.deliveries = [];
@@ -8,6 +8,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         $scope.activeDelivery = undefined;
         $scope.hasReceivedDelivery = undefined;
         var questionLabel = 'deliveryReceived';
+        $scope.searchFields = ['number', 'date'];
 
         function loadDeliveries() {
             LoaderService.showLoader();

@@ -25,6 +25,7 @@
                                             required="required"
                                             class="form-control"
                                             ng-options="option for option in answers[0].options ">
+                                        <option value="">Select item</option>
                                     </select>
                                 </span>
                                 <span ng-if="answer.type == 'text' && answer.question_label != 'dateOfReceipt'">
@@ -69,6 +70,7 @@
                                             required="required"
                                             class="form-control"
                                             ng-options="option for option in answers[0].options ">
+                                        <option value="">Select item</option>
                                     </select>
                                 </span>
                             </td>

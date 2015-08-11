@@ -52,7 +52,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="delivery in deliveries">
+            <tr ng-repeat="delivery in deliveries | orderFilter: query:dateQuery:searchFields">
                 <td>
                     <span ng-class="delivery.isReceived ?  'glyphicon glyphicon-ok text-success'
                      : 'glyphicon glyphicon-remove text-danger'"></span>
@@ -62,7 +62,9 @@
                 <td>{{ delivery.number }}</td>
                 <td>{{ delivery.numberOfItems }}</td>
                 <td>{{ delivery.totalValue | currency : '$' }}</td>
-                <td><button ng-click="confirm(delivery)" ng-disabled="delivery.isReceived">CONFIRM</button></td>
+                <td>
+                    <button ng-click="confirm(delivery)" ng-disabled="delivery.isReceived">CONFIRM</button>
+                </td>
             </tr>
             </tbody>
             <tfoot>
@@ -72,8 +74,8 @@
                 </td>
             </tr>
             </tfoot>
-                <span class="information message"
-                      ng-show="deliveries.length > 0 && (deliveries | orderFilter: query:dateQuery:searchFields ).length == 0">
+            <span class="information message"
+               ng-show="deliveries.length > 0 && (deliveries | orderFilter: query : dateQuery : searchFields ).length == 0">
                 There are no matches to your search criteria.
                 </span>
             <span class="information message" ng-show="deliveries.length == 0">There are no deliveries available right now.</span>
