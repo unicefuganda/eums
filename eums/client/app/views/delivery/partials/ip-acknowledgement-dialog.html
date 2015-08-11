@@ -39,8 +39,8 @@
 
                                 <span ng-if="answer.type == 'text' && answer.question_label == 'additionalDeliveryComments'">
                                     <textarea rows="2" ng-model="answer.value"
-                                           required="required"
-                                           class="form-control">
+                                              required="required"
+                                              class="form-control">
                                     </textarea>
                                 </span>
 
@@ -111,6 +111,7 @@
                 <button id="deliveryConfirmNo"
                         ng-hide="hasReceivedDelivery"
                         type="button"
+                        ng-disabled="!isValidChoice"
                         class="btn btn-primary"
                         ng-click="saveAnswers()">
                     Confirm

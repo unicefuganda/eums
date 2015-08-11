@@ -47,10 +47,10 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         $scope.saveAnswers = function () {
             var answers;
             LoaderService.showLoader();
-            answers = isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
+            answers = _isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
             AnswerService.createWebAnswer($scope.activeDelivery, answers)
                 .then(function () {
-                    if (isDeliveryReceived(questionLabel, $scope.answers)) {
+                    if (_isDeliveryReceived(questionLabel, $scope.answers)) {
                         $location.path('/ip-delivery-items/' + $scope.activeDelivery.id);
                     }
                     $scope.answers = [];
@@ -60,10 +60,16 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         };
 
         $scope.$watch('answers', function () {
-            $scope.hasReceivedDelivery = $scope.answers && isDeliveryReceived(questionLabel, $scope.answers);
+            $scope.hasReceivedDelivery = $scope.answers && _isDeliveryReceived(questionLabel, $scope.answers);
+
+            if ($scope.answers.length > 0) {
+                $scope.isValidChoice = _isValidChoice($scope.answers.first().value, $scope.answers.first().options);
+            } else {
+                $scope.isValidChoice = false;
+            }
         }, true);
 
-        function isDeliveryReceived(questionLabel, answers) {
+        function _isDeliveryReceived(questionLabel, answers) {
             var received = answers.find(function (answer) {
                 return answer.question_label === questionLabel && answer.value === 'Yes';
             });
@@ -80,6 +86,10 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             });
 
             return found.length === testArray.length;
+        }
+
+        function _isValidChoice(choice, answers) {
+            return answers.indexOf(choice) > -1;
         }
     });
 
