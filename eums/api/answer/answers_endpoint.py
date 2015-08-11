@@ -1,7 +1,7 @@
-import json
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
 from eums.models import DistributionPlanNode
 from eums.models.answers import MultipleChoiceAnswer
 
@@ -60,7 +60,7 @@ class ResponseSerializer(object):
                 if type(response) is MultipleChoiceAnswer:
                     response_value = response.value_id
 
-                node_results[response.question.label] =  {
+                node_results[response.question.label] = {
                     'id': response.id,
                     'value': response_value,
                     'formatted_value': response.format(),
@@ -98,6 +98,7 @@ class AllIPResponses(APIView):
         result = ResponseSerializer().serialize_responses(for_user=DistributionPlanNode.IMPLEMENTING_PARTNER)
         return Response(result, status=status.HTTP_200_OK)
 
+
 class NodeResponses(APIView):
     def get(self, request, node_id, *args, **kwargs):
         planNode = DistributionPlanNode.objects.filter(id=node_id).first()
@@ -115,9 +116,9 @@ class NodeResponses(APIView):
         return Response(result, status=status.HTTP_200_OK)
 
     def _get_node(self, node):
-        return { 'id': node.id,
+        return {'id': node.id,
                 'location': node.location,
                 'consignee': node.consignee_id,
                 'contact_person_id': node.contact_person_id,
                 'plan_id': node.distribution_plan_id
-               }
+                }

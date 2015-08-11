@@ -8,31 +8,32 @@ from eums.test.factories.question_factory import TextQuestionFactory, MultipleCh
 
 
 class AnswerTest(TestCase):
-    @patch('eums.models.question_hooks.update_consignee_stock_level')
+    @patch('eums.models.question_hooks.UpdateConsigneeStockLevel.run')
     def test_should_call_post_create_answer_hook_on_save_if_question_specifies_a_hook(self, mock_post_create_hook):
-        question = TextQuestionFactory(when_answered='update_consignee_stock_level')
+        question = TextQuestionFactory(when_answered='UpdateConsigneeStockLevel')
         answer = TextAnswerFactory(question=question)
         mock_post_create_hook.assert_called_with(answer)
 
-    @patch('eums.models.question_hooks.update_consignee_stock_level')
+    @patch('eums.models.question_hooks.UpdateConsigneeStockLevel.run')
     def test_should_not_call_post_create_answer_hook_for_questions_that_have_none(self, mock_post_create_hook):
         question = TextQuestionFactory()
         TextAnswerFactory(question=question)
         self.assertEqual(mock_post_create_hook.call_count, 0)
 
-    @patch('eums.models.question_hooks.update_consignee_stock_level')
+    @patch('eums.models.question_hooks.UpdateConsigneeStockLevel.rollback')
     def test_should_roll_back_hook_effect_when_answer_is_deleted(self, mock_post_create_hook):
-        question = TextQuestionFactory(when_answered='update_consignee_stock_level')
+        question = TextQuestionFactory(when_answered='UpdateConsigneeStockLevel')
         answer = TextAnswerFactory(question=question)
         mock_post_create_hook.reset_mock()
         answer.delete()
         mock_post_create_hook.assert_called_with(answer, rollback=True)
 
-    @patch('eums.models.question_hooks.update_consignee_stock_level')
-    def test_should_call_post_create_answer_hook_for_multiple_choice_question(self, mock_post_create_hook):
-        question = MultipleChoiceQuestionFactory(when_answered='update_consignee_stock_level')
+    @patch('eums.models.question_hooks.UpdateConsigneeStockLevel.run')
+    def test_should_call_post_create_answer_hook_for_multiple_choice_question(self, mock_run):
+        question = MultipleChoiceQuestionFactory(when_answered='UpdateConsigneeStockLevel')
         answer = MultipleChoiceAnswerFactory(question=question)
-        mock_post_create_hook.assert_called_with(answer)
+        # mock_constructor.assert_called_with(answer)
+        mock_run.assert_called()
 
 
 class TextAnswerTest(TestCase):

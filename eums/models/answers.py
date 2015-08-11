@@ -10,17 +10,16 @@ class Answer(models.Model):
 
     def save(self, **kwargs):
         answer = super(Answer, self).save(**kwargs)
-        self._post_create_hook()(self)
+        self._post_create_hook()(self).run()
         return answer
 
     def delete(self, using=None):
         super(Answer, self).delete()
-        self._post_create_hook()(self, rollback=True)
+        self._post_create_hook()(self).rollback()
 
     def _post_create_hook(self):
         hook_name = self.question.when_answered or ''
-        null_function = lambda *args, **kwargs: None
-        return getattr(question_hooks, hook_name, null_function)
+        return getattr(question_hooks, hook_name, NullHook)
 
 
 class TextAnswer(Answer):
@@ -57,3 +56,14 @@ class MultipleChoiceAnswer(Answer):
 
     def __unicode__(self):
         return '%s' % self.value.text
+
+
+class NullHook:
+    def __init__(self):
+        pass
+
+    def run(self, *args, **kwargs):
+        pass
+
+    def rollback(self, *args, **kwargs):
+        pass

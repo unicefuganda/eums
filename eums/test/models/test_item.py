@@ -4,13 +4,7 @@ from django.db import IntegrityError
 
 from eums.fixtures.questions import seed_questions_and_flows
 from eums.models import Item, Consignee, Option, MultipleChoiceQuestion, Question, NumericQuestion
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
-from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
-from eums.test.factories.run_factory import RunFactory
 
 
 class ItemTest(TestCase):
