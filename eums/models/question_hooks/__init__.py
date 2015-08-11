@@ -1,0 +1,6 @@
+from update_consignee_inventory import UpdateConsigneeInventory
+from update_consignee_stock_level import UpdateConsigneeStockLevel
+
+update_consignee_inventory = UpdateConsigneeInventory
+update_consignee_stock_level = UpdateConsigneeStockLevel
+
