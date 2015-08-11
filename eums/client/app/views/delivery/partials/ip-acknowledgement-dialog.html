@@ -19,8 +19,8 @@
                 <div ng-show=" hasReceivedDelivery" class="pad-top-20">
                     <table>
                         <tr ng-repeat="answer in answers">
-                            <td>{{answer.text}}</td>
-                            <td>
+                            <td class="pad-5">{{answer.text}}</td>
+                            <td class="pad-5">
                                 <span ng-if="answer.type == 'multipleChoice'">
                                     <select ng-model="answer.value"
                                             required="required"
@@ -29,11 +29,19 @@
                                         <option value="">Select item</option>
                                     </select>
                                 </span>
-                                <span ng-if="answer.type == 'text' && answer.question_label != 'dateOfReceipt'">
+                                <span ng-if="answer.type == 'text' && answer.question_label != 'dateOfReceipt'
+                                    && answer.question_label != 'additionalDeliveryComments'">
                                     <input type="text" ng-model="answer.value"
                                            required="required"
                                            class="form-control">
                                     </input>
+                                </span>
+
+                                <span ng-if="answer.type == 'text' && answer.question_label == 'additionalDeliveryComments'">
+                                    <textarea rows="2" ng-model="answer.value"
+                                           required="required"
+                                           class="form-control">
+                                    </textarea>
                                 </span>
 
                                 <p class="table-date-width input-group"
