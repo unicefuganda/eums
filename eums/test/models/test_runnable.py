@@ -60,14 +60,11 @@ class DistributionPlanNodeTest(TestCase):
         sugar_node = DeliveryNodeFactory(quantity=100, item=sugar_item)
         sugar_run = RunFactory(runnable=sugar_node, status='completed')
 
-        multiple_answer_one = MultipleChoiceAnswerFactory(run=run, question=multichoice_question,
-                                                          value=yes_option)
+        multiple_answer_one = MultipleChoiceAnswerFactory(run=run, question=multichoice_question, value=yes_option)
         numeric_answer_one = NumericAnswerFactory(run=run, value=80, question=numeric_question)
 
-        multiple_answer_two = MultipleChoiceAnswerFactory(run=sugar_run,
-                                                          question=multichoice_question, value=no_option)
-        numeric_answer_two = NumericAnswerFactory(run=sugar_run, value=80,
-                                                  question=numeric_question)
+        multiple_answer_two = MultipleChoiceAnswerFactory(run=sugar_run, question=multichoice_question, value=no_option)
+        numeric_answer_two = NumericAnswerFactory(run=sugar_run, value=80, question=numeric_question)
         salt_node_responses = salt_node.responses()
         sugar_node_responses = sugar_node.responses()
 
@@ -78,8 +75,7 @@ class DistributionPlanNodeTest(TestCase):
         self.assertIn(numeric_answer_two, sugar_node_responses[sugar_run])
 
     def test_should_get_run_with_status_scheduled(self):
-        run = RunFactory(runnable=self.node,
-                                  status=Run.STATUS.scheduled)
+        run = RunFactory(runnable=self.node, status=Run.STATUS.scheduled)
         self.assertEqual(self.node.current_run(), run)
 
     def test_should_not_get_run_with_status_completed(self):
