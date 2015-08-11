@@ -13,10 +13,15 @@ class DeliveryNodeManager(PolymorphicManager):
         parents = kwargs.pop('parents') if 'parents' in kwargs else None
         if not parents and not quantity >= 0:
             raise IntegrityError('both parents and quantity cannot be null')
+        is_tracked = kwargs.get('track', False)
+        kwargs['track'] = False
         node = super(DeliveryNodeManager, self).create(**kwargs)
         self._create_arcs(node, parents, quantity)
-        if quantity == 0 and kwargs.get('track', False):
+        if quantity == 0 and is_tracked:
             node.delete()
+        else:
+            node.track = is_tracked
+            node.save()
         return node
 
     def root_nodes_for(self, delivery=None, order_items=None, **kwargs):
