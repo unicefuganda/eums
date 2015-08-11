@@ -15,7 +15,7 @@
             <div class="modal-body">
                 <div>Items will only appear in your stock upon confirmation of delivery</div>
 
-                <div>
+                <div ng-show=" hasReceivedDelivery">
                     <table>
                         <tr ng-repeat="answer in answers">
                             <td>{{answer.text}}</td>
@@ -25,7 +25,6 @@
                                             required="required"
                                             class="form-control"
                                             ng-options="option for option in answers[0].options ">
-                                        <option value="">Select Item</option>
                                     </select>
                                 </span>
                                 <span ng-if="answer.type == 'text'">
@@ -34,7 +33,9 @@
                                            class="form-control">
                                     </input>
                                 </span>
-                                <p class="table-date-width input-group" ng-if="answer.type == 'date'" eums-date-picker>
+
+                                <p class="table-date-width input-group"
+                                   ng-if="answer.type == 'date'" eums-date-picker>
                                     <input type="text"
                                            class="form-control"
                                            datepicker-popup="dd/MM/yyyy"
@@ -57,12 +58,57 @@
 
 
                 </div>
+
+                <div ng-hide=" hasReceivedDelivery">
+                    <table>
+                        <tr>
+                            <td>{{answers[0].text}}</td>
+                            <td>
+                                <span>
+                                    <select ng-model="answers[0].value"
+                                            required="required"
+                                            class="form-control"
+                                            ng-options="option for option in answers[0].options ">
+                                    </select>
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div>
+                        UNICEF will be notified that you have not received this shipment
+                        and get back to you at the earliest opportunity.
+                        You will still be able to come back and confirm once you have received the shipment.
+                    </div>
+
+                </div>
             </div>
             <div class="modal-footer">
-                <button id="deliveryConfirmYes" type="button" class="btn btn-primary" ng-click="saveAnswers()">Yes
+
+                <button id="deliveryConfirmNo"
+                        type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                    Cancel
                 </button>
                 &nbsp;&nbsp;
-                <button id="deliveryConfirmNo" type="button" class="btn btn-default" data-dismiss="modal">No</button>
+                <button id="deliveryConfirmYes"
+                        ng-hide="hasReceivedDelivery"
+                        type="button"
+                        class="btn btn-primary"
+                        ng-click="saveAnswers()">
+                    Confirm
+                </button>
+
+                <button id="deliveryConfirmYes"
+                        ng-show="hasReceivedDelivery"
+                        type="button"
+                        class="btn btn-primary"
+                        ng-click="saveAnswers()">
+                    Confirm items in shipment
+                </button>
+
+
             </div>
         </div>
     </div>

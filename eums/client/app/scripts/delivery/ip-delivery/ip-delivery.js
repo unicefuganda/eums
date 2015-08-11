@@ -32,11 +32,13 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
         $scope.confirm = function (delivery) {
             LoaderService.showLoader();
+            $scope.activeDelivery = delivery;
             DeliveryService.getDetail(delivery, 'answers')
                 .then(function (answers) {
+                    LoaderService.hideLoader();
                     $scope.activeDelivery = delivery;
                     $scope.answers = answers;
-                    LoaderService.hideLoader();
+                    LoaderService.showModal('ip-acknowledgement-modal');
                 });
         };
 
@@ -50,6 +52,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     $scope.answers = [];
                     $scope.activeDelivery = undefined;
                 });
+            LoaderService.showModal('ip-acknowledgement-modal');
         };
 
         $scope.$watch('answers', function () {
@@ -58,7 +61,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
         function isDeliveryReceived(questionLabel, answers) {
             var received = answers.find(function (answer) {
-                return answer.questionLabel === questionLabel && answer.value === 'Yes';
+                return answer.question_label === questionLabel && answer.value === 'Yes';
             });
 
             return received ? true : false;

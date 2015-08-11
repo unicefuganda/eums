@@ -72,6 +72,8 @@ describe('IP Delivery Controller', function () {
             spyOn(mockModal, 'modal');
             spyOn(mockLoaderService, 'showLoader');
             spyOn(mockLoaderService, 'hideLoader');
+            spyOn(mockLoaderService, 'showModal');
+            spyOn(mockLoaderService, 'hideModal');
             spyOn(mockUserService, 'retrieveUserPermissions');
             spyOn(mockAnswerService, 'createWebAnswer');
             spyOn(mockDeliveryService, 'all');
@@ -164,7 +166,7 @@ describe('IP Delivery Controller', function () {
             initializeController();
             scope.answers = [
                 {
-                    questionLabel: 'deliveryReceived',
+                    question_label: 'deliveryReceived',
                     type:'multipleChoice',
                     text: "Was delivery received?",
                     value: 'No',
@@ -235,7 +237,7 @@ describe('IP Delivery Controller', function () {
                 scope.activeDelivery = delivery;
                 scope.answers = [
                     {
-                        questionLabel: 'deliveryReceived',
+                        question_label: 'deliveryReceived',
                         type:'multipleChoice',
                         text: "Was delivery received?",
                         value: 'Yes',
