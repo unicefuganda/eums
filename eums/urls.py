@@ -9,6 +9,7 @@ from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
+from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
 from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, \
     ConsigneePurchaseOrderItemNode
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
@@ -94,6 +95,7 @@ urlpatterns = patterns(
     url(r'^api/', include(releaseOrderRouter.urls)),
     url(r'^api/', include(releaseOrderItemRouter.urls)),
     url(r'^api/', include(questionRouter.urls)),
+    url(r'^api/', include(consignee_items_router.urls)),
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),

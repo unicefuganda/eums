@@ -117,6 +117,6 @@ def seed_questions_and_flows():
 
     NumericQuestion.objects.get_or_create(
         uuids=[], text='How much was received?', label='amountReceived', flow=web_flow,
-        when_answered='update_consignee_stock_level')
+        when_answered='update_consignee_stock_level', position=2)
 
     return flows
