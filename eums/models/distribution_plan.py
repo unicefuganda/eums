@@ -60,7 +60,10 @@ class DistributionPlan(Runnable):
     def _build_multiple_choice_answers(self, multiple_choice_questions):
         answers = []
         for question in multiple_choice_questions:
-            answer = MultipleChoiceAnswer.objects.filter(run__runnable_id=self.id, question=question)
+            answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable_id=self.id),
+                                                         Q(question=question),
+                                                         ~ Q(run__status='cancelled'),
+                                                         ~ Q(run__status='expired'))
             options = DistributionPlan._build_options(question)
             answers.append(
                 {
@@ -77,7 +80,10 @@ class DistributionPlan(Runnable):
     def _build_text_answers(self, text_questions):
         answers = []
         for question in text_questions:
-            answer = TextAnswer.objects.filter(run__runnable_id=self.id, question=question)
+            answer = TextAnswer.objects.filter(Q(run__runnable_id=self.id),
+                                               Q(question=question),
+                                               ~ Q(run__status='cancelled'),
+                                               ~ Q(run__status='expired'))
             answers.append(
                 {
                     'question_label': question.label,

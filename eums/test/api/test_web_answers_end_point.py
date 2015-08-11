@@ -1,6 +1,6 @@
 import json
 from mock import MagicMock
-from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow
+from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
@@ -71,6 +71,27 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(answer_for_delivery_order.value.text, 'Yes')
         self.assertEqual(answer_for_satisfaction.value.text, 'Yes')
         self.assertEqual(answer_for_additional_comments.value, good_comment)
+
+    def test_should_cancel_existing_runs_when_saving_a_new_set_of_answers(self):
+        delivery = DeliveryFactory()
+
+        data = {
+            'delivery': delivery.id, 'answers': [
+            {'question_label': 'deliveryReceived', 'value': 'Yes'}
+        ]}
+
+        self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        runs = Run.objects.filter(runnable=delivery)
+        self.assertEqual(len(runs), 1)
+
+        self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        runs = Run.objects.filter(runnable=delivery)
+
+        self.assertEqual(len(runs), 2)
+        self.assertEqual(len(Run.objects.filter(runnable=delivery, status='cancelled')), 1)
+        self.assertEqual(len(Run.objects.filter(runnable=delivery, status='completed')), 1)
 
     def _get_answer_for(self, answer_type, delivery_id, question_label):
         return answer_type.objects.filter(run__runnable=delivery_id, question__label=question_label).first()

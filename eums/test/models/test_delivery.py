@@ -244,3 +244,45 @@ class DeliveryTest(TestCase):
         self.assertEqual(question_3.label, answers[1]['question_label'])
         self.assertEqual(question_1.label, answers[2]['question_label'])
 
+    def test_should_return_answers_for_completed_or_scheduled_runs_only(self):
+        delivery = DeliveryFactory()
+        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+
+        question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived',
+                                                   flow=flow, text='Was Delivery Received?', position=3)
+        question_2 = TextQuestionFactory(label='dateOfReceipt',
+                                         flow=flow, text='When was Delivery Received?', position=1)
+        question_3 = TextQuestionFactory(label='satisfiedWithProduct',
+                                         flow=flow, text='Are you satisfied with product?', position=2)
+
+        option_no = OptionFactory(text='No', question=question_1)
+        option_yes = OptionFactory(text='Yes', question=question_1)
+
+        run_one = RunFactory(runnable=delivery)
+
+        MultipleChoiceAnswerFactory(question=question_1, value=option_no, run=run_one)
+        TextAnswerFactory(question=question_2, value="2014-10-10", run=run_one)
+        TextAnswerFactory(question=question_3, value="yup", run=run_one)
+
+        answers = delivery.answers()
+
+        self.assertEqual(len(answers), 3)
+        self.assertEqual(answers[0]['value'], '2014-10-10')
+
+        run_one.status = 'cancelled'
+        run_one.save()
+
+        answers = delivery.answers()
+
+        self.assertEqual(len(answers), 3)
+        self.assertEqual(answers[0]['value'], '')
+
+        run_two = RunFactory(runnable=delivery)
+
+        MultipleChoiceAnswerFactory(question=question_1, value=option_yes, run=run_two)
+        answers = delivery.answers()
+
+        self.assertEqual(len(answers), 3)
+        self.assertEqual(answers[0]['value'], '')
+        self.assertEqual(answers[1]['value'], '')
+        self.assertEqual(answers[2]['value'], 'Yes')

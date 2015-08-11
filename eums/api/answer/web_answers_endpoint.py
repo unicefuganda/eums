@@ -13,6 +13,8 @@ def save_answers(request):
     delivery = DistributionPlan.objects.get(pk=delivery_id)
     contact = delivery.build_contact()
 
+    cancel_existing_runs(delivery)
+
     run = Run.objects.create(runnable=delivery,
                              status=Run.STATUS.completed,
                              phone=contact['phone'] if contact else None,
@@ -31,6 +33,14 @@ def save_answers(request):
             question.create_answer(params, run)
 
     return Response(status=status.HTTP_201_CREATED)
+
+
+def cancel_existing_runs(delivery):
+    all_runs = Run.objects.filter(runnable=delivery)
+    if all_runs:
+        for delivery_run in all_runs:
+            delivery_run.status = 'cancelled'
+            delivery_run.save()
 
 
 def _get_matching_question(label, flow):
