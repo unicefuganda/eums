@@ -5,7 +5,7 @@ import celery
 from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
 
-from eums.fixtures.questions import seed_questions_and_flows
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
@@ -31,9 +31,6 @@ from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
 
 
 class FlowSchedulerTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.flows = seed_questions_and_flows()
 
     def setUp(self):
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
@@ -44,15 +41,16 @@ class FlowSchedulerTest(TestCase):
         Node.objects.get = MagicMock(return_value=self.node)
         Runnable.objects.get = MagicMock(return_value=self.node)
 
-        self.MIDDLEMAN_FLOW_ID = self.flows['MIDDLE_MAN_FLOW'].rapid_pro_id
-        self.END_USER_FLOW_ID = self.flows['END_USER_FLOW'].rapid_pro_id
-        self.IMPLEMENTING_PARTNER_FLOW_ID = self.flows['IP_FLOW'].rapid_pro_id
+        ip_flow = FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        end_user_flow = FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
+        middle_man_flow = FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
 
-    @classmethod
-    def tearDownClass(cls):
-        Flow.objects.all().delete()
+        self.MIDDLEMAN_FLOW_ID = middle_man_flow.rapid_pro_id
+        self.END_USER_FLOW_ID = end_user_flow.rapid_pro_id
+        self.IMPLEMENTING_PARTNER_FLOW_ID = ip_flow.rapid_pro_id
 
     def tearDown(self):
+        Flow.objects.all().delete()
         Run.objects.all().delete()
         RunQueue.objects.all().delete()
         Node.objects.all().delete()

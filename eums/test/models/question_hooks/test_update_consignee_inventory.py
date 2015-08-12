@@ -1,29 +1,37 @@
 from unittest import TestCase
 
-from eums.fixtures.questions import seed_questions_and_flows
-from eums.models import MultipleChoiceQuestion, ConsigneeItem, Item, MultipleChoiceAnswer
+from eums.models import MultipleChoiceQuestion, ConsigneeItem, Item, MultipleChoiceAnswer, Runnable, Flow, Option
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 
 class UpdateConsigneeInventoryTest(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.flows = seed_questions_and_flows()
-
     def setUp(self):
+        web_flow = FlowFactory(for_runnable_type=Runnable.WEB)
+        question = MultipleChoiceQuestionFactory(label='itemReceived',
+                                                 when_answered='update_consignee_inventory',
+                                                 flow=web_flow)
+        OptionFactory(question=question, text='Yes')
+        OptionFactory(question=question, text='No')
+
         self.consignee = ConsigneeFactory()
         self.item = ItemFactory()
         self.node = DeliveryNodeFactory(consignee=self.consignee, item=PurchaseOrderItemFactory(item=self.item))
-        self.was_item_received = MultipleChoiceQuestion.objects.get(label='itemReceived', flow=self.flows['WEB_FLOW'])
+        self.was_item_received = MultipleChoiceQuestion.objects.get(label='itemReceived', flow=web_flow)
         self.yes = self.was_item_received.option_set.get(text='Yes')
         self.no = self.was_item_received.option_set.get(text='No')
 
     def tearDown(self):
+        Flow.objects.all().delete()
+        MultipleChoiceQuestion.objects.all().delete()
+        Option.objects.all().delete()
         Item.objects.all().delete()
         ConsigneeItem.objects.all().delete()
         MultipleChoiceAnswer.objects.all().delete()

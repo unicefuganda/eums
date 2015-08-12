@@ -41,6 +41,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def tearDown(self):
         MultipleChoiceQuestion.objects.all().delete()
         TextQuestion.objects.all().delete()
+        NumericAnswer.objects.all().delete()
         Flow.objects.all().delete()
         Runnable.build_contact = self.build_contact
 
@@ -144,6 +145,5 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(NumericAnswer.objects.filter(question__flow=web_flow)), 1)
 
-
-def _get_answer_for(self, answer_type, delivery_id, question_label):
-    return answer_type.objects.filter(run__runnable=delivery_id, question__label=question_label).first()
+    def _get_answer_for(self, answer_type, delivery_id, question_label):
+        return answer_type.objects.filter(run__runnable=delivery_id, question__label=question_label).first()

@@ -1,16 +1,12 @@
 from decimal import Decimal
 
-from eums.fixtures.flows import seed_flows
-
-seed_flows()
-
-from eums.fixtures.questions import seed_questions_and_flows
-from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion
+from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, Flow, Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
@@ -22,6 +18,7 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(StockReportResponsesEndpointTest, self).setUp()
+        self.setup_questions()
         self.setup_actors()
         self.setup_purchase_orders_and_items()
         self.setup_distribution_plans()
@@ -123,12 +120,10 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
     def setup_responses(self):
         self.setup_runs()
-        seed_questions_and_flows()
         self.setup_answers()
 
     def setup_quantity_received_answers(self):
-        quantity_received_qn = NumericQuestion.objects.get(
-            uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'])
+        quantity_received_qn = NumericQuestion.objects.get(label='amountReceived')
         quantity_received_qn.numericanswer_set.create(value=4, run=self.run_one)
         quantity_received_qn.numericanswer_set.create(value=2, run=self.run_two)
         quantity_received_qn.numericanswer_set.create(value=1, run=self.run_three)
@@ -141,8 +136,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.setup_date_received_answers()
 
     def setup_date_received_answers(self):
-        date_received_question = TextQuestion.objects.get(
-            uuids=['abc9c005-7a7c-44f8-b946-e970a361b6cf', '884ed6d8-1cef-4878-999d-bce7de85e27c'])
+        date_received_question = TextQuestion.objects.get(label='dateOfReceipt')
         date_received_question.textanswer_set.create(value='2014-01-01', run=self.run_one)
         date_received_question.textanswer_set.create(value='2014-01-02', run=self.run_two)
         date_received_question.textanswer_set.create(value='2014-01-03', run=self.run_three)
@@ -218,3 +212,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.end_user_node = DeliveryNodeFactory(distribution_plan=self.plan_three, consignee=self.end_user,
                                                  tree_position=DistributionPlanNode.END_USER,
                                                  parents=[(self.ip_node_three, 2)], item=self.po_item_three)
+
+    def setup_questions(self):
+        TextQuestionFactory(label='dateOfReceipt')
+        NumericQuestionFactory(label='amountReceived')
