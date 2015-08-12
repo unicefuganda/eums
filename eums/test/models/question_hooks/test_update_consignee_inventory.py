@@ -34,7 +34,7 @@ class UpdateConsigneeInventoryTest(TestCase):
         MultipleChoiceAnswerFactory(question=self.was_item_received, value=self.yes, run=RunFactory(runnable=self.node))
 
         consignee_item_entry = ConsigneeItem.objects.get(consignee=self.consignee, item=self.item)
-        self.assertEqual(consignee_item_entry.amount_distributed, 0)
+        self.assertEqual(consignee_item_entry.available_balance(), 0)
         self.assertEqual(consignee_item_entry.amount_received, 0)
         self.assertEqual(consignee_item_entry.deliveries, [self.node.id])
 

@@ -29,7 +29,7 @@
             <tr ng-repeat="($index, item) in items">
                 <td class="centered">{{ $index + 1 }}</td>
                 <td>{{ item.itemDescription }}</td>
-                <td>{{ item.amountReceived - item.amountDistributed }}</td>
+                <td>{{ item.availableBalance }}</td>
                 <td>
                     <button class="btn btn-sm btn-success" ng-click="view(item)">View</button>
                     <button class="btn btn-sm btn-info" ng-click="reportOn(item)">Report</button>

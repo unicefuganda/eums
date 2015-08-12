@@ -10,7 +10,7 @@ class ConsigneeItemSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = ConsigneeItem
-        fields = ('id', 'consignee', 'item', 'amount_received', 'amount_distributed', 'deliveries', 'item_description')
+        fields = ('id', 'consignee', 'item', 'amount_received', 'available_balance', 'deliveries', 'item_description')
 
 
 class ConsigneeItemViewSet(ModelViewSet):
