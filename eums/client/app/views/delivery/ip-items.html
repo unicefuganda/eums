@@ -27,10 +27,10 @@
 
             <tbody>
             <tr ng-repeat="($index, item) in items">
-                <td class="centered">{{ $index + 1 }}</td>
-                <td>{{ item.itemDescription }}</td>
-                <td>{{ item.availableBalance }}</td>
-                <td>
+                <td class="centered v-align-middle">{{ $index + 1 }}</td>
+                <td class="v-align-middle">{{ item.itemDescription }}</td>
+                <td class="v-align-middle">{{ item.availableBalance }}</td>
+                <td class="v-align-middle">
                     <button class="btn btn-sm btn-success" ng-click="view(item)">View</button>
                     <button class="btn btn-sm btn-info" ng-click="reportOn(item)">Report</button>
                 </td>
