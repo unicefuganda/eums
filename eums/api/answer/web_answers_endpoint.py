@@ -20,10 +20,10 @@ def save_answers(request):
                              phone=contact['phone'] if contact else None,
                              scheduled_message_task_id='Web')
 
-    ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+    flow = _get_flow(runnable)
 
     for answer in answers:
-        question = _get_matching_question(answer['question_label'], ip_flow)
+        question = _get_matching_question(answer['question_label'], flow)
 
         if isinstance(question, MultipleChoiceQuestion):
             option = Option.objects.filter(text=answer['value'], question=question.id).first()
@@ -33,6 +33,16 @@ def save_answers(request):
             question.create_answer(params, run)
 
     return Response(status=status.HTTP_201_CREATED)
+
+
+def _get_flow(runnable):
+    try:
+        runnable_type = runnable.item
+    except:
+        runnable_type = None
+
+    flow_type = Runnable.WEB if runnable_type else Runnable.IMPLEMENTING_PARTNER
+    return Flow.objects.get(for_runnable_type=flow_type)
 
 
 def cancel_existing_runs_for(delivery):

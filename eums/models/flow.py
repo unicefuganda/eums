@@ -10,7 +10,8 @@ class Flow(models.Model):
     end_nodes = IntegerArrayField(dimension=2)
     for_runnable_type = models.CharField(
         max_length=255, choices=((Runnable.END_USER, 'End User'), (Runnable.MIDDLE_MAN, 'Middleman'),
-                                 (Runnable.IMPLEMENTING_PARTNER, 'Implementing Partner')), unique=True)
+                                 (Runnable.IMPLEMENTING_PARTNER, 'Implementing Partner'),
+                                 (Runnable.WEB, 'Web')), unique=True)
 
     def is_end(self, answer):
         question_id = answer.question.id
