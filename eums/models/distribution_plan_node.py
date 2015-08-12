@@ -45,7 +45,11 @@ class DistributionPlanNode(Runnable):
 
     def children(self):
         children_ids = self.arcs_out.all().values_list('target_id')
-        return DistributionPlanNode.objects.filter(pk__in=children_ids)
+        nodes = DistributionPlanNode.objects.filter(pk__in=children_ids)
+        return nodes
+
+    def has_children(self):
+        return bool(self.children().count())
 
     @classmethod
     def get_delivery_for(cls, release_order_item):
