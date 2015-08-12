@@ -8,14 +8,14 @@ from eums.models import DistributionPlan, Run, MultipleChoiceQuestion, Option, T
 @api_view(['POST', ])
 def save_answers(request):
     request = request.data
-    delivery_id = request['delivery']
+    runnable_id = request['runnable']
     answers = request['answers']
-    delivery = DistributionPlan.objects.get(pk=delivery_id)
-    contact = delivery.build_contact()
+    runnable = Runnable.objects.get(pk=runnable_id)
+    contact = runnable.build_contact()
 
-    cancel_existing_runs(delivery)
+    cancel_existing_runs_for(runnable)
 
-    run = Run.objects.create(runnable=delivery,
+    run = Run.objects.create(runnable=runnable,
                              status=Run.STATUS.completed,
                              phone=contact['phone'] if contact else None,
                              scheduled_message_task_id='Web')
@@ -35,7 +35,7 @@ def save_answers(request):
     return Response(status=status.HTTP_201_CREATED)
 
 
-def cancel_existing_runs(delivery):
+def cancel_existing_runs_for(delivery):
     all_runs = Run.objects.filter(runnable=delivery)
     if all_runs:
         for delivery_run in all_runs:

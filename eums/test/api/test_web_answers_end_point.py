@@ -5,6 +5,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
 from eums.test.factories.delivery_factory import DeliveryFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.question_factory import TextQuestionFactory, MultipleChoiceQuestionFactory
@@ -49,7 +50,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         good_comment = "All is good"
 
         data = {
-            'delivery': delivery.id, 'answers': [
+            'runnable': delivery.id, 'answers': [
             {'question_label': 'deliveryReceived', 'value': 'Yes'},
             {'question_label': 'dateOfReceipt', 'value': date_of_receipt},
             {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
@@ -76,7 +77,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         delivery = DeliveryFactory()
 
         data = {
-            'delivery': delivery.id, 'answers': [
+            'runnable': delivery.id, 'answers': [
             {'question_label': 'deliveryReceived', 'value': 'Yes'}
         ]}
 
@@ -92,6 +93,22 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(runs), 2)
         self.assertEqual(len(Run.objects.filter(runnable=delivery, status='cancelled')), 1)
         self.assertEqual(len(Run.objects.filter(runnable=delivery, status='completed')), 1)
+
+    def test_should_save_delivery_node_answers(self):
+        node = DeliveryNodeFactory()
+        date_of_receipt = '10-10-2014'
+        data = {
+            'runnable': node.id, 'answers': [
+            {'question_label': 'deliveryReceived', 'value': 'Yes'},
+            {'question_label': 'dateOfReceipt', 'value': date_of_receipt}
+        ]}
+
+        self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        runs = Run.objects.filter(runnable=node)
+        self.assertEqual(len(runs), 1)
+        self.assertEqual(len(TextAnswer.objects.filter(run__runnable=node)), 1)
+        self.assertEqual(len(MultipleChoiceAnswer.objects.filter(run__runnable=node)), 1)
 
     def _get_answer_for(self, answer_type, delivery_id, question_label):
         return answer_type.objects.filter(run__runnable=delivery_id, question__label=question_label).first()
