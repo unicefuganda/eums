@@ -42,7 +42,7 @@
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission"
     },
-    "CONTACT_SERVICE_URL": "http://localhost:8005/api/contacts/",
+    "CONTACT_SERVICE_URL": "http://eum.unicefuganda.org/contacts/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",
     "DISTRICTJSONURL": "static/app/data/district_name.json",
     "districtLayerStyle": {
