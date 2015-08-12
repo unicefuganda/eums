@@ -1,11 +1,13 @@
 from unittest import TestCase
 from django.db import IntegrityError
 
-from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem
+from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, Item, \
+    Consignee
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
@@ -254,6 +256,29 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(DeliveryNode.objects.count(), 0)
         self.assertTrue(isinstance(returned_node, DeliveryNode))
 
+    def test_should_get_all_nodes_delivered_by_a_consignee_for_a_specific_item(self):
+        item = ItemFactory()
+        consignee = ConsigneeFactory()
+
+        node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item), consignee=consignee)
+        child_node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item), parents=[(node_one, 10)])
+
+        node_two = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item), consignee=consignee)
+        child_node_two = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item), parents=[(node_two, 10)])
+
+        other_item_node_to_consignee = DeliveryNodeFactory(consignee=consignee, quantity=200)
+        non_item_child_node = DeliveryNodeFactory(parents=[(other_item_node_to_consignee, 100)])
+
+        non_consignee_child_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item))
+
+        returned_nodes = DeliveryNode.objects.delivered_by_consignee(consignee, item)
+
+        self.assertItemsEqual([child_node_one, child_node_two], returned_nodes)
+        self.assertNotIn(non_consignee_child_node, returned_nodes)
+        self.assertNotIn(non_item_child_node, returned_nodes)
+
     def clean_up(self):
         DistributionPlan.objects.all().delete()
         SalesOrder.objects.all().delete()
+        Item.objects.all().delete()
+        Consignee.objects.all().delete()
