@@ -2,7 +2,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from eums.models import DistributionPlan, Run, MultipleChoiceQuestion, Option, TextQuestion, Flow, Runnable
+from eums.models import DistributionPlan, Run, MultipleChoiceQuestion, Option, TextQuestion, Flow, Runnable, \
+    NumericQuestion
 
 
 @api_view(['POST', ])
@@ -56,5 +57,6 @@ def cancel_existing_runs_for(delivery):
 def _get_matching_question(label, flow):
     multi_question = MultipleChoiceQuestion.objects.filter(label=label, flow=flow)
     text_question = TextQuestion.objects.filter(label=label, flow=flow)
+    numeric_question = NumericQuestion.objects.filter(label=label, flow=flow)
 
-    return (text_question or multi_question).first()
+    return (text_question or multi_question or numeric_question).first()
