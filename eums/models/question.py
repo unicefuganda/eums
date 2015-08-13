@@ -20,6 +20,8 @@ class Question(models.Model):
 
 
 class NumericQuestion(Question):
+    type = models.CharField(max_length=255, choices=[('numeric', 'numeric question')], default='numeric')
+
     def create_answer(self, params, run):
         value = params['text']
         answer = self.numericanswer_set.create(question=self, value=value, run=run)
@@ -27,6 +29,10 @@ class NumericQuestion(Question):
 
 
 class TextQuestion(Question):
+    type = models.CharField(max_length=255, choices=(('text', 'text question'),
+                                                     ('date', 'date question')),
+                            default='text')
+
     def create_answer(self, params, run):
         value = params['text']
         answer = self.textanswer_set.create(question=self, value=value, run=run)
@@ -35,6 +41,9 @@ class TextQuestion(Question):
 
 class MultipleChoiceQuestion(Question):
     UNCATEGORISED = 'UNCATEGORISED'
+    type = models.CharField(max_length=255,
+                            choices=[('multipleChoice', 'multiple choice question')],
+                            default='multipleChoice')
 
     def save(self, *args, **kwargs):
         super(MultipleChoiceQuestion, self).save(*args, **kwargs)

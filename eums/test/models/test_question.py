@@ -20,6 +20,16 @@ class QuestionTest(TestCase):
         for field in ['text', 'label', 'uuids', 'position']:
             self.assertIn(field, fields_in_item)
 
+    def test_questions_should_have_type_with_default_values(self):
+        text_question = TextQuestionFactory()
+        self.assertEqual(text_question.type, 'text')
+
+        numeric_question = NumericQuestionFactory()
+        self.assertEqual(numeric_question.type, 'numeric')
+
+        multiple_choice_question = MultipleChoiceQuestionFactory()
+        self.assertEqual(multiple_choice_question.type, 'multipleChoice')
+
     def test_should_create_a_default_option_for_multiple_choice_question(self):
         uncategorised_option = Option.objects.filter(question=self.multiple_choice_question, text=Option.UNCATEGORISED)
         self.assertEqual(uncategorised_option.count(), 1)
