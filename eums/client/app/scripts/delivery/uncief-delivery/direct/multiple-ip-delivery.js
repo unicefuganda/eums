@@ -18,7 +18,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
 
         $scope.datepicker = {};
         $scope.districts = [];
-        $scope.consigneeButtonText = 'Add Consignee';
         $scope.contact = {};
         $scope.selectedDate = '';
         $scope.selectedLocation = {};
@@ -26,7 +25,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.lineItem = {};
         $scope.itemIndex = '';
         $scope.track = false;
-        $scope.consigneeLevel = false;
         $scope.isReport = false;
         $scope.districtsLoaded = false;
         $scope.IPsLoaded = false;

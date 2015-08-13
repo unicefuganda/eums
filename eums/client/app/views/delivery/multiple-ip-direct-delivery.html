@@ -27,7 +27,7 @@
             </ul>
         </div>
         <div ng-show="inMultipleIpMode">
-            <div class="row pad-left-5 pad-top-10" ng-show="!parentNode">
+            <div class="row pad-left-5 pad-top-10">
                 <span class="label label-success label-as-step-badge">Step 2: Please select an item in the purchase order to create a direct delivery</span>
             </div>
             <div class="row pad-left-5 pad-top-10">
@@ -38,7 +38,7 @@
                 </div>
                 <div class="row">
                     <div class="form-horizontal">
-                        <div class="form-group col-lg-4" ng-show="!parentNode || consigneeLevel">
+                        <div class="form-group col-lg-4">
                             <div class="col-lg-12">
                                 <label for="select-sales-order" class="col-lg-4 control-label description-label">
                                     Item Description:
@@ -53,20 +53,6 @@
                                         <option value="">Select Item</option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group col-lg-4" ng-show="parentNode && !consigneeLevel">
-                            <div class="sub_header_padding">
-                                <span class="sub-header">Add Sub-Consignee to Consignee:</span> <span
-                                    class="text-muted">{{ parentNode.consignee.name }}</span>
-                            </div>
-                            <div class="sub_header_padding">
-                                <button type="button" class="btn btn-default btn-sm blue-border-button"
-                                        ng-click="previousConsignee(parentNode)">
-                                    <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
-                                    Back to Consignee
-                                </button>
                             </div>
                         </div>
                     </div>
@@ -107,8 +93,7 @@
                                 <th class="table-header-width" id="input-header">Unit</th>
                                 <th id="input-quantity-header">Qty Shipped</th>
                                 <th id="input-planned-distribution-date-header">Shipment Date</th>
-                                <th class="table-select-header-width">{{ parentNode ? 'Sub-Consignee' : 'Consignee'}}
-                                </th>
+                                <th class="table-select-header-width">'Consignee'</th>
                                 <th class="table-contact-select-header-width">Contact Person</th>
                                 <th class="table-select-header-width">District</th>
                                 <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
@@ -211,7 +196,7 @@
                         <button id="addConsigneeBtn" ng-show="computeQuantityLeft(distributionPlanNodes) > 0"
                                 type="button" class="btn btn-primary" ng-click="addDeliveryNode()">
                             <i class="glyphicon glyphicon-plus"> </i>
-                            {{ consigneeButtonText }}
+                            'Add Consignee'
                         </button>
                         <div ng-show="distributionPlanNodes.length" class="pull-right">
                             <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
