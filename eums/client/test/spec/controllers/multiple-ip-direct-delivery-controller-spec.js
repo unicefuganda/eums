@@ -25,10 +25,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                     id: 1,
                     description: 'Test Item',
                     materialCode: '12345AS',
-                    value: '100.00',
-                    unit: {
-                        name: 'EA'
-                    }
+                    value: '100.00'
                 },
                 value: 1500,
                 quantity: 100,
@@ -70,10 +67,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             id: 1,
             description: 'Test Item',
             materialCode: '12345AS',
-            value: '100.00',
-            unit: {
-                name: 'EA'
-            }
+            value: '100.00'
         },
         quantity: 100,
         date: '2014-10-02',
@@ -88,10 +82,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 id: 1,
                 description: 'Test Item',
                 material_code: '12345AS',
-                value: '100.00',
-                unit: {
-                    name: 'EA'
-                }
+                value: '100.00'
             }
         },
         quantity: '100',
@@ -494,7 +485,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                 display: stubPurchaseOrderItemNoDeliveryNodes.information.item.description,
                 material_code: stubPurchaseOrderItemNoDeliveryNodes.information.item.material_code,
                 quantity: stubPurchaseOrderItemNoDeliveryNodes.quantity,
-                unit: stubPurchaseOrderItemNoDeliveryNodes.information.item.unit.name,
                 information: stubPurchaseOrderItemNoDeliveryNodes
             };
             scope.$apply();

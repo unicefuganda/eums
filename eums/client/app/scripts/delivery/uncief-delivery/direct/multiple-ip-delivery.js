@@ -87,7 +87,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 $scope.inMultipleIpMode = $routeParams.purchaseOrderType == 'multiple';
                 $scope.inSingleIpMode = $routeParams.purchaseOrderType == 'single';
             }
-            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item.unit']).then(function (purchaseOrder) {
+            PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 $scope.selectedPurchaseOrder = purchaseOrder;
                 if (!$routeParams.purchaseOrderType) {
                     if (purchaseOrder.isSingleIp === null) {
@@ -109,7 +109,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         if ($routeParams.purchaseOrderItemId) {
-            PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
+            PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
                 loadDeliveryDataFor(purchaseOrderItem);
             });

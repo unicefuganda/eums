@@ -77,8 +77,8 @@
                                     Total Quantity
                                 </li>
                                 <li class="list-group-item">
-                                    <span class="label label-success label-as-badge">{{ selectedPurchaseOrderItem.item.unit.name }}</span>
-                                    Unit
+                                    <span class="label label-success label-as-badge">{{ computeQuantityLeft(distributionPlanNodes) }}</span>
+                                    Available Quantity
                                 </li>
                             </ul>
                         </div>
@@ -89,8 +89,6 @@
                         <div ng-show="distributionPlanNodes.length">
                             <table id="distributionPlanTable"
                                    class="table table-bordered table-striped table-hover table-condensed">
-                                <th class="table-header-width" id="input-available-quantity-header">Balance</th>
-                                <th class="table-header-width" id="input-header">Unit</th>
                                 <th id="input-quantity-header">Qty Shipped</th>
                                 <th id="input-planned-distribution-date-header">Shipment Date</th>
                                 <th class="table-select-header-width">'Consignee'</th>
@@ -101,10 +99,7 @@
                                 <th class="table-header-width">Track</th>
 
                                 <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
-                                    <td id="input-available-quantity">{{ computeQuantityLeft(distributionPlanNodes) }}
-                                    </td>
-                                    <td id="input-unit">{{ selectedPurchaseOrderItem.item.unit.name }}</td>
-                                    <td>
+                                   <td>
                                         <input type="text" id="input-quantity" class="form-control"
                                                ng-model="item.quantityIn"
                                                ng-disabled="item.trackSubmitted" only-digits>
