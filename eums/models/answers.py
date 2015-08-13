@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from eums.models import Run, Option
 from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQuestion
 from eums.models import question_hooks
@@ -23,6 +24,47 @@ class Answer(models.Model):
     def _post_create_hook(self):
         hook_name = self.question.when_answered or ''
         return getattr(question_hooks, hook_name, NullHook)
+
+    @staticmethod
+    def build_answer(runnable, questions, answer_type):
+        answers = []
+        for question in questions:
+            answer = answer_type.objects.filter(Q(run__runnable_id=runnable.id),
+                                                Q(question=question),
+                                                ~ Q(run__status='cancelled'),
+                                                ~ Q(run__status='expired'))
+            answers.append(
+                Answer._build_answer_response(answer, question)
+            )
+        return answers
+
+    @staticmethod
+    def _build_answer_response(answer, question):
+        options = Answer._build_options(question)
+
+        answer_response = {
+            'question_label': question.label,
+            'type': question.type,
+            'text': question.text,
+            'value': answer.first().value if answer else '',
+            'position': question.position
+        }
+
+        if options:
+            answer_response['value'] = answer.first().value.text if answer else ''
+            answer_response['options'] = options
+
+        return answer_response
+
+    @staticmethod
+    def _build_options(question):
+        options = []
+        try:
+            for option in question.option_set.all():
+                options.append(option.text) if option.text != 'UNCATEGORISED' else None
+        except:
+            pass
+        return options
 
 
 class TextAnswer(Answer):

@@ -2,8 +2,9 @@ from django.db import models
 from django.db.models import Q
 
 from eums.models import MultipleChoiceAnswer, PurchaseOrderItem, Flow, Question, TextQuestion, TextAnswer, \
-    MultipleChoiceQuestion
+    MultipleChoiceQuestion, NumericAnswer, NumericQuestion
 from eums.models import Runnable, DistributionPlanNode
+from eums.models.answers import Answer
 from eums.models.programme import Programme
 
 
@@ -70,54 +71,12 @@ class DistributionPlan(Runnable):
         ip_flow = Flow.objects.get(for_runnable_type='IMPLEMENTING_PARTNER')
         text_questions = TextQuestion.objects.filter(flow=ip_flow)
         multiple_choice_questions = MultipleChoiceQuestion.objects.filter(flow=ip_flow)
+        numeric_questions = NumericQuestion.objects.filter(flow=ip_flow)
 
-        text_answers = self._build_text_answers(text_questions)
-        multiple_choice_answers = self._build_multiple_choice_answers(multiple_choice_questions)
+        text_answers = Answer.build_answer(self, text_questions, TextAnswer)
+        multiple_choice_answers = Answer.build_answer(self, multiple_choice_questions, MultipleChoiceAnswer)
+        numeric_answers = Answer.build_answer(self, numeric_questions, NumericAnswer)
 
-        answers = text_answers + multiple_choice_answers
+        answers = text_answers + multiple_choice_answers + numeric_answers
         return sorted(answers, key=lambda field: field['position'])
 
-    def _build_multiple_choice_answers(self, multiple_choice_questions):
-        answers = []
-        for question in multiple_choice_questions:
-            answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable_id=self.id),
-                                                         Q(question=question),
-                                                         ~ Q(run__status='cancelled'),
-                                                         ~ Q(run__status='expired'))
-            options = DistributionPlan._build_options(question)
-            answers.append(
-                {
-                    'question_label': question.label,
-                    'type': 'multipleChoice',
-                    'text': question.text,
-                    'value': answer.first().value.text if answer else '',
-                    'options': options,
-                    'position': question.position
-                }
-            )
-        return answers
-
-    def _build_text_answers(self, text_questions):
-        answers = []
-        for question in text_questions:
-            answer = TextAnswer.objects.filter(Q(run__runnable_id=self.id),
-                                               Q(question=question),
-                                               ~ Q(run__status='cancelled'),
-                                               ~ Q(run__status='expired'))
-            answers.append(
-                {
-                    'question_label': question.label,
-                    'type': 'text',
-                    'text': question.text,
-                    'value': answer.first().value if answer else "",
-                    'position': question.position
-                }
-            )
-        return answers
-
-    @staticmethod
-    def _build_options(question):
-        options = []
-        for option in question.option_set.all():
-            options.append(option.text) if option.text != 'UNCATEGORISED' else None
-        return options

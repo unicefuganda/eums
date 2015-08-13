@@ -2,14 +2,15 @@ from unittest import TestCase
 
 from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
     MultipleChoiceQuestion, Run, Flow
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
+    NumericQuestionFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
@@ -93,7 +94,6 @@ class DeliveryTest(TestCase):
         MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_one), question=item_question, value=yes_node_option)
 
         self.assertFalse(delivery.is_received())
-
 
     def test_should_return_false_when_delivery_is_received_and_some_nodes_are_not_received(self):
         delivery = DeliveryFactory()
@@ -219,6 +219,7 @@ class DeliveryTest(TestCase):
 
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow, text='Was Delivery Received?')
         question_2 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
+        question_3 = NumericQuestionFactory(text='How much was received?', label='amountReceived', flow=flow)
 
         option_yes = OptionFactory(text='Yes', question=question_1)
 
@@ -226,6 +227,7 @@ class DeliveryTest(TestCase):
 
         multiple_choice_answer = MultipleChoiceAnswerFactory(run=run, question=question_1, value=option_yes)
         text_answer = TextAnswerFactory(run=run, question=question_2, value='2015-10-10')
+        numeric_answer = NumericAnswerFactory(run=run, question=question_3, value=10)
 
         expected_multiple_choice_answer = {
             'question_label': question_1.label,
@@ -242,11 +244,19 @@ class DeliveryTest(TestCase):
             'value': text_answer.value,
             'position': question_2.position
         }
+        expected_numeric_answer = {
+            'question_label': question_3.label,
+            'type': 'numeric',
+            'text': question_3.text,
+            'value': numeric_answer.value,
+            'position': question_3.position
+        }
         answers = delivery.answers()
 
-        self.assertEqual(len(answers), 2)
+        self.assertEqual(len(answers), 3)
         self.assertIn(expected_multiple_choice_answer, answers)
         self.assertIn(expected_text_answer, answers)
+        self.assertIn(expected_numeric_answer, answers)
 
     def test_should_return_default_answers_for_delivery(self):
         delivery = DeliveryFactory()
