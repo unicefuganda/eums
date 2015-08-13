@@ -9,13 +9,14 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
+    NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
@@ -159,6 +160,47 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         TextAnswerFactory(run=run, question=question_2, value='2015-10-10')
 
         response = self.client.get('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'answers'))
+
+        self.assertEqual(len(response.data), 2)
+
+    def test_should_return_answers_to_top_level_nodes_of_a_delivery(self):
+        delivery = DeliveryFactory()
+        node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery)
+
+        flow = FlowFactory(for_runnable_type='WEB')
+
+        question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
+                                                   position=1)
+        option_1 = OptionFactory(text='Yes', question=question_1)
+
+        question_2 = NumericQuestionFactory(text='How much was received?', label='amountReceived', flow=flow)
+
+        question_3 = MultipleChoiceQuestionFactory(text='What is the quality of the product?', label='qualityOfProduct',
+                                                   flow=flow, position=3)
+        option_3 = OptionFactory(text='Damaged', question=question_3)
+
+        question_4 = MultipleChoiceQuestionFactory(text='Are you satisfied with the product?',
+                                                   label='satisfiedWithProduct', flow=flow, position=4)
+        option_4 = OptionFactory(text='Yes', question=question_4)
+
+        question_5 = TextQuestionFactory(text='Remarks', label='additionalDeliveryComments',
+                                         flow=flow, position=5)
+        run_one = RunFactory(runnable=node_one)
+        MultipleChoiceAnswerFactory(question=question_1, run=run_one, value=option_1)
+        NumericAnswerFactory(question=question_2, run=run_one, value=5)
+        MultipleChoiceAnswerFactory(question=question_3, run=run_one, value=option_3)
+        MultipleChoiceAnswerFactory(question=question_4, run=run_one, value=option_4)
+        TextAnswerFactory(question=question_5, run=run_one, value="Answer1")
+
+        run_two = RunFactory(runnable=node_two)
+        MultipleChoiceAnswerFactory(question=question_1, run=run_two, value=option_1)
+        NumericAnswerFactory(question=question_2, run=run_two, value=3)
+        MultipleChoiceAnswerFactory(question=question_3, run=run_two, value=option_3)
+        MultipleChoiceAnswerFactory(question=question_4, run=run_two, value=option_4)
+        TextAnswerFactory(question=question_5, run=run_two, value="Answer2")
+
+        response = self.client.get('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'node_answers'))
 
         self.assertEqual(len(response.data), 2)
 

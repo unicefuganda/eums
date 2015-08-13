@@ -31,6 +31,11 @@ class DistributionPlanViewSet(ModelViewSet):
         delivery = DistributionPlan.objects.get(pk=(kwargs['pk']))
         return Response(delivery.answers())
 
+    @detail_route(['GET', ])
+    def node_answers(self, request, *args, **kwargs):
+        delivery = DistributionPlan.objects.get(pk=(kwargs['pk']))
+        return Response(delivery.node_answers())
+
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
 

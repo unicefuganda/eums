@@ -68,7 +68,7 @@ class DistributionPlan(Runnable):
         return DistributionPlanNode.objects.filter(distribution_plan=self).count()
 
     def answers(self):
-        ip_flow = Flow.objects.get(for_runnable_type='IMPLEMENTING_PARTNER')
+        ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
         text_questions = TextQuestion.objects.filter(flow=ip_flow)
         multiple_choice_questions = MultipleChoiceQuestion.objects.filter(flow=ip_flow)
         numeric_questions = NumericQuestion.objects.filter(flow=ip_flow)
@@ -80,3 +80,20 @@ class DistributionPlan(Runnable):
         answers = text_answers + multiple_choice_answers + numeric_answers
         return sorted(answers, key=lambda field: field['position'])
 
+    def node_answers(self):
+        node_answers = []
+        web_flow = Flow.objects.get(for_runnable_type=Runnable.WEB)
+        text_questions = TextQuestion.objects.filter(flow=web_flow)
+        multiple_choice_questions = MultipleChoiceQuestion.objects.filter(flow=web_flow)
+        numeric_questions = NumericQuestion.objects.filter(flow=web_flow)
+        nodes = DistributionPlanNode.objects.filter(distribution_plan=self)
+
+        for node in nodes:
+            text_answers = Answer.build_answer(node, text_questions, TextAnswer)
+            multiple_choice_answers = Answer.build_answer(node, multiple_choice_questions, MultipleChoiceAnswer)
+            numeric_answers = Answer.build_answer(node, numeric_questions, NumericAnswer)
+
+            answers = text_answers + multiple_choice_answers + numeric_answers
+            node_answers.append({'id': node.id, 'answers': sorted(answers, key=lambda field: field['position'])})
+
+        return node_answers
