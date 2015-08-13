@@ -101,7 +101,7 @@ describe('Route Provider', function () {
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-items.html');
     });
     it('should have ip delivery item list route pointing to the right controller', function () {
-        var route = '/ip-delivery-items';
+        var route = '/ip-delivery-items/:activeDeliveryId';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('IpDeliveryItemsController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/delivery-items.html');

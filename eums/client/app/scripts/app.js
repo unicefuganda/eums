@@ -202,7 +202,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/ip-delivery-items', {
+        .when('/ip-delivery-items/:activeDeliveryId', {
             templateUrl: '/static/app/views/delivery/ip-delivery/delivery-items.html',
             controller: 'IpDeliveryItemsController',
             resolve: {
