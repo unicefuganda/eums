@@ -2,7 +2,8 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     beforeEach(module('MultipleIpDirectDelivery'));
     var mockNodeService, mockIPService, mockDeliveryService, mockPurchaseOrderItemService,
-        mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService, mockConfirmationModal, otherModal;
+        mockConsigneeService, mockPurchaseOrderService, mockUserService, mockItemService, mockConfirmationModal, otherModal,
+        mockLoaderService;
     var deferred, deferredPlan, deferredDistrictPromise, deferredTopLevelNodes,
         deferredPlanNode, deferredPurchaseOrder, deferredPurchaseOrderItem, deferredNode, deferredUserPromise, deferredItemPromise;
     var scope, q, mockToastProvider, location;
@@ -103,6 +104,7 @@ describe('MultipleIpDirectDeliveryController', function () {
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
         mockConfirmationModal = {
             modal: jasmine.createSpy('modal').and.callFake(function(value){
                 if(value === 'hide') return;
@@ -124,7 +126,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             })
         };
 
-        inject(function ($controller, $rootScope, $q, $location) {
+        inject(function ($controller, $rootScope, $q, $location, LoaderService) {
             q = $q;
             deferred = $q.defer();
             deferredPlan = $q.defer();
@@ -180,7 +182,8 @@ describe('MultipleIpDirectDeliveryController', function () {
                     IPService: mockIPService,
                     UserService: mockUserService,
                     ItemService: mockItemService,
-                    ngToast: mockToastProvider
+                    ngToast: mockToastProvider,
+                    LoaderService: mockLoaderService
                 });
         });
     };
@@ -389,6 +392,21 @@ describe('MultipleIpDirectDeliveryController', function () {
             deferredPurchaseOrder.resolve(purchaseOrders[0]);
             scope.$apply();
             expect(scope.purchaseOrderItems).toEqual(purchaseOrders[0].purchaseorderitemSet);
+        });
+
+        it('should show loader', function(){
+            scope.$apply();
+
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.showLoader.calls.count()).toBe(1);
+            expect(mockLoaderService.hideLoader).not.toHaveBeenCalled();
+        });
+
+        it('should hide loader after purchase order is retrieved', function() {
+            deferredPurchaseOrder.resolve(purchaseOrders[0]);
+            scope.$apply();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader.calls.count()).toBe(1);
         });
 
     });
