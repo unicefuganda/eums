@@ -202,6 +202,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
+        .when('/ip-delivery-items', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/delivery-items.html',
+            controller: 'IpDeliveryItemsController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                }
+            }
+        })
         .when('/ip-items', {
             templateUrl: '/static/app/views/delivery/ip-items.html',
             controller: 'IpItemsController'
