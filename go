@@ -70,6 +70,8 @@ function prepbackend {
   pip install -r requirements.txt
   killtestdbconnections
   echo "drop database eums_test; create database eums_test;" | psql -h localhost -U postgres
+  echo "******* make migrations ********"
+  python manage.py makemigrations && python manage.py migrate
 }
 
 function prepfrontend {
