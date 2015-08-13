@@ -274,6 +274,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         function hideLoader() {
             angular.element('#loading').modal('hide');
             angular.element('#loading.modal').removeClass('in');
+            angular.element('.modal-backdrop').remove();
         }
 
         function alertOnSaveFailure() {

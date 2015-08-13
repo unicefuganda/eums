@@ -5,29 +5,26 @@ DirectDeliveryPage.prototype = Object.create({}, {
 
     visit: { value: function () {
         browser.get(this.url);
-        var EC = protractor.ExpectedConditions;
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var ordersHaveLoaded = EC.stalenessOf(fadingModal);
-        browser.wait(ordersHaveLoaded, 5000, "Timeout exceeded while loading purchase orders");
+        waitForPageToLoad();
     }},
 
     purchaseOrders: { get: function () { return element.all(by.repeater('purchaseOrder in purchaseOrders').column('purchaseOrder.orderNumber')).getText(); }},
     purchaseOrderCount: { get: function () { return element.all(by.repeater('purchaseOrder in purchaseOrders')).count(); }},
 
-    selectPurchaseOrderByNumber: { value: function (text) { element(by.linkText(text)).click(); }},
+    selectPurchaseOrderByNumber: {
+        value: function (text) { element(by.linkText(text)).click();
+        waitForPageToLoad();
+    }},
+
     selectSingleIP: { value: function () {
-        var EC = protractor.ExpectedConditions;
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var screenHasLoaded = EC.stalenessOf(fadingModal);
-        browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
+        waitForPageToLoad();
         element(by.id('single-ip')).click();
+        waitForPageToLoad();
     }},
     selectMultipleIP: { value: function() {
-        var EC = protractor.ExpectedConditions;
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var screenHasLoaded = EC.stalenessOf(fadingModal);
-        browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
+        waitForPageToLoad();
         element(by.id('multiple-ip')).click();
+        waitForPageToLoad();
     }},
 
     implementingPartner: { get: function () { return element(by.css('#input-consignee')).getText(); }},
@@ -60,10 +57,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
     selectItem: { value: function (item) {
         element(by.css('#select-sales-order')).click();
         element(by.css("#select-sales-order option[label='" + item + "']")).click();
-        var EC = protractor.ExpectedConditions;
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var itemsHaveLoaded = EC.stalenessOf(fadingModal);
-        browser.wait(itemsHaveLoaded, 5000, "Timeout exceeded while loading item");
+        waitForPageToLoad();
     }},
 
     addConsignee: { value: function () { element(by.id('addConsigneeBtn')).click(); }},
@@ -130,13 +124,7 @@ DirectDeliveryPage.prototype = Object.create({}, {
 
     viewFirstPreviousDelivery: { value: function () {
         element.all(by.repeater('(index, delivery) in trackedDeliveries')).get(0).click();
-
-        var EC = protractor.ExpectedConditions;
-        var loadingModal = element(by.id('loading'));
-        var fadingModal = element(by.css('.modal-backdrop.fade'));
-        var deliveriesModalHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
-
-        browser.wait(deliveriesModalHasLoaded, 5000, "Timeout exceeded while loading previous deliveries modal");
+        waitForPageToLoad();
     }},
 
     previousDeliveryDates: { get: function () { return element(by.repeater('(index, delivery) in trackedDeliveries').column('delivery.delivery_date')).getText(); }},
@@ -155,4 +143,11 @@ function fillSelect2Chosen (id, input) {
     element(by.id(id)).click();
     element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
     element(by.css('.select2-results li')).click();
+}
+
+function waitForPageToLoad() {
+    var EC = protractor.ExpectedConditions;
+    var fadingModal = element(by.css('.modal-backdrop.fade'));
+    var screenHasLoaded = EC.stalenessOf(fadingModal);
+    browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
 }
