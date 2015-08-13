@@ -44,7 +44,8 @@ def _calculate_delay(runnable):
     expected_delivery_date = datetime.datetime.combine(runnable.delivery_date,
                                                        datetime.datetime.min.time())
     when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
-    return (when_to_send_message - datetime.datetime.now()).total_seconds() + settings.DELIVERY_BUFFER_IN_SECONDS
+    delay_in_seconds = (when_to_send_message - datetime.datetime.now()).total_seconds()
+    return delay_in_seconds if delay_in_seconds > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
 
 
 def _flow_for(runnable):

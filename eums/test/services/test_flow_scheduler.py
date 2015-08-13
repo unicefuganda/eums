@@ -17,7 +17,7 @@ from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
 from eums.test.factories.run_factory import RunFactory
-from eums.test.helpers.fake_datetime import FakeDatetime
+from eums.test.helpers.fake_datetime import FakeDatetime, FakeDate
 
 datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
@@ -124,7 +124,17 @@ class FlowSchedulerTest(TestCase):
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
         schedule_run_for(self.node)
 
-        self.assertEqual(mock_celery.invoked_after, 604810.0)
+        self.assertEqual(mock_celery.invoked_after, 604800.0)
+
+
+    def test_should_schedule_flow_to_start_after_buffer_when_calculated_send_time_is_in_past(self):
+        some_date = FakeDate.today() - datetime.timedelta(days=10)
+        node = NodeFactory(delivery_date=some_date)
+        node.build_contact = MagicMock(return_value=self.contact)
+
+        schedule_run_for(node)
+
+        self.assertEqual(mock_celery.invoked_after, 10.0)
 
     def test_should_cancel_scheduled_run_for_consignee_before_scheduling_another_one_for_the_same_node(self):
         run = RunFactory(runnable=self.node)
