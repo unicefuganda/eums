@@ -26,11 +26,31 @@ class DistributionPlan(Runnable):
         return "%s, %s" % (self.programme.name, str(self.date))
 
     def is_received(self):
-        answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
-                                                     Q(question__label='deliveryReceived'),
-                                                     ~ Q(run__status='cancelled')).first()
+        delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
+                                                              Q(question__label='deliveryReceived'),
+                                                              ~ Q(run__status='cancelled')).first()
 
-        return True if answer and answer.value.text == 'Yes' else False
+        delivery_nodes = DistributionPlanNode.objects.filter(distribution_plan=self)
+
+        items_received = DistributionPlan._has_received_all_items(delivery_nodes)
+
+        return True if delivery_answer and delivery_answer.value.text == 'Yes' and items_received else False
+
+    @staticmethod
+    def _has_received_all_items(delivery_nodes):
+        node_answers = []
+        for node in delivery_nodes:
+            answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=node.id),
+                                                         Q(question__label='itemReceived'),
+                                                         ~ Q(run__status='cancelled')).first()
+            if answer:
+                node_answers.append(answer.value.text == 'Yes')
+
+        all_nodes_have_answers = len(node_answers) == len(delivery_nodes)
+        all_answers_are_true = all(True == answer for answer in node_answers)
+        has_received_items = True if all_nodes_have_answers and all_answers_are_true else False
+
+        return has_received_items
 
     def type(self):
         delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()

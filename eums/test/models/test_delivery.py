@@ -51,27 +51,87 @@ class DeliveryTest(TestCase):
         DeliveryNodeFactory(parents=[(self.node_one, 10)], item=self.po_item_one, distribution_plan=self.delivery)
         self.assertEqual(self.delivery.total_value(), 280)
 
-    def test_should_return_true_when_delivery_is_received(self):
-        delivery = DeliveryFactory()
-        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
-        option = OptionFactory(text='Yes', question=question)
-        run = RunFactory(runnable=delivery)
-
-        self.assertFalse(delivery.is_received())
-
-        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
-
-        self.assertTrue(delivery.is_received())
-
     def test_should_return_false_when_delivery_is_not_received(self):
         delivery = DeliveryFactory()
         question = MultipleChoiceQuestionFactory(label='deliveryReceived')
         option = OptionFactory(text='No', question=question)
         run = RunFactory(runnable=delivery)
 
+        self.assertFalse(delivery.is_received())
+
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
         self.assertFalse(delivery.is_received())
+
+    def test_should_return_false_when_delivery_is_received_but_no_answers_have_been_received_for_its_nodes(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+
+        run = RunFactory(runnable=delivery)
+
+        DeliveryNodeFactory(distribution_plan=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery)
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        self.assertFalse(delivery.is_received())
+
+    def test_should_return_false_when_delivery_is_received_and_there_are_no_answers_for_some_nodes(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery)
+
+        item_question = MultipleChoiceQuestionFactory(label='itemReceived')
+        yes_node_option = OptionFactory(text='Yes', question=item_question)
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_one), question=item_question, value=yes_node_option)
+
+        self.assertFalse(delivery.is_received())
+
+
+    def test_should_return_false_when_delivery_is_received_and_some_nodes_are_not_received(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery)
+
+        item_question = MultipleChoiceQuestionFactory(label='itemReceived')
+        yes_node_option = OptionFactory(text='Yes', question=item_question)
+        no_node_option = OptionFactory(text='No', question=item_question)
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_one), question=item_question, value=yes_node_option)
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_two), question=item_question, value=no_node_option)
+
+        self.assertFalse(delivery.is_received())
+
+
+    def test_should_return_true_when_delivery_is_received_and_all_node_answers_are_received(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery)
+
+        item_question = MultipleChoiceQuestionFactory(label='itemReceived')
+        option_two = OptionFactory(text='Yes', question=item_question)
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_one), question=item_question, value=option_two)
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_two), question=item_question, value=option_two)
+
+        self.assertTrue(delivery.is_received())
 
     def test_should_mirror_delivery_tracked_status_on_all_nodes_when_tracked_status_changes_on_delivery(self):
         Delivery.objects.all().delete()
