@@ -24,7 +24,7 @@ angular.module('Answer', ['eums.config', 'eums.service-factory'])
             createWebAnswer: function (delivery, answers) {
                 return webAnswerService.create(Object.merge(
                     {
-                        delivery: delivery.id,
+                        runnable: delivery.id,
                         answers: answers
                     })
                 );

@@ -58,7 +58,7 @@ describe('Answer Service', function () {
 
         expect(mockService.create).toHaveBeenCalledWith(
             {
-                delivery: delivery.id,
+                runnable: delivery.id,
                 answers: answers
             });
     });
