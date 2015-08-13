@@ -75,10 +75,24 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(response.data[0]['is_received'], True)
 
+    def test_should_filter_deliveries_by_tracked_for_ip(self):
+        first_consignee = ConsigneeFactory()
+        DeliveryFactory(consignee=first_consignee)
+        DeliveryFactory(consignee=first_consignee)
+        DeliveryFactory(consignee=first_consignee)
+
+        self.logout()
+        self.log_consignee_in(consignee=first_consignee)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 0)
+
     def test_should_filter_deliveries_by_ip(self):
         first_consignee = ConsigneeFactory()
         second_consignee = ConsigneeFactory()
-        first_delivery = DeliveryFactory(consignee=first_consignee)
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True)
         second_delivery = DeliveryFactory(consignee=first_consignee)
         third_delivery = DeliveryFactory(consignee=second_consignee)
 
@@ -91,7 +105,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(first_delivery.id, ids)
-        self.assertIn(second_delivery.id, ids)
+        self.assertNotIn(second_delivery.id, ids)
         self.assertNotIn(third_delivery.id, ids)
 
     def test_should_return_type_of_delivery(self):

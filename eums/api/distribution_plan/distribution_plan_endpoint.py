@@ -37,7 +37,7 @@ class DistributionPlanViewSet(ModelViewSet):
         try:
             user_profile = UserProfile.objects.get(user=logged_in_user)
             if user_profile and user_profile.consignee:
-                deliveries = DistributionPlan.objects.filter(consignee=user_profile.consignee)
+                deliveries = DistributionPlan.objects.filter(consignee=user_profile.consignee, track=True)
                 return Response(self.get_serializer(deliveries, many=True).data)
         except:
             return super(DistributionPlanViewSet, self).list(request, *args, **kwargs)
