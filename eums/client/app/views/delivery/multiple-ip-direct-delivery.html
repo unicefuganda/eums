@@ -114,7 +114,6 @@
                                 <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
                                 <th class="table-header-width">End User</th>
                                 <th class="table-header-width">Track</th>
-                                <th class="table-sub-consignee-header-width"></th>
 
                                 <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
                                     <td id="input-available-quantity">{{ computeQuantityLeft(distributionPlanNodes) }}
@@ -201,16 +200,6 @@
                                                    value="{{ item.track }}"
                                                    ng-model="item.track"
                                                    ng-disabled="item.trackSubmitted">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="text-center">
-                                            <button class="btn
-                                                    {{ item.canReceiveSubConsignees() ? 'btn-primary' : 'btn-default'}}"
-                                                    title="Consignees"
-                                                    ng-disabled="!item.canReceiveSubConsignees() || item.trackSubmitted"
-                                                    ng-click="addSubConsignee(item)">Sub-Consignees
-                                            </button>
                                         </div>
                                     </td>
                                 </tr>

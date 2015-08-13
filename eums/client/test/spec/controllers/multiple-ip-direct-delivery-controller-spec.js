@@ -161,7 +161,7 @@ describe('MultipleIpDirectDeliveryController', function () {
 
 
             //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
-            if (!routeParams.deliveryNodeId && !routeParams.purchaseOrderItemId && !routeParams.purchaseOrderType) {
+            if (!routeParams.purchaseOrderItemId && !routeParams.purchaseOrderType) {
                 spyOn(angular, 'element').and.callFake(function (element) {
                     if (element === '#confirmation-modal') {
                         return mockConfirmationModal;
@@ -447,6 +447,14 @@ describe('MultipleIpDirectDeliveryController', function () {
 
     describe('when purchase order item selected changes, ', function () {
 
+        var topLevelNodes = [{
+            consignee: {
+                name: 'Save the Children'
+            },
+            location: 'Kampala',
+            contact_person: {_id: 1}
+        }];
+
         it('should set the selected purchase order to the scope when purchase order item is selected', function () {
             scope.selectedPurchaseOrderItem = stubPurchaseOrderItem;
             scope.$apply();
@@ -462,34 +470,14 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
 
         it('should get distribution plan nodes for nodes if nodes exist', function () {
-            setUp({purchaseOrderId: 1, deliveryNodeId: 1});
+            setUp({purchaseOrderId: 1, purchaseOrderItemId: 1});
+            deferredDistrictPromise.resolve({data: plainDistricts});
 
-            deferred.resolve({distribution_plan_node: 1});
-            scope.selectedPurchaseOrderItem = {information: {distributionplannode_set: ['1']}};
+            deferredPurchaseOrder.resolve(purchaseOrders[0]);
+            deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
+            deferredTopLevelNodes.resolve(topLevelNodes);
             scope.$apply();
-            expect(mockNodeService.get).toHaveBeenCalledWith(1, ['consignee', 'contact_person_id']);
-        });
-
-        it('should put a distribution plan on the scope if distribution plan node exists', function () {
-            setUp({purchaseOrderId: 1, deliveryNodeId: 1});
-
-            deferredUserPromise.resolve(stubUser);
-            deferredNode.resolve({});
-            deferredPlanNode.resolve({distributionPlan: 2, children: [{id: 1}]});
-            scope.$apply();
-
-            expect(scope.distributionPlan).toEqual(2);
-        });
-
-        it('should put a distribution plan on the scope if distribution plan node exists', function () {
-            setUp({purchaseOrderId: 1, deliveryNodeId: 1});
-
-            deferredUserPromise.resolve(stubUser);
-            deferredNode.resolve({});
-            deferredPlanNode.resolve({distributionPlan: 2, children: [{id: 1}]});
-            scope.$apply();
-
-            expect(scope.distributionPlan).toEqual(2);
+            expect(mockNodeService.filter).toHaveBeenCalledWith({item : 1, parent__isnull : 'true' }, [ 'consignee', 'contact_person_id' ]);
         });
 
         it('should navigate to same page with POid and POItemId specified', function () {
@@ -519,55 +507,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.$apply();
 
             expect(scope.distributionPlanNodes).toEqual([]);
-        });
-    });
-
-    describe('when track item checkbox changes, ', function () {
-        beforeEach(function () {
-            scope.track = true;
-            scope.distributionPlan = 1;
-        });
-
-        it('should set the invalidNodes value', function () {
-            scope.$apply();
-            scope.trackPurchaseOrderItem();
-            expect(scope.invalidNodes).toEqual(false);
-        });
-
-        it('should NOT call update if track is set to true and plan Node is set', function () {
-            scope.parentNode = 1;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockDeliveryService.update).not.toHaveBeenCalled();
-        });
-
-        it('should call update if track is set to true and on first Level', function () {
-            scope.consigneeLevel = true;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 1, track: true}, 'PATCH');
-        });
-
-        it('should not call update if track is set to true and not on first Level', function () {
-            scope.consigneeLevel = false;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockDeliveryService.update).not.toHaveBeenCalledWith();
-        });
-
-        it('should call update if track is set to true and no plan Node', function () {
-            scope.parentNode = NaN;
-
-            scope.trackPurchaseOrderItem();
-            scope.$apply();
-
-            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 1, track: true}, 'PATCH');
         });
     });
 
@@ -607,31 +546,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.$apply();
 
             expect(location.path()).toBe('/direct-delivery/new/5/multiple');
-        });
-        it('when Sub Consignee button is clicked', function () {
-            scope.selectedPurchaseOrder = {id: 5, isSingleIp: false};
-            scope.selectedPurchaseOrderItem = {id: 76};
-            scope.addSubConsignee({id: 9});
-            scope.$apply();
-
-            expect(location.path()).toBe('/direct-delivery/new/5/multiple/76/9');
-        });
-        it('when back to consignee button is clicked with top-level node', function () {
-            scope.selectedPurchaseOrder = {id: 5};
-            scope.selectedPurchaseOrderItem = {id: 76};
-            scope.previousConsignee({id: 9});
-            scope.$apply();
-
-            expect(location.path()).toBe('/direct-delivery/new/5/multiple/76');
-        });
-
-        it('when back to consignee button is clicked with top-level node', function () {
-            scope.selectedPurchaseOrder = {id: 5};
-            scope.selectedPurchaseOrderItem = {id: 76};
-            scope.previousConsignee({id: 9, parent: 90});
-            scope.$apply();
-
-            expect(location.path()).toBe('/direct-delivery/new/5/multiple/76/90');
         });
     });
 
@@ -772,7 +686,6 @@ describe('MultipleIpDirectDeliveryController', function () {
 
                 it('should save node with middle man user tree position', function () {
                     uiPlanNode.isEndUser = false;
-                    scope.parentNode = {id: 1};
                     scope.inMultipleIpMode = true;
                     scope.saveDeliveryNodes();
                     scope.$apply();
@@ -781,8 +694,8 @@ describe('MultipleIpDirectDeliveryController', function () {
                         consignee: 1,
                         location: 'Kampala',
                         contact_person_id: '0489284',
-                        tree_position: 'MIDDLE_MAN',
-                        parent: 1,
+                        tree_position: 'IMPLEMENTING_PARTNER',
+                        parent: null,
                         item: uiPlanNode.item,
                         quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
@@ -989,8 +902,8 @@ describe('MultipleIpDirectDeliveryController', function () {
                     consignee: 1,
                     location: 'Kampala',
                     contact_person_id: '0489284',
-                    tree_position: 'MIDDLE_MAN',
-                    parent: scope.parentNode.id,
+                    tree_position: 'IMPLEMENTING_PARTNER',
+                    parent: null,
                     item: 1,
                     quantity: 10,
                     delivery_date: '2014-2-3',

@@ -40,12 +40,6 @@ describe('Route Provider', function () {
         expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
     });
 
-    it('should know new direct delivery - multiple ip, select purchase order item, and select delivery route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId'].controller).toBe('MultipleIpDirectDeliveryController');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
-    });
-
     it('should know warehouse-delivery route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/warehouse-delivery');
         expect(routes.routes['/warehouse-delivery'].controller).toBe('WarehouseDeliveryController');

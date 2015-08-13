@@ -76,15 +76,6 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId/:deliveryNodeId', {
-            templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
-            controller: 'MultipleIpDirectDeliveryController',
-            resolve: {
-                permission: function (UserService) {
-                    return UserService.checkUserPermission('auth.can_view_dashboard');
-                }
-            }
-        })
         .when('/warehouse-delivery', {
             templateUrl: '/static/app/views/delivery/warehouse-delivery.html',
             controller: 'WarehouseDeliveryController',

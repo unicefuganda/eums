@@ -73,7 +73,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.implementingPartners = [];
 
         $scope.getTotalQuantity = function () {
-            return !$scope.parentNode ? !$scope.selectedPurchaseOrderItem ? NaN : $scope.selectedPurchaseOrderItem.quantity : $scope.parentNode.quantityIn;
+            return !$scope.selectedPurchaseOrderItem ? NaN : $scope.selectedPurchaseOrderItem.quantity;
         };
 
         $scope.computeQuantityLeft = function (deliveryNodes) {
@@ -113,7 +113,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         if ($routeParams.purchaseOrderItemId) {
             PurchaseOrderItemService.get($routeParams.purchaseOrderItemId, ['item.unit']).then(function (purchaseOrderItem) {
                 $scope.selectedPurchaseOrderItem = purchaseOrderItem;
-                !$routeParams.deliveryNodeId && loadDeliveryDataFor(purchaseOrderItem);
+                loadDeliveryDataFor(purchaseOrderItem);
             });
         }
 
@@ -133,30 +133,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             }
         };
 
-        if ($routeParams.deliveryNodeId) {
-            $scope.consigneeButtonText = 'Add Sub-Consignee';
-
-            DeliveryNodeService.get($routeParams.deliveryNodeId, ['consignee', 'contact_person_id']).then(function (planNode) {
-                $scope.parentNode = planNode;
-                $scope.distributionPlanNodes = planNode.children;
-
-                resetFields();
-
-                UserService.getCurrentUser().then(function (user) {
-                    if (user.consignee_id) {
-                        $scope.consigneeLevel = $scope.parentNode.parent ? false : true;
-                    }
-
-                    $scope.distributionPlan = planNode.distributionPlan;
-                    $scope.track = planNode.track;
-
-                    setDatePickers();
-                    showLoadingModal(false);
-
-                });
-            });
-        }
-
         $scope.showSingleIpMode = function () {
             $location.path('single-ip-direct-delivery/' + $scope.selectedPurchaseOrder.id);
         };
@@ -168,17 +144,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {
             $location.path(rootPath + $scope.selectedPurchaseOrder.id + '/'
             + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/') + purchaseOrderItem.id);
-        };
-
-        function savePlanTracking() {
-            if ($scope.track && $scope.distributionPlan && (!$scope.parentNode || $scope.consigneeLevel)) {
-                DeliveryService.update({id: $scope.distributionPlan, track: $scope.track}, 'PATCH');
-            }
-        }
-
-        $scope.trackPurchaseOrderItem = function () {
-            $scope.invalidNodes = anyInvalidFields($scope.distributionPlanNodes);
-            savePlanTracking();
         };
 
         function invalidFields(item) {
@@ -231,13 +196,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             });
         }
 
-        function parentNodeId() {
-            if ($scope.parentNode) {
-                return $scope.parentNode.id;
-            }
-            return null;
-        }
-
         function saveMultipleIPNode(uiPlanNode) {
             var deferred = $q.defer();
 
@@ -252,8 +210,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 consignee: uiPlanNode.consignee.id,
                 location: uiPlanNode.location,
                 contact_person_id: uiPlanNode.contactPerson.id,
-                tree_position: uiPlanNode.isEndUser ? 'END_USER' : (parentNodeId() === null ? 'IMPLEMENTING_PARTNER' : 'MIDDLE_MAN'),
-                parent: parentNodeId(),
+                tree_position: uiPlanNode.isEndUser ? 'END_USER' : 'IMPLEMENTING_PARTNER',
+                parent: null,
                 item: uiPlanNode.item,
                 quantity: uiPlanNode.quantityIn,
                 delivery_date: formatDateForSave(plannedDate),
@@ -337,26 +295,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false}, 'PATCH');
             $scope.selectedPurchaseOrder.isSingleIp = false;
         }
-
-        $scope.addSubConsignee = function (node) {
-            $location.path(
-                rootPath
-                + $scope.selectedPurchaseOrder.id + "/"
-                + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/')
-                + $scope.selectedPurchaseOrderItem.id + '/'
-                + node.id);
-        };
-
-        $scope.showSubConsigneeButton = function (node) {
-            return node.id && !node.isEndUser;
-        };
-
-        $scope.previousConsignee = function (planNode) {
-            var path = rootPath + $scope.selectedPurchaseOrder.id + '/'
-                + ($scope.selectedPurchaseOrder.isSingleIp ? 'single/' : 'multiple/')
-                + $scope.selectedPurchaseOrderItem.id;
-            $location.path(planNode.parent ? path + '/' + planNode.parent : path);
-        };
 
         showLoadingModal(false);
     }
