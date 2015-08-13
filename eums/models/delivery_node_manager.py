@@ -40,7 +40,7 @@ class DeliveryNodeManager(PolymorphicManager):
         elif quantity:
             Arc.objects.create(target=node, quantity=quantity)
 
-    def delivered_by_consignee(self, consignee, item):
-        return self.model.objects.filter(arcs_in__source__consignee=consignee, item__item=item)
+    def delivered_by_consignee(self, consignee, item_id):
+        return self.model.objects.filter(arcs_in__source__consignee=consignee, item__item_id=item_id)
 
 
