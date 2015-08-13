@@ -1,4 +1,5 @@
 from eums.client.test.functional.fixtures.mapdata_runs import *
+from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.models import DistributionReport
 from eums.models import NumericAnswer
 from eums.models import TextAnswer
