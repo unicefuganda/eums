@@ -5,7 +5,7 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
 
         fetchItems();
         $scope.goToPage = function (page) {
-            var urlArgs = {paginate: 'true', page: page};
+            var urlArgs = {page: page};
             if ($scope.searchTerm && $scope.searchTerm.length) {
                 urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
             }
@@ -17,7 +17,7 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
                 $scope.searching = true;
-                ConsigneeItemService.search(term, [], {paginate: true}).then(function (response) {
+                ConsigneeItemService.search(term).then(function (response) {
                     setScopeDataFromResponse(response);
                 }).catch(function () {
                     //createToast('Search failed', 'danger');
@@ -31,7 +31,7 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
         });
 
         function fetchItems() {
-            ConsigneeItemService.all([], {paginate: 'true'}).then(function (response) {
+            ConsigneeItemService.all().then(function (response) {
                 setScopeDataFromResponse(response);
             });
         }

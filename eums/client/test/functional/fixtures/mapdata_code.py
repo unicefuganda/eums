@@ -5,6 +5,9 @@ from eums.models import NumericAnswer
 from eums.models import TextAnswer
 from eums.models import MultipleChoiceAnswer
 from eums.fixtures.end_user_questions import *
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.run_factory import RunFactory
 
 
 NumericAnswer.objects.create(run=run_7, question=eu_question_3, value=50)
@@ -78,3 +81,15 @@ MultipleChoiceAnswer.objects.create(run=run_23, question=eu_question_5, value=eu
 
 DistributionReport.objects.create(total_distributed=80, total_not_received=67, consignee=consignee_32,
                                   total_received=100, programme=programme_3)
+
+# WEB RUNS
+was_item_received = MultipleChoiceQuestion.objects.get(flow=Flow.objects.get(for_runnable_type='WEB'),
+                                                       label='itemReceived')
+yes = Option.objects.get(question=was_item_received, text='Yes')
+wakiso = Consignee.objects.get(name='WAKISO DHO')
+MultipleChoiceAnswerFactory(question=was_item_received, value=yes,
+                            run=RunFactory(runnable=DeliveryNodeFactory(consignee=wakiso)))
+MultipleChoiceAnswerFactory(question=was_item_received, value=yes,
+                            run=RunFactory(runnable=DeliveryNodeFactory(consignee=wakiso)))
+MultipleChoiceAnswerFactory(question=was_item_received, value=yes,
+                            run=RunFactory(runnable=DeliveryNodeFactory(consignee=wakiso)))

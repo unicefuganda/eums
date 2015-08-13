@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
-from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeSerialiser
@@ -27,12 +26,6 @@ class ConsigneeItemViewSet(ModelViewSet):
         if user_profile:
             return ConsigneeItem.objects.filter(consignee=user_profile.consignee)
         return super(ConsigneeItemViewSet, self).get_queryset()
-
-    def list(self, request, *args, **kwargs):
-        paginate = request.GET.get('paginate', None)
-        if paginate != 'true':
-            self.paginator.page_size = 0
-        return super(ConsigneeItemViewSet, self).list(request, *args, **kwargs)
 
     @detail_route()
     def deliveries(self, *_, **kwargs):

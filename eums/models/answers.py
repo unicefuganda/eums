@@ -12,16 +12,16 @@ class Answer(models.Model):
     def save(self, **kwargs):
         if self.id:
             previous_answer = type(self).objects.get(pk=self.id)
-            self._post_create_hook()(previous_answer).rollback()
+            self._get_post_create_hook()(previous_answer).rollback()
         answer = super(Answer, self).save(**kwargs)
-        self._post_create_hook()(self).run()
+        self._get_post_create_hook()(self).run()
         return answer
 
     def delete(self, using=None):
         super(Answer, self).delete()
-        self._post_create_hook()(self).rollback()
+        self._get_post_create_hook()(self).rollback()
 
-    def _post_create_hook(self):
+    def _get_post_create_hook(self):
         hook_name = self.question.when_answered or ''
         return getattr(question_hooks, hook_name, NullHook)
 

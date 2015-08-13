@@ -37,18 +37,13 @@ class ConsigneeItemEndpointTest(AuthenticatedAPITestCase):
         self.assertIn('pageSize', response.data)
         self.assertEqual(len(response.data['results']), 2)
 
-    def test_should_not_paginate_consignee_list_when_paginate_is_not_true(self):
-        response = self.client.get('%s?paginate=falsy' % ENDPOINT_URL)
-        self.assertEqual(response.status_code, 200)
-        self.assertNotIn('results', response.data)
-        self.assertEqual(response.data, [])
-
     def test_should_search_item_by_description(self):
         consignee_item = ConsigneeItemFactory(consignee=self.consignee, item=ItemFactory(description='Plumpynut'))
         ConsigneeItemFactory(item=ItemFactory(description='AA'))
         response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'Plum'))
-        self.assertEqual(len(response.data), 1)
-        self.assertIn(consignee_item.id, [consignee_item['id'] for consignee_item in response.data])
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertIn(consignee_item.id, [consignee_item['id'] for consignee_item in results])
 
     def test_should_return_consignee_item_with_deliveries_on_get__paginated(self):
         item = ItemFactory()

@@ -21,9 +21,9 @@ describe('IP Items Controller', function () {
         });
     });
 
-    it('should fetch all items ever delivered to the consignee with pagination', function () {
+    it('should fetch all items ever delivered to the consignee', function () {
         scope.$apply();
-        expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {paginate: 'true'});
+        expect(mockConsigneeItemService.all).toHaveBeenCalled();
         expect(scope.items).toEqual(items);
         expect(scope.count).toEqual(3);
         expect(scope.pageSize).toEqual(2);
@@ -32,7 +32,7 @@ describe('IP Items Controller', function () {
     it('should fetch new page when goToPage is called and put the consignees on that page on scope', function () {
         scope.goToPage(10);
         scope.$apply();
-        expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10});
+        expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {page: 10});
         expect(scope.items).toEqual(items);
     });
 
@@ -43,7 +43,7 @@ describe('IP Items Controller', function () {
         var searchTerm = 'some item name';
         scope.searchTerm = searchTerm;
         scope.$apply();
-        expect(mockConsigneeItemService.search).toHaveBeenCalledWith(searchTerm, [], {paginate: true});
+        expect(mockConsigneeItemService.search).toHaveBeenCalledWith(searchTerm);
         expect(scope.items).toEqual(searchResults);
 
         scope.searchTerm = '';
@@ -58,7 +58,7 @@ describe('IP Items Controller', function () {
         scope.$apply();
         scope.goToPage(10);
         scope.$apply();
-        expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10, search: term});
+        expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {page: 10, search: term});
     });
 
     it('should toggle search mode during search', function () {
