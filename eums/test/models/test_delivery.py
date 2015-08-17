@@ -264,7 +264,6 @@ class DeliveryTest(TestCase):
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow, text='Was Delivery Received?')
         question_2 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
 
-        OptionFactory(text='No', question=question_1)
         OptionFactory(text='Yes', question=question_1)
 
         RunFactory(runnable=delivery)
@@ -274,7 +273,7 @@ class DeliveryTest(TestCase):
             'type': 'multipleChoice',
             'text': question_1.text,
             'value': '',
-            'options': ['Yes', 'No'],
+            'options': ['Yes'],
             'position': question_1.position
         }
         expected_text_answer = {
@@ -384,14 +383,14 @@ class DeliveryTest(TestCase):
         NumericAnswerFactory(question=question_2, run=run_one, value=5)
         MultipleChoiceAnswerFactory(question=question_3, run=run_one, value=option_3)
         MultipleChoiceAnswerFactory(question=question_4, run=run_one, value=option_4)
-        TextAnswerFactory(question=question_5, run=run_one, value="Answer1")
+        TextAnswerFactory(question=question_5, run=run_one, value="Answer")
 
         run_two = RunFactory(runnable=node_two)
         MultipleChoiceAnswerFactory(question=question_1, run=run_two, value=option_1)
         NumericAnswerFactory(question=question_2, run=run_two, value=3)
         MultipleChoiceAnswerFactory(question=question_3, run=run_two, value=option_3)
         MultipleChoiceAnswerFactory(question=question_4, run=run_two, value=option_4)
-        TextAnswerFactory(question=question_5, run=run_two, value="Answer2")
+        TextAnswerFactory(question=question_5, run=run_two, value="Answer")
 
         node_answers = delivery.node_answers()
 
@@ -407,7 +406,7 @@ class DeliveryTest(TestCase):
             'question_label': question_5.label,
             'type': 'text',
             'text': question_5.text,
-            'value': 'Answer1',
+            'value': 'Answer',
             'position': question_5.position
         }
 
