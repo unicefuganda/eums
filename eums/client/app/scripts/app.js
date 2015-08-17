@@ -40,7 +40,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/single-ip-direct-delivery/:purchaseOrderId', {
+        .when('/direct-delivery/new/:purchaseOrderId/single', {
             templateUrl: '/static/app/views/delivery/single-ip-direct-delivery.html',
             controller: 'SingleIpDirectDeliveryController',
             resolve: {

@@ -83,7 +83,7 @@ describe('Route Provider', function () {
     });
 
     it('should route to single ip direct delivery controller for single delivery to one IP', function () {
-        var route = '/single-ip-direct-delivery/:purchaseOrderId';
+        var route = '/direct-delivery/new/:purchaseOrderId/single';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('SingleIpDirectDeliveryController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/single-ip-direct-delivery.html');

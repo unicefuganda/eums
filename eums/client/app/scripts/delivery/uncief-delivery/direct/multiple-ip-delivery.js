@@ -96,7 +96,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                     return parseFloat(orderItem.value);
                 });
                 if (purchaseOrder.isSingleIp) {
-                    $location.path('/single-ip-direct-delivery/' + purchaseOrder.id)
+                    $location.path('/direct-delivery/new/' + purchaseOrder.id + '/single');
                 }
                 LoaderService.hideLoader();
             });
@@ -126,7 +126,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         $scope.showSingleIpMode = function () {
-            $location.path('single-ip-direct-delivery/' + $scope.selectedPurchaseOrder.id);
+            $location.path(rootPath + $scope.selectedPurchaseOrder.id + '/single');
         };
 
         $scope.showMultipleIpMode = function () {

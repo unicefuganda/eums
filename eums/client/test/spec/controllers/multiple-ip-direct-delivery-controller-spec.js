@@ -513,7 +513,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.selectedPurchaseOrder = {id: 5};
             scope.showSingleIpMode();
             scope.$apply();
-            expect(location.path()).toBe('/single-ip-direct-delivery/5');
+            expect(location.path()).toBe('/direct-delivery/new/5/single');
         });
         it('when Multiple IP button is clicked', function () {
             scope.selectedPurchaseOrder = {id: 5};
