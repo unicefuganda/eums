@@ -32,22 +32,42 @@ describe('IP Delivery Items Controller', function () {
         distributionplannodeSet: deliveryNodes
     };
 
-    var nodeAnswers = [{
-        'question_label': 'itemReceived',
-        'type': 'multipleChoice',
-        'text': 'Was item received?',
-        'value': 'Yes',
-        'options': ['Yes'],
-        'position': 0
-
-    },
-    {
-        'question_label': 'additionalComments',
-        'type': 'text',
-        'text': 'Any additional comments?',
-        'value': 'Answer1',
-        'position': 1
-    }];
+    var nodeAnswers = [
+        {
+            id: 1, answers: [
+            {
+                question_label: 'itemReceived',
+                type: 'multipleChoice',
+                text: 'Was item received?',
+                value: 'Yes',
+                options: ['Yes'],
+                position: 0
+            }
+        ]
+        },
+        {
+            id: 2, answers: [
+            {
+                question_label: 'additionalComments',
+                type: 'text',
+                text: 'Any additional comments?',
+                value: 'Answer1',
+                position: 1
+            },
+            {
+                question_label: 'dateOfReceipt',
+                type: 'text',
+                text: "Was delivery received?",
+                value: 'valid field'
+            },
+            {
+                question_label: 'additionalDeliveryComments',
+                type: 'text',
+                text: "Was delivery received?",
+                value: 'some remarks'
+            }
+        ]
+        }];
 
     function initializeController() {
         controller('IpDeliveryItemsController', {
@@ -178,6 +198,194 @@ describe('IP Delivery Items Controller', function () {
 
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
             expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
+        });
+
+        describe('validations', function () {
+            it('should set can save answer to false when a value is not set', function () {
+                initializeController();
+                scope.$apply();
+
+                scope.nodeAnswers = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'itemReceived',
+                            type: 'multipleChoice',
+                            text: 'Was item received?',
+                            value: '',
+                            options: ['Yes'],
+                            position: 0
+                        }
+                    ]
+                    },
+                    {
+                        id: 2, answers: [
+                        {
+                            question_label: 'additionalComments',
+                            type: 'text',
+                            text: 'Any additional comments?',
+                            value: '',
+                            position: 1
+                        }
+                    ]}
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(false);
+            });
+
+            it('should set can save answer to false when numeric question has non positive answer', function(){
+               initializeController();
+                scope.$apply();
+                scope.nodeAnswers = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'amountReceived',
+                            type: 'numeric',
+                            text: 'Amount received?',
+                            value: -1,
+                            options: [],
+                            position: 0
+                        }
+                    ]
+                    }
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(false);
+            });
+
+            it('should set can save answers to false when numeric is not a number', function () {
+                initializeController();
+                scope.$apply();
+
+                scope.nodeAnswers = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'amountReceived',
+                            type: 'numeric',
+                            text: 'Amount received?',
+                            value: 'not a number',
+                            options: [],
+                            position: 0
+                        }
+                    ]
+                    }
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(false);
+            });
+
+            it('should set can save answers to false when value is empty', function () {
+                initializeController();
+                scope.$apply();
+
+                scope.nodeAnswers = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'amountReceived',
+                            type: 'numeric',
+                            text: 'Amount received?',
+                            value: '',
+                            options: [],
+                            position: 0
+                        }
+                    ]
+                    }
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(false);
+            });
+
+            it('should set can save answer to true when numeric value is valid', function () {
+                initializeController();
+                scope.$apply();
+
+                scope.nodeAnswers = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'amountReceived',
+                            type: 'numeric',
+                            text: 'Amount received?',
+                            value: 2,
+                            options: [],
+                            position: 0
+                        }
+                    ]
+                    }
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(true);
+            });
+
+            it('should set can save answer to true when all values are set', function () {
+                initializeController();
+                scope.$apply();
+
+                scope.nodeAnswers = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'itemReceived',
+                            type: 'multipleChoice',
+                            text: 'Was item received?',
+                            value: 'Yes',
+                            options: ['Yes'],
+                            position: 0
+                        }
+                    ]
+                    },
+                    {
+                        id: 2, answers: [
+                        {
+                            question_label: 'additionalComments',
+                            type: 'text',
+                            text: 'Any additional comments?',
+                            value: 'Remarks',
+                            position: 1
+                        },
+                        {
+                            question_label: 'quantityReceived',
+                            type: 'numeric',
+                            text: 'How many did you receive?',
+                            value: 10,
+                            position: 1
+                        }
+                    ]}
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(true);
+            });
+
+            it('should not validate remarks', function () {
+                initializeController();
+                scope.$apply();
+
+                scope.nodeAnswers = [
+                    {
+
+                        id: 2, answers: [
+                        {
+                            question_label: 'additionalComments',
+                            type: 'text',
+                            text: 'Remarks' ,
+                            value: '',
+                            position: 1
+                        }
+                    ]}
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(true);
+            });
         });
     });
 });
