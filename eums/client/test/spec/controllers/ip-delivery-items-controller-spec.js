@@ -48,14 +48,13 @@ describe('IP Delivery Items Controller', function () {
         'value': 'Answer1',
         'position': 1
     }];
-    var emptyFunction = function () {
-    };
 
     function initializeController() {
         controller('IpDeliveryItemsController', {
             $scope: scope,
             LoaderService: mockLoaderService,
             DeliveryService: mockDeliveryService,
+            DeliveryNodeService: mockDeliveryNodeService,
             $routeParams: {activeDeliveryId: 1}
         });
     }
@@ -81,7 +80,7 @@ describe('IP Delivery Items Controller', function () {
             spyOn(mockAnswerService, 'createWebAnswer');
             spyOn(mockDeliveryService, 'get');
             spyOn(mockDeliveryService, 'getDetail');
-            spyOn(mockDeliveryNodeService, 'all');
+            spyOn(mockDeliveryNodeService, 'filter');
             spyOn(location, 'path');
 
         });
@@ -92,6 +91,7 @@ describe('IP Delivery Items Controller', function () {
         beforeEach(function () {
             mockDeliveryService.get.and.returnValue(q.when(activeDelivery));
             mockDeliveryService.getDetail.and.returnValue(q.when(nodeAnswers));
+            mockDeliveryNodeService.filter.and.returnValue(q.when(deliveryNodes));
         });
 
         it('should show loader while loading', function () {
@@ -106,10 +106,11 @@ describe('IP Delivery Items Controller', function () {
             initializeController();
             scope.$apply();
 
-            expect(mockDeliveryService.get).toHaveBeenCalledWith(1, ['distributionplannode_set']);
+            expect(mockDeliveryService.get).toHaveBeenCalledWith(1);
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1}, ['item']);
+            expect(scope.deliveryNodes).toBe(deliveryNodes);
             expect(scope.shipmentDate).toBe('2015-01-02');
             expect(scope.totalValue).toBe(6000);
-            expect(scope.deliveryNodes).toBe(deliveryNodes);
         });
 
         it('should get all the answers for all nodes belonging to a delivery', function () {
@@ -119,6 +120,14 @@ describe('IP Delivery Items Controller', function () {
             expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(activeDelivery, 'node_answers');
             expect(scope.nodeAnswers).toBe(nodeAnswers);
         });
+
+        it('should hide the loader after loading the data', function () {
+            initializeController();
+            scope.$apply();
+
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader.calls.count()).toBe(1);
+        })
     });
 });
 
