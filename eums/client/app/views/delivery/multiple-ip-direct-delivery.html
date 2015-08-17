@@ -8,25 +8,7 @@
         </div>
     </div>
     <div class="content">
-        <div class="pad-left-5 pad-top-10" ng-hide="inSingleIpMode || inMultipleIpMode">
-            <span class="section-header">Is the delivery for a Single IP or Multiple IPs?</span>
-        </div>
-        <ng-toast></ng-toast>
-        <div ng-hide="inSingleIpMode || inMultipleIpMode" class="pad-left-5">
-            <ul class="nav nav-pills" style="margin-top: 1em;">
-                <li role="presentation">
-                    <button id="single-ip" class="btn btn-default blue-border-button" ng-click="showSingleIpMode()">
-                        Single IP
-                    </button>
-                </li>
-                <li role="presentation">
-                    <button id="multiple-ip" class="btn btn-default blue-border-button" ng-click="showMultipleIpMode()">
-                        Multiple IPs
-                    </button>
-                </li>
-            </ul>
-        </div>
-        <div ng-show="inMultipleIpMode">
+        <div>
             <div class="row pad-left-5 pad-top-10">
                 <span class="label label-success label-as-step-badge">Step 2: Please select an item in the purchase order to create a direct delivery</span>
             </div>
@@ -91,7 +73,7 @@
                                    class="table table-bordered table-striped table-hover table-condensed">
                                 <th id="input-quantity-header">Qty Shipped</th>
                                 <th id="input-planned-distribution-date-header">Shipment Date</th>
-                                <th class="table-select-header-width">'Consignee'</th>
+                                <th class="table-select-header-width">Consignee</th>
                                 <th class="table-contact-select-header-width">Contact Person</th>
                                 <th class="table-select-header-width">District</th>
                                 <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
@@ -204,7 +186,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
         <eums-contact></eums-contact>
         <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>

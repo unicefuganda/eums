@@ -24,20 +24,20 @@ describe('Route Provider', function () {
 
     it('should know new direct delivery route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].controller).toBe('MultipleIpDirectDeliveryController');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].controller).toBe('DirectDeliveryIpChoiceController');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].templateUrl).toBe('/static/app/views/delivery/direct-delivery-ip-choice.html');
     });
 
     it('should know new direct delivery, select purchase order type route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType'].controller).toBe('MultipleIpDirectDeliveryController');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
+        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId/multiple');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/multiple'].controller).toBe('MultipleIpDirectDeliveryController');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/multiple'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
     });
 
     it('should know new direct delivery, select purchase order item route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId'].controller).toBe('MultipleIpDirectDeliveryController');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
+        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId/multiple/:purchaseOrderItemId');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/multiple/:purchaseOrderItemId'].controller).toBe('MultipleIpDirectDeliveryController');
+        expect(routes.routes['/direct-delivery/new/:purchaseOrderId/multiple/:purchaseOrderItemId'].templateUrl).toBe('/static/app/views/delivery/multiple-ip-direct-delivery.html');
     });
 
     it('should know warehouse-delivery route exists', function () {

@@ -508,22 +508,6 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
     });
 
-    describe('should route correctly on page', function () {
-        it('when Single IP button is clicked', function () {
-            scope.selectedPurchaseOrder = {id: 5};
-            scope.showSingleIpMode();
-            scope.$apply();
-            expect(location.path()).toBe('/direct-delivery/new/5/single');
-        });
-        it('when Multiple IP button is clicked', function () {
-            scope.selectedPurchaseOrder = {id: 5};
-            scope.showMultipleIpMode();
-            scope.$apply();
-
-            expect(location.path()).toBe('/direct-delivery/new/5/multiple');
-        });
-    });
-
     describe('when save is clicked, ', function () {
         var programmeId, distributionPlan;
 
@@ -541,7 +525,6 @@ describe('MultipleIpDirectDeliveryController', function () {
 
         describe('and the plan is successfully saved, ', function () {
             it('a toast confirming the save action should be created', function () {
-                scope.inMultipleIpMode = true;
                 scope.saveDeliveryNodes();
                 scope.$apply();
 
@@ -555,7 +538,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             });
 
             it('two distribution plans should be created', function () {
-                scope.inMultipleIpMode = true;
                 scope.distributionPlanNodes = [{
                     consignee: {id: 1},
                     item: scope.selectedPurchaseOrderItem.id,
@@ -620,7 +602,6 @@ describe('MultipleIpDirectDeliveryController', function () {
 
                 it('should save node with end user tree position', function () {
                     uiPlanNode.isEndUser = true;
-                    scope.inMultipleIpMode = true;
                     scope.saveDeliveryNodes();
                     scope.$apply();
 
@@ -640,7 +621,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                 });
 
                 it('a node should be saved with no parent id as implementing partner', function () {
-                    scope.inMultipleIpMode = true;
                     scope.saveDeliveryNodes();
                     scope.$apply();
 
@@ -661,7 +641,6 @@ describe('MultipleIpDirectDeliveryController', function () {
 
                 it('should save node with middle man user tree position', function () {
                     uiPlanNode.isEndUser = false;
-                    scope.inMultipleIpMode = true;
                     scope.saveDeliveryNodes();
                     scope.$apply();
 
@@ -681,7 +660,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                 });
 
                 it('a distribution plan node should be saved, with it\'s track property picked from the scope', function () {
-                    scope.inMultipleIpMode = true;
                     scope.saveDeliveryNodes();
                     scope.$apply();
 
@@ -804,7 +782,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                 it('the delivery node should be updated along with its delivery', function () {
                     uiPlanNode.id = nodeId;
                     uiPlanNode.distributionPlan = 1;
-                    scope.inMultipleIpMode = true;
                     deferredPlan.resolve({});
                     scope.selectedPurchaseOrder.programme = 11;
 
@@ -869,7 +846,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             });
 
             it('a node be saved with parent node', function () {
-                scope.inMultipleIpMode = true;
                 scope.saveDeliveryNodes();
                 scope.$apply();
 

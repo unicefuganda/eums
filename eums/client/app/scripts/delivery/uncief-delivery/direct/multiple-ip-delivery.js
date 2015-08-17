@@ -76,28 +76,13 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         if ($routeParams.purchaseOrderId) {
-            if ($routeParams.purchaseOrderType) {
-                $scope.inMultipleIpMode = $routeParams.purchaseOrderType == 'multiple';
-                $scope.inSingleIpMode = $routeParams.purchaseOrderType == 'single';
-            }
+
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set.item']).then(function (purchaseOrder) {
                 $scope.selectedPurchaseOrder = purchaseOrder;
-                if (!$routeParams.purchaseOrderType) {
-                    if (purchaseOrder.isSingleIp === null) {
-                        $scope.inSingleIpMode = false;
-                        $scope.inMultipleIpMode = false;
-                    } else {
-                        $scope.inSingleIpMode = purchaseOrder.isSingleIp;
-                        $scope.inMultipleIpMode = !purchaseOrder.isSingleIp;
-                    }
-                }
                 $scope.purchaseOrderItems = purchaseOrder.purchaseorderitemSet;
                 $scope.selectedPurchaseOrder.totalValue = $scope.purchaseOrderItems.sum(function (orderItem) {
                     return parseFloat(orderItem.value);
                 });
-                if (purchaseOrder.isSingleIp) {
-                    $location.path('/direct-delivery/new/' + purchaseOrder.id + '/single');
-                }
                 LoaderService.hideLoader();
             });
         }
@@ -123,14 +108,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 $scope.invalidNodes = NaN;
                 $scope.distributionPlan = NaN;
             }
-        };
-
-        $scope.showSingleIpMode = function () {
-            $location.path(rootPath + $scope.selectedPurchaseOrder.id + '/single');
-        };
-
-        $scope.showMultipleIpMode = function () {
-            $location.path(rootPath + $scope.selectedPurchaseOrder.id + '/multiple');
         };
 
         $scope.selectPurchaseOrderItem = function (purchaseOrderItem) {

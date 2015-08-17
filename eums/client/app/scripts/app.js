@@ -15,9 +15,9 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
 angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
-    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery', 'Loader',
-    'IPResponses', 'ConsigneeItem'
-]).config(function ($routeProvider, $httpProvider) {
+    'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem'])
+.config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -40,6 +40,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
+        .when('/direct-delivery/new/:purchaseOrderId', {
+            templateUrl: '/static/app/views/delivery/direct-delivery-ip-choice.html',
+            controller: 'DirectDeliveryIpChoiceController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_dashboard');
+                }
+            }
+        })
         .when('/direct-delivery/new/:purchaseOrderId/single', {
             templateUrl: '/static/app/views/delivery/single-ip-direct-delivery.html',
             controller: 'SingleIpDirectDeliveryController',
@@ -49,7 +58,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/direct-delivery/new/:purchaseOrderId', {
+        .when('/direct-delivery/new/:purchaseOrderId/multiple', {
             templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
             controller: 'MultipleIpDirectDeliveryController',
             resolve: {
@@ -58,16 +67,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType', {
-            templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
-            controller: 'MultipleIpDirectDeliveryController',
-            resolve: {
-                permission: function (UserService) {
-                    return UserService.checkUserPermission('auth.can_view_dashboard');
-                }
-            }
-        })
-        .when('/direct-delivery/new/:purchaseOrderId/:purchaseOrderType/:purchaseOrderItemId', {
+        .when('/direct-delivery/new/:purchaseOrderId/multiple/:purchaseOrderItemId', {
             templateUrl: '/static/app/views/delivery/multiple-ip-direct-delivery.html',
             controller: 'MultipleIpDirectDeliveryController',
             resolve: {
