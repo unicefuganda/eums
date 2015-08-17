@@ -260,12 +260,12 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             if ($scope.selectedPurchaseOrder.isSingleIp || $scope.selectedPurchaseOrder.isSingleIp == false) {
                 $scope.saveDeliveryNodes();
             } else {
-                angular.element('#confirmation-modal').modal();
+                LoaderService.showModal('confirmation-modal');
             }
         };
 
         $scope.warningAccepted = function () {
-            angular.element('#confirmation-modal').modal('hide');
+            LoaderService.hideModal('confirmation-modal');
             updateDeliveryStatus();
             $scope.saveDeliveryNodes();
         };

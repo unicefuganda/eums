@@ -2,7 +2,7 @@ describe('DirectDeliveryController', function () {
 
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
-    var mockContactService, mockProgrammeService, mockPurchaseOrderService;
+    var mockContactService, mockProgrammeService, mockPurchaseOrderService, mockLoaderService;
     var deferred, deferredPlan, deferredPurchaseOrder;
 
     var programmeOne = {
@@ -17,6 +17,7 @@ describe('DirectDeliveryController', function () {
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
             deferred = $q.defer();
@@ -34,14 +35,6 @@ describe('DirectDeliveryController', function () {
             filter = $filter;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
 
-            spyOn(angular, 'element').and.callFake(function () {
-                return {
-                    modal: jasmine.createSpy('modal').and.callFake(function (status) {
-                        return status;
-                    })
-                };
-            });
-
             $controller('DirectDeliveryController',
                 {
                     $scope: scope, ContactService: mockContactService,
@@ -49,7 +42,8 @@ describe('DirectDeliveryController', function () {
                     PurchaseOrderService: mockPurchaseOrderService,
                     $sorter: sorter,
                     $filter: filter,
-                    $location: location
+                    $location: location,
+                    LoaderService: mockLoaderService
                 });
         });
     });
@@ -115,6 +109,19 @@ describe('DirectDeliveryController', function () {
             expect(scope.sortArrowClass('orderNumber')).toEqual('active glyphicon glyphicon-arrow-up');
         });
 
+        it('should show loader', function () {
+            scope.initialize();
+            scope.$apply();
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader).not.toHaveBeenCalled();
+        });
+
+        it('should hide loader after retrieving purchase orders', function () {
+            deferredPurchaseOrder.resolve(['po one', 'po two']);
+            scope.initialize();
+            scope.$apply();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+        });
     });
 
     describe('when purchase order is selected', function () {

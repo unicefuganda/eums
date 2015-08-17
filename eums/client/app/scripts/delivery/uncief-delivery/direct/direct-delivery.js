@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'EumsFilters'])
-    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter) {
+angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'EumsFilters', 'Loader'])
+    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService) {
 
         $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'date'];
@@ -18,13 +18,13 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.outcomeColumnTitle = 'Outcome';
 
         $scope.initialize = function () {
-            angular.element('#loading').modal();
+            LoaderService.showLoader();
             this.sortBy('orderNumber');
             this.sort.descending = false;
 
             PurchaseOrderService.forDirectDelivery().then(function (purchaseOrders) {
                 $scope.purchaseOrders = purchaseOrders.sort();
-                angular.element('#loading').modal('hide');
+                LoaderService.hideLoader();
             });
         };
 

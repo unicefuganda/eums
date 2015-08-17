@@ -104,27 +104,7 @@ describe('MultipleIpDirectDeliveryController', function () {
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
         mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
-        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
-        mockConfirmationModal = {
-            modal: jasmine.createSpy('modal').and.callFake(function(value){
-                if(value === 'hide') return;
-                scope.warningAccepted(); //simulate accept
-            }),
-            hasClass: emptyFunction,
-            removeClass: emptyFunction,
-            remove: emptyFunction
-        };
-        otherModal = {
-            modal: jasmine.createSpy('modal').and.callFake(function (status) {
-                return status;
-            }),
-            hasClass: jasmine.createSpy('hasClass').and.callFake(function (status) {
-                return status;
-            }),
-            removeClass: jasmine.createSpy('removeClass').and.callFake(function (status) {
-                return status;
-            })
-        };
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal', 'hideModal']);
 
         inject(function ($controller, $rootScope, $q, $location, LoaderService) {
             q = $q;
@@ -151,19 +131,6 @@ describe('MultipleIpDirectDeliveryController', function () {
             mockIPService.loadAllDistricts.and.returnValue(deferredDistrictPromise.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUserPromise.promise);
             mockItemService.get.and.returnValue(deferredItemPromise.promise);
-
-
-            //TOFIX: dirty fix for element has been spied on already for setup being called again - showcase was impending
-            if (!routeParams.purchaseOrderItemId && !routeParams.purchaseOrderType) {
-                spyOn(angular, 'element').and.callFake(function (element) {
-                    if (element === '#confirmation-modal') {
-                        return mockConfirmationModal;
-                    } else {
-                        return otherModal;
-                    }
-
-                });
-            }
 
             location = $location;
             scope = $rootScope.$new();
@@ -933,8 +900,8 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.warnBeforeSaving();
             scope.$apply();
 
-            expect(mockConfirmationModal.modal).toHaveBeenCalled();
-            expect(mockPurchaseOrderService.update).toHaveBeenCalled();
+            expect(mockLoaderService.showModal).toHaveBeenCalled();
+            expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });
 
@@ -946,7 +913,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.warnBeforeSaving();
             scope.$apply();
 
-            expect(mockConfirmationModal.modal).not.toHaveBeenCalled();
+            expect(mockLoaderService.showModal).not.toHaveBeenCalled();
             expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeTruthy();
         });
@@ -959,7 +926,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.warnBeforeSaving();
             scope.$apply();
 
-            expect(mockConfirmationModal.modal).not.toHaveBeenCalled();
+            expect(mockLoaderService.showModal).not.toHaveBeenCalled();
             expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });

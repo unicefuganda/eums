@@ -147,7 +147,7 @@ function fillSelect2Chosen (id, input) {
 
 function waitForPageToLoad() {
     var EC = protractor.ExpectedConditions;
-    var fadingModal = element(by.css('.modal-backdrop.fade'));
-    var screenHasLoaded = EC.stalenessOf(fadingModal);
+    var spinner = element(by.css('#loading'));
+    var screenHasLoaded = EC.invisibilityOf(spinner);
     browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
 }
