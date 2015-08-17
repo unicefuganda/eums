@@ -129,5 +129,56 @@ describe('IP Delivery Items Controller', function () {
             expect(mockLoaderService.hideLoader.calls.count()).toBe(1);
         })
     });
+
+    describe('on save', function () {
+        beforeEach(function () {
+            mockDeliveryService.get.and.returnValue(q.when(activeDelivery));
+            mockDeliveryService.getDetail.and.returnValue(q.when(nodeAnswers));
+            mockDeliveryNodeService.filter.and.returnValue(q.when(deliveryNodes));
+        });
+
+        it('should show loader while saving', function () {
+            initializeController();
+            scope.$apply();
+            scope.saveAnswers();
+            scope.$apply();
+
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.showLoader.calls.count()).toBe(2);
+        });
+
+        it('should call save web answers end points', function () {
+            mockAnswerService.createWebAnswer.and.returnValue(q.when());
+            initializeController();
+            scope.$apply();
+
+            scope.saveAnswers();
+            scope.$apply();
+
+            expect(mockAnswerService.createWebAnswer).toHaveBeenCalled();
+            expect(mockAnswerService.createWebAnswer.calls.count()).toBe(2);
+        });
+
+        it('should navigate to the home page upon success', function () {
+            mockAnswerService.createWebAnswer.and.returnValue(q.when());
+            initializeController();
+            scope.$apply();
+            scope.saveAnswers();
+            scope.$apply();
+
+            expect(location.path).toHaveBeenCalledWith('/ip-deliveries');
+        });
+
+        it('should hide loader at the end', function () {
+            mockAnswerService.createWebAnswer.and.returnValue(q.when());
+            initializeController();
+            scope.$apply();
+            scope.saveAnswers();
+            scope.$apply();
+
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
+        });
+    });
 });
 
