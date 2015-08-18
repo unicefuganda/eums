@@ -85,7 +85,7 @@ module.exports = function (grunt) {
                     ]
                 },
                 files: {
-                    'app/css/app.css': 'less/app.less'
+                    '.tmp/css/app.min.css': 'less/app.less'
                 }
             }
         },
@@ -93,13 +93,52 @@ module.exports = function (grunt) {
         uglify: {
             all: {
                 files: {
-                    'dist/app.min.js': ['app/scripts/**/*.js']
+                    '.tmp/js/app.min.js': ['app/scripts/**/*.js']
                 },
                 options: {
                     mangle: false,
                     beautify: true
                 }
             }
+        },
+
+        copy: {
+          js: {
+            expand: true,
+            cwd: '.tmp/js/',
+            src: '**/*.js',
+            dest: 'dist/js/'
+          },
+          json: {
+            expand: true,
+            cwd: 'app/data/',
+            src: '**/*.json',
+            dest: 'dist/data/'
+          },
+          media: {
+            expand: true,
+            cwd: 'app/media/',
+            src: '**/*',
+            dest: 'dist/media/'
+          },
+          css: {
+            expand: true,
+            cwd: '.tmp/css/',
+            src: '**/*.css',
+            dest: 'dist/css/'
+          },
+          html: {
+            expand: true,
+            cwd: 'app/views/',
+            src: '**/*.html',
+            dest: 'dist/views/'
+          },
+          vendor: {
+            expand: true,
+            cwd: 'bower_components/',
+            src: '**/*',
+            dest: 'dist/vendor/',
+          }
         },
 
         jshint: {
@@ -372,6 +411,18 @@ module.exports = function (grunt) {
 
     grunt.registerTask('performance', [
         'protractor:performance'
+    ]);
+
+    grunt.registerTask('dist', 'Copy to Dist', [
+      'clean:dist',
+      'less',
+      'newer:uglify:all',
+      'copy:css',
+      'copy:js',
+      'copy:json',
+      'copy:html',
+      'copy:vendor',
+      'copy:media'
     ]);
 
     grunt.registerTask('default', [
