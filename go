@@ -42,6 +42,9 @@ function main {
         testfunctional
       fi;;
 
+    "fft" )
+      testfunctional --multi;;
+
     "at" )
       testbackend
       testjsunit
@@ -136,7 +139,9 @@ function testfunctional {
     grunt prep-test-env
     python ../../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
     grunt functional-headless
-      else
+  elif [ "$1" = "--multi" ]; then
+    grunt functional --multi
+  else
     grunt functional
   fi
 

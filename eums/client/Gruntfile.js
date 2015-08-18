@@ -168,7 +168,12 @@ module.exports = function (grunt) {
             },
             chrome: {
                 options: {
-                    configFile: 'test/functional_chrome_conf.js'
+                    configFile: (function () {
+                        if (grunt.option('multi')) {
+                            return 'test/functional_multi_conf.js'
+                        }
+                        else { return 'test/functional_chrome_conf.js' }
+                    })()
                 }
             },
             headless: {
