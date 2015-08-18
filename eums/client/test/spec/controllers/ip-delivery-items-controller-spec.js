@@ -2,7 +2,7 @@ describe('IP Delivery Items Controller', function () {
     var mockDeliveryService, scope, location, mockLoaderService, q,
         mockDeliveryNodeService, controller, mockAnswerService;
 
-    var deliveryNodes = [{
+    var nodeOne = {
         id: 1,
         location: 'Kampala',
         consignee: {id: 10},
@@ -10,16 +10,18 @@ describe('IP Delivery Items Controller', function () {
         deliveryDate: '2015-01-02',
         remark: 'some remarks',
         item: 1
-    },
-        {
-            id: 2,
-            location: 'Kampala',
-            consignee: {id: 10},
-            track: true,
-            deliveryDate: '2015-01-02',
-            remark: 'some other remarks',
-            item: 2
-        }];
+    };
+
+    var nodeTwo = {
+        id: 2,
+        location: 'Kampala',
+        consignee: {id: 10},
+        track: true,
+        deliveryDate: '2015-01-02',
+        remark: 'some other remarks',
+        item: 2
+    };
+    var deliveryNodes = [nodeOne, nodeTwo];
 
     var activeDelivery = {
         id: 1,
@@ -32,41 +34,66 @@ describe('IP Delivery Items Controller', function () {
         distributionplannodeSet: deliveryNodes
     };
 
-    var nodeAnswers = [
+    var firstNodeAnswers = [
         {
-            id: 1, answers: [
-            {
-                question_label: 'itemReceived',
-                type: 'multipleChoice',
-                text: 'Was item received?',
-                value: 'Yes',
-                options: ['Yes'],
-                position: 0
-            }
-        ]
+            question_label: 'itemReceived',
+            type: 'multipleChoice',
+            text: 'Was item received?',
+            value: 'Yes',
+            options: ['Yes'],
+            position: 0
+        }
+    ];
+    var secondNodeAnswers = [
+        {
+            question_label: 'additionalComments',
+            type: 'text',
+            text: 'Any additional comments?',
+            value: 'Answer1',
+            position: 1
         },
         {
-            id: 2, answers: [
-            {
-                question_label: 'additionalComments',
-                type: 'text',
-                text: 'Any additional comments?',
-                value: 'Answer1',
-                position: 1
-            },
-            {
-                question_label: 'dateOfReceipt',
-                type: 'text',
-                text: "Was delivery received?",
-                value: 'valid field'
-            },
-            {
-                question_label: 'additionalDeliveryComments',
-                type: 'text',
-                text: "Was delivery received?",
-                value: 'some remarks'
-            }
-        ]
+            question_label: 'dateOfReceipt',
+            type: 'text',
+            text: "Was delivery received?",
+            value: 'valid field'
+        },
+        {
+            question_label: 'additionalDeliveryComments',
+            type: 'text',
+            text: "Was delivery received?",
+            value: 'some remarks'
+        }
+    ];
+    var nodeAnswers = [
+        {
+            id: 1, answers: firstNodeAnswers
+        },
+        {
+            id: 2, answers: secondNodeAnswers
+        }
+    ];
+
+    var combinedDeliveryNodes = [
+        {
+            id: 1,
+            location: 'Kampala',
+            consignee: {id: 10},
+            track: true,
+            deliveryDate: '2015-01-02',
+            remark: 'some remarks',
+            item: 1,
+            answers: firstNodeAnswers
+        },
+        {
+            id: 2,
+            location: 'Kampala',
+            consignee: {id: 10},
+            track: true,
+            deliveryDate: '2015-01-02',
+            remark: 'some other remarks',
+            item: 2,
+            answers: secondNodeAnswers
         }];
 
     function initializeController() {
@@ -128,7 +155,6 @@ describe('IP Delivery Items Controller', function () {
 
             expect(mockDeliveryService.get).toHaveBeenCalledWith(1);
             expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1}, ['item']);
-            expect(scope.deliveryNodes).toBe(deliveryNodes);
             expect(scope.shipmentDate).toBe('2015-01-02');
             expect(scope.totalValue).toBe(6000);
         });
@@ -138,7 +164,13 @@ describe('IP Delivery Items Controller', function () {
             scope.$apply();
 
             expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(activeDelivery, 'node_answers');
-            expect(scope.nodeAnswers).toBe(nodeAnswers);
+        });
+
+        it('should combine nodes and node answers belonging to a delivery', function () {
+           initializeController();
+            scope.$apply();
+
+            expect(scope.combinedDeliveryNodes).toEqual(combinedDeliveryNodes);
         });
 
         it('should hide the loader after loading the data', function () {
@@ -205,7 +237,7 @@ describe('IP Delivery Items Controller', function () {
                 initializeController();
                 scope.$apply();
 
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
                         id: 1, answers: [
                         {
@@ -237,7 +269,7 @@ describe('IP Delivery Items Controller', function () {
             it('should set can save answer to false when numeric question has non positive answer', function(){
                initializeController();
                 scope.$apply();
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
                         id: 1, answers: [
                         {
@@ -260,7 +292,7 @@ describe('IP Delivery Items Controller', function () {
                 initializeController();
                 scope.$apply();
 
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
                         id: 1, answers: [
                         {
@@ -283,7 +315,7 @@ describe('IP Delivery Items Controller', function () {
                 initializeController();
                 scope.$apply();
 
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
                         id: 1, answers: [
                         {
@@ -306,7 +338,7 @@ describe('IP Delivery Items Controller', function () {
                 initializeController();
                 scope.$apply();
 
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
                         id: 1, answers: [
                         {
@@ -329,7 +361,7 @@ describe('IP Delivery Items Controller', function () {
                 initializeController();
                 scope.$apply();
 
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
                         id: 1, answers: [
                         {
@@ -369,7 +401,7 @@ describe('IP Delivery Items Controller', function () {
                 initializeController();
                 scope.$apply();
 
-                scope.nodeAnswers = [
+                scope.combinedDeliveryNodes = [
                     {
 
                         id: 2, answers: [

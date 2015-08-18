@@ -10,8 +10,8 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Deliver
             LoaderService.showLoader();
             var answerPromises = []
                 ;
-            $scope.nodeAnswers.forEach(function (nodeAnswer) {
-                answerPromises.push(AnswerService.createWebAnswer(nodeAnswer.id, nodeAnswer.answers))
+            $scope.combinedDeliveryNodes.forEach(function (node) {
+                answerPromises.push(AnswerService.createWebAnswer(node.id, node.answers))
             });
 
             $q.all(answerPromises)
@@ -23,11 +23,11 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Deliver
                 });
         };
 
-        $scope.$watch('nodeAnswers', function () {
+        $scope.$watch('combinedDeliveryNodes', function () {
             var areValid = [];
-            if ($scope.nodeAnswers) {
-                $scope.nodeAnswers.forEach(function (nodeAnswer) {
-                    areValid.push(_areValidAnswers(nodeAnswer.answers))
+            if ($scope.combinedDeliveryNodes) {
+                $scope.combinedDeliveryNodes.forEach(function (node) {
+                    areValid.push(_areValidAnswers(node.answers))
                 });
                 $scope.areValidAnswers = areValid.indexOf(false) <= -1;
             }
@@ -53,6 +53,18 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Deliver
             return isValid.indexOf(false) <= -1;
         }
 
+        function _combineNodeAnswers(answers) {
+            $scope.combinedDeliveryNodes = [];
+            $scope.deliveryNodes.forEach(function(node) {
+                var result = answers.filter(function(answerSet) {
+                   return answerSet.id == node.id;
+                });
+                if(result) {
+                    var deliveryNode = Object.merge(node, { answers: result[0].answers});
+                    $scope.combinedDeliveryNodes.push(deliveryNode);
+                }
+            });
+        }
 
         function loadData() {
             LoaderService.showLoader();
@@ -71,7 +83,7 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Deliver
                 .then(function () {
                     DeliveryService.getDetail($scope.activeDelivery, 'node_answers')
                         .then(function (answers) {
-                            $scope.nodeAnswers = answers;
+                            _combineNodeAnswers(answers);
                         })
                 })
                 .finally(function () {
