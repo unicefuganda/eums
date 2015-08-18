@@ -138,6 +138,12 @@ module.exports = function (grunt) {
             cwd: 'bower_components/',
             src: '**/*',
             dest: 'dist/vendor/',
+          },
+          toDjango: {
+            expand: true,
+            cwd: 'dist/',
+            src: '**/*',
+            dest: '../eums/client/'
           }
         },
 
@@ -422,7 +428,8 @@ module.exports = function (grunt) {
       'copy:json',
       'copy:html',
       'copy:vendor',
-      'copy:media'
+      'copy:media',
+      'copy:toDjango'
     ]);
 
     grunt.registerTask('default', [
