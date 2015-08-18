@@ -1,0 +1,71 @@
+<div class="container-fluid">
+    <div class="eums page-header">Itemized Confirmation for {{activeDelivery.type}} {{activeDelivery.number}}</div>
+</div>
+
+<div>
+    <table si-table class="table table-bordered table-hover table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="left-aligned">Item Description</th>
+            <th class="left-aligned">Qty Shipped</th>
+            <th class="left-aligned">Item Received</th>
+            <th class="left-aligned">Qty Received</th>
+            <th class="left-aligned">Condition</th>
+            <th class="left-aligned">Satisfied</th>
+            <th class="left-aligned">Remarks</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="($index, node) in combinedDeliveryNodes">
+            <td class="centered v-align-middle">{{ $index + 1 }}</td>
+            <td class="v-align-middle">{{ node.item.item.description }}</td>
+            <td class="v-align-middle">{{ node.quantityIn }}</td>
+            <td class="v-align-middle">
+                <select ng-model="node.answers[0].value"
+                        required="required"
+                        class="form-control"
+                        ng-init="node.answers[0].value = 'Yes'"
+                        ng-options="option for option in node.answers[0].options ">
+                </select>
+            </td>
+            <td class="v-align-middle">
+                <input type="text"
+                       data-ng-model="node.answers[1].value"
+                        ng-init="node.answers[1].value = node.quantityIn"/>
+            </td>
+            <td class="v-align-middle">
+                <select ng-model="node.answers[2].value"
+                        required="required"
+                        class="form-control"
+                        ng-init="node.answers[2].value = 'Good'"
+                        ng-options="option for option in node.answers[2].options ">
+                </select></td>
+            <td class="v-align-middle">
+                <select ng-model="node.answers[3].value"
+                        required="required"
+                        class="form-control"
+                        ng-init="node.answers[3].value = 'Yes'"
+                        ng-options="option for option in node.answers[3].options ">
+                </select>
+            </td>
+            <td class="v-align-middle"></td>
+
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="6" class="centered">
+                <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                            ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                            items-per-page="pageSize">
+                </pagination>
+            </td>
+        </tr>
+        </tfoot>
+
+        <span class="information message" ng-show="purchaseOrders.length == 0">There are no deliveries available right now.</span>
+    </table>
+</div>

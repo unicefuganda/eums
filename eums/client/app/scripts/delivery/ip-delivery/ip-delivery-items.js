@@ -1,6 +1,6 @@
-angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters'])
-    .controller('IpDeliveryItemsController', function ($scope, LoaderService, DeliveryService, DeliveryNodeService,
-                                                       $routeParams, AnswerService, $location, $q) {
+angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Delivery', 'DeliveryNode', 'Answer'])
+    .controller('IpDeliveryItemsController', function ($scope, $routeParams, $location, $q, LoaderService,
+                                                       DeliveryService, DeliveryNodeService, AnswerService) {
 
         $scope.activeDelivery = {};
 
@@ -53,17 +53,20 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Deliver
             return isValid.indexOf(false) <= -1;
         }
 
-        function _combineNodeAnswers(answers) {
+        function combineNodeAnswers(answers) {
             $scope.combinedDeliveryNodes = [];
-            $scope.deliveryNodes.forEach(function(node) {
-                var result = answers.filter(function(answerSet) {
-                   return answerSet.id == node.id;
+            if ($scope.deliveryNodes) {
+                $scope.deliveryNodes.forEach(function(node) {
+                    var result = answers.filter(function(answerSet) {
+                        return answerSet.id == node.id;
+                    });
+
+                    if(result) {
+                        var deliveryNode = Object.merge(node, { answers: result[0].answers});
+                        $scope.combinedDeliveryNodes.push(deliveryNode);
+                    }
                 });
-                if(result) {
-                    var deliveryNode = Object.merge(node, { answers: result[0].answers});
-                    $scope.combinedDeliveryNodes.push(deliveryNode);
-                }
-            });
+            }
         }
 
         function loadData() {
@@ -75,19 +78,19 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Deliver
                     $scope.activeDelivery = delivery;
                 })
                 .then(function () {
-                    DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id}, ['item'])
+                    DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id}, ['item.item'])
                         .then(function (nodes) {
                             $scope.deliveryNodes = nodes;
                         })
-                })
-                .then(function () {
-                    DeliveryService.getDetail($scope.activeDelivery, 'node_answers')
-                        .then(function (answers) {
-                            _combineNodeAnswers(answers);
+                        .then(function () {
+                            DeliveryService.getDetail($scope.activeDelivery, 'node_answers')
+                                .then(function (answers) {
+                                    combineNodeAnswers(answers);
+                                })
+                                .finally(function () {
+                                    LoaderService.hideLoader();
+                                });
                         })
                 })
-                .finally(function () {
-                    LoaderService.hideLoader();
-                });
         }
     });

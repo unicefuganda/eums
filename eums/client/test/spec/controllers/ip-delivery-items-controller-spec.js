@@ -154,7 +154,7 @@ describe('IP Delivery Items Controller', function () {
             scope.$apply();
 
             expect(mockDeliveryService.get).toHaveBeenCalledWith(1);
-            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1}, ['item']);
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1}, ['item.item']);
             expect(scope.shipmentDate).toBe('2015-01-02');
             expect(scope.totalValue).toBe(6000);
         });
