@@ -305,10 +305,20 @@
                     LayerMap.clickLayer(layerName.toLowerCase(), scope);
                     this.highlightLayer(layerName);
                 }
+            },
+            setDefaultView: function () {
+                map.setView(EumsConfig.MAP_OPTIONS.CENTER, EumsConfig.MAP_OPTIONS.ZOOM_LEVEL);
             }
         };
     });
 
+    module.directive('defaultView', function (MapService) {
+        return function (scope, element) {
+            element.click(function () {
+                MapService.setDefaultView();
+            });
+        }
+    });
 
     module.directive('map', function (MapService, $window, IPService, DeliveryService) {
         return {

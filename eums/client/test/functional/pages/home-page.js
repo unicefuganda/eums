@@ -14,6 +14,11 @@ var HomePage = function () {
         return this.homePageTitle.getText();
     };
 
+    this.clickZoomOutIcon = function(){
+        browser.sleep(2000);
+        element(by.css('.view-thumbnail img')).click();
+    };
+
     this.clickMapLayer = function (district) {
         browser.executeScript(function (district) {
             window.map.clickLayer(district);

@@ -78,6 +78,16 @@ describe('Home Page', function () {
                 });
             });
         });
+
+        it('should unzoom when the zoom out icon is clicked', function () {
+            homePage.clickMapLayer('wakiso');
+            homePage.clickZoomOutIcon();
+            expect(homePage.getMapZoomLevel()).toBe(7);
+            expect(homePage.numberSent.getText()).toEqual('17');
+            expect(homePage.numberDelivered.getText()).toEqual('13');
+            expect(homePage.numberNotDelivered.getText()).toEqual('4');
+        });
+
     });
 
     describe('IP User', function () {
