@@ -24,48 +24,44 @@
             <td class="v-align-middle">{{ node.item.item.description }}</td>
             <td class="v-align-middle">{{ node.quantityIn }}</td>
             <td class="v-align-middle">
-                <select ng-model="node.answers[0].value"
+                <select data-ng-model="node.answers[0].value"
                         required="required"
                         class="form-control"
-                        ng-init="node.answers[0].value = 'Yes'"
                         ng-options="option for option in node.answers[0].options ">
+                    <option>Select</option>
                 </select>
             </td>
             <td class="v-align-middle">
                 <input type="text"
-                       data-ng-model="node.answers[1].value"
-                        ng-init="node.answers[1].value = node.quantityIn"/>
+                       data-ng-model="node.answers[1].value"/>
             </td>
             <td class="v-align-middle">
-                <select ng-model="node.answers[2].value"
+                <select data-ng-model="node.answers[2].value"
                         required="required"
                         class="form-control"
-                        ng-init="node.answers[2].value = 'Good'"
                         ng-options="option for option in node.answers[2].options ">
-                </select></td>
+                    <option>Select</option>
+                </select>
+            </td>
             <td class="v-align-middle">
-                <select ng-model="node.answers[3].value"
+                <select data-ng-model="node.answers[3].value"
                         required="required"
                         class="form-control"
-                        ng-init="node.answers[3].value = 'Yes'"
                         ng-options="option for option in node.answers[3].options ">
+                    <option>Select</option>
                 </select>
             </td>
             <td class="v-align-middle"></td>
 
         </tr>
         </tbody>
-        <tfoot>
-        <tr>
-            <td colspan="6" class="centered">
-                <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                            ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                            items-per-page="pageSize">
-                </pagination>
-            </td>
-        </tr>
-        </tfoot>
 
-        <span class="information message" ng-show="purchaseOrders.length == 0">There are no deliveries available right now.</span>
     </table>
+</div>
+<div class="pull-right">
+    <button id="saveBtn" type="button" class="btn btn-primary"
+            ng-click="saveAnswers()">
+        <i class="glyphicon glyphicon-floppy-save"> </i>
+        Save & Confirm
+    </button>
 </div>

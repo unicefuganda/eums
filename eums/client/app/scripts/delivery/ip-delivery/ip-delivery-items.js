@@ -11,7 +11,7 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Loader'
             var answerPromises = []
                 ;
             $scope.combinedDeliveryNodes.forEach(function (node) {
-                answerPromises.push(AnswerService.createWebAnswer(node.id, node.answers))
+                answerPromises.push(AnswerService.createWebAnswer(node, node.answers))
             });
 
             $q.all(answerPromises)

@@ -12,12 +12,12 @@ class UpdateConsigneeStockLevel:
 
     def run(self):
         entry = self._get_item_entry()
-        entry.amount_received += self.amount_received
+        entry.amount_received += int(self.amount_received)
         entry.save()
 
     def rollback(self):
         entry = self._get_item_entry()
-        entry.amount_received -= self.amount_received
+        entry.amount_received -= int(self.amount_received)
         entry.save()
 
     def _get_item_entry(self):

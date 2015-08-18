@@ -21,10 +21,10 @@ angular.module('Answer', ['eums.config', 'eums.service-factory'])
             updateNumericAnswer: function (answerId, answerDetails) {
                 return numericAnswerService.update(Object.merge({id: answerId}, answerDetails), method);
             },
-            createWebAnswer: function (delivery, answers) {
+            createWebAnswer: function (runnable, answers) {
                 return webAnswerService.create(Object.merge(
                     {
-                        runnable: delivery.id,
+                        runnable: runnable.id,
                         answers: answers
                     })
                 );
