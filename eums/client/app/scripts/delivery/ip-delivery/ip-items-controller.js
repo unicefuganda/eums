@@ -1,5 +1,5 @@
 angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
-    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService) {
+    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService, $location) {
         $scope.items = [];
         $scope.searching = false;
 
@@ -29,6 +29,10 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
                 fetchItems();
             }
         });
+
+        $scope.view = function(item){
+            $location.path('/deliveries-for-item/%' % item.id)
+        };
 
         function fetchItems() {
             ConsigneeItemService.all().then(function (response) {

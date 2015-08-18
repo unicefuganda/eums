@@ -75,6 +75,14 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                     return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
                         return response.data;
                     });
+                },
+                getDeliveriesForItem: function (itemId) {
+                    return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?consignee_deliveries_for_item=' + itemId + '&paginate=true' + '/')
+                        .then(function (response) {
+                            var result = $q.defer();
+                            result.resolve(response.data);
+                            return result.promise;
+                        });
                 }
             }
         });

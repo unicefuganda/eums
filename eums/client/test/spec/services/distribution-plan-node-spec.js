@@ -217,5 +217,17 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.flush();
     });
 
+    it('should get deliveries for item', function (done) {
+        var expectedNodes = [expectedPlanNode];
+        mockBackend.whenGET(planNodeEndpointUrl + '?consignee_deliveries_for_item=' + itemId + '&paginate=true/')
+            .respond(expectedNodes);
+
+        planNodeService.getDeliveriesForItem(itemId).then(function (returnedNodes) {
+            expect(returnedNodes).toEqual(expectedNodes);
+            done();
+        });
+        mockBackend.flush();
+    })
+
 });
 

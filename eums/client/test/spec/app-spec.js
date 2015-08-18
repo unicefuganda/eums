@@ -106,4 +106,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('IpDeliveryItemsController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/delivery-items.html');
     });
+
+    it('should have deliveries for item route', function(){
+        var route = '/deliveries-for-item/:itemId';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('IpDeliveriesForItemController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/deliveries-for-item.html');
+    })
 });

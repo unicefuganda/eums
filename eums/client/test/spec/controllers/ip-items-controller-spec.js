@@ -1,16 +1,18 @@
 describe('IP Items Controller', function () {
-    var scope, q, mockConsigneeItemService, deferredSearchResults;
+    var scope, q, mockConsigneeItemService, deferredSearchResults, location;
     var items = [{id: 1, Description: 'Plumpynut'}, {id: 1, Description: 'Books'}, {id: 1, Description: 'Shoes'}];
     var paginated_items_response = {results: items, count: items.length, pageSize: 2};
     var searchResults = items.first(2);
 
     beforeEach(function () {
         module('IpItems');
-        inject(function ($controller, $rootScope, $q) {
+        inject(function ($controller, $rootScope, $q, $location) {
             mockConsigneeItemService = jasmine.createSpyObj('mockConsigneeItemService', ['all', 'search']);
             deferredSearchResults = $q.defer();
             mockConsigneeItemService.all.and.returnValue($q.when(paginated_items_response));
             mockConsigneeItemService.search.and.returnValue(deferredSearchResults.promise);
+            location = $location;
+            spyOn($location,'path').and.returnValue('fake location');
 
             scope = $rootScope.$new();
             q = $q;
@@ -71,5 +73,11 @@ describe('IP Items Controller', function () {
         deferredSearchResults.resolve({results: searchResults});
         scope.$apply();
         expect(scope.searching).toBe(false);
+    });
+
+    it('should change location to deliveries for item page', function(){
+        var item = items[0];
+        scope.view(item);
+        expect(location.path).toHaveBeenCalledWith('/deliveries-for-item/%' % item.id);
     });
 });
