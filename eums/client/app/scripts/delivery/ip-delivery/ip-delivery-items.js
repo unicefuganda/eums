@@ -36,7 +36,7 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Loader'
         function _areValidAnswers(nodeAnswers) {
             var isValid = [];
             nodeAnswers.forEach(function (nodeAnswer) {
-                if (nodeAnswer.question_label == 'additionalComments') {
+                if (nodeAnswer.question_label == 'additionalDeliveryComments') {
                     isValid.add(true);
                 } else {
                     if (nodeAnswer.type == 'multipleChoice') {
@@ -44,12 +44,10 @@ angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Loader'
                     } else if (nodeAnswer.type == 'text') {
                         isValid.add(nodeAnswer.value != '');
                     } else if (nodeAnswer.type == 'numeric') {
-                        isValid.add(angular.isNumber(nodeAnswer.value) && nodeAnswer.value != '' && nodeAnswer.value.valueOf() >= 0)
+                        isValid.add(!isNaN(nodeAnswer.value) && nodeAnswer.value != '' && nodeAnswer.value.valueOf() >= 0)
                     }
                 }
-
             });
-
             return isValid.indexOf(false) <= -1;
         }
 

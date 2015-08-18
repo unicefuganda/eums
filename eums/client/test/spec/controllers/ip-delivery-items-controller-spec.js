@@ -406,7 +406,7 @@ describe('IP Delivery Items Controller', function () {
 
                         id: 2, answers: [
                         {
-                            question_label: 'additionalComments',
+                            question_label: 'additionalDeliveryComments',
                             type: 'text',
                             text: 'Remarks' ,
                             value: '',

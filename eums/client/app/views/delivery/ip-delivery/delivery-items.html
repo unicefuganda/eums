@@ -59,7 +59,10 @@
     </table>
 </div>
 <div class="pull-right">
-    <button id="saveBtn" type="button" class="btn btn-primary"
+    <button id="saveBtn"
+            type="button"
+            class="btn btn-primary"
+            ng-disabled="!areValidAnswers"
             ng-click="saveAnswers()">
         <i class="glyphicon glyphicon-floppy-save"> </i>
         Save & Confirm
