@@ -187,16 +187,6 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.flush();
     });
 
-    xit('should get node with full details', function (done) {
-        mockBackend.whenGET(planNodeEndpointUrl + planNodeId + '/').respond(stubPlanNode);
-        mockBackend.whenGET(planNodeEndpointUrl + childPlanNodeId + '/').respond(stubChildPlanNode);
-        planNodeService.getPlanNodeDetails(planNodeId).then(function (returnedPlanNode) {
-            expect(returnedPlanNode).toEqual(expectedPlanNode);
-            done();
-        });
-        mockBackend.flush();
-    });
-
     it('should update node', function (done) {
         var updatedNode = {id: 1};
         mockBackend.expectPUT(planNodeEndpointUrl + planNodeId + '/', updatedNode).respond(200);
@@ -218,12 +208,14 @@ describe('Distribution Plan Node Service', function () {
     });
 
     it('should get deliveries for item', function (done) {
-        var expectedNodes = [expectedPlanNode];
-        mockBackend.whenGET(planNodeEndpointUrl + '?consignee_deliveries_for_item=' + itemId + '&paginate=true/')
-            .respond(expectedNodes);
+        var expectedNode = {id: 1, item: 1, deliveryDate: '2014-02-23'};
+        var expectedNodes = [expectedNode];
+        var url = planNodeEndpointUrl + '?consignee_deliveries_for_item=' + itemId + '&paginate=true';
+        mockBackend.whenGET(url).respond(expectedNodes);
 
         planNodeService.getDeliveriesForItem(itemId).then(function (returnedNodes) {
-            expect(returnedNodes).toEqual(expectedNodes);
+            expect(returnedNodes.length).toBe(1);
+            expect(returnedNodes.first()).toEqual(jasmine.objectContaining(expectedNode));
             done();
         });
         mockBackend.flush();

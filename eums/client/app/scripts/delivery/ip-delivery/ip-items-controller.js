@@ -31,7 +31,6 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
         });
 
         $scope.view = function (item) {
-            console.log('item', item);
             $location.path('/item-deliveries/' + item.id);
         };
 
