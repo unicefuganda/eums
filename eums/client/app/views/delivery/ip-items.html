@@ -1,20 +1,19 @@
 <ng-include src="'/static/app/views/delivery/partials/ip-delivery-header.html'"></ng-include>
 
 <div class="container-fluid">
-
-    <div class="row">
-        <div class="col-xs-4 pull-right">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon "
-                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by item description"/>
+    <div ng-if="items.length">
+        <div class="row">
+            <div class="col-xs-4 pull-right">
+                <div class="inner-addon left-addon">
+                    <i class="glyphicon "
+                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                    <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                           placeholder="Search by item description"/>
+                </div>
             </div>
         </div>
-    </div>
-    <span class="well-sm"></span>
+        <span class="well-sm"></span>
 
-    <div>
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead>
             <tr>
@@ -46,12 +45,9 @@
                 </td>
             </tr>
             </tfoot>
-                <span class="information message"
-                      ng-show="purchaseOrders.length > 0 && (purchaseOrders | orderFilter: query:dateQuery:searchFields ).length == 0">
-                There are no matches to your search criteria.
-                </span>
-            <span class="information message" ng-show="!items.length">There are no items delivered to you yet.</span>
         </table>
     </div>
+    <span class="text-info" ng-show="false"> There are no matches to your search criteria. </span>
+    <h4 class="text-warning" ng-show="!items.length">There are no items delivered to you yet</h4>
 </div>
 
