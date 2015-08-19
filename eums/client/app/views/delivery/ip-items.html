@@ -50,7 +50,7 @@
                       ng-show="purchaseOrders.length > 0 && (purchaseOrders | orderFilter: query:dateQuery:searchFields ).length == 0">
                 There are no matches to your search criteria.
                 </span>
-            <span class="information message" ng-show="purchaseOrders.length == 0">There are no deliveries available right now.</span>
+            <span class="information message" ng-show="!items.length">There are no items delivered to you yet.</span>
         </table>
     </div>
 </div>
