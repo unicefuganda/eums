@@ -52,11 +52,13 @@
                 </td>
                 <td class="v-align-middle">
                     <input type="text"
+                           ng-disabled="node.answers[0].value == 'No'"
                            data-ng-model="node.answers[1].value"/>
                 </td>
                 <td class="v-align-middle">
                     <select data-ng-model="node.answers[2].value"
                             required="required"
+                            ng-disabled="node.answers[0].value == 'No'"
                             class="form-control"
                             ng-options="option for option in node.answers[2].options ">
                         <option>Select</option>
@@ -65,6 +67,7 @@
                 <td class="v-align-middle">
                     <select data-ng-model="node.answers[3].value"
                             required="required"
+                            ng-disabled="node.answers[0].value == 'No'"
                             class="form-control"
                             ng-options="option for option in node.answers[3].options ">
                         <option>Select</option>

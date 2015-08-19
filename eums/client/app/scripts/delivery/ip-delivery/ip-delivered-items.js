@@ -27,9 +27,18 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
             var areValid = [];
             if ($scope.combinedDeliveryNodes) {
                 $scope.combinedDeliveryNodes.forEach(function (node) {
-                    areValid.push(_areValidAnswers(node.answers))
+
+                    if (node.answers.first().value == 'No') {
+                        node.answers[1].value = 0;
+                        node.answers[2].value = 'Incomplete';
+                        node.answers[3].value = 'No';
+                    }
+
+                    areValid.push(areValidAnswers(node.answers));
                 });
+
                 $scope.areValidAnswers = areValid.indexOf(false) <= -1;
+
             }
         }, true);
 
@@ -38,7 +47,7 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
             LoaderService.showModal(remarksModalId)
         };
 
-        function _areValidAnswers(nodeAnswers) {
+        function areValidAnswers(nodeAnswers) {
             var isValid = [];
             nodeAnswers.forEach(function (nodeAnswer) {
                 if (nodeAnswer.question_label == 'additionalDeliveryComments') {

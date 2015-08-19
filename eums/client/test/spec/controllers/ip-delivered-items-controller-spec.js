@@ -242,6 +242,133 @@ describe('IP Delivered Items Controller', function () {
             expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
         });
 
+        it('should disable fields and set values when item received is set to No', function() {
+           initializeController();
+            scope.$apply();
+
+            scope.combinedDeliveryNodes = [
+                {
+                    id: 1,
+                    "answers": [
+                        {
+                            "question_label": "itemReceived",
+                            "text": "Was the item received?",
+                            "value": "No",
+                            "position": 1,
+                            "type": "multipleChoice",
+                            "options": [
+                                "No",
+                                "Yes"
+                            ]
+                        },
+                        {
+                            "text": "How much was received?",
+                            "type": "numeric",
+                            "question_label": "amountReceived",
+                            "value": 4,
+                            "position": 2
+                        },
+                        {
+                            "question_label": "qualityOfProduct",
+                            "text": "What is the quality of the product?",
+                            "value": "Substandard",
+                            "position": 3,
+                            "type": "multipleChoice",
+                            "options": [
+                                "Incomplete",
+                                "Expired",
+                                "Substandard",
+                                "Damaged",
+                                "Good"
+                            ]
+                        },
+                        {
+                            "question_label": "satisfiedWithProduct",
+                            "text": "Are you satisfied with the product?",
+                            "value": "No",
+                            "position": 4,
+                            "type": "multipleChoice",
+                            "options": [
+                                "No",
+                                "Yes"
+                            ]
+                        },
+                        {
+                            "text": "Remarks",
+                            "type": "text",
+                            "question_label": "additionalDeliveryComments",
+                            "value": "2222222222",
+                            "position": 5
+                        }
+                    ]
+
+                }
+            ];
+
+            scope.$apply();
+
+            var changedDeliveryNodes = [
+                {
+                    id: 1,
+                    answers: [
+                        {
+                            "question_label": "itemReceived",
+                            "text": "Was the item received?",
+                            "value": "No",
+                            "position": 1,
+                            "type": "multipleChoice",
+                            "options": [
+                                "No",
+                                "Yes"
+                            ]
+                        },
+                        {
+                            "text": "How much was received?",
+                            "type": "numeric",
+                            "question_label": "amountReceived",
+                            "value": 0,
+                            "position": 2
+                        },
+                        {
+                            "question_label": "qualityOfProduct",
+                            "text": "What is the quality of the product?",
+                            "value": "Incomplete",
+                            "position": 3,
+                            "type": "multipleChoice",
+                            "options": [
+                                "Incomplete",
+                                "Expired",
+                                "Substandard",
+                                "Damaged",
+                                "Good"
+                            ]
+                        },
+                        {
+                            "question_label": "satisfiedWithProduct",
+                            "text": "Are you satisfied with the product?",
+                            "value": "No",
+                            "position": 4,
+                            "type": "multipleChoice",
+                            "options": [
+                                "No",
+                                "Yes"
+                            ]
+                        },
+                        {
+                            "text": "Remarks",
+                            "type": "text",
+                            "question_label": "additionalDeliveryComments",
+                            "value": "2222222222",
+                            "position": 5
+                        }
+                    ]
+                }
+            ];
+
+            expect(scope.combinedDeliveryNodes).toEqual(changedDeliveryNodes);
+
+        });
+
         describe('validations', function () {
             it('should set can save answer to false when a value is not set', function () {
                 initializeController();
