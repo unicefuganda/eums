@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
+from eums.api.alert.alert_endpoint import AlertResponses
 
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
     NodeResponses, AllIPResponses
@@ -96,6 +97,8 @@ urlpatterns = patterns(
     url(r'^api/', include(releaseOrderItemRouter.urls)),
     url(r'^api/', include(questionRouter.urls)),
     url(r'^api/', include(consignee_items_router.urls)),
+    url(r'^api/', include(consignee_items_router.urls)),
+    url(r'^api/alert', AlertResponses.as_view()),
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
