@@ -1,4 +1,4 @@
-angular.module('IpDeliveriesForItem', [])
+angular.module('IpDeliveriesForItem', ['DeliveryNode'])
     .controller('IpDeliveriesForItemController', function ($scope, DeliveryNodeService, $routeParams) {
         $scope.deliveryNodes = [];
 

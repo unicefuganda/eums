@@ -16,7 +16,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
-    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveryItems'])
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveryItems', 'IpDeliveriesForItem'])
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -216,7 +216,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             controller: 'IpItemsController'
         })
         .when('/deliveries-for-item/:itemId', {
-            templateUrl: '/static/app/views/delivery/ip-delivery/deliveries-for-item.html',
+            templateUrl: '/static/app/views/delivery/ip-delivery/ip-deliveries-for-item.html',
             controller: 'IpDeliveriesForItemController',
             resolve: {
                 permission: function (UserService) {

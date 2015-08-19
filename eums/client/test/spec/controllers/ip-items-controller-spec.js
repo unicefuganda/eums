@@ -78,6 +78,6 @@ describe('IP Items Controller', function () {
     it('should change location to deliveries for item page', function(){
         var item = items[0];
         scope.view(item);
-        expect(location.path).toHaveBeenCalledWith('/deliveries-for-item/%' % item.id);
+        expect(location.path).toHaveBeenCalledWith('/deliveries-for-item/'+ item.id);
     });
 });
