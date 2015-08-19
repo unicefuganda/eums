@@ -1,4 +1,4 @@
-from django.test import TestCase
+from unittest import TestCase
 
 from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
     MultipleChoiceQuestion, Run, Flow, Option
