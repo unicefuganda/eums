@@ -6,6 +6,7 @@ from eums.models import TextAnswer
 from eums.models import MultipleChoiceAnswer
 from eums.fixtures.end_user_questions import *
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 
@@ -83,13 +84,21 @@ DistributionReport.objects.create(total_distributed=80, total_not_received=67, c
                                   total_received=100, programme=programme_3)
 
 # WEB RUNS
-was_item_received = MultipleChoiceQuestion.objects.get(flow=Flow.objects.get(for_runnable_type='WEB'),
-                                                       label='itemReceived')
+web_flow = Flow.objects.get(for_runnable_type='WEB')
+was_item_received = MultipleChoiceQuestion.objects.get(flow=web_flow, label='itemReceived')
 yes = Option.objects.get(question=was_item_received, text='Yes')
+
 wakiso = Consignee.objects.get(name='WAKISO DHO')
-MultipleChoiceAnswerFactory(question=was_item_received, value=yes,
-                            run=RunFactory(runnable=DeliveryNodeFactory(consignee=wakiso)))
-MultipleChoiceAnswerFactory(question=was_item_received, value=yes,
-                            run=RunFactory(runnable=DeliveryNodeFactory(consignee=wakiso)))
-MultipleChoiceAnswerFactory(question=was_item_received, value=yes,
-                            run=RunFactory(runnable=DeliveryNodeFactory(consignee=wakiso)))
+plan = DeliveryFactory()
+wakiso_node_1 = DeliveryNodeFactory(consignee=wakiso, item=po_item_1, quantity=100, distribution_plan=plan)
+wakiso_node_2 = DeliveryNodeFactory(consignee=wakiso, item=po_item_2, quantity=60, distribution_plan=plan)
+wakiso_node_3 = DeliveryNodeFactory(consignee=wakiso, item=po_item_3, quantity=300, distribution_plan=plan)
+
+MultipleChoiceAnswerFactory(question=was_item_received, value=yes, run=RunFactory(runnable=wakiso_node_1))
+MultipleChoiceAnswerFactory(question=was_item_received, value=yes, run=RunFactory(runnable=wakiso_node_2))
+MultipleChoiceAnswerFactory(question=was_item_received, value=yes, run=RunFactory(runnable=wakiso_node_3))
+
+# item deliveries made by wakiso
+DeliveryNodeFactory(parents=[(wakiso_node_1, 60)], tree_position="END_USER", item=po_item_1, distribution_plan=plan)
+DeliveryNodeFactory(parents=[(wakiso_node_1, 40)], tree_position="MIDDLE_MAN", item=po_item_1, distribution_plan=plan)
+DeliveryNodeFactory(parents=[(wakiso_node_2, 58)], tree_position="END_USER", item=po_item_2, distribution_plan=plan)
