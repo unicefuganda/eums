@@ -78,14 +78,14 @@ describe('Release Order Item Service', function () {
             id: releaseOrderItemId,
             itemId: itemId,
             itemNumber: 10,
-            purchaseOrderItem: stubPurchaseOrderItem,
+            purchaseOrderItem: 1,
             quantity: quantity,
             value: value
         };
 
         mockBackend.whenGET(endpointUrl + releaseOrderItemId + '/').respond(stubReleaseOrderItem);
         mockBackend.whenGET(purchaseOrderItemEndpointUrl + stubPurchaseOrderItem.id + '/').respond(stubPurchaseOrderItem);
-        releaseOrderItemService.get(releaseOrderItemId, ['purchase_order_item']).then(function (releaseOrderItem) {
+        releaseOrderItemService.get(releaseOrderItemId).then(function (releaseOrderItem) {
             expect(releaseOrderItem).toEqual(expectedReleaseOrderItem);
             done();
         });

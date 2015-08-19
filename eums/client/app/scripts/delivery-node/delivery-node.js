@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.service-factory'])
+angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.service-factory', 'ReleaseOrderItem'])
     .factory('DeliveryNode', function () {
         return function (json) {
             !json && (json = {});
@@ -60,14 +60,17 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.balance = json.balance;
         };
     })
-    .factory('DeliveryNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
+    .factory('DeliveryNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService,
+                                              ServiceFactory, DeliveryNode, PurchaseOrderItemService,
+                                              ReleaseOrderItemService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
             propertyServiceMap: {
                 consignee: ConsigneeService,
                 contact_person_id: ContactService,
                 children: 'self',
-                item: PurchaseOrderItemService
+                item: PurchaseOrderItemService,
+                release_order_item: ReleaseOrderItemService
             },
             model: DeliveryNode,
             methods: {

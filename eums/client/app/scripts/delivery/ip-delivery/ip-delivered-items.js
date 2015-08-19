@@ -90,7 +90,8 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
                     $scope.activeDelivery = delivery;
                 })
                 .then(function () {
-                    DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id}, ['item.item'])
+                    var item = $scope.activeDelivery.type == 'Purchase Order' ? 'item.item' : 'release_order_item.item';
+                    DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id}, [item])
                         .then(function (nodes) {
                             $scope.deliveryNodes = nodes;
                         })

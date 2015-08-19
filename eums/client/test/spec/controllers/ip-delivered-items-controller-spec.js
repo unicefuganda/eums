@@ -31,7 +31,8 @@ describe('IP Delivered Items Controller', function () {
         deliveryDate: '2015-01-02',
         remark: 'some remarks',
         totalValue: 6000,
-        distributionplannodeSet: deliveryNodes
+        distributionplannodeSet: deliveryNodes,
+        type: 'Purchase Order'
     };
 
     var firstNodeAnswers = [
@@ -156,7 +157,28 @@ describe('IP Delivered Items Controller', function () {
             expect(mockDeliveryService.get).toHaveBeenCalledWith(1);
             expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1}, ['item.item']);
             expect(scope.shipmentDate).toBe('2015-01-02');
-            expect(scope.totalValue).toBe(6000);
+            expect(scope.totalValue).toBe(6000)
+        });
+
+        it('should call the ReleaseOrderItemService when delivery is a warehouse delivery', function () {
+            var warehouseDelivery = {
+                id: 1,
+                location: 'Kampala',
+                consignee: {id: 10},
+                track: true,
+                deliveryDate: '2015-01-02',
+                remark: 'some remarks',
+                totalValue: 6000,
+                distributionplannodeSet: deliveryNodes,
+                type: 'Waybill'
+            };
+            mockDeliveryService.get.and.returnValue(q.when(warehouseDelivery));
+
+            initializeController();
+            scope.$apply();
+
+            expect(mockDeliveryService.get).toHaveBeenCalledWith(1);
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1}, ['release_order_item.item']);
         });
 
         it('should get all the answers for all nodes belonging to a delivery', function () {
