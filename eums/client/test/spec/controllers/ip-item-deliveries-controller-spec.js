@@ -1,5 +1,5 @@
 describe('Ip item deliveries', function () {
-    var scope, mockDeliveryNodeService;
+    var scope, mockDeliveryNodeService, mockItemService;
     var node = {
         'id': 34,
         'distribution_plan': 33,
@@ -18,21 +18,26 @@ describe('Ip item deliveries', function () {
         'has_children': 'False'
     };
     var nodes = {results: [node]};
+    var fetchedItem = {id: 1, description: 'Some name', unit: 1};
 
     beforeEach(function () {
         module('IpItemDeliveries');
 
         mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['filter']);
+        mockItemService = jasmine.createSpyObj('ItemService', ['get']);
+
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
             var routeParams = {itemId: 2};
 
             mockDeliveryNodeService.filter.and.returnValue($q.when(nodes));
+            mockItemService.get.and.returnValue($q.when(fetchedItem));
 
             $controller('IpItemDeliveriesController', {
                 $scope: scope,
                 DeliveryNodeService: mockDeliveryNodeService,
-                $routeParams: routeParams
+                $routeParams: routeParams,
+                ItemService: mockItemService
             });
         });
     });
@@ -41,5 +46,10 @@ describe('Ip item deliveries', function () {
         scope.$apply();
         expect(scope.deliveryNodes.length).toBe(1);
         expect(scope.deliveryNodes).toContain(node);
-    })
+    });
+
+    it('should fetch item details and put them on scope', function () {
+        scope.$apply();
+        expect(scope.item).toEqual(fetchedItem);
+    });
 });
