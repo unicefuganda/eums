@@ -2,103 +2,124 @@
     <div class="eums page-header">Itemized Confirmation for {{activeDelivery.type}} {{activeDelivery.number}}</div>
 </div>
 
-<div>
-    <table si-table class="table table-bordered table-hover table-striped table-condensed">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th class="left-aligned">Item Description</th>
-            <th class="left-aligned">Qty Shipped</th>
-            <th class="left-aligned">Item Received</th>
-            <th class="left-aligned">Qty Received</th>
-            <th class="left-aligned">Condition</th>
-            <th class="left-aligned">Satisfied</th>
-            <th class="left-aligned">Remarks</th>
-            <th></th>
-        </tr>
-        </thead>
+<div class="container-fluid margin-top-50">
+    <div class="pad-10 well col-lg-7 pull-right margin-bottom-50">
+        <div class="col-lg-6 no-side-padding">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="label label-success label-as-badge">{{ activeDelivery.deliveryDate}}</span>
+                    Shipment Date
+                </li>
+            </ul>
+        </div>
+        <div class="col-lg-6 no-side-padding">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="label label-success label-as-badge">{{ activeDelivery.totalValue | currency }}</span>
+                    Total Value
+                </li>
+            </ul>
+        </div>
+    </div>
 
-        <tbody>
-        <tr ng-repeat="($index, node) in combinedDeliveryNodes">
-            <td class="centered v-align-middle">{{ $index + 1 }}</td>
-            <td class="v-align-middle">{{ node.item.item.description }}</td>
-            <td class="v-align-middle">{{ node.quantityIn }}</td>
-            <td class="v-align-middle">
-                <select data-ng-model="node.answers[0].value"
-                        required="required"
-                        class="form-control"
-                        ng-options="option for option in node.answers[0].options ">
-                    <option>Select</option>
-                </select>
-            </td>
-            <td class="v-align-middle">
-                <input type="text"
-                       data-ng-model="node.answers[1].value"/>
-            </td>
-            <td class="v-align-middle">
-                <select data-ng-model="node.answers[2].value"
-                        required="required"
-                        class="form-control"
-                        ng-options="option for option in node.answers[2].options ">
-                    <option>Select</option>
-                </select>
-            </td>
-            <td class="v-align-middle">
-                <select data-ng-model="node.answers[3].value"
-                        required="required"
-                        class="form-control"
-                        ng-options="option for option in node.answers[3].options ">
-                    <option>Select</option>
-                </select>
-            </td>
-            <td class="v-align-middle">
-                <div class="text-center">
-                    <button class="btn btn-default glyphicon glyphicon-list-alt"
-                            title="Remark"
-                            ng-click="addRemark($index)">
-                    </button>
-                </div>
-                <div class="modal fade" id="{{$index}}-add-remark-answer-modal">
-                    <div class="modal-dialog">
-                        <div class="modal-content col-md-offset-3 col-md-6">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal"><span
-                                        aria-hidden="true">&times;</span><span
-                                        class="sr-only">Close</span></button>
-                                <h4 class="modal-title">Remarks</h4>
-                            </div>
-                            <div class="modal-body">
+    <div>
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th class="left-aligned">Item Description</th>
+                <th class="left-aligned">Qty Shipped</th>
+                <th class="left-aligned">Item Received</th>
+                <th class="left-aligned">Qty Received</th>
+                <th class="left-aligned">Condition</th>
+                <th class="left-aligned">Satisfied</th>
+                <th class="left-aligned">Remarks</th>
+            </tr>
+            </thead>
 
-                                <form role="form">
-                                    <div class="form-group">
+            <tbody>
+            <tr ng-repeat="($index, node) in combinedDeliveryNodes">
+                <td class="centered v-align-middle">{{ $index + 1 }}</td>
+                <td class="v-align-middle">{{ node.item.item.description }}</td>
+                <td class="v-align-middle">{{ node.quantityIn }}</td>
+                <td class="v-align-middle">
+                    <select data-ng-model="node.answers[0].value"
+                            required="required"
+                            class="form-control"
+                            ng-options="option for option in node.answers[0].options ">
+                        <option>Select</option>
+                    </select>
+                </td>
+                <td class="v-align-middle">
+                    <input type="text"
+                           data-ng-model="node.answers[1].value"/>
+                </td>
+                <td class="v-align-middle">
+                    <select data-ng-model="node.answers[2].value"
+                            required="required"
+                            class="form-control"
+                            ng-options="option for option in node.answers[2].options ">
+                        <option>Select</option>
+                    </select>
+                </td>
+                <td class="v-align-middle">
+                    <select data-ng-model="node.answers[3].value"
+                            required="required"
+                            class="form-control"
+                            ng-options="option for option in node.answers[3].options ">
+                        <option>Select</option>
+                    </select>
+                </td>
+                <td class="v-align-middle">
+                    <div class="text-center">
+                        <button class="btn btn-default glyphicon glyphicon-list-alt"
+                                title="Remark"
+                                ng-click="addRemark($index)">
+                        </button>
+                    </div>
+                    <div class="modal fade" id="{{$index}}-add-remark-answer-modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content col-md-offset-3 col-md-6">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span
+                                            aria-hidden="true">&times;</span><span
+                                            class="sr-only">Close</span></button>
+                                    <h4 class="modal-title">Remarks</h4>
+                                </div>
+                                <div class="modal-body">
+
+                                    <form role="form">
+                                        <div class="form-group">
                                         <textarea class="form-control"
                                                   ng-model="node.answers[4].value"
                                                   required rows="6">
                                         </textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary"
-                                        data-dismiss="modal">OK
-                                </button>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary"
+                                            data-dismiss="modal">OK
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </td>
-        </tr>
-        </tbody>
+                </td>
+            </tr>
+            </tbody>
 
-    </table>
-</div>
-<div class="pull-right">
-    <button id="saveBtn"
-            type="button"
-            class="btn btn-primary"
-            ng-disabled="!areValidAnswers"
-            ng-click="saveAnswers()">
-        <i class="glyphicon glyphicon-floppy-save"> </i>
-        Save & Confirm
-    </button>
+        </table>
+    </div>
+
+    <div class="pull-right">
+        <button id="saveBtn"
+                type="button"
+                class="btn btn-primary"
+                ng-disabled="!areValidAnswers"
+                ng-click="saveAnswers()">
+            <i class="glyphicon glyphicon-floppy-save"> </i>
+            Save & Confirm
+        </button>
+    </div>
 </div>
