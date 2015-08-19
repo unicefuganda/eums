@@ -37,6 +37,13 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         SalesOrder.objects.all().delete()
         DistributionPlan.objects.all().delete()
 
+    def test_should_add_consignee_name_accessor_to_delivery_nodes_fetched_from_endpoint(self):
+        consignee_name = 'WAKISO DHO'
+        consignee = ConsigneeFactory(name=consignee_name)
+        DeliveryNodeFactory(consignee=consignee)
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.data[0]['consignee_name'], consignee_name)
+
     def test_should_filter_nodes_by_delivery(self):
         create_delivery = lambda node_id: DeliveryFactory(id=node_id)
         first_delivery = create_delivery(1)
