@@ -16,7 +16,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
-    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveryItems', 'IpDeliveriesForItem'])
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveryItems', 'IpDeliveriesForItem', 'Alerts'])
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -30,6 +30,10 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                     return UserService.checkUserPermission('auth.can_view_dashboard');
                 }
             }
+        })
+        .when('/alerts', {
+            templateUrl: '/static/app/views/alerts/alerts.html',
+            controller: 'AlertsController'
         })
         .when('/direct-delivery', {
             templateUrl: '/static/app/views/delivery/direct-delivery.html',
