@@ -1,5 +1,5 @@
 import json
-from eums.models import DistributionPlanNode, SalesOrder, DistributionPlan
+from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -56,7 +56,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         contact_person_id = '8541BD02-E862-48FD-952D-470445347DAE'
         DeliveryNodeFactory()
         node = DeliveryNodeFactory(contact_person_id=contact_person_id)
-        self.assertEqual(DistributionPlanNode.objects.count(), 2)
+        self.assertEqual(DeliveryNode.objects.count(), 2)
         response = self.client.get('%s?contact_person_id=%s' % (ENDPOINT_URL, contact_person_id))
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], node.id)
@@ -65,7 +65,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.node_details['quantity'] = 100
 
         response = self.client.post(ENDPOINT_URL, data=self.node_details)
-        node = DistributionPlanNode.objects.get(pk=response.data['id'])
+        node = DeliveryNode.objects.get(pk=response.data['id'])
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(node.quantity_in(), 100)
@@ -76,7 +76,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.node_details['parents'] = [{'id': node_one.id, 'quantity': 5}, {'id': node_two.id, 'quantity': 6}]
 
         response = self.client.post(ENDPOINT_URL, data=json.dumps(self.node_details), content_type='application/json')
-        node = DistributionPlanNode.objects.get(pk=response.data['id'])
+        node = DeliveryNode.objects.get(pk=response.data['id'])
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(node.quantity_in(), 11)
@@ -133,3 +133,16 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         node_ids = map(lambda node_dict: node_dict['id'], response.data['results'])
         self.assertItemsEqual([child_one.id, child_two.id], node_ids)
         self.assertNotIn(child_three.id, node_ids)
+
+    def test_should_return_deliveries_made_to_the_logged_in_consignee_if_consignee_item_filter_is_not_applied(self):
+        self.logout()
+        self.log_consignee_in(self.consignee)
+        consignee_node = DeliveryNodeFactory(consignee=self.consignee)
+        non_consignee_node = DeliveryNodeFactory()
+        response = self.client.get(ENDPOINT_URL)
+
+        node_ids = [node['id'] for node in response.data]
+        self.assertEqual(DeliveryNode.objects.count(), 2)
+        self.assertEqual(len(response.data), 1)
+        self.assertIn(consignee_node.id, node_ids)
+        self.assertNotIn(non_consignee_node.id, node_ids)

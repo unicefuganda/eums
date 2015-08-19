@@ -30,7 +30,9 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
         if user_profile:
             item_id = self.request.GET.get('consignee_deliveries_for_item')
-            return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id)
+            if item_id:
+                return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id)
+            return DeliveryNode.objects.filter(consignee=user_profile.consignee)
         return self.queryset._clone()
 
     def list(self, request, *args, **kwargs):
@@ -38,6 +40,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         if paginate != 'true':
             self.paginator.page_size = 0
         return super(DistributionPlanNodeViewSet, self).list(request, *args, **kwargs)
+
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)
