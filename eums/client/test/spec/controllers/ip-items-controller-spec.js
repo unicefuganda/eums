@@ -1,7 +1,7 @@
 describe('IP Items Controller', function () {
     var scope, q, mockConsigneeItemService, deferredSearchResults, location;
     var items = [{id: 1, Description: 'Plumpynut'}, {id: 1, Description: 'Books'}, {id: 1, Description: 'Shoes'}];
-    var paginated_items_response = {results: items, count: items.length, pageSize: 2};
+    var paginatedItemsResponse = {results: items, count: items.length, pageSize: 2};
     var searchResults = items.first(2);
 
     beforeEach(function () {
@@ -9,7 +9,7 @@ describe('IP Items Controller', function () {
         inject(function ($controller, $rootScope, $q, $location) {
             mockConsigneeItemService = jasmine.createSpyObj('mockConsigneeItemService', ['all', 'search']);
             deferredSearchResults = $q.defer();
-            mockConsigneeItemService.all.and.returnValue($q.when(paginated_items_response));
+            mockConsigneeItemService.all.and.returnValue($q.when(paginatedItemsResponse));
             mockConsigneeItemService.search.and.returnValue(deferredSearchResults.promise);
             location = $location;
             spyOn($location,'path').and.returnValue('fake location');
