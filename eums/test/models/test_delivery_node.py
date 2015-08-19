@@ -1,4 +1,4 @@
-from unittest import TestCase
+from django.test import TestCase
 from django.db import IntegrityError
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, Item, \
