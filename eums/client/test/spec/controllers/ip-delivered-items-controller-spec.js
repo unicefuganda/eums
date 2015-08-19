@@ -348,7 +348,7 @@ describe('IP Delivered Items Controller', function () {
                             "text": "How much was received?",
                             "type": "numeric",
                             "question_label": "amountReceived",
-                            "value": 0,
+                            "value": '0',
                             "position": 2
                         },
                         {
@@ -494,7 +494,29 @@ describe('IP Delivered Items Controller', function () {
                 expect(scope.areValidAnswers).toBe(false);
             });
 
-            it('should set can save answer to true when numeric value is valid', function () {
+            it('should set can save answer to false when numeric question has zero answer', function () {
+                initializeController();
+                scope.$apply();
+                scope.combinedDeliveryNodes = [
+                    {
+                        id: 1, answers: [
+                        {
+                            question_label: 'amountReceived',
+                            type: 'numeric',
+                            text: 'Amount received?',
+                            value: '0',
+                            options: [],
+                            position: 0
+                        }
+                    ]
+                    }
+                ];
+                scope.$apply();
+
+                expect(scope.areValidAnswers).toBe(true);
+            });
+
+            it('should set can save answer to true when numeric value is positive number', function () {
                 initializeController();
                 scope.$apply();
 

@@ -1,13 +1,19 @@
 <div class="container-fluid">
     <div class="eums page-header">Itemized Confirmation for {{activeDelivery.type}} {{activeDelivery.number}}</div>
 </div>
-
-<div class="container-fluid margin-top-50">
+<div class="container-fluid margin-top-20 pull-left">
+    <ul class="nav nav-pills" style="margin-top: 1em;">
+        <li role="presentation">
+            <a href="#/ip-deliveries" class="btn btn-default blue-border-button btn-xs">Back to Shipments</a>
+        </li>
+    </ul>
+</div>
+<div class="container-fluid margin-top-20">
     <div class="pad-10 well col-lg-7 pull-right margin-bottom-50">
         <div class="col-lg-6 no-side-padding">
             <ul class="list-group">
                 <li class="list-group-item">
-                    <span class="label label-success label-as-badge">{{ activeDelivery.deliveryDate}}</span>
+                    <span class="label label-success label-as-badge">{{ activeDelivery.deliveryDate | date : 'dd/MM/yyyy' }}</span>
                     Shipment Date
                 </li>
             </ul>
@@ -47,7 +53,7 @@
                             required="required"
                             class="form-control"
                             ng-options="option for option in node.answers[0].options ">
-                        <option>Select</option>
+                        <option value="">Select</option>
                     </select>
                 </td>
                 <td class="v-align-middle">
@@ -61,7 +67,7 @@
                             ng-disabled="node.answers[0].value == 'No'"
                             class="form-control"
                             ng-options="option for option in node.answers[2].options ">
-                        <option>Select</option>
+                        <option value="">Select</option>
                     </select>
                 </td>
                 <td class="v-align-middle">
@@ -70,7 +76,7 @@
                             ng-disabled="node.answers[0].value == 'No'"
                             class="form-control"
                             ng-options="option for option in node.answers[3].options ">
-                        <option>Select</option>
+                        <option value="">Select</option>
                     </select>
                 </td>
                 <td class="v-align-middle">

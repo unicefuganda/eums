@@ -29,7 +29,7 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
                 $scope.combinedDeliveryNodes.forEach(function (node) {
 
                     if (node.answers.first().value == 'No') {
-                        node.answers[1].value = 0;
+                        node.answers[1].value = '0';
                         node.answers[2].value = 'Incomplete';
                         node.answers[3].value = 'No';
                     }
@@ -56,9 +56,9 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
                     if (nodeAnswer.type == 'multipleChoice') {
                         isValid.add(nodeAnswer.options.indexOf(nodeAnswer.value) > -1);
                     } else if (nodeAnswer.type == 'text') {
-                        isValid.add(nodeAnswer.value != '');
+                        isValid.add(nodeAnswer.value !== '');
                     } else if (nodeAnswer.type == 'numeric') {
-                        isValid.add(!isNaN(nodeAnswer.value) && nodeAnswer.value != '' && nodeAnswer.value.valueOf() >= 0)
+                        isValid.add(!isNaN(nodeAnswer.value) && nodeAnswer.value !== '' && nodeAnswer.value.valueOf() >= 0)
                     }
                 }
             });
