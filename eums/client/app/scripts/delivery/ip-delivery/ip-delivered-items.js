@@ -1,5 +1,5 @@
-angular.module('IpDeliveryItems', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Delivery', 'DeliveryNode', 'Answer'])
-    .controller('IpDeliveryItemsController', function ($scope, $routeParams, $location, $q, LoaderService,
+angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Delivery', 'DeliveryNode', 'Answer'])
+    .controller('IpDeliveredItemsController', function ($scope, $routeParams, $location, $q, LoaderService,
                                                        DeliveryService, DeliveryNodeService, AnswerService) {
 
         $scope.activeDelivery = {};

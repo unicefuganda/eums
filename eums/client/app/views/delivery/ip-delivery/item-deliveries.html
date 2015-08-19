@@ -24,19 +24,17 @@
                 <th class="left-aligned">Consignee</th>
                 <th class="left-aligned">Contact Person</th>
                 <th class="left-aligned">District</th>
-                <th class="left-aligned"></th>
             </tr>
             </thead>
 
             <tbody>
             <tr ng-repeat="($index, node) in deliveryNodes">
                 <td class="centered v-align-middle">{{ $index + 1 }}</td>
-                <td class="v-align-middle">{{ node.quantity }}</td>
-                <td class="v-align-middle">{{ node.delivery_date }}</td>
-                <td class="v-align-middle">{{ node.consignee }}</td>
-                <td class="v-align-middle">{{ node.contact_person }}</td>
-                <td class="v-align-middle">{{ node.location }}</td>
-                <td class="v-align-middle"></td>
+                <td class="left-aligned">{{ node.quantity }}</td>
+                <td class="left-aligned">{{ node.delivery_date }}</td>
+                <td class="left-aligned">{{ node.consignee }}</td>
+                <td class="left-aligned">{{ node.contact_person }}</td>
+                <td class="left-aligned">{{ node.location }}</td>
             </tr>
             </tbody>
             <tfoot>
@@ -49,8 +47,7 @@
                 </td>
             </tr>
             </tfoot>
-
-            <span class="information message" ng-show="deliveryNodes.length == 0">There are no deliveries.</span>
         </table>
+        <span class="information message" ng-show="deliveryNodes.length == 0">There are no deliveries.</span>
     </div>
 </div>

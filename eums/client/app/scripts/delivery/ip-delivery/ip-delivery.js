@@ -51,7 +51,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             AnswerService.createWebAnswer($scope.activeDelivery, answers)
                 .then(function () {
                     if (_isDeliveryReceived(questionLabel, $scope.answers)) {
-                        $location.path('/ip-delivery-items/' + $scope.activeDelivery.id);
+                        $location.path('/ip-delivered-items/' + $scope.activeDelivery.id);
                     } else {
                         loadDeliveries();
                     }

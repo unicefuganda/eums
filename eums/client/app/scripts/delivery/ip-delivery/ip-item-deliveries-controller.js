@@ -1,5 +1,5 @@
-angular.module('IpDeliveriesForItem', ['DeliveryNode'])
-    .controller('IpDeliveriesForItemController', function ($scope, DeliveryNodeService, $routeParams) {
+angular.module('IpItemDeliveries', ['DeliveryNode'])
+    .controller('IpItemDeliveriesController', function ($scope, DeliveryNodeService, $routeParams) {
         $scope.deliveryNodes = [];
 
         if ($routeParams.itemId) {

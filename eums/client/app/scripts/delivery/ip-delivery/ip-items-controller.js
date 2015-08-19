@@ -32,7 +32,7 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
 
         $scope.view = function (item) {
             console.log('item', item);
-            $location.path('/deliveries-for-item/' + item.id)
+            $location.path('/item-deliveries/' + item.id);
         };
 
         function fetchItems() {

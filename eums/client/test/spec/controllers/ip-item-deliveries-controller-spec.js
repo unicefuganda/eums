@@ -1,4 +1,4 @@
-describe('Ip deliveries for item', function () {
+describe('Ip item deliveries', function () {
     var scope, mockDeliveryNodeService;
     var nodes = [{
         'id': 34,
@@ -18,7 +18,7 @@ describe('Ip deliveries for item', function () {
         'has_children': 'False'
     }];
     beforeEach(function () {
-        module('IpDeliveriesForItem');
+        module('IpItemDeliveries');
 
         mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['getDeliveriesForItem']);
         inject(function ($controller, $rootScope, $q) {
@@ -27,7 +27,7 @@ describe('Ip deliveries for item', function () {
             var result = $q.defer(), routeParams = {itemId: 2};
             result.resolve(nodes);
             mockDeliveryNodeService.getDeliveriesForItem.and.returnValue(result.promise);
-            $controller('IpDeliveriesForItemController', {
+            $controller('IpItemDeliveriesController', {
                 $scope: scope,
                 DeliveryNodeService: mockDeliveryNodeService,
                 $routeParams: routeParams

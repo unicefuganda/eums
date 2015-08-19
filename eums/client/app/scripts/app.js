@@ -17,6 +17,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'EndUserResponses', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
     'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveryItems', 'IpDeliveriesForItem', 'Alerts'])
+
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
@@ -206,9 +207,9 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/ip-delivery-items/:activeDeliveryId', {
-            templateUrl: '/static/app/views/delivery/ip-delivery/delivery-items.html',
-            controller: 'IpDeliveryItemsController',
+        .when('/ip-delivered-items/:activeDeliveryId', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/delivered-items.html',
+            controller: 'IpDeliveredItemsController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_distribution_plans');
@@ -219,9 +220,9 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             templateUrl: '/static/app/views/delivery/ip-items.html',
             controller: 'IpItemsController'
         })
-        .when('/deliveries-for-item/:itemId', {
-            templateUrl: '/static/app/views/delivery/ip-delivery/ip-deliveries-for-item.html',
-            controller: 'IpDeliveriesForItemController',
+        .when('/item-deliveries/:itemId', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/item-deliveries.html',
+            controller: 'IpItemDeliveriesController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_distribution_plans');

@@ -1,4 +1,4 @@
-describe('IP Delivery Items Controller', function () {
+describe('IP Delivered Items Controller', function () {
     var mockDeliveryService, scope, location, mockLoaderService, q,
         mockDeliveryNodeService, controller, mockAnswerService;
 
@@ -97,7 +97,7 @@ describe('IP Delivery Items Controller', function () {
         }];
 
     function initializeController() {
-        controller('IpDeliveryItemsController', {
+        controller('IpDeliveredItemsController', {
             $scope: scope,
             LoaderService: mockLoaderService,
             DeliveryService: mockDeliveryService,
@@ -108,10 +108,9 @@ describe('IP Delivery Items Controller', function () {
 
     beforeEach(function () {
 
-        module('IpDeliveryItems');
+        module('IpDeliveredItems');
 
-        inject(function ($controller, $rootScope, $location, $q,
-                         LoaderService, AnswerService, DeliveryService,
+        inject(function ($controller, $rootScope, $location, $q, LoaderService, AnswerService, DeliveryService,
                          DeliveryNodeService) {
             controller = $controller;
             scope = $rootScope.$new();
@@ -167,7 +166,7 @@ describe('IP Delivery Items Controller', function () {
         });
 
         it('should combine nodes and node answers belonging to a delivery', function () {
-           initializeController();
+            initializeController();
             scope.$apply();
 
             expect(scope.combinedDeliveryNodes).toEqual(combinedDeliveryNodes);
@@ -259,15 +258,16 @@ describe('IP Delivery Items Controller', function () {
                             value: '',
                             position: 1
                         }
-                    ]}
+                    ]
+                    }
                 ];
                 scope.$apply();
 
                 expect(scope.areValidAnswers).toBe(false);
             });
 
-            it('should set can save answer to false when numeric question has non positive answer', function(){
-               initializeController();
+            it('should set can save answer to false when numeric question has non positive answer', function () {
+                initializeController();
                 scope.$apply();
                 scope.combinedDeliveryNodes = [
                     {
@@ -390,7 +390,8 @@ describe('IP Delivery Items Controller', function () {
                             value: 10,
                             position: 1
                         }
-                    ]}
+                    ]
+                    }
                 ];
                 scope.$apply();
 
@@ -408,11 +409,12 @@ describe('IP Delivery Items Controller', function () {
                         {
                             question_label: 'additionalDeliveryComments',
                             type: 'text',
-                            text: 'Remarks' ,
+                            text: 'Remarks',
                             value: '',
                             position: 1
                         }
-                    ]}
+                    ]
+                    }
                 ];
                 scope.$apply();
 

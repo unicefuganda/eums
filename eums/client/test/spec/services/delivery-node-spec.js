@@ -227,7 +227,6 @@ describe('Distribution Plan Node Service', function () {
             done();
         });
         mockBackend.flush();
-    })
-
+    });
 });
 
