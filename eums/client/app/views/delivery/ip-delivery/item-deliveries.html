@@ -1,5 +1,6 @@
 <div class="container-fluid">
     <div class="eums page-header">Item: {{item.description}}</div>
+    <span class="well-sm"></span>
 
     <div class="row">
         <div class="col-xs-4 pull-right">
@@ -33,7 +34,9 @@
                 <td class="left-aligned">{{ node.quantityIn }}</td>
                 <td class="left-aligned">{{ node.deliveryDate }}</td>
                 <td class="left-aligned">{{ node.consigneeName }}</td>
-                <td ng-if="node.contactPerson" class="left-aligned">{{ node.contactPerson.firstName}} {{ node.contactPerson.lastName }}</td>
+                <td ng-if="node.contactPerson" class="left-aligned">{{ node.contactPerson.firstName}} {{
+                    node.contactPerson.lastName }}
+                </td>
                 <td ng-if="!node.contactPerson" class="left-aligned">Contact Not Found</td>
                 <td class="left-aligned">{{ node.location }}</td>
             </tr>
