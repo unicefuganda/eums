@@ -122,6 +122,7 @@ describe('IP Delivered Items Controller', function () {
             mockDeliveryNodeService = DeliveryNodeService;
 
             spyOn(mockLoaderService, 'showLoader');
+            spyOn(mockLoaderService, 'showModal');
             spyOn(mockLoaderService, 'hideLoader');
             spyOn(mockAnswerService, 'createWebAnswer');
             spyOn(mockDeliveryService, 'get');
@@ -178,7 +179,17 @@ describe('IP Delivered Items Controller', function () {
 
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
             expect(mockLoaderService.hideLoader.calls.count()).toBe(1);
-        })
+        });
+
+        it('should show the add remarks modal for a specific node when add remark button is clicked', function(){
+           initializeController();
+            scope.$apply();
+
+            scope.addRemark(1);
+            scope.$apply();
+
+            expect(mockLoaderService.showModal).toHaveBeenCalledWith('1-add-remark-answer-modal')
+        });
     });
 
     describe('on save', function () {

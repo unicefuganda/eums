@@ -51,8 +51,42 @@
                     <option>Select</option>
                 </select>
             </td>
-            <td class="v-align-middle"></td>
+            <td class="v-align-middle">
+                <div class="text-center">
+                    <button class="btn btn-default glyphicon glyphicon-list-alt"
+                            title="Remark"
+                            ng-click="addRemark($index)">
+                    </button>
+                </div>
+                <div class="modal fade" id="{{$index}}-add-remark-answer-modal">
+                    <div class="modal-dialog">
+                        <div class="modal-content col-md-offset-3 col-md-6">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span
+                                        aria-hidden="true">&times;</span><span
+                                        class="sr-only">Close</span></button>
+                                <h4 class="modal-title">Remarks</h4>
+                            </div>
+                            <div class="modal-body">
 
+                                <form role="form">
+                                    <div class="form-group">
+                                        <textarea class="form-control"
+                                                  ng-model="node.answers[4].value"
+                                                  required rows="6">
+                                        </textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary"
+                                        data-dismiss="modal">OK
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
         </tr>
         </tbody>
 

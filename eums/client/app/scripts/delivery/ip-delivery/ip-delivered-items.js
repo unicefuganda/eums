@@ -33,6 +33,11 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
             }
         }, true);
 
+        $scope.addRemark = function (index) {
+            var remarksModalId = index + '-add-remark-answer-modal';
+            LoaderService.showModal(remarksModalId)
+        };
+
         function _areValidAnswers(nodeAnswers) {
             var isValid = [];
             nodeAnswers.forEach(function (nodeAnswer) {
