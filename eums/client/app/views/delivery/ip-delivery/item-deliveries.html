@@ -1,20 +1,19 @@
 <div class="container-fluid">
     <div class="eums page-header">Item: {{item.description}}</div>
-    <span class="well-sm"></span>
 
-    <div class="row">
-        <div class="col-xs-4 pull-right">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon "
-                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by item description"/>
+    <div ng-if="deliveryNodes.length">
+        <span class="well-sm"></span>
+        <div class="row">
+            <div class="col-xs-4 pull-right">
+                <div class="inner-addon left-addon">
+                    <i class="glyphicon "
+                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                    <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                           placeholder="Search by Consignee or District"/>
+                </div>
             </div>
         </div>
-    </div>
-    <span class="well-sm"></span>
-
-    <div>
+        <span class="well-sm"></span>
 
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead>
@@ -34,8 +33,8 @@
                 <td class="left-aligned">{{ node.quantityIn }}</td>
                 <td class="left-aligned">{{ node.deliveryDate }}</td>
                 <td class="left-aligned">{{ node.consigneeName }}</td>
-                <td ng-if="node.contactPerson" class="left-aligned">{{ node.contactPerson.firstName}} {{
-                    node.contactPerson.lastName }}
+                <td ng-if="node.contactPerson" class="left-aligned">
+                    {{ node.contactPerson.firstName}} {{node.contactPerson.lastName }}
                 </td>
                 <td ng-if="!node.contactPerson" class="left-aligned">Contact Not Found</td>
                 <td class="left-aligned">{{ node.location }}</td>
@@ -52,6 +51,8 @@
             </tr>
             </tfoot>
         </table>
-        <span class="information message" ng-show="deliveryNodes.length == 0">There are no deliveries.</span>
     </div>
+    <h4 class="text-warning" ng-show="deliveryNodes.length == 0">
+        You have not made any deliveries for this item yet.
+    </h4>
 </div>
