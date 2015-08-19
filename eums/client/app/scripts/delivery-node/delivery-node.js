@@ -33,7 +33,6 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.deliveryDate = json.deliveryDate || '';
             this.quantityIn = json.quantityIn || 0;
             this.quantity = json.quantity;
-            this.quantityIn = json.quantityIn;
             this.contactPerson = json.contactPersonId || json.contactPerson;
             this.contactPersonId = json.contactPersonId || json.contactPerson;
             this.remark = json.remark || '';
@@ -45,6 +44,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.location = json.location;
             this.parent = json.parent;
             this.distributionPlan = json.distributionPlan;
+            this.consigneeName = json.consigneeName;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
@@ -78,9 +78,6 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                     return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
                         return response.data;
                     });
-                },
-                getDeliveriesForItem: function(itemId) {
-                    return this.filter({consignee_deliveries_for_item: itemId, paginate: true});
                 }
             }
         });

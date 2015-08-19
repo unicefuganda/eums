@@ -1,43 +1,11 @@
-describe('Distribution Plan Node Service', function () {
+describe('Delivery Node Service', function () {
 
     var planNodeService, mockConsigneeService, mockContactService, mockPurchaseOrderItemService;
     var mockBackend, q;
     var planNodeEndpointUrl;
     var nodeResponsesEndpointUrl;
 
-    var planNodeId = 1, childPlanNodeId = 2, consigneeId = 1, contactId = 1, itemId = 1;
-
-    var stubPlanNode = {
-        id: planNodeId,
-        parent: null,
-        distributionPlan: 1,
-        location: 'Kampala',
-        contact_person_id: contactId,
-        children: [2],
-        consignee: consigneeId,
-        item: itemId,
-        quantity: 10,
-        underCurrentSupplyPlan: false,
-        deliveryDate: '2014-02-23',
-        remark: 'In good condition',
-        track: true
-    };
-
-    var stubChildPlanNode = {
-        id: childPlanNodeId,
-        parent: null,
-        distributionPlan: 1,
-        location: 'Kampala',
-        contactPersonId: contactId,
-        children: null,
-        consignee: consigneeId,
-        item: itemId,
-        quantity: 10,
-        underCurrentSupplyPlan: false,
-        deliveryDate: '2014-02-23',
-        remark: 'In good condition',
-        track: true
-    };
+    var planNodeId = 1, consigneeId = 1, contactId = 1, itemId = 1;
 
     var fullConsignee = {
         id: consigneeId,
@@ -47,23 +15,6 @@ describe('Distribution Plan Node Service', function () {
     var fullContact = {
         id: contactId, firstName: 'Andrew',
         lastName: 'Mukiza', phone: '+234778945674'
-    };
-
-    var expectedPlanNode = {
-        id: planNodeId,
-        parent: null,
-        distributionPlan: 1,
-        location: 'Kampala',
-        contactPersonId: fullContact,
-        children: [stubChildPlanNode],
-        consignee: fullConsignee,
-        item: itemId,
-        quantity: 10,
-        underCurrentSupplyPlan: false,
-        deliveryDate: '2014-02-23',
-        remark: 'In good condition',
-        track: true,
-        contactPerson: fullContact
     };
 
     var expectedNodeResponse = {
@@ -202,20 +153,6 @@ describe('Distribution Plan Node Service', function () {
         mockBackend.whenGET(nodeResponsesEndpointUrl + planNodeId + '/').respond(expectedNodeResponse);
         planNodeService.getNodeResponse(planNodeId).then(function (returnedNodeResponse) {
             expect(returnedNodeResponse).toEqual(expectedNodeResponse);
-            done();
-        });
-        mockBackend.flush();
-    });
-
-    it('should get deliveries for item', function (done) {
-        var expectedNode = {id: 1, item: 1, deliveryDate: '2014-02-23'};
-        var expectedNodes = [expectedNode];
-        var url = planNodeEndpointUrl + '?consignee_deliveries_for_item=' + itemId + '&paginate=true';
-        mockBackend.whenGET(url).respond(expectedNodes);
-
-        planNodeService.getDeliveriesForItem(itemId).then(function (returnedNodes) {
-            expect(returnedNodes.length).toBe(1);
-            expect(returnedNodes.first()).toEqual(jasmine.objectContaining(expectedNode));
             done();
         });
         mockBackend.flush();

@@ -3,8 +3,10 @@ angular.module('IpItemDeliveries', ['DeliveryNode'])
         $scope.deliveryNodes = [];
 
         if ($routeParams.itemId) {
-            DeliveryNodeService.getDeliveriesForItem($routeParams.itemId).then(function (nodes) {
-                $scope.deliveryNodes = nodes;
+            var fieldsToBuild = ['contact_person_id'];
+            var filterFields = {consignee_deliveries_for_item: $routeParams.itemId, paginate: true};
+            DeliveryNodeService.filter(filterFields, fieldsToBuild).then(function (response) {
+                $scope.deliveryNodes = response.results;
             });
         }
     });

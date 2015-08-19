@@ -30,10 +30,11 @@
             <tbody>
             <tr ng-repeat="($index, node) in deliveryNodes">
                 <td class="centered v-align-middle">{{ $index + 1 }}</td>
-                <td class="left-aligned">{{ node.quantity }}</td>
-                <td class="left-aligned">{{ node.delivery_date }}</td>
-                <td class="left-aligned">{{ node.consignee }}</td>
-                <td class="left-aligned">{{ node.contact_person }}</td>
+                <td class="left-aligned">{{ node.quantityIn }}</td>
+                <td class="left-aligned">{{ node.deliveryDate }}</td>
+                <td class="left-aligned">{{ node.consigneeName }}</td>
+                <td ng-if="node.contactPerson" class="left-aligned">{{ node.contactPerson.firstName}} {{ node.contactPerson.lastName }}</td>
+                <td ng-if="!node.contactPerson" class="left-aligned">Contact Not Found</td>
                 <td class="left-aligned">{{ node.location }}</td>
             </tr>
             </tbody>

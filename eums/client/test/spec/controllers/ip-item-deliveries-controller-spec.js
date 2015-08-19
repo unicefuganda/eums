@@ -1,6 +1,6 @@
 describe('Ip item deliveries', function () {
     var scope, mockDeliveryNodeService;
-    var nodes = [{
+    var node = {
         'id': 34,
         'distribution_plan': 33,
         'location': 'Kampala',
@@ -16,28 +16,30 @@ describe('Ip item deliveries', function () {
         'quantity_out': 0,
         'balance': 5,
         'has_children': 'False'
-    }];
+    };
+    var nodes = {results: [node]};
+
     beforeEach(function () {
         module('IpItemDeliveries');
 
-        mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['getDeliveriesForItem']);
+        mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['filter']);
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
+            var routeParams = {itemId: 2};
 
-            var result = $q.defer(), routeParams = {itemId: 2};
-            result.resolve(nodes);
-            mockDeliveryNodeService.getDeliveriesForItem.and.returnValue(result.promise);
+            mockDeliveryNodeService.filter.and.returnValue($q.when(nodes));
+
             $controller('IpItemDeliveriesController', {
                 $scope: scope,
                 DeliveryNodeService: mockDeliveryNodeService,
                 $routeParams: routeParams
-            })
+            });
         });
     });
 
     it('should load deliveries on the scope.', function () {
         scope.$apply();
         expect(scope.deliveryNodes.length).toBe(1);
-        expect(scope.deliveryNodes).toContain(nodes[0]);
+        expect(scope.deliveryNodes).toContain(node);
     })
 });
