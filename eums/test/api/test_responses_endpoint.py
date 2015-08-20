@@ -108,10 +108,8 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEquals(len(response.data), 2)
-        self.assertEquals(expected_data_node_one, response.data[0])
-        self.assertEquals(expected_data_node_two, response.data[1])
-        self.assertDictContainsSubset(expected_data_node_one, response.data[0])
-        self.assertDictContainsSubset(expected_data_node_two, response.data[1])
+        self.assertIn(expected_data_node_one, response.data)
+        self.assertIn(expected_data_node_two, response.data)
 
     def test_should_provide_summary_data_from_all_end_user_node_responses(self):
         self.create_questions_and_items()

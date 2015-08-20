@@ -27,15 +27,6 @@ class ConsigneeItemViewSet(ModelViewSet):
             return ConsigneeItem.objects.filter(consignee=user_profile.consignee)
         return super(ConsigneeItemViewSet, self).get_queryset()
 
-    @detail_route()
-    def deliveries(self, *_, **kwargs):
-        consignee_item = ConsigneeItem.objects.get(pk=kwargs['pk'])
-        deliveries_by_consignee = DistributionPlanNode.objects.delivered_by_consignee(consignee_item.consignee,
-                                                                                      consignee_item.item)
-        page = self.paginate_queryset(deliveries_by_consignee)
-        delivery_node_serialiser = DistributionPlanNodeSerialiser(page, many=True)
-        return self.get_paginated_response(delivery_node_serialiser.data)
-
 
 consignee_items_router = DefaultRouter()
 consignee_items_router.register(r'consignee-item', ConsigneeItemViewSet)
