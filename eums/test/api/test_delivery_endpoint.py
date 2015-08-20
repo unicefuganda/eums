@@ -76,6 +76,13 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(response.data[0]['is_received'], True)
 
+    def test_should_provide_delivery_has_confirmed_from_api(self):
+        delivery = DeliveryFactory(confirmed=True)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['confirmed'], True)
+
     def test_should_filter_deliveries_by_tracked_for_ip(self):
         first_consignee = ConsigneeFactory()
         DeliveryFactory(consignee=first_consignee)

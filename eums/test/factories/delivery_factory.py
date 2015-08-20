@@ -17,3 +17,4 @@ class DeliveryFactory(factory.DjangoModelFactory):
     track = False
     delivery_date = datetime.today()
     remark = 'some remarks'
+    confirmed = False
