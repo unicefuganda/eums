@@ -54,7 +54,7 @@
             <tbody>
             <tr ng-repeat="delivery in deliveries | orderFilter: query:dateQuery:searchFields">
                 <td>
-                    <span ng-class="delivery.isReceived ?  'glyphicon glyphicon-ok text-success'
+                    <span ng-class="delivery.confirmed ?  'glyphicon glyphicon-ok text-success'
                      : 'glyphicon glyphicon-remove text-danger'"></span>
                 </td>
                 <td>{{ delivery.date | date : 'dd/MM/yyyy' }}</td>
@@ -65,7 +65,7 @@
                 <td>
                     <button ng-click="confirm(delivery)"
                             class="btn btn-default blue-border-button"
-                            ng-disabled="delivery.isReceived"
+                            ng-disabled="delivery.confirmed"
                             >
                         Confirm
                     </button>

@@ -243,7 +243,7 @@ describe('IP Delivered Items Controller', function () {
             expect(mockAnswerService.createWebAnswer.calls.count()).toBe(2);
         });
 
-        iit('should not send answers if answer to item received is no', function () {
+        it('should not send answers if answer to item received is no', function () {
             mockAnswerService.createWebAnswer.and.returnValue(q.when());
             initializeController();
             scope.$apply();
