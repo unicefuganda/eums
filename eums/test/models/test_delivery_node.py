@@ -277,11 +277,6 @@ class DeliveryNodeTest(TestCase):
         self.assertNotIn(non_consignee_child_node, returned_nodes)
         self.assertNotIn(non_item_child_node, returned_nodes)
 
-    def test_should_get_item_type(self):
-        item = ItemFactory()
-        node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item))
-        self.assertEqual(node_one.item_type(), 'PurchaseOrderItem')
-
     def clean_up(self):
         DistributionPlan.objects.all().delete()
         SalesOrder.objects.all().delete()
