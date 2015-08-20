@@ -1,5 +1,5 @@
 describe('Ip item deliveries', function () {
-    var scope, mockDeliveryNodeService, mockItemService, deferredSearchResults;
+    var scope, mockDeliveryNodeService, mockItemService, deferredSearchResults, mockConsigneeItemService;
     var node = {
         'id': 34,
         'distribution_plan': 33,
@@ -21,12 +21,14 @@ describe('Ip item deliveries', function () {
     var fetchedItem = {id: 1, description: 'Some name', unit: 1};
     var searchResults = [node];
     var allNodes = paginatedNodesResponse.results;
+    var fetched_consignee_items = {results: [{id: 2, availableBalance: 450}]};
 
     beforeEach(function () {
         module('IpItemDeliveries');
 
-        mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['filter', 'all', 'search']);
+        mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['filter', 'search']);
         mockItemService = jasmine.createSpyObj('ItemService', ['get']);
+        mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
 
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
@@ -34,15 +36,16 @@ describe('Ip item deliveries', function () {
             deferredSearchResults = $q.defer();
 
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedNodesResponse));
-            mockDeliveryNodeService.all.and.returnValue($q.when(paginatedNodesResponse));
-            mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise)
+            mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
             mockItemService.get.and.returnValue($q.when(fetchedItem));
+            mockConsigneeItemService.filter.and.returnValue($q.when(fetched_consignee_items));
 
             $controller('IpItemDeliveriesController', {
                 $scope: scope,
                 DeliveryNodeService: mockDeliveryNodeService,
                 $routeParams: routeParams,
-                ItemService: mockItemService
+                ItemService: mockItemService,
+                ConsigneeItemService: mockConsigneeItemService
             });
         });
     });
@@ -119,4 +122,10 @@ describe('Ip item deliveries', function () {
         scope.$apply();
         expect(scope.searching).toBe(false);
     });
+
+    it('should fetch consignee item details on load', function () {
+        scope.$apply();
+        expect(mockConsigneeItemService.filter).toHaveBeenCalledWith({item: 2});
+        expect(scope.quantityAvailable).toBe(450);
+    })
 });

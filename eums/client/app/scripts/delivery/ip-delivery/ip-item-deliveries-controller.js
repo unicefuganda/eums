@@ -1,11 +1,15 @@
 angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap'])
-    .controller('IpItemDeliveriesController', function ($scope, DeliveryNodeService, ItemService, $routeParams) {
+    .controller('IpItemDeliveriesController', function ($scope, DeliveryNodeService, ItemService, $routeParams, ConsigneeItemService) {
         $scope.deliveryNodes = [];
         $scope.searching = false;
 
         var itemId = $routeParams.itemId;
         ItemService.get(itemId).then(function (item) {
             $scope.item = item;
+        });
+
+        ConsigneeItemService.filter({item: itemId}).then(function(response){
+            $scope.quantityAvailable = response.results.first().availableBalance;
         });
 
         var fieldsToBuild = ['contact_person_id'];
@@ -42,7 +46,6 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap'])
         }
 
         function fetchNodes() {
-
             DeliveryNodeService.filter(filterFields, fieldsToBuild).then(function (response) {
                 setScopeDataFromResponse(response);
             });
