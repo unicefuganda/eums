@@ -19,6 +19,7 @@ class ConsigneeItemViewSet(ModelViewSet):
     queryset = ConsigneeItem.objects.all()
     serializer_class = ConsigneeItemSerialiser
     pagination_class = StandardResultsSetPagination
+    filter_fields = ('item',)
     search_fields = ('item__description',)
 
     def get_queryset(self):

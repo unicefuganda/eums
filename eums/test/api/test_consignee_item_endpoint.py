@@ -22,11 +22,11 @@ class ConsigneeItemEndpointTest(AuthenticatedAPITestCase):
         User.objects.all().delete()
         Item.objects.all().delete()
 
-    def test_should_paginate_items_list_on_request(self):
+    def test_should_paginate_items_list(self):
         ConsigneeItemFactory(consignee=self.consignee)
         ConsigneeItemFactory(consignee=self.consignee)
 
-        response = self.client.get('%s?paginate=true' % ENDPOINT_URL)
+        response = self.client.get(ENDPOINT_URL)
 
         self.assertIn('results', response.data)
         self.assertIn('count', response.data)
@@ -42,3 +42,15 @@ class ConsigneeItemEndpointTest(AuthenticatedAPITestCase):
         results = response.data['results']
         self.assertEqual(len(results), 1)
         self.assertIn(consignee_item.id, [consignee_item['id'] for consignee_item in results])
+
+    def test_should_filter_by_item_id(self):
+        item = ItemFactory()
+        consignee_item = ConsigneeItemFactory(item=item, consignee=self.consignee)
+        ConsigneeItemFactory(consignee=self.consignee)
+
+        response = self.client.get('%s?item=%d' % (ENDPOINT_URL, item.id))
+
+        consignee_items = response.data['results']
+        consignee_item_ids = [item['id'] for item in consignee_items]
+        self.assertEqual(len(consignee_items), 1)
+        self.assertIn(consignee_item.id, consignee_item_ids)
