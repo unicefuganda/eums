@@ -75,3 +75,6 @@ class DistributionPlanNode(Runnable):
 
     def __unicode__(self):
         return "%s %s %s %s" % (self.consignee.name, self.tree_position, str(self.distribution_plan), self.item)
+
+    def item_type(self):
+        return self.item.__class__.__name__

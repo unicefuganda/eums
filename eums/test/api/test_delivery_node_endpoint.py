@@ -27,7 +27,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
             'contact_person_id': '23FE8E64-A6B8-4BA5-A9E3-8535F355EA77',
             'item': self.item.id,
             'tree_position': self.END_USER_POSITION,
-            'delivery_date': '2015-02-02'
+            'delivery_date': '2015-02-02',
         }
 
     def tearDown(self):
