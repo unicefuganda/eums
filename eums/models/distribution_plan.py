@@ -11,6 +11,7 @@ from eums.models.programme import Programme
 class DistributionPlan(Runnable):
     programme = models.ForeignKey(Programme)
     date = models.DateField(auto_now=True)
+    confirmed = models.BooleanField(default=False, null=False)
 
     class Meta:
         app_label = 'eums'

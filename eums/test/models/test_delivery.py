@@ -40,10 +40,9 @@ class DeliveryTest(TestCase):
         self.clean_up()
 
     def test_should_have_all_expected_fields(self):
-        fields_in_plan = Delivery()._meta._name_map
-
-        for expected_field in ['programme_id']:
-            self.assertIn(expected_field, fields_in_plan)
+        delivery = DeliveryFactory()
+        for expected_field in ['programme', 'date', 'confirmed']:
+            self.assertTrue(hasattr(delivery, expected_field))
 
     def test_should_compute_total_value_delivered_from_order_item_values(self):
         self.assertEqual(self.delivery.total_value(), 280)
