@@ -1,53 +1,54 @@
 <ng-include src="'/static/app/views/delivery/partials/ip-delivery-header.html'"></ng-include>
 
 <div class="container-fluid">
-    <div ng-if="items.length">
-        <div class="row">
-            <div class="col-xs-4 pull-right">
-                <div class="inner-addon left-addon">
-                    <i class="glyphicon "
-                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                    <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                           placeholder="Search by item description"/>
-                </div>
+    <div class="row" ng-hide="!items.length && !searchTerm.length">
+        <div class="col-xs-4 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon "
+                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                       placeholder="Search by item description"/>
+                <span class="text-info" ng-show="searchTerm.length && !items.length">
+                    There are no matches to your search criteria.
+                </span>
             </div>
         </div>
-        <span class="well-sm"></span>
-
-        <table si-table class="table table-bordered table-hover table-striped table-condensed">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th class="left-aligned">Item Description</th>
-                <th class="left-aligned">Available Qty</th>
-                <th></th>
-            </tr>
-            </thead>
-
-            <tbody>
-            <tr ng-repeat="($index, item) in items">
-                <td class="centered v-align-middle">{{ $index + 1 }}</td>
-                <td class="v-align-middle">{{ item.itemDescription }}</td>
-                <td class="v-align-middle">{{ item.availableBalance }}</td>
-                <td class="v-align-middle">
-                    <button class="btn btn-sm btn-success" ng-click="view(item)">View</button>
-                    <button class="btn btn-sm btn-info" ng-click="reportOn(item)">Report</button>
-                </td>
-            </tr>
-            </tbody>
-            <tfoot>
-            <tr>
-                <td colspan="6" class="centered">
-                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                                items-per-page="pageSize">
-                    </pagination>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
     </div>
-    <span class="text-info" ng-show="false"> There are no matches to your search criteria. </span>
-    <h4 class="text-warning" ng-show="!items.length">There are no items delivered to you yet</h4>
+    <span class="well-sm"></span>
+
+    <table ng-if="items.length" si-table class="table table-bordered table-hover table-striped table-condensed">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th class="left-aligned">Item Description</th>
+            <th class="left-aligned">Available Qty</th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr ng-repeat="($index, item) in items">
+            <td class="centered v-align-middle">{{ $index + 1 }}</td>
+            <td class="v-align-middle">{{ item.itemDescription }}</td>
+            <td class="v-align-middle">{{ item.availableBalance }}</td>
+            <td class="v-align-middle">
+                <button class="btn btn-sm btn-success" ng-click="view(item)">View</button>
+                <button class="btn btn-sm btn-info" ng-click="reportOn(item)">Report</button>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="6" class="centered">
+                <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                            ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                            items-per-page="pageSize">
+                </pagination>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <h4 class="text-warning" ng-show="!items.length && !searchTerm.length">There are no items delivered to you yet</h4>
 </div>
 
