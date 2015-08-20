@@ -7,8 +7,8 @@ from eums.models import Runnable
 
 class Alert(models.Model):
 
-    ORDER_TYPES = Choices('waybill', 'purchase_order')
-    ISSUE_TYPES = Choices('not_received', 'bad_condition')
+    ORDER_TYPES = Choices(('waybill', 'Waybill'), ('purchase_order', 'Purchase Order'))
+    ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'))
 
     order_type = StatusField(choices_name='ORDER_TYPES')
     order_number = models.IntegerField(unique=True)
@@ -20,3 +20,9 @@ class Alert(models.Model):
     delivery_sender = models.ForeignKey(User, editable=False)
     created_on = models.DateField(auto_now_add=True)
     runnable = models.ForeignKey(Runnable)
+
+    def order_type_display_name(self):
+        return self.ORDER_TYPES[self.order_type]
+
+    def issue_display_name(self):
+        return self.ISSUE_TYPES[self.issue]
