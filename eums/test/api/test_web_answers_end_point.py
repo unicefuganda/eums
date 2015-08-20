@@ -1,5 +1,5 @@
 import json
-from mock import MagicMock
+from mock import MagicMock, patch
 from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
     NumericAnswer
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -73,6 +73,26 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(answer_for_delivery_order.value.text, 'Yes')
         self.assertEqual(answer_for_satisfaction.value.text, 'Yes')
         self.assertEqual(answer_for_additional_comments.value, good_comment)
+
+    @patch('eums.models.DistributionPlan.confirm')
+    def test_should_confirm_delivery_when_answers_are_saved(self, mock_confirm):
+        delivery = DeliveryFactory()
+        date_of_receipt = '10-10-2014'
+        good_comment = "All is good"
+
+        data = {
+            'runnable': delivery.id, 'answers': [
+                {'question_label': 'deliveryReceived', 'value': 'Yes'},
+                {'question_label': 'dateOfReceipt', 'value': date_of_receipt},
+                {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
+                {'question_label': 'areYouSatisfied', 'value': 'Yes'},
+                {'question_label': 'additionalDeliveryComments', 'value': good_comment}
+            ]}
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(mock_confirm.called)
 
     def test_should_cancel_existing_runs_when_saving_a_new_set_of_answers(self):
         delivery = DeliveryFactory()

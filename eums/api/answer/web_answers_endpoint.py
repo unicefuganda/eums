@@ -33,6 +33,8 @@ def save_answers(request):
             params = {'text': answer['value']}
             question.create_answer(params, run)
 
+    runnable.confirm()
+
     return Response(status=status.HTTP_201_CREATED)
 
 
