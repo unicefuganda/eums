@@ -243,6 +243,91 @@ describe('IP Delivered Items Controller', function () {
             expect(mockAnswerService.createWebAnswer.calls.count()).toBe(2);
         });
 
+        iit('should not send answers if answer to item received is no', function () {
+            mockAnswerService.createWebAnswer.and.returnValue(q.when());
+            initializeController();
+            scope.$apply();
+
+            var deliveryNode = {
+                id: 1,
+                "answers": [
+                    {
+                        "question_label": "itemReceived",
+                        "text": "Was the item received?",
+                        "value": "No",
+                        "position": 1,
+                        "type": "multipleChoice",
+                        "options": [
+                            "No",
+                            "Yes"
+                        ]
+                    },
+                    {
+                        "text": "How much was received?",
+                        "type": "numeric",
+                        "question_label": "amountReceived",
+                        "value": 4,
+                        "position": 2
+                    },
+                    {
+                        "question_label": "qualityOfProduct",
+                        "text": "What is the quality of the product?",
+                        "value": "Substandard",
+                        "position": 3,
+                        "type": "multipleChoice",
+                        "options": [
+                            "Incomplete",
+                            "Expired",
+                            "Substandard",
+                            "Damaged",
+                            "Good"
+                        ]
+                    },
+                    {
+                        "question_label": "satisfiedWithProduct",
+                        "text": "Are you satisfied with the product?",
+                        "value": "No",
+                        "position": 4,
+                        "type": "multipleChoice",
+                        "options": [
+                            "No",
+                            "Yes"
+                        ]
+                    },
+                    {
+                        "text": "Remarks",
+                        "type": "text",
+                        "question_label": "additionalDeliveryComments",
+                        "value": "2222222222",
+                        "position": 5
+                    }
+                ]
+
+            };
+
+            var expectedUsedAnswers = [
+                {
+                    "question_label": "itemReceived",
+                    "text": "Was the item received?",
+                    "value": "No",
+                    "position": 1,
+                    "type": "multipleChoice",
+                    "options": [
+                        "No",
+                        "Yes"
+                    ]
+                }
+            ];
+
+            scope.combinedDeliveryNodes = [deliveryNode];
+
+            scope.$apply();
+            scope.saveAnswers();
+            scope.$apply();
+            expect(location.path).toHaveBeenCalledWith('/ip-deliveries');
+            expect(mockAnswerService.createWebAnswer).toHaveBeenCalledWith(deliveryNode, expectedUsedAnswers);
+        });
+
         it('should navigate to the home page upon success', function () {
             mockAnswerService.createWebAnswer.and.returnValue(q.when());
             initializeController();
