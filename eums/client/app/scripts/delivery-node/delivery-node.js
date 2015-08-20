@@ -45,6 +45,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.parent = json.parent;
             this.distributionPlan = json.distributionPlan;
             this.consigneeName = json.consigneeName;
+            this.itemDescription = json.itemDescription;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
@@ -70,7 +71,6 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                 contact_person_id: ContactService,
                 children: 'self',
                 item: PurchaseOrderItemService,
-                release_order_item: ReleaseOrderItemService
             },
             model: DeliveryNode,
             methods: {

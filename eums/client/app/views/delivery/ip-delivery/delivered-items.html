@@ -46,7 +46,7 @@
             <tbody>
             <tr ng-repeat="($index, node) in combinedDeliveryNodes">
                 <td class="centered v-align-middle">{{ $index + 1 }}</td>
-                <td class="v-align-middle">{{ node.item.item.description }}</td>
+                <td class="v-align-middle">{{ node.itemDescription }}</td>
                 <td class="v-align-middle">{{ node.quantityIn }}</td>
                 <td class="v-align-middle">
                     <select data-ng-model="node.answers[0].value"
