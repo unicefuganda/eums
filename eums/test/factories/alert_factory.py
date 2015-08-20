@@ -13,7 +13,7 @@ class AlertFactory(factory.DjangoModelFactory):
     issue = Alert.ISSUE_TYPES.not_received
     is_resolved = False
     remarks = None
-    consignee_name = 'wakiso'
-    contact_name = 'john doe'
+    consignee_name = 'Wakiso DHO'
+    contact_name = 'John Doe'
     delivery_sender = factory.SubFactory(UserFactory)
     runnable = factory.SubFactory(RunnableFactory)

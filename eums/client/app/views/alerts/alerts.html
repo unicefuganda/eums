@@ -7,10 +7,10 @@
 
 <div class="container-fluid alerts-container">
     <div class="alert-row" ng-repeat="alert in alerts">
-        <span class="alerts-grey">21-08-2015</span>
-        <span class="alerts-bolder">Chris George</span>
-        reported <span class="alerts-bolder">Waybill {{ alert.waybill }}</span>
-        sent to <span class="alerts-bolder">Wakiso DHO</span>
+        <span class="alerts-grey">{{ alert.createdAt }}</span>
+        <span class="alerts-bolder">{{ alert.contactName }}</span>
+        reported <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
+        sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>
         as <span class="alerts-issue">{{ alert.issue }}</span>
     </div>
 </div>

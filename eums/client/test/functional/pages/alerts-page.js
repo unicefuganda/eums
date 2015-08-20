@@ -8,12 +8,7 @@ AlertsPage.prototype = Object.create({}, {
         waitForPageToLoad();
     }},
 
-    statusForWaybill: {
-        value: function (waybillNumber) {
-            return element.all(by.repeater('alert in alerts')).get(0).getText();
-        }},
-
-    resolutionForWaybill: { value: function (waybillNumber) { return false; }}
+    firstAlert: { get: function () { return element.all(by.repeater('alert in alerts')).get(0).getText(); }}
 });
 
 module.exports = new AlertsPage;
