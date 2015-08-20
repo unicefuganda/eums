@@ -7,7 +7,7 @@
 
 <div class="container-fluid alerts-container">
     <div class="alert-row" ng-repeat="alert in alerts">
-        <span class="alerts-grey">{{ alert.createdAt }}</span>
+        <span class="alerts-grey">{{ alert.createdOn }}</span>
         <span class="alerts-bolder">{{ alert.contactName }}</span>
         reported <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
         sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>

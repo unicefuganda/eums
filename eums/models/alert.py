@@ -18,5 +18,5 @@ class Alert(models.Model):
     consignee_name = models.CharField(max_length=255)
     contact_name = models.CharField(max_length=255)
     delivery_sender = models.ForeignKey(User, editable=False)
-    created_at = models.DateField(auto_now=True)
+    created_on = models.DateField(auto_now_add=True)
     runnable = models.ForeignKey(Runnable)

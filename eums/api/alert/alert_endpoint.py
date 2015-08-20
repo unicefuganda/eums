@@ -15,7 +15,7 @@ class AlertSerializer(serializers.ModelSerializer):
             'remarks',
             'consignee_name',
             'contact_name',
-            'created_at'
+            'created_on'
         )
 
 class AlertViewSet(ReadOnlyModelViewSet):
