@@ -24,7 +24,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     queryset = DeliveryNode.objects.all()
     serializer_class = DistributionPlanNodeSerialiser
     pagination_class = StandardResultsSetPagination
-    search_fields = ('location', 'consignee__name')
+    search_fields = ('location', 'consignee__name', 'delivery_date')
     filter_fields = ('consignee', 'item', 'distribution_plan', 'contact_person_id')
 
     def get_queryset(self):

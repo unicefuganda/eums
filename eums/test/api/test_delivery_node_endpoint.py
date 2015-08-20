@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -182,9 +183,19 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'Kape'))
 
         nodes = response.data
-        node_ids =  [node['id']  for node in nodes]
+        node_ids = [node['id'] for node in nodes]
 
         self.assertEqual(len(nodes), 1)
         self.assertItemsEqual([delivery_node.id], node_ids)
 
+    def test_should_search_nodes_by_date(self):
+        delivery_node = DeliveryNodeFactory(delivery_date=datetime(2014, 04, 14))
+        DeliveryNodeFactory(delivery_date=datetime(2015, 04, 23))
 
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, '2014-04'))
+
+        nodes = response.data
+        node_ids = [node['id'] for node in nodes]
+
+        self.assertEqual(len(nodes), 1)
+        self.assertItemsEqual([delivery_node.id], node_ids)

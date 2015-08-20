@@ -29,7 +29,7 @@
                 <i class="glyphicon"
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" ng-model="searchTerm"
-                       placeholder="Search by Consignee or District"/>
+                       placeholder="Search by Consignee, District or Date in format 'YYYY-MM-DD'"/>
                 <span class="text-info" ng-show="searchTerm.length && !deliveryNodes.length">
                     There are no matches to your search criteria.
                 </span>
