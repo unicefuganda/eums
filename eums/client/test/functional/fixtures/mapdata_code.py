@@ -1,10 +1,11 @@
 from eums.client.test.functional.fixtures.mapdata_runs import *
 from eums.client.test.functional.fixtures.mapdata_release_order_items import *
-from eums.models import DistributionReport
+from eums.models import DistributionReport, Alert
 from eums.models import NumericAnswer
 from eums.models import TextAnswer
 from eums.models import MultipleChoiceAnswer
 from eums.fixtures.end_user_questions import *
+from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -102,3 +103,7 @@ MultipleChoiceAnswerFactory(question=was_item_received, value=yes, run=RunFactor
 DeliveryNodeFactory(parents=[(wakiso_node_1, 60)], tree_position="END_USER", item=po_item_1, distribution_plan=plan)
 DeliveryNodeFactory(parents=[(wakiso_node_1, 40)], tree_position="MIDDLE_MAN", item=po_item_1, distribution_plan=plan)
 DeliveryNodeFactory(parents=[(wakiso_node_2, 58)], tree_position="END_USER", item=po_item_2, distribution_plan=plan)
+
+# alerts
+AlertFactory(order_type=Alert.ORDER_TYPES.waybill, order_number=123456, issue=Alert.ISSUE_TYPES.not_received)
+AlertFactory(order_type=Alert.ORDER_TYPES.purchase_order, order_number=654321, issue=Alert.ISSUE_TYPES.bad_condition)

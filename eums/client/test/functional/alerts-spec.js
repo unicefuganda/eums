@@ -12,7 +12,7 @@ describe('Alerts', function () {
     });
 
     it('should show alert for waybill that was not received', function () {
-        expect(alertsPage.statusForWaybill(72082647)).toContain('NOT RECEIVED');
+        expect(alertsPage.statusForWaybill(72082647)).toContain('NOT_RECEIVED');
         expect(alertsPage.resolutionForWaybill(72082647)).toBeFalsy();
     });
 });

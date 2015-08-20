@@ -24,6 +24,7 @@ from eums.models.purchase_order import PurchaseOrder
 from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
+from eums.models.alert import Alert
 
 __all__ = [
     'Consignee',
@@ -54,5 +55,6 @@ __all__ = [
     'DistributionReport',
     'UserProfile',
     'ConsigneeItem',
-    'PurchaseOrder'
+    'PurchaseOrder',
+    'Alert'
 ]
