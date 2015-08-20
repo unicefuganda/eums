@@ -1,5 +1,6 @@
 describe('Ip item deliveries', function () {
-    var scope, mockDeliveryNodeService, mockItemService, deferredSearchResults, mockConsigneeItemService;
+    var scope, mockDeliveryNodeService, mockItemService, deferredSearchResults, mockConsigneeItemService,
+        mockLoaderService;
     var node = {
         'id': 34,
         'distribution_plan': 33,
@@ -29,6 +30,7 @@ describe('Ip item deliveries', function () {
         mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['filter', 'search']);
         mockItemService = jasmine.createSpyObj('ItemService', ['get']);
         mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
+        mockLoaderService = jasmine.createSpyObj('LoaderService', ['showLoader', 'hideLoader']);
 
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
@@ -45,7 +47,8 @@ describe('Ip item deliveries', function () {
                 DeliveryNodeService: mockDeliveryNodeService,
                 $routeParams: routeParams,
                 ItemService: mockItemService,
-                ConsigneeItemService: mockConsigneeItemService
+                ConsigneeItemService: mockConsigneeItemService,
+                LoaderService: mockLoaderService
             });
         });
     });
@@ -127,5 +130,11 @@ describe('Ip item deliveries', function () {
         scope.$apply();
         expect(mockConsigneeItemService.filter).toHaveBeenCalledWith({item: 2});
         expect(scope.quantityAvailable).toBe(450);
+    });
+
+    it('should show loader while loading the paging at the start', function () {
+        scope.$apply();
+        expect(mockLoaderService.showLoader).toHaveBeenCalled();
+        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     })
 });
