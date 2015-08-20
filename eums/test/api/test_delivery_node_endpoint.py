@@ -160,3 +160,31 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertIn(consignee_node.id, node_ids)
         self.assertNotIn(non_consignee_node.id, node_ids)
+
+    def test_should_filter_nodes_by_location(self):
+        kagoma_one = DeliveryNodeFactory(location='Kagoma')
+        DeliveryNodeFactory(location='Kabaale')
+        kagoma_two = DeliveryNodeFactory(location='Kagoma')
+
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'Kag'))
+
+        nodes = response.data
+        node_ids = [node['id'] for node in nodes]
+        self.assertEqual(len(nodes), 2)
+        self.assertItemsEqual([kagoma_one.id, kagoma_two.id], node_ids)
+
+    def test_should_filter_nodes_by_consignee_name(self):
+        consignee = ConsigneeFactory(name='Kapere')
+        delivery_node = DeliveryNodeFactory(consignee=consignee)
+        DeliveryNodeFactory()
+        DeliveryNodeFactory()
+
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'Kape'))
+
+        nodes = response.data
+        node_ids =  [node['id']  for node in nodes]
+
+        self.assertEqual(len(nodes), 1)
+        self.assertItemsEqual([delivery_node.id], node_ids)
+
+
