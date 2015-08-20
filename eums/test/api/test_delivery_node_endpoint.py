@@ -44,6 +44,13 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.data[0]['consignee_name'], consignee_name)
 
+    def test_should_add_item_description_accessor_to_delivery_nodes_fetched_from_endpoint(self):
+        item_description = 'Plumpy Nut'
+        item = ItemFactory(description=item_description)
+        DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item))
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.data[0]['item_description'], item_description)
+
     def test_should_filter_nodes_by_delivery(self):
         create_delivery = lambda node_id: DeliveryFactory(id=node_id)
         first_delivery = create_delivery(1)
