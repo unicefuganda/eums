@@ -4,6 +4,7 @@ module.exports = function (grunt) {
 
     require('load-grunt-tasks')(grunt);
     require('time-grunt')(grunt);
+    var _ = require('lodash');
 
     // Configurable paths for the application
     var venvHome = grunt.option('venvHome') || '~/.virtualenvs/';
@@ -90,14 +91,32 @@ module.exports = function (grunt) {
             }
         },
 
+        bower_concat: {
+            all: {
+                dependencies: {
+                    'angular': ['jquery']
+                },
+                dest: '.tmp/js/vendor.min.js',
+                cssDest: '.tmp/css/vendor.min.css',
+                mainFiles: {
+                  'moment': 'min/moment.min.js'
+                },
+                callback: function (mainFiles) {
+                    return _.map(mainFiles, function (filepath) {
+                        var min = filepath.replace(/\.js$/, '.min.js');
+                        return grunt.file.exists(min) ? min : filepath;
+                    });
+                }
+            }
+        },
+
         uglify: {
             all: {
                 files: {
-                    '.tmp/js/app.min.js': ['app/scripts/**/*.js']
+                    '.tmp/js/app.min.js': ['app/scripts/**/*.js', '.tmp/config/config.js']
                 },
                 options: {
-                    mangle: false,
-                    beautify: true
+                    mangle: false
                 }
             }
         },
@@ -107,37 +126,43 @@ module.exports = function (grunt) {
             expand: true,
             cwd: '.tmp/js/',
             src: '**/*.js',
-            dest: 'dist/js/'
-          },
-          json: {
-            expand: true,
-            cwd: 'app/data/',
-            src: '**/*.json',
-            dest: 'dist/data/'
-          },
-          media: {
-            expand: true,
-            cwd: 'app/media/',
-            src: '**/*',
-            dest: 'dist/media/'
+            dest: 'dist/app/js/'
           },
           css: {
             expand: true,
             cwd: '.tmp/css/',
             src: '**/*.css',
-            dest: 'dist/css/'
+            dest: 'dist/app/css/'
+          },
+          json: {
+            expand: true,
+            cwd: 'app/data/',
+            src: '**/*.json',
+            dest: 'dist/app/data/'
+          },
+          media: {
+            expand: true,
+            cwd: 'app/media/',
+            src: '**/*',
+            dest: 'dist/app/media/'
+          },
+          fonts: {
+            expand: true,
+            cwd: 'bower_components/bootstrap/dist/fonts/',
+            src: '*',
+            dest: 'dist/app/fonts/'
+          },
+          select2: {
+            expand: true,
+            cwd: 'bower_components/select2/',
+            src: ['*.png', '*.gif'],
+            dest: 'dist/app/css/'
           },
           html: {
             expand: true,
             cwd: 'app/views/',
             src: '**/*.html',
-            dest: 'dist/views/'
-          },
-          vendor: {
-            expand: true,
-            cwd: 'bower_components/',
-            src: '**/*',
-            dest: 'dist/vendor/',
+            dest: 'dist/app/views/'
           },
           toDjango: {
             expand: true,
@@ -198,7 +223,7 @@ module.exports = function (grunt) {
                 quiet: Infinity
             },
             djangoServer: {
-                exec: 'python ../../manage.py runserver 0.0.0.0:9000 --settings=eums.test_settings'
+                exec: 'python ../manage.py runserver 0.0.0.0:9000 --settings=eums.test_settings'
             }
         },
 
@@ -240,21 +265,21 @@ module.exports = function (grunt) {
                 options: {
                     stderr: false,
                     execOptions: {
-                        cwd: '../..'
+                        cwd: '../'
                     }
                 }
             },
             seedData: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings',
+                command: 'python manage.py loaddata eums-client/test/functional/fixtures/user.json --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
-                        cwd: '../..'
+                        cwd: '../'
                     }
                 }
             },
             mapData: {
-                command: 'python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
+                command: 'python manage.py shell < eums-client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
                 options: {
                     stderr: true,
                     execOptions: {
@@ -267,7 +292,7 @@ module.exports = function (grunt) {
                 options: {
                     stderr: false,
                     execOptions: {
-                        cwd: '../..'
+                        cwd: '../'
                     }
                 }
             },
@@ -276,7 +301,7 @@ module.exports = function (grunt) {
                 options: {
                     stderr: false,
                     execOptions: {
-                        cwd: '../..'
+                        cwd: '../'
                     }
                 }
             },
@@ -286,10 +311,11 @@ module.exports = function (grunt) {
                 }
             }
         },
+
         ngconstant: {
             options: {
                 name: 'eums.config',
-                dest: 'app/scripts/config/config.js',
+                dest: '.tmp/config/config.js',
                 constants: {
                     EumsConfig: grunt.file.readJSON('config/development.json')
                 }
@@ -325,7 +351,7 @@ module.exports = function (grunt) {
 
     });
 
-    grunt.loadNpmTasks('grunt-contrib-less');
+//    grunt.loadNpmTasks('grunt-contrib-less');
 
     grunt.registerTask('serve', 'Compile then start a connect web server', function (target) {
         if (target === 'dist') {
@@ -377,23 +403,41 @@ module.exports = function (grunt) {
         'watchify:example'
     ]);
 
+    grunt.registerTask('copy:toDist', 'Copy to Dist', [
+      'copy:js',
+      'copy:css',
+      'copy:json',
+      'copy:html',
+      'copy:fonts',
+      'copy:select2',
+      'copy:media'
+    ]);
+
     grunt.registerTask('build', [
-        'clean:dist',
-        'ngconstant:dev',
-        'newer:uglify:all',
-        'less'
+      'clean:dist',
+      'ngconstant:dev',
+      'newer:uglify:all',
+      'less',
+      'bower_concat:all',
+      'copy:toDist'
     ]);
 
     grunt.registerTask('build-test', [
-        'clean:dist',
-        'ngconstant:test',
-        'newer:uglify:all',
-        'less'
+      'clean:dist',
+      'ngconstant:test',
+      'newer:uglify:all',
+      'less',
+      'bower_concat:all',
+      'copy:toDist'
+    ]);
+
+    grunt.registerTask('deploy:local', 'Build, Copy to Django', [
+      'build',
+      'copy:toDjango'
     ]);
 
     grunt.registerTask('prep-test-env', 'Prepare test environment before running tests', [
         'build-test',
-        'clean:server',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
@@ -417,19 +461,6 @@ module.exports = function (grunt) {
 
     grunt.registerTask('performance', [
         'protractor:performance'
-    ]);
-
-    grunt.registerTask('dist', 'Copy to Dist', [
-      'clean:dist',
-      'less',
-      'newer:uglify:all',
-      'copy:css',
-      'copy:js',
-      'copy:json',
-      'copy:html',
-      'copy:vendor',
-      'copy:media',
-      'copy:toDjango'
     ]);
 
     grunt.registerTask('default', [

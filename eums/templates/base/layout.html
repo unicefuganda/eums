@@ -3,16 +3,8 @@
 <head>
     <meta charset="utf-8">
     <title>SEUMS</title>
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/select2/select2.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/ng-table/ng-table.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/leaflet/dist/leaflet.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/ngtoast/dist/ngToast.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/angular-busy/dist/angular-busy.min.css">
-    <link rel="stylesheet"
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/tree-grid-directive/src/treeGrid.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/chosen/chosen.min.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}bower_components/angular-chosen-localytics/chosen-spinner.css">
-    <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/css/vendor.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}app/css/app.min.css">
     <link rel="icon" href="{{ STATIC_URL }}app/media/favicon.ico">
 </head>
 
@@ -20,7 +12,7 @@
 {% load generic_tags %}
 {% include "base/header.html" %}
 
-<div ng-view="" class="container-content full-page ng-scope">
+<div class="container-content full-page ng-scope">
     <div class="container-fluid">
         <div class="content">
             {% if messages %}
@@ -40,29 +32,6 @@
 </div>
 {% include "base/loading.html" %}
 
-<script src="{{ STATIC_URL }}app/media/lodash.js"></script>
-<script src="{{ STATIC_URL }}bower_components/jquery/dist/jquery.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular/angular.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-route/angular-route.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/ng-table/ng-table.js"></script>
-<script src="{{ STATIC_URL }}bower_components/si-table/dist/si-table.js"></script>
-<script src="{{ STATIC_URL }}bower_components/leaflet/dist/leaflet.js"></script>
-<script src="{{ STATIC_URL }}bower_components/select2/select2.js"></script>
-<script src="{{ STATIC_URL }}bower_components/moment/moment.js"></script>
-<script src="{{ STATIC_URL }}node_modules/moment-range/lib/moment-range.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-animate/angular-animate.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-sanitize/angular-sanitize.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/ngtoast/dist/ngToast.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-busy/dist/angular-busy.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/tree-grid-directive/src/tree-grid-directive.js"></script>
-<script src="{{ STATIC_URL }}bower_components/chosen/chosen.jquery.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-chosen-localytics/chosen.js"></script>
-<script src="{{ STATIC_URL }}bower_components/es5-shim/es5-shim.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/es5-shim/es5-sham.min.js"></script>
-<script src="{{ STATIC_URL }}bower_components/angular-file-upload/angular-file-upload.min.js"></script>
-<script src="{{ STATIC_URL }}dist/app.min.js"></script>
 {% block javascripts %}
 {% endblock %}
 </body>
