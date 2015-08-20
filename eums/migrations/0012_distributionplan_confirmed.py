@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0010_alert'),
+        ('eums', '0011_auto_20150820_1325'),
     ]
 
     operations = [
