@@ -3,13 +3,17 @@ from django.db import IntegrityError
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, Item, \
     Consignee
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
@@ -276,6 +280,26 @@ class DeliveryNodeTest(TestCase):
         self.assertItemsEqual([child_node_one, child_node_two], returned_nodes)
         self.assertNotIn(non_consignee_child_node, returned_nodes)
         self.assertNotIn(non_item_child_node, returned_nodes)
+
+    def test_should_confirm_delivery_from_node_when_all_nodes_in_delivery_are_answered(self):
+        delivery = DeliveryFactory()
+        node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery)
+
+        item_question = MultipleChoiceQuestionFactory(label='itemReceived')
+        option_one = OptionFactory(text='Yes', question=item_question)
+        option_two = OptionFactory(text='No', question=item_question)
+
+        node_one.confirm()
+        self.assertFalse(delivery.confirmed)
+
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_one), question=item_question, value=option_one)
+        node_one.confirm()
+        self.assertFalse(delivery.confirmed)
+
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_two), question=item_question, value=option_two)
+        node_one.confirm()
+        self.assertTrue(delivery.confirmed)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()

@@ -38,6 +38,21 @@ class DistributionPlan(Runnable):
 
         return True if delivery_answer and delivery_answer.value.text == 'Yes' and items_received else False
 
+    def _is_confirmed(self):
+        delivery_nodes = DistributionPlanNode.objects.filter(distribution_plan=self)
+        for node in delivery_nodes:
+            node_answers = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=node.id),
+                                                         Q(question__label='itemReceived'),
+                                                         ~ Q(run__status='cancelled'))
+            if not node_answers.exists():
+                return False
+        return True
+
+    def confirm(self):
+        if self._is_confirmed():
+            self.confirmed = True
+            self.save()
+
     @staticmethod
     def _has_received_all_items(delivery_nodes):
         node_answers = []

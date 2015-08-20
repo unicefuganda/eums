@@ -131,6 +131,26 @@ class DeliveryTest(TestCase):
 
         self.assertTrue(delivery.is_received())
 
+    def test_should_confirm_delivery_when_all_nodes_are_answered(self):
+        delivery = DeliveryFactory()
+        node_one = DeliveryNodeFactory(distribution_plan=delivery)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery)
+
+        item_question = MultipleChoiceQuestionFactory(label='itemReceived')
+        option_one = OptionFactory(text='Yes', question=item_question)
+        option_two = OptionFactory(text='No', question=item_question)
+
+        delivery.confirm()
+        self.assertFalse(delivery.confirmed)
+
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_one), question=item_question, value=option_one)
+        delivery.confirm()
+        self.assertFalse(delivery.confirmed)
+
+        MultipleChoiceAnswerFactory(run=RunFactory(runnable=node_two), question=item_question, value=option_two)
+        delivery.confirm()
+        self.assertTrue(delivery.confirmed)
+
     def test_should_mirror_delivery_tracked_status_on_all_nodes_when_tracked_status_changes_on_delivery(self):
         Delivery.objects.all().delete()
         delivery = DeliveryFactory(track=False)
