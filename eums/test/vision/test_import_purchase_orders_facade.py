@@ -285,10 +285,14 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.facade.save_records(self.updated_imported_purchase_order_data)
         self.assertEqual(PurchaseOrderItem.objects.count(), 3)
-        self.assertEqual(str(PurchaseOrder.objects.all()[0].date),
-                         self.updated_imported_purchase_order_data[0]['po_date'])
-        self.assertEqual(PurchaseOrder.objects.all()[0].po_type,
-                         self.updated_imported_purchase_order_data[0]['po_type'])
+
+        purchase_orders = PurchaseOrder.objects.all()
+
+        dates = [str(purchase_order.date) for purchase_order in purchase_orders]
+        self.assertIn(self.updated_imported_purchase_order_data[0]['po_date'], dates)
+
+        po_types = [purchase_order.po_type for purchase_order in purchase_orders]
+        self.assertIn(self.updated_imported_purchase_order_data[0]['po_type'], po_types)
 
     def test_should_update_existing_purchase_order_items_when_saving_only_matching_by_order_number(self):
         self.create_items()
