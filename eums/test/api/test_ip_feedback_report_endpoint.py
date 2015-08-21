@@ -1,4 +1,5 @@
-from eums.models import MultipleChoiceQuestion, TextQuestion, NumericAnswer, Flow, Runnable, NumericQuestion, TextAnswer, \
+from eums.models import MultipleChoiceQuestion, TextQuestion, NumericAnswer, Flow, Runnable, NumericQuestion, \
+    TextAnswer, \
     MultipleChoiceAnswer, Option, Run, DistributionPlan, DistributionPlanNode, Consignee, Programme, PurchaseOrderItem, \
     ReleaseOrderItem, PurchaseOrder, SalesOrder, Item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -10,9 +11,11 @@ from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
     NumericQuestionFactory
+from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
@@ -22,7 +25,6 @@ ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report/'
 
 
 class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
-
     def tearDown(self):
         MultipleChoiceQuestion.objects.all().delete()
         TextQuestion.objects.all().delete()
@@ -68,7 +70,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_should_return_items_and_all_their_answers(self):
-        delivery_one, node_one, purchase_order_item, _ = self.setup_nodes_with_answers()
+        delivery_one, node_one, purchase_order_item, _, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
@@ -76,27 +78,65 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, response.data[0])
         self.assertDictContainsSubset({'programme': delivery_one.programme.name}, response.data[0])
         self.assertDictContainsSubset({'consignee': node_one.consignee.name}, response.data[0])
-        self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, response.data[0])
+        self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number},
+                                      response.data[0])
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, response.data[0])
         self.assertEqual(len(response.data[0]['answers']), 5)
 
     def test_should_filter_answers_by_item_description(self):
-        _, _, _, release_order_item = self.setup_nodes_with_answers()
+        _, _, _, release_order_item, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?query=baba', content_type='application/json')
 
         self.assertEqual(len(response.data), 1)
         self.assertDictContainsSubset({'item_description': release_order_item.item.description}, response.data[0])
 
+    def test_should_filter_answers_by_programme_name(self):
+        delivery_one, _, _, _, _ = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?query=my%20first', content_type='application/json')
+
+        self.assertEqual(len(response.data), 1)
+        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, response.data[0])
+
+    def test_should_filter_answers_by_implementing_partner(self):
+        _, node_one, _, _, _ = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?query=consignee%20one', content_type='application/json')
+
+        self.assertEqual(len(response.data), 1)
+        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, response.data[0])
+
+    def test_should_filter_answers_by_purchase_order_number(self):
+        _, node_one, _, _, _ = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?query=329', content_type='application/json')
+
+        self.assertEqual(len(response.data), 1)
+        self.assertDictContainsSubset({'order_number': node_one.item.number()}, response.data[0])
+
+    def test_should_filter_answers_by_waybill(self):
+        _, _, _, _, node_two = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?query=5540', content_type='application/json')
+
+        self.assertEqual(len(response.data), 1)
+        self.assertDictContainsSubset({'order_number': node_two.item.number()}, response.data[0])
+
     def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True):
-        consignee = ConsigneeFactory()
-        programme = ProgrammeFactory()
-        purchase_order_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'))
-        release_order_item = ReleaseOrderItemFactory(item=ItemFactory(description='Baba bla bla'))
-        delivery_one = DeliveryFactory(programme=programme, track=track_delivery_one)
-        delivery_two = DeliveryFactory(programme=programme, track=track_delivery_two)
-        node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=consignee, item=purchase_order_item)
-        node_two = DeliveryNodeFactory(distribution_plan=delivery_two, consignee=consignee, item=release_order_item)
+        consignee_one = ConsigneeFactory(name='consignee one')
+        consignee_two = ConsigneeFactory(name='consignee two')
+        programme_one = ProgrammeFactory(name='my first programme')
+        programme_two = ProgrammeFactory(name='my second programme')
+        purchase_order_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'),
+                                                       purchase_order=PurchaseOrderFactory(order_number=329293))
+        release_order_item = ReleaseOrderItemFactory(item=ItemFactory(description='Baba bla bla'),
+                                                     release_order=ReleaseOrderFactory(waybill=5540322))
+        delivery_one = DeliveryFactory(programme=programme_one, track=track_delivery_one)
+        delivery_two = DeliveryFactory(programme=programme_two, track=track_delivery_two)
+        node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=consignee_one,
+                                       item=purchase_order_item)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery_two, consignee=consignee_two, item=release_order_item)
         flow = FlowFactory(for_runnable_type='WEB')
         question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
                                                    position=1)
@@ -121,4 +161,4 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         MultipleChoiceAnswerFactory(question=question_3, run=run_two, value=option_3)
         MultipleChoiceAnswerFactory(question=question_4, run=run_two, value=option_4)
         TextAnswerFactory(run=run_two, question=question_5, value='2013-12-12')
-        return delivery_one, node_one, purchase_order_item, release_order_item
+        return delivery_one, node_one, purchase_order_item, release_order_item, node_two
