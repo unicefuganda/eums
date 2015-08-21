@@ -22,11 +22,11 @@ describe('Warehouse Delivery', function () {
 
         warehouseDeliveryPage.selectContact('John');
         warehouseDeliveryPage.selectLocation('wakiso');
+        warehouseDeliveryPage.enableTracking();
         warehouseDeliveryPage.saveDelivery();
 
         warehouseDeliveryPage.visit();
         warehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-success');
     });
-
 });

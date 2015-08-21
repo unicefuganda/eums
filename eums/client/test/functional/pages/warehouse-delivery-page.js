@@ -50,8 +50,10 @@ WarehouseDeliveryPage.prototype = Object.create({}, {
 
     firstReleaseOrderAttributes: { get: function () {
         return element.all(by.repeater('releaseOrder in releaseOrders')).first().element(by.css('span')).getAttribute('class');
+    }},
+    enableTracking: { value: function () {
+       element(by.model('track')).click();
     }}
-
 });
 
 module.exports = new WarehouseDeliveryPage;
