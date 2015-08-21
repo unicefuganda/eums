@@ -16,7 +16,12 @@ def ip_feedback_report(request):
         response = []
         deliveries = DistributionPlan.objects.filter(track=True)
         for delivery in deliveries:
-            nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery)
+            if request.GET.get('query'):
+                filter_param = request.GET.get('query')
+                nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery,
+                                                            item__item__description__icontains=filter_param)
+            else:
+                nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery)
             node_answers = delivery.node_answers()
             if nodes:
                 for node in nodes:

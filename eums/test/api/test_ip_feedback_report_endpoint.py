@@ -7,6 +7,7 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.flow_factory import FlowFactory
+from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -67,7 +68,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 1)
 
     def test_should_return_items_and_all_their_answers(self):
-        delivery_one, node_one, purchase_order_item = self.setup_nodes_with_answers()
+        delivery_one, node_one, purchase_order_item, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
@@ -79,11 +80,19 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, response.data[0])
         self.assertEqual(len(response.data[0]['answers']), 5)
 
+    def test_should_filter_answers_by_item_description(self):
+        _, _, _, release_order_item = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?query=baba', content_type='application/json')
+
+        self.assertEqual(len(response.data), 1)
+        self.assertDictContainsSubset({'item_description': release_order_item.item.description}, response.data[0])
+
     def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True):
         consignee = ConsigneeFactory()
         programme = ProgrammeFactory()
-        purchase_order_item = PurchaseOrderItemFactory()
-        release_order_item = ReleaseOrderItemFactory()
+        purchase_order_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'))
+        release_order_item = ReleaseOrderItemFactory(item=ItemFactory(description='Baba bla bla'))
         delivery_one = DeliveryFactory(programme=programme, track=track_delivery_one)
         delivery_two = DeliveryFactory(programme=programme, track=track_delivery_two)
         node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=consignee, item=purchase_order_item)
@@ -112,4 +121,4 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         MultipleChoiceAnswerFactory(question=question_3, run=run_two, value=option_3)
         MultipleChoiceAnswerFactory(question=question_4, run=run_two, value=option_4)
         TextAnswerFactory(run=run_two, question=question_5, value='2013-12-12')
-        return delivery_one, node_one, purchase_order_item
+        return delivery_one, node_one, purchase_order_item, release_order_item
