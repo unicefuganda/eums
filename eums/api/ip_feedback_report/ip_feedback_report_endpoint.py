@@ -25,7 +25,7 @@ def ip_feedback_report(request):
                         'programme': node.distribution_plan.programme.name,
                         'consignee': node.consignee.name,
                         'order_number': node.item.number(),
-                        'quantity_shipped': node.quantity,
+                        'quantity_shipped': node.quantity_out(),
                         'answers': _filter_answers_by_id(node_answers, node.id)
                     })
 

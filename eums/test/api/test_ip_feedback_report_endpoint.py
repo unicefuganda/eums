@@ -76,7 +76,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'programme': delivery_one.programme.name}, response.data[0])
         self.assertDictContainsSubset({'consignee': node_one.consignee.name}, response.data[0])
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, response.data[0])
-        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity}, response.data[0])
+        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, response.data[0])
         self.assertEqual(len(response.data[0]['answers']), 5)
 
     def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True):
