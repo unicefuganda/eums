@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from eums.models import Run, RunQueue, Flow
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
 from eums.services.flow_scheduler import schedule_run_for
+from eums.services.response_alert_handler import ResponseAlertHandler
 
 logger = get_task_logger(__name__)
 
@@ -27,6 +28,8 @@ def hook(request):
         if flow.is_end(answer):
             _mark_as_complete(run)
             _dequeue_next_run(run.runnable.contact_person_id)
+            handler = ResponseAlertHandler(run.runnable, params['values'])
+            handler.process()
         return HttpResponse(status=200)
 
     except StandardError:

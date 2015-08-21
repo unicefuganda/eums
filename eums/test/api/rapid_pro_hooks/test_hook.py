@@ -7,7 +7,7 @@ from eums.test.factories.question_factory import TextQuestionFactory, NumericQue
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, Run, Flow, \
-    MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion
+    MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion, Alert
 from eums.test.config import BACKEND_URL
 from eums.test.factories.flow_factory import FlowFactory
 
@@ -19,6 +19,9 @@ class HookTest(APITestCase):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
         self.flow = FlowFactory(rapid_pro_id=self.flow_id)
+
+    def tearDown(self):
+        Alert.objects.all().delete()
 
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self):
         uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
@@ -200,6 +203,26 @@ class HookTest(APITestCase):
         run_returned_by_dequeue = RunQueue.objects.get(id=next_run.id)
 
         self.assertEqual(run_returned_by_dequeue.status, RunQueue.STATUS.started)
+
+    @patch('eums.services.response_alert_handler.ResponseAlertHandler.process')
+    @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
+    @patch('eums.models.RunQueue.dequeue')
+    def test_should_call_alert_handler_when_last_question_answered(self, mock_run_queue_dequeue,
+                                                                   mock_schedule_next_run,
+                                                                   mock_response_alert_handler_process):
+
+        question = NumericQuestionFactory(uuids=['1234'], text='some text', label='someLabel')
+
+        node = DeliveryNodeFactory()
+        RunFactory(runnable=node, phone=self.PHONE, status=Run.STATUS.scheduled)
+
+        self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
+        self.flow.save()
+
+        url_params = self._create_rapid_pro_url_params(self.PHONE, '1234', '42', None, 'someLabel')
+        self.client.post(HOOK_URL, url_params)
+
+        self.assertTrue(mock_response_alert_handler_process.called)
 
     def _create_rapid_pro_url_params(self, phone, uuid, text="Yes", category=None, label=""):
         return {u'run': [u'4621789'], u'relayer': [u'138'], u'text': [u'%s' % text], u'flow': [u'%s' % self.flow_id],
