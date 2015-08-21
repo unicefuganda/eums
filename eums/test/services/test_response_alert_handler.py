@@ -1,5 +1,5 @@
 from unittest import TestCase
-from eums.models import Alert
+from eums.models import Alert, Question
 from eums.services.response_alert_handler import ResponseAlertHandler
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -15,8 +15,8 @@ class ResponseAlertHandlerTest(TestCase):
 
     def test_should_create_alert_when_delivery_is_not_in_good_condition(self):
         answer_values = [
-            {"category": {"base": "Yes"}, "label": "deliveryReceived"},
-            {"category": {"base": "No"}, "label": "isDeliveryInGoodOrder"}
+            {"category": {"base": "Yes"}, "label": Question.LABEL.deliveryReceived},
+            {"category": {"base": "No"}, "label": Question.LABEL.isDeliveryInGoodOrder}
         ]
         purchase_order = PurchaseOrderFactory(order_number=1234)
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
@@ -32,8 +32,8 @@ class ResponseAlertHandlerTest(TestCase):
 
     def test_should_create_alert_when_delivery_is_not_received(self):
         answer_values = [
-            {"category": {"base": "No"}, "label": "deliveryReceived"},
-            {"category": {"base": "Yes"}, "label": "isDeliveryInGoodOrder"}
+            {"category": {"base": "No"}, "label": Question.LABEL.deliveryReceived},
+            {"category": {"base": "Yes"}, "label": Question.LABEL.isDeliveryInGoodOrder}
         ]
         purchase_order = PurchaseOrderFactory(order_number=5678)
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
@@ -49,8 +49,8 @@ class ResponseAlertHandlerTest(TestCase):
 
     def test_should_not_create_alert_when_no_issues_with_delivery(self):
         answer_values = [
-            {"category": {"base": "Yes"}, "label": "deliveryReceived"},
-            {"category": {"base": "Yes"}, "label": "isDeliveryInGoodOrder"}
+            {"category": {"base": "Yes"}, "label": Question.LABEL.deliveryReceived},
+            {"category": {"base": "Yes"}, "label": Question.LABEL.isDeliveryInGoodOrder}
         ]
         delivery = DeliveryFactory()
 

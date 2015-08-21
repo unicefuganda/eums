@@ -2,9 +2,13 @@ import ast
 
 from django.db import models
 from djorm_pgarray.fields import TextArrayField
+from model_utils import Choices
 
 
 class Question(models.Model):
+
+    LABEL = Choices('deliveryReceived', 'isDeliveryInGoodOrder')
+
     text = models.TextField()
     label = models.CharField(max_length=255)
     uuids = TextArrayField(dimension=1)

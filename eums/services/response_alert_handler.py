@@ -1,4 +1,4 @@
-from eums.models import Alert
+from eums.models import Alert, Question
 
 
 class ResponseAlertHandler(object):
@@ -8,8 +8,8 @@ class ResponseAlertHandler(object):
         self.answer_values = answer_values
 
     def process(self):
-        delivery_received_answer = (answer for answer in self.answer_values if answer["label"] == "deliveryReceived").next()
-        delivery_in_good_order_answer = (answer for answer in self.answer_values if answer["label"] == "isDeliveryInGoodOrder").next()
+        delivery_received_answer = self._retrieve_answer_for(Question.LABEL.deliveryReceived)
+        delivery_in_good_order_answer = self._retrieve_answer_for(Question.LABEL.isDeliveryInGoodOrder)
 
         issue = None
         if delivery_received_answer["category"]["base"] == "No":
@@ -30,3 +30,6 @@ class ResponseAlertHandler(object):
                 contact_name=contact_name,
                 issue=issue,
                 runnable=self.runnable)
+
+    def _retrieve_answer_for(self, label):
+        return (answer for answer in self.answer_values if answer["label"] == label).next()

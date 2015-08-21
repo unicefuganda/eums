@@ -29,7 +29,7 @@ class DistributionPlan(Runnable):
 
     def is_received(self):
         delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
-                                                              Q(question__label='deliveryReceived'),
+                                                              Q(question__label=Question.LABEL.deliveryReceived),
                                                               ~ Q(run__status='cancelled')).first()
 
         delivery_nodes = DistributionPlanNode.objects.filter(distribution_plan=self)

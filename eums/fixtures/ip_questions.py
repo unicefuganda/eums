@@ -1,10 +1,10 @@
-from eums.models import MultipleChoiceQuestion, Option, TextQuestion, Flow, Runnable
+from eums.models import MultipleChoiceQuestion, Option, TextQuestion, Flow, Runnable, Question
 
 ip_flow, _ = Flow.objects.get_or_create(rapid_pro_id=16995, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
 
 ip_question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=['3ce26959-1e21-4cf6-98a1-c460b57e7ba5', '31e426cd-6934-4252-869f-4e1843691d4a'],
-    text='Was delivery received?', label='deliveryReceived', flow=ip_flow, position=1)
+    text='Was delivery received?', label=Question.LABEL.deliveryReceived, flow=ip_flow, position=1)
 Option.objects.get_or_create(text='Yes', question=ip_question_1)
 no_delivery, _ = Option.objects.get_or_create(text='No', question=ip_question_1)
 ip_flow.end_nodes = []
@@ -17,7 +17,7 @@ ip_question_2, _ = TextQuestion.objects.get_or_create(
 
 ip_question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=['3762e25b-20e2-49fd-ad4f-0ccec08b4426'],
-    text='Was delivery in good order?', label='isDeliveryInGoodOrder',
+    text='Was delivery in good order?', label=Question.LABEL.isDeliveryInGoodOrder,
     flow=ip_flow, position=3)
 Option.objects.get_or_create(text='Yes', question=ip_question_3)
 Option.objects.get_or_create(text='No', question=ip_question_3)
