@@ -75,9 +75,10 @@ describe('IP Items Controller', function () {
         expect(scope.searching).toBe(false);
     });
 
-    it('should change location to deliveries for item page', function(){
-        var item = items[0];
-        scope.view(item);
-        expect(location.path).toHaveBeenCalledWith('/item-deliveries/'+ item.id);
+    it('should change location to deliveries for item when passed consignee item', function(){
+        var itemId = 10;
+        var consigneeItem = {id: 1, item: itemId};
+        scope.view(consigneeItem);
+        expect(location.path).toHaveBeenCalledWith('/item-deliveries/'+ itemId);
     });
 });
