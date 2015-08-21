@@ -1,6 +1,6 @@
 from eums.models import MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion, Flow, Runnable
 
-web_flow, _ = Flow.objects.get_or_create(rapid_pro_id=2436, for_runnable_type=Runnable.WEB)
+web_flow, _ = Flow.objects.get_or_create(rapid_pro_id=0, for_runnable_type=Runnable.WEB)
 
 web_question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=[], text='Was the item received?', label='itemReceived', flow=web_flow,
