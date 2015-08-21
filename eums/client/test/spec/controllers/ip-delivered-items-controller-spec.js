@@ -9,7 +9,8 @@ describe('IP Delivered Items Controller', function () {
         track: true,
         deliveryDate: '2015-01-02',
         remark: 'some remarks',
-        item: 1
+        item: 1,
+        quantityIn: 10
     };
 
     var nodeTwo = {
@@ -19,7 +20,8 @@ describe('IP Delivered Items Controller', function () {
         track: true,
         deliveryDate: '2015-01-02',
         remark: 'some other remarks',
-        item: 2
+        item: 2,
+        quantityIn: 5
     };
     var deliveryNodes = [nodeOne, nodeTwo];
 
@@ -43,28 +45,31 @@ describe('IP Delivered Items Controller', function () {
             value: 'Yes',
             options: ['Yes'],
             position: 0
-        }
+        },
+        {
+            "text": "How much was received?",
+            "type": "numeric",
+            "question_label": "amountReceived",
+            "value": "10",
+            "position": 1
+        },
     ];
     var secondNodeAnswers = [
         {
-            question_label: 'additionalComments',
-            type: 'text',
-            text: 'Any additional comments?',
-            value: 'Answer1',
-            position: 1
+            question_label: 'itemReceived',
+            type: 'multipleChoice',
+            text: 'Was item received?',
+            value: 'Yes',
+            options: ['Yes'],
+            position: 0
         },
         {
-            question_label: 'dateOfReceipt',
-            type: 'text',
-            text: "Was delivery received?",
-            value: 'valid field'
+            "text": "How much was received?",
+            "type": "numeric",
+            "question_label": "amountReceived",
+            "value": "5",
+            "position": 1
         },
-        {
-            question_label: 'additionalDeliveryComments',
-            type: 'text',
-            text: "Was delivery received?",
-            value: 'some remarks'
-        }
     ];
     var nodeAnswers = [
         {
@@ -80,6 +85,7 @@ describe('IP Delivered Items Controller', function () {
             id: 1,
             location: 'Kampala',
             consignee: {id: 10},
+            quantityIn: 10,
             track: true,
             deliveryDate: '2015-01-02',
             remark: 'some remarks',
@@ -90,12 +96,135 @@ describe('IP Delivered Items Controller', function () {
             id: 2,
             location: 'Kampala',
             consignee: {id: 10},
+            quantityIn: 5,
             track: true,
             deliveryDate: '2015-01-02',
             remark: 'some other remarks',
             item: 2,
             answers: secondNodeAnswers
         }];
+
+    var nodeAnswersWithoutValues = [{
+        id: 1,
+        "answers": [
+            {
+                "question_label": "itemReceived",
+                "text": "Was the item received?",
+                "value": "",
+                "position": 1,
+                "type": "multipleChoice",
+                "options": [
+                    "No",
+                    "Yes"
+                ]
+            },
+            {
+                "text": "How much was received?",
+                "type": "numeric",
+                "question_label": "amountReceived",
+                "value": "",
+                "position": 2
+            },
+            {
+                "question_label": "qualityOfProduct",
+                "text": "What is the quality of the product?",
+                "value": "",
+                "position": 3,
+                "type": "multipleChoice",
+                "options": [
+                    "Incomplete",
+                    "Expired",
+                    "Substandard",
+                    "Damaged",
+                    "Good"
+                ]
+            },
+            {
+                "question_label": "satisfiedWithProduct",
+                "text": "Are you satisfied with the product?",
+                "value": "",
+                "position": 4,
+                "type": "multipleChoice",
+                "options": [
+                    "No",
+                    "Yes"
+                ]
+            },
+            {
+                "text": "Remarks",
+                "type": "text",
+                "question_label": "additionalDeliveryComments",
+                "value": "",
+                "position": 5
+            }
+        ]
+
+    }];
+
+    var combinedDeliveryNodesWithAnswers = [
+        {
+            id: 1,
+            location: 'Kampala',
+            consignee: {id: 10},
+            track: true,
+            deliveryDate: '2015-01-02',
+            remark: 'some remarks',
+            item: 1,
+            quantityIn: 10,
+            answers: [
+                {
+                    "question_label": "itemReceived",
+                    "text": "Was the item received?",
+                    "value": "Yes",
+                    "position": 1,
+                    "type": "multipleChoice",
+                    "options": [
+                        "No",
+                        "Yes"
+                    ]
+                },
+                {
+                    "text": "How much was received?",
+                    "type": "numeric",
+                    "question_label": "amountReceived",
+                    "value": "10",
+                    "position": 2
+                },
+                {
+                    "question_label": "qualityOfProduct",
+                    "text": "What is the quality of the product?",
+                    "value": "",
+                    "position": 3,
+                    "type": "multipleChoice",
+                    "options": [
+                        "Incomplete",
+                        "Expired",
+                        "Substandard",
+                        "Damaged",
+                        "Good"
+                    ]
+                },
+                {
+                    "question_label": "satisfiedWithProduct",
+                    "text": "Are you satisfied with the product?",
+                    "value": "",
+                    "position": 4,
+                    "type": "multipleChoice",
+                    "options": [
+                        "No",
+                        "Yes"
+                    ]
+                },
+                {
+                    "text": "Remarks",
+                    "type": "text",
+                    "question_label": "additionalDeliveryComments",
+                    "value": "",
+                    "position": 5
+                }
+            ]
+        }
+        ]
 
     function initializeController() {
         controller('IpDeliveredItemsController', {
@@ -160,27 +289,6 @@ describe('IP Delivered Items Controller', function () {
             expect(scope.totalValue).toBe(6000)
         });
 
-        it('should call the ReleaseOrderItemService when delivery is a warehouse delivery', function () {
-            var warehouseDelivery = {
-                id: 1,
-                location: 'Kampala',
-                consignee: {id: 10},
-                track: true,
-                deliveryDate: '2015-01-02',
-                remark: 'some remarks',
-                totalValue: 6000,
-                distributionplannodeSet: deliveryNodes,
-                type: 'Waybill'
-            };
-            mockDeliveryService.get.and.returnValue(q.when(warehouseDelivery));
-
-            initializeController();
-            scope.$apply();
-
-            expect(mockDeliveryService.get).toHaveBeenCalledWith(1);
-            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({distribution_plan: 1});
-        });
-
         it('should get all the answers for all nodes belonging to a delivery', function () {
             initializeController();
             scope.$apply();
@@ -193,6 +301,14 @@ describe('IP Delivered Items Controller', function () {
             scope.$apply();
 
             expect(scope.combinedDeliveryNodes).toEqual(combinedDeliveryNodes);
+        });
+
+        it('should default itemReceived to yes and quantityReceived to quantity shipped when no values exist for those answers', function () {
+            mockDeliveryService.getDetail.and.returnValue(q.when(nodeAnswersWithoutValues));
+            initializeController();
+            scope.$apply();
+
+            expect(scope.combinedDeliveryNodes).toEqual(combinedDeliveryNodesWithAnswers);
         });
 
         it('should hide the loader after loading the data', function () {

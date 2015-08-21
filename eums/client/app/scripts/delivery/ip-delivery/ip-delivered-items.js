@@ -1,46 +1,39 @@
 angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader', 'Delivery', 'DeliveryNode', 'Answer'])
     .controller('IpDeliveredItemsController', function ($scope, $routeParams, $location, $q, LoaderService,
-                                                       DeliveryService, DeliveryNodeService, AnswerService) {
+                                                        DeliveryService, DeliveryNodeService, AnswerService) {
 
         $scope.activeDelivery = {};
+        $scope.combinedDeliveryNodes = [];
 
         loadData();
 
         $scope.saveAnswers = function () {
             LoaderService.showLoader();
-            var answerPromises = []
-                ;
+            var answerPromises = [];
             $scope.combinedDeliveryNodes.forEach(function (node) {
                 var answers = (node.answers.first().value == 'No') ? [node.answers.first()] : node.answers;
                 answerPromises.push(AnswerService.createWebAnswer(node, answers))
             });
 
-            $q.all(answerPromises)
-                .then(function () {
-                    $location.path('/ip-deliveries');
-                })
-                .finally(function () {
-                    LoaderService.hideLoader();
-                });
+            $q.all(answerPromises).then(function () {
+                $location.path('/ip-deliveries');
+            }).finally(function () {
+                LoaderService.hideLoader();
+            });
         };
 
         $scope.$watch('combinedDeliveryNodes', function () {
             var areValid = [];
-            if ($scope.combinedDeliveryNodes) {
-                $scope.combinedDeliveryNodes.forEach(function (node) {
+            $scope.combinedDeliveryNodes.forEach(function (node) {
+                if (node.answers.first().value == 'No') {
+                    node.answers[1].value = '0';
+                    node.answers[2].value = 'Incomplete';
+                    node.answers[3].value = 'No';
+                }
+                areValid.push(areValidAnswers(node.answers));
+            });
 
-                    if (node.answers.first().value == 'No') {
-                        node.answers[1].value = '0';
-                        node.answers[2].value = 'Incomplete';
-                        node.answers[3].value = 'No';
-                    }
-
-                    areValid.push(areValidAnswers(node.answers));
-                });
-
-                $scope.areValidAnswers = areValid.indexOf(false) <= -1;
-
-            }
+            $scope.areValidAnswers = areValid.indexOf(false) <= -1;
         }, true);
 
         $scope.addRemark = function (index) {
@@ -69,13 +62,18 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
         function combineNodeAnswers(answers) {
             $scope.combinedDeliveryNodes = [];
             if ($scope.deliveryNodes) {
-                $scope.deliveryNodes.forEach(function(node) {
-                    var result = answers.filter(function(answerSet) {
-                        return answerSet.id == node.id;
+                $scope.deliveryNodes.forEach(function (node) {
+                    var result = answers.filter(function (answerSet) {
+                        if (answerSet.id == node.id) {
+                            answerSet.answers[0].value = answerSet.answers[0].value || "Yes";
+                            answerSet.answers[1].value = answerSet.answers[1].value || node.quantityIn.toString();
+                            return true;
+                        }
+                        return false;
                     });
 
-                    if(result) {
-                        var deliveryNode = Object.merge(node, { answers: result[0].answers});
+                    if (result && result.length > 0) {
+                        var deliveryNode = Object.merge(node, {answers: result[0].answers});
                         $scope.combinedDeliveryNodes.push(deliveryNode);
                     }
                 });
@@ -84,26 +82,20 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
 
         function loadData() {
             LoaderService.showLoader();
-            DeliveryService.get($routeParams.activeDeliveryId)
-                .then(function (delivery) {
-                    $scope.shipmentDate = delivery.deliveryDate;
-                    $scope.totalValue = delivery.totalValue;
-                    $scope.activeDelivery = delivery;
+            DeliveryService.get($routeParams.activeDeliveryId).then(function (delivery) {
+                $scope.shipmentDate = delivery.deliveryDate;
+                $scope.totalValue = delivery.totalValue;
+                $scope.activeDelivery = delivery;
+            }).then(function () {
+                DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id}).then(function (nodes) {
+                    $scope.deliveryNodes = nodes;
+                }).then(function () {
+                    DeliveryService.getDetail($scope.activeDelivery, 'node_answers').then(function (answers) {
+                        combineNodeAnswers(answers);
+                    }).finally(function () {
+                        LoaderService.hideLoader();
+                    });
                 })
-                .then(function () {
-                    DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id})
-                        .then(function (nodes) {
-                            $scope.deliveryNodes = nodes;
-                        })
-                        .then(function () {
-                            DeliveryService.getDetail($scope.activeDelivery, 'node_answers')
-                                .then(function (answers) {
-                                    combineNodeAnswers(answers);
-                                })
-                                .finally(function () {
-                                    LoaderService.hideLoader();
-                                });
-                        })
-                })
+            })
         }
     });
