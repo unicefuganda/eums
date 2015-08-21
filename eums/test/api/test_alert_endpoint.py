@@ -3,7 +3,6 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.runnable_factory import RunnableFactory
-from eums.test.factories.user_factory import UserFactory
 
 ENDPOINT_URL = BACKEND_URL + 'alert/'
 
@@ -12,7 +11,6 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_return_information_on_an_alert(self):
         runnable = RunnableFactory()
-        user = UserFactory()
         AlertFactory(
             order_type=Alert.ORDER_TYPES.waybill,
             order_number=123456,
@@ -21,7 +19,6 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
             remarks='some remarks',
             consignee_name='wakiso',
             contact_name='john doe',
-            delivery_sender=user,
             runnable=runnable)
 
         response = self.client.get(ENDPOINT_URL)

@@ -1,5 +1,4 @@
 from eums.models import Alert
-from eums.test.factories.user_factory import UserFactory
 
 
 class ResponseAlertHandler(object):
@@ -23,7 +22,6 @@ class ResponseAlertHandler(object):
             order_number = self.runnable.distributionplannode_set.first().item.number()
             consignee_name = self.runnable.consignee.name
             contact_name = 'Misaina Naval Andrianjafinandrasana'
-            delivery_sender = UserFactory(first_name='UNICEF', last_name='Official')
 
             Alert.objects.create(
                 order_type=order_type,
@@ -31,5 +29,4 @@ class ResponseAlertHandler(object):
                 consignee_name=consignee_name,
                 contact_name=contact_name,
                 issue=issue,
-                delivery_sender=delivery_sender,
                 runnable=self.runnable)

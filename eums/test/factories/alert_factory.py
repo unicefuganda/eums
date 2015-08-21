@@ -1,7 +1,6 @@
 import factory
 from eums.models import Alert
 from eums.test.factories.runnable_factory import RunnableFactory
-from eums.test.factories.user_factory import UserFactory
 
 
 class AlertFactory(factory.DjangoModelFactory):
@@ -15,5 +14,4 @@ class AlertFactory(factory.DjangoModelFactory):
     remarks = None
     consignee_name = 'Wakiso DHO'
     contact_name = 'John Doe'
-    delivery_sender = factory.SubFactory(UserFactory)
     runnable = factory.SubFactory(RunnableFactory)

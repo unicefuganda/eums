@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField
@@ -17,7 +16,6 @@ class Alert(models.Model):
     remarks = models.TextField(blank=True, null=True)
     consignee_name = models.CharField(max_length=255)
     contact_name = models.CharField(max_length=255)
-    delivery_sender = models.ForeignKey(User, editable=False)
     created_on = models.DateField(auto_now_add=True)
     runnable = models.ForeignKey(Runnable)
 
