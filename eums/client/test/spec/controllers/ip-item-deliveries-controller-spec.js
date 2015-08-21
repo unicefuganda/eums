@@ -53,6 +53,11 @@ describe('Ip item deliveries', function () {
         });
     });
 
+    it('should by default not show new delivery screen', function() {
+        scope.$apply();
+        expect(scope.newDeliveryFormShowing).toBeFalsy();
+    });
+
     it('should load deliveries on the scope', function () {
         scope.$apply();
         expect(scope.deliveryNodes.length).toBe(1);
@@ -136,5 +141,13 @@ describe('Ip item deliveries', function () {
         scope.$apply();
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    })
+    });
+
+    it('should toggle new delivery form visibility', function() {
+        scope.$apply();
+        scope.toggleNewDeliveryForm();
+        expect(scope.newDeliveryFormShowing).toBeTruthy();
+        scope.toggleNewDeliveryForm();
+        expect(scope.newDeliveryFormShowing).toBeFalsy();
+    });
 });

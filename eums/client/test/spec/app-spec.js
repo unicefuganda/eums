@@ -112,12 +112,5 @@ describe('Route Provider', function () {
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('IpItemDeliveriesController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/item-deliveries.html');
-    })
-
-    it('should have route to ip-to-consignee deliveries page', function() {
-       var route = '/consignee-delivery/:itemId';
-        expect((Object.keys(routes.routes))).toContain(route);
-        expect(routes.routes[route].controller).toBe('ConsigneeDeliveryController');
-        expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/consignee-delivery.html');
     });
 });

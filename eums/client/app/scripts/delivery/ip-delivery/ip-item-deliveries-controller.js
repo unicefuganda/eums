@@ -1,4 +1,4 @@
-angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast'])
+angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewIpDelivery'])
     .controller('IpItemDeliveriesController', function ($scope, DeliveryNodeService, ItemService, $routeParams,
                                                         ConsigneeItemService, LoaderService, $q, ngToast) {
 
@@ -8,6 +8,7 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast'])
 
         $scope.deliveryNodes = [];
         $scope.searching = false;
+        $scope.newDeliveryFormShowing = false;
 
         var itemId = $routeParams.itemId;
         var loadPromises = [];
@@ -51,6 +52,10 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast'])
                 loadPromises.push(fetchNodes());
             }
         });
+
+        $scope.toggleNewDeliveryForm = function () {
+            $scope.newDeliveryFormShowing = !$scope.newDeliveryFormShowing;
+        };
 
         $q.all(loadPromises).catch(function () {
             createToast('failed to load deliveries', 'danger');
