@@ -1,15 +1,36 @@
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
-from eums.models import UserProfile
+
+from eums.models import UserProfile, DistributionPlan, DistributionPlanNode
 
 
-@api_view(['GET',])
+@api_view(['GET', ])
 def ip_feedback_report(request):
     logged_in_user = request.user
 
     try:
-        user_profile = UserProfile.objects.get(user=logged_in_user)
+        UserProfile.objects.get(user=logged_in_user)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
     except:
-        return Response(status=status.HTTP_200_OK)
+        response = []
+        deliveries = DistributionPlan.objects.filter(track=True)
+        for delivery in deliveries:
+            nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery)
+            node_answers = delivery.node_answers()
+            if nodes:
+                for node in nodes:
+                    response.append({
+                        'item_description': node.item.item.description,
+                        'programme': node.distribution_plan.programme.name,
+                        'consignee': node.consignee.name,
+                        'order_number': node.item.number(),
+                        'quantity_shipped': node.quantity,
+                        'answers': _filter_answers_by_id(node_answers, node.id)
+                    })
+
+        return Response(response, status=status.HTTP_200_OK)
+
+
+def _filter_answers_by_id(answers, node_id):
+    return filter(lambda answer: answer['id'] == node_id, answers)[0]['answers']
