@@ -229,6 +229,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
+        .when('/consignee-delivery/:itemId', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/consignee-delivery.html',
+            controller: 'ConsigneeDeliveryController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                }
+            }
+        })
         .otherwise({
             redirectTo: '/'
         });
