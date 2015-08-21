@@ -10,3 +10,5 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+
+CONTACTS_SERVICE_URL = 'http://localhost:9005/api/contacts/'

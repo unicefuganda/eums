@@ -85,10 +85,9 @@ DELIVERY_BUFFER_IN_SECONDS = 10
 
 # Contacts service settings
 import os
-try:
-    CONTACTS_SERVICE_URL = os.environ['LOCAL_HOST_HTTP_URL'] + ':8005/api/contacts/'
-except KeyError:
-    CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
+
+default_contacts_url = 'http://localhost:8005/api/contacts/'
+CONTACTS_SERVICE_URL = os.environ.get('LOCAL_HOST_HTTP_URL', default_contacts_url) + ':8005/api/contacts/'
 
 # RapidPro settings
 RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
