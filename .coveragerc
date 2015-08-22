@@ -1,0 +1,13 @@
+[run]
+omit =
+    eums/*settings.py
+    eums/migrations/*
+    eums/test/*/*
+    eums/wsgi.py
+    eums/auth.py
+    eums/urls.py
+    eums/mixins.py
+    eums/celery.py
+    eums/admin.py
+    eums/config.py
+    eums/fixtures/*
