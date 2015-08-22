@@ -110,13 +110,22 @@ module.exports = function (grunt) {
             }
         },
 
+        ngAnnotate: {
+          all: {
+            files: {
+              '.tmp/annotated/app.js': 'app/scripts/**/*.js'
+            }
+          },
+        },
+
         uglify: {
             all: {
                 files: {
-                    '.tmp/js/app.min.js': ['app/scripts/**/*.js', '.tmp/config/config.js']
+                  '.tmp/js/app.min.js' : ['.tmp/annotated/app.js', '.tmp/config/config.js']
                 },
                 options: {
-                    mangle: false
+                    mangle: false,
+                    beautify: true
                 }
             }
         },
@@ -416,6 +425,7 @@ module.exports = function (grunt) {
     grunt.registerTask('build', [
       'clean:dist',
       'ngconstant:dev',
+      'ngAnnotate:all',
       'newer:uglify:all',
       'less',
       'bower_concat:all',
