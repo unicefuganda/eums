@@ -11,3 +11,4 @@ omit =
     eums/admin.py
     eums/config.py
     eums/fixtures/*
+    eums/client/*
