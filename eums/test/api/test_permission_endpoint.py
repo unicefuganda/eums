@@ -1,3 +1,4 @@
+from mock import patch
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.models import Consignee
@@ -10,8 +11,48 @@ from django.contrib.contenttypes.models import ContentType
 ENDPOINT_URL = BACKEND_URL + 'permission/'
 
 
+class CheckPermissionEndpointTest(AuthenticatedAPITestCase):
+
+    def setUp(self):
+        self.content_type = ContentType.objects.get_for_model(Consignee)
+        self.permission_one = Permission.objects.create(
+            codename='can_do_something_1',
+            name='Can Do Something 1',
+            content_type=self.content_type)
+
+        user = User.objects.create_user(username='some_name', email='some@email.com', password='test')
+        group = Group.objects.create(name='Some Group Name')
+        user.groups = [group]
+        user.save()
+        group.permissions = [self.permission_one]
+        group.save()
+
+        self.client.login(username='some_name', password='test')
+
+    def test_should_200_if_user_has_permission(self):
+        response = self.client.get(ENDPOINT_URL + '?permission=eums.%s'%self.permission_one.codename, format='json')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_should_401_if_user_does_not_have_permission(self):
+        self.permission_two = Permission.objects.create(
+            codename='can_do_something_2',
+            name='Can Do Something 2',
+            content_type=self.content_type)
+
+        response = self.client.get(ENDPOINT_URL + '?permission=eums.%s'%self.permission_two.codename, format='json')
+
+        self.assertEqual(response.status_code, 401)
+
+    @patch('django.contrib.auth.models.User.has_perm')
+    def test_should_401_if_any_non_sense_exception(self, mock_has_perm):
+        mock_has_perm.side_effect = StandardError
+        response = self.client.get(ENDPOINT_URL + '?permission=this.does_not_exist', format='json')
+        self.assertEqual(response.status_code, 401)
+
+
 class PermissionEndpointTest(AuthenticatedAPITestCase):
-    
+
     def test_should_return_permissions_for_a_user(self):
         content_type = ContentType.objects.get_for_model(Consignee)
         permission_one = Permission.objects.create(
