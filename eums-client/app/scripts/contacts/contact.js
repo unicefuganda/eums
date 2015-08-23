@@ -154,7 +154,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                             callback(countryCode);
                         });
                     },
-                    utilsScript: '/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js'
+                    utilsScript: '/static/app/js/utils.js'
                 });
 
                 scope.contactChanged = function () {

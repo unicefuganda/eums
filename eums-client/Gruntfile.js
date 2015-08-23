@@ -78,7 +78,7 @@ module.exports = function (grunt) {
         less: {
             compile: {
                 options: {
-                    compress: true,
+                    compress: false,
                     paths: [
                         'less',
                         'bower_components/bootstrap/less',
@@ -91,23 +91,14 @@ module.exports = function (grunt) {
             }
         },
 
-        bower_concat: {
-            all: {
-                dependencies: {
-                    'angular': ['jquery']
-                },
-                dest: '.tmp/js/vendor.min.js',
-                cssDest: '.tmp/css/vendor.min.css',
-                mainFiles: {
-                  'moment': 'min/moment.min.js'
-                },
-                callback: function (mainFiles) {
-                    return _.map(mainFiles, function (filepath) {
-                        var min = filepath.replace(/\.js$/, '.min.js');
-                        return grunt.file.exists(min) ? min : filepath;
-                    });
-                }
+        useminPrepare: {
+          html: 'app/deps.html',
+          flow: {
+            steps: {
+              js: ['concat'],
+              css: ['concat']
             }
+          }
         },
 
         ngAnnotate: {
@@ -133,14 +124,16 @@ module.exports = function (grunt) {
         copy: {
           js: {
             expand: true,
-            cwd: '.tmp/js/',
-            src: '**/*.js',
+            flatten: true,
+            cwd: '.tmp/',
+            src: [ 'js/*.js', 'concat/**/*.js' ],
             dest: 'dist/app/js/'
           },
           css: {
             expand: true,
-            cwd: '.tmp/css/',
-            src: '**/*.css',
+            flatten: true,
+            cwd: '.tmp/',
+            src: [ 'css/*.css', 'concat/**/*.css' ],
             dest: 'dist/app/css/'
           },
           json: {
@@ -155,11 +148,29 @@ module.exports = function (grunt) {
             src: '**/*',
             dest: 'dist/app/media/'
           },
+          flags: {
+            expand: true,
+            cwd: 'bower_components/intl-tel-input/build/img',
+            src: '*',
+            dest: 'dist/app/media/'
+          },
+          intlTelInput: {
+            expand: true,
+            cwd: 'bower_components/intl-tel-input/lib/libphonenumber/build/',
+            src: '*',
+            dest: 'dist/app/js/'
+          },
           fonts: {
             expand: true,
-            cwd: 'bower_components/bootstrap/dist/fonts/',
+            cwd: 'bower_components/bootstrap/fonts/',
             src: '*',
             dest: 'dist/app/fonts/'
+          },
+          chosen: {
+            expand: true,
+            cwd: 'bower_components/angular-chosen-localytics/',
+            src: '*.gif',
+            dest: 'dist/app/css/'
           },
           select2: {
             expand: true,
@@ -417,37 +428,42 @@ module.exports = function (grunt) {
       'copy:css',
       'copy:json',
       'copy:html',
-      'copy:fonts',
+      'copy:intlTelInput',
+      'copy:flags',
       'copy:select2',
-      'copy:media'
+      'copy:chosen',
+      'copy:media',
+      'copy:fonts'
     ]);
 
     grunt.registerTask('build', [
-      'clean:dist',
-      'ngconstant:dev',
       'ngAnnotate:all',
-      'newer:uglify:all',
+      'uglify:all',
       'less',
-      'bower_concat:all',
+      'useminPrepare',
+      'concat:generated',
       'copy:toDist'
     ]);
 
-    grunt.registerTask('build-test', [
+    grunt.registerTask('build:dev', [
+      'clean:dist',
+      'ngconstant:dev',
+      'build'
+    ]);
+
+    grunt.registerTask('build:test', [
       'clean:dist',
       'ngconstant:test',
-      'newer:uglify:all',
-      'less',
-      'bower_concat:all',
-      'copy:toDist'
+      'build'
     ]);
 
     grunt.registerTask('deploy:local', 'Build, Copy to Django', [
-      'build',
+      'build:dev',
       'copy:toDjango'
     ]);
 
     grunt.registerTask('prep-test-env', 'Prepare test environment before running tests', [
-        'build-test',
+        'build:test',
         'shell:dropDb',
         'shell:createDb',
         'shell:runMigrations',
