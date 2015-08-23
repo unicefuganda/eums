@@ -290,7 +290,7 @@ module.exports = function (grunt) {
                 }
             },
             seedData: {
-                command: 'python manage.py loaddata eums-client/test/functional/fixtures/user.json --settings=eums.test_settings',
+                command: 'python manage.py loaddata client/test/functional/fixtures/user.json --settings=eums.test_settings',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -299,7 +299,7 @@ module.exports = function (grunt) {
                 }
             },
             mapData: {
-                command: 'python manage.py shell < eums-client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
+                command: 'python manage.py shell < client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
                 options: {
                     stderr: true,
                     execOptions: {
@@ -454,7 +454,8 @@ module.exports = function (grunt) {
     grunt.registerTask('build:test', [
       'clean:dist',
       'ngconstant:test',
-      'build'
+      'build',
+      'copy:toDjango'
     ]);
 
     grunt.registerTask('deploy:local', 'Build, Copy to Django', [

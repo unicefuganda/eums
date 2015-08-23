@@ -1,4 +1,4 @@
-from eums.client.test.functional.fixtures.mapdata_delivery_nodes import *
+from client.test.functional.fixtures.mapdata_delivery_nodes import *
 from eums.models import Run
 
 run_7 = Run.objects.create(runnable=node_5, status="completed", scheduled_message_task_id="rgwfq7916791hson", phone="0794008951")

@@ -1,5 +1,5 @@
-from eums.client.test.functional.fixtures.mapdata_items import *
-from eums.client.test.functional.fixtures.mapdata_sales_order import *
+from client.test.functional.fixtures.mapdata_items import *
+from client.test.functional.fixtures.mapdata_sales_order import *
 from eums.models import SalesOrderItem
 
 so_item_1 = SalesOrderItem.objects.create(issue_date="2014-10-13", description="Leaflet 2013 A5 or A4 with 3 fold 2013 Full", sales_order=sales_order_1, net_price=500.0000, net_value=0.0500, delivery_date="2014-10-13", item=item_1, item_number=0, quantity=10000.00)

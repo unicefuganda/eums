@@ -1,4 +1,4 @@
-from eums.client.test.functional.fixtures.mapdata_sales_order import *
+from client.test.functional.fixtures.mapdata_sales_order import *
 from eums.models import PurchaseOrder
 
 po_1 = PurchaseOrder.objects.create(date="2014-12-21", order_number=12345, is_single_ip=None, sales_order=sales_order_1, po_type="")

@@ -1,7 +1,7 @@
 from datetime import date
 from eums.models import DistributionPlan
-from eums.client.test.functional.fixtures.mapdata_consignees import *
-from eums.client.test.functional.fixtures.mapdata_programmes import *
+from client.test.functional.fixtures.mapdata_consignees import *
+from client.test.functional.fixtures.mapdata_programmes import *
 from eums.test.helpers.fake_datetime import FakeDate
 
 delivery_37 = DistributionPlan.objects.create(programme=programme_3, location="Amur", consignee=consignee_1, contact_person_id="54213ccc797221e84ac993fe", track=False,  delivery_date="2014-10-14", remark="hh")

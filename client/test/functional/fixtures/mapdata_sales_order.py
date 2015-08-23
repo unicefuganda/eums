@@ -1,5 +1,5 @@
 from eums.models import SalesOrder
-from eums.client.test.functional.fixtures.mapdata_programmes import *
+from client.test.functional.fixtures.mapdata_programmes import *
 
 sales_order_1 = SalesOrder.objects.create(date="2014-01-01", description="sample sales order", order_number=12345, programme=programme_1)
 sales_order_2 = SalesOrder.objects.create(date="2014-01-08", description="Laptop,Lenovo,ThinkPad T510", order_number=20148033, programme=programme_3)

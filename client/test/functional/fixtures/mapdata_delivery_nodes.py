@@ -1,5 +1,5 @@
-from eums.client.test.functional.fixtures.mapdata_deliveries import *
-from eums.client.test.functional.fixtures.mapdata_purchase_order_items import *
+from client.test.functional.fixtures.mapdata_deliveries import *
+from client.test.functional.fixtures.mapdata_purchase_order_items import *
 from eums.models import DistributionPlanNode
 from eums.test.helpers.fake_datetime import FakeDate
 

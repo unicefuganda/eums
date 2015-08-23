@@ -1,5 +1,5 @@
-from eums.client.test.functional.fixtures.mapdata_purchase_order import *
-from eums.client.test.functional.fixtures.mapdata_sales_order_items import *
+from client.test.functional.fixtures.mapdata_purchase_order import *
+from client.test.functional.fixtures.mapdata_sales_order_items import *
 from eums.models import PurchaseOrderItem
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory

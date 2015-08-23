@@ -1,13 +1,13 @@
-from eums.client.test.functional.fixtures.mapdata_runs import *
-from eums.fixtures import web_questions, ip_questions
-from eums.client.test.functional.fixtures.mapdata_release_order_items import *
+from client.test.functional.fixtures.mapdata_runs import *
+from client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.models import DistributionReport, Alert
 from eums.models import NumericAnswer
 from eums.models import TextAnswer
 from eums.models import MultipleChoiceAnswer
+from eums.fixtures import web_questions, ip_questions
 from eums.fixtures.end_user_questions import *
 from eums.test.factories.alert_factory import AlertFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory, TextAnswerFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory

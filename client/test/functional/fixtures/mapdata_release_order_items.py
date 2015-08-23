@@ -1,5 +1,5 @@
-from eums.client.test.functional.fixtures.mapdata_purchase_order_items import *
-from eums.client.test.functional.fixtures.mapdata_release_order import *
+from client.test.functional.fixtures.mapdata_purchase_order_items import *
+from client.test.functional.fixtures.mapdata_release_order import *
 from eums.models import ReleaseOrderItem
 
 ro_item_430 = ReleaseOrderItem.objects.create(purchase_order_item=po_item_429, release_order=ro_1, value=8999.05, item=item_174, item_number=10, quantity=50.00)

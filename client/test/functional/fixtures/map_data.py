@@ -1,9 +1,9 @@
 import json
 
-map_data_file = open('eums/client/test/functional/fixtures/mapdata-2.json')
+map_data_file = open('client/test/functional/fixtures/mapdata-2.json')
 fixtures = json.load(map_data_file)
 
-output_file = open('eums/client/test/functional/fixtures/mapdata_code.py', 'w')
+output_file = open('client/test/functional/fixtures/mapdata_code.py', 'w')
 
 output_file.write('from eums.models import Consignee\n')
 output_file.write('from eums.models import DistributionPlan\n')

@@ -1,6 +1,6 @@
-from eums.client.test.functional.fixtures.mapdata_purchase_order import *
-from eums.client.test.functional.fixtures.mapdata_consignees import *
-from eums.client.test.functional.fixtures.mapdata_sales_order import *
+from client.test.functional.fixtures.mapdata_purchase_order import *
+from client.test.functional.fixtures.mapdata_consignees import *
+from client.test.functional.fixtures.mapdata_sales_order import *
 from eums.models import ReleaseOrder
 
 ro_1 = ReleaseOrder.objects.create(sales_order=sales_order_105, waybill=72082647, consignee=consignee_1, purchase_order=po_106, order_number=54102852, delivery_date="2014-08-19")
