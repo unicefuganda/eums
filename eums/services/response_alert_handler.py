@@ -21,7 +21,8 @@ class ResponseAlertHandler(object):
             order_type = Alert.ORDER_TYPES.purchase_order
             order_number = self.runnable.distributionplannode_set.first().item.number()
             consignee_name = self.runnable.consignee.name
-            contact_name = 'Misaina Naval Andrianjafinandrasana'
+            contact = self.runnable.build_contact()
+            contact_name = "%s %s" % (contact.get('firstName', ''), contact.get('lastName', ''))
 
             Alert.objects.create(
                 order_type=order_type,
