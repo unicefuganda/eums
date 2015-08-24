@@ -9,6 +9,15 @@ angular.module('ReportService', ['eums.config'])
                     result.resolve(response.data);
                 });
                 return result.promise
+            },
+
+            ipFeedbackReport: function () {
+                var result = $q.defer();
+                $http.get(EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT)
+                    .then(function (response) {
+                        result.resolve(response.data);
+                });
+                return result.promise
             }
         };
     });

@@ -24,4 +24,12 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
+    it('should get ip feedback', function(){
+        var fakeReport = {results:[{id:34}]};
+        mockBackend.whenGET('/api/api-feedback-report').respond(200, fakeReport);
+        reportService.ipFeedbackReport().then(function(response){
+            expect(response.data).toEqual(fakeReport);
+        })
+    })
+
 });
