@@ -1,5 +1,6 @@
 Django==1.7
 Factory==1.2
+requests-mock==0.6.0
 Markdown==2.4.1
 amqp==1.4.6
 anyjson==0.3.3
@@ -34,4 +35,3 @@ xlrd==0.9.3
 xlutils==1.7.1
 xlwt==0.7.5
 flower
-requests-mock
