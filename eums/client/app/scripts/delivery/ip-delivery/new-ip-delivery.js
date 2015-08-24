@@ -4,6 +4,8 @@ angular.module('NewIpDelivery', ['eums.config'])
     .controller('NewIpDeliveryController', function ($scope, IPService) {
         $scope.districts = [];
         $scope.contact = {};
+        $scope.district = {};
+        $scope.consignee = {};
 
         IPService.loadAllDistricts().then(function(response) {
             $scope.districts = response.data.map(function (districtName) {
@@ -24,6 +26,16 @@ angular.module('NewIpDelivery', ['eums.config'])
             $scope.contact = contact;
             $scope.contact_person_id = contact._id;
 
+            event.stopPropagation();
+        });
+
+        $scope.addConsignee = function(){
+            $scope.$broadcast('add-consignee');
+        };
+
+        $scope.$on('consignee-saved', function (event, consignee) {
+            $scope.consignee = consignee;
+            $scope.$broadcast('set-consignee', consignee);
             event.stopPropagation();
         });
     });

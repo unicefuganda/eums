@@ -174,13 +174,10 @@ angular.module('Directives', [])
                     $(element).val(consignee.id);
                 });
 
-                scope.$on('set-consignee-for-node', function (_, consignee, nodeId) {
-                    var myNodeId = element[0].getAttribute('id').split('-').last();
-                    if (Number(nodeId) === Number(myNodeId)) {
-                        var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                        consigneeSelect2Input.text(consignee.name);
-                        $(element).val(consignee.id);
-                    }
+                scope.$on('set-consignee', function (_, consignee) {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text(consignee.name);
+                    $(element).val(consignee.id);
                 });
             }
         };

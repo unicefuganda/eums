@@ -32,11 +32,19 @@
                 </div>
             </td>
             <td class="col-md-3">
-                <div id='input-consignee' class="pad-small">
-                    <input type="hidden" search-consignees only-ips
-                           ng-model="consignee"
-                           ng-attr-id="{{ 'ip-select' }}"
-                           value="{{ consignee }}">
+                <div id="input-consignee" class="col-md-12 pad-small">
+                    <div class="pad-small col-md-10">
+                        <input type="hidden" search-consignees
+                               ng-model="consignee"
+                               ng-attr-id="{{ 'ip-select' }}"
+                               value="{{ consignee }}">
+                    </div>
+                    <div class="col-md-2 pad-small">
+                        <button type="button" class="btn btn-default "
+                                ng-click="addConsignee()">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
+                    </div>
                 </div>
             </td>
             <td class="col-md-3">

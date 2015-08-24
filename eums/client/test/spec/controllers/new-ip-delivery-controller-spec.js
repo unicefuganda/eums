@@ -22,8 +22,11 @@ describe('New IP Delivery Controller', function () {
         });
     });
 
-    it('should have empty contact on load', function () {
+    it('should have empty initial data on load', function () {
         expect(scope.contact).toEqual({});
+        expect(scope.districts).toEqual([]);
+        expect(scope.district).toEqual({});
+        expect(scope.consignee).toEqual({});
     });
 
     it('should load all districts and put them on scope', function () {
@@ -33,7 +36,7 @@ describe('New IP Delivery Controller', function () {
         expect(scope.districtsLoaded).toBeTruthy();
     });
 
-    it('should broadcast show contact event when addContact is called', function () {
+    it('should broadcast add contact event when addContact is called', function () {
         spyOn(scope, '$broadcast');
         scope.addContact();
         expect(scope.$broadcast).toHaveBeenCalledWith('add-contact');
@@ -69,5 +72,31 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
 
         expect(fakeTextSetter).toHaveBeenCalledWith('James Bean');
+    });
+
+    it('should broadcast add consignee event when addConsignee is called', function () {
+        spyOn(scope, '$broadcast');
+        scope.addConsignee();
+        expect(scope.$broadcast).toHaveBeenCalledWith('add-consignee');
+    });
+
+    it('should put new consignee on scope after save', function () {
+        var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
+
+        var consigneeScope = scope.$new();
+        consigneeScope.$emit('consignee-saved', consignee);
+        scope.$apply();
+
+        expect(scope.consignee).toEqual(consignee);
+    });
+
+    it('should put consignee name into select after consignee-saved is called', function () {
+        var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
+        spyOn(scope, '$broadcast');
+        var consigneeScope = scope.$new();
+        consigneeScope.$emit('consignee-saved', consignee);
+        scope.$apply();
+
+        expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', consignee);
     });
 });

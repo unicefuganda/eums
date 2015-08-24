@@ -228,8 +228,8 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
             angular.element('#add-consignee-modal').modal();
         });
 
-        $scope.save = function (contact) {
-            ConsigneeService.create(contact).then(function (createdConsignee) {
+        $scope.save = function (consignee) {
+            ConsigneeService.create(consignee).then(function (createdConsignee) {
                 $scope.$emit('consignee-saved', createdConsignee, $scope.object, $scope.objectIndex);
                 angular.element('#add-consignee-modal').modal('hide');
             }).catch(function (response) {
