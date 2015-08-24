@@ -46,9 +46,12 @@ class Runnable(PolymorphicModel):
     def number(self):
         pass
 
-    def create_alert(self, issue, order_type):
+    def type(self):
+        pass
+
+    def create_alert(self, issue):
         self.alert_set.create(
-            order_type=order_type,
+            order_type=self.type(),
             order_number=self.number(),
             consignee_name=self.consignee.name,
             contact_name=self._contact_name(),

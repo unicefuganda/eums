@@ -17,8 +17,7 @@ class ResponseAlertHandler(object):
 
         if negative_answer:
             issue = self.ALERT_TYPES[negative_answer["label"]]
-            order_type = Alert.ORDER_TYPES.purchase_order
-            self.runnable.create_alert(issue, order_type)
+            self.runnable.create_alert(issue)
 
     def _retrieve_negative_answer(self):
         for answer in self.answer_values:

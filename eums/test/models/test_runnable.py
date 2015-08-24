@@ -121,7 +121,7 @@ class DistributionPlanNodeTest(TestCase):
         delivery = DeliveryFactory(consignee=consignee, contact_person_id=contact_person_id)
         DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
 
-        delivery.create_alert("Not received", "Waybill")
+        delivery.create_alert("Not received")
         alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
 
         self.assertEqual(alerts.count(), 1)
