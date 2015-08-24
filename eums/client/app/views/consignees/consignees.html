@@ -70,7 +70,7 @@
                                 <input class="table-input form-control" ng-model="consignee.remarks">
                             </span>
                         </td>
-                        <td>
+                        <td ng-show="hasPermissionTo('eums.change_consignee')">
                             <span ng-show="!consignee.inEditMode && !consignee.inEditRemarkMode">
                                 <button ng-show="hasPermissionTo('eums.change_consignee')"
                                         class="btn btn-sm btn-default blue-border-button editBtn"

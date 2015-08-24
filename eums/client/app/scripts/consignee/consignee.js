@@ -141,11 +141,13 @@ angular.module('Consignee', ['eums.config', 'eums.service-factory', 'ngToast', '
         };
 
         $scope.edit = function (consignee) {
-
-            ConsigneeService.userCanFullyEdit(consignee).then(function () {
-                consignee.switchToEditMode();
+            ConsigneeService.userCanFullyEdit(consignee).then(function (responce) {
+                if (responce.permission == 'can_edit_fully')
+                    consignee.switchToEditMode();
+                if (responce.permission == 'can_edit_partially')
+                    consignee.switchToEditRemarkMode();
             }).catch(function (result) {
-                consignee.switchToEditRemarkMode();
+                consignee.switchToReadMode();
             });
         };
 

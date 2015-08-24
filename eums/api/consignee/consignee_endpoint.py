@@ -46,15 +46,24 @@ class ConsigneeViewSet(ModelViewSet):
     def permission_to_edit(self, request, pk=None):
         consignee = self.get_object()
         if consignee.imported_from_vision:
-            return Response(status=403)
+            return self.vision_import_edit_permissions(request)
         if request.user.groups.first().name in ['UNICEF_admin', 'UNICEF_editor']:
-            return Response(status=200)
+            return Response(status=200, data={'permission': 'can_edit_fully'})
+
+        return self.ip_edit_permissions(consignee, request)
+
+    @staticmethod
+    def vision_import_edit_permissions(request):
+        if request.user.groups.first().name in ['UNICEF_admin', 'UNICEF_editor']:
+            return Response(status=200, data={'permission': 'can_edit_partially'})
+        else:
+            return Response(status=403)
+
+    @staticmethod
+    def ip_edit_permissions(consignee, request):
         request_ip = UserProfile.objects.get(user=request.user).consignee
         consignee_ip = UserProfile.objects.get(user=consignee.created_by_user).consignee
-        if consignee_ip != request_ip:
-            return Response(status=403)
-        return Response(status=200)
-
+        return Response(status=403) if consignee_ip != request_ip else Response(status=200, data={'permission': 'can_edit_fully'})
 
 consigneeRouter = DefaultRouter()
 consigneeRouter.register(r'consignee', ConsigneeViewSet)

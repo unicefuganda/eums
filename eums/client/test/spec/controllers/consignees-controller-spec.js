@@ -7,7 +7,7 @@ describe('Consignees Controller', function () {
     var savedConsignee = {
         id: 1, name: 'Dwelling Places', switchToReadMode: emptyFunction, switchToEditMode: emptyFunction
     };
-    var emptyConsignee = {properties: null, switchToEditMode: emptyFunction, switchToEditRemarkMode: emptyFunction};
+    var emptyConsignee = {properties: null, switchToEditMode: emptyFunction, switchToEditRemarkMode: emptyFunction, switchToReadMode: emptyFunction};
     var consignees = [{name: 'Dwelling Places'}, {name: 'Save the children'}, {name: 'Amuru DHO'}];
     var consigneesResponse = {results: consignees, count: consignees.length, next: 'next-page', previous: 'prev-page', pageSize: 1};
     var searchResults = consignees.first(2);
@@ -94,20 +94,29 @@ describe('Consignees Controller', function () {
     });
 
     it('should switch consignee to edit mode on edit when user has permission to fully edit', function () {
-        deferredCanFullyEdit.resolve(true);
+        deferredCanFullyEdit.resolve({permission:'can_edit_fully'});
         spyOn(emptyConsignee, 'switchToEditMode');
         scope.edit(emptyConsignee);
         scope.$apply()
         expect(emptyConsignee.switchToEditMode).toHaveBeenCalled();
     });
 
-    it('should switch consignee to edit remark mode on edit when user does not have permission to fully edit', function () {
-        deferredCanFullyEdit.reject(false);
+    it('should switch consignee to read mode on edit when user does has permission to edit partially', function () {
+        deferredCanFullyEdit.resolve({permission:'can_edit_partially'});
         spyOn(emptyConsignee, 'switchToEditRemarkMode');
         scope.edit(emptyConsignee);
         scope.$apply()
         expect(emptyConsignee.switchToEditRemarkMode).toHaveBeenCalled();
-    });    
+    });
+
+
+    it('should switch consignee to read mode on edit when user does not have permission to edit', function () {
+        deferredCanFullyEdit.reject(false);
+        spyOn(emptyConsignee, 'switchToReadMode');
+        scope.edit(emptyConsignee);
+        scope.$apply()
+        expect(emptyConsignee.switchToReadMode).toHaveBeenCalled();
+    });
 
     it('should broadcast deleteConsignee event when showDeleteDialog is called', function () {
         var consignee = {id: 1};
