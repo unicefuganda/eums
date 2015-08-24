@@ -50,16 +50,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             event.stopPropagation();
         });
 
-        $scope.addConsignee = function (node, nodeIndex) {
-            $scope.$broadcast('add-consignee', node, nodeIndex);
-        };
-
-        $scope.$on('consignee-saved', function (event, consignee, node, nodeIndex) {
-            node.consignee = consignee;
-            $scope.$broadcast('set-consignee-for-node', consignee, nodeIndex);
-            event.stopPropagation();
-        });
-
         var setLocationAndContactFields = function () {
             ContactService.get($scope.contact.id)
                 .then(function (contact) {
