@@ -28,7 +28,7 @@ describe('Vision Data Imports', function () {
         expect(consigneesPage.consigneeIDs).toContain('customer id of test consignee');
     });
 
-    it('should show programmes imported from vision on the feedback report page', function () {
+    xit('should show programmes imported from vision on the feedback report page', function () {
 
         importDataPage.uploadProgrammes('../files/programs.xlsx');
 
@@ -125,7 +125,7 @@ describe('Vision Data Imports', function () {
         expect(directDeliveryPage.purchaseOrderValues).toContain('$8,900.00');
     });
 
-    it('should update existing outcomes with data from newly imported spreadsheets', function () {
+    xit('should update existing outcomes with data from newly imported spreadsheets', function () {
         importDataPage.uploadProgrammes('../files/programs-update.xlsx');
 
         feedbackReportPage.visit();
