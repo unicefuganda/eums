@@ -2,13 +2,13 @@
     <span class="sub-header">ADD CONSIGNEE DETAILS</span>
 </div>
 <div class="well col-md-12">
-    <table  class="col-md-12">
+    <table class="col-md-12">
         <tr>
-            <td class="col-md-2">Date Shipped</td>
-            <td class="col-md-3">Consignee</td>
-            <td class="col-md-3">Contact Person</td>
-            <td class="col-md-2">District</td>
-            <td class="col-md-2 centered">End-User</td>
+            <td class="col-md-2 pad-bottom-5">Date Shipped</td>
+            <td class="col-md-3 pad-bottom-5">Consignee</td>
+            <td class="col-md-3 pad-bottom-5">Contact Person</td>
+            <td class="col-md-2 pad-bottom-5">District</td>
+            <td class="col-md-2 centered pad-bottom-5">End-User</td>
         </tr>
         <tr>
             <td class="col-md-2">
@@ -40,8 +40,8 @@
                 </div>
             </td>
             <td class="col-md-3">
-                <div id="input-contact" class=" col-md-12 pad-small">
-                    <div class="form-group col-md-10 pad-small">
+                <div id="input-contact" class="col-md-12 pad-small">
+                    <div class="col-md-10 pad-small">
                         <input type="hidden"
                                search-contacts
                                required="required"
@@ -49,7 +49,7 @@
                                ng-model="delivery.contact_person_id"
                                ng-attr-id="{{ 'contact-select' }}">
                     </div>
-                    <div class="form-group col-md-2 pad-small">
+                    <div class="col-md-2 pad-small">
                         <button type="button" class="btn btn-default "
                                 ng-click="addContact(item, $index)">
                             <i class="glyphicon glyphicon-plus"></i>
@@ -76,4 +76,50 @@
             </td>
         </tr>
     </table>
+</div>
+<div>
+    <span class="sub-header">CHOOSE A QUANTITY TO SHIP: </span><span>You can only select quantities from a single PO or Waybill</span>
+</div>
+<div>
+    <div class="panel-body col-lg-12">
+        <table id="singleIPDeliveryItemsTable"
+               class="table table-bordered table-hover table-condensed col-lg-6">
+            <tr class="summary-row">
+                <th class="item-list-col-header">Date Shipped</th>
+                <th class="item-list-col-header">Shipment</th>
+                <th class="item-list-col-header">Avail. Qty</th>
+                <th class="item-list-col-header">&nbsp;</th>
+            </tr>
+            <tr>
+                <td>02/02/2015</td>
+                <td>2000144</td>
+                <td>1000</td>
+                <td class="table-row-input-column">
+                    <input type="text" id="quantity-shipped" class="form-control" only-digits ng-model="something">
+                </td>
+            </tr>
+            <tr>
+                <td>02/02/2015</td>
+                <td>2000145</td>
+                <td>1050</td>
+                <td class="table-row-input-column">
+                    <input type="text" id="quantity-shipped" class="form-control" only-digits ng-model="something">
+                </td>
+            </tr>
+            <tr class="summary-row">
+                <td colspan="3">SELECTED QUANTITY</td>
+                <td>2050</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div>
+    <div class="pad-20 row">
+        <div class="pull-right">
+            <button id="save-delivery-report" type="button" class="btn btn-primary">
+                <i class="glyphicon glyphicon-floppy-save"> </i>
+                Save Delivery Report
+            </button>
+        </div>
+    </div>
 </div>

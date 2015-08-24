@@ -16,7 +16,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'IpFeedbackReports', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
-    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveredItems', 'IpItemDeliveries', 'Alerts'])
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveredItems', 'IpItemDeliveries', 'Alerts', 'NewIpDelivery'])
 
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
