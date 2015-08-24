@@ -1,4 +1,4 @@
-describe('EndUserResponsesController', function () {
+describe('IpFeedbackReportsController', function () {
     var mockDeliveryService, mockProgrammeService, mockConsigneeService, mockPurchaseOrderService, mockItemService;
 
     var deferredDistributionPlanPromise, deferredProgrammePromise, deferredConsigneePromise, deferredPurchaseOrderPromise, deferredItemPromise;
@@ -119,7 +119,7 @@ describe('EndUserResponsesController', function () {
     };
 
     beforeEach(function () {
-        module('EndUserResponses');
+        module('IpFeedbackReports');
 
         mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['getAllEndUserResponses']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
@@ -143,7 +143,7 @@ describe('EndUserResponsesController', function () {
             scope = $rootScope.$new();
             location = $location;
 
-            $controller('EndUserResponsesController', {
+            $controller('IpFeedbackReportsController', {
                 $scope: scope,
                 $location: location,
                 DeliveryService: mockDeliveryService,

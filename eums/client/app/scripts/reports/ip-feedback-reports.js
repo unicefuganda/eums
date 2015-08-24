@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('EndUserResponses', ['eums.config', 'Delivery', 'Programme', 'Consignee', 'PurchaseOrder', 'PurchaseOrderItem', 'Item', 'DeliveryNode'])
-    .controller('EndUserResponsesController', function ($scope, $q, $location, DeliveryService, ProgrammeService, ConsigneeService, PurchaseOrderService, PurchaseOrderItemService, ItemService, DeliveryNodeService) {
+angular.module('IpFeedbackReports', ['eums.config', 'Delivery', 'Programme', 'Consignee', 'PurchaseOrder', 'PurchaseOrderItem', 'Item', 'DeliveryNode'])
+    .controller('IpFeedbackReportsController', function ($scope, $q, $location, DeliveryService, ProgrammeService, ConsigneeService, PurchaseOrderService, PurchaseOrderItemService, ItemService, DeliveryNodeService) {
         $scope.allResponses = [];
         $scope.filteredResponses = [];
         $scope.programmeResponses = [];
