@@ -24,12 +24,42 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
-    it('should get ip feedback', function(){
+    it('should get ip feedback with no filters', function(){
         var fakeReport = {results:[{id:34}]};
-        mockBackend.whenGET('/api/api-feedback-report').respond(200, fakeReport);
-        reportService.ipFeedbackReport().then(function(response){
-            expect(response.data).toEqual(fakeReport);
-        })
-    })
+        var url = '/api/ip-feedback-report';
 
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        reportService.ipFeedbackReport('').then(function(response){
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
+
+    it('should get ip feedback with filters', function(){
+        var fakeReport = {results:[{id:34}]};
+        var url = '/api/ip-feedback-report?query=something';
+
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        reportService.ipFeedbackReport('something').then(function(response){
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
+
+    it('should get ip feedback with filters of multiple words', function(){
+        var fakeReport = {results:[{id:34}]};
+        var url = '/api/ip-feedback-report?query=something%20interesting';
+
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        reportService.ipFeedbackReport('something interesting').then(function(response){
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
 });

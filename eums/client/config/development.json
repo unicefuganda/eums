@@ -23,7 +23,7 @@
         "RESPONSES": "/api/responses/",
         "END_USER_RESPONSES": "/api/end-user-responses/",
         "IP_RESPONSES": "/api/ip-responses/",
-        "IP_FEEDBACK_REPORT": "/api/ip-feedback-report/",
+        "IP_FEEDBACK_REPORT": "/api/ip-feedback-report",
         "NODE_RESPONSES": "/api/node-responses/",
         "STOCK_REPORT": "/api/stock-report/",
         "DISTRIBUTION_PLAN_RESPONSES": "/api/distribution-plan-responses/",

@@ -36,12 +36,36 @@ describe('IpFeedbackReportsController', function () {
         });
 
         it('should call reports service', function () {
-            var report = [{id: 3}, {id: 33}];
-            deferredResult.resolve(report);
+            var response = {results:[{id: 3}, {id: 33}]};
+            deferredResult.resolve(response);
             scope.$apply();
 
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalled();
-            expect(scope.report).toEqual(report)
+            expect(scope.report).toEqual(response.results)
+        });
+    });
+
+    describe('on filtering', function () {
+        it('should call endpoint with query params after ', function () {
+            deferredResult.resolve({results: []});
+            scope.$apply();
+
+            var searchTerm = 'something';
+            scope.searchTerm = searchTerm;
+            scope.$apply();
+
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith(searchTerm);
+            expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
+        });
+
+        it('should not call the service when search is spaces only', function () {
+            deferredResult.resolve({});
+            scope.$apply();
+
+            scope.searchTerm = '      ';
+            scope.$apply();
+
+            expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(1);
         });
     });
 
