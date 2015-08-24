@@ -36,3 +36,6 @@ class PurchaseOrderItem(OrderItem):
                and self.sales_order_item.id == other.sales_order_item.id \
                and self.value == other.value \
                and self.quantity == other.quantity
+
+    def type(self):
+        return "Purchase Order"
