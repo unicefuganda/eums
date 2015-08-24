@@ -1,4 +1,5 @@
 from celery.utils.log import get_task_logger
+import ast
 
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -28,7 +29,8 @@ def hook(request):
         if flow.is_end(answer):
             _mark_as_complete(run)
             _dequeue_next_run(run.runnable.contact_person_id)
-            handler = ResponseAlertHandler(run.runnable, params['values'])
+            answer_values = ast.literal_eval(params['values'])
+            handler = ResponseAlertHandler(run.runnable, answer_values)
             handler.process()
         return HttpResponse(status=200)
 
