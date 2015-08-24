@@ -59,7 +59,7 @@
             </td>
             <td class="col-md-2">
                 <div id="input-location" class="pad-small">
-                    <input type="hidden"
+                    <input type="hidden" ng-if="districtsLoaded"
                            search-from-list
                            list="{{ districts }}"
                            ng-model="location"
