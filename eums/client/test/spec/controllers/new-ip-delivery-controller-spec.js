@@ -44,7 +44,7 @@ describe('New IP Delivery Controller', function () {
 
     it('should load deliveries made to IP for the item', function() {
         scope.$apply();
-        var filterParams = {item: routeParams.itemId, balance_greater_than: 0};
+        var filterParams = {item__item: routeParams.itemId, balance_greater_than: 0};
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
         expect(scope.deliveries).toEqual(ipNodes);
     });
