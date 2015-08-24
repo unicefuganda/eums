@@ -46,12 +46,12 @@
                                search-contacts
                                required="required"
                                value="{{ contact_person_id }}"
-                               ng-model="delivery.contact_person_id"
+                               ng-model="contact_person_id"
                                ng-attr-id="{{ 'contact-select' }}">
                     </div>
                     <div class="col-md-2 pad-small">
                         <button type="button" class="btn btn-default "
-                                ng-click="addContact(item, $index)">
+                                ng-click="addContact()">
                             <i class="glyphicon glyphicon-plus"></i>
                         </button>
                     </div>
@@ -123,3 +123,6 @@
         </div>
     </div>
 </div>
+<eums-contact></eums-contact>
+<ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"
+            ng-controller="AddConsigneeController"></ng-include>
