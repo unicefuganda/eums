@@ -3,6 +3,7 @@ from django.db import models
 from polymorphic import PolymorphicModel
 import requests
 from eums.models import Consignee
+from eums.services.contacts import ContactService
 
 
 class Runnable(PolymorphicModel):
@@ -37,3 +38,18 @@ class Runnable(PolymorphicModel):
 
     def responses(self):
         return dict(map(lambda run: (run, run.answers()), self._completed_runs()))
+
+    def _contact_name(self):
+        contact = self.build_contact()
+        return ContactService(**contact).full_name()
+
+    def number(self):
+        pass
+
+    def create_alert(self, issue, order_type):
+        self.alert_set.create(
+            order_type=order_type,
+            order_number=self.number(),
+            consignee_name=self.consignee.name,
+            contact_name=self._contact_name(),
+            issue=issue)

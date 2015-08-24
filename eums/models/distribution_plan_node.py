@@ -78,3 +78,6 @@ class DistributionPlanNode(Runnable):
 
     def confirm(self):
         self.distribution_plan.confirm()
+
+    def number(self):
+        return self.item.number()

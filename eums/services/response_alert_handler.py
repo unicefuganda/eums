@@ -16,21 +16,9 @@ class ResponseAlertHandler(object):
         negative_answer = self._retrieve_negative_answer()
 
         if negative_answer:
-
             issue = self.ALERT_TYPES[negative_answer["label"]]
             order_type = Alert.ORDER_TYPES.purchase_order
-            order_number = self.runnable.distributionplannode_set.first().item.number()
-            consignee_name = self.runnable.consignee.name
-            contact = self.runnable.build_contact()
-            contact_name = "%s %s" % (contact.get('firstName', ''), contact.get('lastName', ''))
-
-            Alert.objects.create(
-                order_type=order_type,
-                order_number=order_number,
-                consignee_name=consignee_name,
-                contact_name=contact_name,
-                issue=issue,
-                runnable=self.runnable)
+            self.runnable.create_alert(issue, order_type)
 
     def _retrieve_negative_answer(self):
         for answer in self.answer_values:

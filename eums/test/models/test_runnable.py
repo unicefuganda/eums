@@ -2,10 +2,14 @@ from unittest import TestCase
 
 from django.conf import settings
 from mock import patch
+from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
 from eums.test.factories.run_factory import RunFactory
 from eums.models import DistributionPlanNode, Run, SalesOrderItem, PurchaseOrderItem, ReleaseOrderItem, \
-    ReleaseOrder, PurchaseOrder, SalesOrder
+    ReleaseOrder, PurchaseOrder, SalesOrder, Alert
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, \
@@ -101,3 +105,24 @@ class DistributionPlanNodeTest(TestCase):
         second_run = RunFactory(runnable=self.node)
         self.assertEqual(self.node.latest_run(), second_run)
 
+    @patch('eums.models.runnable.Runnable.build_contact')
+    def test_should_create_alert(self, mock_contact):
+        purchase_order = PurchaseOrderFactory(order_number=5678)
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        consignee = ConsigneeFactory(name="Liverpool FC")
+
+        contact_person_id = 'some_id'
+        contact = {u'_id': contact_person_id,
+                   u'firstName': u'chris',
+                   u'lastName': u'george',
+                   u'phone': u'+256781111111'}
+        mock_contact.return_value = contact
+
+        delivery = DeliveryFactory(consignee=consignee, contact_person_id=contact_person_id)
+        DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
+
+        delivery.create_alert("Not received", "Waybill")
+        alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
+
+        self.assertEqual(alerts.count(), 1)
+        self.assertTrue(mock_contact.called)
