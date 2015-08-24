@@ -322,3 +322,15 @@ class DeliveryNodeTest(TestCase):
         node = DeliveryNodeFactory(item=release_order_item)
 
         self.assertEqual(node.number(), 98765)
+
+    def test_should_return_delivery_type_purchase_order(self):
+        po_item = PurchaseOrderItemFactory()
+        node = DeliveryNodeFactory(item=po_item)
+
+        self.assertEqual(node.type(), 'Purchase Order')
+
+    def test_should_return_delivery_type_waybill(self):
+        ro_item = ReleaseOrderItemFactory()
+        node = DeliveryNodeFactory(item=ro_item)
+
+        self.assertEqual(node.type(), 'Waybill')

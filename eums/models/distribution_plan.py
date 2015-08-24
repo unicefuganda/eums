@@ -69,15 +69,17 @@ class DistributionPlan(Runnable):
 
         return has_received_items
 
-    def type(self):
-        delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()
+    def _first_node(self):
+        return DistributionPlanNode.objects.filter(distribution_plan=self).first()
 
+    def type(self):
+        delivery_node = self._first_node()
         if delivery_node:
-            return 'Purchase Order' if isinstance(delivery_node.item, PurchaseOrderItem) else 'Waybill'
+            return delivery_node.type()
         return 'Unknown'
 
     def number(self):
-        delivery_node = DistributionPlanNode.objects.filter(distribution_plan=self).first()
+        delivery_node = self._first_node()
         return delivery_node.number() if delivery_node else 'Unknown'
 
     def number_of_items(self):

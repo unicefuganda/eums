@@ -81,3 +81,6 @@ class DistributionPlanNode(Runnable):
 
     def number(self):
         return self.item.number()
+
+    def type(self):
+        return self.item.type()
