@@ -1,23 +1,29 @@
 describe('New IP Delivery Controller', function () {
-    var mockIpService, location, scope, q;
+    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams;
     var districts = ['Kampala', 'Mukono'];
+    var ipNodes = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
 
     beforeEach(function () {
         module('NewIpDelivery');
         inject(function ($controller, $rootScope, $q, $location) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter']);
 
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
+            mockDeliveryNodeService.filter.and.returnValue($q.when(ipNodes));
 
             location = $location;
             spyOn($location, 'path').and.returnValue('fake location');
 
             scope = $rootScope.$new();
+            routeParams = {itemId: 2};
 
             q = $q;
             $controller('NewIpDeliveryController', {
                 $scope: scope,
-                IPService: mockIpService
+                IPService: mockIpService,
+                $routeParams: routeParams,
+                DeliveryNodeService: mockDeliveryNodeService
             });
         });
     });
@@ -34,6 +40,13 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
         expect(scope.districts).toEqual([{id: 'Kampala', name: 'Kampala'}, {id: 'Mukono', name: 'Mukono'}]);
         expect(scope.districtsLoaded).toBeTruthy();
+    });
+
+    it('should load deliveries made to IP for the item', function() {
+        scope.$apply();
+        var filterParams = {item: routeParams.itemId, balance_greater_than: 0};
+        expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
+        expect(scope.deliveries).toEqual(ipNodes);
     });
 
     it('should broadcast add contact event when addContact is called', function () {

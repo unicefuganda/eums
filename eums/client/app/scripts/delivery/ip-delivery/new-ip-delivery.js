@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NewIpDelivery', ['eums.config'])
-    .controller('NewIpDeliveryController', function ($scope, IPService) {
+    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams) {
         $scope.districts = [];
         $scope.contact = {};
         $scope.district = {};
@@ -12,6 +12,10 @@ angular.module('NewIpDelivery', ['eums.config'])
                 return {id: districtName, name: districtName};
             });
             $scope.districtsLoaded = true;
+        });
+
+        DeliveryNodeService.filter({item: $routeParams.itemId, balance_greater_than: 0}).then(function(nodes) {
+            $scope.deliveries = nodes;
         });
 
         $scope.addContact = function () {
