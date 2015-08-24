@@ -32,8 +32,7 @@ class ResponseAlertHandlerTest(TestCase):
 
     def test_should_create_alert_when_delivery_is_not_received(self):
         answer_values = [
-            {"category": {"base": "No"}, "label": Question.LABEL.deliveryReceived},
-            {"category": {"base": "Yes"}, "label": Question.LABEL.isDeliveryInGoodOrder}
+            {"category": {"base": "No"}, "label": Question.LABEL.deliveryReceived}
         ]
         purchase_order = PurchaseOrderFactory(order_number=5678)
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
