@@ -17,7 +17,6 @@
         "PO_ITEM_FOR_SO_ITEM": "/api/so-item-po-item/",
         "CONSIGNEE_PURCHASE_ORDERS": "/api/consignee-purchase-orders/",
         "CONSIGNEE_ITEM": "/api/consignee-item/",
-        "CONSIGNEE_PURCHASE_ORDER_ITEMS": "/api/consignee-purchase-order-items/",
         "PROGRAMME": "/api/programme/",
         "USER": "/api/user/",
         "QUESTION": "/api/question/",

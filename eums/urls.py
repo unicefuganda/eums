@@ -11,8 +11,6 @@ from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswe
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
-from eums.api.consignee_purchase_order_items.consignee_purchase_order_item_endpoint import ConsigneePurchaseOrderItems, \
-    ConsigneePurchaseOrderItemNode
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.item.item_endpoint import itemRouter
@@ -32,6 +30,7 @@ from eums.api.user.user_endpoint import userRouter
 from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
 from eums.api.option.option_endpoint import optionRouter
+
 
 urlpatterns = patterns(
     '',
@@ -60,10 +59,6 @@ urlpatterns = patterns(
     url(r'^api/current-user', 'eums.api.current_user.current_user_endpoint.current_user',
         name='current-user'),
     url(r'^api/web-answers', 'eums.api.answer.web_answers_endpoint.save_answers', name='save_answers'),
-    url(r'^api/consignee-purchase-order-items/(?P<consignee_id>\d+)/purchase-order/(?P<purchase_order_id>\d+)/$',
-        ConsigneePurchaseOrderItems.as_view(), name='consignee_purchase_order_items'),
-    url(r'^api/consignee-purchase-order-items/(?P<consignee_id>\d+)/sales-order-item/(?P<sales_order_item_id>\d+)/$',
-        ConsigneePurchaseOrderItemNode.as_view(), name='consignee_purchase_order_item_node'),
     url(r'^api/so-item-po-item/(?P<sales_order_item_id>\d+)/$',
         soItemPOItem.as_view(), name='so_item_po_item'),
     url(r'^api/responses/(?P<consignee_id>\d+)/$', ConsigneeResponses.as_view(), name='consignee_responses'),
