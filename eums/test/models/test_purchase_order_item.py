@@ -31,10 +31,10 @@ class PurchaseOrderItemTest(TestCase):
         self.assertEquals(purchase_order_item.available_balance(), 300)
 
         NodeFactory(item=purchase_order_item, quantity=120, track=True)
+
         self.assertEquals(purchase_order_item.available_balance(), 180)
 
     def test_should_return_type(self):
         purchase_order = PurchaseOrderFactory()
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
-
         self.assertEqual(purchase_order_item.type(), "Purchase Order")
