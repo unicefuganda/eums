@@ -11,5 +11,5 @@ delivery_40 = DistributionPlan.objects.create(date="2015-07-26", programme=progr
 delivery_41 = DistributionPlan.objects.create(date="2015-07-26", programme=programme_3, location="Bukomansimbi", consignee=consignee_32, contact_person_id="542bfa5108453c32ffd4cade", track=False,  delivery_date="2014-06-10", remark="blah blah")
 delivery_42 = DistributionPlan.objects.create(date="2015-07-26", programme=programme_1, location="Oyam", consignee=consignee_38, contact_person_id="5422bf5999f3eb0000a46ae6", track=False,  delivery_date="2014-10-14", remark="hh")
 
-delivery_43 = DistributionPlan.objects.create(date="2015-07-26", programme=programme_3, location="Bukomansimbi", consignee=consignee_32, contact_person_id="542bfa5108453c32ffd4cade", track=False,  delivery_date=FakeDate.build(2015, 07, 11), remark="blah blah")
+delivery_43 = DistributionPlan.objects.create(date="2015-07-26", programme=programme_3, location="Bukomansimbi", consignee=consignee_32, contact_person_id="542bfa5108453c32ffd4cade", track=True,  delivery_date=FakeDate.build(2015, 07, 11), remark="blah blah")
 
