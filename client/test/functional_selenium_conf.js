@@ -17,7 +17,7 @@ exports.config = {
 
     specs: ['functional/*-spec.js'],
 
-    baseUrl: 'http://localhost:9000',
+    baseUrl: 'http://localhost:8150',
 
     framework: 'jasmine2',
 

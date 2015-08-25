@@ -137,9 +137,7 @@ function testfunctional {
   source ~/.virtualenvs/eums/bin/activate
 
   if [ "$1" = "--headless" ]; then
-    grunt prep-test-env
-    python ../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
-    grunt functional-headless
+    grunt functional:headless
   elif [ "$1" = "--multi" ]; then
     grunt functional --multi
   else

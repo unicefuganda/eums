@@ -31,3 +31,6 @@ client/exports/*
 
 # build output from grunt
 eums/client/
+
+#build output
+build/

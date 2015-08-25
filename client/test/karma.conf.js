@@ -39,7 +39,6 @@ module.exports = function (config) {
             'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'app/scripts/**/*.js',
-            '.tmp/config/config.js',
             'test/spec/**/*.js'
         ],
 
