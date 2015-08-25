@@ -138,7 +138,7 @@ function testfunctional {
 
   if [ "$1" = "--headless" ]; then
     grunt prep-test-env
-    python ../../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
+    python ../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
     grunt functional-headless
   elif [ "$1" = "--multi" ]; then
     grunt functional --multi
