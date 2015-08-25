@@ -63,15 +63,14 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
         };
     })
     .factory('DeliveryNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService,
-                                              ServiceFactory, DeliveryNode, PurchaseOrderItemService,
-                                              ReleaseOrderItemService) {
+                                              ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
             propertyServiceMap: {
                 consignee: ConsigneeService,
                 contact_person_id: ContactService,
                 children: 'self',
-                item: PurchaseOrderItemService,
+                item: PurchaseOrderItemService
             },
             model: DeliveryNode,
             methods: {
