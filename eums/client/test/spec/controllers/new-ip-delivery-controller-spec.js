@@ -44,7 +44,7 @@ describe('New IP Delivery Controller', function () {
 
     it('should load deliveries made to IP for the item', function() {
         scope.$apply();
-        var filterParams = {item__item: routeParams.itemId, is_distributable: 0};
+        var filterParams = {item__item: routeParams.itemId, is_distributable: true};
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
         expect(scope.deliveries).toEqual(ipNodes);
     });
@@ -101,6 +101,18 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
 
         expect(scope.consignee).toEqual(consignee);
+    });
+
+    it('should compute totalQuantityShipped from individual deliveries quantityShipped', function() {
+        scope.$apply();
+        expect(scope.totalQuantityShipped).toBe(0);
+        scope.deliveries.first().quantityShipped = 100;
+        scope.$apply();
+        expect(scope.totalQuantityShipped).toBe(100);
+
+        scope.deliveries.last().quantityShipped = 500;
+        scope.$apply();
+        expect(scope.totalQuantityShipped).toBe(600);
     });
 
     it('should put consignee name into select after consignee-saved is called', function () {
