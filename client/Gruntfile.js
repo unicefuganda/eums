@@ -165,12 +165,6 @@ module.exports = function(grunt) {
         src: '**/*.html',
         dest: 'dist/app/views/'
       },
-      toDjango: {
-        expand: true,
-        cwd: 'dist/',
-        src: '**/*',
-        dest: '../eums/client/'
-      },
       toBuild: {
         expand: true,
         cwd: 'dist/',
@@ -366,13 +360,13 @@ module.exports = function(grunt) {
     'copy:toDist'
   ]);
 
-  grunt.registerTask('deploy:package', 'Build, Copy to Build', [
+  grunt.registerTask('package', 'Build, Copy to Build', [
     'build',
     'copy:toBuild'
   ]);
 
   grunt.registerTask('test:run', [
-    'deploy:package',
+    'package',
     'configureProxies:local',
     'run:djangoServer',
     'connect:local'
