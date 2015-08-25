@@ -2,8 +2,8 @@
 
 module.exports = function(grunt) {
 
-  require('load-grunt-tasks')(grunt);
   require('time-grunt')(grunt);
+  require('load-grunt-tasks')(grunt);
   var _ = require('lodash');
   var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
