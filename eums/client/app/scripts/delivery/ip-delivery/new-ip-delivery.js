@@ -7,14 +7,14 @@ angular.module('NewIpDelivery', ['eums.config'])
         $scope.district = {};
         $scope.consignee = {};
 
-        IPService.loadAllDistricts().then(function(response) {
+        IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
                 return {id: districtName, name: districtName};
             });
             $scope.districtsLoaded = true;
         });
 
-        DeliveryNodeService.filter({item__item: $routeParams.itemId, is_distributable: true}).then(function(nodes) {
+        DeliveryNodeService.filter({item__item: $routeParams.itemId, is_distributable: true}).then(function (nodes) {
             $scope.deliveries = nodes;
         });
 
@@ -33,7 +33,7 @@ angular.module('NewIpDelivery', ['eums.config'])
             event.stopPropagation();
         });
 
-        $scope.addConsignee = function(){
+        $scope.addConsignee = function () {
             $scope.$broadcast('add-consignee');
         };
 
@@ -42,4 +42,13 @@ angular.module('NewIpDelivery', ['eums.config'])
             $scope.$broadcast('set-consignee', consignee);
             event.stopPropagation();
         });
+
+        $scope.$watch('deliveries', function (deliveries) {
+            if (deliveries) {
+                $scope.totalQuantityShipped = deliveries.reduce(function (acc, delivery) {
+                    acc.quantityShipped += delivery.quantityShipped || 0;
+                    return acc;
+                }, {quantityShipped: 0}).quantityShipped;
+            }
+        }, true);
     });

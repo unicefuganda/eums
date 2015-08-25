@@ -96,28 +96,23 @@
                 <th class="item-list-col-header">Date Shipped</th>
                 <th class="item-list-col-header">Shipment</th>
                 <th class="item-list-col-header">Avail. Qty</th>
-                <th class="item-list-col-header">&nbsp;</th>
+                <th class="item-list-col-header">Quantity Shipped</th>
             </tr>
-            <tr>
-                <td>02/02/2015</td>
-                <td>2000144</td>
-                <td>1000</td>
+            <tr ng-repeat="delivery in deliveries">
+                <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ delivery.orderNumber }}</td>
+                <td>{{ delivery.balance }}</td>
                 <td class="table-row-input-column">
-                    <input type="text" id="quantity-shipped" class="form-control" only-digits ng-model="something">
+                    <input type="text" id="quantity-shipped" class="form-control" only-digits
+                           ng-model="delivery.quantityShipped">
                 </td>
             </tr>
+            <tfoot class="summary-row">
             <tr>
-                <td>02/02/2015</td>
-                <td>2000145</td>
-                <td>1050</td>
-                <td class="table-row-input-column">
-                    <input type="text" id="quantity-shipped" class="form-control" only-digits ng-model="something">
-                </td>
+                <td colspan="3">TOTAL QUANTITY SHIPPED</td>
+                <td>{{ totalQuantityShipped }}</td>
             </tr>
-            <tr class="summary-row">
-                <td colspan="3">SELECTED QUANTITY</td>
-                <td>2050</td>
-            </tr>
+            </tfoot>
         </table>
     </div>
 </div>
