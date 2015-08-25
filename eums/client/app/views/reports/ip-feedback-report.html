@@ -38,8 +38,15 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="11">
-                        <si-table-pagination limit="20" indices="3"></si-table-pagination>
+                    <td colspan="6" class="centered">
+                        <pagination total-items="count"
+                                    ng-model="currentPage"
+                                    boundary-links="true"
+                                    ng-change="goToPage(currentPage)"
+                                    max-size="5"
+                                    rotate="false"
+                                    items-per-page="pageSize">
+                        </pagination>
                     </td>
                 </tr>
                 </tfoot>
