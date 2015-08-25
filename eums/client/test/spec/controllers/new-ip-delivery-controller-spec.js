@@ -1,14 +1,16 @@
 describe('New IP Delivery Controller', function () {
-    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams;
+    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes;
     var districts = ['Kampala', 'Mukono'];
-    var ipNodes = [{id: 1}, {id: 2}, {id: 3}, {id: 4}];
+    var orderItemId = 1890;
 
     beforeEach(function () {
         module('NewIpDelivery');
         inject(function ($controller, $rootScope, $q, $location) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter']);
-
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
+            mockDeliveryNode = function (options) {
+                this.track = options.track;
+            };
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(ipNodes));
 
@@ -18,21 +20,27 @@ describe('New IP Delivery Controller', function () {
             scope = $rootScope.$new();
             routeParams = {itemId: 2};
 
+            ipNodes = [
+                {id: 1, item: orderItemId, quantityShipped: 10},
+                {id: 2, item: orderItemId, quantityShipped: 20},
+                {id: 3, item: orderItemId, quantityShipped: 30},
+                {id: 4, item: orderItemId, quantityShipped: 40}
+            ];
+
             q = $q;
             $controller('NewIpDeliveryController', {
                 $scope: scope,
                 IPService: mockIpService,
                 $routeParams: routeParams,
-                DeliveryNodeService: mockDeliveryNodeService
+                DeliveryNodeService: mockDeliveryNodeService,
+                DeliveryNode: mockDeliveryNode
             });
         });
     });
 
     it('should have empty initial data on load', function () {
-        expect(scope.contact).toEqual({});
         expect(scope.districts).toEqual([]);
-        expect(scope.district).toEqual({});
-        expect(scope.consignee).toEqual({});
+        expect(JSON.stringify(scope.newDelivery)).toEqual(JSON.stringify({track: true}));
     });
 
     it('should load all districts and put them on scope', function () {
@@ -42,7 +50,7 @@ describe('New IP Delivery Controller', function () {
         expect(scope.districtsLoaded).toBeTruthy();
     });
 
-    it('should load deliveries made to IP for the item', function() {
+    it('should load deliveries made to IP for the item', function () {
         scope.$apply();
         var filterParams = {item__item: routeParams.itemId, is_distributable: true};
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
@@ -62,8 +70,8 @@ describe('New IP Delivery Controller', function () {
         contactScope.$emit('contact-saved', contact);
         scope.$apply();
 
-        expect(scope.contact_person_id).toBe(contact._id);
-        expect(scope.contact).toEqual(contact);
+        expect(scope.newDelivery.contact_person_id).toBe(contact._id);
+        expect(scope.newDelivery.contact).toEqual(contact);
     });
 
     it('should put contact name into select after contact-saved is called', function () {
@@ -100,19 +108,25 @@ describe('New IP Delivery Controller', function () {
         consigneeScope.$emit('consignee-saved', consignee);
         scope.$apply();
 
-        expect(scope.consignee).toEqual(consignee);
+        expect(scope.newDelivery.consignee).toEqual(consignee);
     });
 
-    it('should compute totalQuantityShipped from individual deliveries quantityShipped', function() {
+    it('should compute new delivery quantity from individual deliveries quantityShipped', function () {
         scope.$apply();
-        expect(scope.totalQuantityShipped).toBe(0);
+        expect(scope.newDelivery.quantity).toBe(100);
         scope.deliveries.first().quantityShipped = 100;
         scope.$apply();
-        expect(scope.totalQuantityShipped).toBe(100);
+        expect(scope.newDelivery.quantity).toBe(190);
 
         scope.deliveries.last().quantityShipped = 500;
         scope.$apply();
-        expect(scope.totalQuantityShipped).toBe(600);
+        expect(scope.newDelivery.quantity).toBe(650);
+    });
+
+    xit('it should format new delivery date correctly on change', function() {
+        scope.newDelivery.deliveryDate = '2015-08-13T21:00:00.000Z';
+        scope.$apply();
+        expect(scope.newDelivery.deliveryDate).toBe('2015-08-13');
     });
 
     it('should put consignee name into select after consignee-saved is called', function () {
@@ -123,5 +137,12 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
 
         expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', consignee);
+    });
+
+    it('should save new delivery', function () {
+        scope.$apply();
+        scope.save();
+        var createArgs = mockDeliveryNodeService.create.calls.allArgs().first().first();
+        expect(JSON.stringify(createArgs)).toEqual(JSON.stringify({track: true, quantity: 100, item: 1890}));
     });
 });

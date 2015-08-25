@@ -1,11 +1,9 @@
 'use strict';
 
 angular.module('NewIpDelivery', ['eums.config'])
-    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams) {
+    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode) {
         $scope.districts = [];
-        $scope.contact = {};
-        $scope.district = {};
-        $scope.consignee = {};
+        $scope.newDelivery = new DeliveryNode({track: true});
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
@@ -27,8 +25,8 @@ angular.module('NewIpDelivery', ['eums.config'])
             var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
             contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
 
-            $scope.contact = contact;
-            $scope.contact_person_id = contact._id;
+            $scope.newDelivery.contact = contact;
+            $scope.newDelivery.contact_person_id = contact._id;
 
             event.stopPropagation();
         });
@@ -38,17 +36,31 @@ angular.module('NewIpDelivery', ['eums.config'])
         };
 
         $scope.$on('consignee-saved', function (event, consignee) {
-            $scope.consignee = consignee;
+            $scope.newDelivery.consignee = consignee;
             $scope.$broadcast('set-consignee', consignee);
             event.stopPropagation();
         });
 
         $scope.$watch('deliveries', function (deliveries) {
             if (deliveries) {
-                $scope.totalQuantityShipped = deliveries.reduce(function (acc, delivery) {
+                $scope.newDelivery.quantity = deliveries.reduce(function (acc, delivery) {
                     acc.quantityShipped += delivery.quantityShipped || 0;
                     return acc;
                 }, {quantityShipped: 0}).quantityShipped;
             }
         }, true);
+
+        $scope.$watch('newDelivery.deliveryDate', function (val) {
+            if (val) {
+                var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
+                $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
+            }
+        });
+
+        $scope.save = function () {
+            $scope.newDelivery.item = $scope.deliveries.filter(function (delivery) {
+                return delivery.quantityShipped > 0;
+            }).first().item;
+            DeliveryNodeService.create($scope.newDelivery);
+        };
     });

@@ -16,7 +16,7 @@
                             <span class="input-group" eums-date-picker>
                                 <input type="text" class="form-control"
                                        datepicker-popup="dd/MM/yyyy"
-                                       ng-model="deliveryDate"
+                                       ng-model="newDelivery.deliveryDate"
                                        is-open="datepicker[$index]"
                                        datepicker-options="dateOptions"
                                        show-button-bar="false"
@@ -35,7 +35,7 @@
                 <div id="input-consignee" class="col-md-12 pad-small">
                     <div class="pad-small col-md-10">
                         <input type="hidden" search-consignees
-                               ng-model="consignee"
+                               ng-model="newDelivery.consignee"
                                ng-attr-id="{{ 'ip-select' }}"
                                value="{{ consignee }}">
                     </div>
@@ -54,7 +54,7 @@
                                search-contacts
                                required="required"
                                value="{{ contact_person_id }}"
-                               ng-model="contact_person_id"
+                               ng-model="newDelivery.contact_person_id"
                                ng-attr-id="{{ 'contact-select' }}">
                     </div>
                     <div class="col-md-2 pad-small">
@@ -70,7 +70,7 @@
                     <input type="hidden" ng-if="districtsLoaded"
                            search-from-list
                            list="{{ districts }}"
-                           ng-model="location"
+                           ng-model="newDelivery.location"
                            ng-attr-id="{{ 'location-select' }}"
                            value="{{ location }}">
                 </div>
@@ -79,7 +79,7 @@
                 <div class="text-center">
                     <input type="checkbox" class="end-user-checkbox"
                            value="{{ isEndUser }}"
-                           ng-model="isEndUser">
+                           ng-model="newDelivery.isEndUser">
                 </div>
             </td>
         </tr>
@@ -110,16 +110,17 @@
             <tfoot class="summary-row">
             <tr>
                 <td colspan="3">TOTAL QUANTITY SHIPPED</td>
-                <td>{{ totalQuantityShipped }}</td>
+                <td>{{ newDelivery.quantity }}</td>
             </tr>
             </tfoot>
         </table>
     </div>
 </div>
+{{ newDelivery }}
 <div>
     <div class="pad-20 row">
         <div class="pull-right">
-            <button id="save-delivery-report" type="button" class="btn btn-primary">
+            <button id="save-delivery-report" type="button" class="btn btn-primary" ng-click="save()">
                 <i class="glyphicon glyphicon-floppy-save"> </i>
                 Save Delivery Report
             </button>
