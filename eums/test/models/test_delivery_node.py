@@ -1,7 +1,8 @@
 from unittest import TestCase
 from django.db import IntegrityError
 
-from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, Item, \
+from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
+    Item, \
     Consignee
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
@@ -25,16 +26,6 @@ class DeliveryNodeTest(TestCase):
 
     def tearDown(self):
         self.clean_up()
-
-    def test_should_have_all_expected_fields(self):
-        node = DeliveryNodeFactory()
-        fields = node._meta._name_map
-
-        self.assertEqual(len(node._meta.fields), 12)
-        for field in ['distribution_plan', 'consignee', 'tree_position', 'location',
-                      'contact_person_id', 'item_id', 'delivery_date', 'remark',
-                      'id', 'track', 'runnable_ptr']:
-            self.assertIn(field, fields)
 
     def test_should_create_itself_with_any_type_of_order_item(self):
         sales_order_item = SalesOrderItemFactory()
@@ -79,16 +70,6 @@ class DeliveryNodeTest(TestCase):
 
         Arc.objects.all().delete()
         self.assertEqual(node_one.quantity_out(), 0)
-
-    def test_should_compute_balance_from_incoming_and_outgoing_arcs(self):
-        node_one = DeliveryNodeFactory(quantity=0)
-        ArcFactory(source=None, target=node_one, quantity=50)
-        node_two = DeliveryNodeFactory()
-        ArcFactory(source=node_one, target=node_two, quantity=30)
-        self.assertEqual(node_one.balance(), 20)
-
-        ArcFactory(source=node_one, target=node_two, quantity=10)
-        self.assertEqual(node_one.balance(), 10)
 
     def test_should_create_null_source_arc_for_node_if_parents_are_not_specified_but_quantity_is(self):
         root_node = DeliveryNodeFactory(quantity=70)
@@ -334,3 +315,21 @@ class DeliveryNodeTest(TestCase):
         node = DeliveryNodeFactory(item=ro_item)
 
         self.assertEqual(node.type(), 'Waybill')
+
+    def test_should_set_balance_on_node_when_saved(self):
+        node = DeliveryNodeFactory(quantity=100)
+        self.assertEqual(node.balance, 100)
+
+    def test_should_update_balance_when_node_quantities_change(self):
+        node = DeliveryNodeFactory(quantity=100)
+        child = DeliveryNodeFactory(parents=[(node, 50)])
+
+        self.assertEqual(child.balance, 50)
+        self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 50)
+
+        child_two = DeliveryNodeFactory(parents=[(node, 40)])
+        self.assertEqual(child_two.balance, 40)
+        self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 10)
+
+        child_two.delete()
+        self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 50)

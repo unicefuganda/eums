@@ -28,6 +28,9 @@ class DeliveryNodeManager(PolymorphicManager):
             return self.model.objects.filter(item__in=order_items, **kwargs)
         raise TypeError('both delivery and order items cannot be null')
 
+    def delivered_by_consignee(self, consignee, item_id):
+        return self.model.objects.filter(arcs_in__source__consignee=consignee, item__item_id=item_id)
+
     @staticmethod
     def _create_arcs(node, parents, quantity):
         if parents and len(parents):
@@ -39,8 +42,3 @@ class DeliveryNodeManager(PolymorphicManager):
                     Arc.objects.create(target=node, source=parent_tuple[0], quantity=parent_tuple[1])
         elif quantity:
             Arc.objects.create(target=node, quantity=quantity)
-
-    def delivered_by_consignee(self, consignee, item_id):
-        return self.model.objects.filter(arcs_in__source__consignee=consignee, item__item_id=item_id)
-
-
