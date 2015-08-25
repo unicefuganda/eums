@@ -9,7 +9,7 @@ describe('Consignees and subconsignees', function () {
 
         beforeEach(function () {
             loginPage.visit();
-            loginPage.loginAs('admin', 'admin');
+            loginPage.loginAs('unicef_admin', 'wakiso');
             consigneesPage.visit();
         });
 
