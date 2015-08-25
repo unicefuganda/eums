@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.db.models import Q
 
 from rest_framework.decorators import api_view
@@ -23,7 +24,27 @@ def ip_feedback_report(request):
             if nodes:
                 build_answers_for_nodes(delivery, nodes, response)
 
-        return Response(response, status=status.HTTP_200_OK)
+        paginated_results = Paginator(response, 10)
+        page_number = get_page_number(request)
+
+        reports_current_page = paginated_results.page(page_number)
+
+        data = {
+            'next': reports_current_page.has_next(),
+            'previous': reports_current_page.has_previous(),
+            'count': paginated_results.num_pages,
+            'pageSize': len(reports_current_page.object_list),
+            'results': reports_current_page.object_list
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
+
+
+def get_page_number(request):
+    if request.GET.get('page'):
+        return request.GET.get('page')
+    else:
+        return 1
 
 
 def build_answers_for_nodes(delivery, nodes, response):

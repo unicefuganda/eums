@@ -67,61 +67,85 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         response = self.client.get(ENDPOINT_URL)
 
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
 
     def test_should_return_items_and_all_their_answers(self):
         delivery_one, node_one, purchase_order_item, _, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
+        results = response.data['results'][0]
 
-        self.assertEqual(len(response.data), 2)
-        self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, response.data[0])
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, response.data[0])
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, response.data[0])
-        self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number},
-                                      response.data[0])
-        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, response.data[0])
-        self.assertEqual(len(response.data[0]['answers']), 5)
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
+        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
+        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
+        self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
+        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, results)
+        self.assertEqual(len(results['answers']), 5)
+
+    def test_should_return_paginated_items_and_all_their_answers(self):
+        self.setup_delivery_with_nodes(20)
+
+        response = self.client.get(ENDPOINT_URL, content_type='application/json')
+
+        self.assertEqual(len(response.data['results']), 10)
+        self.assertEqual(response.data['next'], True)
+        self.assertEqual(response.data['previous'], False)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(response.data['pageSize'], 10)
+
+        response = self.client.get(ENDPOINT_URL + '?page=2', content_type='application/json')
+
+        self.assertEqual(len(response.data['results']), 10)
+        self.assertEqual(response.data['next'], False)
+        self.assertEqual(response.data['previous'], True)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(response.data['pageSize'], 10)
 
     def test_should_filter_answers_by_item_description(self):
         _, _, _, release_order_item, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?query=baba', content_type='application/json')
 
-        self.assertEqual(len(response.data), 1)
-        self.assertDictContainsSubset({'item_description': release_order_item.item.description}, response.data[0])
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'item_description': release_order_item.item.description}, results[0])
 
     def test_should_filter_answers_by_programme_name(self):
         delivery_one, _, _, _, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?query=my%20first', content_type='application/json')
 
-        self.assertEqual(len(response.data), 1)
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, response.data[0])
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results[0])
 
     def test_should_filter_answers_by_implementing_partner(self):
         _, node_one, _, _, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?query=consignee%20one', content_type='application/json')
 
-        self.assertEqual(len(response.data), 1)
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, response.data[0])
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results[0])
 
     def test_should_filter_answers_by_purchase_order_number(self):
         _, node_one, _, _, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?query=329', content_type='application/json')
 
-        self.assertEqual(len(response.data), 1)
-        self.assertDictContainsSubset({'order_number': node_one.item.number()}, response.data[0])
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'order_number': node_one.item.number()}, results[0])
 
     def test_should_filter_answers_by_waybill(self):
         _, _, _, _, node_two = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?query=5540', content_type='application/json')
 
-        self.assertEqual(len(response.data), 1)
-        self.assertDictContainsSubset({'order_number': node_two.item.number()}, response.data[0])
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'order_number': node_two.item.number()}, results[0])
 
     def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True):
         consignee_one = ConsigneeFactory(name='consignee one')
@@ -162,3 +186,33 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         MultipleChoiceAnswerFactory(question=question_4, run=run_two, value=option_4)
         TextAnswerFactory(run=run_two, question=question_5, value='2013-12-12')
         return delivery_one, node_one, purchase_order_item, release_order_item, node_two
+
+    def setup_delivery_with_nodes(self, number_of_nodes):
+        consignee_one = ConsigneeFactory(name='consignee one')
+        programme_one = ProgrammeFactory(name='my first programme')
+        po_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'),
+                                           purchase_order=PurchaseOrderFactory(order_number=329293))
+
+        delivery = DeliveryFactory(programme=programme_one, track=True)
+        flow = FlowFactory(for_runnable_type='WEB')
+        question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
+                                                   position=1)
+        option_1 = OptionFactory(text='Yes', question=question_1)
+        question_2 = NumericQuestionFactory(text='How much was received?', label='amountReceived', flow=flow)
+        question_3 = MultipleChoiceQuestionFactory(text='What is the quality of the product?', label='qualityOfProduct',
+                                                   flow=flow, position=3)
+        option_3 = OptionFactory(text='Damaged', question=question_3)
+        question_4 = MultipleChoiceQuestionFactory(text='Are you satisfied with the product?',
+                                                   label='satisfiedWithProduct', flow=flow, position=4)
+        option_4 = OptionFactory(text='Yes', question=question_4)
+        question_5 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
+
+        for index in range(number_of_nodes):
+            node = DeliveryNodeFactory(distribution_plan=delivery, consignee=consignee_one, item=po_item)
+
+            run_one = RunFactory(runnable=node)
+            MultipleChoiceAnswerFactory(question=question_1, run=run_one, value=option_1)
+            NumericAnswerFactory(question=question_2, run=run_one, value=5)
+            MultipleChoiceAnswerFactory(question=question_3, run=run_one, value=option_3)
+            MultipleChoiceAnswerFactory(question=question_4, run=run_one, value=option_4)
+            TextAnswerFactory(run=run_one, question=question_5, value='2014-10-10')
