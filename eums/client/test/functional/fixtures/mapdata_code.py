@@ -1,4 +1,5 @@
 from eums.client.test.functional.fixtures.mapdata_runs import *
+from eums.fixtures import web_questions
 from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.models import DistributionReport, Alert
 from eums.models import NumericAnswer
@@ -6,7 +7,7 @@ from eums.models import TextAnswer
 from eums.models import MultipleChoiceAnswer
 from eums.fixtures.end_user_questions import *
 from eums.test.factories.alert_factory import AlertFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
@@ -108,3 +109,23 @@ DeliveryNodeFactory(parents=[(wakiso_node_2, 58)], tree_position="END_USER", ite
 AlertFactory(order_type=Alert.ORDER_TYPES.waybill, order_number=123456, issue=Alert.ISSUE_TYPES.not_received,
              consignee_name='Some Consignee Name', contact_name='Some Contact Name')
 AlertFactory(order_type=Alert.ORDER_TYPES.purchase_order, order_number=654321, issue=Alert.ISSUE_TYPES.bad_condition)
+
+# web answers
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_77)
+NumericAnswerFactory(question=web_questions.web_question_2, run=run_77)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.damaged, run=run_77)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_77)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_77)
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_78)
+NumericAnswerFactory(question=web_questions.web_question_2, run=run_78)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.damaged, run=run_78)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_78)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_78)
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_79)
+NumericAnswerFactory(question=web_questions.web_question_2, run=run_79)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.damaged, run=run_79)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_79)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_79)

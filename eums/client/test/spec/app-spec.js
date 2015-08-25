@@ -114,10 +114,10 @@ describe('Route Provider', function () {
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/item-deliveries.html');
     });
 
-    it('should have ip feedback reports route pointing to the righ controller', function(){
-        var route = '/ip-feedback-reports';
+    it('should have ip feedback report route pointing to the righ controller', function(){
+        var route = '/ip-feedback-report';
         expect((Object.keys(routes.routes))).toContain(route);
-        expect(routes.routes[route].controller).toBe('IpFeedbackReportsController');
-        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-reports.html');
+        expect(routes.routes[route].controller).toBe('IpFeedbackReportController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-report.html');
     });
 });

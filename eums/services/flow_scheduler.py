@@ -24,7 +24,7 @@ def schedule_run_for(runnable):
             contact = runnable.build_contact()
             task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
             Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
-                               status=Run.STATUS.scheduled, phone=contact['phone'])
+                               status=Run.STATUS.scheduled, phone=contact['phone'] if contact else None)
 
 
 @app.task

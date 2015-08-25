@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('IpFeedbackReports', ['eums.config', 'ReportService', 'Loader'])
-    .controller('IpFeedbackReportsController', function ($scope, $q, $location, ReportService, LoaderService) {
+angular.module('IpFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
+    .controller('IpFeedbackReportController', function ($scope, $q, $location, ReportService, LoaderService) {
 
         loadIpFeedbackReport();
 

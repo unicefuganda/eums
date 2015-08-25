@@ -15,7 +15,7 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
 angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
-    'ImportData', 'IpFeedbackReports', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
+    'ImportData', 'IpFeedbackReport', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
     'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveredItems', 'IpItemDeliveries', 'Alerts', 'NewIpDelivery'])
 
 .config(function ($routeProvider, $httpProvider) {
@@ -99,9 +99,9 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/ip-feedback-reports', {
-            templateUrl: '/static/app/views/reports/ip-feedback-reports.html',
-            controller: 'IpFeedbackReportsController',
+        .when('/ip-feedback-report', {
+            templateUrl: '/static/app/views/reports/ip-feedback-report.html',
+            controller: 'IpFeedbackReportController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_reports');
