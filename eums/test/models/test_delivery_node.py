@@ -333,3 +333,12 @@ class DeliveryNodeTest(TestCase):
 
         child_two.delete()
         self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 50)
+
+    def test_should_know_its_order_number(self):
+        purchase_order = PurchaseOrderFactory(order_number=200)
+        po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=purchase_order))
+        self.assertEqual(po_node.order_number(), 200)
+
+        release_order = ReleaseOrderFactory(waybill=300)
+        ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=release_order))
+        self.assertEqual(ro_node.order_number(), 300)

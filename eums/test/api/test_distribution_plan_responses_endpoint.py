@@ -63,4 +63,6 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
 
         response = self.client.get(endpoint_url)
 
-        self.assertDictEqual(response.data, expected_data)
+        self.assertDictContainsSubset({'node': expected_data['node']}, response.data)
+        self.assertDictContainsSubset({'answers': expected_data['answers']}, response.data)
+        self.assertItemsEqual(expected_data['children'], response.data['children'])
