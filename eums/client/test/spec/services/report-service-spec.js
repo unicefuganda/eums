@@ -31,7 +31,7 @@ describe('Report Service', function () {
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
 
-        reportService.ipFeedbackReport('').then(function(response){
+        reportService.ipFeedbackReport().then(function(response){
             expect(response).toEqual(fakeReport);
         });
         mockBackend.flush();
@@ -44,7 +44,7 @@ describe('Report Service', function () {
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
 
-        reportService.ipFeedbackReport('something').then(function(response){
+        reportService.ipFeedbackReport({query: 'something'}).then(function(response){
             expect(response).toEqual(fakeReport);
         });
         mockBackend.flush();
@@ -57,9 +57,23 @@ describe('Report Service', function () {
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
 
-        reportService.ipFeedbackReport('something interesting').then(function(response){
+        reportService.ipFeedbackReport({query: 'something interesting'}).then(function(response){
             expect(response).toEqual(fakeReport);
         });
         mockBackend.flush();
     });
+
+    it('should get ip feedback report paginated', function(){
+        var fakeReport = {results:[{id:34}]};
+        var url = '/api/ip-feedback-report?page=2';
+
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        reportService.ipFeedbackReport({page: '2'}).then(function(response){
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
+
 });
