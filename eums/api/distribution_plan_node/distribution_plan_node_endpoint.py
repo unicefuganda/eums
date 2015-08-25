@@ -10,6 +10,7 @@ from eums.models import DistributionPlanNode as DeliveryNode, UserProfile
 class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
     quantity = serializers.IntegerField(write_only=True, required=False)
     parents = serializers.ListField(required=False)
+    balance = serializers.IntegerField(read_only=True, required=False)
     consignee_name = serializers.CharField(read_only=True, source='consignee.name')
     item_description = serializers.CharField(read_only=True, source='item.item.description')
 
@@ -17,7 +18,7 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
         model = DeliveryNode
         fields = ('id', 'distribution_plan', 'location', 'consignee', 'tree_position', 'parents', 'quantity_in',
                   'contact_person_id', 'item', 'delivery_date', 'remark', 'track', 'quantity', 'quantity_out',
-                  'balance', 'has_children', 'consignee_name', 'item_description')
+                  'balance', 'has_children', 'consignee_name', 'item_description', 'order_number')
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):

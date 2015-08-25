@@ -8,7 +8,10 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.release_order_factory import ReleaseOrderFactory
+from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan-node/'
 
@@ -203,6 +206,17 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(nodes), 1)
         self.assertItemsEqual([delivery_node.id], node_ids)
+
+    def test_should_include_order_number_in_delivery_node_fields(self):
+        purchase_order = PurchaseOrderFactory(order_number=200)
+        DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=purchase_order))
+
+        release_order = ReleaseOrderFactory(waybill=300)
+        DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=release_order))
+
+        response = self.client.get(ENDPOINT_URL)
+        node_order_numbers = [node['order_number'] for node in response.data]
+        self.assertItemsEqual([300, 200], node_order_numbers)
 
     def test_should_filter_out_distributable_nodes(self):
         distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee)
