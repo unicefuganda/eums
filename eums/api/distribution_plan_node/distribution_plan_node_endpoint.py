@@ -1,5 +1,5 @@
+from django.db.models import Sum, F, Q
 from eums.api.standard_pagination import StandardResultsSetPagination
-from rest_framework import filters
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
@@ -33,15 +33,20 @@ class DistributionPlanNodeViewSet(ModelViewSet):
             item_id = self.request.GET.get('consignee_deliveries_for_item')
             if item_id:
                 return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id)
-            return DeliveryNode.objects.filter(consignee=user_profile.consignee)
+            return self._all_nodes_delivered_to_consignee(user_profile)
         return self.queryset._clone()
+
+    def _all_nodes_delivered_to_consignee(self, user_profile):
+        queryset = DeliveryNode.objects.filter(consignee=user_profile.consignee)
+        if self.request.GET.get('is_distributable'):
+            return queryset.filter(balance__gt=0)
+        return queryset
 
     def list(self, request, *args, **kwargs):
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':
             self.paginator.page_size = 0
         return super(DistributionPlanNodeViewSet, self).list(request, *args, **kwargs)
-
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)
