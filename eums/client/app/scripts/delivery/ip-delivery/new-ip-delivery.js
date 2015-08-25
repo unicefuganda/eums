@@ -14,7 +14,7 @@ angular.module('NewIpDelivery', ['eums.config'])
             $scope.districtsLoaded = true;
         });
 
-        DeliveryNodeService.filter({item__item: $routeParams.itemId, balance_greater_than: 0}).then(function(nodes) {
+        DeliveryNodeService.filter({item__item: $routeParams.itemId, is_distributable: true}).then(function(nodes) {
             $scope.deliveries = nodes;
         });
 

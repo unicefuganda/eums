@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from eums.api.distribution_plan_node.distribution_plan_node_endpoint import DistributionPlanNodeViewSet
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -38,6 +39,9 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         SalesOrder.objects.all().delete()
         DistributionPlan.objects.all().delete()
 
+    def test_should_filter_nodes_by_order_item_item(self):
+        self.assertIn('item__item', DistributionPlanNodeViewSet.filter_fields)
+
     def test_should_add_consignee_name_accessor_to_delivery_nodes_fetched_from_endpoint(self):
         consignee_name = 'WAKISO DHO'
         consignee = ConsigneeFactory(name=consignee_name)
@@ -46,7 +50,7 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data[0]['consignee_name'], consignee_name)
 
     def test_should_add_item_description_accessor_to_delivery_nodes_fetched_from_endpoint(self):
-        item_description = 'Plumpy Nut'
+        item_description = 'PlumpyNut'
         item = ItemFactory(description=item_description)
         DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item))
         response = self.client.get(ENDPOINT_URL)
@@ -199,3 +203,18 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(nodes), 1)
         self.assertItemsEqual([delivery_node.id], node_ids)
+
+    def test_should_filter_out_distributable_nodes(self):
+        distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee)
+        DeliveryNodeFactory(parents=[(distributable_parent, 50)])
+        closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee)
+        DeliveryNodeFactory(parents=[(closed_parent, 80)])
+
+        self.logout()
+        self.log_consignee_in(self.consignee)
+        response = self.client.get('%s?is_distributable=true' % ENDPOINT_URL)
+
+        node_ids = [node['id'] for node in response.data]
+        self.assertEqual(len(response.data), 1)
+        self.assertIn(distributable_parent.id, node_ids)
+        self.assertNotIn(closed_parent.id, node_ids)
