@@ -10,6 +10,7 @@ class DistributionPlanNode(Runnable):
     distribution_plan = models.ForeignKey('DistributionPlan')
     item = models.ForeignKey('OrderItem')
     tree_position = models.CharField(max_length=255, choices=positions)
+    balance = models.IntegerField(null=True, blank=True, default=0)
     parents = None
     quantity = None
     objects = DeliveryNodeManager()
@@ -22,16 +23,20 @@ class DistributionPlanNode(Runnable):
         if self.id and self.quantity_in() == 0 and self.track:
             self.delete()
             return self
+        self.balance = self.quantity_in() - self.quantity_out()
         super(DistributionPlanNode, self).save(*args, **kwargs)
+        self._update_parent_balances(self._parents())
+
+    def delete(self, using=None):
+        parents = list(self._parents())
+        super(DistributionPlanNode, self).delete(using=using)
+        self._update_parent_balances(parents)
 
     def quantity_in(self):
         return reduce(lambda total, arc: total + arc.quantity, self.arcs_in.all(), 0)
 
     def quantity_out(self):
         return reduce(lambda total, arc: total + arc.quantity, self.arcs_out.all(), 0)
-
-    def balance(self):
-        return self.quantity_in() - self.quantity_out()
 
     def get_ip(self):
         root_node = DistributionPlanNode.objects.root_nodes_for(delivery=self.distribution_plan).first()
@@ -58,6 +63,15 @@ class DistributionPlanNode(Runnable):
 
     def is_root(self):
         return self.arcs_in.exists() and not self.arcs_in.first().source
+
+    @staticmethod
+    def _update_parent_balances(parents):
+        for parent in parents:
+            parent._update_balance()
+
+    def _update_balance(self):
+        self.balance = self.quantity_in() - self.quantity_out()
+        self.save()
 
     def _update_arcs(self):
         self.arcs_in.all().delete()
