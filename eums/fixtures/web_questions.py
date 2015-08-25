@@ -5,10 +5,10 @@ web_flow, _ = Flow.objects.get_or_create(rapid_pro_id=0, for_runnable_type=Runna
 web_question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=[], text='Was the item received?', label='itemReceived', flow=web_flow,
     when_answered='update_consignee_inventory', position=1)
-Option.objects.get_or_create(text='Yes', question=web_question_1)
+yes_1, _ = Option.objects.get_or_create(text='Yes', question=web_question_1)
 Option.objects.get_or_create(text='No', question=web_question_1)
 
-NumericQuestion.objects.get_or_create(
+web_question_2, _ = NumericQuestion.objects.get_or_create(
     uuids=[], text='How much was received?', label='amountReceived', flow=web_flow,
     when_answered='update_consignee_stock_level', position=2)
 
@@ -31,9 +31,9 @@ web_flow.save()
 web_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'],
     text='Are you satisfied with the product?', label='satisfiedWithProduct', flow=web_flow, position=4)
-yes, _ = Option.objects.get_or_create(text='Yes', question=web_question_4)
+yes_2, _ = Option.objects.get_or_create(text='Yes', question=web_question_4)
 Option.objects.get_or_create(text='No', question=web_question_4)
-web_flow.end_nodes.append([web_question_4.id, yes.id])
+web_flow.end_nodes.append([web_question_4.id, yes_2.id])
 web_flow.save()
 
 web_question_5, _ = TextQuestion.objects.get_or_create(

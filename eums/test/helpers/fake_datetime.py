@@ -12,3 +12,8 @@ class FakeDate(date):
     def today(cls):
         return cls(2014, 9, 25)
 
+    @classmethod
+    def build(cls, year,month, day):
+        return date(year, month, day)
+
+

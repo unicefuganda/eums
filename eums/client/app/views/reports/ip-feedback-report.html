@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="content">
+        <h4 class="page-header">
+            IP Feedback Report
+        </h4>
+        <div class="table-wrapper">
+            <table si-table class="table table-bordered table-hover table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th class="table-header">Item Description</th>
+                    <th class="table-header">Outcome</th>
+                    <th class="table-header">Implementing Partner</th>
+                    <th class="table-header">PO/Waybill</th>
+                    <th class="table-header">Qty Shipped</th>
+
+                    <th class="table-header">Received</th>
+                    <th class="table-header">Date Received</th>
+                    <th class="table-header">Qty Received</th>
+                    <th class="table-header">Quality</th>
+                    <th class="table-header">Satisfied</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr ng-repeat="itemReport in report">
+                    <td class="table-body">{{ itemReport.item_description }}</td>
+                    <td class="table-body">{{ itemReport.programme }}</td>
+                    <td class="table-body">{{ itemReport.consignee }}</td>
+                    <td class="table-body">{{itemReport.order_number}}</td>
+                    <td class="table-body">{{itemReport.quantity_shipped}}</td>
+
+                    <td class="table-body">{{ itemReport.answers[0].value }}</td>
+                    <td class="table-body">{{ itemReport.answers[1].value }}</td>
+                    <td class="table-body">{{ itemReport.answers[2].value }}</td>
+                    <td class="table-body">{{ itemReport.answers[3].value }}</td>
+                    <td class="table-body">{{ itemReport.answers[4].value }}</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="11">
+                        <si-table-pagination limit="20" indices="3"></si-table-pagination>
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <!-- END TABLE -->
+    </div>
+</div>
+</div>

@@ -1,6 +1,7 @@
 from eums.client.test.functional.fixtures.mapdata_deliveries import *
 from eums.client.test.functional.fixtures.mapdata_purchase_order_items import *
 from eums.models import DistributionPlanNode
+from eums.test.helpers.fake_datetime import FakeDate
 
 node_2 = DistributionPlanNode.objects.create(distribution_plan=delivery_41, quantity=5000, tree_position="END_USER", item=po_item_1, location="PADER",consignee=consignee_10, contact_person_id="5420508290cc38715b1af928", track=False, delivery_date="2014-10-06", remark="SAFE Programme")
 node_3 = DistributionPlanNode.objects.create(distribution_plan=delivery_42, quantity=5, tree_position="END_USER", item=po_item_1, location="bundibugyo", consignee=consignee_21, contact_person_id="54213ccc797221e84ac993fe", track=False, delivery_date="2014-10-01", remark="Mother and Child")
@@ -37,3 +38,9 @@ node_33 = DistributionPlanNode.objects.create(distribution_plan=delivery_38, qua
 node_34 = DistributionPlanNode.objects.create(distribution_plan=delivery_38, quantity=5, tree_position="END_USER", item=po_item_1, location="Oyam",consignee=consignee_35, contact_person_id="5422bf5999f3eb0000a46ae6", track=False, delivery_date="2014-10-14", remark="hh") 
 node_35 = DistributionPlanNode.objects.create(distribution_plan=delivery_38, quantity=5, tree_position="END_USER", item=po_item_1, location="Kalungu",consignee=consignee_35, contact_person_id="5422bf5999f3eb0000a46ae6", track=False, delivery_date="2014-10-14", remark="hh") 
 node_36 = DistributionPlanNode.objects.create(distribution_plan=delivery_38, quantity=5, tree_position="END_USER", item=po_item_1, location="Oyam",consignee=consignee_35, contact_person_id="5422bf5999f3eb0000a46ae6", track=False, delivery_date="2014-10-14", remark="hh")
+
+wakiso = Consignee.objects.get(name='WAKISO DHO')
+
+node_37 = DistributionPlanNode.objects.create(distribution_plan=delivery_43, quantity=5000, tree_position="END_USER", item=po_item_1, location="PADER",consignee=wakiso, contact_person_id="5420508290cc38715b1af928", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="SAFE Programme")
+node_38 = DistributionPlanNode.objects.create(distribution_plan=delivery_43, quantity=5, tree_position="END_USER", item=po_item_1, location="bundibugyo", consignee=wakiso, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="Mother and Child")
+node_39 = DistributionPlanNode.objects.create(distribution_plan=delivery_43, quantity=51, tree_position="END_USER", item=po_item_1, location="Amuru", consignee=wakiso, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="hh")
