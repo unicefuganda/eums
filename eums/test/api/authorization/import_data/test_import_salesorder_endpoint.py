@@ -1,12 +1,13 @@
-from django.contrib.auth.models import User, Group
+import os
+
+from django.contrib.auth.models import User
+from django.core.management import call_command
+from rest_framework.test import APITestCase
+from xlwt import Workbook
+
 from eums.models import Item, SalesOrder, SalesOrderItem, Programme
 from eums.test.api.api_test_helpers import create_user_with_group
 from eums.test.config import BACKEND_URL
-from eums.management.commands.setup_permissions import Command
-import os
-from rest_framework.test import APITestCase
-
-from xlwt import Workbook
 
 
 ENDPOINT_URL = BACKEND_URL + 'import-data/'
@@ -16,7 +17,7 @@ class TestImportSalesOrderEndpoint(APITestCase):
     def setUp(self):
         self.sales_order_file_location = 'sales_orders.xlsx'
         self.create_sales_order_workbook()
-        Command().handle()
+        call_command('setup_permissions')
 
     def tearDown(self):
         os.remove(self.sales_order_file_location)

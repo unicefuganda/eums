@@ -2,9 +2,6 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 from eums.auth import create_groups, create_permissions
 
-create_groups()
-create_permissions()
-
 GROUP_PERMISSIONS = {
     'UNICEF_admin': [
         'can_view_users',
@@ -64,6 +61,9 @@ class Command(BaseCommand):
     help = 'Associates Auth_Groups with permissions'
 
     def handle(self, *args, **options):
+        create_groups()
+        create_permissions()
+
         for group_name, codenames in GROUP_PERMISSIONS.iteritems():
             group = Group.objects.get(name=group_name)
             group_permissions = []
