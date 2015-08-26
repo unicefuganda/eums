@@ -56,14 +56,16 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_returns_200_when_admin(self):
-        self.setup_nodes_with_answers()
+        delivery, _, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL)
 
         self.assertEqual(response.status_code, 200)
 
     def test_should_return_reports_for_tracked_items_only(self):
-        self.setup_nodes_with_answers(track_delivery_one=False)
+        delivery, _, _, _, _ = self.setup_nodes_with_answers(track_delivery_two=False)
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL)
 
@@ -71,6 +73,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_return_items_and_all_their_answers(self):
         delivery_one, node_one, purchase_order_item, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery_one)
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
         results = response.data['results'][0]
@@ -83,8 +86,19 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, results)
         self.assertEqual(len(results['answers']), 5)
 
+    def test_should_return_date_from_delivery(self):
+        delivery, _, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
+
+        response = self.client.get(ENDPOINT_URL, content_type='application/json')
+        results = response.data['results'][0]
+
+        self.assertEqual(len(response.data['results']), 2)
+        self.assertDictContainsSubset({'date_of_receipt': '2014-10-10'}, results)
+
     def test_should_return_paginated_items_and_all_their_answers(self):
-        self.setup_delivery_with_nodes(20)
+        delivery = self.setup_delivery_with_nodes(20)
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
@@ -103,7 +117,8 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data['pageSize'], 10)
 
     def test_should_filter_answers_by_item_description(self):
-        _, _, _, release_order_item, _ = self.setup_nodes_with_answers()
+        delivery, _, _, release_order_item, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL + '?query=baba', content_type='application/json')
 
@@ -113,6 +128,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
     def test_should_filter_answers_by_programme_name(self):
         delivery_one, _, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery_one)
 
         response = self.client.get(ENDPOINT_URL + '?query=my%20first', content_type='application/json')
 
@@ -121,7 +137,8 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results[0])
 
     def test_should_filter_answers_by_implementing_partner(self):
-        _, node_one, _, _, _ = self.setup_nodes_with_answers()
+        delivery, node_one, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL + '?query=consignee%20one', content_type='application/json')
 
@@ -130,7 +147,8 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results[0])
 
     def test_should_filter_answers_by_purchase_order_number(self):
-        _, node_one, _, _, _ = self.setup_nodes_with_answers()
+        delivery, node_one, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL + '?query=329', content_type='application/json')
 
@@ -139,7 +157,8 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'order_number': node_one.item.number()}, results[0])
 
     def test_should_filter_answers_by_waybill(self):
-        _, _, _, _, node_two = self.setup_nodes_with_answers()
+        delivery, _, _, _, node_two = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL + '?query=5540', content_type='application/json')
 
@@ -216,3 +235,24 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
             MultipleChoiceAnswerFactory(question=question_3, run=run_one, value=option_3)
             MultipleChoiceAnswerFactory(question=question_4, run=run_one, value=option_4)
             TextAnswerFactory(run=run_one, question=question_5, value='2014-10-10')
+
+        return delivery
+
+    def setup_flow_with_questions(self, delivery):
+        flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        run = RunFactory(runnable=delivery)
+
+        delivery_received_qn = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow)
+        OptionFactory(question=delivery_received_qn, text='Yes')
+        OptionFactory(question=delivery_received_qn, text='No')
+        date_question = TextQuestionFactory(label='dateOfReceipt', flow=flow)
+        good_order_qn = MultipleChoiceQuestionFactory(label='isDeliveryInGoodOrder', flow=flow)
+        OptionFactory(question=good_order_qn, text='Yes')
+        OptionFactory(question=good_order_qn, text='No')
+        OptionFactory(question=good_order_qn, text='Incomplete')
+        satisfied_qn = MultipleChoiceQuestionFactory(label='areYouSatisfied', flow=flow)
+        OptionFactory(question=satisfied_qn, text='Yes')
+        OptionFactory(question=satisfied_qn, text='No')
+        TextQuestionFactory(label='additionalDeliveryComments', flow=flow)
+
+        TextAnswerFactory(run=run, question=date_question, value='2014-10-10')

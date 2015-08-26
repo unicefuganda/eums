@@ -47,7 +47,14 @@ def get_page_number(request):
         return 1
 
 
+def _get_delivery_data(delivery_answers):
+    date_answer = filter(lambda answers: answers['question_label'] == 'dateOfReceipt', delivery_answers)[0]
+    return date_answer['value']
+
+
 def build_answers_for_nodes(delivery, nodes, response):
+    delivery_answers = delivery.answers()
+    date_of_receipt = _get_delivery_data(delivery_answers)
     node_answers = delivery.node_answers()
     for node in nodes:
         response.append({
@@ -55,6 +62,7 @@ def build_answers_for_nodes(delivery, nodes, response):
             'programme': node.distribution_plan.programme.name,
             'consignee': node.consignee.name,
             'order_number': node.item.number(),
+            'date_of_receipt': date_of_receipt,
             'quantity_shipped': node.quantity_out(),
             'answers': _filter_answers_by_id(node_answers, node.id)
         })
