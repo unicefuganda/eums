@@ -1,9 +1,13 @@
 'use strict';
 
-angular.module('NewIpDelivery', ['eums.config'])
-    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode) {
+angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
+    .config(['ngToastProvider', function (ngToast) {
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+    }])
+    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast) {
         $scope.districts = [];
         $scope.newDelivery = new DeliveryNode({track: true});
+        $scope.errors = false;
 
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
@@ -43,7 +47,7 @@ angular.module('NewIpDelivery', ['eums.config'])
 
         $scope.$watch('deliveries', function (deliveries) {
             if (deliveries) {
-                $scope.newDelivery.quantity = deliveries.reduce(function (acc, delivery) {
+                $scope.totalQuantityShipped = deliveries.reduce(function (acc, delivery) {
                     acc.quantityShipped += delivery.quantityShipped || 0;
                     return acc;
                 }, {quantityShipped: 0}).quantityShipped;
@@ -58,9 +62,38 @@ angular.module('NewIpDelivery', ['eums.config'])
         });
 
         $scope.save = function () {
-            $scope.newDelivery.item = $scope.deliveries.filter(function (delivery) {
+            var non_zero_quantity_deliveries = $scope.deliveries.filter(function (delivery) {
                 return delivery.quantityShipped > 0;
-            }).first().item;
-            DeliveryNodeService.create($scope.newDelivery);
+            });
+            $scope.newDelivery.parents = non_zero_quantity_deliveries.map(function (delivery) {
+                return {id: delivery.id, quantity: delivery.quantityShipped};
+            });
+
+            if (scopeDataIsValid() && non_zero_quantity_deliveries.length) {
+                $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
+                DeliveryNodeService.create($scope.newDelivery).then(closeNewDeliveryForm);
+            }
+            else {
+                $scope.errors = true;
+                createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger');
+            }
         };
+
+        function closeNewDeliveryForm() {
+            $scope.reloadParentController();
+        }
+
+        function scopeDataIsValid() {
+            var someInputsAreEmpty = !($scope.newDelivery.location && $scope.newDelivery.contact_person_id
+            && $scope.newDelivery.consignee
+            && $scope.newDelivery.deliveryDate);
+            var someQuantitiesAreInvalid = $scope.deliveries.any(function(delivery) {
+                return delivery.quantityShipped > delivery.balance;
+            });
+            return !someInputsAreEmpty && !someQuantitiesAreInvalid;
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass});
+        }
     });

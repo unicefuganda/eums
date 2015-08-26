@@ -150,4 +150,24 @@ describe('Ip item deliveries', function () {
         scope.toggleNewDeliveryForm();
         expect(scope.newDeliveryFormShowing).toBeFalsy();
     });
+
+    it('should reload its data', function() {
+        scope.$apply();
+        mockItemService.get.calls.reset();
+        mockConsigneeItemService.filter.calls.reset();
+        mockDeliveryNodeService.filter.calls.reset();
+
+        scope.reloadParentController();
+
+        expect(mockItemService.get).toHaveBeenCalled();
+        expect(mockConsigneeItemService.filter).toHaveBeenCalled();
+        expect(mockDeliveryNodeService.filter).toHaveBeenCalled();
+    });
+
+    it('should hide new delivery form on reload', function() {
+        scope.$apply();
+        scope.newDeliveryFormShowing = true;
+        scope.reloadParentController();
+        expect(scope.newDeliveryFormShowing).toBeFalsy();
+    });
 });
