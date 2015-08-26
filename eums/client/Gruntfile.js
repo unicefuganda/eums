@@ -217,6 +217,15 @@ module.exports = function (grunt) {
                     }
                 }
             },
+            questionAndFlowData: {
+                command: 'python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py --settings=eums.test_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
+            },
             setupPermissions: {
                 command: 'python manage.py setup_permissions --settings=eums.test_settings',
                 options: {
@@ -344,6 +353,7 @@ module.exports = function (grunt) {
         'shell:createDb',
         'shell:runMigrations',
         'shell:setupPermissions',
+        'shell:questionAndFlowData',
         'shell:seedData',
         'shell:mapData',
         'apimocker'

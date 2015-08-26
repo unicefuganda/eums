@@ -37,7 +37,7 @@ angular.module('IpDeliveredItems', ['eums.config', 'ngTable', 'siTable', 'Loader
         }, true);
 
         $scope.addRemark = function (index) {
-            var remarksModalId = index + '-add-remark-answer-modal';
+            var remarksModalId = 'add-remark-answer-modal-' + index;
             LoaderService.showModal(remarksModalId)
         };
 

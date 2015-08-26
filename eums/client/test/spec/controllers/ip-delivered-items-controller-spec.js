@@ -326,7 +326,7 @@ describe('IP Delivered Items Controller', function () {
             scope.addRemark(1);
             scope.$apply();
 
-            expect(mockLoaderService.showModal).toHaveBeenCalledWith('1-add-remark-answer-modal')
+            expect(mockLoaderService.showModal).toHaveBeenCalledWith('add-remark-answer-modal-1')
         });
     });
 

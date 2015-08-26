@@ -18,19 +18,19 @@
 
                 <div ng-show=" hasReceivedDelivery" class="pad-top-20">
                     <table>
-                        <tr ng-repeat="answer in answers">
+                        <tr ng-repeat="answer in answers" id="answer-{{ answer.position }}">
                             <td class="pad-5">{{answer.text}}</td>
                             <td class="pad-5">
                                 <span ng-if="answer.type == 'multipleChoice'">
                                     <select ng-model="answer.value"
                                             required="required"
-                                            class="form-control"
+                                            class="form-control select-dropdown"
                                             ng-options="option for option in answers[0].options ">
                                         <option value="">Select item</option>
                                     </select>
                                 </span>
                                 <span ng-if="answer.type == 'text' && answer.question_label != 'dateOfReceipt'
-                                    && answer.question_label != 'additionalDeliveryComments'">
+                                   && answer.question_label != 'additionalDeliveryComments'">
                                     <input type="text" ng-model="answer.value"
                                            required="required"
                                            class="form-control">

@@ -37,7 +37,6 @@ describe('Consignees and subconsignees', function () {
             consigneesPage.setConsigneeLocation('New Consignee Location');
             consigneesPage.setConsigneeRemarks('New Consignee Remarks');
             consigneesPage.saveConsignee();
-
             consigneesPage.visit();
             consigneesPage.searchFor('New Consignee');
             expect(consigneesPage.consigneeNames).toContain('New Consignee');
