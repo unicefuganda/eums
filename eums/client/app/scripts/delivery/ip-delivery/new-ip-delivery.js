@@ -43,7 +43,7 @@ angular.module('NewIpDelivery', ['eums.config'])
 
         $scope.$watch('deliveries', function (deliveries) {
             if (deliveries) {
-                $scope.newDelivery.quantity = deliveries.reduce(function (acc, delivery) {
+                $scope.totalQuantityShipped = deliveries.reduce(function (acc, delivery) {
                     acc.quantityShipped += delivery.quantityShipped || 0;
                     return acc;
                 }, {quantityShipped: 0}).quantityShipped;
@@ -58,9 +58,15 @@ angular.module('NewIpDelivery', ['eums.config'])
         });
 
         $scope.save = function () {
-            $scope.newDelivery.item = $scope.deliveries.filter(function (delivery) {
+            var non_zero_quantity_deliveries = $scope.deliveries.filter(function(delivery) {
                 return delivery.quantityShipped > 0;
-            }).first().item;
+            });
+            var parents = non_zero_quantity_deliveries.map(function(delivery) {
+                return {id: delivery.id, quantity: delivery.quantityShipped};
+            });
+
+            $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
+            $scope.newDelivery.parents = parents;
             DeliveryNodeService.create($scope.newDelivery);
         };
     });

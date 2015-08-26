@@ -113,17 +113,17 @@ describe('New IP Delivery Controller', function () {
 
     it('should compute new delivery quantity from individual deliveries quantityShipped', function () {
         scope.$apply();
-        expect(scope.newDelivery.quantity).toBe(100);
+        expect(scope.totalQuantityShipped).toBe(100);
         scope.deliveries.first().quantityShipped = 100;
         scope.$apply();
-        expect(scope.newDelivery.quantity).toBe(190);
+        expect(scope.totalQuantityShipped).toBe(190);
 
         scope.deliveries.last().quantityShipped = 500;
         scope.$apply();
-        expect(scope.newDelivery.quantity).toBe(650);
+        expect(scope.totalQuantityShipped).toBe(650);
     });
 
-    it('it should format new delivery date correctly on change', function() {
+    it('it should format new delivery date correctly on change', function () {
         scope.newDelivery.deliveryDate = '2015-08-26T08:00:00.000Z';
         scope.$apply();
         expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
@@ -139,10 +139,21 @@ describe('New IP Delivery Controller', function () {
         expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', consignee);
     });
 
-    it('should save new delivery', function () {
+    it('should save new delivery using only parent nodes with non-zero quantities', function () {
         scope.$apply();
+        scope.deliveries = [
+            {id: 1, item: orderItemId, quantityShipped: 10},
+            {id: 2, item: orderItemId, quantityShipped: 0},
+            {id: 3, item: orderItemId, quantityShipped: 40}
+        ];
         scope.save();
+
         var createArgs = mockDeliveryNodeService.create.calls.allArgs().first().first();
-        expect(JSON.stringify(createArgs)).toEqual(JSON.stringify({track: true, quantity: 100, item: 1890}));
+        var expectedArgs = {
+            track: true,
+            item: 1890,
+            parents: [{id: 1, quantity: 10}, {id: 3, quantity: 40}]
+        };
+        expect(JSON.stringify(createArgs)).toEqual(JSON.stringify(expectedArgs));
     });
 });
