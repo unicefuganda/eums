@@ -30,10 +30,6 @@ angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
             }
         });
 
-        $scope.view = function (consigneeItem) {
-            $location.path('/item-deliveries/' + consigneeItem.item);
-        };
-
         function fetchItems() {
             ConsigneeItemService.all().then(function (response) {
                 setScopeDataFromResponse(response);

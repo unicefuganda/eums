@@ -8,7 +8,7 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', '
 
         $scope.deliveryNodes = [];
         $scope.searching = false;
-        $scope.newDeliveryFormShowing = false;
+        $scope.newDeliveryFormShowing = $routeParams.new === 'true';
 
         var itemId = $routeParams.itemId;
         var loadPromises = [];
@@ -52,7 +52,7 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', '
             $scope.newDeliveryFormShowing = !$scope.newDeliveryFormShowing;
         };
 
-        $scope.reloadParentController = function() {
+        $scope.reloadParentController = function () {
             fetchItem();
             fetchConsigneeItem();
             fetchNodes();

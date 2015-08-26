@@ -74,11 +74,4 @@ describe('IP Items Controller', function () {
         scope.$apply();
         expect(scope.searching).toBe(false);
     });
-
-    it('should change location to deliveries for item when passed consignee item', function(){
-        var itemId = 10;
-        var consigneeItem = {id: 1, item: itemId};
-        scope.view(consigneeItem);
-        expect(location.path).toHaveBeenCalledWith('/item-deliveries/'+ itemId);
-    });
 });

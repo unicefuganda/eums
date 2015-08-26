@@ -53,10 +53,24 @@ describe('Ip item deliveries', function () {
         });
     });
 
-    it('should by default not show new delivery screen', function() {
+    it('should by default not show new delivery screen', function () {
         scope.$apply();
         expect(scope.newDeliveryFormShowing).toBeFalsy();
     });
+
+    it('should show new delivery form when specified in url args', inject(function ($controller, $rootScope) {
+        var routeParams = {itemId: 2, new: 'true'};
+        var scope = $rootScope.$new();
+        $controller('IpItemDeliveriesController', {
+            $scope: scope,
+            DeliveryNodeService: mockDeliveryNodeService,
+            $routeParams: routeParams,
+            ItemService: mockItemService,
+            ConsigneeItemService: mockConsigneeItemService,
+            LoaderService: mockLoaderService
+        });
+        expect(scope.newDeliveryFormShowing).toBeTruthy();
+    }));
 
     it('should load deliveries on the scope', function () {
         scope.$apply();
@@ -143,7 +157,7 @@ describe('Ip item deliveries', function () {
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
 
-    it('should toggle new delivery form visibility', function() {
+    it('should toggle new delivery form visibility', function () {
         scope.$apply();
         scope.toggleNewDeliveryForm();
         expect(scope.newDeliveryFormShowing).toBeTruthy();
@@ -151,7 +165,7 @@ describe('Ip item deliveries', function () {
         expect(scope.newDeliveryFormShowing).toBeFalsy();
     });
 
-    it('should reload its data', function() {
+    it('should reload its data', function () {
         scope.$apply();
         mockItemService.get.calls.reset();
         mockConsigneeItemService.filter.calls.reset();
@@ -164,7 +178,7 @@ describe('Ip item deliveries', function () {
         expect(mockDeliveryNodeService.filter).toHaveBeenCalled();
     });
 
-    it('should hide new delivery form on reload', function() {
+    it('should hide new delivery form on reload', function () {
         scope.$apply();
         scope.newDeliveryFormShowing = true;
         scope.reloadParentController();
