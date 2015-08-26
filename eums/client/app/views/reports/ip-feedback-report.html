@@ -40,15 +40,15 @@
                     <td class="table-body">{{itemReport.quantity_shipped}}</td>
 
                     <td class="table-body">{{ itemReport.answers[0].value }}</td>
+                    <td class="table-body">{{ itemReport.date_of_receipt }}</td>
                     <td class="table-body">{{ itemReport.answers[1].value }}</td>
                     <td class="table-body">{{ itemReport.answers[2].value }}</td>
                     <td class="table-body">{{ itemReport.answers[3].value }}</td>
-                    <td class="table-body">{{ itemReport.answers[4].value }}</td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="6" class="centered">
+                    <td colspan="10" class="centered">
                         <pagination total-items="count"
                                     ng-model="currentPage"
                                     boundary-links="true"
