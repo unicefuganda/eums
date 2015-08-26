@@ -1,0 +1,10 @@
+postgres:
+  image: postgres
+web:
+  image: cuevee/unicef-web:0.1
+  # volumes:
+  #   - .:/eums
+  ports:
+    - "80:80"
+  links:
+    - postgres
