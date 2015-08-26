@@ -1,0 +1,15 @@
+FROM postgres
+MAINTAINER eums <eums@thoughtworks.com>
+
+#RUN mkdir /scripts
+#WORKDIR /scripts
+COPY ./scripts/packaging/initdb.sh /docker-entrypoint-initdb.d/initdb.sh
+COPY ./scripts/packaging/pg_hba.conf /var/lib/postgresql/data/pg_hba.conf
+
+#RUN su - postgres -c "/etc/init.d/postgresql start"
+# RUN sh /docker-entrypoint-initdb.d/initdb.sh
+
+#RUN chmod +x /scripts/initdb.sh
+
+#RUN createuser -U postgres -s -r -w root
+#RUN createdb -U postgres -O postgres eums

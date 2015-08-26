@@ -1,0 +1,32 @@
+FROM python:2.7
+MAINTAINER eums <eums@thoughtworks.com>
+
+ENV PYTHONUNBUFFERED 1
+
+RUN export DEBIAN_FRONTEND=noninteractive
+
+# nodejs-legacy deals with npm packages looking for a `node` binary
+RUN apt-get update && apt-get install -y npm nodejs-legacy
+RUN npm install -g bower grunt grunt-cli
+
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+RUN mkdir -p /eums/client
+WORKDIR /eums/client
+
+COPY client/package.json client/bower.json /eums/client/
+
+RUN npm install
+RUN bower install --allow-root
+
+ADD . /eums
+
+EXPOSE 80
+
+WORKDIR /eums/client
+RUN grunt package
+
+WORKDIR /eums
+
+CMD python build/manage.py runserver 0.0.0.0:80
