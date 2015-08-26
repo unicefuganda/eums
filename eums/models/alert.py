@@ -1,12 +1,12 @@
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField
-from eums.models import Runnable
+from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem
 
 
 class Alert(models.Model):
 
-    ORDER_TYPES = Choices(('waybill', 'Waybill'), ('purchase_order', 'Purchase Order'))
+    ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
     ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'))
 
     order_type = StatusField(choices_name='ORDER_TYPES')

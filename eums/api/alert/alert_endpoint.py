@@ -16,7 +16,6 @@ class AlertSerializer(serializers.ModelSerializer):
             'consignee_name',
             'contact_name',
             'created_on',
-            'order_type_display_name',
             'issue_display_name'
         )
 
