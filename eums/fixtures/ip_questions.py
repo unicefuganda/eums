@@ -22,13 +22,13 @@ ip_question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
 Option.objects.get_or_create(text='Yes', question=ip_question_3)
 Option.objects.get_or_create(text='No', question=ip_question_3)
 
-ip_question_4 = MultipleChoiceQuestion.objects.create(
+ip_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
     text="Are you satisfied with the product?",
     label="satisfiedWithProduct",
     flow=ip_flow, position=4,
     uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'])
-Option.objects.create(text="No", question=ip_question_4)
-Option.objects.create(text="Yes", question=ip_question_4)
+Option.objects.get_or_create(text="No", question=ip_question_4)
+Option.objects.get_or_create(text="Yes", question=ip_question_4)
 
 ip_question_5, _ = TextQuestion.objects.get_or_create(
     uuids=['2fccd250-00a1-4740-b30e-3593b8f147a1'],

@@ -1,5 +1,5 @@
 from eums.client.test.functional.fixtures.mapdata_runs import *
-from eums.fixtures import web_questions
+from eums.fixtures import web_questions, ip_questions
 from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.models import DistributionReport, Alert
 from eums.models import NumericAnswer
@@ -113,19 +113,22 @@ AlertFactory(order_type=PurchaseOrderItem.PURCHASE_ORDER, order_number=654321, i
 # web answers
 
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_77)
-NumericAnswerFactory(question=web_questions.web_question_2, run=run_77)
-MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.damaged, run=run_77)
+NumericAnswerFactory(question=web_questions.web_question_2, value=50, run=run_77)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.expired, run=run_77)
 MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_77)
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_77)
 
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_78)
-NumericAnswerFactory(question=web_questions.web_question_2, run=run_78)
+NumericAnswerFactory(question=web_questions.web_question_2, value=70, run=run_78)
 MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.damaged, run=run_78)
-MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_78)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.no_2, run=run_78)
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_78)
 
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_79)
-NumericAnswerFactory(question=web_questions.web_question_2, run=run_79)
-MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.damaged, run=run_79)
+NumericAnswerFactory(question=web_questions.web_question_2, value=93, run=run_79)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.substandard, run=run_79)
 MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_79)
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_79)
+
+#delivery answers
+TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_80)

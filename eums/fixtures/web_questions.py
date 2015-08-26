@@ -32,7 +32,7 @@ web_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'],
     text='Are you satisfied with the product?', label='satisfiedWithProduct', flow=web_flow, position=4)
 yes_2, _ = Option.objects.get_or_create(text='Yes', question=web_question_4)
-Option.objects.get_or_create(text='No', question=web_question_4)
+no_2, _ = Option.objects.get_or_create(text='No', question=web_question_4)
 web_flow.end_nodes.append([web_question_4.id, yes_2.id])
 web_flow.save()
 

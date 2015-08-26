@@ -74,3 +74,4 @@ run_76 = Run.objects.create(runnable=node_24, status="scheduled", scheduled_mess
 run_77 = Run.objects.create(runnable=node_37, status="scheduled", scheduled_message_task_id="d4196d31-1bdf-43c3-a7f0-8c45f8ce63cc", phone="+256 773 196588")
 run_78 = Run.objects.create(runnable=node_38, status="scheduled", scheduled_message_task_id="d4196d31-1bdf-43c3-a7f0-8c45f8ce63cc", phone="+256 773 196588")
 run_79 = Run.objects.create(runnable=node_39, status="scheduled", scheduled_message_task_id="d4196d31-1bdf-43c3-a7f0-8c45f8ce63cc", phone="+256 773 196588")
+run_80 = Run.objects.create(runnable=delivery_43, status="scheduled", scheduled_message_task_id="d4196d31-1bdf-43c3-a7f0-8c45f8ce63cc", phone="+256 773 196588")
