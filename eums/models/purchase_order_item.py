@@ -7,6 +7,9 @@ from eums.models import DistributionPlanNode
 
 
 class PurchaseOrderItem(OrderItem):
+
+    PURCHASE_ORDER = "Purchase Order"
+
     purchase_order = models.ForeignKey('PurchaseOrder')
     sales_order_item = models.ForeignKey('SalesOrderItem')
     value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
@@ -38,4 +41,4 @@ class PurchaseOrderItem(OrderItem):
                and self.quantity == other.quantity
 
     def type(self):
-        return "Purchase Order"
+        return self.PURCHASE_ORDER

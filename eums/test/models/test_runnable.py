@@ -20,7 +20,7 @@ from eums.test.factories.question_factory import NumericQuestionFactory, Multipl
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
-class DistributionPlanNodeTest(TestCase):
+class RunnableTest(TestCase):
     def setUp(self):
         self.node = DeliveryNodeFactory()
 
@@ -113,16 +113,26 @@ class DistributionPlanNodeTest(TestCase):
 
         contact_person_id = 'some_id'
         contact = {u'_id': contact_person_id,
-                   u'firstName': u'chris',
-                   u'lastName': u'george',
+                   u'firstName': u'Chris',
+                   u'lastName': u'George',
                    u'phone': u'+256781111111'}
         mock_contact.return_value = contact
 
         delivery = DeliveryFactory(consignee=consignee, contact_person_id=contact_person_id)
         DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
 
-        delivery.create_alert("Not received")
-        alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
+        delivery.create_alert(Alert.ISSUE_TYPES.not_received)
 
-        self.assertEqual(alerts.count(), 1)
         self.assertTrue(mock_contact.called)
+
+        alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
+        self.assertEqual(alerts.count(), 1)
+        alert = alerts.first()
+        self.assertEqual(alert.order_type, PurchaseOrderItem.PURCHASE_ORDER)
+        self.assertEqual(alert.order_number, 5678)
+        self.assertEqual(alert.consignee_name, "Liverpool FC")
+        self.assertEqual(alert.contact_name, "Chris George")
+        self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
+        self.assertFalse(alert.is_resolved)
+        self.assertIsNone(alert.remarks)
+        self.assertEqual(alert.runnable.id, delivery.id)
