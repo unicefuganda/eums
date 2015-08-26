@@ -123,10 +123,10 @@ describe('New IP Delivery Controller', function () {
         expect(scope.newDelivery.quantity).toBe(650);
     });
 
-    xit('it should format new delivery date correctly on change', function() {
-        scope.newDelivery.deliveryDate = '2015-08-13T21:00:00.000Z';
+    it('it should format new delivery date correctly on change', function() {
+        scope.newDelivery.deliveryDate = '2015-08-26T08:00:00.000Z';
         scope.$apply();
-        expect(scope.newDelivery.deliveryDate).toBe('2015-08-13');
+        expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
     });
 
     it('should put consignee name into select after consignee-saved is called', function () {
