@@ -15,6 +15,7 @@ eums/include/
 eums/lib/
 eums/pip-selfcheck.json
 .python-version
+.node-version
 
 initaluser.json
 celerybeat-schedule.db
