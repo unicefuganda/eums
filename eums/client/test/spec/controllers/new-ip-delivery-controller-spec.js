@@ -208,6 +208,29 @@ describe('New IP Delivery Controller', function () {
         expect(rootScope.reloadParentController).toHaveBeenCalled();
     });
 
+    it('should show success toast upon save', function() {
+        scope.$apply();
+        setupNewDelivery();
+        scope.save();
+        scope.$apply();
+        expect(toast.create).toHaveBeenCalledWith({
+            content: 'Delivery Successfully Created',
+            class: 'success'
+        });
+    });
+
+    it('should show failure toast when save fails', function() {
+        scope.$apply();
+        setupNewDelivery();
+        mockDeliveryNodeService.create.and.returnValue(q.reject());
+        scope.save();
+        scope.$apply();
+        expect(toast.create).toHaveBeenCalledWith({
+            content: 'Failed to save delivery',
+            class: 'danger'
+        });
+    });
+
     var assertSaveFails = {
         if: function (fieldname) {
             return {

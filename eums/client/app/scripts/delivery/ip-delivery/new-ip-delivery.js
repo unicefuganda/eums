@@ -71,7 +71,14 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
 
             if (scopeDataIsValid() && non_zero_quantity_deliveries.length) {
                 $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
-                DeliveryNodeService.create($scope.newDelivery).then(closeNewDeliveryForm);
+                DeliveryNodeService.create($scope.newDelivery)
+                    .then(function() {
+                        closeNewDeliveryForm();
+                        createToast('Delivery Successfully Created', 'success');
+                    })
+                    .catch(function() {
+                        createToast('Failed to save delivery', 'danger');
+                    });
             }
             else {
                 $scope.errors = true;
