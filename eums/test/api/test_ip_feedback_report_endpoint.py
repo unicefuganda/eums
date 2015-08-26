@@ -83,7 +83,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
         self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
-        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_out()}, results)
+        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertEqual(len(results['answers']), 5)
 
     def test_should_return_date_from_delivery(self):
@@ -178,8 +178,9 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         delivery_one = DeliveryFactory(programme=programme_one, track=track_delivery_one)
         delivery_two = DeliveryFactory(programme=programme_two, track=track_delivery_two)
         node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=consignee_one,
-                                       item=purchase_order_item)
-        node_two = DeliveryNodeFactory(distribution_plan=delivery_two, consignee=consignee_two, item=release_order_item)
+                                       item=purchase_order_item, quantity=1000)
+        node_two = DeliveryNodeFactory(distribution_plan=delivery_two, consignee=consignee_two, item=release_order_item,
+                                       quantity=500)
         flow = FlowFactory(for_runnable_type='WEB')
         question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
                                                    position=1)
