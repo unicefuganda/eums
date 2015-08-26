@@ -13,7 +13,8 @@
         <tr>
             <td class="col-md-2">
                 <div id="input-delivery-date" class="pad-small">
-                            <span class="input-group" eums-date-picker>
+                            <span class="input-group" eums-date-picker
+                                  ng-class="{'has-error': !newDelivery.deliveryDate && errors}">
                                 <input type="text" class="form-control"
                                        datepicker-popup="dd/MM/yyyy"
                                        ng-model="newDelivery.deliveryDate"
@@ -32,7 +33,8 @@
                 </div>
             </td>
             <td class="col-md-3">
-                <div id="input-consignee" class="col-md-12 pad-small">
+                <div id="input-consignee" class="col-md-12 pad-small"
+                     ng-class="{'has-error': !newDelivery.consignee && errors}">
                     <div class="pad-small col-md-10">
                         <input type="hidden" search-consignees
                                ng-model="newDelivery.consignee"
@@ -48,7 +50,8 @@
                 </div>
             </td>
             <td class="col-md-3">
-                <div id="input-contact" class="col-md-12 pad-small">
+                <div id="input-contact" class="col-md-12 pad-small"
+                     ng-class="{'has-error': !newDelivery.contact_person_id && errors}">
                     <div class="col-md-10 pad-small">
                         <input type="hidden"
                                search-contacts
@@ -66,7 +69,7 @@
                 </div>
             </td>
             <td class="col-md-2">
-                <div id="input-location" class="pad-small">
+                <div id="input-location" class="pad-small" ng-class="{'has-error': !newDelivery.location && errors}">
                     <input type="hidden" ng-if="districtsLoaded"
                            search-from-list
                            list="{{ districts }}"
@@ -103,8 +106,10 @@
                 <td>{{ delivery.orderNumber }}</td>
                 <td>{{ delivery.balance }}</td>
                 <td class="table-row-input-column">
-                    <input type="text" id="quantity-shipped" class="form-control" only-digits
-                           ng-model="delivery.quantityShipped">
+                    <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
+                        <input type="text" id="quantity-shipped" class="form-control" only-digits
+                               ng-model="delivery.quantityShipped">
+                    </div>
                 </td>
             </tr>
             <tfoot class="summary-row">
@@ -116,7 +121,6 @@
         </table>
     </div>
 </div>
-{{ newDelivery }}
 <div>
     <div class="pad-20 row">
         <div class="pull-right">

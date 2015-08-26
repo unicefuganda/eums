@@ -1,11 +1,19 @@
 describe('New IP Delivery Controller', function () {
-    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes;
+    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
 
     beforeEach(function () {
         module('NewIpDelivery');
-        inject(function ($controller, $rootScope, $q, $location) {
+
+        ipNodes = [
+            {id: 1, item: orderItemId, quantityShipped: 10},
+            {id: 2, item: orderItemId, quantityShipped: 20},
+            {id: 3, item: orderItemId, quantityShipped: 30},
+            {id: 4, item: orderItemId, quantityShipped: 40}
+        ];
+
+        inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
             mockDeliveryNode = function (options) {
@@ -19,13 +27,9 @@ describe('New IP Delivery Controller', function () {
 
             scope = $rootScope.$new();
             routeParams = {itemId: 2};
+            toast = ngToast;
 
-            ipNodes = [
-                {id: 1, item: orderItemId, quantityShipped: 10},
-                {id: 2, item: orderItemId, quantityShipped: 20},
-                {id: 3, item: orderItemId, quantityShipped: 30},
-                {id: 4, item: orderItemId, quantityShipped: 40}
-            ];
+            spyOn(toast, 'create');
 
             q = $q;
             $controller('NewIpDeliveryController', {
@@ -33,12 +37,14 @@ describe('New IP Delivery Controller', function () {
                 IPService: mockIpService,
                 $routeParams: routeParams,
                 DeliveryNodeService: mockDeliveryNodeService,
-                DeliveryNode: mockDeliveryNode
+                DeliveryNode: mockDeliveryNode,
+                ngToast: toast
             });
         });
     });
 
     it('should have empty initial data on load', function () {
+        expect(scope.errors).toBe(false);
         expect(scope.districts).toEqual([]);
         expect(JSON.stringify(scope.newDelivery)).toEqual(JSON.stringify({track: true}));
     });
@@ -141,6 +147,7 @@ describe('New IP Delivery Controller', function () {
 
     it('should save new delivery using only parent nodes with non-zero quantities', function () {
         scope.$apply();
+        var newDelivery = setupNewDelivery();
         scope.deliveries = [
             {id: 1, item: orderItemId, quantityShipped: 10},
             {id: 2, item: orderItemId, quantityShipped: 0},
@@ -149,11 +156,73 @@ describe('New IP Delivery Controller', function () {
         scope.save();
 
         var createArgs = mockDeliveryNodeService.create.calls.allArgs().first().first();
-        var expectedArgs = {
-            track: true,
-            item: 1890,
-            parents: [{id: 1, quantity: 10}, {id: 3, quantity: 40}]
-        };
+        var additionalFields = {track: true, item: 1890, parents: [{id: 1, quantity: 10}, {id: 3, quantity: 40}]};
+        var expectedArgs = Object.merge(newDelivery, additionalFields);
         expect(JSON.stringify(createArgs)).toEqual(JSON.stringify(expectedArgs));
     });
+
+    it('should not save delivery when any required field on the new delivery is not provided', function () {
+        scope.$apply();
+        assertSaveFails.if('location').is(undefined);
+        assertSaveFails.if('consignee').is(undefined);
+        assertSaveFails.if('deliveryDate').is(undefined);
+        assertSaveFails.if('contact_person_id').is(undefined);
+    });
+
+    it('should not save new delivery if all deliveries to IP have no or zero quantity shipped', function () {
+        scope.$apply();
+        setupNewDelivery();
+        scope.deliveries = [{id: 1, item: orderItemId}, {id: 2, item: orderItemId, quantityShipped: 0}];
+        scope.save();
+        expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
+    });
+
+    it('should not save new delivery if any of the deliveries has a quantity shipped higher than their balance', function () {
+        scope.$apply();
+        setupNewDelivery();
+        scope.deliveries = [
+            {id: 1, balance: 10, item: orderItemId, quantityShipped: 50},
+            {id: 2, balance: 20, item: orderItemId, quantityShipped: 10}
+        ];
+        scope.save();
+        expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
+        expect(scope.errors).toBeTruthy();
+        expect(toast.create).toHaveBeenCalledWith({
+            content: 'Cannot save. Please fill out or fix values for all fields marked in red',
+            class: 'danger'
+        });
+    });
+
+    var assertSaveFails = {
+        if: function (fieldname) {
+            return {
+                is: function (val) {
+                    var unsetParams = {};
+                    unsetParams[fieldname] = val;
+                    setupNewDelivery(unsetParams);
+                    scope.save();
+                    expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
+                    expect(scope.errors).toBeTruthy();
+                    expect(toast.create).toHaveBeenCalledWith({
+                        content: 'Cannot save. Please fill out or fix values for all fields marked in red',
+                        class: 'danger'
+                    });
+                }
+            }
+        }
+    };
+
+
+    function setupNewDelivery(unset) {
+        scope.newDelivery = {};
+        scope.newDelivery.consignee = 10;
+        scope.newDelivery.location = 'Jinja';
+        scope.newDelivery.deliveryDate = '2015-01-30';
+        scope.newDelivery.contact_person_id = '3A09C3B1-0937-4082-93D9-4ACC3E86B2B3';
+        scope.newDelivery.parents = [{id: 1, quantity: 10}];
+        Object.each(unset, function (key, value) {
+            scope.newDelivery[key] = value;
+        });
+        return scope.newDelivery;
+    }
 });
