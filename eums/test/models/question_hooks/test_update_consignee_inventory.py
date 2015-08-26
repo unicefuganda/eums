@@ -33,7 +33,7 @@ class UpdateConsigneeInventoryTest(TestCase):
         Flow.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
         Option.objects.all().delete()
-        SalesOrderItem.object.all().delete()
+        SalesOrderItem.objects.all().delete()
         Item.objects.all().delete()
         ConsigneeItem.objects.all().delete()
         MultipleChoiceAnswer.objects.all().delete()
