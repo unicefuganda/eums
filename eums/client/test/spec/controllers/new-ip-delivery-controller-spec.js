@@ -1,7 +1,10 @@
 describe('New IP Delivery Controller', function () {
-    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast;
+    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
+        rootScope;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
+    var emptyFunction = function () {
+    };
 
     beforeEach(function () {
         module('NewIpDelivery');
@@ -21,11 +24,14 @@ describe('New IP Delivery Controller', function () {
             };
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(ipNodes));
+            mockDeliveryNodeService.create.and.returnValue($q.when({}));
 
             location = $location;
             spyOn($location, 'path').and.returnValue('fake location');
 
-            scope = $rootScope.$new();
+            rootScope = $rootScope;
+            rootScope.reloadParentController = emptyFunction;
+            scope = rootScope.$new();
             routeParams = {itemId: 2};
             toast = ngToast;
 
@@ -191,6 +197,15 @@ describe('New IP Delivery Controller', function () {
             content: 'Cannot save. Please fill out or fix values for all fields marked in red',
             class: 'danger'
         });
+    });
+
+    it('should reload parent controller upon save', function () {
+        spyOn(rootScope, 'reloadParentController');
+        scope.$apply();
+        setupNewDelivery();
+        scope.save();
+        scope.$apply();
+        expect(rootScope.reloadParentController).toHaveBeenCalled();
     });
 
     var assertSaveFails = {

@@ -12,11 +12,11 @@
 
     <div class="row pad-15">
         <div class="pull-left">
-            <span ng-hide="!newDeliveryFormShowing" class="btn btn-primary" ng-click="toggleNewDeliveryForm()">
+            <span ng-hide="newDeliveryFormShowing" class="btn btn-primary" ng-click="toggleNewDeliveryForm()">
                 <span class="glyphicon glyphicon-plus"></span>
                 New Delivery Report
             </span>
-            <span ng-show="!newDeliveryFormShowing" class="btn warning-border-button" ng-click="toggleNewDeliveryForm()">
+            <span ng-show="newDeliveryFormShowing" class="btn warning-border-button" ng-click="toggleNewDeliveryForm()">
                 <span class="glyphicon glyphicon-remove"></span>
                 Discard New Delivery
             </span>
@@ -29,8 +29,8 @@
 
     <span class="well-sm"></span>
 
-    <ng-include ng-hide="!newDeliveryFormShowing"
+    <ng-include ng-hide="newDeliveryFormShowing"
                 src="'/static/app/views/delivery/ip-delivery/ip-past-item-deliveries-list-partial.html'"></ng-include>
-    <ng-include ng-show="!newDeliveryFormShowing" ng-controller="NewIpDeliveryController"
+    <ng-include ng-show="newDeliveryFormShowing" ng-controller="NewIpDeliveryController"
                 src="'/static/app/views/delivery/ip-delivery/new-ip-delivery-partial.html'"></ng-include>
 </div>

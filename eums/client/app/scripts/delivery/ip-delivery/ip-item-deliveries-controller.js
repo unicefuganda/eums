@@ -14,13 +14,8 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', '
         var loadPromises = [];
 
         LoaderService.showLoader();
-        loadPromises.push(ItemService.get(itemId).then(function (item) {
-            $scope.item = item;
-        }));
-
-        loadPromises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
-            $scope.quantityAvailable = response.results.first().availableBalance;
-        }));
+        loadPromises.push(fetchItem());
+        loadPromises.push(fetchConsigneeItem());
 
         var fieldsToBuild = ['contact_person_id'];
         var filterFields = {consignee_deliveries_for_item: itemId, paginate: true};
@@ -57,6 +52,13 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', '
             $scope.newDeliveryFormShowing = !$scope.newDeliveryFormShowing;
         };
 
+        $scope.reloadParentController = function() {
+            fetchItem();
+            fetchConsigneeItem();
+            fetchNodes();
+            $scope.newDeliveryFormShowing = false;
+        };
+
         $q.all(loadPromises).catch(function () {
             createToast('failed to load deliveries', 'danger');
         }).finally(LoaderService.hideLoader);
@@ -70,6 +72,18 @@ angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', '
         function fetchNodes() {
             DeliveryNodeService.filter(filterFields, fieldsToBuild).then(function (response) {
                 setScopeDataFromResponse(response);
+            });
+        }
+
+        function fetchItem() {
+            return ItemService.get(itemId).then(function (item) {
+                $scope.item = item;
+            });
+        }
+
+        function fetchConsigneeItem() {
+            return ConsigneeItemService.filter({item: itemId}).then(function (response) {
+                $scope.quantityAvailable = response.results.first().availableBalance;
             });
         }
     });

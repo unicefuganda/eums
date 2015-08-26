@@ -71,13 +71,17 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
 
             if (scopeDataIsValid() && non_zero_quantity_deliveries.length) {
                 $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
-                DeliveryNodeService.create($scope.newDelivery);
+                DeliveryNodeService.create($scope.newDelivery).then(closeNewDeliveryForm);
             }
             else {
                 $scope.errors = true;
                 createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger');
             }
         };
+
+        function closeNewDeliveryForm() {
+            $scope.reloadParentController();
+        }
 
         function scopeDataIsValid() {
             var someInputsAreEmpty = !($scope.newDelivery.location && $scope.newDelivery.contact_person_id
