@@ -1,5 +1,5 @@
 from unittest import TestCase
-from eums.models import NumericQuestion, Item, ConsigneeItem, NumericAnswer, Flow
+from eums.models import NumericQuestion, Item, ConsigneeItem, NumericAnswer, Flow, SalesOrderItem
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -30,6 +30,7 @@ class UpdateConsigneeStockLevelTest(TestCase):
         MultipleChoiceAnswerFactory(question=self.was_item_received, value=option_yes, run=self.run)
 
     def tearDown(self):
+        SalesOrderItem.objects.all().delete()
         Item.objects.all().delete()
         Flow.objects.all().delete()
         ConsigneeItem.objects.all().delete()

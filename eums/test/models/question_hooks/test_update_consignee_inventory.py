@@ -1,6 +1,7 @@
 from unittest import TestCase
 
-from eums.models import MultipleChoiceQuestion, ConsigneeItem, Item, MultipleChoiceAnswer, Runnable, Flow, Option
+from eums.models import MultipleChoiceQuestion, ConsigneeItem, Item, MultipleChoiceAnswer, Runnable, Flow, Option, \
+    SalesOrderItem
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -32,6 +33,7 @@ class UpdateConsigneeInventoryTest(TestCase):
         Flow.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
         Option.objects.all().delete()
+        SalesOrderItem.object.all().delete()
         Item.objects.all().delete()
         ConsigneeItem.objects.all().delete()
         MultipleChoiceAnswer.objects.all().delete()
