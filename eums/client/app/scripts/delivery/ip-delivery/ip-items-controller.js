@@ -1,5 +1,5 @@
 angular.module('IpItems', ['ConsigneeItem', 'ui.bootstrap'])
-    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService, $location) {
+    .controller('IpItemsController', function ($scope, $q, ConsigneeItemService) {
         $scope.items = [];
         $scope.searching = false;
 

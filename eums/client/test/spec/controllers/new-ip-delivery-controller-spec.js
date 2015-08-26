@@ -1,6 +1,6 @@
 describe('New IP Delivery Controller', function () {
     var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
-        rootScope;
+        rootScope, mockLoaderService;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
     var emptyFunction = function () {
@@ -19,6 +19,7 @@ describe('New IP Delivery Controller', function () {
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
+            mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             mockDeliveryNode = function (options) {
                 this.track = options.track;
             };
@@ -44,9 +45,16 @@ describe('New IP Delivery Controller', function () {
                 $routeParams: routeParams,
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: mockDeliveryNode,
-                ngToast: toast
+                ngToast: toast,
+                LoaderService: mockLoaderService
             });
         });
+    });
+
+    it('should show loader on load', function() {
+        scope.$apply();
+        expect(mockLoaderService.showLoader).toHaveBeenCalled();
+        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
 
     it('should have empty initial data on load', function () {

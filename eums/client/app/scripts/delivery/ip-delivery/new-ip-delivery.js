@@ -4,21 +4,28 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast) {
+    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $q) {
         $scope.districts = [];
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.errors = false;
 
-        IPService.loadAllDistricts().then(function (response) {
+        var loadPromises = [];
+
+        LoaderService.showLoader();
+        loadPromises.push(IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
                 return {id: districtName, name: districtName};
             });
             $scope.districtsLoaded = true;
-        });
+        }));
 
-        DeliveryNodeService.filter({item__item: $routeParams.itemId, is_distributable: true}).then(function (nodes) {
+        loadPromises.push(DeliveryNodeService.filter({item__item: $routeParams.itemId, is_distributable: true}).then(function (nodes) {
             $scope.deliveries = nodes;
-        });
+        }));
+
+        $q.all(loadPromises).catch(function () {
+            createToast('failed to load deliveries', 'danger');
+        }).finally(LoaderService.hideLoader);
 
         $scope.addContact = function () {
             $scope.$broadcast('add-contact');
@@ -70,6 +77,7 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
             });
 
             if (scopeDataIsValid() && non_zero_quantity_deliveries.length) {
+                LoaderService.showLoader();
                 $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
                 DeliveryNodeService.create($scope.newDelivery)
                     .then(function() {
@@ -78,6 +86,8 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
                     })
                     .catch(function() {
                         createToast('Failed to save delivery', 'danger');
+                    }).finally(function() {
+                        LoaderService.hideLoader();
                     });
             }
             else {
