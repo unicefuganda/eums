@@ -170,6 +170,18 @@ module.exports = function(grunt) {
         cwd: 'dist/',
         src: '**/*',
         dest: '../build/eums/client/'
+      },
+      eums: {
+        expand: true,
+        cwd: '../eums/',
+        src: '**/*',
+        dest: '../build/eums/'
+      },
+      eumsManage: {
+        expand: true,
+        cwd: '../',
+        src: 'manage.py',
+        dest: '../build/'
       }
     },
 
@@ -203,6 +215,15 @@ module.exports = function(grunt) {
             '.tmp',
             'dist/{,*/}*',
             '!dist/.git*'
+          ]
+        }]
+      },
+      build: {
+        files: [{
+          dot: true,
+          src: [
+            '../build/{,*/}*',
+            '../build/.git*'
           ]
         }]
       }
@@ -361,8 +382,11 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('package', 'Build, Copy to Build', [
+    // 'clean:build',
     'build',
-    'copy:toBuild'
+    'copy:toBuild',
+    'copy:eums',
+    'copy:eumsManage'
   ]);
 
   grunt.registerTask('test:run', [
