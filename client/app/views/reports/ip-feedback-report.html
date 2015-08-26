@@ -3,6 +3,16 @@
         <h4 class="page-header">
             IP Feedback Report
         </h4>
+
+        <div class="col-xs-4 pull-right margin-bottom-20">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon "
+                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                       placeholder="Search by item, outcome, purchase order or waybill"/>
+            </div>
+        </div>
+
         <div class="table-wrapper">
             <table si-table class="table table-bordered table-hover table-striped table-condensed">
                 <thead>
@@ -30,16 +40,23 @@
                     <td class="table-body">{{itemReport.quantity_shipped}}</td>
 
                     <td class="table-body">{{ itemReport.answers[0].value }}</td>
+                    <td class="table-body">{{ itemReport.date_of_receipt  | date: 'dd/MM/yyyy'}}</td>
                     <td class="table-body">{{ itemReport.answers[1].value }}</td>
                     <td class="table-body">{{ itemReport.answers[2].value }}</td>
                     <td class="table-body">{{ itemReport.answers[3].value }}</td>
-                    <td class="table-body">{{ itemReport.answers[4].value }}</td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="11">
-                        <si-table-pagination limit="20" indices="3"></si-table-pagination>
+                    <td colspan="10" class="centered">
+                        <pagination total-items="count"
+                                    ng-model="currentPage"
+                                    boundary-links="true"
+                                    ng-change="goToPage(currentPage)"
+                                    max-size="5"
+                                    rotate="false"
+                                    items-per-page="pageSize">
+                        </pagination>
                     </td>
                 </tr>
                 </tfoot>
@@ -47,5 +64,4 @@
         </div>
         <!-- END TABLE -->
     </div>
-</div>
 </div>

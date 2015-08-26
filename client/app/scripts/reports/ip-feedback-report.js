@@ -7,16 +7,25 @@ angular.module('IpFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
 
         $scope.$watch('searchTerm', function () {
             if ($scope.searchTerm && $scope.searchTerm.trim()) {
-                loadIpFeedbackReport($scope.searchTerm)
+                $scope.searching = true;
+                loadIpFeedbackReport({query: $scope.searchTerm})
             }
         });
 
+        $scope.goToPage = function (page) {
+            loadIpFeedbackReport({page: page})
+        };
+
         function loadIpFeedbackReport(filterParams) {
-            LoaderService.showLoader();
+            $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
             ReportService.ipFeedbackReport(filterParams)
                 .then(function (response) {
                     $scope.report = response.results;
+                    $scope.count = response.count;
+                    $scope.pageSize = response.pageSize;
+
                     LoaderService.hideLoader();
+                    $scope.searching = false;
                 });
         }
 

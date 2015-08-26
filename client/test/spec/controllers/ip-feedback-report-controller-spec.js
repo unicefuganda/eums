@@ -54,7 +54,7 @@ describe('IpFeedbackReportController', function () {
             scope.searchTerm = searchTerm;
             scope.$apply();
 
-            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith(searchTerm);
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
         });
 
@@ -66,6 +66,19 @@ describe('IpFeedbackReportController', function () {
             scope.$apply();
 
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(1);
+        });
+    });
+
+    describe('on paginate', function () {
+        it('should call the service with page number', function () {
+            deferredResult.resolve({});
+            scope.$apply();
+
+            scope.goToPage(2);
+            scope.$digest();
+
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({page: 2});
+            expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
         });
     });
 
