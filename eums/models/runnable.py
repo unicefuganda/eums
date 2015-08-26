@@ -20,9 +20,11 @@ class Runnable(PolymorphicModel):
     END_USER = 'END_USER'
 
     def build_contact(self):
-        response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))
-        result = response.json() if response.status_code is 200 else None
-        return result
+        try:
+            response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))
+            return response.json() if response.status_code is 200 else None
+        except:
+            return None
 
     def current_run(self):
         return self.run_set.filter(status='scheduled').first()

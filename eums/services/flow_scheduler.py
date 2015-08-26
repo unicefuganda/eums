@@ -20,7 +20,7 @@ def schedule_run_for(runnable):
 
         if Run.has_scheduled_run(runnable.contact_person_id):
             RunQueue.enqueue(runnable, run_delay)
-        else:
+        elif settings.RAPIDPRO_LIVE:
             contact = runnable.build_contact()
             task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
             Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,

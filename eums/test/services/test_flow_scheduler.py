@@ -19,6 +19,8 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as Nod
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime, FakeDate
 
+from django.conf import settings
+
 datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
 local_celery.app.task = mock_celery.task
@@ -33,6 +35,7 @@ from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
 class FlowSchedulerTest(TestCase):
 
     def setUp(self):
+        settings.RAPIDPRO_LIVE = True
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
 
         self.node = NodeFactory()
@@ -50,6 +53,7 @@ class FlowSchedulerTest(TestCase):
         self.IMPLEMENTING_PARTNER_FLOW_ID = ip_flow.rapid_pro_id
 
     def tearDown(self):
+        settings.RAPIDPRO_LIVE = False
         Flow.objects.all().delete()
         Run.objects.all().delete()
         RunQueue.objects.all().delete()
