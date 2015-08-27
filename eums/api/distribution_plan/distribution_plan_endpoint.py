@@ -14,7 +14,7 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = DistributionPlan
-        fields = ('id', 'programme', 'date', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
+        fields = ('id', 'programme', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
                   'track', 'contact_person_id', 'remark', 'total_value', 'is_received', 'type', 'number',
                   'number_of_items', 'confirmed')
 

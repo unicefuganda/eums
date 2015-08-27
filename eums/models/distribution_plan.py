@@ -10,7 +10,6 @@ from eums.models.programme import Programme
 
 class DistributionPlan(Runnable):
     programme = models.ForeignKey(Programme)
-    date = models.DateField(auto_now=True)
     confirmed = models.BooleanField(default=False, null=False)
 
     class Meta:
@@ -25,7 +24,7 @@ class DistributionPlan(Runnable):
         return reduce(lambda total, node: total + node.item.unit_value() * node.quantity_in(), delivery_root_nodes, 0)
 
     def __unicode__(self):
-        return "%s, %s" % (self.programme.name, str(self.date))
+        return "%s, %s" % (self.programme.name, str(self.delivery_date))
 
     def is_received(self):
         delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),

@@ -38,7 +38,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
     def test_should_create_delivery(self):
         today = datetime.date.today()
         programme = ProgrammeFactory()
-        delivery = DeliveryFactory(programme=programme, date=today)
+        delivery = DeliveryFactory(programme=programme, delivery_date=today)
         response = self.client.get(ENDPOINT_URL)
 
         self.assertEqual(response.status_code, 200)
