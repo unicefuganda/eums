@@ -1,13 +1,14 @@
 from mock import patch
 from rest_framework.test import APITestCase
 
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory, \
     MultipleChoiceQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.models import MultipleChoiceAnswer, TextAnswer, NumericAnswer, RunQueue, Run, Flow, \
-    MultipleChoiceQuestion, Option, NumericQuestion, TextQuestion, Alert
+    MultipleChoiceQuestion, Option, Alert, Runnable
 from eums.test.config import BACKEND_URL
 from eums.test.factories.flow_factory import FlowFactory
 
@@ -18,7 +19,7 @@ class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
-        self.flow = FlowFactory(rapid_pro_id=self.flow_id)
+        self.flow = FlowFactory(rapid_pro_id=self.flow_id, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
 
     def tearDown(self):
         Alert.objects.all().delete()
@@ -26,14 +27,14 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self):
         uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
-        question = MultipleChoiceQuestionFactory(
-            uuids=[uuid], text='Was item received?', label='productReceived'
-        )
+        question = MultipleChoiceQuestionFactory(uuids=[uuid], text='Was item received?', label='productReceived',
+                                                 flow=self.flow)
 
         Option.objects.get_or_create(text='Yes', question=question)
         Option.objects.get_or_create(text='No', question=question)
 
-        run = RunFactory(phone=self.PHONE)
+        delivery = DeliveryFactory()
+        run = RunFactory(phone=self.PHONE, runnable=delivery)
 
         url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, 'Yes', 'Yes', 'productReceived')
 
@@ -47,6 +48,7 @@ class HookTest(APITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(created_answer.value, yes_option)
+        self.assertEqual(delivery.answers()[0]['value'], created_answer.value.text)
 
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self):
         uuids = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
@@ -210,7 +212,6 @@ class HookTest(APITestCase):
     def test_should_call_alert_handler_when_last_question_answered(self, mock_run_queue_dequeue,
                                                                    mock_schedule_next_run,
                                                                    mock_response_alert_handler_process):
-
         question = NumericQuestionFactory(uuids=['1234'], text='some text', label='someLabel')
 
         node = DeliveryNodeFactory()
