@@ -1,0 +1,5 @@
+FROM postgres
+MAINTAINER eums <eums@thoughtworks.com>
+
+VOLUME /dbdata
+CMD /bin/true

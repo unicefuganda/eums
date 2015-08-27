@@ -1,9 +1,15 @@
+data:
+  build: .
+  dockerfile: Dockerfile.data
 postgres:
   image: postgres
+  environment:
+    PGDATA: /dbdata
+  volumes_from:
+    - data
 web:
-  image: cuevee/unicef-web:0.1
-  # volumes:
-  #   - .:/eums
+  build: .
+  dockerfile: Dockerfile.dev
   ports:
     - "80:80"
   links:
