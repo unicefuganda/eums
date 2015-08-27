@@ -17,5 +17,6 @@ describe('Alerts', function () {
         expect(alertsPage.firstAlert).toContain('NOT RECEIVED');
         expect(alertsPage.firstAlert).toContain('Some Consignee Name');
         expect(alertsPage.firstAlert).toContain('Some Contact Name');
+        expect(alertsPage.firstAlert).toContain('Some Description');
     });
 });

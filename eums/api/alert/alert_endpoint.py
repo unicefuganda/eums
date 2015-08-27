@@ -3,6 +3,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.models import Alert
 
+
 class AlertSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -16,8 +17,10 @@ class AlertSerializer(serializers.ModelSerializer):
             'consignee_name',
             'contact_name',
             'created_on',
-            'issue_display_name'
+            'issue_display_name',
+            'item_description'
         )
+
 
 class AlertViewSet(ReadOnlyModelViewSet):
 

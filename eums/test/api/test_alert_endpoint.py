@@ -20,7 +20,8 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
             remarks='some remarks',
             consignee_name='wakiso',
             contact_name='john doe',
-            runnable=runnable)
+            runnable=runnable,
+            item_description="some description")
 
         response = self.client.get(ENDPOINT_URL)
 
@@ -34,6 +35,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(first_alert['remarks'], 'some remarks')
         self.assertEqual(first_alert['consignee_name'], 'wakiso')
         self.assertEqual(first_alert['contact_name'], 'john doe')
+        self.assertEqual(first_alert['item_description'], 'some description')
         self.assertEqual(first_alert['issue_display_name'], Alert.ISSUE_TYPES[Alert.ISSUE_TYPES.not_received])
 
     def test_should_return_multiple_alerts_when_multiple_exist(self):

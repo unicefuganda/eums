@@ -9,7 +9,10 @@
     <div class="alert-row" ng-repeat="alert in alerts">
         <span class="alerts-grey">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
         <span class="alerts-bolder">{{ alert.contactName }}</span>
-        reported <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
+        reported <span ng-show="alert.itemDescription">
+        item <span class="alerts-bolder">{{ alert.itemDescription }}</span> from </span>
+        </span>
+        <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
         sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>
         as <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
     </div>
