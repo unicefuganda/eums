@@ -60,4 +60,5 @@ class Runnable(PolymorphicModel):
             order_number=self.number(),
             consignee_name=self.consignee.name,
             contact_name=self._contact_name(),
+            item_description=self.item_description(),
             issue=issue)

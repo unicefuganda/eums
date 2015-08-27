@@ -1,8 +1,9 @@
 from unittest import TestCase
 from django.db import IntegrityError
+from mock import patch
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
-    Item, Consignee
+    Item, Consignee, Alert
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -349,3 +350,38 @@ class DeliveryNodeTest(TestCase):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=purchase_order, item=item))
 
         self.assertEqual(po_node.item_description(), description)
+
+    @patch('eums.models.runnable.Runnable.build_contact')
+    def test_should_create_alert_with_item_description(self, mock_contact):
+        purchase_order = PurchaseOrderFactory(order_number=5678)
+        description = "some description"
+        item = ItemFactory(description=description)
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order, item=item)
+        consignee = ConsigneeFactory(name="Liverpool FC")
+
+        contact_person_id = 'some_id'
+        contact = {u'_id': contact_person_id,
+                   u'firstName': u'Chris',
+                   u'lastName': u'George',
+                   u'phone': u'+256781111111'}
+        mock_contact.return_value = contact
+
+        node = DeliveryNodeFactory(item=purchase_order_item, consignee=consignee, contact_person_id=contact_person_id)
+
+        node.create_alert(Alert.ISSUE_TYPES.not_received)
+
+        self.assertTrue(mock_contact.called)
+
+        alerts = Alert.objects.filter(consignee_name="Liverpool FC", order_number=5678)
+        self.assertEqual(alerts.count(), 1)
+        alert = alerts.first()
+        self.assertEqual(alert.order_type, PurchaseOrderItem.PURCHASE_ORDER)
+        self.assertEqual(alert.order_number, 5678)
+        self.assertEqual(alert.consignee_name, "Liverpool FC")
+        self.assertEqual(alert.contact_name, "Chris George")
+        self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
+        self.assertFalse(alert.is_resolved)
+        self.assertIsNone(alert.remarks)
+        self.assertEqual(alert.runnable, node)
+        self.assertEqual(alert.item_description, description)
+

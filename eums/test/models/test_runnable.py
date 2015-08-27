@@ -136,3 +136,5 @@ class RunnableTest(TestCase):
         self.assertFalse(alert.is_resolved)
         self.assertIsNone(alert.remarks)
         self.assertEqual(alert.runnable.id, delivery.id)
+        self.assertIsNone(alert.item_description)
+
