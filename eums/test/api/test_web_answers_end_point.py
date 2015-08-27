@@ -1,14 +1,17 @@
 import json
 from mock import MagicMock, patch
 from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
-    NumericAnswer
+    NumericAnswer, Alert
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
+from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.option_factory import OptionFactory
+from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.question_factory import TextQuestionFactory, MultipleChoiceQuestionFactory, \
     NumericQuestionFactory
 
@@ -93,6 +96,83 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(mock_confirm.called)
+
+    @patch('eums.services.response_alert_handler.ResponseAlertHandler')
+    @patch('eums.models.DistributionPlan.confirm')
+    def test_should_format_answers_to_rapidpro_hook_api_and_handle_corresponding_alerts(self, mock_confirm, mock_alert_handler):
+        delivery = DeliveryFactory()
+        date_of_receipt = '10-10-2014'
+        good_comment = "All is good"
+
+        data = {
+            'runnable': delivery.id, 'answers': [
+                {'question_label': 'deliveryReceived', 'value': 'Yes'},
+                {'question_label': 'dateOfReceipt', 'value': date_of_receipt},
+                {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
+                {'question_label': 'areYouSatisfied', 'value': 'Yes'},
+                {'question_label': 'additionalDeliveryComments', 'value': good_comment}
+            ]}
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 201)
+        rapidpro_formatted_answers =[
+                {"category":{'eng': 'Yes', 'base': 'Yes'}, 'label': 'deliveryReceived' },
+                {"category":{'eng': date_of_receipt, 'base': date_of_receipt},'label': 'dateOfReceipt'},
+                {"category":{'eng': 'Yes', 'base': 'Yes'}, 'label': 'isDeliveryInGoodOrder', },
+                {"category":{'eng': 'Yes', 'base': 'Yes'}, 'label': 'areYouSatisfied'},
+                {"category":{'eng': good_comment, 'base': good_comment}, 'label': 'additionalDeliveryComments'}
+            ]
+
+        self.assertTrue(mock_alert_handler.called_once_with(delivery, rapidpro_formatted_answers))
+
+    @patch('eums.services.response_alert_handler.ResponseAlertHandler.process')
+    @patch('eums.models.DistributionPlan.confirm')
+    def test_should_process_alerts(self, mock_confirm, mock_process):
+        delivery = DeliveryFactory()
+        date_of_receipt = '10-10-2014'
+        good_comment = "All is good"
+
+        data = {
+            'runnable': delivery.id, 'answers': [
+                {'question_label': 'deliveryReceived', 'value': 'Yes'},
+                {'question_label': 'dateOfReceipt', 'value': date_of_receipt},
+                {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
+                {'question_label': 'areYouSatisfied', 'value': 'Yes'},
+                {'question_label': 'additionalDeliveryComments', 'value': good_comment}
+            ]}
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(mock_process.called)
+
+    @patch('eums.models.DistributionPlan.confirm')
+    def test_should_create_alerts_integration(self, mock_confirm):
+        purchase_order = PurchaseOrderFactory(order_number=5678)
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        consignee = ConsigneeFactory(name="Liverpool FC")
+        delivery = DeliveryFactory(consignee=consignee)
+        DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
+
+        date_of_receipt = '10-10-2014'
+        good_comment = "All is good"
+
+        data = {
+            'runnable': delivery.id, 'answers': [
+                {'question_label': 'deliveryReceived', 'value': 'No'},
+                {'question_label': 'dateOfReceipt', 'value': date_of_receipt},
+                {'question_label': 'isDeliveryInGoodOrder', 'value': 'Yes'},
+                {'question_label': 'areYouSatisfied', 'value': 'Yes'},
+                {'question_label': 'additionalDeliveryComments', 'value': good_comment}
+            ]}
+
+        response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        self.assertEqual(response.status_code, 201)
+
+        alert = Alert.objects.get(consignee_name="Liverpool FC", order_number=5678)
+        self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
 
     def test_should_cancel_existing_runs_when_saving_a_new_set_of_answers(self):
         delivery = DeliveryFactory()

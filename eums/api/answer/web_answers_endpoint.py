@@ -1,8 +1,11 @@
+import ast
+
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from eums.models import Run, MultipleChoiceQuestion, TextQuestion, Flow, Runnable, NumericQuestion
+from eums.services.response_alert_handler import ResponseAlertHandler
 
 
 @api_view(['POST', ])
@@ -19,17 +22,29 @@ def save_answers(request):
                              scheduled_message_task_id='Web')
 
     flow = _get_flow(runnable)
-    _create_answers(request['answers'], flow, run)
+    rapidpro_formatted_answers = _process_answers(request['answers'], flow, run)
+    _create_alert(run.runnable, rapidpro_formatted_answers)
     runnable.confirm()
     return Response(status=status.HTTP_201_CREATED)
 
 
-def _create_answers(raw_answers, flow, run):
+def _process_answers(raw_answers, flow, run):
+    rapidpro_formatted_answers = []
     for answer in raw_answers:
         question = _get_matching_question(answer['question_label'], flow)
-        params = {'values': [u'[{"category": {"eng":"%s"}, "label": "%s"}]' % (answer['value'], answer['question_label'])],
+        params = {'values': [u'[{"category": {"eng":"%s", "base": "%s"}, "label": "%s"}]' %
+                             (answer['value'], answer['value'], answer['question_label'])],
                   'text': answer['value']}
         question.create_answer(params, run)
+        params_values = ast.literal_eval(params['values'][0])
+        rapidpro_formatted_answers.append(params_values[0])
+    return rapidpro_formatted_answers
+
+
+def _create_alert(runnable, params):
+    handler = ResponseAlertHandler(runnable, params)
+    handler.process()
+
 
 
 def _get_flow(runnable):
