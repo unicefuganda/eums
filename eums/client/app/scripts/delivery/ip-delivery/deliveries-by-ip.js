@@ -33,14 +33,12 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
         $scope.$watch('searchTerm', function (term) {
             if (term && term.length) {
                 $scope.searching = true;
-                LoaderService.showLoader();
                 DeliveryNodeService.search(term, fieldsToBuild, filterFields).then(function (response) {
                     setScopeDataFromResponse(response);
                 }).catch(function () {
                     createToast('search failed', 'danger');
                 }).finally(function () {
                     $scope.searching = false;
-                    LoaderService.hideLoader();
                 });
             }
             else {

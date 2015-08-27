@@ -25,5 +25,60 @@
 
     <span class="well-sm"></span>
 
-    <ng-include src="'/static/app/views/delivery/ip-delivery/partials/deliveries-by-ip-list.html'"></ng-include>
+    <div class="row" ng-hide="!deliveryNodes.length && !searchTerm.length">
+        <div class="col-xs-4 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon"
+                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                <input type="text" id="filter" class="form-control" ng-model="searchTerm"
+                       placeholder="Search by Consignee, District or Date in format 'YYYY-MM-DD'"/>
+                <span class="text-info" ng-show="searchTerm.length && !deliveryNodes.length">
+                    There are no matches to your search criteria.
+                </span>
+            </div>
+        </div>
+    </div>
+    <span class="well-sm"></span>
+
+    <div ng-if="deliveryNodes.length">
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th class="left-aligned">Qty Shipped</th>
+                <th class="left-aligned">Date Shipped</th>
+                <th class="left-aligned">Consignee</th>
+                <th class="left-aligned">Contact Person</th>
+                <th class="left-aligned">District</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr ng-repeat="($index, node) in deliveryNodes">
+                <td class="centered v-align-middle">{{ $index + 1 }}</td>
+                <td class="left-aligned">{{ node.quantityIn }}</td>
+                <td class="left-aligned">{{ node.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                <td class="left-aligned">{{ node.consigneeName }}</td>
+                <td ng-if="node.contactPerson" class="left-aligned">
+                    {{ node.contactPerson.firstName }} {{ node.contactPerson.lastName }}
+                </td>
+                <td ng-if="!node.contactPerson" class="left-aligned">Contact Not Found</td>
+                <td class="left-aligned">{{ node.location }}</td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="6" class="centered">
+                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
+                    </pagination>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+    <h4 class="text-warning" ng-show="!deliveryNodes.length && !searchTerm.length">
+        You have not made any deliveries for this item yet.
+    </h4>
 </div>
