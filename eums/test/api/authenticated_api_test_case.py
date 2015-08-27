@@ -1,5 +1,6 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from rest_framework.test import APITestCase
+
 from eums.models import UserProfile
 
 
