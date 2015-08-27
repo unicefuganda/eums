@@ -40,7 +40,7 @@
                     <td class="table-body">{{itemReport.quantity_shipped}}</td>
 
                     <td class="table-body">{{ itemReport.answers[0].value }}</td>
-                    <td class="table-body">{{ itemReport.date_of_receipt  | date "dd/mm/yyyy"}}</td>
+                    <td class="table-body">{{ itemReport.date_of_receipt  | date: 'dd/mm/yyyy'}}</td>
                     <td class="table-body">{{ itemReport.answers[1].value }}</td>
                     <td class="table-body">{{ itemReport.answers[2].value }}</td>
                     <td class="table-body">{{ itemReport.answers[3].value }}</td>
