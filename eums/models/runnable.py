@@ -51,6 +51,9 @@ class Runnable(PolymorphicModel):
     def type(self):
         pass
 
+    def item_description(self):
+        return None
+
     def create_alert(self, issue):
         self.alert_set.create(
             order_type=self.type(),

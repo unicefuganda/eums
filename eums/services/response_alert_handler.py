@@ -5,6 +5,7 @@ class ResponseAlertHandler(object):
 
     ALERT_TYPES = {
         Question.LABEL.deliveryReceived: Alert.ISSUE_TYPES.not_received,
+        Question.LABEL.itemReceived: Alert.ISSUE_TYPES.not_received,
         Question.LABEL.isDeliveryInGoodOrder: Alert.ISSUE_TYPES.bad_condition
     }
 

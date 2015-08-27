@@ -2,8 +2,7 @@ from unittest import TestCase
 from django.db import IntegrityError
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
-    Item, \
-    Consignee
+    Item, Consignee
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -342,3 +341,11 @@ class DeliveryNodeTest(TestCase):
         release_order = ReleaseOrderFactory(waybill=300)
         ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=release_order))
         self.assertEqual(ro_node.order_number(), 300)
+
+    def test_delivery_node_knows_its_item_description(self):
+        purchase_order = PurchaseOrderFactory(order_number=200)
+        description  = "some description"
+        item = ItemFactory(description=description)
+        po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=purchase_order, item=item))
+
+        self.assertEqual(po_node.item_description(), description)

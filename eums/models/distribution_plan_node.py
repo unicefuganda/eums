@@ -101,3 +101,6 @@ class DistributionPlanNode(Runnable):
 
     def order_number(self):
         return self.item.number()
+
+    def item_description(self):
+        return self.item.item.description

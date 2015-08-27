@@ -18,6 +18,7 @@ class Alert(models.Model):
     contact_name = models.CharField(max_length=255)
     created_on = models.DateField(auto_now_add=True)
     runnable = models.ForeignKey(Runnable)
+    item_description = models.CharField(max_length=255, null=True)
 
     def order_type_display_name(self):
         return self.ORDER_TYPES[self.order_type]

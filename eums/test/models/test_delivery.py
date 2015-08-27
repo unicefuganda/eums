@@ -438,3 +438,8 @@ class DeliveryTest(TestCase):
         self.assertIn(node_answers[1]['id'], [node_one.id, node_two.id])
         self.assertEqual(len(node_answers[1]['answers']), 5)
         self.assertIn(expected_text_answer, node_answers[1]['answers'])
+
+    def test_delivery_does_not_have_item_description(self):
+        delivery = DeliveryFactory()
+        
+        self.assertIsNone(delivery.item_description())
