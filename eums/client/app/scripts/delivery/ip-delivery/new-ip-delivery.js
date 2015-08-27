@@ -19,7 +19,10 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
             $scope.districtsLoaded = true;
         }));
 
-        loadPromises.push(DeliveryNodeService.filter({item__item: $routeParams.itemId, is_distributable: true}).then(function (nodes) {
+        loadPromises.push(DeliveryNodeService.filter({
+            item__item: $routeParams.itemId,
+            is_distributable: true
+        }).then(function (nodes) {
             $scope.deliveries = nodes;
         }));
 
@@ -79,16 +82,7 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
             if (scopeDataIsValid() && non_zero_quantity_deliveries.length) {
                 LoaderService.showLoader();
                 $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
-                DeliveryNodeService.create($scope.newDelivery)
-                    .then(function() {
-                        closeNewDeliveryForm();
-                        createToast('Delivery Successfully Created', 'success');
-                    })
-                    .catch(function() {
-                        createToast('Failed to save delivery', 'danger');
-                    }).finally(function() {
-                        LoaderService.hideLoader();
-                    });
+                createNewDelivery();
             }
             else {
                 $scope.errors = true;
@@ -96,15 +90,22 @@ angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
             }
         };
 
-        function closeNewDeliveryForm() {
-            $scope.reloadParentController();
+        function createNewDelivery() {
+            DeliveryNodeService.create($scope.newDelivery).then(function () {
+                $scope.reloadParentController();
+                createToast('Delivery Successfully Created', 'success');
+            }).catch(function () {
+                createToast('Failed to save delivery', 'danger');
+            }).finally(function () {
+                LoaderService.hideLoader();
+            });
         }
 
         function scopeDataIsValid() {
             var someInputsAreEmpty = !($scope.newDelivery.location && $scope.newDelivery.contact_person_id
             && $scope.newDelivery.consignee
             && $scope.newDelivery.deliveryDate);
-            var someQuantitiesAreInvalid = $scope.deliveries.any(function(delivery) {
+            var someQuantitiesAreInvalid = $scope.deliveries.any(function (delivery) {
                 return delivery.quantityShipped > delivery.balance;
             });
             return !someInputsAreEmpty && !someQuantitiesAreInvalid;

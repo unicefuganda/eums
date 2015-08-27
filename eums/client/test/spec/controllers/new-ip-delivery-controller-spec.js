@@ -51,7 +51,7 @@ describe('New IP Delivery Controller', function () {
         });
     });
 
-    it('should show loader on load', function() {
+    it('should show loader on load', function () {
         scope.$apply();
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
@@ -216,7 +216,7 @@ describe('New IP Delivery Controller', function () {
         expect(rootScope.reloadParentController).toHaveBeenCalled();
     });
 
-    it('should show success toast upon save', function() {
+    it('should show success toast upon save', function () {
         scope.$apply();
         setupNewDelivery();
         scope.save();
@@ -227,7 +227,7 @@ describe('New IP Delivery Controller', function () {
         });
     });
 
-    it('should show failure toast when save fails', function() {
+    it('should show failure toast when save fails', function () {
         scope.$apply();
         setupNewDelivery();
         mockDeliveryNodeService.create.and.returnValue(q.reject());
@@ -235,6 +235,22 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
         expect(toast.create).toHaveBeenCalledWith({
             content: 'Failed to save delivery',
+            class: 'danger'
+        });
+    });
+
+    it('should fail to save new delivery if its quantities are from shipments with different order items', function () {
+        scope.$apply();
+        setupNewDelivery();
+        scope.deliveries = [
+            {id: 1, balance: 10, item: orderItemId, quantityShipped: 50, orderNumber: 444, orderType: 'waybill'},
+            {id: 2, balance: 20, item: orderItemId, quantityShipped: 10, orderNumber: 555, orderType: 'waybill'}
+        ];
+        scope.save();
+        expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
+        expect(scope.errors).toBeTruthy();
+        expect(toast.create).toHaveBeenCalledWith({
+            content: 'Cannot save. Please fill out or fix values for all fields marked in red',
             class: 'danger'
         });
     });
