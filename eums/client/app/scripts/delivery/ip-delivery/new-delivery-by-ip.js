@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('NewIpDelivery', ['eums.config', 'ngToast'])
+angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewIpDeliveryController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $q) {
+    .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $q) {
         $scope.districts = [];
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.errors = false;

@@ -16,7 +16,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'IpFeedbackReport', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
-    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveredItems', 'IpItemDeliveries', 'Alerts', 'NewIpDelivery'])
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveredItems', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp'])
 
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
@@ -220,9 +220,18 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             templateUrl: '/static/app/views/delivery/ip-items.html',
             controller: 'IpItemsController'
         })
-        .when('/item-deliveries/:itemId', {
-            templateUrl: '/static/app/views/delivery/ip-delivery/item-deliveries.html',
-            controller: 'IpItemDeliveriesController',
+        .when('/deliveries-by-ip/:itemId', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/deliveries-by-ip.html',
+            controller: 'DeliveriesByIpController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                }
+            }
+        })
+        .when('/deliveries-by-ip/:itemId/new', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html',
+            controller: 'NewDeliveryByIpController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_distribution_plans');

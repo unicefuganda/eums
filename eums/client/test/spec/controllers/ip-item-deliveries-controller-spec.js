@@ -25,7 +25,7 @@ describe('Ip item deliveries', function () {
     var fetched_consignee_items = {results: [{id: 2, availableBalance: 450}]};
 
     beforeEach(function () {
-        module('IpItemDeliveries');
+        module('DeliveriesByIp');
 
         mockDeliveryNodeService = jasmine.createSpyObj('DeliveryNodeService', ['filter', 'search']);
         mockItemService = jasmine.createSpyObj('ItemService', ['get']);
@@ -42,7 +42,7 @@ describe('Ip item deliveries', function () {
             mockItemService.get.and.returnValue($q.when(fetchedItem));
             mockConsigneeItemService.filter.and.returnValue($q.when(fetched_consignee_items));
 
-            $controller('IpItemDeliveriesController', {
+            $controller('DeliveriesByIpController', {
                 $scope: scope,
                 DeliveryNodeService: mockDeliveryNodeService,
                 $routeParams: routeParams,
@@ -61,7 +61,7 @@ describe('Ip item deliveries', function () {
     it('should show new delivery form when specified in url args', inject(function ($controller, $rootScope) {
         var routeParams = {itemId: 2, new: 'true'};
         var scope = $rootScope.$new();
-        $controller('IpItemDeliveriesController', {
+        $controller('DeliveriesByIpController', {
             $scope: scope,
             DeliveryNodeService: mockDeliveryNodeService,
             $routeParams: routeParams,

@@ -7,7 +7,7 @@ describe('New IP Delivery Controller', function () {
     };
 
     beforeEach(function () {
-        module('NewIpDelivery');
+        module('NewDeliveryByIp');
 
         ipNodes = [
             {id: 1, item: orderItemId, quantityShipped: 10},
@@ -39,7 +39,7 @@ describe('New IP Delivery Controller', function () {
             spyOn(toast, 'create');
 
             q = $q;
-            $controller('NewIpDeliveryController', {
+            $controller('NewDeliveryByIpController', {
                 $scope: scope,
                 IPService: mockIpService,
                 $routeParams: routeParams,

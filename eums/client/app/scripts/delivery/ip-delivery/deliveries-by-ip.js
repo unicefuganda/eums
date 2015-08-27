@@ -1,5 +1,5 @@
-angular.module('IpItemDeliveries', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewIpDelivery'])
-    .controller('IpItemDeliveriesController', function ($scope, DeliveryNodeService, ItemService, $routeParams,
+angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewDeliveryByIp'])
+    .controller('DeliveriesByIpController', function ($scope, DeliveryNodeService, ItemService, $routeParams,
                                                         ConsigneeItemService, LoaderService, $q, ngToast) {
 
         function createToast(message, klass) {
