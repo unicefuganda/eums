@@ -97,3 +97,15 @@ class ResponseAlertHandlerTest(TestCase):
         response_alert_handler.process()
 
         self.assertEqual(Alert.objects.count(), 0)
+
+    def test_should_not_create_alert_when_non_delivery_question_are_answered_no(self):
+        answer_values = [
+            {"category": {"base": "No"}, "label": "This is not a delivery question"},
+            {"category": {"base": "Yes"}, "label": Question.LABEL.isDeliveryInGoodOrder}
+        ]
+        delivery = DeliveryFactory()
+
+        response_alert_handler = ResponseAlertHandler(runnable=delivery, answer_values=answer_values)
+        response_alert_handler.process()
+
+        self.assertEqual(Alert.objects.count(), 0)
