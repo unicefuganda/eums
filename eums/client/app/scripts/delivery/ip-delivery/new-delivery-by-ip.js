@@ -4,19 +4,30 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $q) {
+    .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
+                                                       DeliveryNode, ngToast, LoaderService, $q, ItemService,
+                                                       ConsigneeItemService, $location) {
         $scope.districts = [];
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.errors = false;
+        LoaderService.showLoader();
 
         var loadPromises = [];
+        var itemId = $routeParams.itemId;
 
-        LoaderService.showLoader();
         loadPromises.push(IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
                 return {id: districtName, name: districtName};
             });
             $scope.districtsLoaded = true;
+        }));
+
+        loadPromises.push(ItemService.get(itemId).then(function (item) {
+            $scope.item = item;
+        }));
+
+        loadPromises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
+            $scope.quantityAvailable = response.results.first().availableBalance;
         }));
 
         loadPromises.push(DeliveryNodeService.filter({
@@ -92,8 +103,8 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
 
         function createNewDelivery() {
             DeliveryNodeService.create($scope.newDelivery).then(function () {
-                $scope.reloadParentController();
                 createToast('Delivery Successfully Created', 'success');
+                $location.path('/deliveries-by-ip/' + $routeParams.itemId);
             }).catch(function () {
                 createToast('Failed to save delivery', 'danger');
             }).finally(function () {

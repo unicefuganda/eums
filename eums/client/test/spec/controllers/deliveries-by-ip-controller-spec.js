@@ -22,7 +22,7 @@ describe('Ip item deliveries', function () {
     var fetchedItem = {id: 1, description: 'Some name', unit: 1};
     var searchResults = [node];
     var allNodes = paginatedNodesResponse.results;
-    var fetched_consignee_items = {results: [{id: 2, availableBalance: 450}]};
+    var fetchedConsigneeItems = {results: [{id: 2, availableBalance: 450}]};
 
     beforeEach(function () {
         module('DeliveriesByIp');
@@ -40,7 +40,7 @@ describe('Ip item deliveries', function () {
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedNodesResponse));
             mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
             mockItemService.get.and.returnValue($q.when(fetchedItem));
-            mockConsigneeItemService.filter.and.returnValue($q.when(fetched_consignee_items));
+            mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
 
             $controller('DeliveriesByIpController', {
                 $scope: scope,
@@ -52,25 +52,6 @@ describe('Ip item deliveries', function () {
             });
         });
     });
-
-    it('should by default not show new delivery screen', function () {
-        scope.$apply();
-        expect(scope.newDeliveryFormShowing).toBeFalsy();
-    });
-
-    it('should show new delivery form when specified in url args', inject(function ($controller, $rootScope) {
-        var routeParams = {itemId: 2, new: 'true'};
-        var scope = $rootScope.$new();
-        $controller('DeliveriesByIpController', {
-            $scope: scope,
-            DeliveryNodeService: mockDeliveryNodeService,
-            $routeParams: routeParams,
-            ItemService: mockItemService,
-            ConsigneeItemService: mockConsigneeItemService,
-            LoaderService: mockLoaderService
-        });
-        expect(scope.newDeliveryFormShowing).toBeTruthy();
-    }));
 
     it('should load deliveries on the scope', function () {
         scope.$apply();
@@ -155,33 +136,5 @@ describe('Ip item deliveries', function () {
         scope.$apply();
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    });
-
-    it('should toggle new delivery form visibility', function () {
-        scope.$apply();
-        scope.toggleNewDeliveryForm();
-        expect(scope.newDeliveryFormShowing).toBeTruthy();
-        scope.toggleNewDeliveryForm();
-        expect(scope.newDeliveryFormShowing).toBeFalsy();
-    });
-
-    it('should reload its data', function () {
-        scope.$apply();
-        mockItemService.get.calls.reset();
-        mockConsigneeItemService.filter.calls.reset();
-        mockDeliveryNodeService.filter.calls.reset();
-
-        scope.reloadParentController();
-
-        expect(mockItemService.get).toHaveBeenCalled();
-        expect(mockConsigneeItemService.filter).toHaveBeenCalled();
-        expect(mockDeliveryNodeService.filter).toHaveBeenCalled();
-    });
-
-    it('should hide new delivery form on reload', function () {
-        scope.$apply();
-        scope.newDeliveryFormShowing = true;
-        scope.reloadParentController();
-        expect(scope.newDeliveryFormShowing).toBeFalsy();
     });
 });

@@ -1,18 +1,44 @@
-<div>
-    <span class="sub-header">ADD CONSIGNEE DETAILS</span>
-</div>
-<div class="well col-md-12">
-    <table class="col-md-12">
-        <tr>
-            <td class="col-md-2 pad-bottom-5">Date Shipped</td>
-            <td class="col-md-3 pad-bottom-5">Consignee</td>
-            <td class="col-md-3 pad-bottom-5">Contact Person</td>
-            <td class="col-md-2 pad-bottom-5">District</td>
-            <td class="col-md-2 centered pad-bottom-5">End-User</td>
-        </tr>
-        <tr>
-            <td class="col-md-2">
-                <div id="input-delivery-date" class="pad-small">
+<ng-toast></ng-toast>
+<div class="container-fluid">
+    <div class="eums page-header row">
+        <div class="pull-left pad-top-10">Create New Delivery for Item: {{ item.description }}</div>
+        <div class="pull-right">
+            <a href="#/ip-items" class="btn blue-border-button">
+                <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
+                Back to My Warehouse
+            </a>
+        </div>
+    </div>
+
+    <div class="row pad-15">
+        <div class="pull-left">
+            <a href="#/deliveries-by-ip/{{ item.id }}" class="btn warning-border-button">
+                <span class="glyphicon glyphicon-remove"></span>
+                Discard New Delivery
+            </a>
+        </div>
+        <div class="pull-right pad-top-10">
+            <span class="pad-right-5 item-quantity-label">Quantity Available</span>
+            <span class="label label-success item-quantity-label">{{ quantityAvailable }}</span>
+        </div>
+    </div>
+
+    <span class="well-sm"></span>
+    <div>
+        <span class="sub-header">ADD CONSIGNEE DETAILS</span>
+    </div>
+    <div class="well col-md-12">
+        <table class="col-md-12">
+            <tr>
+                <td class="col-md-2 pad-bottom-5">Date Shipped</td>
+                <td class="col-md-3 pad-bottom-5">Consignee</td>
+                <td class="col-md-3 pad-bottom-5">Contact Person</td>
+                <td class="col-md-2 pad-bottom-5">District</td>
+                <td class="col-md-2 centered pad-bottom-5">End-User</td>
+            </tr>
+            <tr>
+                <td class="col-md-2">
+                    <div id="input-delivery-date" class="pad-small">
                             <span class="input-group" eums-date-picker
                                   ng-class="{'has-error': !newDelivery.deliveryDate && errors}">
                                 <input type="text" class="form-control"
@@ -30,107 +56,109 @@
                                   </button>
                                 </span>
                             </span>
-                </div>
-            </td>
-            <td class="col-md-3">
-                <div id="input-consignee" class="col-md-12 pad-small"
-                     ng-class="{'has-error': !newDelivery.consignee && errors}">
-                    <div class="pad-small col-md-10">
-                        <input type="hidden" search-consignees
-                               ng-model="newDelivery.consignee"
-                               ng-attr-id="{{ 'ip-select' }}"
-                               value="{{ consignee }}">
                     </div>
-                    <div class="col-md-2 pad-small">
-                        <button type="button" class="btn btn-default "
-                                ng-click="addConsignee()">
-                            <i class="glyphicon glyphicon-plus"></i>
-                        </button>
+                </td>
+                <td class="col-md-3">
+                    <div id="input-consignee" class="col-md-12 pad-small"
+                         ng-class="{'has-error': !newDelivery.consignee && errors}">
+                        <div class="pad-small col-md-10">
+                            <input type="hidden" search-consignees
+                                   ng-model="newDelivery.consignee"
+                                   ng-attr-id="{{ 'ip-select' }}"
+                                   value="{{ consignee }}">
+                        </div>
+                        <div class="col-md-2 pad-small">
+                            <button type="button" class="btn btn-default "
+                                    ng-click="addConsignee()">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td class="col-md-3">
-                <div id="input-contact" class="col-md-12 pad-small"
-                     ng-class="{'has-error': !newDelivery.contact_person_id && errors}">
-                    <div class="col-md-10 pad-small">
-                        <input type="hidden"
-                               search-contacts
-                               required="required"
-                               value="{{ contact_person_id }}"
-                               ng-model="newDelivery.contact_person_id"
-                               ng-attr-id="{{ 'contact-select' }}">
+                </td>
+                <td class="col-md-3">
+                    <div id="input-contact" class="col-md-12 pad-small"
+                         ng-class="{'has-error': !newDelivery.contact_person_id && errors}">
+                        <div class="col-md-10 pad-small">
+                            <input type="hidden"
+                                   search-contacts
+                                   required="required"
+                                   value="{{ contact_person_id }}"
+                                   ng-model="newDelivery.contact_person_id"
+                                   ng-attr-id="{{ 'contact-select' }}">
+                        </div>
+                        <div class="col-md-2 pad-small">
+                            <button type="button" class="btn btn-default "
+                                    ng-click="addContact()">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-2 pad-small">
-                        <button type="button" class="btn btn-default "
-                                ng-click="addContact()">
-                            <i class="glyphicon glyphicon-plus"></i>
-                        </button>
+                </td>
+                <td class="col-md-2">
+                    <div id="input-location" class="pad-small"
+                         ng-class="{'has-error': !newDelivery.location && errors}">
+                        <input type="hidden" ng-if="districtsLoaded"
+                               search-from-list
+                               list="{{ districts }}"
+                               ng-model="newDelivery.location"
+                               ng-attr-id="{{ 'location-select' }}"
+                               value="{{ location }}">
                     </div>
-                </div>
-            </td>
-            <td class="col-md-2">
-                <div id="input-location" class="pad-small" ng-class="{'has-error': !newDelivery.location && errors}">
-                    <input type="hidden" ng-if="districtsLoaded"
-                           search-from-list
-                           list="{{ districts }}"
-                           ng-model="newDelivery.location"
-                           ng-attr-id="{{ 'location-select' }}"
-                           value="{{ location }}">
-                </div>
-            </td>
-            <td class="col-md-2 centered">
-                <div class="text-center">
-                    <input type="checkbox" class="end-user-checkbox"
-                           value="{{ isEndUser }}"
-                           ng-model="newDelivery.isEndUser">
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
-<div>
-    <span class="sub-header">CHOOSE A QUANTITY TO SHIP: </span><span>You can only select quantities from a single PO or Waybill</span>
-</div>
-<div>
-    <div class="panel-body col-lg-12">
-        <table id="singleIPDeliveryItemsTable"
-               class="table table-bordered table-hover table-condensed col-lg-6">
-            <tr class="summary-row">
-                <th class="item-list-col-header">Date Shipped</th>
-                <th class="item-list-col-header">Shipment</th>
-                <th class="item-list-col-header">Avail. Qty</th>
-                <th class="item-list-col-header">Quantity Shipped</th>
-            </tr>
-            <tr ng-repeat="delivery in deliveries">
-                <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
-                <td>{{ delivery.orderNumber }}</td>
-                <td>{{ delivery.balance }}</td>
-                <td class="table-row-input-column">
-                    <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
-                        <input type="text" id="quantity-shipped" class="form-control" only-digits
-                               ng-model="delivery.quantityShipped">
+                </td>
+                <td class="col-md-2 centered">
+                    <div class="text-center">
+                        <input type="checkbox" class="end-user-checkbox"
+                               value="{{ isEndUser }}"
+                               ng-model="newDelivery.isEndUser">
                     </div>
                 </td>
             </tr>
-            <tfoot class="summary-row">
-            <tr>
-                <td colspan="3">TOTAL QUANTITY SHIPPED</td>
-                <td>{{ totalQuantityShipped }}</td>
-            </tr>
-            </tfoot>
         </table>
     </div>
-</div>
-<div>
-    <div class="pad-20 row">
-        <div class="pull-right">
-            <button id="save-delivery-report" type="button" class="btn btn-primary" ng-click="save()">
-                <i class="glyphicon glyphicon-floppy-save"> </i>
-                Save Delivery Report
-            </button>
+    <div>
+        <span class="sub-header">CHOOSE A QUANTITY TO SHIP: </span><span>You can only select quantities from a single Purchase Order or Waybill</span>
+    </div>
+    <div>
+        <div class="panel-body col-lg-12">
+            <table id="singleIPDeliveryItemsTable"
+                   class="table table-bordered table-hover table-condensed col-lg-6">
+                <tr class="summary-row">
+                    <th class="item-list-col-header">Date Shipped</th>
+                    <th class="item-list-col-header">Shipment</th>
+                    <th class="item-list-col-header">Avail. Qty</th>
+                    <th class="item-list-col-header">Quantity Shipped</th>
+                </tr>
+                <tr ng-repeat="delivery in deliveries">
+                    <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                    <td>{{ delivery.orderNumber }}</td>
+                    <td>{{ delivery.balance }}</td>
+                    <td class="table-row-input-column">
+                        <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
+                            <input type="text" id="quantity-shipped" class="form-control" only-digits
+                                   ng-model="delivery.quantityShipped">
+                        </div>
+                    </td>
+                </tr>
+                <tfoot class="summary-row">
+                <tr>
+                    <td colspan="3">TOTAL QUANTITY SHIPPED</td>
+                    <td>{{ totalQuantityShipped }}</td>
+                </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
+    <div>
+        <div class="pad-20 row">
+            <div class="pull-right">
+                <button id="save-delivery-report" type="button" class="btn btn-primary" ng-click="save()">
+                    <i class="glyphicon glyphicon-floppy-save"> </i>
+                    Save Delivery Report
+                </button>
+            </div>
+        </div>
+    </div>
+    <eums-contact></eums-contact>
+    <ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"
+                ng-controller="AddConsigneeController"></ng-include>
 </div>
-<eums-contact></eums-contact>
-<ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"
-            ng-controller="AddConsigneeController"></ng-include>

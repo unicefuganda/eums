@@ -1,21 +1,21 @@
 angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'NewDeliveryByIp'])
     .controller('DeliveriesByIpController', function ($scope, DeliveryNodeService, ItemService, $routeParams,
-                                                        ConsigneeItemService, LoaderService, $q, ngToast) {
-
-        function createToast(message, klass) {
-            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
-        }
+                                                      ConsigneeItemService, LoaderService, $q, ngToast) {
 
         $scope.deliveryNodes = [];
         $scope.searching = false;
-        $scope.newDeliveryFormShowing = $routeParams.new === 'true';
 
         var itemId = $routeParams.itemId;
         var loadPromises = [];
 
         LoaderService.showLoader();
-        loadPromises.push(fetchItem());
-        loadPromises.push(fetchConsigneeItem());
+        loadPromises.push(ItemService.get(itemId).then(function (item) {
+            $scope.item = item;
+        }));
+
+        loadPromises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
+            $scope.quantityAvailable = response.results.first().availableBalance;
+        }));
 
         var fieldsToBuild = ['contact_person_id'];
         var filterFields = {consignee_deliveries_for_item: itemId, paginate: true};
@@ -44,20 +44,11 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
                 });
             }
             else {
-                loadPromises.push(fetchNodes());
+                loadPromises.push(DeliveryNodeService.filter(filterFields, fieldsToBuild).then(function (response) {
+                    setScopeDataFromResponse(response);
+                }));
             }
         });
-
-        $scope.toggleNewDeliveryForm = function () {
-            $scope.newDeliveryFormShowing = !$scope.newDeliveryFormShowing;
-        };
-
-        $scope.reloadParentController = function () {
-            fetchItem();
-            fetchConsigneeItem();
-            fetchNodes();
-            $scope.newDeliveryFormShowing = false;
-        };
 
         $q.all(loadPromises).catch(function () {
             createToast('failed to load deliveries', 'danger');
@@ -69,21 +60,7 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
             $scope.pageSize = response.pageSize;
         }
 
-        function fetchNodes() {
-            DeliveryNodeService.filter(filterFields, fieldsToBuild).then(function (response) {
-                setScopeDataFromResponse(response);
-            });
-        }
-
-        function fetchItem() {
-            return ItemService.get(itemId).then(function (item) {
-                $scope.item = item;
-            });
-        }
-
-        function fetchConsigneeItem() {
-            return ConsigneeItemService.filter({item: itemId}).then(function (response) {
-                $scope.quantityAvailable = response.results.first().availableBalance;
-            });
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass, maxNumber: 1, dismissOnTimeout: true});
         }
     });

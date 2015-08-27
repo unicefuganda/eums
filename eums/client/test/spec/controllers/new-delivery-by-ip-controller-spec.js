@@ -1,10 +1,10 @@
 describe('New IP Delivery Controller', function () {
     var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
-        rootScope, mockLoaderService;
+        mockLoaderService, mockItemService, mockConsigneeItemService;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
-    var emptyFunction = function () {
-    };
+    var fetchedItem = {id: 1, description: 'Some name', unit: 1};
+    var fetchedConsigneeItems = {results: [{id: 2, availableBalance: 450}]};
 
     beforeEach(function () {
         module('NewDeliveryByIp');
@@ -20,19 +20,21 @@ describe('New IP Delivery Controller', function () {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
+            mockItemService = jasmine.createSpyObj('ItemService', ['get']);
+            mockConsigneeItemService = jasmine.createSpyObj('ConsigneeItemService', ['filter']);
+            mockConsigneeItemService.filter.and.returnValue($q.when(fetchedConsigneeItems));
             mockDeliveryNode = function (options) {
                 this.track = options.track;
             };
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(ipNodes));
             mockDeliveryNodeService.create.and.returnValue($q.when({}));
+            mockItemService.get.and.returnValue($q.when(fetchedItem));
 
             location = $location;
-            spyOn($location, 'path').and.returnValue('fake location');
+            spyOn($location, 'path');
 
-            rootScope = $rootScope;
-            rootScope.reloadParentController = emptyFunction;
-            scope = rootScope.$new();
+            scope = $rootScope.$new();
             routeParams = {itemId: 2};
             toast = ngToast;
 
@@ -46,6 +48,9 @@ describe('New IP Delivery Controller', function () {
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: mockDeliveryNode,
                 ngToast: toast,
+                $location: location,
+                ItemService: mockItemService,
+                ConsigneeItemService: mockConsigneeItemService,
                 LoaderService: mockLoaderService
             });
         });
@@ -76,6 +81,18 @@ describe('New IP Delivery Controller', function () {
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
         expect(scope.deliveries).toEqual(ipNodes);
     });
+
+    it('should fetch item details and put them on scope', function () {
+        scope.$apply();
+        expect(scope.item).toEqual(fetchedItem);
+    });
+
+    it('should fetch consignee item details on load', function () {
+        scope.$apply();
+        expect(mockConsigneeItemService.filter).toHaveBeenCalledWith({item: 2});
+        expect(scope.quantityAvailable).toBe(450);
+    });
+
 
     it('should broadcast add contact event when addContact is called', function () {
         spyOn(scope, '$broadcast');
@@ -207,15 +224,6 @@ describe('New IP Delivery Controller', function () {
         });
     });
 
-    it('should reload parent controller upon save', function () {
-        spyOn(rootScope, 'reloadParentController');
-        scope.$apply();
-        setupNewDelivery();
-        scope.save();
-        scope.$apply();
-        expect(rootScope.reloadParentController).toHaveBeenCalled();
-    });
-
     it('should show success toast upon save', function () {
         scope.$apply();
         setupNewDelivery();
@@ -225,6 +233,14 @@ describe('New IP Delivery Controller', function () {
             content: 'Delivery Successfully Created',
             class: 'success'
         });
+    });
+
+    it('should redirect to deliveries by ip list upon successful save', function() {
+        scope.$apply();
+        setupNewDelivery();
+        scope.save();
+        scope.$apply();
+        expect(location.path).toHaveBeenCalledWith('/deliveries-by-ip/' + routeParams.itemId)
     });
 
     it('should show failure toast when save fails', function () {

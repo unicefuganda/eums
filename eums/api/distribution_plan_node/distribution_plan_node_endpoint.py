@@ -33,7 +33,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         if user_profile:
             item_id = self.request.GET.get('consignee_deliveries_for_item')
             if item_id:
-                return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id)
+                return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id).order_by('-id')
             return self._all_nodes_delivered_to_consignee(user_profile)
         return self.queryset._clone()
 
