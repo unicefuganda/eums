@@ -4,45 +4,52 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.utils.urls import replace_query_param
 
 from eums.models import UserProfile, DistributionPlan, DistributionPlanNode, PurchaseOrderItem, \
     ReleaseOrderItem
+
+PAGE_SIZE = 10
 
 
 @api_view(['GET', ])
 def ip_feedback_report(request):
     logged_in_user = request.user
 
-    try:
-        UserProfile.objects.get(user=logged_in_user)
+    if UserProfile.objects.filter(user=logged_in_user).exists():
         return Response(status=status.HTTP_401_UNAUTHORIZED)
-    except:
-        response = []
-        deliveries = DistributionPlan.objects.filter(track=True)
-        for delivery in deliveries:
-            nodes = get_tracked_nodes(delivery, request)
-            if nodes:
-                build_answers_for_nodes(delivery, nodes, response)
 
-        paginated_results = Paginator(response, 10)
-        page_number = get_page_number(request)
+    response = []
+    deliveries = DistributionPlan.objects.filter(track=True)
+    for delivery in deliveries:
+        nodes = get_tracked_nodes(delivery, request)
+        if nodes:
+            build_answers_for_nodes(delivery, nodes, response)
 
-        reports_current_page = paginated_results.page(page_number)
+    paginated_results = Paginator(response, PAGE_SIZE)
+    page_number = get_page_number(request)
 
-        data = {
-            'next': reports_current_page.has_next(),
-            'previous': reports_current_page.has_previous(),
-            'count': paginated_results.num_pages,
-            'pageSize': len(reports_current_page.object_list),
-            'results': reports_current_page.object_list
-        }
+    reports_current_page = paginated_results.page(page_number)
 
-        return Response(data, status=status.HTTP_200_OK)
+    data = {
+        'next': _has_page(reports_current_page.has_next(), get_page_number(request) + 1, request),
+        'previous': _has_page(reports_current_page.has_previous(), get_page_number(request) - 1, request),
+        'count': len(response),
+        'pageSize': PAGE_SIZE,
+        'results': reports_current_page.object_list
+    }
+
+    return Response(data, status=status.HTTP_200_OK)
+
+
+def _has_page(has_page, page, request):
+    base_url = replace_query_param(request.build_absolute_uri(), 'page', page)
+    return None if has_page is False else base_url
 
 
 def get_page_number(request):
     if request.GET.get('page'):
-        return request.GET.get('page')
+        return int(request.GET.get('page'))
     else:
         return 1
 

@@ -97,23 +97,24 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'date_of_receipt': '2014-10-10'}, results)
 
     def test_should_return_paginated_items_and_all_their_answers(self):
-        delivery = self.setup_delivery_with_nodes(20)
+        total_number_of_items = 20
+        delivery = self.setup_delivery_with_nodes(total_number_of_items)
         self.setup_flow_with_questions(delivery)
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
         self.assertEqual(len(response.data['results']), 10)
-        self.assertEqual(response.data['next'], True)
-        self.assertEqual(response.data['previous'], False)
-        self.assertEqual(response.data['count'], 2)
+        self.assertIn('/api/ip-feedback-report/?page=2', response.data['next'])
+        self.assertEqual(response.data['previous'], None)
+        self.assertEqual(response.data['count'], total_number_of_items)
         self.assertEqual(response.data['pageSize'], 10)
 
         response = self.client.get(ENDPOINT_URL + '?page=2', content_type='application/json')
 
         self.assertEqual(len(response.data['results']), 10)
-        self.assertEqual(response.data['next'], False)
-        self.assertEqual(response.data['previous'], True)
-        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(response.data['next'], None)
+        self.assertIn('/api/ip-feedback-report/?page=1', response.data['previous'])
+        self.assertEqual(response.data['count'], total_number_of_items)
         self.assertEqual(response.data['pageSize'], 10)
 
     def test_should_filter_answers_by_item_description(self):
