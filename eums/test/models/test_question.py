@@ -60,19 +60,17 @@ class TextQuestionTest(QuestionTest):
 
 
 class MultipleChoiceQuestionTest(QuestionTest):
-    # TODO Figure out why this test fails
-    def xtest_should_save_multiple_choice_answer(self):
+    def test_should_save_multiple_choice_answer(self):
         text = "Yes"
         option = self.multiple_choice_question.option_set.create(text=text)
 
-        category = 'category'
         label = 'gender'
-        params = [{u'values': [u'[{"category": "%s", "time": "2014-10-22T11:56:52.836354Z", '
-                               u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (category, label)],
-                   u'time': [u'2014-10-22T11:57:35.606372Z']}]
+        params = {u'values': [u'[{"category": {"eng":"%s"}, "time": "2014-10-22T11:56:52.836354Z", '
+                               u'"text": "Yes", "value": "Yes", "label": "%s"}]' % (text, label)],
+                   u'time': [u'2014-10-22T11:57:35.606372Z']}
 
         self.multiple_choice_question.create_answer(params, self.run)
-        answers = self.multiple_choice_question.multiplechoiceanswer_set.all()
+        answers = self.multiple_choice_question.answers.all()
 
         self.assertEqual(answers.count(), 1)
         self.assertEqual(answers.first().value, option)

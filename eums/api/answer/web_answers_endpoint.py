@@ -2,16 +2,13 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from eums.models import DistributionPlan, Run, MultipleChoiceQuestion, Option, TextQuestion, Flow, Runnable, \
-    NumericQuestion
+from eums.models import Run, MultipleChoiceQuestion, TextQuestion, Flow, Runnable, NumericQuestion
 
 
 @api_view(['POST', ])
 def save_answers(request):
     request = request.data
-    runnable_id = request['runnable']
-    answers = request['answers']
-    runnable = Runnable.objects.get(pk=runnable_id)
+    runnable = Runnable.objects.get(pk=(request['runnable']))
     contact = runnable.build_contact()
 
     cancel_existing_runs_for(runnable)
@@ -22,43 +19,30 @@ def save_answers(request):
                              scheduled_message_task_id='Web')
 
     flow = _get_flow(runnable)
-
-    for answer in answers:
-        question = _get_matching_question(answer['question_label'], flow)
-
-        if isinstance(question, MultipleChoiceQuestion):
-            option = Option.objects.filter(text=answer['value'], question=question.id).first()
-            question.answers.create(question=question, value=option, run=run)
-        else:
-            params = {'text': answer['value']}
-            question.create_answer(params, run)
-
+    _create_answers(request['answers'], flow, run)
     runnable.confirm()
-
     return Response(status=status.HTTP_201_CREATED)
 
 
-def _get_flow(runnable):
-    try:
-        runnable_type = runnable.item
-    except:
-        runnable_type = None
+def _create_answers(raw_answers, flow, run):
+    for answer in raw_answers:
+        question = _get_matching_question(answer['question_label'], flow)
+        params = {'values': [u'[{"category": {"eng":"%s"}, "label": "%s"}]' % (answer['value'], answer['question_label'])],
+                  'text': answer['value']}
+        question.create_answer(params, run)
 
-    flow_type = Runnable.WEB if runnable_type else Runnable.IMPLEMENTING_PARTNER
+
+def _get_flow(runnable):
+    flow_type = Runnable.WEB if getattr(runnable, 'item', None) else Runnable.IMPLEMENTING_PARTNER
     return Flow.objects.get(for_runnable_type=flow_type)
 
 
 def cancel_existing_runs_for(delivery):
-    all_runs = Run.objects.filter(runnable=delivery)
-    if all_runs:
-        for delivery_run in all_runs:
-            delivery_run.status = 'cancelled'
-            delivery_run.save()
+    Run.objects.filter(runnable=delivery).update(status=Run.STATUS.cancelled)
 
 
 def _get_matching_question(label, flow):
     multi_question = MultipleChoiceQuestion.objects.filter(label=label, flow=flow)
     text_question = TextQuestion.objects.filter(label=label, flow=flow)
     numeric_question = NumericQuestion.objects.filter(label=label, flow=flow)
-
-    return (text_question or multi_question or numeric_question).first()
+    return text_question.first() or multi_question.first() or numeric_question.first()
