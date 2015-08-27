@@ -255,20 +255,26 @@ describe('New IP Delivery Controller', function () {
         });
     });
 
-    it('should fail to save new delivery if its quantities are from shipments with different order items', function () {
+    it('should fail to save new delivery if its quantities are from shipments with different order numbers bu the same order type', function () {
         scope.$apply();
         setupNewDelivery();
         scope.deliveries = [
-            {id: 1, balance: 10, item: orderItemId, quantityShipped: 50, orderNumber: 444, orderType: 'waybill'},
+            {id: 1, balance: 10, item: orderItemId, quantityShipped: 10, orderNumber: 444, orderType: 'waybill'},
             {id: 2, balance: 20, item: orderItemId, quantityShipped: 10, orderNumber: 555, orderType: 'waybill'}
         ];
         scope.save();
         expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
-        expect(scope.errors).toBeTruthy();
-        expect(toast.create).toHaveBeenCalledWith({
-            content: 'Cannot save. Please fill out or fix values for all fields marked in red',
-            class: 'danger'
-        });
+    });
+
+    it('should fail to save new delivery if its quantities are from shipments with the same order numbers but different order types', function () {
+        scope.$apply();
+        setupNewDelivery();
+        scope.deliveries = [
+            {id: 1, balance: 10, item: orderItemId, quantityShipped: 10, orderNumber: 444, orderType: 'waybill'},
+            {id: 2, balance: 20, item: orderItemId, quantityShipped: 10, orderNumber: 444, orderType: 'purchase order'}
+        ];
+        scope.save();
+        expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
     });
 
     var assertSaveFails = {

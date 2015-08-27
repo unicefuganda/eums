@@ -47,6 +47,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.consigneeName = json.consigneeName;
             this.itemDescription = json.itemDescription;
             this.orderNumber = json.orderNumber;
+            this.orderType = json.orderType;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;

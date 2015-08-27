@@ -83,16 +83,16 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
         });
 
         $scope.save = function () {
-            var non_zero_quantity_deliveries = $scope.deliveries.filter(function (delivery) {
+            var parentDeliveries = $scope.deliveries.filter(function (delivery) {
                 return delivery.quantityShipped > 0;
             });
-            $scope.newDelivery.parents = non_zero_quantity_deliveries.map(function (delivery) {
+            $scope.newDelivery.parents = parentDeliveries.map(function (delivery) {
                 return {id: delivery.id, quantity: delivery.quantityShipped};
             });
 
-            if (scopeDataIsValid() && non_zero_quantity_deliveries.length) {
+            if (parentDeliveries.length && scopeDataIsValid(parentDeliveries)) {
                 LoaderService.showLoader();
-                $scope.newDelivery.item = non_zero_quantity_deliveries.first().item;
+                $scope.newDelivery.item = parentDeliveries.first().item;
                 createNewDelivery();
             }
             else {
@@ -112,14 +112,28 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             });
         }
 
-        function scopeDataIsValid() {
-            var someInputsAreEmpty = !($scope.newDelivery.location && $scope.newDelivery.contact_person_id
-            && $scope.newDelivery.consignee
-            && $scope.newDelivery.deliveryDate);
-            var someQuantitiesAreInvalid = $scope.deliveries.any(function (delivery) {
+        function scopeDataIsValid(parentDeliveries) {
+            return requiredFieldsAreFilled() && allQuantitiesAreValid() && deliveriesAreFromOneOrder(parentDeliveries);
+        }
+
+        function requiredFieldsAreFilled() {
+            return $scope.newDelivery.location
+                && $scope.newDelivery.contact_person_id
+                && $scope.newDelivery.consignee
+                && $scope.newDelivery.deliveryDate;
+        }
+
+        function allQuantitiesAreValid() {
+            return !$scope.deliveries.any(function (delivery) {
                 return delivery.quantityShipped > delivery.balance;
             });
-            return !someInputsAreEmpty && !someQuantitiesAreInvalid;
+        }
+
+        function deliveriesAreFromOneOrder(parentDeliveries) {
+            var parentDeliveryOrderHashes = parentDeliveries.map(function (delivery) {
+                return delivery.orderNumber + delivery.orderType;
+            });
+            return parentDeliveryOrderHashes.unique().length == 1;
         }
 
         function createToast(message, klass) {
