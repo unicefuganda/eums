@@ -13,12 +13,13 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
     balance = serializers.IntegerField(read_only=True, required=False)
     consignee_name = serializers.CharField(read_only=True, source='consignee.name')
     item_description = serializers.CharField(read_only=True, source='item.item.description')
+    order_type = serializers.CharField(read_only=True, source='type')
 
     class Meta:
         model = DeliveryNode
         fields = ('id', 'distribution_plan', 'location', 'consignee', 'tree_position', 'parents', 'quantity_in',
                   'contact_person_id', 'item', 'delivery_date', 'remark', 'track', 'quantity', 'quantity_out',
-                  'balance', 'has_children', 'consignee_name', 'item_description', 'order_number')
+                  'balance', 'has_children', 'consignee_name', 'item_description', 'order_number', 'order_type')
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):

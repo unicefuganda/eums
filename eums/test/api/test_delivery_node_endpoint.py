@@ -232,3 +232,12 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 1)
         self.assertIn(distributable_parent.id, node_ids)
         self.assertNotIn(closed_parent.id, node_ids)
+
+    def test_returned_nodes_should_have_order_type_field(self):
+        po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
+        ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))
+
+        response = self.client.get(ENDPOINT_URL)
+        node_order_types = [node['order_type'] for node in response.data]
+
+        self.assertItemsEqual([po_node.type(), ro_node.type()], node_order_types)
