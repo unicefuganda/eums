@@ -26,3 +26,6 @@ class Alert(models.Model):
 
     def issue_display_name(self):
         return self.ISSUE_TYPES[self.issue]
+
+    class Meta:
+        ordering = ['-created_on']
