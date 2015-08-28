@@ -8,6 +8,7 @@ class ResponseAlertHandler(object):
         Question.LABEL.deliveryReceived: Alert.ISSUE_TYPES.not_received,
         Question.LABEL.itemReceived: Alert.ISSUE_TYPES.not_received,
         Question.LABEL.isDeliveryInGoodOrder: Alert.ISSUE_TYPES.bad_condition,
+        Question.LABEL.satisfiedWithDelivery: Alert.ISSUE_TYPES.not_satisfied
     }
 
     def __init__(self, runnable, answer_values):

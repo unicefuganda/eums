@@ -6,8 +6,8 @@ from model_utils import Choices
 
 
 class Question(models.Model):
-
-    LABEL = Choices('deliveryReceived', 'isDeliveryInGoodOrder', 'itemReceived', 'qualityOfProduct')
+    LABEL = Choices('deliveryReceived', 'isDeliveryInGoodOrder', 'itemReceived', 'qualityOfProduct',
+                    'satisfiedWithDelivery')
 
     text = models.TextField()
     label = models.CharField(max_length=255)

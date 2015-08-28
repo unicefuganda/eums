@@ -60,6 +60,27 @@ class ResponseAlertHandlerTest(TestCase):
         self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
 
     @requests_mock.Mocker()
+    def test_should_create_alert_when_one_is_not_satisfied_with_delivery(self, requests_mocker):
+        answer_values = [
+            {"category": {"base": "No"}, "label": Question.LABEL.satisfiedWithDelivery}
+        ]
+        purchase_order = PurchaseOrderFactory(order_number=5679)
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        consignee = ConsigneeFactory(name="Other FC")
+        delivery = DeliveryFactory(consignee=consignee)
+        DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
+
+        requests_mocker.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, delivery.contact_person_id), json={})
+
+        response_alert_handler = ResponseAlertHandler(runnable=delivery, answer_values=answer_values)
+        response_alert_handler.process()
+
+        self.assertEqual(Alert.objects.count(), 1)
+
+        alert = Alert.objects.get(consignee_name="Other FC", order_number=5679)
+        self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_satisfied)
+
+    @requests_mock.Mocker()
     def test_should_create_alert_when_item_is_not_received(self, requests_mocker):
         answer_values = [
             {"category": {"base": "No"}, "label": Question.LABEL.itemReceived}

@@ -5,10 +5,10 @@ from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem
 
 
 class Alert(models.Model):
-
     ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
     ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'),
-        ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'), ('incomplete', 'Incomplete'))
+                          ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'),
+                          ('incomplete', 'Incomplete'), ('not_satisfied', 'Not Satisfied'))
 
     order_type = StatusField(choices_name='ORDER_TYPES')
     order_number = models.IntegerField()
