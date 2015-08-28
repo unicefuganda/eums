@@ -79,6 +79,25 @@ class ResponseAlertHandlerTest(TestCase):
         self.assertEqual(alert.issue, Alert.ISSUE_TYPES.not_received)
 
     @requests_mock.Mocker()
+    def test_should_create_alert_when_item_is_not_quality_acceptable(self, requests_mocker):
+        answer_values = [
+            {"category": {"base": "Damaged"}, "label": Question.LABEL.qualityOfProduct}
+        ]
+        purchase_order = PurchaseOrderFactory(order_number=5679)
+        purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+        consignee = ConsigneeFactory(name="Liverpool FC")
+        delivery = DeliveryFactory(consignee=consignee)
+        DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
+
+        requests_mocker.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, delivery.contact_person_id), json={})
+
+        response_alert_handler = ResponseAlertHandler(runnable=delivery, answer_values=answer_values)
+        response_alert_handler.process()
+
+        alert = Alert.objects.get(consignee_name="Liverpool FC", order_number=5679)
+        self.assertEqual(alert.issue, "damaged")
+
+    @requests_mock.Mocker()
     def test_should_fetch_name_from_contacts_and_adds_alert_attribute(self, requests_mocker):
         answer_values = [
             {"category": {"base": "No"}, "label": Question.LABEL.deliveryReceived},

@@ -7,7 +7,8 @@ from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem
 class Alert(models.Model):
 
     ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
-    ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'))
+    ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'),
+        ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'), ('incomplete', 'Incomplete'))
 
     order_type = StatusField(choices_name='ORDER_TYPES')
     order_number = models.IntegerField(unique=True)
