@@ -48,6 +48,24 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 3)
 
+    def test_should_paginate_alert_list_on_request(self):
+        AlertFactory()
+        AlertFactory()
+        response = self.client.get('%s?paginate=true' % ENDPOINT_URL)
+        self.assertIn('results', response.data)
+        self.assertIn('count', response.data)
+        self.assertIn('next', response.data)
+        self.assertIn('previous', response.data)
+        self.assertIn('pageSize', response.data)
+        self.assertEqual(len(response.data['results']), 2)
+
+    def test_should_not_paginate_alert_list_when_paginate_is_not_true(self):
+        response = self.client.get('%s?paginate=falsy' % ENDPOINT_URL)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('results', response.data)
+        self.assertEqual(response.data, [])
+
+
 
 class AlertCountEndpointTest(AuthenticatedAPITestCase):
 

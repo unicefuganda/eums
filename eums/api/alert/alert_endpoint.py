@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Alert
 
 
@@ -26,9 +27,16 @@ class AlertSerializer(serializers.ModelSerializer):
 
 
 class AlertViewSet(ReadOnlyModelViewSet):
-
+    pagination_class = StandardResultsSetPagination
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
+
+    def list(self, request, *args, **kwargs):
+        paginate = request.GET.get('paginate', None)
+        if paginate != 'true':
+            self.paginator.page_size = 0
+        return super(AlertViewSet, self).list(request, args, kwargs)
+
 
 alert_router = DefaultRouter()
 alert_router.register(r'alert', AlertViewSet)
