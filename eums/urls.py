@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from eums.api.alert.alert_endpoint import alert_router
+from eums.api.alert.alert_endpoint import alert_router, AlertCount
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
     NodeResponses, AllIPResponses
 from eums.api.answer.text_answers_endpoint import textAnswerRouter
@@ -95,6 +95,7 @@ urlpatterns = patterns(
     url(r'^api/', include(questionRouter.urls)),
     url(r'^api/', include(consignee_items_router.urls)),
     url(r'^api/', include(consignee_items_router.urls)),
+    url(r'^api/alert/count/$', AlertCount.as_view()),
     url(r'^api/', include(alert_router.urls)),
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),

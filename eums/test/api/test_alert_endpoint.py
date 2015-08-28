@@ -47,3 +47,16 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 3)
+
+
+class AlertCountEndpointTest(AuthenticatedAPITestCase):
+
+    def test_should_show_alerts_count(self):
+        AlertFactory(is_resolved=False)
+        AlertFactory(is_resolved=True)
+
+        response = self.client.get(ENDPOINT_URL + "count/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['total'], 2)
+        self.assertEqual(response.data['unresolved'], 1)
