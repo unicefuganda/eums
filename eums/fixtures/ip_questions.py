@@ -23,12 +23,12 @@ Option.objects.get_or_create(text='Yes', question=ip_question_3)
 Option.objects.get_or_create(text='No', question=ip_question_3)
 
 ip_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
+    uuids=['357b3eda-0a30-43c6-967d-6ec44e4c6162'],
     text="Are you satisfied with the delivery?",
-    label="satisfiedWithProduct",
-    flow=ip_flow, position=4,
-    uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'])
-Option.objects.get_or_create(text="No", question=ip_question_4)
+    label="satisfiedWithDelivery",
+    flow=ip_flow, position=4)
 Option.objects.get_or_create(text="Yes", question=ip_question_4)
+Option.objects.get_or_create(text="No", question=ip_question_4)
 
 ip_question_5, _ = TextQuestion.objects.get_or_create(
     uuids=['2fccd250-00a1-4740-b30e-3593b8f147a1'],
