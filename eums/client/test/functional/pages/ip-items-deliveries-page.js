@@ -3,7 +3,7 @@ var ConfirmItemByItem = function () {
 
 ConfirmItemByItem.prototype = Object.create({}, {
     url: { get: function () {
-        return '#ip-delivered-items/51';
+        return '#items-delivered-to-ip/51';
     }},
     visit: { value: function () {
         browser.get(this.url);

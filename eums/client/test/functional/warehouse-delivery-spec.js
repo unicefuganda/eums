@@ -6,6 +6,7 @@ var ipWarehouseDeliveryPage = require('./pages/ip-warehouse-delivery-page.js');
 var confirmItemByItem = require('./pages/ip-items-deliveries-page.js');
 var header = require('./pages/header.js');
 var WAYBILL_NUMBER;
+
 describe('Warehouse Delivery', function () {
 
     beforeEach(function () {
