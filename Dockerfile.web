@@ -1,0 +1,14 @@
+FROM eums_python:latest
+MAINTAINER eums <eums@thoughtworks.com>
+
+RUN export DEBIAN_FRONTEND=noninteractive
+
+RUN mkdir -p /opt/app/eums
+COPY ./build/ /opt/app/eums
+# VOLUME .:/eums
+
+EXPOSE 80
+
+WORKDIR /opt/app/eums
+
+CMD sleep 4 && python manage.py runserver 0.0.0.0:80
