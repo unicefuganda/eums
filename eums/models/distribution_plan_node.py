@@ -64,14 +64,19 @@ class DistributionPlanNode(Runnable):
     def is_root(self):
         return self.arcs_in.exists() and not self.arcs_in.first().source
 
+    def update_tracked_status(self):
+        if not self.is_root():
+            self.track = self.arcs_in.filter(source__track=True).exists()
+            self.save()
+
+    def update_balance(self):
+        self.balance = self.quantity_in() - self.quantity_out()
+        self.save()
+
     @staticmethod
     def _update_parent_balances(parents):
         for parent in parents:
-            parent._update_balance()
-
-    def _update_balance(self):
-        self.balance = self.quantity_in() - self.quantity_out()
-        self.save()
+            parent.update_balance()
 
     def _update_arcs(self):
         self.arcs_in.all().delete()

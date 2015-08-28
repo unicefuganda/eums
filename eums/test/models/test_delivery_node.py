@@ -1,9 +1,10 @@
 from unittest import TestCase
+from datetime import datetime
 from django.db import IntegrityError
 from mock import patch
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
-    Item, Consignee, Alert
+    Item, Consignee, Alert, Runnable
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -345,7 +346,7 @@ class DeliveryNodeTest(TestCase):
 
     def test_delivery_node_knows_its_item_description(self):
         purchase_order = PurchaseOrderFactory(order_number=200)
-        description  = "some description"
+        description = "some description"
         item = ItemFactory(description=description)
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=purchase_order, item=item))
 
@@ -385,3 +386,25 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(alert.runnable, node)
         self.assertEqual(alert.item_description, description)
 
+    def test_should_save_node_when_quantity_is_not_specified_but_parents_are(self):
+        parent = DeliveryNodeFactory(consignee=ConsigneeFactory())
+        node = DeliveryNode.objects.create(parents=[(parent, 5)],
+                                           consignee=ConsigneeFactory(),
+                                           item=PurchaseOrderItemFactory(),
+                                           tree_position=Runnable.MIDDLE_MAN,
+                                           location='Jinja',
+                                           contact_person_id='89878528-864A-4320-8426-1DB5C9A5A337',
+                                           delivery_date=datetime.today())
+        self.assertEqual(DeliveryNode.objects.get(pk=node.id), node)
+
+    def test_should_get_node_tracked_status_from_its_parents_if_they_are_provided(self):
+        parent_one = DeliveryNodeFactory(track=True)
+        parent_two = DeliveryNodeFactory(track=False)
+
+        node_with_tuple_parents = DeliveryNodeFactory(parents=[(parent_one, 5), (parent_two, 4)], track=False)
+        node_with_dict_parents = DeliveryNodeFactory(parents=[{'id': parent_one.id, 'quantity': 5}], track=False)
+        untracked_node = DeliveryNodeFactory(parents=[(parent_two, 5)], track=True)
+
+        self.assertTrue(node_with_tuple_parents.track)
+        self.assertTrue(node_with_dict_parents.track)
+        self.assertFalse(untracked_node.track)
