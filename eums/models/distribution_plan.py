@@ -26,16 +26,25 @@ class DistributionPlan(Runnable):
     def __unicode__(self):
         return "%s, %s" % (self.programme.name, str(self.delivery_date))
 
+    def shipment_received(self):
+        delivery_answer = self._shipment_received_answer()
+
+        return True if delivery_answer and delivery_answer.value.text == 'Yes' else False
+
     def is_received(self):
-        delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
-                                                              Q(question__label=Question.LABEL.deliveryReceived),
-                                                              ~ Q(run__status='cancelled')).first()
+        delivery_answer = self._shipment_received_answer()
 
         delivery_nodes = DistributionPlanNode.objects.filter(distribution_plan=self)
 
         items_received = DistributionPlan._has_received_all_items(delivery_nodes)
 
         return True if delivery_answer and delivery_answer.value.text == 'Yes' and items_received else False
+
+    def _shipment_received_answer(self):
+        delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
+                                                              Q(question__label=Question.LABEL.deliveryReceived),
+                                                              ~ Q(run__status='cancelled')).first()
+        return delivery_answer
 
     def _is_confirmed(self):
         delivery_nodes = DistributionPlanNode.objects.filter(distribution_plan=self)

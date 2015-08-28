@@ -54,7 +54,7 @@
             <tbody>
             <tr ng-repeat="delivery in deliveries | orderFilter: query:dateQuery:searchFields">
                 <td>
-                    <span ng-class="delivery.confirmed ?  'glyphicon glyphicon-ok text-success'
+                    <span ng-class="delivery.shipmentReceived ?  'glyphicon glyphicon-ok text-success'
                      : 'glyphicon glyphicon-remove text-danger'"></span>
                 </td>
                 <td>{{ delivery.deliveryDate | date : 'dd/MM/yyyy' }}</td>

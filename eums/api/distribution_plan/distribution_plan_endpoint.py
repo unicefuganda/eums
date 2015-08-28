@@ -16,7 +16,7 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
         model = DistributionPlan
         fields = ('id', 'programme', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
                   'track', 'contact_person_id', 'remark', 'total_value', 'is_received', 'type', 'number',
-                  'number_of_items', 'confirmed')
+                  'number_of_items', 'confirmed', 'shipment_received')
 
 
 class DistributionPlanViewSet(ModelViewSet):

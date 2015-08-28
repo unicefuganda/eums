@@ -63,6 +63,20 @@ class DeliveryTest(TestCase):
 
         self.assertFalse(delivery.is_received())
 
+    def test_should_return_true_when_shipment_is_received_regardless_of_confirmation_of_items(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+
+        run = RunFactory(runnable=delivery)
+
+        DeliveryNodeFactory(distribution_plan=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery)
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        self.assertTrue(delivery.shipment_received())
+
     def test_should_return_false_when_delivery_is_received_but_no_answers_have_been_received_for_its_nodes(self):
         delivery = DeliveryFactory()
         question = MultipleChoiceQuestionFactory(label='deliveryReceived')

@@ -1,7 +1,5 @@
 import datetime
 
-from django.contrib.auth.models import Group, Permission
-
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
@@ -76,8 +74,19 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.assertEqual(response.data[0]['is_received'], True)
 
+    def test_should_provide_shipment_received_value_from_api(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        self.assertEqual(response.data[0]['shipment_received'], True)
+
     def test_should_provide_delivery_has_confirmed_from_api(self):
-        delivery = DeliveryFactory(confirmed=True)
+        DeliveryFactory(confirmed=True)
 
         response = self.client.get(ENDPOINT_URL)
 
