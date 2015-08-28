@@ -17,13 +17,13 @@ ip_question_2, _ = TextQuestion.objects.get_or_create(
 
 ip_question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=['3762e25b-20e2-49fd-ad4f-0ccec08b4426'],
-    text='Was delivery in good order?', label=Question.LABEL.isDeliveryInGoodOrder,
+    text='Was delivery in good condition?', label=Question.LABEL.isDeliveryInGoodOrder,
     flow=ip_flow, position=3)
 Option.objects.get_or_create(text='Yes', question=ip_question_3)
 Option.objects.get_or_create(text='No', question=ip_question_3)
 
 ip_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
-    text="Are you satisfied with the product?",
+    text="Are you satisfied with the delivery?",
     label="satisfiedWithProduct",
     flow=ip_flow, position=4,
     uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'])
