@@ -224,10 +224,10 @@ describe('IP Delivered Items Controller', function () {
                 }
             ]
         }
-        ]
+    ];
 
     function initializeController() {
-        controller('IpDeliveredItemsController', {
+        controller('ItemsDeliveredToIpController', {
             $scope: scope,
             LoaderService: mockLoaderService,
             DeliveryService: mockDeliveryService,
@@ -238,7 +238,7 @@ describe('IP Delivered Items Controller', function () {
 
     beforeEach(function () {
 
-        module('IpDeliveredItems');
+        module('ItemsDeliveredToIp');
 
         inject(function ($controller, $rootScope, $location, $q, LoaderService, AnswerService, DeliveryService,
                          DeliveryNodeService) {
@@ -319,8 +319,8 @@ describe('IP Delivered Items Controller', function () {
             expect(mockLoaderService.hideLoader.calls.count()).toBe(1);
         });
 
-        it('should show the add remarks modal for a specific node when add remark button is clicked', function(){
-           initializeController();
+        it('should show the add remarks modal for a specific node when add remark button is clicked', function () {
+            initializeController();
             scope.$apply();
 
             scope.addRemark(1);
@@ -465,8 +465,8 @@ describe('IP Delivered Items Controller', function () {
             expect(mockLoaderService.hideLoader.calls.count()).toBe(2);
         });
 
-        it('should disable fields and set values when item received is set to No', function() {
-           initializeController();
+        it('should disable fields and set values when item received is set to No', function () {
+            initializeController();
             scope.$apply();
 
             scope.combinedDeliveryNodes = [

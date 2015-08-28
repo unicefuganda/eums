@@ -16,7 +16,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'IpFeedbackReport', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
-    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'IpDeliveredItems', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp'])
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp'])
 
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
@@ -207,9 +207,9 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/ip-delivered-items/:activeDeliveryId', {
-            templateUrl: '/static/app/views/delivery/ip-delivery/delivered-items.html',
-            controller: 'IpDeliveredItemsController',
+        .when('/items-delivered-to-ip/:activeDeliveryId', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/items-delivered-to-ip.html',
+            controller: 'ItemsDeliveredToIpController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_distribution_plans');
