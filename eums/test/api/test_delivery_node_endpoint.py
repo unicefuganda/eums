@@ -98,7 +98,6 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.node_details['parents'] = [{'id': node_one.id, 'quantity': 5}, {'id': node_two.id, 'quantity': 6}]
 
         response = self.client.post(ENDPOINT_URL, data=json.dumps(self.node_details), content_type='application/json')
-        print '*' * 50, 'response', response.data , '*' * 50
         node = DeliveryNode.objects.get(pk=response.data['id'])
 
         self.assertEqual(response.status_code, 201)

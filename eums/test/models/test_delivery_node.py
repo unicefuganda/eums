@@ -51,6 +51,17 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(parent_one.quantity_out(), 50)
         self.assertEqual(parent_two.quantity_out(), 40)
 
+    def test_should_save_node_when_quantity_is_not_specified_but_parents_are(self):
+        parent = DeliveryNodeFactory(consignee=ConsigneeFactory())
+        node = DeliveryNode.objects.create(parents=[(parent, 5)],
+                                           consignee=ConsigneeFactory(),
+                                           item=PurchaseOrderItemFactory(),
+                                           tree_position=Runnable.MIDDLE_MAN,
+                                           location='Jinja',
+                                           contact_person_id='89878528-864A-4320-8426-1DB5C9A5A337',
+                                           delivery_date=datetime.today())
+        self.assertEqual(DeliveryNode.objects.get(pk=node.id), node)
+
     def test_should_compute_quantity_in_from_incoming_arcs(self):
         node = DeliveryNodeFactory(quantity=0)
         ArcFactory(source=None, target=node, quantity=50)
@@ -385,17 +396,6 @@ class DeliveryNodeTest(TestCase):
         self.assertIsNone(alert.remarks)
         self.assertEqual(alert.runnable, node)
         self.assertEqual(alert.item_description, description)
-
-    def test_should_save_node_when_quantity_is_not_specified_but_parents_are(self):
-        parent = DeliveryNodeFactory(consignee=ConsigneeFactory())
-        node = DeliveryNode.objects.create(parents=[(parent, 5)],
-                                           consignee=ConsigneeFactory(),
-                                           item=PurchaseOrderItemFactory(),
-                                           tree_position=Runnable.MIDDLE_MAN,
-                                           location='Jinja',
-                                           contact_person_id='89878528-864A-4320-8426-1DB5C9A5A337',
-                                           delivery_date=datetime.today())
-        self.assertEqual(DeliveryNode.objects.get(pk=node.id), node)
 
     def test_should_get_node_tracked_status_from_its_parents_if_they_are_provided(self):
         parent_one = DeliveryNodeFactory(track=True)
