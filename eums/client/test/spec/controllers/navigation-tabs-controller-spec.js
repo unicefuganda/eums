@@ -30,7 +30,7 @@ describe('Navigation Tabs Controller', function() {
 
     it('should load unresloved alerts count to the scope', function() {
         scope.$apply();
-        expect(mockAlertsService.get).toHaveBeenCalledWith('/count');
+        expect(mockAlertsService.get).toHaveBeenCalledWith('count');
         expect(scope.unresolvedAlertsCount).toEqual(2);
     });
 });

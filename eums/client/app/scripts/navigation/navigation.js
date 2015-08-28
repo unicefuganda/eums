@@ -15,7 +15,7 @@ angular.module('NavigationTabs', ['Alerts'])
             return false;
         };
 
-        AlertsService.get('/count').then(function (alertsCount) {
+        AlertsService.get('count').then(function (alertsCount) {
             $scope.unresolvedAlertsCount = alertsCount.unresolved;
         });
 

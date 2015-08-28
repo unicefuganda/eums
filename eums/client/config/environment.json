@@ -41,7 +41,7 @@
         "QUALITY_OPTIONS": "api/quality-options/",
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission",
-        "ALERTS": "/api/alert"
+        "ALERTS": "/api/alert/"
     },
     "CONTACT_SERVICE_URL": "http://localhost:8005/api/contacts/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",

@@ -16,4 +16,11 @@
         sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>
         as <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
     </div>
+    <div class="centered">
+        <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                    ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                    items-per-page="pageSize">
+        </pagination>
+    </div>
+
 </div>
