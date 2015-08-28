@@ -11,7 +11,7 @@ class Alert(models.Model):
         ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'), ('incomplete', 'Incomplete'))
 
     order_type = StatusField(choices_name='ORDER_TYPES')
-    order_number = models.IntegerField(unique=True)
+    order_number = models.IntegerField()
     issue = StatusField(choices_name='ISSUE_TYPES')
     is_resolved = models.BooleanField(default=False)
     remarks = models.TextField(blank=True, null=True)
