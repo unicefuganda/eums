@@ -16,7 +16,7 @@
 </nav>
 <nav class="navbar navbar-default navbar-fixed-top navbar-second" role="navigation">
     <div class="container">
-        <ul class="nav navbar-nav navbar-left" ng-controller="NavigationTabsController">
+        <ul class="nav navbar-nav menubar navbar-left" ng-controller="NavigationTabsController">
             <li id="home-nav" {% if request.path == '/' %} class="active" {% endif %}
                 ng-class="{ active: isActive('/')}">
                 {% if perms.auth.can_view_dashboard %}
