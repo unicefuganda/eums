@@ -396,7 +396,7 @@ describe('IP Delivery Controller', function () {
                 scope.saveAnswers();
                 scope.$apply();
 
-                expect(location.path).toHaveBeenCalledWith('/ip-delivered-items/' + delivery.id);
+                expect(location.path).toHaveBeenCalledWith('/items-delivered-to-ip/' + delivery.id);
             });
 
             it('should load deliveries upon successful save and delivery is NOT received', function () {
