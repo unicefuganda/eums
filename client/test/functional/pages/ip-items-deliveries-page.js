@@ -3,19 +3,19 @@ var ConfirmItemByItem = function () {
 
 ConfirmItemByItem.prototype = Object.create({}, {
     url: { get: function () {
-        return '#ip-delivered-items/51';
+        return '#items-delivered-to-ip/51';
     }},
     visit: { value: function () {
         browser.get(this.url);
     }},
-    waitForModalToLoad: {value: function(){
+    waitForModalToLoad: {value: function () {
         var EC = protractor.ExpectedConditions;
         var modalControl = element(by.css('.modal.fade'));
         var modal = EC.visibilityOf(modalControl);
         browser.wait(modal, 5000, "Timeout when modal doesn't load");
 
     }},
-      waitForModalToExit: {value: function(){
+    waitForModalToExit: {value: function () {
         var EC = protractor.ExpectedConditions;
         var modalControl = element(by.css('.modal.fade'));
         var modal = EC.invisibilityOf(modalControl);
@@ -39,11 +39,15 @@ ConfirmItemByItem.prototype = Object.create({}, {
     saveRemarks: { value: function () {
         element(by.css('#add-remark-answer-modal-0 textarea')).sendKeys('Goods were received in good Conditions');
     }},
-     exitRemarksModal: { value: function () {
+    exitRemarksModal: { value: function () {
         element(by.partialButtonText('OK')).click();
     }},
-     saveItems: { value: function () {
+    saveItems: { value: function () {
         element(by.id('saveBtn')).click();
+    }},
+    itemCondition: { value: function () {
+        element(by.css('#condition-0 select')).$('[value="1"]').click();
+
     }}
 
 });

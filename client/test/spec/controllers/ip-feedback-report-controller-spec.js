@@ -1,5 +1,5 @@
 describe('IpFeedbackReportController', function () {
-    var scope, q, location, mockReportService, deferredResult, mockLoader;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout;
 
     beforeEach(function () {
         module('IpFeedbackReport');
@@ -7,10 +7,11 @@ describe('IpFeedbackReportController', function () {
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
 
-        inject(function ($controller, $q, $location, $rootScope) {
+        inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
             scope = $rootScope.$new();
             location = $location;
+            timeout = $timeout;
 
             mockReportService.ipFeedbackReport.and.returnValue(deferredResult.promise);
 
@@ -36,7 +37,7 @@ describe('IpFeedbackReportController', function () {
         });
 
         it('should call reports service', function () {
-            var response = {results:[{id: 3}, {id: 33}]};
+            var response = {results: [{id: 3}, {id: 33}]};
             deferredResult.resolve(response);
             scope.$apply();
 
@@ -54,8 +55,9 @@ describe('IpFeedbackReportController', function () {
             scope.searchTerm = searchTerm;
             scope.$apply();
 
-            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
+            timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
         });
 
         it('should not call the service when search is spaces only', function () {
@@ -65,6 +67,7 @@ describe('IpFeedbackReportController', function () {
             scope.searchTerm = '      ';
             scope.$apply();
 
+            timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(1);
         });
     });
