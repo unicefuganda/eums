@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
-from eums.models import Alert
+from eums.models import Alert, UserProfile
 
 
 class AlertSerializer(serializers.ModelSerializer):
@@ -32,6 +32,11 @@ class AlertViewSet(ReadOnlyModelViewSet):
     serializer_class = AlertSerializer
 
     def list(self, request, *args, **kwargs):
+        logged_in_user = request.user
+
+        if UserProfile.objects.filter(user=logged_in_user).exists():
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         paginate = request.GET.get('paginate', None)
         if paginate != 'true':
             self.paginator.page_size = 0
