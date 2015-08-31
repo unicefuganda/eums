@@ -31,6 +31,23 @@ class AlertViewSet(ReadOnlyModelViewSet):
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
 
+    def patch(self, request, *args, **kwargs):
+        logged_in_user = request.user
+        is_unicef_viewer = AlertViewSet._is_unicef_viewer(logged_in_user)
+
+        if UserProfile.objects.filter(user=logged_in_user).exists() or is_unicef_viewer:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response()
+
+    @staticmethod
+    def _is_unicef_viewer(logged_in_user):
+        try:
+            is_unicef_viewer = logged_in_user.groups.first().name in ['UNICEF_viewer']
+        except:
+            is_unicef_viewer = False
+        return is_unicef_viewer
+
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
 
