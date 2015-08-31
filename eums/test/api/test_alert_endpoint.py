@@ -85,6 +85,16 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(updated_alert.remarks, None)
         self.assertEqual(updated_alert.is_resolved, False)
 
+    def test_should_not_update_alert_when_remark_is_blank(self):
+        alert = AlertFactory()
+
+        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'remarks': ''})
+        updated_alert = Alert.objects.get(pk=alert.id)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(updated_alert.remarks, None)
+        self.assertEqual(updated_alert.is_resolved, False)
+
     def test_should_not_update_alert_when_id_does_not_exist(self):
         alert = AlertFactory()
 

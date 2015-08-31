@@ -32,9 +32,9 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
 
     def test_admin_should_update_alert(self):
         PermissionsTestCase.setUpClass()
-        AlertFactory()
+        alert = AlertFactory()
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': 'someId', 'remarks': 'hello world'})
+        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'remarks': 'hello world'})
 
         self.assertEqual(response.status_code, 200)
 
