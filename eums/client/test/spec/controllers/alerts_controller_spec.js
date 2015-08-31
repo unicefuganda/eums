@@ -1,7 +1,7 @@
 describe('AlertsController', function () {
 
     var scope;
-    var mockAlertsService, mockLoaderService;
+    var mockAlertsService, mockLoaderService, mockToast, q;
     var deferredAlerts,
         expectedAlerts = [
             {"order_type": "Waybill", "order_number": 123456, "issue": "not_received", "is_resolved": false, "remarks": null, "consignee_name": "Some Consignee Name", "contact_name": "Some Contact Name", "created_on": "2015-08-28", "issue_display_name": "Not Received", "item_description": "Some Description"},
@@ -21,10 +21,14 @@ describe('AlertsController', function () {
 
         inject(function ($controller, $rootScope, $q, ngToast) {
 
+            q = $q;
             deferredAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
+
             mockAlertsService.update.and.returnValue($q.when({}));
+            mockToast = ngToast;
+            spyOn(mockToast, 'create');
 
             scope = $rootScope.$new();
 
@@ -32,7 +36,7 @@ describe('AlertsController', function () {
                 $scope: scope,
                 AlertsService: mockAlertsService,
                 LoaderService: mockLoaderService,
-                ngToast: ngToast
+                ngToast: mockToast
             });
         });
     });
@@ -76,6 +80,18 @@ describe('AlertsController', function () {
 
             expect(mockAlertsService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 1});
             expect(mockAlertsService.all.calls.count()).toEqual(2);
+        });
+
+        it('should not load alerts upon failure to update an alert and create toast', function () {
+            mockAlertsService.update.and.returnValue(q.reject());
+            scope.$apply();
+
+            scope.remarks = 'some remarks about an alert';
+            scope.resolveAlert();
+            scope.$apply();
+
+            expect(mockAlertsService.all.calls.count()).toEqual(1);
+            expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to resolve alert', class: 'danger'});
         });
     });
 

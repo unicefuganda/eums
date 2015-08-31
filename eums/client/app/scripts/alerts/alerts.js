@@ -46,6 +46,9 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                 .then(function () {
                     loadInitialAlerts();
                 })
+                .catch(function () {
+                    createToast('Failed to resolve alert', 'danger')
+                })
         };
 
     });
