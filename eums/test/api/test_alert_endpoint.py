@@ -65,6 +65,35 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertNotIn('results', response.data)
         self.assertEqual(response.data, [])
 
+    def test_should_update_alert(self):
+        alert = AlertFactory()
+
+        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'remarks': 'some remarks'})
+        updated_alert = Alert.objects.get(pk=alert.id)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(updated_alert.remarks, 'some remarks')
+        self.assertEqual(updated_alert.is_resolved, True)
+
+    def test_should_not_update_alert_when_remark_does_not_exist(self):
+        alert = AlertFactory()
+
+        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'alert_remarks': 'some remarks'})
+        updated_alert = Alert.objects.get(pk=alert.id)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(updated_alert.remarks, None)
+        self.assertEqual(updated_alert.is_resolved, False)
+
+    def test_should_not_update_alert_when_id_does_not_exist(self):
+        alert = AlertFactory()
+
+        response = self.client.patch(ENDPOINT_URL, data={'alert_id': alert.id, 'alert_remarks': 'some remarks'})
+        updated_alert = Alert.objects.get(pk=alert.id)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(updated_alert.remarks, None)
+        self.assertEqual(updated_alert.is_resolved, False)
 
 
 class AlertCountEndpointTest(AuthenticatedAPITestCase):

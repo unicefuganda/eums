@@ -38,7 +38,17 @@ class AlertViewSet(ReadOnlyModelViewSet):
         if UserProfile.objects.filter(user=logged_in_user).exists() or is_unicef_viewer:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        return Response()
+        data = request.data
+
+        try:
+            alert = Alert.objects.get(pk=data['id'])
+            alert.remarks = data['remarks']
+            alert.is_resolved = True
+            alert.save()
+            return Response()
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
 
     @staticmethod
     def _is_unicef_viewer(logged_in_user):
