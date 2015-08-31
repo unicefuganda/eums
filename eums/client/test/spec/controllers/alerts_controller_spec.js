@@ -16,7 +16,7 @@ describe('AlertsController', function () {
     beforeEach(function () {
         module('Alerts');
 
-        mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all']);
+        mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
 
         inject(function ($controller, $rootScope, $q, ngToast) {
@@ -24,6 +24,7 @@ describe('AlertsController', function () {
             deferredAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
+            mockAlertsService.update.and.returnValue($q.when({}));
 
             scope = $rootScope.$new();
 
@@ -51,6 +52,31 @@ describe('AlertsController', function () {
         expect(scope.alerts).toEqual(expectedAlerts);
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+    });
+
+    describe('Resolve Alerts ', function () {
+        it('should call the update with remarks and alert id', function () {
+            var alertId = 1;
+            scope.$apply();
+
+            scope.remarks = 'some remarks about an alert';
+            scope.resolveAlert(alertId);
+            scope.$apply();
+
+            expect(mockAlertsService.update).toHaveBeenCalledWith({id: alertId, remarks: scope.remarks}, 'PATCH');
+        });
+
+        it('should load all alerts upon updating an alert', function () {
+            var alertId = 1;
+            scope.$apply();
+
+            scope.remarks = 'some remarks about an alert';
+            scope.resolveAlert(alertId);
+            scope.$apply();
+
+            expect(mockAlertsService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 1});
+            expect(mockAlertsService.all.calls.count()).toEqual(2);
+        });
     });
 
 });

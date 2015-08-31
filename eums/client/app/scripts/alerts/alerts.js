@@ -41,4 +41,11 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             });
         };
 
+        $scope.resolveAlert = function (alertId) {
+            AlertsService.update({id: alertId, remarks: $scope.remarks}, 'PATCH')
+                .then(function () {
+                    loadInitialAlerts();
+                })
+        };
+
     });
