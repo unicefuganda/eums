@@ -4,7 +4,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from eums.models import Run, MultipleChoiceQuestion, TextQuestion, Flow, Runnable, NumericQuestion
+from eums.models import Run, MultipleChoiceQuestion, TextQuestion, Flow, Runnable, NumericQuestion, RunQueue
+from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
 
 
@@ -25,7 +26,18 @@ def save_answers(request):
     rapidpro_formatted_answers = _process_answers(request['answers'], flow, run)
     _create_alert(run.runnable, rapidpro_formatted_answers)
     runnable.confirm()
+
+    _dequeue_next_run_for(runnable)
+
     return Response(status=status.HTTP_201_CREATED)
+
+
+def _dequeue_next_run_for(runnable):
+    next_run = RunQueue.dequeue(contact_person_id=runnable.contact_person_id)
+    if next_run:
+        schedule_run_for(next_run.runnable)
+        next_run.status = RunQueue.STATUS.started
+        next_run.save()
 
 
 def _process_answers(raw_answers, flow, run):

@@ -1,7 +1,9 @@
 import json
+from django.db.models import Q
 from mock import MagicMock, patch
+from eums import settings
 from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
-    NumericAnswer, Alert
+    NumericAnswer, Alert, RunQueue
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 
 from eums.test.config import BACKEND_URL
@@ -99,7 +101,8 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
     @patch('eums.services.response_alert_handler.ResponseAlertHandler')
     @patch('eums.models.DistributionPlan.confirm')
-    def test_should_format_answers_to_rapidpro_hook_api_and_handle_corresponding_alerts(self, mock_confirm, mock_alert_handler):
+    def test_should_format_answers_to_rapidpro_hook_api_and_handle_corresponding_alerts(self, mock_confirm,
+                                                                                        mock_alert_handler):
         delivery = DeliveryFactory()
         date_of_receipt = '10-10-2014'
         good_comment = "All is good"
@@ -116,13 +119,13 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         response = self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
 
         self.assertEqual(response.status_code, 201)
-        rapidpro_formatted_answers =[
-                {"category":{'eng': 'Yes', 'base': 'Yes'}, 'label': 'deliveryReceived' },
-                {"category":{'eng': date_of_receipt, 'base': date_of_receipt},'label': 'dateOfReceipt'},
-                {"category":{'eng': 'Yes', 'base': 'Yes'}, 'label': 'isDeliveryInGoodOrder', },
-                {"category":{'eng': 'Yes', 'base': 'Yes'}, 'label': 'areYouSatisfied'},
-                {"category":{'eng': good_comment, 'base': good_comment}, 'label': 'additionalDeliveryComments'}
-            ]
+        rapidpro_formatted_answers = [
+            {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'deliveryReceived'},
+            {"category": {'eng': date_of_receipt, 'base': date_of_receipt}, 'label': 'dateOfReceipt'},
+            {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'isDeliveryInGoodOrder', },
+            {"category": {'eng': 'Yes', 'base': 'Yes'}, 'label': 'areYouSatisfied'},
+            {"category": {'eng': good_comment, 'base': good_comment}, 'label': 'additionalDeliveryComments'}
+        ]
 
         self.assertTrue(mock_alert_handler.called_once_with(delivery, rapidpro_formatted_answers))
 
@@ -245,5 +248,37 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(NumericAnswer.objects.filter(question__flow=web_flow)), 1)
 
+    def test_should_dequeue_next_run_in_the_queue(self):
+        first_delivery_to_be_answered = DeliveryFactory(track=True)
+        self._schedule_run_for(first_delivery_to_be_answered)
+        second_delivery_to_be_answered = DeliveryFactory(track=True)
+        self._schedule_run_for(second_delivery_to_be_answered)
+
+        data = {
+            'runnable': first_delivery_to_be_answered.id, 'answers': [
+                {'question_label': 'deliveryReceived', 'value': 'Yes'}]
+        }
+
+        next_run = RunQueue.objects.filter(
+            Q(contact_person_id=second_delivery_to_be_answered.contact_person_id) & Q(status='not_started')).order_by(
+            '-run_delay').first()
+        self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
+
+        first_runs = Run.objects.filter(runnable=first_delivery_to_be_answered)
+        next_run = RunQueue.objects.get(id=next_run.id)
+
+        self.assertEqual(len(first_runs), 2)
+        self.assertEqual(next_run.status, 'started')
+
     def _get_answer_for(self, answer_type, delivery_id, question_label):
         return answer_type.objects.filter(run__runnable=delivery_id, question__label=question_label).first()
+
+    def _schedule_run_for(self, runnable):
+        if runnable.completed_run() is None:
+            if Run.has_scheduled_run(runnable.contact_person_id):
+                RunQueue.enqueue(runnable, 0)
+            else:
+                contact = runnable.build_contact()
+                task = '231x31231231'
+                Run.objects.create(scheduled_message_task_id=task, runnable=runnable,
+                                   status=Run.STATUS.scheduled, phone=contact['phone'] if contact else None)
