@@ -16,9 +16,11 @@ class DistributionPlanNode(Runnable):
     objects = DeliveryNodeManager()
 
     def save(self, *args, **kwargs):
+        _is_root = self.is_root()
         if self.parents or self.parents == []:
             self._update_arcs()
-        if self.quantity >= 0 and self.is_root():
+            _is_root = False
+        if self.quantity >= 0 and _is_root:
             self._update_root_node_arc()
         if self.id and self.quantity_in() == 0 and self.track:
             self.delete()
@@ -62,7 +64,9 @@ class DistributionPlanNode(Runnable):
         return getattr(first_node, 'distribution_plan', None)
 
     def is_root(self):
-        return self.arcs_in.exists() and not self.arcs_in.first().source
+        if not self.arcs_in.exists():
+            return True
+        return not self.arcs_in.first().source
 
     def update_tracked_status(self):
         if not self.is_root():
