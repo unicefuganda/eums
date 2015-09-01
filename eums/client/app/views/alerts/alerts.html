@@ -68,6 +68,7 @@
 
                                     <button type="button"
                                             class="btn btn-primary"
+                                            ng-disabled="!alert.remarks"
                                             ng-click="resolveAlert(alert.id, alert.remarks)"
                                             data-dismiss="modal">Mark as resolved
                                     </button>
