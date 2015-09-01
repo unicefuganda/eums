@@ -25,6 +25,7 @@ class Question(models.Model):
     def get_subclass_instance(self):
         return getattr(self, 'numericquestion', None) or getattr(self, 'textquestion', None) or getattr(self, 'multiplechoicequestion', None)
 
+
 class NumericQuestion(Question):
     type = models.CharField(max_length=255, choices=[('numeric', 'numeric question')], default='numeric')
 

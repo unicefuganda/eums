@@ -23,7 +23,7 @@ def hook(request):
             phone=params['phone'],
             status=Run.STATUS.scheduled).order_by('-id').first()
 
-        question = _get_matching_question([params['step']])
+        question = flow.question_with(uuid=[params['step']])
         answer = question.create_answer(params, run)
 
         if flow.is_end(answer):
@@ -53,10 +53,3 @@ def _schedule_next_run(runnable):
 def _mark_as_complete(run):
     run.status = Run.STATUS.completed
     run.save()
-
-
-def _get_matching_question(uuid):
-    numeric_question = NumericQuestion.objects.filter(uuids__contains=uuid)
-    text_question = TextQuestion.objects.filter(uuids__contains=uuid)
-    multi_question = MultipleChoiceQuestion.objects.filter(uuids__contains=uuid)
-    return (numeric_question or text_question or multi_question).first()
