@@ -44,7 +44,7 @@ class AlertViewSet(ReadOnlyModelViewSet):
             remarks = data['remarks'].strip()
 
             if remarks:
-                alert = Alert.objects.get(pk=data['id'])
+                alert = Alert.objects.get(pk=kwargs['pk'])
                 alert.remarks = remarks
                 alert.is_resolved = True
                 alert.save()
@@ -53,7 +53,6 @@ class AlertViewSet(ReadOnlyModelViewSet):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
 
     @staticmethod
     def _is_unicef_viewer(logged_in_user):

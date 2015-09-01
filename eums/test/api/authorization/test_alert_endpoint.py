@@ -34,7 +34,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         PermissionsTestCase.setUpClass()
         alert = AlertFactory()
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'remarks': 'hello world'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': 'hello world'})
 
         self.assertEqual(response.status_code, 200)
 
@@ -45,7 +45,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.logout()
         self.log_consignee_in(ConsigneeFactory())
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': 'someId', 'remarks': 'hello world'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, 'someId'), data={'id': 'someId', 'remarks': 'hello world'})
 
         self.assertEqual(response.status_code, 401)
 
@@ -56,6 +56,6 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.logout()
         self.log_unicef_viewer_in()
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': 'someId', 'remarks': 'hello world'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, 'someId'), data={'id': 'someId', 'remarks': 'hello world'})
 
         self.assertEqual(response.status_code, 401)

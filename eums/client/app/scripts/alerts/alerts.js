@@ -11,6 +11,8 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
     })
     .controller('AlertsController', function ($scope, AlertsService, LoaderService, ngToast) {
 
+        $scope.remarks = '';
+
         loadInitialAlerts();
         function loadInitialAlerts() {
             LoaderService.showLoader();
@@ -41,8 +43,13 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             });
         };
 
-        $scope.resolveAlert = function (alertId) {
-            AlertsService.update({id: alertId, remarks: $scope.remarks}, 'PATCH')
+        $scope.addRemark = function (index) {
+            var remarksModalId = 'resolve-alert-modal-' + index;
+            LoaderService.showModal(remarksModalId)
+        };
+
+        $scope.resolveAlert = function (alertId, alertRemarks) {
+            AlertsService.update({id: alertId, remarks: alertRemarks}, 'PATCH')
                 .then(function () {
                     loadInitialAlerts();
                 })

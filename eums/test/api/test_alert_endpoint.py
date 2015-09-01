@@ -69,7 +69,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_update_alert(self):
         alert = AlertFactory()
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'remarks': 'some remarks'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': 'some remarks'})
         updated_alert = Alert.objects.get(pk=alert.id)
 
         self.assertEqual(response.status_code, 200)
@@ -79,7 +79,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_not_update_alert_when_remark_does_not_exist(self):
         alert = AlertFactory()
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'alert_remarks': 'some remarks'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'id': alert.id, 'alert_remarks': 'some remarks'})
         updated_alert = Alert.objects.get(pk=alert.id)
 
         self.assertEqual(response.status_code, 400)
@@ -89,7 +89,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_not_update_alert_when_remark_is_blank(self):
         alert = AlertFactory()
 
-        response = self.client.patch(ENDPOINT_URL, data={'id': alert.id, 'remarks': ''})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'remarks': ''})
         updated_alert = Alert.objects.get(pk=alert.id)
 
         self.assertEqual(response.status_code, 400)
@@ -99,7 +99,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_not_update_alert_when_id_does_not_exist(self):
         alert = AlertFactory()
 
-        response = self.client.patch(ENDPOINT_URL, data={'alert_id': alert.id, 'alert_remarks': 'some remarks'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'alert_remarks': 'some remarks'})
         updated_alert = Alert.objects.get(pk=alert.id)
 
         self.assertEqual(response.status_code, 400)
