@@ -220,7 +220,10 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_filter_out_distributable_nodes(self):
         distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee)
+        delivery = DeliveryFactory(confirmed=True)
+        distributable_confirmed_parent = DeliveryNodeFactory(quantity=50, consignee=self.consignee, distribution_plan=delivery)
         DeliveryNodeFactory(parents=[(distributable_parent, 50)])
+        DeliveryNodeFactory(parents=[(distributable_confirmed_parent, 30)])
         closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee)
         DeliveryNodeFactory(parents=[(closed_parent, 80)])
 
@@ -230,7 +233,8 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
         node_ids = [node['id'] for node in response.data]
         self.assertEqual(len(response.data), 1)
-        self.assertIn(distributable_parent.id, node_ids)
+        self.assertIn(distributable_confirmed_parent.id, node_ids)
+        self.assertNotIn(distributable_parent.id, node_ids)
         self.assertNotIn(closed_parent.id, node_ids)
 
     def test_returned_nodes_should_have_order_type_field(self):

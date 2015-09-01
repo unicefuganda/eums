@@ -40,7 +40,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     def _all_nodes_delivered_to_consignee(self, user_profile):
         queryset = DeliveryNode.objects.filter(consignee=user_profile.consignee)
         if self.request.GET.get('is_distributable'):
-            return queryset.filter(balance__gt=0)
+            return queryset.filter(balance__gt=0, distribution_plan__confirmed=True)
         return queryset
 
     def list(self, request, *args, **kwargs):
