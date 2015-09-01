@@ -2,6 +2,8 @@ from unittest import TestCase
 
 from eums.models.flow import Flow
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
+from eums.test.factories.flow_factory import FlowFactory
+from eums.test.factories.question_factory import NumericQuestionFactory
 
 
 class FlowTest(TestCase):
@@ -37,3 +39,10 @@ class FlowTest(TestCase):
         answer = NumericAnswerFactory()
         flow = Flow(end_nodes=[[answer.question.id, Flow.NO_OPTION]])
         self.assertTrue(flow.is_end(answer))
+
+    def test_should_know_question_given_uuid(self):
+        uuid = ['some uuid']
+        flow = FlowFactory()
+        question = NumericQuestionFactory(uuids=uuid, flow=flow)
+
+        self.assertEqual(flow.question_with(uuid), question)

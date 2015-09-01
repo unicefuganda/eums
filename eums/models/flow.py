@@ -21,3 +21,7 @@ class Flow(models.Model):
 
     def __unicode__(self):
         return '%s' % str(self.for_runnable_type)
+
+    def question_with(self, uuid):
+        question = self.questions.filter(uuids__contains=uuid).first()
+        return question.get_subclass_instance()
