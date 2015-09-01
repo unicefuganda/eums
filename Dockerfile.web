@@ -2,16 +2,29 @@ FROM python:2.7
 MAINTAINER eums <eums@thoughtworks.com>
 
 ENV PYTHONUNBUFFERED 1
+
 RUN export DEBIAN_FRONTEND=noninteractive
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-RUN mkdir -p /opt/app/eums
-COPY ./build/ /opt/app/eums
-# VOLUME .:/eums
+RUN pip install -r requirements.txt
 
-EXPOSE 80
+RUN mkdir -p /eums/client
+WORKDIR /eums/client/
 
-WORKDIR /opt/app/eums
+COPY scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
 
-CMD sleep 4 && python manage.py runserver 0.0.0.0:80
+RUN mkdir /fixtures
+COPY ./client/test/functional/fixtures/ /fixtures/
+
+COPY ./build/ /eums/
+VOLUME ./build/:/eums/
+
+WORKDIR /eums/
+EXPOSE 8000
+
+# RUN python build/manage.py syncdb --noinput
+# RUN python manage.py migrate
+# RUN python manage.py setup_permissions
+# RUN python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
+
+CMD /usr/local/bin/uwsgi --emperor /etc/uwsgi/sites --env DJANGO_SETTINGS_MODULE=eums.staging_settings
