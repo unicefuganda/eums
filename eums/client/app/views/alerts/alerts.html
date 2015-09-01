@@ -6,7 +6,7 @@
 </div>
 
 <div class="container-fluid alerts-container">
-    <div class="col-lg-7 col-md-12 table-container">
+    <div class="col-lg-9 col-md-12 table-container">
         <table>
             <tr ng-repeat="($index, alert) in alerts">
                 <td>
@@ -24,7 +24,6 @@
                 </td>
                 <td>
                     <button class="btn btn-primary"
-                            title="Remark"
                             ng-if="!alert.isResolved"
                             type="button"
                             ng-click="addRemark($index)">
@@ -32,7 +31,6 @@
                     </button>
 
                     <button class="btn btn-default blue-border-button"
-                            title="Remark"
                             type="button"
                             ng-if="alert.isResolved"
                             ng-click="addRemark($index)">
@@ -48,9 +46,11 @@
                                         <span aria-hidden="true">&times;</span>
                                         <span class="sr-only">Close</span>
                                     </button>
-                                    <h4 class="modal-title">Remarks</h4>
+                                    <h4 class="modal-title">Resolve alert</h4>
                                 </div>
                                 <div class="modal-body">
+                                    <div class="text-warning pad-bottom-5">Please make notes of any actions taken.
+                                    </div>
                                     <form role="form">
                                         <div class="form-group">
                                 <textarea class="form-control"
@@ -62,9 +62,14 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button"
+                                            class="btn btn-default"
+                                            data-dismiss="modal">Cancel
+                                    </button>
+
+                                    <button type="button"
                                             class="btn btn-primary"
                                             ng-click="resolveAlert(alert.id, alert.remarks)"
-                                            data-dismiss="modal">OK
+                                            data-dismiss="modal">Mark as resolved
                                     </button>
                                 </div>
                             </div>
