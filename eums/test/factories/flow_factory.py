@@ -1,6 +1,6 @@
 import factory
 
-from eums.models import Flow, Runnable
+from eums.models import Flow
 
 
 class FlowFactory(factory.DjangoModelFactory):
