@@ -22,6 +22,8 @@ class Question(models.Model):
     class Meta:
         unique_together = ('flow', 'label')
 
+    def get_subclass_instance(self):
+        return getattr(self, 'numericquestion', None) or getattr(self, 'textquestion', None) or getattr(self, 'multiplechoicequestion', None)
 
 class NumericQuestion(Question):
     type = models.CharField(max_length=255, choices=[('numeric', 'numeric question')], default='numeric')

@@ -44,6 +44,24 @@ class QuestionTest(TestCase):
         text = self.text_question.text
         self.assertEqual(str(self.text_question), text)
 
+    def test_know_numeric_question_instance(self):
+        numeric_question = NumericQuestionFactory()
+        question = Question.objects.get(id=numeric_question.id)
+
+        self.assertEqual(question.get_subclass_instance(), numeric_question)
+
+    def test_know_text_question_instance(self):
+        text_question = TextQuestionFactory()
+        question = Question.objects.get(id=text_question.id)
+
+        self.assertEqual(question.get_subclass_instance(), text_question)
+
+    def test_know_multichoice_question_instance(self):
+        multichoice_question = MultipleChoiceQuestionFactory()
+        question = Question.objects.get(id=multichoice_question.id)
+
+        self.assertEqual(question.get_subclass_instance(), multichoice_question)
+
     def tearDown(self):
         Question.objects.all().delete()
 
