@@ -32,5 +32,5 @@ mm_question_5, _ = TextQuestion.objects.get_or_create(
     uuids=['3f5d290a-067d-4cb9-bb09-ed7c424a6abd'],
     text='When to expect delay?', label='revisedDeliveryDate', flow=middle_man_flow, position=3)
 
-middle_man_flow.end_nodes.append([mm_question_3.id, Flow.NO_OPTION])
+middle_man_flow.end_nodes.append([mm_question_5.id, Flow.NO_OPTION])
 middle_man_flow.save()
