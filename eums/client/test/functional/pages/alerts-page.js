@@ -8,7 +8,7 @@ AlertsPage.prototype = Object.create({}, {
         waitForPageToLoad();
     }},
 
-    firstAlert: { get: function () { return element.all(by.repeater('alert in alerts')).get(0).getText(); }}
+    firstAlert: { get: function () { return element.all(by.repeater('($index, alert) in alerts')).get(0).getText(); }}
 });
 
 module.exports = new AlertsPage;
