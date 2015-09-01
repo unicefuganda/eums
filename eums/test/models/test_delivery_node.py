@@ -276,6 +276,19 @@ class DeliveryNodeTest(TestCase):
         self.assertNotIn(non_consignee_child_node, returned_nodes)
         self.assertNotIn(non_item_child_node, returned_nodes)
 
+    def test_should_not_get_duplicate_nodes_when_delivery_comes_from_multiple_nodes_of_same_po(self):
+        item = ItemFactory()
+        consignee = ConsigneeFactory()
+        po = PurchaseOrderFactory()
+
+        node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item, purchase_order=po), consignee=consignee)
+        node_two = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item, purchase_order=po), consignee=consignee)
+        child_node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item), parents=[(node_one, 10), (node_two, 5)])
+
+        returned_nodes = DeliveryNode.objects.delivered_by_consignee(consignee, item)
+
+        self.assertItemsEqual([child_node_one], returned_nodes)
+
     def test_should_confirm_delivery_from_node_when_all_nodes_in_delivery_are_answered(self):
         delivery = DeliveryFactory()
         node_one = DeliveryNodeFactory(distribution_plan=delivery)

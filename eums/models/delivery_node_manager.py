@@ -29,7 +29,7 @@ class DeliveryNodeManager(PolymorphicManager):
         raise TypeError('both delivery and order items cannot be null')
 
     def delivered_by_consignee(self, consignee, item_id):
-        return self.model.objects.filter(arcs_in__source__consignee=consignee, item__item_id=item_id)
+        return self.model.objects.filter(arcs_in__source__consignee=consignee, item__item_id=item_id).distinct()
 
     @staticmethod
     def _get_node_attrs(kwargs):
