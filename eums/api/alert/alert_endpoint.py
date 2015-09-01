@@ -13,6 +13,7 @@ class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = (
+            'id',
             'order_type',
             'order_number',
             'issue',

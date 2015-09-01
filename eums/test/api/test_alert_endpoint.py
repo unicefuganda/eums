@@ -28,6 +28,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
         first_alert = response.data[0]
+        self.assertIsNotNone(first_alert['id'])
         self.assertEqual(first_alert['order_type'], ReleaseOrderItem.WAYBILL)
         self.assertEqual(first_alert['order_number'], 123456)
         self.assertEqual(first_alert['issue'], Alert.ISSUE_TYPES.not_received)
