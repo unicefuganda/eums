@@ -6,60 +6,78 @@
 </div>
 
 <div class="container-fluid alerts-container">
-    <div class="alert-row" ng-repeat="($index, alert) in alerts">
-        <span class="alerts-grey">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
-        <span class="alerts-bolder">{{ alert.contactName }}</span>
-        reported <span ng-show="alert.itemDescription">
-        item <span class="alerts-bolder">{{ alert.itemDescription }}</span> from </span>
-        </span>
-        <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
-        sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>
-        as <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
+    <div class="col-lg-7 col-md-12 table-container">
+        <table>
+            <tr ng-repeat="($index, alert) in alerts">
+                <td>
+                    <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
+                </td>
+                <td>
+                    <span class="alerts-grey">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
+                    <span class="alerts-bolder">{{ alert.contactName }}</span>
+                    reported <span ng-show="alert.itemDescription">
+                    item <span class="alerts-bolder">{{ alert.itemDescription }}</span> from </span>
+                    </span>
+                    <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
+                    sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>
 
-        <div class="text-center">
-            <button class="btn btn-default glyphicon glyphicon-list-alt"
-                    title="Remark"
-                    ng-click="addRemark($index)">
-            </button>
-        </div>
-        <div class="modal fade" id="resolve-alert-modal-{{$index}}">
-            <div class="modal-dialog">
-                <div class="modal-content col-md-offset-3 col-md-6">
-                    <div class="modal-header">
-                        <button type="button"
-                                class="close"
-                                data-dismiss="modal">
-                            <span aria-hidden="true">&times;</span>
-                            <span class="sr-only">Close</span>
-                        </button>
-                        <h4 class="modal-title">Remarks</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form role="form">
-                            <div class="form-group">
+                </td>
+                <td>
+                    <button class="btn btn-primary"
+                            title="Remark"
+                            ng-if="!alert.isResolved"
+                            type="button"
+                            ng-click="addRemark($index)">
+                        Resolve
+                    </button>
+
+                    <button class="btn btn-default blue-border-button"
+                            title="Remark"
+                            type="button"
+                            ng-if="alert.isResolved"
+                            ng-click="addRemark($index)">
+                        Resolved
+                    </button>
+                    <div class="modal fade" id="resolve-alert-modal-{{$index}}">
+                        <div class="modal-dialog">
+                            <div class="modal-content col-md-offset-3 col-md-6">
+                                <div class="modal-header">
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="modal-title">Remarks</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form role="form">
+                                        <div class="form-group">
                                 <textarea class="form-control"
                                           ng-model="alert.remarks"
                                           required rows="6">
                                 </textarea>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button"
+                                            class="btn btn-primary"
+                                            ng-click="resolveAlert(alert.id, alert.remarks)"
+                                            data-dismiss="modal">OK
+                                    </button>
+                                </div>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button"
-                                class="btn btn-primary"
-                                ng-click="resolveAlert(alert.id, alert.remarks)"
-                                data-dismiss="modal">OK
-                        </button>
-                    </div>
-                </div>
-            </div>
+                </td>
+            </tr>
+        </table>
+        <div class="centered">
+            <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                        ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                        items-per-page="pageSize">
+            </pagination>
         </div>
     </div>
-    <div class="centered">
-        <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                    ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                    items-per-page="pageSize">
-        </pagination>
-    </div>
-
 </div>
