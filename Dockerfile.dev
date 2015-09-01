@@ -5,29 +5,26 @@ ENV PYTHONUNBUFFERED 1
 
 RUN export DEBIAN_FRONTEND=noninteractive
 
-# nodejs-legacy deals with npm packages looking for a `node` binary
-RUN apt-get update && apt-get install -y npm nodejs nodejs-legacy
-RUN npm install -g bower grunt grunt-cli
-
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
 RUN mkdir -p /eums/client
-WORKDIR /eums/client
+WORKDIR /eums/client/
 
-COPY client/package.json client/bower.json /eums/client/
+COPY scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
 
-RUN npm install
-RUN bower install --allow-root
+RUN mkdir /fixtures
+COPY ./client/test/functional/fixtures/ /fixtures/
 
-ADD . /eums
-VOLUME .:/eums
+COPY ./build/ /eums/
+VOLUME ./build/:/eums/
 
-EXPOSE 80
+WORKDIR /eums/
+EXPOSE 8000
 
-WORKDIR /eums/client
-RUN grunt package
+# RUN python build/manage.py syncdb --noinput
+# RUN python manage.py migrate
+# RUN python manage.py setup_permissions
+# RUN python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
 
-WORKDIR /eums
-
-CMD sleep 4 && python build/manage.py migrate && python build/manage.py runserver 0.0.0.0:80
+CMD /usr/local/bin/uwsgi --emperor /etc/uwsgi/sites --env DJANGO_SETTINGS_MODULE=eums.staging_settings

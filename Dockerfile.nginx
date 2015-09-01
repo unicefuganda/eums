@@ -1,0 +1,17 @@
+FROM nginx
+
+COPY ./scripts/packaging/nginx.config /etc/nginx/nginx.conf
+
+RUN mkdir -p /etc/nginx/sites-enabled
+
+COPY scripts/packaging/nginx.config /etc/nginx/nginx.conf
+COPY scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums
+RUN ln -sf /etc/nginx/sites-available/eums /etc/nginx/sites-enabled/eums
+# RUN rm /etc/nginx/sites-enabled/default
+
+# COPY ./build/eums/client/ /assets/
+ADD ./build/eums/client/ /assets/
+VOLUME ./build/eums/client/:/assets/
+
+RUN echo NGINX container
+CMD ["nginx", "-g", "daemon off;"]

@@ -2,4 +2,4 @@ FROM postgres
 MAINTAINER eums <eums@thoughtworks.com>
 
 VOLUME /dbdata
-CMD /bin/true
+ENTRYPOINT /bin/echo postgresql data-only container
