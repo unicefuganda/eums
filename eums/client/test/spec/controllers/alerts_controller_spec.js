@@ -62,7 +62,7 @@ describe('AlertsController', function () {
     beforeEach(function () {
         module('Alerts');
 
-        mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update']);
+        mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
 
         inject(function ($controller, $rootScope, $q, ngToast) {
@@ -71,6 +71,7 @@ describe('AlertsController', function () {
             deferredAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
+            mockAlertsService.get.and.returnValue($q.when({'total':4, 'unresolved':2}));
 
             mockAlertsService.update.and.returnValue($q.when({}));
             mockToast = ngToast;
@@ -114,6 +115,17 @@ describe('AlertsController', function () {
             scope.$apply();
 
             expect(mockAlertsService.update).toHaveBeenCalledWith({id: alertId, remarks: remarks}, 'PATCH');
+        });
+
+        it('should update unresolved alerts count upon updating an alert', function () {
+            var alertId = 1;
+            scope.$apply();
+
+            scope.resolveAlert(alertId, 'some remarks about an alert');
+            scope.$apply();
+
+            expect(mockAlertsService.get).toHaveBeenCalledWith('count');
+            expect(scope.unresolvedAlertsCount).toEqual(2);
         });
 
         it('should load all alerts upon updating an alert', function () {

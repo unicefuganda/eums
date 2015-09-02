@@ -9,7 +9,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             uri: EumsConfig.BACKEND_URLS.ALERTS
         });
     })
-    .controller('AlertsController', function ($scope, AlertsService, LoaderService, ngToast) {
+    .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast) {
 
         $scope.remarks = '';
 
@@ -51,6 +51,9 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.resolveAlert = function (alertId, alertRemarks) {
             AlertsService.update({id: alertId, remarks: alertRemarks}, 'PATCH')
                 .then(function () {
+                    AlertsService.get('count').then(function (alertsCount) {
+                        $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
+                    });
                     loadInitialAlerts();
                 })
                 .catch(function () {

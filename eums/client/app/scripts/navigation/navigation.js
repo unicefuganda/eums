@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('NavigationTabs', ['Alerts'])
-    .controller('NavigationTabsController', function ($scope, $location, AlertsService) {
+    .controller('NavigationTabsController', function ($scope, $rootScope, $location, AlertsService) {
         $scope.isActive = function (viewLocation) {
             var allLocations = viewLocation.split(',');
             for (var enabledLocation in allLocations) {
@@ -16,7 +16,7 @@ angular.module('NavigationTabs', ['Alerts'])
         };
 
         AlertsService.get('count').then(function (alertsCount) {
-            $scope.unresolvedAlertsCount = alertsCount.unresolved;
+            $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
         });
 
     });
