@@ -48,12 +48,11 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.itemDescription = json.itemDescription;
             this.orderNumber = json.orderNumber;
             this.orderType = json.orderType;
+            this.hasChildren = json.hasChildren;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
             }.bind(this);
-
-            this.hasChildren = json.hasChildren;
 
             this.isInvalid = function () {
                 return this.quantityIn <= 0 || isNaN(this.quantityIn) || !this.consignee || !this.location

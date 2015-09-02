@@ -61,7 +61,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         expect(scope.districtsLoaded).toBeTruthy();
     });
 
-    it('should fetch parent node and put it on scope', function() {
+    it('should fetch parent node and put it on scope', function () {
         scope.$apply();
         expect(mockDeliveryNodeService.get).toHaveBeenCalledWith(routeParams.parentNodeId);
         expect(scope.parentNode).toEqual(parentNode);
@@ -79,6 +79,34 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         scope.toggleNewDeliveryForm();
         expect(scope.addingNewDelivery).toBeTruthy();
     });
+
+    it('it should format new delivery date correctly on change', function () {
+        scope.newDelivery.deliveryDate = '2015-08-26T08:00:00.000Z';
+        scope.$apply();
+        expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
+    });
+
+    describe('on save', function () {
+        it('should save new delivery', function () {
+            var newDelivery = {track: true, quantity: 3};
+            var parentNode = {item: 10};
+            scope.parentNode = parentNode;
+            scope.newDelivery = newDelivery;
+            var additionalFields = {
+                item: parentNode.item,
+                parents: [{
+                    id: routeParams.parentNodeId,
+                    quantity: newDelivery.quantity
+                }]
+            };
+
+            scope.createNewDelivery();
+
+            var fullDelivery = Object.merge(additionalFields, newDelivery);
+            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(fullDelivery);
+        });
+    });
+
 
     //it('should show loader on load', function () {
     //    scope.$apply();
@@ -141,12 +169,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
     //});
     //
     //
-    //it('it should format new delivery date correctly on change', function () {
-    //    scope.newDelivery.deliveryDate = '2015-08-26T08:00:00.000Z';
-    //    scope.$apply();
-    //    expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
-    //});
-    //
+
     //it('should put consignee name into select after consignee-saved is called', function () {
     //    var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
     //    spyOn(scope, '$broadcast');

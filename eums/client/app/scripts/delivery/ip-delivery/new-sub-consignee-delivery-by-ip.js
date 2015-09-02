@@ -6,7 +6,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
     }])
     .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
                                                                    DeliveryNode, ngToast, LoaderService, $q) {
-        $scope.newDelivery = {track: true};
+        $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
         $scope.errors = false;
         $scope.addingNewDelivery = false;
@@ -31,7 +31,24 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.parentNode = parent;
         }));
 
-        $scope.toggleNewDeliveryForm = function(){
+        $scope.toggleNewDeliveryForm = function () {
             $scope.addingNewDelivery = !$scope.addingNewDelivery;
         };
-    });
+
+        $scope.createNewDelivery = function () {
+            $scope.newDelivery.item = $scope.parentNode.item;
+            $scope.newDelivery.parents = [{
+                id: $routeParams.parentNodeId,
+                quantity: $scope.newDelivery.quantity
+            }];
+            DeliveryNodeService.create($scope.newDelivery);
+        };
+
+        $scope.$watch('newDelivery.deliveryDate', function (val) {
+            if (val) {
+                var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
+                $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
+            }
+        });
+    })
+;
