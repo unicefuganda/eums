@@ -1,19 +1,22 @@
 data_postgres:
   build: .
   dockerfile: Dockerfile.data
+
 data_mongo:
   image: mongo
   command: /bin/true
   volumes:
-    - /data/db
+    - /data/mongo
+
 mongo:
   image: mongo
   volumes_from:
     - data_mongo
+
 postgres:
   image: postgres
   environment:
-    PGDATA: /dbdata
+    PGDATA: /data/postgres
   volumes_from:
     - data_postgres
 web:
@@ -28,6 +31,7 @@ contacts:
   image: cuevee/contacts
   links:
     - mongo
+
 nginx:
   build: .
   dockerfile: Dockerfile.nginx

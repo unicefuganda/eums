@@ -7,10 +7,11 @@ from django.conf import settings
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eums.staging_settings')
 
-app = Celery('eums', broker='redis://localhost:6379/0', backend='redis://',
+app = Celery('eums', broker='redis://redis:6379/0', backend='redis://',
              include=['eums.services.flow_scheduler', 'eums.services.csv_export_service'])
 
 CELERY_TIMEZONE = 'Africa/Kampala'
+CELERY_RESULT_BACKEND = 'redis://redis/0'
 
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)

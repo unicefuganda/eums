@@ -1,5 +1,5 @@
 FROM postgres
 MAINTAINER eums <eums@thoughtworks.com>
 
-VOLUME /dbdata
+VOLUME /data/postgres
 ENTRYPOINT /bin/echo postgresql data-only container
