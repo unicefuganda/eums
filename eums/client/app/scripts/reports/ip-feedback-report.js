@@ -1,14 +1,17 @@
 'use strict';
 
 angular.module('IpFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
-    .controller('IpFeedbackReportController', function ($scope, $q, $location, ReportService, LoaderService) {
-
+    .controller('IpFeedbackReportController', function ($scope, $q, $location, $timeout, ReportService, LoaderService) {
+        var timer;
         loadIpFeedbackReport();
 
         $scope.$watch('searchTerm', function () {
             if ($scope.searchTerm && $scope.searchTerm.trim()) {
                 $scope.searching = true;
-                loadIpFeedbackReport({query: $scope.searchTerm})
+                if(timer){
+                    $timeout.cancel(timer);
+                }
+                startTimer();
             }
         });
 
@@ -16,17 +19,21 @@ angular.module('IpFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
             loadIpFeedbackReport({page: page})
         };
 
-        function loadIpFeedbackReport(filterParams) {
-            $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
-            ReportService.ipFeedbackReport(filterParams)
-                .then(function (response) {
-                    $scope.report = response.results;
-                    $scope.count = response.count;
-                    $scope.pageSize = response.pageSize;
-
-                    LoaderService.hideLoader();
-                    $scope.searching = false;
-                });
+        function startTimer() {
+            timer = $timeout(function () {
+                loadIpFeedbackReport({query: $scope.searchTerm})
+            }, 1000);
         }
 
+        function loadIpFeedbackReport(filterParams) {
+            $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
+            ReportService.ipFeedbackReport(filterParams).then(function (response) {
+                $scope.report = response.results;
+                $scope.count = response.count;
+                $scope.pageSize = response.pageSize;
+
+                LoaderService.hideLoader();
+                $scope.searching = false;
+            });
+        }
     });
