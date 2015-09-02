@@ -6,12 +6,14 @@ angular.module('IpFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
         loadIpFeedbackReport();
 
         $scope.$watch('searchTerm', function () {
+            $scope.searching = true;    
             if ($scope.searchTerm && $scope.searchTerm.trim()) {
-                $scope.searching = true;
-                if(timer){
+                if (timer) {
                     $timeout.cancel(timer);
                 }
                 startTimer();
+            } else {
+                loadIpFeedbackReport()
             }
         });
 
