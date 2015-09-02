@@ -13,20 +13,15 @@ from eums.services.response_alert_handler import ResponseAlertHandler
 def save_answers(request):
     request = request.data
     runnable = Runnable.objects.get(pk=(request['runnable']))
-    contact = runnable.build_contact()
-
     cancel_existing_runs_for(runnable)
 
-    run = Run.objects.create(runnable=runnable,
-                             status=Run.STATUS.completed,
-                             phone=contact['phone'] if contact else None,
-                             scheduled_message_task_id='Web')
+    run = Run.objects.create(runnable=runnable, status=Run.STATUS.completed,
+                             phone=runnable.contact.phone, scheduled_message_task_id='Web')
 
     flow = _get_flow(runnable)
     rapidpro_formatted_answers = _process_answers(request['answers'], flow, run)
     _create_alert(run.runnable, rapidpro_formatted_answers)
     runnable.confirm()
-
     _dequeue_next_run_for(runnable)
 
     return Response(status=status.HTTP_201_CREATED)
@@ -36,14 +31,13 @@ def _dequeue_next_run_for(runnable):
     next_run = RunQueue.dequeue(contact_person_id=runnable.contact_person_id)
     if next_run:
         schedule_run_for(next_run.runnable)
-        next_run.status = RunQueue.STATUS.started
-        next_run.save()
+        next_run.update_status(RunQueue.STATUS.started)
 
 
 def _process_answers(raw_answers, flow, run):
     rapidpro_formatted_answers = []
     for answer in raw_answers:
-        question = _get_matching_question(answer['question_label'], flow)
+        question = flow.question_with(label=answer['question_label'])
         params = {'values': [u'[{"category": {"eng":"%s", "base": "%s"}, "label": "%s"}]' %
                              (answer['value'], answer['value'], answer['question_label'])],
                   'text': answer['value']}
@@ -58,7 +52,6 @@ def _create_alert(runnable, params):
     handler.process()
 
 
-
 def _get_flow(runnable):
     flow_type = Runnable.WEB if getattr(runnable, 'item', None) else Runnable.IMPLEMENTING_PARTNER
     return Flow.objects.get(for_runnable_type=flow_type)
@@ -66,10 +59,3 @@ def _get_flow(runnable):
 
 def cancel_existing_runs_for(delivery):
     Run.objects.filter(runnable=delivery).update(status=Run.STATUS.cancelled)
-
-
-def _get_matching_question(label, flow):
-    multi_question = MultipleChoiceQuestion.objects.filter(label=label, flow=flow)
-    text_question = TextQuestion.objects.filter(label=label, flow=flow)
-    numeric_question = NumericQuestion.objects.filter(label=label, flow=flow)
-    return text_question.first() or multi_question.first() or numeric_question.first()

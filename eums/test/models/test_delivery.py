@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from eums.models import DistributionPlan as Delivery, SalesOrder, DistributionPlanNode as DeliveryNode, \
-    MultipleChoiceQuestion, Run, Flow, Option
+    MultipleChoiceQuestion, Run, Flow, Option, Runnable
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -457,3 +457,9 @@ class DeliveryTest(TestCase):
         delivery = DeliveryFactory()
         
         self.assertIsNone(delivery.item_description())
+
+    def test_delivery_flow_is_ipflow_for_ip(self):
+        ip_flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        runnable = DeliveryFactory()
+
+        self.assertEqual(runnable.flow(), ip_flow)

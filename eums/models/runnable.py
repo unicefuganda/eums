@@ -22,9 +22,9 @@ class Runnable(PolymorphicModel):
     def build_contact(self):
         try:
             response = requests.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, self.contact_person_id))
-            return response.json() if response.status_code is 200 else None
+            return response.json() if response.status_code is 200 else {}
         except:
-            return None
+            return {}
 
     def current_run(self):
         return self.run_set.filter(status='scheduled').first()
@@ -41,9 +41,10 @@ class Runnable(PolymorphicModel):
     def responses(self):
         return dict(map(lambda run: (run, run.answers()), self._completed_runs()))
 
-    def _contact_name(self):
+    @property
+    def contact(self):
         contact = self.build_contact()
-        return ContactService(**contact).full_name()
+        return ContactService(**contact)
 
     def number(self):
         pass
@@ -59,6 +60,6 @@ class Runnable(PolymorphicModel):
             order_type=self.type(),
             order_number=self.number(),
             consignee_name=self.consignee.name,
-            contact_name=self._contact_name(),
+            contact_name=self.contact.full_name(),
             item_description=self.item_description(),
             issue=issue)

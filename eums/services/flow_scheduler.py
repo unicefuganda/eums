@@ -6,31 +6,28 @@ from celery.task import periodic_task
 from django.conf import settings
 
 from eums.celery import app
-from eums.models import Run, RunQueue, Flow, Runnable, DistributionPlanNode, DistributionPlan
+from eums.models import Run, RunQueue, Runnable
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.services.delivery_run_message import DeliveryRunMessage
 
 
 def schedule_run_for(runnable):
     if runnable.completed_run() is None:
-        current_run = runnable.current_run()
+        _cancel_current_run(runnable)
         run_delay = _calculate_delay(runnable)
-        if current_run:
-            _cancel_run(current_run)
 
         if Run.has_scheduled_run(runnable.contact_person_id):
             RunQueue.enqueue(runnable, run_delay)
         elif settings.RAPIDPRO_LIVE:
-            contact = runnable.build_contact()
             task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
             Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
-                               status=Run.STATUS.scheduled, phone=contact['phone'] if contact else None)
+                               status=Run.STATUS.scheduled, phone=runnable.contact.phone)
 
 
 @app.task
 def _schedule_run(runnable_id):
     runnable = Runnable.objects.get(id=runnable_id)
-    flow = _flow_for(runnable)
+    flow = runnable.flow()
     message = DeliveryRunMessage(runnable)
     start_delivery_run(
         sender=message.sender_name(),
@@ -48,16 +45,13 @@ def _calculate_delay(runnable):
     return delay_in_seconds if delay_in_seconds > 0 else settings.DELIVERY_BUFFER_IN_SECONDS
 
 
-def _flow_for(runnable):
-    if isinstance(runnable, DistributionPlanNode):
-        if runnable.tree_position == Runnable.END_USER:
-            return Flow.objects.get(for_runnable_type=Runnable.END_USER)
-        return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
-    elif isinstance(runnable, DistributionPlan):
-        return Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+def _cancel_current_run(runnable):
+    current_run = runnable.current_run()
+    if current_run:
+        _cancel(current_run)
 
 
-def _cancel_run(run):
+def _cancel(run):
     app.control.revoke(run.scheduled_message_task_id)
     run.update_status(Run.STATUS.cancelled)
 

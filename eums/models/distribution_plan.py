@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Q
 
-from eums.models import MultipleChoiceAnswer, PurchaseOrderItem, Flow, Question, TextQuestion, TextAnswer, \
+from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, TextAnswer, \
     MultipleChoiceQuestion, NumericAnswer, NumericQuestion
 from eums.models import Runnable, DistributionPlanNode
 from eums.models.answers import Answer
@@ -123,3 +123,7 @@ class DistributionPlan(Runnable):
             node_answers.append({'id': node.id, 'answers': sorted(answers, key=lambda field: field['position'])})
 
         return node_answers
+
+    @classmethod
+    def flow(cls):
+        return Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)

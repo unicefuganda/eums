@@ -9,11 +9,8 @@ from eums.test.factories.question_factory import NumericQuestionFactory
 class FlowTest(TestCase):
     def test_should_have_all_expected_fields(self):
         flow = Flow()
-        fields = [field for field in flow._meta._name_map]
-
-        self.assertEqual(len(fields), 5)
         for field in ['id', 'rapid_pro_id', 'end_nodes', 'questions']:
-            self.assertIn(field, fields)
+            self.assertTrue(hasattr(flow, field))
 
     def test_should_tell_if_question_answer_combination_ends_the_flow(self):
         answer_1 = MultipleChoiceAnswerFactory()
@@ -45,4 +42,11 @@ class FlowTest(TestCase):
         flow = FlowFactory()
         question = NumericQuestionFactory(uuids=uuid, flow=flow)
 
-        self.assertEqual(flow.question_with(uuid), question)
+        self.assertEqual(flow.question_with(uuid=uuid), question)
+
+    def test_should_know_question_given_label(self):
+        label = 'someLabel'
+        flow = FlowFactory()
+        question = NumericQuestionFactory(label=label, flow=flow)
+
+        self.assertEqual(flow.question_with(label=label), question)

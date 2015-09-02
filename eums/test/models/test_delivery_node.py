@@ -4,12 +4,13 @@ from django.db import IntegrityError
 from mock import patch
 
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
-    Item, Consignee, Alert, Runnable
+    Item, Consignee, Alert, Runnable, Flow
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.arc_factory import ArcFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
@@ -314,6 +315,7 @@ class DeliveryNodeTest(TestCase):
         SalesOrder.objects.all().delete()
         Item.objects.all().delete()
         Consignee.objects.all().delete()
+        Flow.objects.all().delete()
 
     def test_should_return_node_with_order_number(self):
         po = PurchaseOrderFactory(order_number=123456)
@@ -421,3 +423,28 @@ class DeliveryNodeTest(TestCase):
         self.assertTrue(node_with_tuple_parents.track)
         self.assertTrue(node_with_dict_parents.track)
         self.assertFalse(untracked_node.track)
+
+    def test_node_end_user(self):
+        node = DeliveryNode(tree_position=Runnable.END_USER)
+
+        self.assertTrue(node.is_end_user())
+
+        node.tree_position = Runnable.MIDDLE_MAN
+
+        self.assertFalse(node.is_end_user())
+
+    def test_delivery_flow_is_middleman_for_non_enduser_node(self):
+        middleman_flow = FlowFactory(for_runnable_type=Runnable.MIDDLE_MAN)
+        runnable = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER)
+
+        self.assertEqual(runnable.flow(), middleman_flow)
+
+        runnable.tree_position = Runnable.MIDDLE_MAN
+
+        self.assertEqual(runnable.flow(), middleman_flow)
+
+    def test_delivery_flow_is_enduser_for_enduser_node(self):
+        enduser_flow = FlowFactory(for_runnable_type=Runnable.END_USER)
+        runnable = DeliveryNodeFactory(tree_position=Runnable.END_USER)
+
+        self.assertEqual(runnable.flow(), enduser_flow)

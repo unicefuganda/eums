@@ -22,6 +22,14 @@ class Flow(models.Model):
     def __unicode__(self):
         return '%s' % str(self.for_runnable_type)
 
-    def question_with(self, uuid):
-        question = self.questions.filter(uuids__contains=uuid).first()
+    def question_with(self, **kwargs):
+        filter_params = self._remap(kwargs)
+        question = self.questions.filter(**filter_params).first()
         return question.get_subclass_instance()
+
+    def _remap(self, kwargs):
+        new_params = kwargs
+        if new_params.get('uuid'):
+            uuid = new_params.pop('uuid')
+            new_params['uuids__contains'] = uuid
+        return new_params

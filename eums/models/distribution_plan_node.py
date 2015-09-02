@@ -1,4 +1,5 @@
 from django.db import models
+from eums.models.flow import Flow
 from eums.models import Runnable, Arc
 from eums.models.delivery_node_manager import DeliveryNodeManager
 
@@ -113,3 +114,11 @@ class DistributionPlanNode(Runnable):
 
     def item_description(self):
         return self.item.item.description
+
+    def is_end_user(self):
+        return self.tree_position == Runnable.END_USER
+
+    def flow(self):
+        if self.is_end_user():
+            return Flow.objects.get(for_runnable_type=self.tree_position)
+        return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
