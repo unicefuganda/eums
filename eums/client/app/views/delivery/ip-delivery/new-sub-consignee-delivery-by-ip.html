@@ -12,10 +12,16 @@
 
     <div class="row pad-15">
         <div class="pull-left">
-            <a href="#/deliveries-by-ip/{{ item.id }}/new" class="btn btn-primary">
+            <div class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
                 <span class="glyphicon glyphicon-plus"></span>
                 New Sub-Consignee
-            </a>
+            </div>
+        </div>
+        <div class="pull-left" ng-show="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
+            <div class="btn warning-border-button">
+                <span class="glyphicon glyphicon-remove"></span>
+                Discard New Delivery
+            </div>
         </div>
         <div class="pull-right pad-top-10">
             <span class="pad-right-5 item-quantity-label">Quantity Available</span>
@@ -26,7 +32,7 @@
     <span class="well-sm"></span>
 
 
-    <div class="well col-md-12">
+    <div class="well col-md-12" ng-show="addingNewDelivery">
         <table class="col-md-12">
             <tr>
                 <td class="col-md-1 pad-bottom-5">Quantity Shipped</td>

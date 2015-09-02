@@ -49,6 +49,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
     it('should have empty initial data on load', function () {
         expect(scope.errors).toBe(false);
+        expect(scope.addingNewDelivery).toBe(false);
         expect(scope.districts).toEqual([]);
         expect(JSON.stringify(scope.newDelivery)).toEqual(JSON.stringify({track: true}));
     });
@@ -71,6 +72,12 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         var filterParams = {item__item: routeParams.itemId, parent: routeParams.parentNodeId};
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
         expect(scope.deliveries).toEqual(childNodes);
+    });
+
+    it('should toggle adding new delivery form on click of button', function () {
+        scope.$apply();
+        scope.toggleNewDeliveryForm();
+        expect(scope.addingNewDelivery).toBeTruthy();
     });
 
     //it('should show loader on load', function () {

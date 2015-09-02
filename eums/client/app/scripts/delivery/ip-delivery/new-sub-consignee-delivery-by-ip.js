@@ -9,6 +9,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         $scope.newDelivery = {track: true};
         $scope.districts = [];
         $scope.errors = false;
+        $scope.addingNewDelivery = false;
 
         var loadPromises = [];
         var itemId = $routeParams.itemId;
@@ -29,4 +30,8 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         loadPromises.push(DeliveryNodeService.get(parentNodeId).then(function (parent) {
             $scope.parentNode = parent;
         }));
+
+        $scope.toggleNewDeliveryForm = function(){
+            $scope.addingNewDelivery = !$scope.addingNewDelivery;
+        };
     });
