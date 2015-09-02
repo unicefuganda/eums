@@ -16,7 +16,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable', 'ui.bootstrap', 'eums.map', 'eums.ip',
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'IpFeedbackReport', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
-    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp'])
+    'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp', 'NewSubConsigneeDeliveryByIp'])
 
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
@@ -232,6 +232,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
         .when('/deliveries-by-ip/:itemId/new', {
             templateUrl: '/static/app/views/delivery/ip-delivery/new-delivery-by-ip.html',
             controller: 'NewDeliveryByIpController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_distribution_plans');
+                }
+            }
+        })
+        .when('/deliveries-by-ip/:itemId/:parentDeliveryId/new', {
+            templateUrl: '/static/app/views/delivery/ip-delivery/new-sub-consignee-delivery-by-ip.html',
+            controller: 'NewSubConsigneeDeliveryByIpController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_distribution_plans');
