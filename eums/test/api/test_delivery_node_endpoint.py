@@ -237,6 +237,21 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertNotIn(distributable_parent.id, node_ids)
         self.assertNotIn(closed_parent.id, node_ids)
 
+    def test_should_return_child_nodes_for_a_parent_node_and_of_an_item(self):
+        self.logout()
+        self.log_consignee_in(self.consignee)
+        item = ItemFactory()
+        po_item = PurchaseOrderItemFactory(item=item)
+        parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee, item=po_item)
+        child_one = DeliveryNodeFactory(parents=[(parent, 30)], item=po_item)
+        child_two = DeliveryNodeFactory(parents=[(parent, 30)], item=po_item)
+        DeliveryNodeFactory(item=po_item)
+
+        response = self.client.get('%s?item__item=%d&parent=%d' % (ENDPOINT_URL, item.id, parent.id))
+
+        node_ids = [node['id'] for node in response.data]
+        self.assertItemsEqual([child_one.id, child_two.id], node_ids)
+
     def test_returned_nodes_should_have_order_type_field(self):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
         ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))

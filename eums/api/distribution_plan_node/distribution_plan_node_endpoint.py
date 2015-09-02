@@ -30,12 +30,17 @@ class DistributionPlanNodeViewSet(ModelViewSet):
 
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
-        if user_profile:
-            item_id = self.request.GET.get('consignee_deliveries_for_item')
-            if item_id:
-                return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id).order_by('-id')
-            return self._all_nodes_delivered_to_consignee(user_profile)
-        return self.queryset._clone()
+        return self._get_consignee_queryset(user_profile) if user_profile else self.queryset._clone()
+
+    def _get_consignee_queryset(self, user_profile):
+        item_id = self.request.GET.get('consignee_deliveries_for_item')
+        if item_id:
+            return DeliveryNode.objects.delivered_by_consignee(user_profile.consignee, item_id).order_by('-id')
+        parent_id = self.request.GET.get('parent')
+        if parent_id:
+            parent = DeliveryNode.objects.get(pk=parent_id)
+            return parent.children()
+        return self._all_nodes_delivered_to_consignee(user_profile)
 
     def _all_nodes_delivered_to_consignee(self, user_profile):
         queryset = DeliveryNode.objects.filter(consignee=user_profile.consignee)
