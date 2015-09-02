@@ -3,15 +3,19 @@
 var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
-
+var ipWarehouseDeliveryPage = require('./pages/ip-warehouse-delivery-page.js');
+var confirmItemByItem = require('./pages/ip-items-deliveries-page.js');
+var PURCHASE_ORDER_NUMBER1, PURCHASE_ORDER_NUMBER2;
 describe('Direct Delivery', function () {
 
-    var PURCHASE_ORDER_NUMBER1 = '81026395';
-    var PURCHASE_ORDER_NUMBER2 = '81029906';
+    beforeEach(function () {
+        loginPage.visit();
+        PURCHASE_ORDER_NUMBER1 = '81026395';
+        PURCHASE_ORDER_NUMBER2 = '81029906';
+    });
 
     it('Admin should be able to create direct deliveries to multiple IPs', function () {
 
-        loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
@@ -37,6 +41,7 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
     });
 
+
     it('Admin should be able to create a direct delivery to a single IP', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
@@ -58,13 +63,12 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$327.98');
 
         contactsPage.clickAddContact();
+
         expect(contactsPage.contactModal.isDisplayed()).toBeTruthy();
         contactsPage.closeContactModal();
         expect(contactsPage.contactModal.isDisplayed()).toBeFalsy();
-
         directDeliveryPage.saveDraftDelivery();
         expect(directDeliveryPage.toastMessage).toContain('Cannot save. Please fill out or fix values for all fields marked in red');
-
         directDeliveryPage.saveAndTrackDelivery();
         expect(directDeliveryPage.toastMessage).toContain('Cannot save. Please fill out or fix values for all fields marked in red');
 
@@ -98,4 +102,35 @@ describe('Direct Delivery', function () {
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
     });
+
+    it('Acknowledge direct delivery for purchase order', function () {
+        loginPage.loginAs('wakiso', 'wakiso');
+        ipWarehouseDeliveryPage.visit();
+        directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
+        ipWarehouseDeliveryPage.confirmDelivery();
+        ipWarehouseDeliveryPage.selectAnswer();
+        ipWarehouseDeliveryPage.deliveryDate();
+        ipWarehouseDeliveryPage.itemCondition();
+        ipWarehouseDeliveryPage.satisfiedByItem();
+        ipWarehouseDeliveryPage.extraComment();
+        ipWarehouseDeliveryPage.confirmItems();
+
+//        confirmItemByItem.isItemReceived();
+//        confirmItemByItem.itemCondition();
+//        confirmItemByItem.satisfiedByItem();
+        //confirmItemByItem.itemDescription();
+//        confirmItemByItem.enterRemarks();
+//        confirmItemByItem.waitForModalToLoad();
+//        confirmItemByItem.saveRemarks();
+//        confirmItemByItem.exitRemarksModal();
+//        confirmItemByItem.waitForModalToExit();
+        //browser.pause();
+        confirmItemByItem.itemCondition();
+
+       //browser.pause();
+        //confirmItemByItem.saveItems();
+
+
+    })
+
 });

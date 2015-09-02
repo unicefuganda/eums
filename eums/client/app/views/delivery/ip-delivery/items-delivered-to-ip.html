@@ -61,7 +61,7 @@
                            ng-disabled="node.answers[0].value == 'No'"
                            data-ng-model="node.answers[1].value"/>
                 </td>
-                <td class="v-align-middle">
+                <td class="v-align-middle" id="condition-{{$index}}">
                     <select data-ng-model="node.answers[2].value"
                             required="required"
                             ng-disabled="node.answers[0].value == 'No'"
