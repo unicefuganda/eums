@@ -19,14 +19,27 @@ postgres:
     PGDATA: /data/postgres
   volumes_from:
     - data_postgres
+
+redis:
+  image: redis
+
 web:
   build: .
-  dockerfile: Dockerfile.dev
+  dockerfile: Dockerfile.web
   expose:
     - "8000:8000"
   links:
     - postgres
     - contacts
+
+worker:
+  build: .
+  dockerfile: Dockerfile.web
+  links:
+    - redis
+    - postgres
+  command: /bin/sh /celery.sh
+
 contacts:
   image: cuevee/contacts
   links:
