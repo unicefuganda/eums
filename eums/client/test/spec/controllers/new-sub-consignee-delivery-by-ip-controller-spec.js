@@ -1,6 +1,6 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
-        mockLoaderService;
+        mockLoaderService, parentNode;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
 
@@ -14,9 +14,11 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             {id: 4, item: orderItemId, quantityShipped: 40}
         ];
 
+        parentNode = {id: 12, item: orderItemId, quantityShipped: 100};
+
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             mockDeliveryNode = function (options) {
                 this.track = options.track;
@@ -24,6 +26,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(childNodes));
             mockDeliveryNodeService.create.and.returnValue($q.when({}));
+            mockDeliveryNodeService.get.and.returnValue($q.when(parentNode));
 
             scope = $rootScope.$new();
             routeParams = {itemId: 2, parentNodeId: 10};
@@ -55,6 +58,12 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         scope.$apply();
         expect(scope.districts).toEqual([{id: 'Kampala', name: 'Kampala'}, {id: 'Mukono', name: 'Mukono'}]);
         expect(scope.districtsLoaded).toBeTruthy();
+    });
+
+    it('should fetch parent node and put it on scope', function() {
+        scope.$apply();
+        expect(mockDeliveryNodeService.get).toHaveBeenCalledWith(routeParams.parentNodeId);
+        expect(scope.parentNode).toEqual(parentNode);
     });
 
     it('should load child deliveries for the parent delivery and item', function () {

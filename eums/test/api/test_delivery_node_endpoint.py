@@ -156,19 +156,6 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertItemsEqual([child_one.id, child_two.id], node_ids)
         self.assertNotIn(child_three.id, node_ids)
 
-    def test_should_return_deliveries_made_to_the_logged_in_consignee_if_consignee_item_filter_is_not_applied(self):
-        self.logout()
-        self.log_consignee_in(self.consignee)
-        consignee_node = DeliveryNodeFactory(consignee=self.consignee)
-        non_consignee_node = DeliveryNodeFactory()
-        response = self.client.get(ENDPOINT_URL)
-
-        node_ids = [node['id'] for node in response.data]
-        self.assertEqual(DeliveryNode.objects.count(), 2)
-        self.assertEqual(len(response.data), 1)
-        self.assertIn(consignee_node.id, node_ids)
-        self.assertNotIn(non_consignee_node.id, node_ids)
-
     def test_should_filter_nodes_by_location(self):
         kagoma_one = DeliveryNodeFactory(location='Kagoma')
         DeliveryNodeFactory(location='Kabaale')
@@ -251,6 +238,20 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
 
         node_ids = [node['id'] for node in response.data]
         self.assertItemsEqual([child_one.id, child_two.id], node_ids)
+
+    def test_should_include_downstream_delivery_nodes_whose_ip_is_the_logged_in_consignees_ip(self):
+        self.logout()
+        self.log_consignee_in(self.consignee)
+        root = DeliveryNodeFactory(consignee=self.consignee, quantity=100)
+        child = DeliveryNodeFactory(parents=[(root, 10)])
+        grandchild = DeliveryNodeFactory(parents=[(child, 5)])
+
+        response = self.client.get(ENDPOINT_URL)
+
+        node_ids = [node['id'] for node in response.data]
+
+        self.assertEqual(len(node_ids), 3)
+        self.assertItemsEqual(node_ids, [root.id, child.id, grandchild.id])
 
     def test_returned_nodes_should_have_order_type_field(self):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))

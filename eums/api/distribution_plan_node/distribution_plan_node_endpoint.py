@@ -40,10 +40,10 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         if parent_id:
             parent = DeliveryNode.objects.get(pk=parent_id)
             return parent.children()
-        return self._all_nodes_delivered_to_consignee(user_profile)
+        return self._consignee_nodes(user_profile)
 
-    def _all_nodes_delivered_to_consignee(self, user_profile):
-        queryset = DeliveryNode.objects.filter(consignee=user_profile.consignee)
+    def _consignee_nodes(self, user_profile):
+        queryset = DeliveryNode.objects.filter(ip=user_profile.consignee)
         if self.request.GET.get('is_distributable'):
             return queryset.filter(balance__gt=0, distribution_plan__confirmed=True)
         return queryset

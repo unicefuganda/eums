@@ -26,11 +26,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.deliveries = nodes;
         }));
 
-        $scope.deliveries = [
-            {quantityIn: 5, isEndUser: true},
-            {deliveryDate: '12/3/2015'},
-            {consigneeName: 'Wakiso'},
-            {contactPerson: 'Kagu', isEndUser: true},
-            {location: 'Kapchorwa'}
-        ];
+        loadPromises.push(DeliveryNodeService.get(parentNodeId).then(function (parent) {
+            $scope.parentNode = parent;
+        }));
     });
