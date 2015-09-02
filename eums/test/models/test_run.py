@@ -115,3 +115,13 @@ class RunTest(TestCase):
         run.status = Run.STATUS.completed
         run.save()
         self.assertEqual(Run.has_scheduled_run(contact_person_id), False)
+
+    def test_should_update_run_status(self):
+        run = RunFactory(status=Run.STATUS.scheduled)
+
+        run.update_status(Run.STATUS.completed)
+
+        updated_run = Run.objects.get(id=run.id)
+
+        self.assertEqual(updated_run.status, Run.STATUS.completed)
+

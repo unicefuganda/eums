@@ -26,3 +26,7 @@ class RunQueue(models.Model):
     def dequeue(cls, contact_person_id):
         return cls.objects.filter(Q(contact_person_id=contact_person_id) & Q(status='not_started')). \
             order_by('-run_delay').first()
+
+    def update_status(self, status):
+        self.status = status
+        self.save()

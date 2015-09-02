@@ -52,3 +52,7 @@ class Run(models.Model):
         scheduled_runs = Run.objects.filter(Q(status=Run.STATUS.scheduled) &
                            Q(runnable__contact_person_id=contact_person_id))
         return len(scheduled_runs) > 0
+
+    def update_status(self, status):
+        self.status = status
+        self.save()

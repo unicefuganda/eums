@@ -59,18 +59,15 @@ def _flow_for(runnable):
 
 def _cancel_run(run):
     app.control.revoke(run.scheduled_message_task_id)
-    run.status = Run.STATUS.cancelled
-    run.save()
+    run.update_status(Run.STATUS.cancelled)
 
 
 @periodic_task(run_every=crontab(minute=0, hour=0))
 def expire_overdue_runs():
     overdue_runs = Run.overdue_runs()
     for overdue_run in overdue_runs:
-        overdue_run.status = Run.STATUS.expired
-        overdue_run.save()
+        overdue_run.update_status(Run.STATUS.expired)
         next_run = RunQueue.dequeue(overdue_run.runnable.contact_person_id)
         if next_run:
             schedule_run_for(next_run.runnable)
-            next_run.status = RunQueue.STATUS.started
-            next_run.save()
+            next_run.update_status(RunQueue.STATUS.started)

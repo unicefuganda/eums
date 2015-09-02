@@ -43,3 +43,13 @@ class RunQueueTest(TestCase):
 
         self.assertEqual(queued_run.status, RunQueue.STATUS.not_started)
         self.assertEqual(queued_run.contact_person_id, contact_person_id)
+
+    def test_should_update_runqueue_status(self):
+        runqueue = RunQueueFactory(contact_person_id='id', status=RunQueue.STATUS.started)
+
+        runqueue.update_status(RunQueue.STATUS.not_started)
+
+        updated_runqueue = RunQueue.objects.get(id=runqueue.id)
+
+        self.assertEqual(updated_runqueue.status, RunQueue.STATUS.not_started)
+
