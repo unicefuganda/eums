@@ -284,7 +284,8 @@ class DeliveryNodeTest(TestCase):
 
         node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item, purchase_order=po), consignee=consignee)
         node_two = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item, purchase_order=po), consignee=consignee)
-        child_node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item), parents=[(node_one, 10), (node_two, 5)])
+        child_node_one = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item),
+                                             parents=[(node_one, 10), (node_two, 5)])
 
         returned_nodes = DeliveryNode.objects.delivered_by_consignee(consignee, item)
 
@@ -433,7 +434,7 @@ class DeliveryNodeTest(TestCase):
 
         self.assertFalse(node.is_end_user())
 
-    def test_delivery_flow_is_middleman_for_non_enduser_node(self):
+    def test_node_flow_is_middleman_for_non_end_user_node(self):
         middleman_flow = FlowFactory(for_runnable_type=Runnable.MIDDLE_MAN)
         runnable = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER)
 
@@ -443,8 +444,18 @@ class DeliveryNodeTest(TestCase):
 
         self.assertEqual(runnable.flow(), middleman_flow)
 
-    def test_delivery_flow_is_enduser_for_enduser_node(self):
-        enduser_flow = FlowFactory(for_runnable_type=Runnable.END_USER)
+    def test_node_flow_is_end_user_for_end_user_node(self):
+        end_user_flow = FlowFactory(for_runnable_type=Runnable.END_USER)
         runnable = DeliveryNodeFactory(tree_position=Runnable.END_USER)
 
-        self.assertEqual(runnable.flow(), enduser_flow)
+        self.assertEqual(runnable.flow(), end_user_flow)
+
+    def test_nodes_should_be_saved_with_their_ip(self):
+        consignee = ConsigneeFactory()
+        root = DeliveryNodeFactory(consignee=consignee, quantity=100)
+        child = DeliveryNodeFactory(parents=[(root, 60)])
+        grandchild = DeliveryNodeFactory(parents=[(child, 30)])
+
+        self.assertEqual(root.ip, consignee)
+        self.assertEqual(child.ip, consignee)
+        self.assertEqual(grandchild.ip, consignee)

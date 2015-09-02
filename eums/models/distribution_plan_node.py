@@ -9,6 +9,7 @@ positions = ((Runnable.MIDDLE_MAN, 'Middleman'), (Runnable.END_USER, 'End User')
 
 class DistributionPlanNode(Runnable):
     distribution_plan = models.ForeignKey('DistributionPlan', null=True, blank=True)
+    ip = models.ForeignKey('Consignee', null=True, blank=True)
     item = models.ForeignKey('OrderItem')
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)
@@ -29,6 +30,10 @@ class DistributionPlanNode(Runnable):
         self.balance = self.quantity_in() - self.quantity_out()
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())
+
+    def assign_ip(self):
+        parent = self._parents().first()
+        self.ip = parent.ip if parent else self.consignee
 
     def delete(self, using=None):
         parents = list(self._parents())

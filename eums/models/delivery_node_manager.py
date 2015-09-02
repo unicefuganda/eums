@@ -16,6 +16,7 @@ class DeliveryNodeManager(PolymorphicManager):
             node = super(DeliveryNodeManager, self).create(**kwargs)
             self._create_arcs(node, parents, quantity)
             node.update_tracked_status()
+            node.assign_ip()
             node.update_balance()
             return node
         return self.model(**kwargs)
