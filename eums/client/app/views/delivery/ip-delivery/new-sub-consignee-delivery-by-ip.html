@@ -106,10 +106,9 @@
                     </div>
                 </td>
                 <td class="col-md-2">
-                    <!--ng-if="districtsLoaded"-->
                     <div id="input-location" class="pad-small"
                          ng-class="{'has-error': !newDelivery.location && errors}">
-                        <input type="hidden"
+                        <input type="hidden" ng-if="districtsLoaded"
                                search-from-list
                                list="{{ districts }}"
                                ng-model="newDelivery.location"

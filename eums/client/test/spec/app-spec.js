@@ -122,7 +122,7 @@ describe('Route Provider', function () {
     });
 
     it('should have new sub-consignee delivery by ip route', function () {
-        var route = '/deliveries-by-ip/:itemId/:parentDeliveryId/new';
+        var route = '/deliveries-by-ip/:itemId/:parentNodeId/new';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('NewSubConsigneeDeliveryByIpController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/delivery/ip-delivery/new-sub-consignee-delivery-by-ip.html');

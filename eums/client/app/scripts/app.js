@@ -238,7 +238,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/deliveries-by-ip/:itemId/:parentDeliveryId/new', {
+        .when('/deliveries-by-ip/:itemId/:parentNodeId/new', {
             templateUrl: '/static/app/views/delivery/ip-delivery/new-sub-consignee-delivery-by-ip.html',
             controller: 'NewSubConsigneeDeliveryByIpController',
             resolve: {
