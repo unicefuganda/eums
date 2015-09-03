@@ -60,16 +60,6 @@ describe('IpFeedbackReportController', function () {
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
         });
 
-        it('should not call the service when search is spaces only', function () {
-            deferredResult.resolve({});
-            scope.$apply();
-
-            scope.searchTerm = '      ';
-            scope.$apply();
-
-            timeout.flush();
-            expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(1);
-        });
     });
 
     describe('on paginate', function () {
