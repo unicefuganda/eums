@@ -63,6 +63,16 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             event.stopPropagation();
         });
 
+        $scope.addConsignee = function () {
+            $scope.$broadcast('add-consignee');
+        };
+
+        $scope.$on('consignee-saved', function (event, consignee) {
+            $scope.newDelivery.consignee = consignee;
+            $scope.$broadcast('set-consignee', consignee);
+            event.stopPropagation();
+        });
+
         function resetNewDeliveryForm() {
             $scope.newDelivery = new DeliveryNode({track: true});
             $scope.$broadcast('clear-consignee');

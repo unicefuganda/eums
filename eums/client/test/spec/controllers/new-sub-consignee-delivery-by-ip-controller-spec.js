@@ -186,39 +186,39 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
         expect(fakeTextSetter).toHaveBeenCalledWith('James Bean');
     });
-    //it('should show loader on load', function () {
+
+    it('should broadcast add consignee event when addConsignee is called', function () {
+        spyOn(scope, '$broadcast');
+        scope.addConsignee();
+        expect(scope.$broadcast).toHaveBeenCalledWith('add-consignee');
+    });
+
+    it('should put new consignee on scope after save', function () {
+        var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
+
+        var consigneeScope = scope.$new();
+        consigneeScope.$emit('consignee-saved', consignee);
+        scope.$apply();
+
+        expect(scope.newDelivery.consignee).toEqual(consignee);
+    });
+
+    it('should put consignee name into select after consignee-saved is called', function () {
+        var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
+        spyOn(scope, '$broadcast');
+        var consigneeScope = scope.$new();
+        consigneeScope.$emit('consignee-saved', consignee);
+        scope.$apply();
+
+        expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', consignee);
+    });
+
+    //
+    //
+     //it('should show loader on load', function () {
     //    scope.$apply();
     //    expect(mockLoaderService.showLoader).toHaveBeenCalled();
     //    expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    //});
-    //
-    //
-    //it('should broadcast add consignee event when addConsignee is called', function () {
-    //    spyOn(scope, '$broadcast');
-    //    scope.addConsignee();
-    //    expect(scope.$broadcast).toHaveBeenCalledWith('add-consignee');
-    //});
-    //
-    //it('should put new consignee on scope after save', function () {
-    //    var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
-    //
-    //    var consigneeScope = scope.$new();
-    //    consigneeScope.$emit('consignee-saved', consignee);
-    //    scope.$apply();
-    //
-    //    expect(scope.newDelivery.consignee).toEqual(consignee);
-    //});
-    //
-    //
-
-    //it('should put consignee name into select after consignee-saved is called', function () {
-    //    var consignee = {id: 1, name: 'Wakiso DHO', location: 'Wakiso'};
-    //    spyOn(scope, '$broadcast');
-    //    var consigneeScope = scope.$new();
-    //    consigneeScope.$emit('consignee-saved', consignee);
-    //    scope.$apply();
-    //
-    //    expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', consignee);
     //});
     //
     //
