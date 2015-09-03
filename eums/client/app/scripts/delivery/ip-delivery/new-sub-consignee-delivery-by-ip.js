@@ -74,7 +74,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 $scope.deliveries.add(createdDelivery, 0);
                 resetDeliveryData()
             });
-        };
+        }
 
         $scope.addContact = function () {
             $scope.$broadcast('add-contact');
@@ -151,6 +151,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
 
         function resetNewDeliveryForm() {
             $scope.newDelivery = new DeliveryNode({track: true});
+            $scope.errors = false;
             $scope.$broadcast('clear-consignee');
             $scope.$broadcast('clear-contact');
             $scope.$broadcast('clear-list');

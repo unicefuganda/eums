@@ -159,6 +159,8 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
         it('should toggle adding new delivery form on click of button', function () {
             scope.$apply();
+            scope.errors = true;
+
             spyOn(scope, '$broadcast');
 
             scope.toggleNewDeliveryForm();
@@ -168,6 +170,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.$broadcast).toHaveBeenCalledWith('clear-contact');
             expect(scope.$broadcast).toHaveBeenCalledWith('clear-consignee');
             expect(scope.$broadcast).toHaveBeenCalledWith('clear-list');
+            expect(scope.errors).toBeFalsy();
         });
 
         it('it should format new delivery date correctly on change', function () {
