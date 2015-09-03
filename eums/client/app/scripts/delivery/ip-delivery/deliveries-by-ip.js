@@ -5,20 +5,20 @@ angular.module('DeliveriesByIp', ['DeliveryNode', 'ui.bootstrap', 'ngToast', 'Ne
         $scope.deliveryNodes = [];
         $scope.searching = false;
 
-        var itemId = $routeParams.itemId;
+        $scope.itemId = $routeParams.itemId;
         var loadPromises = [];
 
         LoaderService.showLoader();
-        loadPromises.push(ItemService.get(itemId).then(function (item) {
+        loadPromises.push(ItemService.get($scope.itemId).then(function (item) {
             $scope.item = item;
         }));
 
-        loadPromises.push(ConsigneeItemService.filter({item: itemId}).then(function (response) {
+        loadPromises.push(ConsigneeItemService.filter({item: $scope.itemId}).then(function (response) {
             $scope.quantityAvailable = response.results.first().availableBalance;
         }));
 
         var fieldsToBuild = ['contact_person_id'];
-        var filterFields = {consignee_deliveries_for_item: itemId, paginate: true};
+        var filterFields = {consignee_deliveries_for_item: $scope.itemId, paginate: true};
 
         $scope.goToPage = function (page) {
             var filterAndUrlArgs = Object.merge({page: page}, filterFields);

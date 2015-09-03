@@ -1,6 +1,6 @@
 describe('Ip item deliveries', function () {
     var scope, mockDeliveryNodeService, mockItemService, deferredSearchResults, mockConsigneeItemService,
-        mockLoaderService;
+        mockLoaderService, routeParams;
     var node = {
         'id': 34,
         'distribution_plan': 33,
@@ -34,7 +34,7 @@ describe('Ip item deliveries', function () {
 
         inject(function ($controller, $rootScope, $q) {
             scope = $rootScope.$new();
-            var routeParams = {itemId: 2};
+            routeParams = {itemId: 2};
             deferredSearchResults = $q.defer();
 
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedNodesResponse));
@@ -62,6 +62,11 @@ describe('Ip item deliveries', function () {
     it('should fetch item details and put them on scope', function () {
         scope.$apply();
         expect(scope.item).toEqual(fetchedItem);
+    });
+
+    it('should put itemId on scope for use by template in routing', function() {
+        scope.$apply();
+        expect(scope.itemId).toEqual(routeParams.itemId);
     });
 
     it('should fetch new page when goToPage is called and put the nodes on that page on scope', function () {
