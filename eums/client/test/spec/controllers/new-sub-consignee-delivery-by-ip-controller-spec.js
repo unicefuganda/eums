@@ -81,7 +81,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
     });
 
-    xdescribe('pagination and search:', function () {
+    describe('pagination and search:', function () {
         it('should add pagination parameters on page after fetching nodes', function () {
             scope.$apply();
             expect(scope.count).toEqual(paginatedChildNodes.count);
@@ -91,46 +91,52 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         it('should fetch new page when goToPage is called and put the consignees on that page on scope', function () {
             scope.goToPage(10);
             scope.$apply();
-            expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {page: 10});
-            expect(scope.items).toEqual(items);
+            var filterParams = {
+                item__item: routeParams.itemId,
+                parent: routeParams.parentNodeId,
+                paginate: true,
+                page: 10
+            };
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
+            expect(scope.deliveries).toEqual(childNodes);
         });
 
-        it('should search for items with scope search term', function () {
-            scope.$apply();
-            expect(scope.items).toEqual(items);
-            deferredSearchResults.resolve({results: searchResults});
-            var searchTerm = 'some item name';
-            scope.searchTerm = searchTerm;
-            scope.$apply();
-            expect(mockConsigneeItemService.search).toHaveBeenCalledWith(searchTerm);
-            expect(scope.items).toEqual(searchResults);
-
-            scope.searchTerm = '';
-            scope.$apply();
-            expect(mockConsigneeItemService.all).toHaveBeenCalled();
-            expect(scope.items).toEqual(items);
-        });
-
-        it('should maintain search term when moving through pages', function () {
-            var term = 'search term';
-            scope.searchTerm = term;
-            scope.$apply();
-            scope.goToPage(10);
-            scope.$apply();
-            expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {page: 10, search: term});
-        });
-
-        it('should toggle search mode during search', function () {
-            scope.$apply();
-            expect(scope.searching).toBe(false);
-            scope.searchTerm = 'something';
-            scope.$apply();
-            expect(mockConsigneeItemService.search).toHaveBeenCalled();
-            expect(scope.searching).toBe(true);
-            deferredSearchResults.resolve({results: searchResults});
-            scope.$apply();
-            expect(scope.searching).toBe(false);
-        });
+        //it('should search for items with scope search term', function () {
+        //    scope.$apply();
+        //    expect(scope.items).toEqual(items);
+        //    deferredSearchResults.resolve({results: searchResults});
+        //    var searchTerm = 'some item name';
+        //    scope.searchTerm = searchTerm;
+        //    scope.$apply();
+        //    expect(mockConsigneeItemService.search).toHaveBeenCalledWith(searchTerm);
+        //    expect(scope.items).toEqual(searchResults);
+        //
+        //    scope.searchTerm = '';
+        //    scope.$apply();
+        //    expect(mockConsigneeItemService.all).toHaveBeenCalled();
+        //    expect(scope.items).toEqual(items);
+        //});
+        //
+        //it('should maintain search term when moving through pages', function () {
+        //    var term = 'search term';
+        //    scope.searchTerm = term;
+        //    scope.$apply();
+        //    scope.goToPage(10);
+        //    scope.$apply();
+        //    expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {page: 10, search: term});
+        //});
+        //
+        //it('should toggle search mode during search', function () {
+        //    scope.$apply();
+        //    expect(scope.searching).toBe(false);
+        //    scope.searchTerm = 'something';
+        //    scope.$apply();
+        //    expect(mockConsigneeItemService.search).toHaveBeenCalled();
+        //    expect(scope.searching).toBe(true);
+        //    deferredSearchResults.resolve({results: searchResults});
+        //    scope.$apply();
+        //    expect(scope.searching).toBe(false);
+        //});
     });
 
     describe('Creating a new delivery', function () {

@@ -9,6 +9,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
         $scope.errors = false;
+        $scope.searchTerm = '';
         $scope.addingNewDelivery = false;
 
         var loadPromises = [];
@@ -22,9 +23,10 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.districtsLoaded = true;
         }));
 
-        var filterParams = {item__item: itemId, parent: parentNodeId};
-        loadPromises.push(DeliveryNodeService.filter(filterParams).then(function (nodes) {
-            $scope.deliveries = nodes;
+        var filterParams = {item__item: itemId, parent: parentNodeId, paginate: true};
+
+        loadPromises.push(DeliveryNodeService.filter(filterParams).then(function (paginatedNodes) {
+            setScopeDataFromResponse(paginatedNodes);
         }));
 
         loadPromises.push(DeliveryNodeService.get(parentNodeId).then(function (parent) {
@@ -42,7 +44,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 id: $routeParams.parentNodeId,
                 quantity: $scope.newDelivery.quantity
             }];
-            DeliveryNodeService.create($scope.newDelivery).then(function(createdDelivery) {
+            DeliveryNodeService.create($scope.newDelivery).then(function (createdDelivery) {
                 $scope.deliveries.add(createdDelivery, 0);
                 resetNewDeliveryForm();
             });
@@ -86,4 +88,20 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
             }
         });
+
+        $scope.goToPage = function (page) {
+            var urlArgs = Object.merge({page: page}, filterParams);
+            //if ($scope.searchTerm && $scope.searchTerm.length) {
+            //    urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
+            //}
+            DeliveryNodeService.filter(urlArgs).then(function (paginatedNodes) {
+                setScopeDataFromResponse(paginatedNodes);
+            });
+        };
+
+        function setScopeDataFromResponse(paginatedNodes) {
+            $scope.deliveries = paginatedNodes.results;
+            $scope.pageSize = paginatedNodes.pageSize;
+            $scope.count = paginatedNodes.count;
+        }
     });

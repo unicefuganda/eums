@@ -162,6 +162,16 @@
                     <span ng-show="delivery.isEndUser">End User</span>
                 </td>
             </tr>
+            <tfoot>
+            <tr>
+                <td colspan="6" class="centered">
+                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
+                    </pagination>
+                </td>
+            </tr>
+            </tfoot>
         </table>
     </div>
     <eums-contact></eums-contact>
