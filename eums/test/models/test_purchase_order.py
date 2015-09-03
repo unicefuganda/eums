@@ -3,16 +3,24 @@ from unittest import TestCase
 from django.db import IntegrityError
 
 from eums.models import Consignee, DistributionPlan, DistributionPlanNode, SalesOrder, PurchaseOrderItem, PurchaseOrder, \
-    Programme, SalesOrderItem
+    Programme, SalesOrderItem, ReleaseOrder
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.release_order_factory import ReleaseOrderFactory
 
 
 class PurchaseOrderTest(TestCase):
+
+    def setUp(self):
+        self.clean_up()
+
     def tearDown(self):
+        self.clean_up()
+
+    def clean_up(self):
         DistributionPlan.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
         DistributionPlanNode.objects.all().delete()
@@ -21,6 +29,7 @@ class PurchaseOrderTest(TestCase):
         SalesOrderItem.objects.all().delete()
         SalesOrder.objects.all().delete()
         Consignee.objects.all().delete()
+        ReleaseOrder.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
         fields_in_order = [field for field in PurchaseOrder._meta._name_map]
@@ -108,3 +117,25 @@ class PurchaseOrderTest(TestCase):
 
         self.assertListEqual(list(consignee_orders), [order_one, order_two])
         self.assertNotIn(order_three, consignee_orders)
+
+    def test_for_direct_delivery_should_return_only_purchase_orders_that_have_no_sales_orders(self):
+        po_one = PurchaseOrderFactory()
+        po_two = PurchaseOrderFactory()
+
+        ReleaseOrderFactory(purchase_order=po_one)
+
+        PurchaseOrderItemFactory(purchase_order=po_one, quantity=1000)
+        PurchaseOrderItemFactory(purchase_order=po_two, quantity=100)
+
+        self.assertEquals(len(PurchaseOrder.objects.for_direct_delivery()), 1)
+        self.assertEquals(PurchaseOrder.objects.for_direct_delivery().first().id, po_two.id)
+
+    def test_for_direct_delivery_should_return_purchase_orders_by_their_numbers(self):
+        po_one = PurchaseOrderFactory(order_number=12345)
+        po_two = PurchaseOrderFactory(order_number=9876)
+
+        PurchaseOrderItemFactory(purchase_order=po_one, quantity=1000)
+        PurchaseOrderItemFactory(purchase_order=po_two, quantity=100)
+
+        self.assertEquals(len(PurchaseOrder.objects.for_direct_delivery(123)), 1)
+        self.assertEquals(PurchaseOrder.objects.for_direct_delivery(search_term='123').first().id, po_one.id)

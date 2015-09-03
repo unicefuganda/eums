@@ -5,8 +5,12 @@ from eums.models import SalesOrder, DistributionPlanNode as DeliveryNode, Purcha
 
 
 class PurchaseOrderManager(models.Manager):
-    def for_direct_delivery(self):
-        return self.model.objects.annotate(release_order_count=Count('release_orders')).filter(release_order_count=0)
+    def for_direct_delivery(self, search_term=None):
+        po_orders = self.model.objects.annotate(release_order_count=Count('release_orders'))
+
+        return po_orders.filter(
+            release_order_count=0) if search_term is None else po_orders.filter(
+            release_order_count=0, order_number__icontains=search_term)
 
     def for_consignee(self, consignee_id):
         order_item_ids = DeliveryNode.objects.filter(consignee__id=consignee_id).values_list('item')
