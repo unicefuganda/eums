@@ -53,7 +53,9 @@
             <tr>
                 <td class="col-md-1">
                     <div id="quantity" class="pad-small"
-                         ng-class="{'has-error': !newDelivery.quantity && errors}">
+                         ng-class="{
+                         'has-error': (!newDelivery.quantity || newDelivery.quantity > parentNode.balance) && errors
+                         }">
 
                         <input type="text" id="quantity-shipped" class="form-control"
                                ng-model="newDelivery.quantity" only-digits/>

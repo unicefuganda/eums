@@ -17,7 +17,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         paginatedChildNodes = {results: childNodes, count: 4, pageSize: 1, next: 'next', previous: 'prev'};
         searchResults = childNodes.first(2);
 
-        parentNode = {id: 12, item: orderItemId, quantityShipped: 100};
+        parentNode = {id: 12, item: orderItemId, balance: 100};
 
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
@@ -153,6 +153,10 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
     });
 
     describe('Creating a new delivery', function () {
+        beforeEach(function () {
+            setupNewDelivery();
+        });
+
         it('should toggle adding new delivery form on click of button', function () {
             scope.$apply();
             spyOn(scope, '$broadcast');
@@ -173,18 +177,18 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
 
         it('should save new delivery', function () {
-            var deliveryData = setupDeliveryData();
-            var newDelivery = deliveryData.newDelivery;
-            var additionalFields = deliveryData.additionalFields;
+            var newDelivery = setupNewDelivery();
+
             scope.createNewDelivery();
 
-            var fullDelivery = Object.merge(additionalFields, newDelivery);
-            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(fullDelivery);
+            expect(newDelivery.item).toEqual(scope.parentNode.item);
+            expect(newDelivery.parents).toEqual([{id: routeParams.parentNodeId, quantity: scope.newDelivery.quantity}]);
+            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(newDelivery);
         });
 
         it('should add created delivery to the top of the deliveries list upon successful save', function () {
             var createdNode = {id: 2};
-            setupDeliveryData();
+            setupNewDelivery();
             mockDeliveryNodeService.create.and.returnValue(q.when(createdNode));
 
             scope.createNewDelivery();
@@ -194,7 +198,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
 
         it('should reload parent node upon successful save', function () {
-            setupDeliveryData();
+            setupNewDelivery();
             mockDeliveryNodeService.get.calls.reset();
 
             scope.createNewDelivery();
@@ -204,7 +208,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
 
         it('should reset delivery form fields  upon successful save', function () {
-            setupDeliveryData();
+            setupNewDelivery();
             spyOn(scope, '$broadcast');
 
             scope.createNewDelivery();
@@ -216,22 +220,56 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.$broadcast).toHaveBeenCalledWith('clear-list');
         });
 
-        function setupDeliveryData() {
-            var newDelivery = {track: true, quantity: 3};
-            var parentNode = {item: 10};
+        it('should not save delivery when any required field on the new delivery is not provided', function () {
+            scope.$apply();
+            assertSaveFails.if('quantity').is(undefined);
+            assertSaveFails.if('quantity').is(0);
+            assertSaveFails.if('location').is(undefined);
+            assertSaveFails.if('consignee').is(undefined);
+            assertSaveFails.if('deliveryDate').is(undefined);
+            assertSaveFails.if('contact_person_id').is(undefined);
+        });
+
+        function setupNewDelivery(unset) {
             scope.parentNode = parentNode;
-            scope.newDelivery = newDelivery;
-            var additionalFields = {
-                item: parentNode.item,
-                parents: [
-                    {
-                        id: routeParams.parentNodeId,
-                        quantity: newDelivery.quantity
-                    }
-                ]
-            };
-            return {newDelivery: newDelivery, additionalFields: additionalFields};
+
+            scope.newDelivery = {track: true};
+            scope.newDelivery.consignee = 10;
+            scope.newDelivery.location = 'Jinja';
+            scope.newDelivery.deliveryDate = '2015-01-30';
+            scope.newDelivery.contact_person_id = '3A09C3B1-0937-4082-93D9-4ACC3E86B2B3';
+            scope.newDelivery.quantity = 1;
+
+            Object.each(unset, function (key, value) {
+                scope.newDelivery[key] = value;
+            });
+            return scope.newDelivery;
         }
+
+        var assertSaveFails = {
+            if: function (fieldname) {
+                return {
+                    is: function (val) {
+                        var unsetParams = {};
+                        unsetParams[fieldname] = val;
+                        setupNewDelivery(unsetParams);
+                        scope.createNewDelivery();
+                        expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
+                        expect(scope.errors).toBeTruthy();
+                        expect(toast.create).toHaveBeenCalledWith({
+                            content: 'Cannot save. Please fill out or fix values for all fields marked in red',
+                            class: 'danger'
+                        });
+                    }
+                }
+            }
+        };
+
+        it('should not save new delivery if the delivery to sub-consignee if quantity shipped is greater than quantity available', function () {
+            scope.$apply();
+            var quantityLargerThanAvailable = scope.parentNode.balance + 10;
+            assertSaveFails.if('quantity').is(quantityLargerThanAvailable);
+        });
     });
 
     describe('Consignee and Contact selectors', function () {
@@ -300,16 +338,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
     });
 
-
-    //LOADERS
-    //
-    //it('should show loader on load', function () {
-    //    scope.$apply();
-    //    expect(mockLoaderService.showLoader).toHaveBeenCalled();
-    //    expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    //});
-    //
-    //
+//
     //it('should show success toast upon save', function () {
     //    scope.$apply();
     //    setupNewDelivery();
@@ -333,36 +362,16 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
     //    });
     //});
     //
-    //var assertSaveFails = {
-    //    if: function (fieldname) {
-    //        return {
-    //            is: function (val) {
-    //                var unsetParams = {};
-    //                unsetParams[fieldname] = val;
-    //                setupNewDelivery(unsetParams);
-    //                scope.save();
-    //                expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
-    //                expect(scope.errors).toBeTruthy();
-    //                expect(toast.create).toHaveBeenCalledWith({
-    //                    content: 'Cannot save. Please fill out or fix values for all fields marked in red',
-    //                    class: 'danger'
-    //                });
-    //            }
-    //        }
-    //    }
-    //};
+
+
+    //LOADERS
     //
+    //it('should show loader on load', function () {
+    //    scope.$apply();
+    //    expect(mockLoaderService.showLoader).toHaveBeenCalled();
+    //    expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+    //});
     //
-    //function setupNewDelivery(unset) {
-    //    scope.newDelivery = {};
-    //    scope.newDelivery.consignee = 10;
-    //    scope.newDelivery.location = 'Jinja';
-    //    scope.newDelivery.deliveryDate = '2015-01-30';
-    //    scope.newDelivery.contact_person_id = '3A09C3B1-0937-4082-93D9-4ACC3E86B2B3';
-    //    scope.newDelivery.parents = [{id: 1, quantity: 10}];
-    //    Object.each(unset, function (key, value) {
-    //        scope.newDelivery[key] = value;
-    //    });
-    //    return scope.newDelivery;
-    //}
+
+
 });

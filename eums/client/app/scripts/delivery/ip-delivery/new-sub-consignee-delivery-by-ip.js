@@ -34,6 +34,37 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         };
 
         $scope.createNewDelivery = function () {
+            if (scopeDataIsValid()) {
+                save();
+            }
+            else {
+                $scope.errors = true;
+                createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger');
+            }
+        };
+
+        function scopeDataIsValid() {
+            return requiredFieldsAreFilled() && quantityIsValid();
+        }
+
+        function requiredFieldsAreFilled() {
+            return $scope.newDelivery.location
+                && $scope.newDelivery.contact_person_id
+                && $scope.newDelivery.consignee
+                && $scope.newDelivery.deliveryDate
+                && $scope.newDelivery.quantity;
+        }
+
+        function quantityIsValid() {
+            return $scope.newDelivery.quantity <= $scope.parentNode.balance;
+        }
+
+        function createToast(message, klass) {
+            ngToast.create({content: message, class: klass});
+        }
+
+
+        function save() {
             $scope.newDelivery.item = $scope.parentNode.item;
             $scope.newDelivery.parents = [{
                 id: $routeParams.parentNodeId,
@@ -101,7 +132,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         });
 
         function fetchNodes(extraArgs) {
-            var requestArgs = extraArgs ? Object.merge(extraArgs, filterParams): filterParams;
+            var requestArgs = extraArgs ? Object.merge(extraArgs, filterParams) : filterParams;
             DeliveryNodeService.filter(requestArgs).then(function (paginatedNodes) {
                 setScopeDataFromResponse(paginatedNodes);
             });
