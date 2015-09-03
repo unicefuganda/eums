@@ -3,7 +3,7 @@
     <div class="eums page-header row">
         <div class="pull-left pad-top-10">Report Sub-Consignees of: {{ parentNode.consigneeName }}</div>
         <div class="pull-right">
-            <a href="#/ip-items" class="btn blue-border-button">
+            <a href="#/deliveries-by-ip/{{itemId}}/{{parentNode.id}}/new" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
                 Back Up
             </a>
@@ -11,22 +11,29 @@
     </div>
 
     <div class="row pad-15">
-        <div class="pull-left">
-            <div class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
-                <span class="glyphicon glyphicon-plus"></span>
-                New Sub-Consignee
+        <div ng-show="parentNode.balance">
+            <div class="pull-left">
+                <div class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    New Sub-Consignee
+                </div>
             </div>
-        </div>
-        <div class="pull-left" ng-show="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
-            <div class="btn warning-border-button">
-                <span class="glyphicon glyphicon-remove"></span>
-                Discard New Delivery
+            <div class="pull-left" ng-show="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
+                <div class="btn warning-border-button">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Discard New Delivery
+                </div>
             </div>
         </div>
         <div class="pull-right pad-top-10">
             <span class="pad-right-5 item-quantity-label">Quantity Available</span>
             <span class="label label-success item-quantity-label">{{ parentNode.balance }}</span>
         </div>
+
+        <div class="pull-left content alerts-sub-header" ng-hide="parentNode.balance">
+            All quantities have been distributed, at this level.
+        </div>
+
     </div>
 
     <span class="well-sm"></span>
