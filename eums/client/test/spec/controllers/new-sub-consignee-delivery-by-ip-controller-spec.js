@@ -79,8 +79,15 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
     it('should toggle adding new delivery form on click of button', function () {
         scope.$apply();
+        spyOn(scope, '$broadcast');
+
         scope.toggleNewDeliveryForm();
+
         expect(scope.addingNewDelivery).toBeTruthy();
+        expect(scope.newDelivery).toEqual(new mockDeliveryNode({track: true}));
+        expect(scope.$broadcast).toHaveBeenCalledWith('clear-contact');
+        expect(scope.$broadcast).toHaveBeenCalledWith('clear-consignee');
+        expect(scope.$broadcast).toHaveBeenCalledWith('clear-list');
     });
 
     it('it should format new delivery date correctly on change', function () {
@@ -113,11 +120,15 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
         it('should reset delivery form fields  upon successful save', function () {
             setupDeliveryData();
+            spyOn(scope, '$broadcast');
 
             scope.createNewDelivery();
             scope.$apply();
 
             expect(scope.newDelivery).toEqual(new mockDeliveryNode({track: true}));
+            expect(scope.$broadcast).toHaveBeenCalledWith('clear-contact');
+            expect(scope.$broadcast).toHaveBeenCalledWith('clear-consignee');
+            expect(scope.$broadcast).toHaveBeenCalledWith('clear-list');
         });
 
         function setupDeliveryData() {
