@@ -137,30 +137,32 @@
             </tr>
         </table>
     </div>
-    <div>
-        <div class="panel-body col-lg-12">
-            <table class="table table-bordered table-hover table-condensed col-lg-6">
-                <tr class="summary-row">
-                    <th class="item-list-col-header">Qty Shipped</th>
-                    <th class="item-list-col-header">Date Shipped</th>
-                    <th class="item-list-col-header">Sub-consignee</th>
-                    <th class="item-list-col-header">Contact Person</th>
-                    <th class="item-list-col-header">District</th>
-                    <th class="item-list-col-header"></th>
-                </tr>
-                <tr ng-repeat="delivery in deliveries">
-                    <td>{{ delivery.quantityIn }}</td>
-                    <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
-                    <td>{{ delivery.consigneeName }}</td>
-                    <td>{{ delivery.contactPerson }}</td>
-                    <td>{{ delivery.location }}</td>
-                    <td class="table-row-input-column">
-                        <div class="btn blue-border-button btn-sm" ng-hide="delivery.isEndUser">Sub-consignees</div>
-                        <span ng-show="delivery.isEndUser">End User</span>
-                    </td>
-                </tr>
-            </table>
-        </div>
+    <div class="content alerts-sub-header" ng-hide="deliveries.length">
+        There are currently no sub-consignees.
+    </div>
+
+    <div class="panel-body col-lg-12" ng-show="deliveries.length">
+        <table class="table table-bordered table-hover table-condensed col-lg-6">
+            <tr class="summary-row">
+                <th class="item-list-col-header">Qty Shipped</th>
+                <th class="item-list-col-header">Date Shipped</th>
+                <th class="item-list-col-header">Sub-consignee</th>
+                <th class="item-list-col-header">Contact Person</th>
+                <th class="item-list-col-header">District</th>
+                <th class="item-list-col-header"></th>
+            </tr>
+            <tr ng-repeat="delivery in deliveries">
+                <td>{{ delivery.quantityIn }}</td>
+                <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                <td>{{ delivery.consigneeName }}</td>
+                <td>{{ delivery.contactPerson }}</td>
+                <td>{{ delivery.location }}</td>
+                <td class="table-row-input-column">
+                    <div class="btn blue-border-button btn-sm" ng-hide="delivery.isEndUser">Sub-consignees</div>
+                    <span ng-show="delivery.isEndUser">End User</span>
+                </td>
+            </tr>
+        </table>
     </div>
     <eums-contact></eums-contact>
     <ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"
