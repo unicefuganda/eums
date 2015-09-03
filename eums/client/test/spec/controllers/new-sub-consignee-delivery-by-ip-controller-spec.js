@@ -111,6 +111,15 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.deliveries.first()).toEqual(createdNode);
         });
 
+        it('should reset delivery form fields  upon successful save', function () {
+            setupDeliveryData();
+
+            scope.createNewDelivery();
+            scope.$apply();
+
+            expect(scope.newDelivery).toEqual(new mockDeliveryNode({track: true}));
+        });
+
         function setupDeliveryData() {
             var newDelivery = {track: true, quantity: 3};
             var parentNode = {item: 10};

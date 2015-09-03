@@ -43,6 +43,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             }];
             DeliveryNodeService.create($scope.newDelivery).then(function(createdDelivery) {
                 $scope.deliveries.add(createdDelivery, 0);
+                $scope.newDelivery = new DeliveryNode({track: true});
             });
         };
 
@@ -52,5 +53,4 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 $scope.newDelivery.deliveryDate = earlierMoment.format('YYYY-MM-DD');
             }
         });
-    })
-;
+    });
