@@ -48,6 +48,21 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             });
         };
 
+        $scope.addContact = function () {
+            $scope.$broadcast('add-contact');
+        };
+
+        $scope.$on('contact-saved', function (event, contact) {
+            var contactInput = angular.element('#contact-select');
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+            $scope.newDelivery.contact = contact;
+            $scope.newDelivery.contact_person_id = contact._id;
+
+            event.stopPropagation();
+        });
+
         function resetNewDeliveryForm() {
             $scope.newDelivery = new DeliveryNode({track: true});
             $scope.$broadcast('clear-consignee');

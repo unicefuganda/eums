@@ -149,50 +149,49 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         }
     });
 
+    it('should broadcast add contact event when addContact is called', function () {
+        spyOn(scope, '$broadcast');
+        scope.addContact();
+        expect(scope.$broadcast).toHaveBeenCalledWith('add-contact');
+    });
 
+    it('should put new contact on scope after save', function () {
+        var contact = {_id: 1, firstName: 'James', lastName: 'Bean'};
+
+        var contactScope = scope.$new();
+        contactScope.$emit('contact-saved', contact);
+        scope.$apply();
+
+        expect(scope.newDelivery.contact_person_id).toBe(contact._id);
+        expect(scope.newDelivery.contact).toEqual(contact);
+    });
+
+    it('should put contact name into select after contact-saved is called', function () {
+        var fakeTextSetter = jasmine.createSpy();
+        var fakeContactInput = {
+            siblings: function () {
+                return {
+                    find: function () {
+                        return {text: fakeTextSetter}
+                    }
+                }
+            }
+        };
+        spyOn(angular, 'element').and.returnValue(fakeContactInput);
+
+        var contact = {_id: 1, firstName: 'James', lastName: 'Bean'};
+        var contactScope = scope.$new();
+        contactScope.$emit('contact-saved', contact);
+        scope.$apply();
+
+        expect(fakeTextSetter).toHaveBeenCalledWith('James Bean');
+    });
     //it('should show loader on load', function () {
     //    scope.$apply();
     //    expect(mockLoaderService.showLoader).toHaveBeenCalled();
     //    expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     //});
     //
-    //it('should broadcast add contact event when addContact is called', function () {
-    //    spyOn(scope, '$broadcast');
-    //    scope.addContact();
-    //    expect(scope.$broadcast).toHaveBeenCalledWith('add-contact');
-    //});
-    //
-    //it('should put new contact on scope after save', function () {
-    //    var contact = {_id: 1, firstName: 'James', lastName: 'Bean'};
-    //
-    //    var contactScope = scope.$new();
-    //    contactScope.$emit('contact-saved', contact);
-    //    scope.$apply();
-    //
-    //    expect(scope.newDelivery.contact_person_id).toBe(contact._id);
-    //    expect(scope.newDelivery.contact).toEqual(contact);
-    //});
-    //
-    //it('should put contact name into select after contact-saved is called', function () {
-    //    var fakeTextSetter = jasmine.createSpy();
-    //    var fakeContactInput = {
-    //        siblings: function () {
-    //            return {
-    //                find: function () {
-    //                    return {text: fakeTextSetter}
-    //                }
-    //            }
-    //        }
-    //    };
-    //    spyOn(angular, 'element').and.returnValue(fakeContactInput);
-    //
-    //    var contact = {_id: 1, firstName: 'James', lastName: 'Bean'};
-    //    var contactScope = scope.$new();
-    //    contactScope.$emit('contact-saved', contact);
-    //    scope.$apply();
-    //
-    //    expect(fakeTextSetter).toHaveBeenCalledWith('James Bean');
-    //});
     //
     //it('should broadcast add consignee event when addConsignee is called', function () {
     //    spyOn(scope, '$broadcast');
