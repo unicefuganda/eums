@@ -42,6 +42,16 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
 
+    def test_should_get_purchase_orders_without_release_orders_and_purchase_order_number(self):
+        PurchaseOrderFactory()
+        po_two = PurchaseOrderFactory(order_number=12345)
+
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?query=123')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
     def test_fetched_purchase_orders_should_have_programme_name_and_programme_id(self):
         programme = ProgrammeFactory()
         purchase_order = PurchaseOrderFactory(sales_order=SalesOrderFactory(programme=programme))
