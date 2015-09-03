@@ -141,6 +141,22 @@
         There are currently no sub-consignees.
     </div>
 
+    <div class="row" ng-hide="!deliveries.length && !searchTerm.length">
+        <div class="col-xs-4 pull-right">
+            <div class="inner-addon left-addon">
+                <i class="glyphicon "
+                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                       placeholder="Search by Sub-consignee, District or Date in format 'YYYY-MM-DD'"/>
+                <span class="text-info" ng-show="searchTerm.length && !deliveries.length">
+                    There are no matches to your search criteria.
+                </span>
+            </div>
+        </div>
+    </div>
+    <span class="well-sm"></span>
+
+
     <div class="panel-body col-lg-12" ng-show="deliveries.length">
         <table class="table table-bordered table-hover table-condensed col-lg-6">
             <tr class="summary-row">

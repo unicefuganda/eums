@@ -1,8 +1,9 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
-        mockLoaderService, parentNode, paginatedChildNodes;
+        mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
+
 
     beforeEach(function () {
         module('NewSubConsigneeDeliveryByIp');
@@ -14,21 +15,24 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             {id: 4, item: orderItemId, quantityShipped: 40}
         ];
         paginatedChildNodes = {results: childNodes, count: 4, pageSize: 1, next: 'next', previous: 'prev'};
+        searchResults = childNodes.first(2);
 
         parentNode = {id: 12, item: orderItemId, quantityShipped: 100};
 
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get']);
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get', 'search']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             mockDeliveryNode = function (options) {
                 this.track = options.track;
             };
-            mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
 
+            deferredSearchResults = $q.defer();
+            mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedChildNodes));
             mockDeliveryNodeService.create.and.returnValue($q.when({}));
             mockDeliveryNodeService.get.and.returnValue($q.when(parentNode));
+            mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
 
             scope = $rootScope.$new();
             routeParams = {itemId: 2, parentNodeId: 10};
@@ -101,42 +105,50 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.deliveries).toEqual(childNodes);
         });
 
-        //it('should search for items with scope search term', function () {
-        //    scope.$apply();
-        //    expect(scope.items).toEqual(items);
-        //    deferredSearchResults.resolve({results: searchResults});
-        //    var searchTerm = 'some item name';
-        //    scope.searchTerm = searchTerm;
-        //    scope.$apply();
-        //    expect(mockConsigneeItemService.search).toHaveBeenCalledWith(searchTerm);
-        //    expect(scope.items).toEqual(searchResults);
-        //
-        //    scope.searchTerm = '';
-        //    scope.$apply();
-        //    expect(mockConsigneeItemService.all).toHaveBeenCalled();
-        //    expect(scope.items).toEqual(items);
-        //});
-        //
-        //it('should maintain search term when moving through pages', function () {
-        //    var term = 'search term';
-        //    scope.searchTerm = term;
-        //    scope.$apply();
-        //    scope.goToPage(10);
-        //    scope.$apply();
-        //    expect(mockConsigneeItemService.all).toHaveBeenCalledWith([], {page: 10, search: term});
-        //});
-        //
-        //it('should toggle search mode during search', function () {
-        //    scope.$apply();
-        //    expect(scope.searching).toBe(false);
-        //    scope.searchTerm = 'something';
-        //    scope.$apply();
-        //    expect(mockConsigneeItemService.search).toHaveBeenCalled();
-        //    expect(scope.searching).toBe(true);
-        //    deferredSearchResults.resolve({results: searchResults});
-        //    scope.$apply();
-        //    expect(scope.searching).toBe(false);
-        //});
+        it('should search for items with scope search term', function () {
+            scope.$apply();
+            expect(scope.deliveries).toEqual(childNodes);
+            deferredSearchResults.resolve({results: searchResults});
+            var searchTerm = 'some item name';
+            scope.searchTerm = searchTerm;
+            scope.$apply();
+            var filterParams = {item__item: routeParams.itemId, parent: routeParams.parentNodeId, paginate: true};
+            expect(mockDeliveryNodeService.search).toHaveBeenCalledWith(searchTerm, [], filterParams);
+            expect(scope.deliveries).toEqual(searchResults);
+
+            scope.searchTerm = '';
+            scope.$apply();
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalled();
+            expect(scope.deliveries).toEqual(childNodes);
+        });
+
+        it('should maintain search term when moving through pages', function () {
+            var term = 'search term';
+            scope.searchTerm = term;
+            scope.$apply();
+            scope.goToPage(10);
+            scope.$apply();
+            var filterParams = {
+                item__item: routeParams.itemId,
+                parent: routeParams.parentNodeId,
+                paginate: true,
+                page: 10,
+                search: term
+            };
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
+        });
+
+        it('should toggle search mode during search', function () {
+            scope.$apply();
+            expect(scope.searching).toBe(false);
+            scope.searchTerm = 'something';
+            scope.$apply();
+            expect(mockDeliveryNodeService.search).toHaveBeenCalled();
+            expect(scope.searching).toBe(true);
+            deferredSearchResults.resolve({results: searchResults});
+            scope.$apply();
+            expect(scope.searching).toBe(false);
+        });
     });
 
     describe('Creating a new delivery', function () {

@@ -9,12 +9,13 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
         $scope.errors = false;
-        $scope.searchTerm = '';
+        $scope.searching = false;
         $scope.addingNewDelivery = false;
 
         var loadPromises = [];
         var itemId = $routeParams.itemId;
         var parentNodeId = $routeParams.parentNodeId;
+        var filterParams = {item__item: itemId, parent: parentNodeId, paginate: true};
 
         loadPromises.push(IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {
@@ -23,11 +24,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.districtsLoaded = true;
         }));
 
-        var filterParams = {item__item: itemId, parent: parentNodeId, paginate: true};
-
-        loadPromises.push(DeliveryNodeService.filter(filterParams).then(function (paginatedNodes) {
-            setScopeDataFromResponse(paginatedNodes);
-        }));
+        loadPromises.push(fetchNodes());
 
         loadPromises.push(DeliveryNodeService.get(parentNodeId).then(function (parent) {
             $scope.parentNode = parent;
@@ -75,13 +72,6 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             event.stopPropagation();
         });
 
-        function resetNewDeliveryForm() {
-            $scope.newDelivery = new DeliveryNode({track: true});
-            $scope.$broadcast('clear-consignee');
-            $scope.$broadcast('clear-contact');
-            $scope.$broadcast('clear-list');
-        }
-
         $scope.$watch('newDelivery.deliveryDate', function (val) {
             if (val) {
                 var earlierMoment = moment(new Date($scope.newDelivery.deliveryDate));
@@ -90,14 +80,41 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         });
 
         $scope.goToPage = function (page) {
-            var urlArgs = Object.merge({page: page}, filterParams);
-            //if ($scope.searchTerm && $scope.searchTerm.length) {
-            //    urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
-            //}
-            DeliveryNodeService.filter(urlArgs).then(function (paginatedNodes) {
+            var urlArgs = {page: page};
+            if ($scope.searchTerm && $scope.searchTerm.length) {
+                urlArgs = Object.merge(urlArgs, {search: $scope.searchTerm});
+            }
+            fetchNodes(urlArgs);
+        };
+
+
+        $scope.$watch('searchTerm', function (term) {
+            if (term && term.length) {
+                $scope.searching = true;
+                DeliveryNodeService.search(term, [], filterParams).then(function (response) {
+                    setScopeDataFromResponse(response);
+                }).finally(function () {
+                    $scope.searching = false;
+                });
+            }
+            else {
+                fetchNodes();
+            }
+        });
+
+        function fetchNodes(extraArgs) {
+            var requestArgs = extraArgs ? Object.merge(extraArgs, filterParams): filterParams;
+            DeliveryNodeService.filter(requestArgs).then(function (paginatedNodes) {
                 setScopeDataFromResponse(paginatedNodes);
             });
-        };
+        }
+
+        function resetNewDeliveryForm() {
+            $scope.newDelivery = new DeliveryNode({track: true});
+            $scope.$broadcast('clear-consignee');
+            $scope.$broadcast('clear-contact');
+            $scope.$broadcast('clear-list');
+        }
 
         function setScopeDataFromResponse(paginatedNodes) {
             $scope.deliveries = paginatedNodes.results;
