@@ -51,6 +51,12 @@ angular.module('Directives', [])
                     scope.$apply();
                 });
 
+                scope.$on('clear-list', function () {
+                    var select2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    select2Input.text('');
+                    $(element).val(undefined);
+                });
+
                 scope.$on('set-location', function (_, location) {
                     var locationSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     locationSelect2Input.text(location.name);
@@ -102,6 +108,12 @@ angular.module('Directives', [])
                 element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
+                });
+
+                scope.$on('clear-contact', function () {
+                    var contactSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    contactSelect2Input.text('');
+                    $(element).val(undefined);
                 });
 
                 scope.$on('set-contact-for-node', function (_, contact, nodeId) {
@@ -166,6 +178,12 @@ angular.module('Directives', [])
                 element.change(function () {
                     ngModel.$setViewValue(element.select2('data').id);
                     scope.$apply();
+                });
+
+                scope.$on('clear-consignee', function () {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text('');
+                    $(element).val(undefined);
                 });
 
                 scope.$on('set-consignee-for-single-ip', function (_, consignee) {
