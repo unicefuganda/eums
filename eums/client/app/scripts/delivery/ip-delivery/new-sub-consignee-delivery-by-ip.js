@@ -13,9 +13,9 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         $scope.addingNewDelivery = false;
 
         var loadPromises = [];
-        var itemId = $routeParams.itemId;
+        $scope.itemId = $routeParams.itemId;
         var parentNodeId = $routeParams.parentNodeId;
-        var filterParams = {item__item: itemId, parent: parentNodeId, paginate: true};
+        var filterParams = {item__item: $scope.itemId, parent: parentNodeId, paginate: true};
 
         loadPromises.push(IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (districtName) {

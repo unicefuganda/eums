@@ -90,6 +90,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             scope.$apply();
             expect(scope.count).toEqual(paginatedChildNodes.count);
             expect(scope.pageSize).toEqual(paginatedChildNodes.pageSize);
+            expect(scope.itemId).toEqual(routeParams.itemId);
         });
 
         it('should fetch new page when goToPage is called and put the consignees on that page on scope', function () {

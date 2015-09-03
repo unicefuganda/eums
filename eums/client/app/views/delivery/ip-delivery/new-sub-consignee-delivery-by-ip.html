@@ -25,7 +25,7 @@
         </div>
         <div class="pull-right pad-top-10">
             <span class="pad-right-5 item-quantity-label">Quantity Available</span>
-            <span class="label label-success item-quantity-label">{{ quantityAvailable }}</span>
+            <span class="label label-success item-quantity-label">{{ parentNode.balance }}</span>
         </div>
     </div>
 
@@ -174,7 +174,8 @@
                 <td>{{ delivery.contactPerson }}</td>
                 <td>{{ delivery.location }}</td>
                 <td class="table-row-input-column">
-                    <div class="btn blue-border-button btn-sm" ng-hide="delivery.isEndUser">Sub-consignees</div>
+                    <a href="#/deliveries-by-ip/{{itemId}}/{{delivery.id}}/new" class="btn blue-border-button btn-sm"
+                       ng-hide="delivery.isEndUser">Sub-consignees</a>
                     <span ng-show="delivery.isEndUser">End User</span>
                 </td>
             </tr>
