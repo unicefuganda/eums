@@ -26,9 +26,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
 
         loadPromises.push(fetchNodes());
 
-        loadPromises.push(DeliveryNodeService.get(parentNodeId).then(function (parent) {
-            $scope.parentNode = parent;
-        }));
+        loadPromises.push(loadParentNode());
 
         $scope.toggleNewDeliveryForm = function () {
             resetNewDeliveryForm();
@@ -43,7 +41,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             }];
             DeliveryNodeService.create($scope.newDelivery).then(function (createdDelivery) {
                 $scope.deliveries.add(createdDelivery, 0);
-                resetNewDeliveryForm();
+                resetDeliveryData()
             });
         };
 
@@ -107,6 +105,17 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             DeliveryNodeService.filter(requestArgs).then(function (paginatedNodes) {
                 setScopeDataFromResponse(paginatedNodes);
             });
+        }
+
+        function loadParentNode() {
+            return DeliveryNodeService.get(parentNodeId).then(function (parent) {
+                $scope.parentNode = parent;
+            });
+        }
+
+        function resetDeliveryData() {
+            loadParentNode();
+            resetNewDeliveryForm();
         }
 
         function resetNewDeliveryForm() {

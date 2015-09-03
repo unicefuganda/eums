@@ -172,7 +172,6 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
         });
 
-
         it('should save new delivery', function () {
             var deliveryData = setupDeliveryData();
             var newDelivery = deliveryData.newDelivery;
@@ -192,6 +191,16 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             scope.$apply();
 
             expect(scope.deliveries.first()).toEqual(createdNode);
+        });
+
+        it('should reload parent node upon successful save', function () {
+            setupDeliveryData();
+            mockDeliveryNodeService.get.calls.reset();
+
+            scope.createNewDelivery();
+            scope.$apply();
+
+            expect(mockDeliveryNodeService.get).toHaveBeenCalledWith(routeParams.parentNodeId);
         });
 
         it('should reset delivery form fields  upon successful save', function () {
