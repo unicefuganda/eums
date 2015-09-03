@@ -27,7 +27,7 @@
     <a href="#/consignees">Consignees</a>
 </li>
 <li class="dropdown" ng-class="{ active: isActive('/alerts')}">
-    <a href="#/alerts">Alerts <span class="badge alert-info" ng-bind="unresolvedAlertsCount"></span></a>
+    <a href="#/alerts">Alerts <span class="badge alert-info" ng-show="unresolvedAlertsCount" ng-bind="unresolvedAlertsCount"></span></a>
 </li>
 
 {% else %}

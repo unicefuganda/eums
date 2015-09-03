@@ -1,7 +1,10 @@
 <div class="container-fluid">
     <div class="eums page-header">Your Alerts</div>
-    <div class="content alerts-subheader">
+    <div class="content alerts-subheader" ng-show="alerts.length">
         Here you will find alerts from consignees and end-users that require a response from you
+    </div>
+    <div class="content alerts-subheader" ng-hide="alerts.length">
+        There are currently no alerts.
     </div>
 </div>
 
@@ -81,7 +84,7 @@
                 </td>
             </tr>
         </table>
-        <div class="centered">
+        <div class="centered" ng-show="alerts.length">
             <pagination total-items="count" ng-model="currentPage" boundary-links="true"
                         ng-change="goToPage(currentPage)" max-size="5" rotate="false"
                         items-per-page="pageSize">
