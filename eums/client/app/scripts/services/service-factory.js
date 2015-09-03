@@ -161,7 +161,8 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         var objectToPost = options.changeCase ? changeCase(flatObject, toSnakeCase) : flatObject;
                         return $http.post(options.uri, objectToPost).then(function (response) {
                             var createdObject = response.data;
-                            return options.changeCase ? changeCase(createdObject, toCamelCase) : createdObject;
+                            var objectToReturn = options.changeCase ? changeCase(createdObject, toCamelCase) : createdObject;
+                            return options.model ? new options.model(objectToReturn) : objectToReturn;
                         });
                     },
                     update: function (object, verb) {

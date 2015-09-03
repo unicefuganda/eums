@@ -84,11 +84,11 @@ describe('Delivery Node Service', function () {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
             id: 1, parent: null, distributionPlan: planId, consignee: consigneeId,
-            children: [], treePosition: 'END_USER', item: itemId,
-            quantity: 10, underCurrentSupplyPlan: false,
+            treePosition: 'END_USER', item: itemId,
+            quantity: 10, quantityIn:0,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
-            track: true
+            track: true, trackSubmitted: true
         };
         mockBackend.whenPOST(planNodeEndpointUrl).respond(201, stubCreatedNode);
         planNodeService.create({
@@ -96,7 +96,7 @@ describe('Delivery Node Service', function () {
             quantity: 10, deliveryDate: '2014-02-23', remark: 'In bad condition',
             track: true
         }).then(function (createdNode) {
-            expect(createdNode).toEqual(stubCreatedNode);
+            expect(JSON.parse(JSON.stringify(createdNode))).toEqual(JSON.parse(JSON.stringify(stubCreatedNode)));
             done();
         });
         mockBackend.flush();
@@ -106,11 +106,11 @@ describe('Delivery Node Service', function () {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
             id: 1, parent: null, distributionPlan: planId, consignee: consigneeId,
-            children: [], treePosition: 'END_USER', item: itemId,
-            quantity: 10, underCurrentSupplyPlan: false,
+            treePosition: 'END_USER', item: itemId,
+            quantity: 10, quantityIn: 0,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
-            track: true
+            track: true, trackSubmitted: true
         };
         var stubNewNode = {
             distributionPlan: planId, consignee: consigneeId, tree_position: 'END_USER',
@@ -133,7 +133,7 @@ describe('Delivery Node Service', function () {
         };
         mockBackend.expectPOST(planNodeEndpointUrl, stubExpectedNode).respond(201, stubCreatedNode);
         planNodeService.create(stubNewNode).then(function (createdNode) {
-            expect(createdNode).toEqual(stubCreatedNode);
+            expect(JSON.parse(JSON.stringify(createdNode))).toEqual(JSON.parse(JSON.stringify(stubCreatedNode)));
         });
         mockBackend.flush();
     });
