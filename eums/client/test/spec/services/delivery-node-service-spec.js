@@ -83,9 +83,9 @@ describe('Delivery Node Service', function () {
     it('should create node with neither parent nor children', function (done) {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
-            id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
-            children: [], tree_position: 'END_USER', item: itemId,
-            quantity: 10, under_current_supply_plan: false,
+            id: 1, parent: null, distributionPlan: planId, consignee: consigneeId,
+            children: [], treePosition: 'END_USER', item: itemId,
+            quantity: 10, underCurrentSupplyPlan: false,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
             track: true
@@ -105,9 +105,9 @@ describe('Delivery Node Service', function () {
     it('should only return a response when the status is not 201', function () {
         var planId = 1, consigneeId = 1;
         var stubCreatedNode = {
-            id: 1, parent: null, distribution_plan: planId, consignee: consigneeId,
-            children: [], tree_position: 'END_USER', item: itemId,
-            quantity: 10, under_current_supply_plan: false,
+            id: 1, parent: null, distributionPlan: planId, consignee: consigneeId,
+            children: [], treePosition: 'END_USER', item: itemId,
+            quantity: 10, underCurrentSupplyPlan: false,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
             track: true

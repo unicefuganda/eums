@@ -213,10 +213,10 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should search against endpoint', function(done) {
+    it('should search against endpoint', function (done) {
         var searchString = 'search string';
         mockBackend.expectGET('{1}?search={2}'.assign(levelOneEndpoint, searchString)).respond(fakeObjects);
-        levelOneService.search(searchString).then(function(matches) {
+        levelOneService.search(searchString).then(function (matches) {
             expect(matches).toEqual(fakeObjects);
             done();
         });
@@ -238,10 +238,10 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should get results from paginated response', function() {
+    it('should get results from paginated response', function () {
         var expected = {results: [], count: 10, next: '?page=3', previous: '?page=1', pageSize: 10};
         mockBackend.whenGET(levelOneEndpoint).respond(expected);
-        levelOneService.all().then(function(response) {
+        levelOneService.all().then(function (response) {
             expect(response.results).toEqual(expected.results);
             expect(response.next).toEqual(expected.next);
             expect(response.count).toEqual(expected.count);
@@ -251,13 +251,13 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
-    it('should accept url params when fetching all', function() {
+    it('should accept url params when fetching all', function () {
         mockBackend.expectGET(levelOneEndpoint + '?arg=val').respond([]);
         levelOneService.all([], {arg: 'val'});
         mockBackend.flush();
     });
 
-    it('should accept url params when searching', function() {
+    it('should accept url params when searching', function () {
         mockBackend.expectGET(levelOneEndpoint + '?arg=val&search=term').respond([]);
         levelOneService.search('term', [], {arg: 'val'});
         mockBackend.flush();
@@ -285,8 +285,9 @@ describe('Service Factory', function () {
     it('should flatten nested objects to ids before create', function (done) {
         var obj = {some_property: {id: 1}};
         var flattened = {some_property: 1};
-        var expected = {id: 3, some_property: 1};
-        mockBackend.expectPOST(levelOneEndpoint, flattened).respond(201, expected);
+        var apiResponse = {id: 3, some_property: 1};
+        var expected = {id: 3, someProperty: 1};
+        mockBackend.expectPOST(levelOneEndpoint, flattened).respond(201, apiResponse);
         levelOneService.create(obj).then(function (created) {
             expect(created).toEqual(expected);
             done();

@@ -57,7 +57,10 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
     it('should load all districts and put them on scope', function () {
         expect(scope.districtsLoaded).toBeFalsy();
         scope.$apply();
-        expect(scope.districts).toEqual([{id: 'Kampala', name: 'Kampala'}, {id: 'Mukono', name: 'Mukono'}]);
+        expect(scope.districts).toEqual([
+            {id: 'Kampala', name: 'Kampala'},
+            {id: 'Mukono', name: 'Mukono'}
+        ]);
         expect(scope.districtsLoaded).toBeTruthy();
     });
 
@@ -88,23 +91,42 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
     describe('on save', function () {
         it('should save new delivery', function () {
+            var deliveryData = setupDeliveryData();
+            var newDelivery = deliveryData.newDelivery;
+            var additionalFields = deliveryData.additionalFields;
+            scope.createNewDelivery();
+
+            var fullDelivery = Object.merge(additionalFields, newDelivery);
+            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(fullDelivery);
+        });
+
+        it('should add created delivery to the top of the deliveries list upon successful save', function () {
+            var createdNode = {id: 2};
+            setupDeliveryData();
+            mockDeliveryNodeService.create.and.returnValue(q.when(createdNode));
+
+            scope.createNewDelivery();
+            scope.$apply();
+
+            expect(scope.deliveries.first()).toEqual(createdNode);
+        });
+
+        function setupDeliveryData() {
             var newDelivery = {track: true, quantity: 3};
             var parentNode = {item: 10};
             scope.parentNode = parentNode;
             scope.newDelivery = newDelivery;
             var additionalFields = {
                 item: parentNode.item,
-                parents: [{
-                    id: routeParams.parentNodeId,
-                    quantity: newDelivery.quantity
-                }]
+                parents: [
+                    {
+                        id: routeParams.parentNodeId,
+                        quantity: newDelivery.quantity
+                    }
+                ]
             };
-
-            scope.createNewDelivery();
-
-            var fullDelivery = Object.merge(additionalFields, newDelivery);
-            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(fullDelivery);
-        });
+            return {newDelivery: newDelivery, additionalFields: additionalFields};
+        }
     });
 
 

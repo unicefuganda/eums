@@ -41,7 +41,9 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 id: $routeParams.parentNodeId,
                 quantity: $scope.newDelivery.quantity
             }];
-            DeliveryNodeService.create($scope.newDelivery);
+            DeliveryNodeService.create($scope.newDelivery).then(function(createdDelivery) {
+                $scope.deliveries.add(createdDelivery, 0);
+            });
         };
 
         $scope.$watch('newDelivery.deliveryDate', function (val) {
