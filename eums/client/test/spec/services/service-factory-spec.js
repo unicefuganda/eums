@@ -286,7 +286,7 @@ describe('Service Factory', function () {
         var obj = {some_property: {id: 1}};
         var flattened = {some_property: 1};
         var apiResponse = {id: 3, some_property: 1};
-        var expected = {id: 3, someProperty: 1};
+        var expected = {id: 3, some_property: 1};
         mockBackend.expectPOST(levelOneEndpoint, flattened).respond(201, apiResponse);
         levelOneService.create(obj).then(function (created) {
             expect(created).toEqual(expected);
@@ -300,6 +300,42 @@ describe('Service Factory', function () {
         var expected = {some_property: 1};
         mockBackend.expectPOST(levelOneEndpoint, expected).respond(201, {id: 5, some_property: 1});
         levelOneService.create(obj).then(function () {
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should change response keys to camel case  when requested, on creating object', function (done) {
+        var obj = {some_property: 1};
+        var apiResponse = {id: 3, some_response: 1};
+        var expected = {id: 3, someResponse: 1};
+        mockBackend.expectPOST(levelOneEndpoint, obj).respond(201, apiResponse);
+        levelOneService.create(obj, {changeCaseOnResponse: true}).then(function (created) {
+            expect(created).toEqual(expected);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should not change response keys when not requested to', function (done) {
+        var obj = {some_property: 1};
+        var apiResponse = {id: 3, some_response: 1};
+        var expected = {id: 3, some_response: 1};
+        mockBackend.expectPOST(levelOneEndpoint, obj).respond(201, apiResponse);
+        levelOneService.create(obj).then(function (created) {
+            expect(created).toEqual(expected);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should not change response keys when other extra options are requested', function (done) {
+        var obj = {some_property: 1};
+        var apiResponse = {id: 3, some_response: 1};
+        var expected = {id: 3, some_response: 1};
+        mockBackend.expectPOST(levelOneEndpoint, obj).respond(201, apiResponse);
+        levelOneService.create(obj, {someOtherExtraOption: true}).then(function (created) {
+            expect(created).toEqual(expected);
             done();
         });
         mockBackend.flush();

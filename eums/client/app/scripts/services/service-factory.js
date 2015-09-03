@@ -156,13 +156,15 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         var opts = Object.merge({model: undefined}, options.model);
                         return getObject.call(this, uri, opts, nestedFields);
                     },
-                    create: function (object) {
+                    create: function (object, extraOptions) {
+                        extraOptions === undefined && (extraOptions = {changeCaseOnResponse: false});
                         var flatObject = nestedObjectsToIds(object);
                         var objectToPost = options.changeCase ? changeCase(flatObject, toSnakeCase) : flatObject;
                         return $http.post(options.uri, objectToPost).then(function (response) {
                             var createdObject = response.data;
-                            var objectToReturn = options.changeCase ? changeCase(createdObject, toCamelCase) : createdObject;
-                            return options.model ? new options.model(objectToReturn) : objectToReturn;
+                            createdObject = extraOptions.changeCaseOnResponse ? changeCase(createdObject, toCamelCase) : createdObject;
+                            createdObject = options.model ? new options.model(createdObject) : createdObject;
+                            return  createdObject;
                         });
                     },
                     update: function (object, verb) {

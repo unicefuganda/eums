@@ -179,14 +179,14 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.newDelivery.deliveryDate).toBe('2015-08-26');
         });
 
-        it('should save new delivery', function () {
+        it('should save new delivery and camel case the returned response', function () {
             var newDelivery = setupNewDelivery();
 
             scope.createNewDelivery();
 
             expect(newDelivery.item).toEqual(scope.parentNode.item);
             expect(newDelivery.parents).toEqual([{id: routeParams.parentNodeId, quantity: scope.newDelivery.quantity}]);
-            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(newDelivery);
+            expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(newDelivery, {changeCaseOnResponse: true});
         });
 
         it('should add created delivery to the top of the deliveries list upon successful save', function () {
