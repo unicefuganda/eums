@@ -1,10 +1,6 @@
-data_postgres:
-  build: .
-  dockerfile: Dockerfile.data
-
 data_mongo:
   image: mongo
-  command: /bin/true
+  command: /bin/echo MongoDB data-only container
   volumes:
     - /data/mongo
 
@@ -13,15 +9,23 @@ mongo:
   volumes_from:
     - data_mongo
 
+contacts:
+  image: cuevee/contacts
+  links:
+    - mongo
+
+data_postgres:
+  image: postgres
+  command: /bin/echo PostgreSQL data-only container
+  volumes:
+    - /data/postgres
+
 postgres:
   image: postgres
   environment:
     PGDATA: /data/postgres
   volumes_from:
     - data_postgres
-
-redis:
-  image: redis
 
 web:
   build: .
@@ -32,18 +36,16 @@ web:
     - postgres
     - contacts
 
-worker:
+redis:
+  image: redis
+
+celery_worker:
   build: .
   dockerfile: Dockerfile.web
   links:
     - redis
     - postgres
   command: /bin/sh /celery.sh
-
-contacts:
-  image: cuevee/contacts
-  links:
-    - mongo
 
 nginx:
   build: .
