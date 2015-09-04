@@ -134,7 +134,9 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         function fetchNodes(extraArgs) {
             var requestArgs = extraArgs ? Object.merge(extraArgs, filterParams) : filterParams;
             DeliveryNodeService.filter(requestArgs).then(function (paginatedNodes) {
+                LoaderService.showLoader();
                 setScopeDataFromResponse(paginatedNodes);
+                LoaderService.hideLoader();
             });
         }
 

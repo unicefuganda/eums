@@ -368,13 +368,13 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
 
     //LOADERS
-    //
-    //it('should show loader on load', function () {
-    //    scope.$apply();
-    //    expect(mockLoaderService.showLoader).toHaveBeenCalled();
-    //    expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-    //});
-    //
+
+    it('should show loader on load', function () {
+        scope.$apply();
+        expect(mockLoaderService.showLoader).toHaveBeenCalled();
+        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+    });
+
 
 
 });
