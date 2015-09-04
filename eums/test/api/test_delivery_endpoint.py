@@ -125,6 +125,31 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertNotIn(second_delivery.id, ids)
         self.assertNotIn(third_delivery.id, ids)
 
+    def test_should_filter_deliveries_by_ip_and_number(self):
+        first_consignee = ConsigneeFactory()
+        second_consignee = ConsigneeFactory()
+
+        purchase_order = PurchaseOrderFactory(order_number=123)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+        DeliveryNodeFactory(item=po_item, distribution_plan=first_delivery)
+
+        second_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+        third_delivery = DeliveryFactory(consignee=second_consignee)
+
+        self.logout()
+        self.log_consignee_in(consignee=first_consignee)
+
+        response = self.client.get(ENDPOINT_URL + '?query=123')
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertNotIn(second_delivery.id, ids)
+        self.assertNotIn(third_delivery.id, ids)
+
     def test_should_return_type_of_delivery(self):
         po_item = PurchaseOrderItemFactory()
         delivery = DeliveryFactory()
