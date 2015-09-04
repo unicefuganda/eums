@@ -11,12 +11,16 @@
     </div>
 
     <div class="row pad-15">
-        <div class="pull-left">
+        <div class="pull-left" ng-show="quantityAvailable">
             <a href="#/deliveries-by-ip/{{ item.id }}" class="btn warning-border-button">
                 <span class="glyphicon glyphicon-remove"></span>
                 Discard New Delivery
             </a>
         </div>
+        <div class="pull-left content alerts-sub-header" ng-hide="quantityAvailable">
+            All quantities have been distributed for this item.
+        </div>
+
         <div class="pull-right pad-top-10">
             <span class="pad-right-5 item-quantity-label">Quantity Available</span>
             <span class="label label-success item-quantity-label">{{ quantityAvailable }}</span>
@@ -24,6 +28,7 @@
     </div>
 
     <span class="well-sm"></span>
+
     <div>
         <span class="sub-header">ADD CONSIGNEE DETAILS</span>
     </div>
