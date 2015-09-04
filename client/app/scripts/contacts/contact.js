@@ -153,8 +153,8 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                             var countryCode = (resp && resp.country) ? resp.country : 'UG';
                             callback(countryCode);
                         });
-                    },
-                    utilsScript: '/static/bower_components/intl-tel-input/lib/libphonenumber/build/utils.js'
+		    },
+		    utilsScript: '/static/app/js/utils.js' 
                 });
 
                 scope.contactChanged = function () {
