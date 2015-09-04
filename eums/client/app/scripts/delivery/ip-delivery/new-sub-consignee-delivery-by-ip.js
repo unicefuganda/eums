@@ -4,7 +4,8 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $window) {
+    .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
+                                                                   DeliveryNode, ngToast, LoaderService, $window, ItemService) {
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
         $scope.errors = false;
@@ -26,6 +27,11 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             });
             $scope.districtsLoaded = true;
         }));
+
+        loadPromises.push(ItemService.get($scope.itemId).then(function (item) {
+            $scope.item = item;
+        }));
+
 
         loadPromises.push(fetchNodes());
 

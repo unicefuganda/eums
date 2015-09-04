@@ -1,70 +1,77 @@
 <ng-toast></ng-toast>
 <div class="container-fluid">
-    <div class="eums page-header row">
-        <div class="pull-left pad-top-10">Report Sub-Consignees of: {{ parentNode.consigneeName }}</div>
-        <div class="pull-right">
-            <a ng-click="goBack()" class="btn blue-border-button">
-                <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
-                Back Up
-            </a>
+<div class="eums page-header row">
+    <div class="pull-left pad-top-10">
+        <div>
+            Item: <span class="black sub-consignee-sub-header">{{ item.description }}</span>
+        </div>
+        <div>
+            Report Sub-Consignees of: <span class="black sub-consignee-sub-header">{{ parentNode.consigneeName }}</span>
         </div>
     </div>
+    <div class="pull-right">
+        <a ng-click="goBack()" class="btn blue-border-button">
+            <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
+            Back Up
+        </a>
+    </div>
+</div>
 
-    <div class="row pad-15">
-        <div ng-show="parentNode.balance">
-            <div class="pull-left">
-                <div class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    New Sub-Consignee
-                </div>
+<div class="row pad-15">
+    <div ng-show="parentNode.balance">
+        <div class="pull-left">
+            <div class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
+                <span class="glyphicon glyphicon-plus"></span>
+                New Sub-Consignee
             </div>
-            <div class="pull-left" ng-show="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
-                <div class="btn warning-border-button">
-                    <span class="glyphicon glyphicon-remove"></span>
-                    Discard New Delivery
-                </div>
+        </div>
+        <div class="pull-left" ng-show="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
+            <div class="btn warning-border-button">
+                <span class="glyphicon glyphicon-remove"></span>
+                Discard New Delivery
             </div>
         </div>
-        <div class="pull-right pad-top-10">
-            <span class="pad-right-5 item-quantity-label">Quantity Available</span>
-            <span class="label label-success item-quantity-label">{{ parentNode.balance }}</span>
-        </div>
-
-        <div class="pull-left content alerts-sub-header" ng-hide="parentNode.balance">
-            All quantities have been distributed, at this level.
-        </div>
-
+    </div>
+    <div class="pull-right pad-top-10">
+        <span class="pad-right-5 item-quantity-label">Quantity Available</span>
+        <span class="label label-success item-quantity-label">{{ parentNode.balance }}</span>
     </div>
 
-    <span class="well-sm"></span>
+    <div class="pull-left content alerts-sub-header" ng-hide="parentNode.balance">
+        All quantities have been distributed, at this level.
+    </div>
+
+</div>
+
+<span class="well-sm"></span>
 
 
-    <div class="well col-md-12" ng-show="addingNewDelivery && parentNode.balance">
-        <table class="col-md-12">
-            <tr>
-                <td class="col-md-1 pad-bottom-5">Quantity Shipped</td>
-                <td class="col-md-2 pad-bottom-5">Date Shipped</td>
-                <td class="col-md-3 pad-bottom-5">Sub-consignee</td>
-                <td class="col-md-2 pad-bottom-5">Contact Person</td>
-                <td class="col-md-2 pad-bottom-5">District</td>
-                <td class="col-md-1 centered pad-bottom-5">End User</td>
-                <td class="col-md-1 centered pad-bottom-5"></td>
-            </tr>
-            <tr>
-                <td class="col-md-1">
-                    <div id="quantity" class="pad-small"
-                         ng-class="{
+<div class="well col-md-12" ng-show="addingNewDelivery && parentNode.balance">
+    <table class="col-md-12">
+        <tr>
+            <td class="col-md-1 pad-bottom-5">Quantity Shipped</td>
+            <td class="col-md-2 pad-bottom-5">Date Shipped</td>
+            <td class="col-md-3 pad-bottom-5">Sub-consignee</td>
+            <td class="col-md-2 pad-bottom-5">Contact Person</td>
+            <td class="col-md-2 pad-bottom-5">District</td>
+            <td class="col-md-1 centered pad-bottom-5">End User</td>
+            <td class="col-md-1 centered pad-bottom-5"></td>
+        </tr>
+        <tr>
+            <td class="col-md-1">
+                <div id="quantity" class="pad-small"
+                     ng-class="{
                          'has-error': (!newDelivery.quantity || newDelivery.quantity > parentNode.balance) && errors
                          }">
 
-                        <input type="text" id="quantity-shipped" class="form-control"
-                               ng-model="newDelivery.quantity" only-digits/>
+                    <input type="text" id="quantity-shipped" class="form-control"
+                           ng-model="newDelivery.quantity" only-digits/>
 
-                    </div>
-                </td>
+                </div>
+            </td>
 
-                <td class="col-md-2">
-                    <div id="input-delivery-date" class="pad-small">
+            <td class="col-md-2">
+                <div id="input-delivery-date" class="pad-small">
                             <span class="input-group" eums-date-picker
                                   ng-class="{'has-error': !newDelivery.deliveryDate && errors}">
                                 <input type="text" class="form-control"
@@ -82,124 +89,124 @@
                                   </button>
                                 </span>
                             </span>
+                </div>
+            </td>
+            <td class="col-md-2">
+                <div id="input-consignee" class="col-md-12 pad-small"
+                     ng-class="{'has-error': !newDelivery.consignee && errors}">
+                    <div class="pad-small col-md-10">
+                        <input type="hidden" search-consignees
+                               ng-model="newDelivery.consignee"
+                               ng-attr-id="{{ 'ip-select' }}"
+                               value="{{ consignee }}">
                     </div>
-                </td>
-                <td class="col-md-2">
-                    <div id="input-consignee" class="col-md-12 pad-small"
-                         ng-class="{'has-error': !newDelivery.consignee && errors}">
-                        <div class="pad-small col-md-10">
-                            <input type="hidden" search-consignees
-                                   ng-model="newDelivery.consignee"
-                                   ng-attr-id="{{ 'ip-select' }}"
-                                   value="{{ consignee }}">
-                        </div>
-                        <div class="col-md-2 pad-small">
-                            <button type="button" class="btn btn-default "
-                                    ng-click="addConsignee()">
-                                <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                        </div>
+                    <div class="col-md-2 pad-small">
+                        <button type="button" class="btn btn-default "
+                                ng-click="addConsignee()">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
                     </div>
-                </td>
-                <td class="col-md-3">
-                    <div id="input-contact" class="col-md-12 pad-small"
-                         ng-class="{'has-error': !newDelivery.contact_person_id && errors}">
-                        <div class="col-md-10 pad-small">
-                            <input type="hidden"
-                                   search-contacts
-                                   required="required"
-                                   value="{{ contact_person_id }}"
-                                   ng-model="newDelivery.contact_person_id"
-                                   ng-attr-id="{{ 'contact-select' }}">
-                        </div>
-                        <div class="col-md-2 pad-small">
-                            <button type="button" class="btn btn-default "
-                                    ng-click="addContact()">
-                                <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                        </div>
+                </div>
+            </td>
+            <td class="col-md-3">
+                <div id="input-contact" class="col-md-12 pad-small"
+                     ng-class="{'has-error': !newDelivery.contact_person_id && errors}">
+                    <div class="col-md-10 pad-small">
+                        <input type="hidden"
+                               search-contacts
+                               required="required"
+                               value="{{ contact_person_id }}"
+                               ng-model="newDelivery.contact_person_id"
+                               ng-attr-id="{{ 'contact-select' }}">
                     </div>
-                </td>
-                <td class="col-md-2">
-                    <div id="input-location" class="pad-small"
-                         ng-class="{'has-error': !newDelivery.location && errors}">
-                        <input type="hidden" ng-if="districtsLoaded"
-                               search-from-list
-                               list="{{ districts }}"
-                               ng-model="newDelivery.location"
-                               ng-attr-id="{{ 'location-select' }}"
-                               value="{{ location }}">
+                    <div class="col-md-2 pad-small">
+                        <button type="button" class="btn btn-default "
+                                ng-click="addContact()">
+                            <i class="glyphicon glyphicon-plus"></i>
+                        </button>
                     </div>
-                </td>
-                <td class="col-md-1 centered">
-                    <div class="text-center">
-                        <input type="checkbox" class="end-user-checkbox"
-                               value="{{ isEndUser }}"
-                               ng-model="newDelivery.isEndUser">
-                    </div>
-                </td>
-                <td class="col-md-1 centered">
-                    <div class="btn btn-primary" ng-click="createNewDelivery()">
-                        Save
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="content alerts-sub-header" ng-hide="deliveries.length">
-        There are currently no sub-consignees.
-    </div>
+                </div>
+            </td>
+            <td class="col-md-2">
+                <div id="input-location" class="pad-small"
+                     ng-class="{'has-error': !newDelivery.location && errors}">
+                    <input type="hidden" ng-if="districtsLoaded"
+                           search-from-list
+                           list="{{ districts }}"
+                           ng-model="newDelivery.location"
+                           ng-attr-id="{{ 'location-select' }}"
+                           value="{{ location }}">
+                </div>
+            </td>
+            <td class="col-md-1 centered">
+                <div class="text-center">
+                    <input type="checkbox" class="end-user-checkbox"
+                           value="{{ isEndUser }}"
+                           ng-model="newDelivery.isEndUser">
+                </div>
+            </td>
+            <td class="col-md-1 centered">
+                <div class="btn btn-primary" ng-click="createNewDelivery()">
+                    Save
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="content alerts-sub-header" ng-hide="deliveries.length">
+    There are currently no sub-consignees.
+</div>
 
-    <div class="row" ng-hide="!deliveries.length && !searchTerm.length">
-        <div class="col-xs-4 pull-right">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon "
-                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by Sub-consignee, District or Date in format 'YYYY-MM-DD'"/>
+<div class="row" ng-hide="!deliveries.length && !searchTerm.length">
+    <div class="col-xs-4 pull-right">
+        <div class="inner-addon left-addon">
+            <i class="glyphicon "
+               ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+            <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                   placeholder="Search by Sub-consignee, District or Date in format 'YYYY-MM-DD'"/>
                 <span class="text-info" ng-show="searchTerm.length && !deliveries.length">
                     There are no matches to your search criteria.
                 </span>
-            </div>
         </div>
     </div>
-    <span class="well-sm"></span>
+</div>
+<span class="well-sm"></span>
 
-    <div class="panel-body col-lg-12" ng-show="deliveries.length">
-        <table class="table table-bordered table-hover table-condensed col-lg-6">
-            <tr class="summary-row">
-                <th class="item-list-col-header">Qty Shipped</th>
-                <th class="item-list-col-header">Date Shipped</th>
-                <th class="item-list-col-header">Sub-consignee</th>
-                <th class="item-list-col-header">Contact Person</th>
-                <th class="item-list-col-header">District</th>
-                <th class="item-list-col-header"></th>
-            </tr>
-            <tr ng-repeat="delivery in deliveries">
-                <td>{{ delivery.quantityIn }}</td>
-                <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
-                <td>{{ delivery.consigneeName }}</td>
-                <td>{{delivery.contactPerson.firstName | capitalize }} {{ delivery.contactPerson.lastName | capitalize }}</td>
-                <td>{{ delivery.location }}</td>
-                <td class="table-row-input-column">
-                    <a href="#/deliveries-by-ip/{{itemId}}/{{delivery.id}}/new" class="btn blue-border-button btn-sm"
-                       ng-hide="delivery.isEndUser">Sub-consignees</a>
-                    <span ng-show="delivery.isEndUser">End User</span>
-                </td>
-            </tr>
-            <tfoot>
-            <tr>
-                <td colspan="6" class="centered">
-                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                                items-per-page="pageSize">
-                    </pagination>
-                </td>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
-    <eums-contact></eums-contact>
-    <ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"
-                ng-controller="AddConsigneeController"></ng-include>
+<div class="panel-body col-lg-12" ng-show="deliveries.length">
+    <table class="table table-bordered table-hover table-condensed col-lg-6">
+        <tr class="summary-row">
+            <th class="item-list-col-header">Qty Shipped</th>
+            <th class="item-list-col-header">Date Shipped</th>
+            <th class="item-list-col-header">Sub-consignee</th>
+            <th class="item-list-col-header">Contact Person</th>
+            <th class="item-list-col-header">District</th>
+            <th class="item-list-col-header"></th>
+        </tr>
+        <tr ng-repeat="delivery in deliveries">
+            <td>{{ delivery.quantityIn }}</td>
+            <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ delivery.consigneeName }}</td>
+            <td>{{ delivery.contactPerson.firstName | capitalize }} {{ delivery.contactPerson.lastName | capitalize }}</td>
+            <td>{{ delivery.location }}</td>
+            <td class="table-row-input-column">
+                <a href="#/deliveries-by-ip/{{ itemId }}/{{ delivery.id }}/new" class="btn blue-border-button btn-sm"
+                   ng-hide="delivery.isEndUser">Sub-consignees</a>
+                <span ng-show="delivery.isEndUser">End User</span>
+            </td>
+        </tr>
+        <tfoot>
+        <tr>
+            <td colspan="6" class="centered">
+                <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                            ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                            items-per-page="pageSize">
+                </pagination>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<eums-contact></eums-contact>
+<ng-include src="'/static/app/views/consignees/partials/add-consignee-modal.html'"
+            ng-controller="AddConsigneeController"></ng-include>
 </div>
