@@ -11,11 +11,14 @@
     </div>
 
     <div class="row pad-15">
-        <div class="pull-left">
+        <div class="pull-left" ng-show="quantityAvailable">
             <a href="#/deliveries-by-ip/{{ item.id }}/new" class="btn btn-primary">
                 <span class="glyphicon glyphicon-plus"></span>
                 New Delivery Report
             </a>
+        </div>
+        <div class="pull-left content alerts-sub-header" ng-hide="quantityAvailable">
+            You have run out of inventory for this item.
         </div>
         <div class="pull-right pad-top-10">
             <span class="pad-right-5 item-quantity-label">Quantity Available</span>

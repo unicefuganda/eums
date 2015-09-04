@@ -174,7 +174,6 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
     .filter('capitalize', function () {
         'use strict';
         return function (token) {
-            return token.charAt(0).toUpperCase() + token.slice(1);
+            return token.first().toUpperCase() + token.slice(1);
         }
     });
-;
