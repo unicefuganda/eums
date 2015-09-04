@@ -23,6 +23,7 @@ class ReleaseOrderViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         consignee_id = request.GET.get('consignee', None)
         delivered = request.GET.get('delivered', None)
+        query = request.GET.get('query')
         if consignee_id:
             orders = ReleaseOrder.objects.for_consignee(consignee_id).order_by('waybill')
         else:
@@ -30,6 +31,8 @@ class ReleaseOrderViewSet(ModelViewSet):
                 orders = ReleaseOrder.objects.delivered().order_by('waybill')
             else:
                 orders = self.get_queryset()
+
+        orders = orders.filter(waybill__icontains=query) if query else orders
         return Response(self.get_serializer(orders, many=True).data)
 
     def get_queryset(self):

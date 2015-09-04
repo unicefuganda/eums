@@ -44,3 +44,13 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
 
         mock_for_consignee.assert_called_with(consignee_id)
         self.assertDictContainsSubset({'id': order.id}, response.data[0])
+
+    def test_should_return_release_orders_filtered_by_waybill(self):
+
+        ReleaseOrderFactory()
+        order = ReleaseOrderFactory(waybill=12345)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'query=123'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], order.id)
