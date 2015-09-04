@@ -139,7 +139,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
 
         function fetchNodes(extraArgs) {
             var requestArgs = extraArgs ? Object.merge(extraArgs, filterParams) : filterParams;
-            DeliveryNodeService.filter(requestArgs).then(function (paginatedNodes) {
+            DeliveryNodeService.filter(requestArgs, ['contact_person_id']).then(function (paginatedNodes) {
                 LoaderService.showLoader();
                 setScopeDataFromResponse(paginatedNodes);
                 LoaderService.hideLoader();
@@ -170,4 +170,11 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.pageSize = paginatedNodes.pageSize;
             $scope.count = paginatedNodes.count;
         }
+    })
+    .filter('capitalize', function () {
+        'use strict';
+        return function (token) {
+            return token.charAt(0).toUpperCase() + token.slice(1);
+        }
     });
+;

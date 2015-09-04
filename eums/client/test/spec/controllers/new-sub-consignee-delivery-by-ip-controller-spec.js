@@ -83,7 +83,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         it('should load child deliveries for the parent delivery and item; and paginate', function () {
             scope.$apply();
             var filterParams = {item__item: routeParams.itemId, parent: routeParams.parentNodeId, paginate: true};
-            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams, ['contact_person_id']);
             expect(scope.deliveries).toEqual(childNodes);
         });
     });
@@ -105,7 +105,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
                 paginate: true,
                 page: 10
             };
-            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams, ['contact_person_id']);
             expect(scope.deliveries).toEqual(childNodes);
         });
 
@@ -139,7 +139,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
                 page: 10,
                 search: term
             };
-            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
+            expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams, ['contact_person_id']);
         });
 
         it('should toggle search mode during search', function () {

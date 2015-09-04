@@ -165,7 +165,6 @@
     </div>
     <span class="well-sm"></span>
 
-
     <div class="panel-body col-lg-12" ng-show="deliveries.length">
         <table class="table table-bordered table-hover table-condensed col-lg-6">
             <tr class="summary-row">
@@ -180,7 +179,7 @@
                 <td>{{ delivery.quantityIn }}</td>
                 <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
                 <td>{{ delivery.consigneeName }}</td>
-                <td>{{ delivery.contactPerson }}</td>
+                <td>{{delivery.contactPerson.firstName | capitalize }} {{ delivery.contactPerson.lastName | capitalize }}</td>
                 <td>{{ delivery.location }}</td>
                 <td class="table-row-input-column">
                     <a href="#/deliveries-by-ip/{{itemId}}/{{delivery.id}}/new" class="btn blue-border-button btn-sm"

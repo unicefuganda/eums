@@ -49,6 +49,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.orderNumber = json.orderNumber;
             this.orderType = json.orderType;
             this.hasChildren = json.hasChildren;
+            this.balance = json.balance;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;
@@ -58,12 +59,9 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                 return this.quantityIn <= 0 || isNaN(this.quantityIn) || !this.consignee || !this.location
                     || !this.contactPerson || !this.deliveryDate;
             };
-
-            this.balance = json.balance;
         };
     })
-    .factory('DeliveryNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService,
-                                              ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
+    .factory('DeliveryNodeService', function ($http, $q, EumsConfig, ContactService, ConsigneeService, ServiceFactory, DeliveryNode, PurchaseOrderItemService) {
         return ServiceFactory.create({
             uri: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE,
             propertyServiceMap: {
