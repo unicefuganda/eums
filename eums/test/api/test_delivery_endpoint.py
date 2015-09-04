@@ -1,6 +1,7 @@
 import datetime
 
-from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, Flow
+from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, Flow, DistributionPlan, \
+    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
@@ -53,15 +54,30 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertEqual(response.data[0]['total_value'], 20)
 
     def test_should_filter_deliveries_by_programme(self):
-        programme = ProgrammeFactory()
+        programme = ProgrammeFactory(name='my programme')
         delivery = DeliveryFactory(programme=programme)
         DeliveryFactory()
 
-        response = self.client.get('%s?programme=%d' % (ENDPOINT_URL, programme.id))
+        response = self.client.get('%s?programme=%s' % (ENDPOINT_URL, 'my'))
 
         self.assertEqual(Delivery.objects.count(), 2)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], delivery.id)
+
+    def test_should_filter_deliveries_by_programme_for_ip(self):
+        programme = ProgrammeFactory(name='cool programme')
+        first_consignee = ConsigneeFactory()
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True, programme=programme)
+
+        self.logout()
+        self.log_consignee_in(consignee=first_consignee)
+
+        DeliveryFactory(consignee=first_consignee, track=True)
+
+        response = self.client.get('%s?programme=%s' % (ENDPOINT_URL, 'cool'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], first_delivery.id)
 
     def test_should_provide_delivery_is_received_value_from_api(self):
         delivery = DeliveryFactory()
@@ -140,6 +156,28 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         self.logout()
         self.log_consignee_in(consignee=first_consignee)
+
+        response = self.client.get(ENDPOINT_URL + '?query=123')
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertNotIn(second_delivery.id, ids)
+        self.assertNotIn(third_delivery.id, ids)
+
+    def test_should_filter_deliveries_by_ip_and_number_for_admin(self):
+        first_consignee = ConsigneeFactory()
+        second_consignee = ConsigneeFactory()
+
+        purchase_order = PurchaseOrderFactory(order_number=123)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+        DeliveryNodeFactory(item=po_item, distribution_plan=first_delivery)
+
+        second_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+        third_delivery = DeliveryFactory(consignee=second_consignee)
 
         response = self.client.get(ENDPOINT_URL + '?query=123')
 
@@ -246,6 +284,10 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertEqual(len(response.data), 2)
 
     def clean_up(self):
+        DistributionPlan.objects.all().delete()
+        DistributionPlanNode.objects.all().delete()
+        PurchaseOrder.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
         Programme.objects.all().delete()
         Consignee.objects.all().delete()
         UserProfile.objects.all().delete()

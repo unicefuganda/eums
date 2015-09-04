@@ -24,7 +24,6 @@ class DistributionPlanViewSet(ModelViewSet):
 
     queryset = DistributionPlan.objects.all()
     serializer_class = DistributionPlanSerialiser
-    filter_fields = ('programme',)
 
     @detail_route(['GET', ])
     def answers(self, request, *args, **kwargs):
@@ -39,18 +38,46 @@ class DistributionPlanViewSet(ModelViewSet):
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user
 
+        query = request.GET.get('query')
+        programme = request.GET.get('programme')
+        user_profile, consignee = self.get_user_profile(logged_in_user)
+        if user_profile and consignee:
+            deliveries = DistributionPlanViewSet._deliveries_for_ip(programme, query, consignee)
+            return Response(self.get_serializer(deliveries, many=True).data)
+
+        admin_deliveries = DistributionPlanViewSet._deliveries_for_admin(programme, query)
+        return Response(self.get_serializer(admin_deliveries, many=True).data)
+
+    @staticmethod
+    def get_user_profile(logged_in_user):
         try:
             user_profile = UserProfile.objects.get(user=logged_in_user)
-            if user_profile and user_profile.consignee:
-                query = request.GET.get('query')
-                deliveries = DistributionPlan.objects.filter(consignee=user_profile.consignee, track=True)
-                deliveries = filter(lambda delivery: query in str(delivery.number()),
-                                    deliveries) if query else deliveries
-
-                return Response(self.get_serializer(deliveries, many=True).data)
+            consignee = user_profile.consignee
+            return user_profile, consignee
         except:
-            return super(DistributionPlanViewSet, self).list(request, *args, **kwargs)
+            return None, None
 
+
+    @staticmethod
+    def _deliveries_for_admin(programme, query):
+        return DistributionPlanViewSet.filter_deliveries(
+            DistributionPlan.objects.filter(programme__name__icontains=programme
+                                            ) if programme else DistributionPlan.objects.all(),
+            query)
+
+    @staticmethod
+    def _deliveries_for_ip(programme, query, consignee):
+        return DistributionPlanViewSet.filter_deliveries(
+            DistributionPlan.objects.filter(consignee=consignee,
+                                            track=True,
+                                            programme__name__icontains=programme
+                                            ) if programme else DistributionPlan.objects.filter(
+                consignee=consignee, track=True), query)
+
+    @staticmethod
+    def filter_deliveries(deliveries, query):
+        return filter(lambda delivery: query in str(delivery.number()),
+                      deliveries) if query else deliveries
 
 distributionPlanRouter = DefaultRouter()
 distributionPlanRouter.register(r'distribution-plan', DistributionPlanViewSet)
