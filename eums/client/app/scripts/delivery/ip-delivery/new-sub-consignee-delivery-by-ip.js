@@ -72,7 +72,8 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
             }];
             DeliveryNodeService.create($scope.newDelivery, {changeCaseOnResponse: true}).then(function (createdDelivery) {
                 $scope.deliveries.add(createdDelivery, 0);
-                resetDeliveryData()
+                resetDeliveryData();
+                createToast('Sub-consignee Successfully Created', 'success');
             });
         }
 

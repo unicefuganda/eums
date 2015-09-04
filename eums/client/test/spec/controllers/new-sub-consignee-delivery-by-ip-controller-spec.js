@@ -189,6 +189,21 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(newDelivery, {changeCaseOnResponse: true});
         });
 
+
+        it('should show success toast upon save', function () {
+            scope.$apply();
+            setupNewDelivery();
+
+            scope.createNewDelivery();
+
+            scope.$apply();
+            expect(toast.create).toHaveBeenCalledWith({
+                content: 'Sub-consignee Successfully Created',
+                class: 'success'
+            });
+        });
+
+
         it('should add created delivery to the top of the deliveries list upon successful save', function () {
             var createdNode = {id: 2};
             setupNewDelivery();
@@ -340,32 +355,6 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', consignee);
         });
     });
-
-//
-    //it('should show success toast upon save', function () {
-    //    scope.$apply();
-    //    setupNewDelivery();
-    //    scope.save();
-    //    scope.$apply();
-    //    expect(toast.create).toHaveBeenCalledWith({
-    //        content: 'Delivery Successfully Created',
-    //        class: 'success'
-    //    });
-    //});
-    //
-    //it('should show failure toast when save fails', function () {
-    //    scope.$apply();
-    //    setupNewDelivery();
-    //    mockDeliveryNodeService.create.and.returnValue(q.reject());
-    //    scope.save();
-    //    scope.$apply();
-    //    expect(toast.create).toHaveBeenCalledWith({
-    //        content: 'Failed to save delivery',
-    //        class: 'danger'
-    //    });
-    //});
-    //
-
 
     //LOADERS
 
