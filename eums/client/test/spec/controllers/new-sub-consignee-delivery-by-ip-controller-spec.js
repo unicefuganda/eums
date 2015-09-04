@@ -1,6 +1,6 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
-        mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults;
+        mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults, mockWindow, mockHistory;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
 
@@ -26,6 +26,8 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             mockDeliveryNode = function (options) {
                 this.track = options.track;
             };
+            mockHistory = jasmine.createSpyObj('mockHistory', ['back']);
+            mockWindow = {history: mockHistory};
 
             deferredSearchResults = $q.defer();
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
@@ -48,7 +50,8 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: mockDeliveryNode,
                 ngToast: toast,
-                LoaderService: mockLoaderService
+                LoaderService: mockLoaderService,
+                $window: mockWindow
             });
         });
     });
@@ -356,12 +359,17 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
     });
 
-    //LOADERS
-
     it('should show loader on load', function () {
         scope.$apply();
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+    });
+
+
+    it('should go back to the previous history', function () {
+        scope.goBack();
+        scope.$apply();
+        expect(mockHistory.back).toHaveBeenCalled();
     });
 
 

@@ -3,7 +3,7 @@
     <div class="eums page-header row">
         <div class="pull-left pad-top-10">Report Sub-Consignees of: {{ parentNode.consigneeName }}</div>
         <div class="pull-right">
-            <a href="#/deliveries-by-ip/{{itemId}}/{{parentNode.id}}/new" class="btn blue-border-button">
+            <a ng-click="goBack()" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
                 Back Up
             </a>

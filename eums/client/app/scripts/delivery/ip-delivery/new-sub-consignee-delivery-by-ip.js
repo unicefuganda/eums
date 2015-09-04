@@ -4,13 +4,16 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
-                                                                   DeliveryNode, ngToast, LoaderService, $q) {
+    .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $window) {
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
         $scope.errors = false;
         $scope.searching = false;
         $scope.addingNewDelivery = false;
+
+        $scope.goBack = function () {
+            $window.history.back();
+        };
 
         var loadPromises = [];
         $scope.itemId = $routeParams.itemId;
@@ -66,10 +69,12 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
 
         function save() {
             $scope.newDelivery.item = $scope.parentNode.item;
-            $scope.newDelivery.parents = [{
-                id: $routeParams.parentNodeId,
-                quantity: $scope.newDelivery.quantity
-            }];
+            $scope.newDelivery.parents = [
+                {
+                    id: $routeParams.parentNodeId,
+                    quantity: $scope.newDelivery.quantity
+                }
+            ];
             DeliveryNodeService.create($scope.newDelivery, {changeCaseOnResponse: true}).then(function (createdDelivery) {
                 $scope.deliveries.add(createdDelivery, 0);
                 resetDeliveryData();
