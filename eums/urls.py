@@ -11,6 +11,7 @@ from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswe
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
+from eums.api.csv.warehouse_deliveries import WarehouseDeliveriesCSV
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
 from eums.api.item.item_endpoint import itemRouter
@@ -44,6 +45,7 @@ urlpatterns = patterns(
         name='import_sales_orders'),
     url(r'^api/ip-feedback-report/', 'eums.api.ip_feedback_report.ip_feedback_report_endpoint.ip_feedback_report',
         name='ip_feedback_report'),
+    url(r'^api/warehouse-deliveries-csv/', WarehouseDeliveriesCSV.as_view(), name='warehouse_deliveries_csv'),
     url(r'^api/import-release-orders/', 'eums.api.import_data.import_orders_endpoint.import_release_orders',
         name='import_release_orders'),
     url(r'^api/import-purchase-orders/', 'eums.api.import_data.import_orders_endpoint.import_purchase_orders',
