@@ -1,3 +1,4 @@
+from datetime import datetime
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.permissions import DjangoModelPermissions
@@ -41,8 +42,11 @@ class DistributionPlanViewSet(ModelViewSet):
         query = request.GET.get('query')
         programme = request.GET.get('programme')
         user_profile, consignee = self.get_user_profile(logged_in_user)
+        from_date = request.GET.get('from') if request.GET.get('from') else datetime(1970, 01, 1)
+        to_date = request.GET.get('to') if request.GET.get('to') else datetime.today()
         if user_profile and consignee:
-            deliveries = DistributionPlanViewSet._deliveries_for_ip(programme, query, consignee)
+            deliveries = DistributionPlanViewSet._deliveries_for_ip(programme, query, consignee, from_date, to_date)
+
             return Response(self.get_serializer(deliveries, many=True).data)
 
         admin_deliveries = DistributionPlanViewSet._deliveries_for_admin(programme, query)
@@ -57,7 +61,6 @@ class DistributionPlanViewSet(ModelViewSet):
         except:
             return None, None
 
-
     @staticmethod
     def _deliveries_for_admin(programme, query):
         return DistributionPlanViewSet.filter_deliveries(
@@ -66,18 +69,24 @@ class DistributionPlanViewSet(ModelViewSet):
             query)
 
     @staticmethod
-    def _deliveries_for_ip(programme, query, consignee):
+    def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
         return DistributionPlanViewSet.filter_deliveries(
-            DistributionPlan.objects.filter(consignee=consignee,
-                                            track=True,
-                                            programme__name__icontains=programme
-                                            ) if programme else DistributionPlan.objects.filter(
-                consignee=consignee, track=True), query)
+            DistributionPlan.objects.filter(
+                programme__name__icontains=programme,
+                delivery_date__range=[from_date, to_date],
+                consignee=consignee,
+                track=True
+                ) if programme else DistributionPlan.objects.filter(
+                consignee=consignee,
+                track=True,
+                delivery_date__range=[from_date, to_date]),
+            query)
 
     @staticmethod
     def filter_deliveries(deliveries, query):
         return filter(lambda delivery: query in str(delivery.number()),
                       deliveries) if query else deliveries
+
 
 distributionPlanRouter = DefaultRouter()
 distributionPlanRouter.register(r'distribution-plan', DistributionPlanViewSet)
