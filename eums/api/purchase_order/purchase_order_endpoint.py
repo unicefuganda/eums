@@ -34,7 +34,11 @@ class PurchaseOrderViewSet(ModelViewSet):
     @list_route()
     def for_direct_delivery(self, request, *args, **kwargs):
         query = request.GET.get('query')
-        purchase_orders = PurchaseOrder.objects.for_direct_delivery(search_term=query)
+        from_date = request.GET.get('from')
+        to_date = request.GET.get('to')
+        purchase_orders = PurchaseOrder.objects.for_direct_delivery(search_term=query,
+                                                                    from_date=from_date,
+                                                                    to_date=to_date)
         return Response(self.get_serializer(purchase_orders, many=True).data)
 
     @detail_route()

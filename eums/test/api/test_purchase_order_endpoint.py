@@ -1,3 +1,4 @@
+import datetime
 from mock import patch
 
 from eums.models import PurchaseOrder, Programme, DistributionPlan, PurchaseOrderItem, DistributionPlanNode, SalesOrder, \
@@ -47,6 +48,17 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
         po_two = PurchaseOrderFactory(order_number=12345)
 
         response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?query=123')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], po_two.id)
+
+    def test_should_get_purchase_orders_without_release_orders_by_date_range(self):
+        date = datetime.date(2014, 07, 9)
+        PurchaseOrderFactory()
+        po_two = PurchaseOrderFactory(date=date)
+
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?from=2014-07-6&to=2014-07-16')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)
