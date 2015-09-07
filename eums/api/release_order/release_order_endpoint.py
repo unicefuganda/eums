@@ -24,6 +24,8 @@ class ReleaseOrderViewSet(ModelViewSet):
         consignee_id = request.GET.get('consignee', None)
         delivered = request.GET.get('delivered', None)
         query = request.GET.get('query')
+        from_date = request.GET.get('from')
+        to_date = request.GET.get('to')
         if consignee_id:
             orders = ReleaseOrder.objects.for_consignee(consignee_id).order_by('waybill')
         else:
@@ -33,6 +35,7 @@ class ReleaseOrderViewSet(ModelViewSet):
                 orders = self.get_queryset()
 
         orders = orders.filter(waybill__icontains=query) if query else orders
+        orders = orders.filter(delivery_date__range=[from_date, to_date]) if (from_date and to_date) else orders
         return Response(self.get_serializer(orders, many=True).data)
 
     def get_queryset(self):

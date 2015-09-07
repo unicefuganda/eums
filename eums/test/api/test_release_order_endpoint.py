@@ -1,3 +1,4 @@
+import datetime
 from eums.models import ReleaseOrder, SalesOrder, PurchaseOrder, Consignee
 from eums.test.api.api_test_helpers import create_release_order
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -51,6 +52,15 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
         order = ReleaseOrderFactory(waybill=12345)
 
         response = self.client.get('%s?%s' % (ENDPOINT_URL, 'query=123'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], order.id)
+
+    def test_should_return_release_orders_filtered_by_date(self):
+        ReleaseOrderFactory()
+        order = ReleaseOrderFactory(delivery_date=datetime.date(2014, 10, 5))
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-05&to=2014-10-15'))
 
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], order.id)
