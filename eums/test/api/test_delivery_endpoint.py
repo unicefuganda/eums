@@ -256,6 +256,65 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertNotIn(second_delivery.id, ids)
         self.assertNotIn(third_delivery.id, ids)
 
+    def test_should_filter_admin_deliveries_by_date(self):
+        first_consignee = ConsigneeFactory()
+        second_consignee = ConsigneeFactory()
+
+        date = datetime.date(2014, 07, 9)
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True, delivery_date=date)
+        second_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+        third_delivery = DeliveryFactory(consignee=second_consignee, track=True)
+
+        response = self.client.get(ENDPOINT_URL + '?from=2014-07-6&to=2014-12-31')
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertNotIn(second_delivery.id, ids)
+        self.assertNotIn(third_delivery.id, ids)
+
+    def test_should_filter_admin_deliveries_by_date_when_only_form_date_exist(self):
+        first_consignee = ConsigneeFactory()
+        second_consignee = ConsigneeFactory()
+
+        date = datetime.date(2014, 07, 9)
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True, delivery_date=date)
+        second_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+        third_delivery = DeliveryFactory(consignee=second_consignee, track=True, delivery_date=date)
+
+        response = self.client.get(ENDPOINT_URL + '?from=2014-07-6')
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertIn(second_delivery.id, ids)
+        self.assertIn(third_delivery.id, ids)
+
+    def test_should_filter_admin_deliveries_by_multiple_queries(self):
+        first_consignee = ConsigneeFactory()
+        second_consignee = ConsigneeFactory()
+
+        purchase_order = PurchaseOrderFactory(order_number=123)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
+
+        date = datetime.date(2014, 07, 9)
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True, delivery_date=date)
+        DeliveryNodeFactory(item=po_item, distribution_plan=first_delivery)
+
+        second_delivery = DeliveryFactory(consignee=first_consignee, track=True, delivery_date=date)
+        third_delivery = DeliveryFactory(consignee=second_consignee)
+
+        response = self.client.get(ENDPOINT_URL + '?from=2014-07-6&to=2014-12-31&query=123')
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertNotIn(second_delivery.id, ids)
+        self.assertNotIn(third_delivery.id, ids)
+
     def test_should_return_type_of_delivery(self):
         po_item = PurchaseOrderItemFactory()
         delivery = DeliveryFactory()

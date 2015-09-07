@@ -46,10 +46,9 @@ class DistributionPlanViewSet(ModelViewSet):
         to_date = request.GET.get('to') if request.GET.get('to') else datetime.today()
         if user_profile and consignee:
             deliveries = DistributionPlanViewSet._deliveries_for_ip(programme, query, consignee, from_date, to_date)
-
             return Response(self.get_serializer(deliveries, many=True).data)
 
-        admin_deliveries = DistributionPlanViewSet._deliveries_for_admin(programme, query)
+        admin_deliveries = DistributionPlanViewSet._deliveries_for_admin(programme, query, from_date, to_date)
         return Response(self.get_serializer(admin_deliveries, many=True).data)
 
     @staticmethod
@@ -62,10 +61,12 @@ class DistributionPlanViewSet(ModelViewSet):
             return None, None
 
     @staticmethod
-    def _deliveries_for_admin(programme, query):
+    def _deliveries_for_admin(programme, query, from_date, to_date):
         return DistributionPlanViewSet.filter_deliveries(
-            DistributionPlan.objects.filter(programme__name__icontains=programme
-                                            ) if programme else DistributionPlan.objects.all(),
+            DistributionPlan.objects.filter(programme__name__icontains=programme,
+                                            delivery_date__range=[from_date, to_date]
+                                            ) if programme else DistributionPlan.objects.filter(
+                delivery_date__range=[from_date, to_date]),
             query)
 
     @staticmethod
@@ -76,7 +77,7 @@ class DistributionPlanViewSet(ModelViewSet):
                 delivery_date__range=[from_date, to_date],
                 consignee=consignee,
                 track=True
-                ) if programme else DistributionPlan.objects.filter(
+            ) if programme else DistributionPlan.objects.filter(
                 consignee=consignee,
                 track=True,
                 delivery_date__range=[from_date, to_date]),
