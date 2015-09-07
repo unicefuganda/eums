@@ -222,7 +222,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
 
 
-        iit('should add created delivery to the top of the deliveries list upon successful save', function () {
+        it('should add created delivery to the top of the deliveries list upon successful save', function () {
             var createdNode = {id: 2, contactPersonId: 10};
             setupNewDelivery();
             mockDeliveryNodeService.create.and.returnValue(q.when(createdNode));
