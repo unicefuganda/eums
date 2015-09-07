@@ -1,7 +1,7 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
         mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults, mockWindow,
-        mockHistory, mockItemService, item;
+        mockHistory, mockItemService, item, mockContactService, contact;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
 
@@ -20,11 +20,13 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
         parentNode = {id: 12, item: orderItemId, balance: 100};
         item = {description: 'some description'};
+        contact = {firstName: 'Sikatange', lastName: 'Jafari'};
 
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get', 'search']);
             mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
+            mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             mockDeliveryNode = function (options) {
                 this.track = options.track;
@@ -39,6 +41,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             mockDeliveryNodeService.get.and.returnValue($q.when(parentNode));
             mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
             mockItemService.get.and.returnValue($q.when(item));
+            mockContactService.get.and.returnValue($q.when(contact));
 
             scope = $rootScope.$new();
             routeParams = {itemId: 2, parentNodeId: 10};
@@ -56,7 +59,8 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
                 ngToast: toast,
                 LoaderService: mockLoaderService,
                 $window: mockWindow,
-                ItemService: mockItemService
+                ItemService: mockItemService,
+                ContactService: mockContactService
             });
         });
     });
@@ -218,15 +222,15 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         });
 
 
-        it('should add created delivery to the top of the deliveries list upon successful save', function () {
-            var createdNode = {id: 2};
+        iit('should add created delivery to the top of the deliveries list upon successful save', function () {
+            var createdNode = {id: 2, contactPersonId: 10};
             setupNewDelivery();
             mockDeliveryNodeService.create.and.returnValue(q.when(createdNode));
 
             scope.createNewDelivery();
             scope.$apply();
-
             expect(scope.deliveries.first()).toEqual(createdNode);
+            expect(mockContactService.get).toHaveBeenCalledWith(createdNode.contactPersonId);
         });
 
         it('should reload parent node upon successful save', function () {
