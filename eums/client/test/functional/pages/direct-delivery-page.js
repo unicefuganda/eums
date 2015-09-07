@@ -7,6 +7,20 @@ DirectDeliveryPage.prototype = Object.create({}, {
         browser.get(this.url);
         waitForPageToLoad();
     }},
+    waitForModalToLoad: {value: function () {
+        var EC = protractor.ExpectedConditions;
+        var modalControl = element(by.css('.modal.fade'));
+        var modal = EC.visibilityOf(modalControl);
+        browser.wait(modal, 5000, "Timeout when modal doesn't load");
+
+    }},
+    waitForModalToExit: {value: function () {
+        var EC = protractor.ExpectedConditions;
+        var modalControl = element(by.css('.modal.fade'));
+        var modal = EC.invisibilityOf(modalControl);
+        browser.wait(modal, 10000, "Timeout when modal doesn't exit");
+
+    }},
 
     purchaseOrders: { get: function () { return element.all(by.repeater('purchaseOrder in purchaseOrders').column('purchaseOrder.orderNumber')).getText(); }},
     purchaseOrderCount: { get: function () { return element.all(by.repeater('purchaseOrder in purchaseOrders')).count(); }},

@@ -70,7 +70,7 @@
                         <option value="">Select</option>
                     </select>
                 </td>
-                <td class="v-align-middle">
+                <td class="v-align-middle" id="satisfied-{{$index}}">
                     <select data-ng-model="node.answers[3].value"
                             required="required"
                             ng-disabled="node.answers[0].value == 'No'"
@@ -80,7 +80,7 @@
                     </select>
                 </td>
                 <td class="v-align-middle">
-                    <div class="text-center">
+                    <div class="text-center" id="btn-{{$index}}">
                         <button class="btn btn-default glyphicon glyphicon-list-alt"
                                 title="Remark"
                                 ng-click="addRemark($index)">
@@ -99,7 +99,7 @@
 
                                     <form role="form">
                                         <div class="form-group">
-                                        <textarea class="form-control"
+                                        <textarea class="form-control" id="remarksId"
                                                   ng-model="node.answers[4].value"
                                                   required rows="6">
                                         </textarea>
@@ -107,7 +107,7 @@
                                     </form>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary"
+                                    <button type="button" class="btn btn-primary" id="saveBtnId"
                                             data-dismiss="modal">OK
                                     </button>
                                 </div>

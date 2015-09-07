@@ -115,21 +115,40 @@ describe('Direct Delivery', function () {
         ipWarehouseDeliveryPage.extraComment();
         ipWarehouseDeliveryPage.confirmItems();
 
-//        confirmItemByItem.isItemReceived();
-//        confirmItemByItem.itemCondition();
-//        confirmItemByItem.satisfiedByItem();
-        //confirmItemByItem.itemDescription();
-//        confirmItemByItem.enterRemarks();
-//        confirmItemByItem.waitForModalToLoad();
-//        confirmItemByItem.saveRemarks();
-//        confirmItemByItem.exitRemarksModal();
-//        confirmItemByItem.waitForModalToExit();
-        //browser.pause();
-        confirmItemByItem.itemCondition();
+        confirmItemByItem.itemConditionFirst();
+        confirmItemByItem.itemSatisfiedFirst();
+        confirmItemByItem.remarksFirst();
+        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-0');
+        confirmItemByItem.enterRemarksFirst('Goods in perfect condition');
+        confirmItemByItem.saveCommentsFirst();
+        confirmItemByItem.exitRemarksModal();
+        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-0');
 
-       //browser.pause();
-        //confirmItemByItem.saveItems();
+        confirmItemByItem.itemConditionSecond();
+        confirmItemByItem.itemSatisfiedSecond();
+        confirmItemByItem.remarksSecond();
+        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-1');
+        confirmItemByItem.enterRemarksSecond('Goods in perfect condition. I am happy');
+        confirmItemByItem.saveCommentsSecond();
+        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-1');
 
+        confirmItemByItem.itemConditionThird();
+        confirmItemByItem.itemSatisfiedThird();
+        confirmItemByItem.remarksThird();
+        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-2');
+        confirmItemByItem.enterRemarksThird('Goods in perfect condition. I am Impressed');
+        confirmItemByItem.saveCommentsThird();
+        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-2');
+
+         confirmItemByItem.itemConditionFourth();
+        confirmItemByItem.itemSatisfiedFourth();
+        confirmItemByItem.remarksFourth();
+        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-3');
+        confirmItemByItem.enterRemarksFourth('Goods in perfect condition. I am out of here');
+        confirmItemByItem.saveCommentsFourth();
+        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-3');
+        confirmItemByItem.saveRecords();
+    
 
     })
 
