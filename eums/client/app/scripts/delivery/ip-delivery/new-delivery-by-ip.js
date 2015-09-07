@@ -57,9 +57,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
                 }
             });
             $scope.allDeliveries = nodes;
-            $scope.selectedDeliveries = $scope.allDeliveries.filter(function(delivery) {
-               return delivery.orderNumber ==  $scope.deliveryGroups.first().orderNumber;
-            });
+            $scope.selectedOrderNumber = $scope.deliveryGroups.first().orderNumber;
         }));
 
         $q.all(loadPromises).catch(function () {
@@ -89,6 +87,14 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             $scope.newDelivery.consignee = consignee;
             $scope.$broadcast('set-consignee', consignee);
             event.stopPropagation();
+        });
+
+        $scope.$watch('selectedOrderNumber', function(selectedOrderNumber) {
+            if($scope.allDeliveries) {
+                $scope.selectedDeliveries = $scope.allDeliveries.filter(function (delivery) {
+                    return delivery.orderNumber == selectedOrderNumber;
+                });
+            }
         });
 
         $scope.$watch('selectedDeliveries', function (deliveries) {

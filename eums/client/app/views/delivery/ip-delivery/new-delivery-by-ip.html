@@ -133,7 +133,7 @@
                     <th class="item-list-col-header">Avail. Qty</th>
                     <th class="item-list-col-header">Quantity Shipped</th>
                 </tr>
-                <tr ng-repeat="delivery in deliveries">
+                <tr ng-repeat="delivery in selectedDeliveries">
                     <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ delivery.orderNumber }}</td>
                     <td>{{ delivery.balance }}</td>

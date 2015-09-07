@@ -90,12 +90,12 @@ describe('New IP Delivery Controller', function () {
         expect(scope.deliveryGroups).toEqual(deliveryGroups);
     });
 
-    it('should load list of POs or Waybills for which deliveries have been made', function() {
-       scope.$apply();
+    it('should load list of POs or Waybills for which deliveries have been made', function () {
+        scope.$apply();
         expect(scope.deliveryGroups).toEqual(deliveryGroups);
     });
 
-    it('should select deliveries for the first PO or Waybill', function() {
+    it('should select deliveries for the first PO or Waybill', function () {
         scope.$apply();
         var selectedDeliveries = [
             {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10},
@@ -104,6 +104,17 @@ describe('New IP Delivery Controller', function () {
             {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40}
         ];
 
+        expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
+    });
+
+    it('should change selected deliveries when selected order number is changed', function () {
+        scope.$apply();
+        scope.selectedOrderNumber = '98765432';
+        scope.$apply();
+        var selectedDeliveries = [
+            {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10},
+            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20},
+        ];
         expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
     });
 
@@ -260,7 +271,7 @@ describe('New IP Delivery Controller', function () {
         });
     });
 
-    it('should redirect to deliveries by ip list upon successful save', function() {
+    it('should redirect to deliveries by ip list upon successful save', function () {
         scope.$apply();
         setupNewDelivery();
         scope.save();
