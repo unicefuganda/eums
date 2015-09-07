@@ -34,7 +34,32 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             item__item: $routeParams.itemId,
             is_distributable: true
         }).then(function (nodes) {
-            $scope.deliveries = nodes;
+            $scope.deliveryGroups = [];
+            nodes.forEach(function (node) {
+                var deliveryGroups = $scope.deliveryGroups.filter(function (deliveryGroup) {
+                    return deliveryGroup.orderNumber == node.orderNumber;
+                });
+                if (deliveryGroups.length == 0) {
+                    var deliveryGroup = {orderNumber: node.orderNumber};
+                    deliveryGroup.totalQuantity = nodes.reduce(function (acc, delivery) {
+                        if (delivery.orderNumber == node.orderNumber) {
+                            acc.quantityShipped += delivery.quantityShipped || 0;
+                        }
+                        return acc;
+                    }, {quantityShipped: 0}).quantityShipped;
+                    deliveryGroup.numberOfShipments = nodes.reduce(function (acc, delivery) {
+                        if (delivery.orderNumber == node.orderNumber) {
+                            acc.numberOfShipments += 1;
+                        }
+                        return acc;
+                    }, {numberOfShipments: 0}).numberOfShipments;
+                    $scope.deliveryGroups.push(deliveryGroup);
+                }
+            });
+            $scope.allDeliveries = nodes;
+            $scope.selectedDeliveries = $scope.allDeliveries.filter(function(delivery) {
+               return delivery.orderNumber ==  $scope.deliveryGroups.first().orderNumber;
+            });
         }));
 
         $q.all(loadPromises).catch(function () {
@@ -66,7 +91,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             event.stopPropagation();
         });
 
-        $scope.$watch('deliveries', function (deliveries) {
+        $scope.$watch('selectedDeliveries', function (deliveries) {
             if (deliveries) {
                 $scope.totalQuantityShipped = deliveries.reduce(function (acc, delivery) {
                     acc.quantityShipped += delivery.quantityShipped || 0;
@@ -83,7 +108,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
         });
 
         $scope.save = function () {
-            var parentDeliveries = $scope.deliveries.filter(function (delivery) {
+            var parentDeliveries = $scope.selectedDeliveries.filter(function (delivery) {
                 return delivery.quantityShipped > 0;
             });
             $scope.newDelivery.parents = parentDeliveries.map(function (delivery) {
@@ -124,7 +149,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
         }
 
         function allQuantitiesAreValid() {
-            return !$scope.deliveries.any(function (delivery) {
+            return !$scope.selectedDeliveries.any(function (delivery) {
                 return delivery.quantityShipped > delivery.balance;
             });
         }

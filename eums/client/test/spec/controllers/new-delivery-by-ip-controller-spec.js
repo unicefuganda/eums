@@ -1,6 +1,6 @@
 describe('New IP Delivery Controller', function () {
     var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
-        mockLoaderService, mockItemService, mockConsigneeItemService;
+        mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
     var fetchedItem = {id: 1, description: 'Some name', unit: 1};
@@ -10,10 +10,17 @@ describe('New IP Delivery Controller', function () {
         module('NewDeliveryByIp');
 
         ipNodes = [
-            {id: 1, item: orderItemId, quantityShipped: 10},
-            {id: 2, item: orderItemId, quantityShipped: 20},
-            {id: 3, item: orderItemId, quantityShipped: 30},
-            {id: 4, item: orderItemId, quantityShipped: 40}
+            {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10},
+            {id: 2, item: orderItemId, orderNumber: '12345678', quantityShipped: 20},
+            {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30},
+            {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40},
+            {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10},
+            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20},
+        ];
+
+        deliveryGroups = [
+            {orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4},
+            {orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2}
         ];
 
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
@@ -79,7 +86,25 @@ describe('New IP Delivery Controller', function () {
         scope.$apply();
         var filterParams = {item__item: routeParams.itemId, is_distributable: true};
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
-        expect(scope.deliveries).toEqual(ipNodes);
+        expect(scope.allDeliveries).toEqual(ipNodes);
+        expect(scope.deliveryGroups).toEqual(deliveryGroups);
+    });
+
+    it('should load list of POs or Waybills for which deliveries have been made', function() {
+       scope.$apply();
+        expect(scope.deliveryGroups).toEqual(deliveryGroups);
+    });
+
+    it('should select deliveries for the first PO or Waybill', function() {
+        scope.$apply();
+        var selectedDeliveries = [
+            {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10},
+            {id: 2, item: orderItemId, orderNumber: '12345678', quantityShipped: 20},
+            {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30},
+            {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40}
+        ];
+
+        expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
     });
 
     it('should fetch item details and put them on scope', function () {
@@ -151,11 +176,11 @@ describe('New IP Delivery Controller', function () {
     it('should compute new delivery quantity from individual deliveries quantityShipped', function () {
         scope.$apply();
         expect(scope.totalQuantityShipped).toBe(100);
-        scope.deliveries.first().quantityShipped = 100;
+        scope.selectedDeliveries.first().quantityShipped = 100;
         scope.$apply();
         expect(scope.totalQuantityShipped).toBe(190);
 
-        scope.deliveries.last().quantityShipped = 500;
+        scope.selectedDeliveries.last().quantityShipped = 500;
         scope.$apply();
         expect(scope.totalQuantityShipped).toBe(650);
     });
@@ -179,7 +204,7 @@ describe('New IP Delivery Controller', function () {
     it('should save new delivery using only parent nodes with non-zero quantities', function () {
         scope.$apply();
         var newDelivery = setupNewDelivery();
-        scope.deliveries = [
+        scope.selectedDeliveries = [
             {id: 1, item: orderItemId, quantityShipped: 10},
             {id: 2, item: orderItemId, quantityShipped: 0},
             {id: 3, item: orderItemId, quantityShipped: 40}
@@ -203,7 +228,7 @@ describe('New IP Delivery Controller', function () {
     it('should not save new delivery if all deliveries to IP have no or zero quantity shipped', function () {
         scope.$apply();
         setupNewDelivery();
-        scope.deliveries = [{id: 1, item: orderItemId}, {id: 2, item: orderItemId, quantityShipped: 0}];
+        scope.selectedDeliveries = [{id: 1, item: orderItemId}, {id: 2, item: orderItemId, quantityShipped: 0}];
         scope.save();
         expect(mockDeliveryNodeService.create).not.toHaveBeenCalled();
     });
@@ -211,7 +236,7 @@ describe('New IP Delivery Controller', function () {
     it('should not save new delivery if any of the deliveries has a quantity shipped higher than their balance', function () {
         scope.$apply();
         setupNewDelivery();
-        scope.deliveries = [
+        scope.selectedDeliveries = [
             {id: 1, balance: 10, item: orderItemId, quantityShipped: 50},
             {id: 2, balance: 20, item: orderItemId, quantityShipped: 10}
         ];
@@ -258,7 +283,7 @@ describe('New IP Delivery Controller', function () {
     it('should fail to save new delivery if its quantities are from shipments with different order numbers bu the same order type', function () {
         scope.$apply();
         setupNewDelivery();
-        scope.deliveries = [
+        scope.selectedDeliveries = [
             {id: 1, balance: 10, item: orderItemId, quantityShipped: 10, orderNumber: 444, orderType: 'waybill'},
             {id: 2, balance: 20, item: orderItemId, quantityShipped: 10, orderNumber: 555, orderType: 'waybill'}
         ];
@@ -269,7 +294,7 @@ describe('New IP Delivery Controller', function () {
     it('should fail to save new delivery if its quantities are from shipments with the same order numbers but different order types', function () {
         scope.$apply();
         setupNewDelivery();
-        scope.deliveries = [
+        scope.selectedDeliveries = [
             {id: 1, balance: 10, item: orderItemId, quantityShipped: 10, orderNumber: 444, orderType: 'waybill'},
             {id: 2, balance: 20, item: orderItemId, quantityShipped: 10, orderNumber: 444, orderType: 'purchase order'}
         ];
