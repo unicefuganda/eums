@@ -6,6 +6,6 @@ from rest_framework.views import APIView
 class WarehouseDeliveriesCSV(APIView):
 
     def get(self, request, *args, **kwargs):
-        generate_waybill_csv.apply_async()
+        generate_waybill_csv.delay(request.user)
         message = {'message': 'Generating CSV, you will be notified via email once it is done.'}
         return Response(message, status=200)

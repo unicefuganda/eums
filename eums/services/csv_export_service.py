@@ -1,6 +1,8 @@
 import csv
+from django.core import mail
 from eums.models import ReleaseOrderItem, DistributionPlanNode
 from eums.celery import app
+from django.conf import settings
 
 
 class CSV_Export_Service(object):
@@ -34,14 +36,23 @@ class CSV_Export_Service(object):
                 node.delivery_date.isoformat(), node.ip.name, contact_person, contact_number,
                 node.location, is_end_user, is_tracked]
 
-
     def generate(self):
-        export_file = open(self.FILENAME, 'wb')
-        data = self.data()
+        file_location = settings.EXPORTS_DIR + self.FILENAME
+        export_file = open(file_location, 'wb')
         wr = csv.writer(export_file, quoting=csv.QUOTE_ALL)
-        wr.writerows(data)
+        wr.writerows(self.data())
+
+    def notify(self, user):
+        subject = "Warehouse Delivery Download"
+        csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.FILENAME)
+        first_name = getattr(user, 'first_name', 'EUMS User')
+        message = settings.EMAIL_NOTIFICATION_CONTENT % (first_name, csv_url)
+        if getattr(user, 'email', None):
+            mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+
 
 @app.task
-def generate_waybill_csv():
+def generate_waybill_csv(user):
     csv = CSV_Export_Service(ReleaseOrderItem.WAYBILL)
     csv.generate()
+    csv.notify(user)

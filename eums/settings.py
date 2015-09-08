@@ -114,6 +114,9 @@ MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY', '')
 MAILGUN_SERVER_NAME = 'sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org'
 MAILGUN_SENDER = "UNICEF EUM <postmaster@sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org>"
 
+HOSTNAME = 'eums.unicefuganda.org'
+DEFAULT_FROM_EMAIL = 'admin@eums.unicefuganda.org'
+
 LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
@@ -156,6 +159,7 @@ import logging.config
 logging.config.dictConfig(LOGGING)
 
 try:
+    from export_settings import *
     from local_settings import *
 except ImportError:
     pass
