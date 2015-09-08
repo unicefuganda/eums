@@ -1,11 +1,12 @@
 from unittest import TestCase
 
-from eums.models import Consignee
+from eums.models import Consignee, DistributionPlan
 
 
 class ConsigneeTest(TestCase):
 
     def tearDown(self):
+        DistributionPlan.objects.all().delete()
         Consignee.objects.all().delete()
 
     def test_should_have_all_expected_fields(self):
