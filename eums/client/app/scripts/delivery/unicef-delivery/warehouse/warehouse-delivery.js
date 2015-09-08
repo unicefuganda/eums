@@ -5,7 +5,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveryService, ngToast) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -47,7 +47,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         };
 
         $scope.exportToCSV = function () {
-            ExportDeliveryService.all().then(function (response) {
+            ExportDeliveriesService.export().then(function (response) {
                 ngToast.create({content: response.message, class: 'success'});
             });
         }

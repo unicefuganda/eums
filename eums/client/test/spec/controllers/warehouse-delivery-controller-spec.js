@@ -12,13 +12,13 @@ describe('Warehouse Delivery Controller', function () {
         module('WarehouseDelivery');
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
-        mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['all']);
+        mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         inject(function ($controller, $rootScope, $location, $q, $sorter) {
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
-            mockExportDeliveryService.all.and.returnValue(deferredExportResult.promise);
+            mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
             scope = $rootScope.$new();
             location = $location;
 
@@ -30,7 +30,7 @@ describe('Warehouse Delivery Controller', function () {
                 $location: location,
                 ngToast: mockToast,
                 ReleaseOrderService: mockReleaseOrderService,
-                ExportDeliveryService: mockExportDeliveryService
+                ExportDeliveriesService: mockExportDeliveryService
             });
         });
     });
@@ -53,8 +53,7 @@ describe('Warehouse Delivery Controller', function () {
     it('should call the export warehouse deliveries to csv', function () {
 
         scope.exportToCSV();
-        expect(mockExportDeliveryService.all
-        ).toHaveBeenCalled();
+        expect(mockExportDeliveryService.export).toHaveBeenCalled();
 
     });
 
