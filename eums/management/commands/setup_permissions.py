@@ -47,7 +47,8 @@ GROUP_PERMISSIONS = {
         'add_consignee',
         'change_consignee',
         'delete_consignee',
-        'can_view_distribution_plans'
+        'can_view_distribution_plans',
+        'add_distributionplan'
     ],
     'Implementing Partner_viewer': [
         'can_view_dashboard',

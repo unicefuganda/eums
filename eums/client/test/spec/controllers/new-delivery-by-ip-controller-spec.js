@@ -1,10 +1,13 @@
 describe('New IP Delivery Controller', function () {
-    var mockIpService, location, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
+    var mockIpService, location, scope, q, mockDeliveryService, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
         mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
     var fetchedItem = {id: 1, description: 'Some name', unit: 1};
     var fetchedConsigneeItems = {results: [{id: 2, availableBalance: 450}]};
+
+    var distributionPlan = {id: 1, programme: "Some programme"};
+    var createdDistributionPlan = {id: 2, programme: "Some programme"};
 
     beforeEach(function () {
         module('NewDeliveryByIp');
@@ -25,6 +28,7 @@ describe('New IP Delivery Controller', function () {
 
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
+            mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['get', 'create']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             mockItemService = jasmine.createSpyObj('ItemService', ['get']);
@@ -34,6 +38,8 @@ describe('New IP Delivery Controller', function () {
                 this.track = options.track;
             };
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
+            mockDeliveryService.get.and.returnValue($q.when(distributionPlan));
+            mockDeliveryService.create.and.returnValue($q.when(createdDistributionPlan));
             mockDeliveryNodeService.filter.and.returnValue($q.when(ipNodes));
             mockDeliveryNodeService.create.and.returnValue($q.when({}));
             mockItemService.get.and.returnValue($q.when(fetchedItem));
@@ -52,6 +58,7 @@ describe('New IP Delivery Controller', function () {
                 $scope: scope,
                 IPService: mockIpService,
                 $routeParams: routeParams,
+                DeliveryService: mockDeliveryService,
                 DeliveryNodeService: mockDeliveryNodeService,
                 DeliveryNode: mockDeliveryNode,
                 ngToast: toast,
@@ -128,7 +135,6 @@ describe('New IP Delivery Controller', function () {
         expect(mockConsigneeItemService.filter).toHaveBeenCalledWith({item: 2});
         expect(scope.quantityAvailable).toBe(450);
     });
-
 
     it('should broadcast add contact event when addContact is called', function () {
         spyOn(scope, '$broadcast');
@@ -215,12 +221,14 @@ describe('New IP Delivery Controller', function () {
     it('should save new delivery using only parent nodes with non-zero quantities', function () {
         scope.$apply();
         var newDelivery = setupNewDelivery();
-        scope.selectedDeliveries = [
-            {id: 1, item: orderItemId, quantityShipped: 10},
-            {id: 2, item: orderItemId, quantityShipped: 0},
-            {id: 3, item: orderItemId, quantityShipped: 40}
+        scope.deliveries = [
+            {id: 1, item: orderItemId, quantityShipped: 10, distributionPlan: 1},
+            {id: 2, item: orderItemId, quantityShipped: 0, distributionPlan: 2},
+            {id: 3, item: orderItemId, quantityShipped: 40, distributionPlan: 3}
         ];
+
         scope.save();
+        scope.$apply();
 
         var createArgs = mockDeliveryNodeService.create.calls.allArgs().first().first();
         var additionalFields = {track: true, item: 1890, parents: [{id: 1, quantity: 10}, {id: 3, quantity: 40}]};

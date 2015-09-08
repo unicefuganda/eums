@@ -76,6 +76,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
 
         function save() {
             $scope.newDelivery.item = $scope.parentNode.item;
+            $scope.newDelivery.distributionPlan = $scope.parentNode.distributionPlan;
             $scope.newDelivery.parents = [
                 {
                     id: $routeParams.parentNodeId,

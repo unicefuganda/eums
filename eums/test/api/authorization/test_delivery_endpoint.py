@@ -150,7 +150,7 @@ class DeliveryEndpointTest(APITestCase):
         self.assertEqual(response.status_code, 403)
 
     # Implementing partner editor:
-    def test_should_not_allow_implementing_partner_editors_to_create_deliveries(self):
+    def test_should_allow_implementing_partner_editors_to_create_deliveries(self):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
         self._login_as('Implementing Partner_editor')
@@ -163,7 +163,7 @@ class DeliveryEndpointTest(APITestCase):
             'contact_person_id': 'some_id'
         })
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 201)
 
     def test_should_allow_implementing_partner_editors_to_view_deliveries(self):
         delivery = DeliveryFactory()

@@ -6,7 +6,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
     }])
     .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
                                                        DeliveryNode, ngToast, LoaderService, $q, ItemService,
-                                                       ConsigneeItemService, $location) {
+                                                       ConsigneeItemService, $location, DeliveryService) {
         $scope.districts = [];
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.errors = false;
@@ -124,7 +124,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             if (parentDeliveries.length && scopeDataIsValid(parentDeliveries)) {
                 LoaderService.showLoader();
                 $scope.newDelivery.item = parentDeliveries.first().item;
-                createNewDelivery();
+                createDistributionPlanAndNode(parentDeliveries.first());
             }
             else {
                 $scope.errors = true;
@@ -132,7 +132,25 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             }
         };
 
-        function createNewDelivery() {
+        function createDistributionPlanAndNode(parentNode) {
+            DeliveryService.get(parentNode.distributionPlan).then(function (distributionPlan) {
+                var distributionPlan = {
+                    programme: distributionPlan.programme,
+                    consignee: $scope.newDelivery.consignee,
+                    location: $scope.newDelivery.location,
+                    contact_person_id: $scope.newDelivery.contact_person_id,
+                    delivery_date: $scope.newDelivery.deliveryDate,
+                    remark: $scope.newDelivery.remark,
+                    track: $scope.newDelivery.track
+                };
+                DeliveryService.create(distributionPlan).then(function (createdPlan) {
+                    $scope.newDelivery.distributionPlan = createdPlan.id;
+                    createNewDeliveryNode();
+                });
+            });
+        }
+
+        function createNewDeliveryNode() {
             DeliveryNodeService.create($scope.newDelivery).then(function () {
                 createToast('Delivery Successfully Created', 'success');
                 $location.path('/deliveries-by-ip/' + $routeParams.itemId);

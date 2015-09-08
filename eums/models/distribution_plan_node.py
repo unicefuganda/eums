@@ -48,7 +48,9 @@ class DistributionPlanNode(Runnable):
 
     def get_ip(self):
         root_node = DistributionPlanNode.objects.root_nodes_for(delivery=self.distribution_plan).first()
-        return {'id': root_node.id, 'location': root_node.location}
+        if root_node:
+            return {'id': root_node.id, 'location': root_node.location}
+        return self._parents().first().get_ip()
 
     def sender_name(self):
         return "UNICEF" if self.is_root() else self._parents().first().consignee.name
