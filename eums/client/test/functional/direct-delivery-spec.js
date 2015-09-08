@@ -3,19 +3,19 @@
 var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
-var ipWarehouseDeliveryPage = require('./pages/ip-warehouse-delivery-page.js');
+var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var confirmItemByItem = require('./pages/ip-items-deliveries-page.js');
-var PURCHASE_ORDER_NUMBER1, PURCHASE_ORDER_NUMBER2;
+
 describe('Direct Delivery', function () {
+
+    var PURCHASE_ORDER_NUMBER1 = '81026395';
+    var PURCHASE_ORDER_NUMBER2 = '81029906';
 
     beforeEach(function () {
         loginPage.visit();
-        PURCHASE_ORDER_NUMBER1 = '81026395';
-        PURCHASE_ORDER_NUMBER2 = '81029906';
     });
 
     it('Admin should be able to create direct deliveries to multiple IPs', function () {
-
         loginPage.loginAs('admin', 'admin');
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
@@ -105,15 +105,16 @@ describe('Direct Delivery', function () {
 
     it('Acknowledge direct delivery for purchase order', function () {
         loginPage.loginAs('wakiso', 'wakiso');
-        ipWarehouseDeliveryPage.visit();
-        directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
-        ipWarehouseDeliveryPage.confirmDelivery();
-        ipWarehouseDeliveryPage.selectAnswer();
-        ipWarehouseDeliveryPage.deliveryDate();
-        ipWarehouseDeliveryPage.itemCondition();
-        ipWarehouseDeliveryPage.satisfiedByItem();
-        ipWarehouseDeliveryPage.extraComment();
-        ipWarehouseDeliveryPage.confirmItems();
+        ipShipmentsPage.visit();
+
+        ipShipmentsPage.searchForShipment(PURCHASE_ORDER_NUMBER2);
+        ipShipmentsPage.viewDeliveryDetails();
+        ipShipmentsPage.specifyDeliveryAsReceived();
+        ipShipmentsPage.specifyDeliveryReceiptDate('12/08/2015');
+        ipShipmentsPage.specifyDeliveryConditionAsGood();
+        ipShipmentsPage.specifyDeliverySatisfactionAsYes();
+        ipShipmentsPage.addRemarks('The delivery was awesome');
+        ipShipmentsPage.saveAndProceedToItemsInDelivery();
 
         confirmItemByItem.itemConditionFirst();
         confirmItemByItem.itemSatisfiedFirst();
@@ -140,7 +141,7 @@ describe('Direct Delivery', function () {
         confirmItemByItem.saveCommentsThird();
         confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-2');
 
-         confirmItemByItem.itemConditionFourth();
+        confirmItemByItem.itemConditionFourth();
         confirmItemByItem.itemSatisfiedFourth();
         confirmItemByItem.remarksFourth();
         confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-3');
@@ -148,8 +149,6 @@ describe('Direct Delivery', function () {
         confirmItemByItem.saveCommentsFourth();
         confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-3');
         confirmItemByItem.saveRecords();
-    
-
     })
 
 });

@@ -75,7 +75,8 @@
                             <td class="pad-10">{{answers[0].text}}</td>
                             <td>
                                 <span>
-                                    <select ng-model="answers[0].value"
+                                    <select id="deliveryConfirmationSelect"
+                                            ng-model="answers[0].value"
                                             required="required"
                                             class="form-control"
                                             ng-options="option for option in answers[0].options ">
