@@ -41,7 +41,8 @@
         "QUALITY_OPTIONS": "api/quality-options/",
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission",
-        "ALERTS": "/api/alert/"
+        "ALERTS": "/api/alert/",
+        "EXPORT_WAREHOUSE_DELIVERIES": "/api/export-warehouse-deliveries/"
     },
     "CONTACT_SERVICE_URL": "http://eum.unicefuganda.org/contacts/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",

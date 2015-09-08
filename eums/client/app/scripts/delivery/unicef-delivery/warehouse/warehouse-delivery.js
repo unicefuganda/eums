@@ -1,8 +1,8 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact'])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter) {
+angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact', 'ExportDeliveries', 'ngToast'])
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveryService, ngToast) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -42,5 +42,16 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         $scope.selectReleaseOrder = function (selectedReleaseOrderId) {
             $location.path('/warehouse-delivery/new/' + selectedReleaseOrderId);
         };
+
+        $scope.exportToCSV = function(){
+            ExportDeliveryService.get('').then(function(response){
+                ngToast.create({
+                    content: response.message,
+                    class: 'success',
+                    maxNumber: 1,
+                    dismissOnTimeout: true
+                });
+            });
+        }
     });
 
