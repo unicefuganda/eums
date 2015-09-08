@@ -12,7 +12,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
 
         function loadDeliveries(urlArgs) {
             LoaderService.showLoader();
-            DeliveryService.all(urlArgs)
+            DeliveryService.all(undefined, urlArgs)
                 .then(function (deliveries) {
                     $scope.deliveries = deliveries;
                     LoaderService.hideLoader();
@@ -113,11 +113,15 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 urlArgs = !hasDateRange ?
                     {query: $scope.query} :
                     !$scope.query ?
-                    {from: $scope.fromDate, to: $scope.toDate} :
-                    {from: $scope.fromDate, to: $scope.toDate, query: $scope.query};
+                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate)} :
+                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate), query: $scope.query};
                 loadDeliveries(urlArgs);
             }
         }, true);
+
+        function formatDate(date) {
+            return moment(date).format('YYYY-MM-DD')
+        }
     });
 
 

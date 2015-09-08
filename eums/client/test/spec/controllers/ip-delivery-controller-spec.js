@@ -434,7 +434,7 @@ describe('IP Delivery Controller', function () {
 
         it('should not filter when toDate is empty', function () {
             initializeController();
-            scope.fromDate = '2014-07-7';
+            scope.fromDate = '2014-07-07';
             scope.$apply();
 
             expect(mockDeliveryService.all.calls.count()).toEqual(1);
@@ -442,7 +442,7 @@ describe('IP Delivery Controller', function () {
 
         it('should not filter when fromDate is empty', function () {
             initializeController();
-            scope.toDate = '2014-07-7';
+            scope.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockDeliveryService.all.calls.count()).toEqual(1);
@@ -450,43 +450,53 @@ describe('IP Delivery Controller', function () {
 
         it('should filter deliveries when date range is given', function () {
             initializeController();
-            scope.fromDate = '2014-05-7';
-            scope.toDate = '2014-07-7';
+            scope.fromDate = '2014-05-07';
+            scope.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith({from: '2014-05-7', to: '2014-07-7'});
+            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07'});
+        });
+
+        it('should format dates before filtering deliveries ', function () {
+            initializeController();
+            scope.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
+            scope.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
+            scope.$apply();
+
+            expect(mockDeliveryService.all.calls.count()).toEqual(2);
+            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {from: '2015-08-30', to: '2015-09-10'});
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
             initializeController();
             scope.query = 'wakiso programme';
-            scope.fromDate = '2014-05-7';
-            scope.toDate = '2014-07-7';
+            scope.fromDate = '2014-05-07';
+            scope.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith({from: '2014-05-7', to: '2014-07-7', query: 'wakiso programme'})
+            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
         });
 
         it('should filter deliveries without date when fromDate is not given with additional query', function () {
             initializeController();
             scope.query = 'wakiso programme';
-            scope.toDate = '2014-07-7';
+            scope.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith({query: 'wakiso programme'})
+            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
         });
 
         it('should not filter deliveries when toDate is not given with additional query', function () {
             initializeController();
             scope.query = 'wakiso programme';
-            scope.fromDate = '2014-07-7';
+            scope.fromDate = '2014-07-07';
             scope.$apply();
 
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith({query: 'wakiso programme'})
+            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
         });
     });
 });
