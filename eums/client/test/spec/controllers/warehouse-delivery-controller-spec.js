@@ -12,13 +12,13 @@ describe('Warehouse Delivery Controller', function () {
         module('WarehouseDelivery');
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
-        mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['get']);
+        mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['all']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         inject(function ($controller, $rootScope, $location, $q, $sorter) {
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
-            mockExportDeliveryService.get.and.returnValue(deferredExportResult.promise);
+            mockExportDeliveryService.all.and.returnValue(deferredExportResult.promise);
             scope = $rootScope.$new();
             location = $location;
 
@@ -53,7 +53,8 @@ describe('Warehouse Delivery Controller', function () {
     it('should call the export warehouse deliveries to csv', function () {
 
         scope.exportToCSV();
-        expect(mockExportDeliveryService.get).toHaveBeenCalled();
+        expect(mockExportDeliveryService.all
+        ).toHaveBeenCalled();
 
     });
 
@@ -65,9 +66,7 @@ describe('Warehouse Delivery Controller', function () {
         scope.$apply();
         expect(mockToast.create).toHaveBeenCalledWith({
             content: message,
-            class: 'success',
-            maxNumber: 1,
-            dismissOnTimeout: true
+            class: 'success'
         });
     });
 });

@@ -6,7 +6,7 @@ from eums.test.config import BACKEND_URL
 from mock import patch
 
 
-ENDPOINT_URL = BACKEND_URL + 'warehouse-deliveries-csv/'
+ENDPOINT_URL = BACKEND_URL + 'export-warehouse-deliveries/'
 
 
 class TestWarehouseDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
