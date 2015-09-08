@@ -36,7 +36,6 @@ describe('Warehouse Delivery', function () {
 
     it('IP should be able to confirm Waybill delivery', function () {
         loginPage.loginAs('wakiso', 'wakiso');
-        loginPage.loginAs('wakiso', 'wakiso');
         ipWarehouseDeliveryPage.visit();
         ipWarehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
         ipWarehouseDeliveryPage.confirmDelivery();
