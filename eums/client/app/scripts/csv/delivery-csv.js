@@ -1,7 +1,9 @@
-angular.module('ExportDeliveries', ['eums.config', 'eums.service-factory'])
-    .factory('ExportDeliveryService', function (EumsConfig, ServiceFactory) {
-        return ServiceFactory.create({
-            uri: EumsConfig.BACKEND_URLS.EXPORT_WAREHOUSE_DELIVERIES
-        });
-
+angular.module('ExportDeliveries', ['eums.config'])
+    .factory('ExportDeliveriesService', function ($http, EumsConfig) {
+        var endPoint = EumsConfig.BACKEND_URLS.EXPORT_WAREHOUSE_DELIVERIES;
+        return {
+            export: function () {
+                return $http.get(endPoint);
+            }
+        };
     });
