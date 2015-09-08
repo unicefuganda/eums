@@ -30,6 +30,7 @@ postgres:
 web:
   build: .
   dockerfile: Dockerfile.web
+  env_file: local.env
   expose:
     - "8000:8000"
   links:
