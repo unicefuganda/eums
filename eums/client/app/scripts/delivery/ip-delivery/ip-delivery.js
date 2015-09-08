@@ -10,9 +10,9 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         var questionLabel = 'deliveryReceived';
         $scope.searchFields = ['number', 'date'];
 
-        function loadDeliveries() {
+        function loadDeliveries(urlArgs) {
             LoaderService.showLoader();
-            DeliveryService.all()
+            DeliveryService.all(urlArgs)
                 .then(function (deliveries) {
                     $scope.deliveries = deliveries;
                     LoaderService.hideLoader();
@@ -91,7 +91,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 if (answer.question_label == 'additionalDeliveryComments') {
                     isValid.add(true);
                 }
-                else{
+                else {
                     if (answer.type == 'multipleChoice') {
                         isValid.add(answer.options.indexOf(answer.value) > -1);
                     } else if (answer.type == 'text') {
@@ -105,6 +105,19 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function _isValidChoice(answers) {
             return answers.length > 0 ? answers.first().options.indexOf(answers.first().value) > -1 : false;
         }
+
+        $scope.$watch('[fromDate,toDate,query]', function () {
+            var hasDateRange = ($scope.fromDate && $scope.toDate);
+            if ($scope.query || hasDateRange) {
+                var urlArgs;
+                urlArgs = !hasDateRange ?
+                    {query: $scope.query} :
+                    !$scope.query ?
+                    {from: $scope.fromDate, to: $scope.toDate} :
+                    {from: $scope.fromDate, to: $scope.toDate, query: $scope.query};
+                loadDeliveries(urlArgs);
+            }
+        }, true);
     });
 
 
