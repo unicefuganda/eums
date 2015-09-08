@@ -89,23 +89,27 @@ DirectDeliveryPage.prototype = Object.create({}, {
     }},
 
     setConsignee: { value: function (input) {
-        fillSelect2Chosen('input-consignee', input)
+        fillSelect2Chosen('input-consignee', input);
     }},
 
     setContact: { value: function (input) {
-        fillSelect2Chosen('input-contact', input)
+        fillSelect2Chosen('input-contact', input);
     }},
 
     setContactForSingleIP: { value: function (input) {
-        fillSelect2Chosen('input-contact-single-ip', input)
+        fillSelect2Chosen('input-contact-single-ip', input);
     }},
 
     setDistrict: { value: function (input) {
-        fillSelect2Chosen('input-location', input)
+        fillSelect2Chosen('input-location', input);
+    }},
+
+    enableTracking: { value: function (input) {
+        element.all(by.css('#input-track div input')).get(0).click();
     }},
 
     setDistrictForSingleIP: { value: function (input) {
-        fillSelect2Chosen('input-location-single-ip', input)
+        fillSelect2Chosen('input-location-single-ip', input);
     }},
 
     saveDelivery: { value: function () {

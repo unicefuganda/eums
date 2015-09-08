@@ -2,7 +2,6 @@
 
 var loginPage = require('./pages/login-page.js');
 var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
-var confirmItemByItem = require('./pages/ip-items-deliveries-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 
 describe('Warehouse Delivery', function () {
@@ -44,14 +43,13 @@ describe('Warehouse Delivery', function () {
         ipShipmentsPage.addRemarks('The delivery was good');
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
 
-        confirmItemByItem.isItemReceived();
-        confirmItemByItem.itemCondition();
-        confirmItemByItem.satisfiedByItem();
-        confirmItemByItem.enterRemarks();
-        confirmItemByItem.waitForModalToLoad();
-        confirmItemByItem.saveRemarks();
-        confirmItemByItem.exitRemarksModal();
-        confirmItemByItem.waitForModalToExit();
-        confirmItemByItem.saveItems();
+        var itemRowIndex = 0;
+        ipShipmentsPage.specifyItemReceived(itemRowIndex, 'Yes');
+        ipShipmentsPage.specifyQtyReceived(itemRowIndex, 50);
+        ipShipmentsPage.specifyItemCondition(itemRowIndex, 'Good');
+        ipShipmentsPage.specifyItemSatisfaction(itemRowIndex, 'Yes');
+        ipShipmentsPage.addItemRemark(itemRowIndex, 'All Good');
+
+        ipShipmentsPage.saveItemConfirmation();
     });
 });

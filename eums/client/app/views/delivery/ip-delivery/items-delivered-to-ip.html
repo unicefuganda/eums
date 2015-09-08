@@ -48,7 +48,7 @@
                 <td class="centered v-align-middle">{{ $index + 1 }}</td>
                 <td class="v-align-middle">{{ node.itemDescription }}</td>
                 <td class="v-align-middle">{{ node.quantityIn }}</td>
-                <td class="v-align-middle">
+                <td class="v-align-middle itemReceived">
                     <select data-ng-model="node.answers[0].value"
                             required="required"
                             class="form-control"
@@ -61,7 +61,7 @@
                            ng-disabled="node.answers[0].value == 'No'"
                            data-ng-model="node.answers[1].value"/>
                 </td>
-                <td class="v-align-middle" id="condition-{{$index}}">
+                <td class="v-align-middle itemCondition" id="condition-{{$index}}">
                     <select data-ng-model="node.answers[2].value"
                             required="required"
                             ng-disabled="node.answers[0].value == 'No'"
@@ -70,7 +70,7 @@
                         <option value="">Select</option>
                     </select>
                 </td>
-                <td class="v-align-middle" id="satisfied-{{$index}}">
+                <td class="v-align-middle itemSatisfaction" id="satisfied-{{$index}}">
                     <select data-ng-model="node.answers[3].value"
                             required="required"
                             ng-disabled="node.answers[0].value == 'No'"
@@ -80,7 +80,7 @@
                     </select>
                 </td>
                 <td class="v-align-middle">
-                    <div class="text-center" id="btn-{{$index}}">
+                    <div class="text-center itemRemark" id="btn-{{$index}}">
                         <button class="btn btn-default glyphicon glyphicon-list-alt"
                                 title="Remark"
                                 ng-click="addRemark($index)">

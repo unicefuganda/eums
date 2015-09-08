@@ -4,18 +4,14 @@ var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
-var confirmItemByItem = require('./pages/ip-items-deliveries-page.js');
 
 describe('Direct Delivery', function () {
 
     var PURCHASE_ORDER_NUMBER1 = '81026395';
     var PURCHASE_ORDER_NUMBER2 = '81029906';
 
-    beforeEach(function () {
-        loginPage.visit();
-    });
-
     it('Admin should be able to create direct deliveries to multiple IPs', function () {
+        loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
@@ -32,6 +28,7 @@ describe('Direct Delivery', function () {
         directDeliveryPage.setConsignee('WAKISO');
         directDeliveryPage.setContact('John');
         directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.enableTracking();
 
         directDeliveryPage.saveDelivery();
         directDeliveryPage.confirmDelivery();
@@ -104,10 +101,11 @@ describe('Direct Delivery', function () {
     });
 
     it('Acknowledge direct delivery for purchase order', function () {
+        loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
 
-        ipShipmentsPage.searchForShipment(PURCHASE_ORDER_NUMBER2);
+        ipShipmentsPage.searchForShipment(PURCHASE_ORDER_NUMBER1);
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
         ipShipmentsPage.specifyDeliveryReceiptDate('12/08/2015');
@@ -116,39 +114,14 @@ describe('Direct Delivery', function () {
         ipShipmentsPage.addRemarks('The delivery was awesome');
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
 
-        confirmItemByItem.itemConditionFirst();
-        confirmItemByItem.itemSatisfiedFirst();
-        confirmItemByItem.remarksFirst();
-        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-0');
-        confirmItemByItem.enterRemarksFirst('Goods in perfect condition');
-        confirmItemByItem.saveCommentsFirst();
-        confirmItemByItem.exitRemarksModal();
-        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-0');
+        var itemRowIndex = 0;
+        ipShipmentsPage.specifyItemReceived(itemRowIndex, 'Yes');
+        ipShipmentsPage.specifyQtyReceived(itemRowIndex, 500);
+        ipShipmentsPage.specifyItemCondition(itemRowIndex, 'Good');
+        ipShipmentsPage.specifyItemSatisfaction(itemRowIndex, 'Yes');
+        ipShipmentsPage.addItemRemark(itemRowIndex, 'All Good');
 
-        confirmItemByItem.itemConditionSecond();
-        confirmItemByItem.itemSatisfiedSecond();
-        confirmItemByItem.remarksSecond();
-        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-1');
-        confirmItemByItem.enterRemarksSecond('Goods in perfect condition. I am happy');
-        confirmItemByItem.saveCommentsSecond();
-        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-1');
-
-        confirmItemByItem.itemConditionThird();
-        confirmItemByItem.itemSatisfiedThird();
-        confirmItemByItem.remarksThird();
-        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-2');
-        confirmItemByItem.enterRemarksThird('Goods in perfect condition. I am Impressed');
-        confirmItemByItem.saveCommentsThird();
-        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-2');
-
-        confirmItemByItem.itemConditionFourth();
-        confirmItemByItem.itemSatisfiedFourth();
-        confirmItemByItem.remarksFourth();
-        confirmItemByItem.waitForElementToLoad('add-remark-answer-modal-3');
-        confirmItemByItem.enterRemarksFourth('Goods in perfect condition. I am out of here');
-        confirmItemByItem.saveCommentsFourth();
-        confirmItemByItem.waitForThisElementToExit('add-remark-answer-modal-3');
-        confirmItemByItem.saveRecords();
+        ipShipmentsPage.saveItemConfirmation();
     })
 
 });

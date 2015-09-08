@@ -14,6 +14,7 @@ IpShipmentsPage.prototype = Object.create({}, {
         this.searchBar.clear().sendKeys(searchTerm);
     }},
 
+
     viewDeliveryDetails: { value: function () {
        element.all(by.css('.viewDeliveryDetailsBtn')).get(0).click();
     }},
@@ -34,6 +35,37 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
+    }},
+
+
+    specifyItemReceived: { value: function (rowIndex, value) {
+        element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$(".itemReceived option[label='"+ value +"']").click();
+    }},
+    specifyQtyReceived: { value: function (rowIndex, value) {
+        element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$("input").clear().sendKeys(value);
+    }},
+    specifyItemCondition: { value: function (rowIndex, value) {
+        element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$(".itemCondition option[label='"+ value +"']").click();
+    }},
+    specifyItemSatisfaction: { value: function (rowIndex, value) {
+        element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$(".itemSatisfaction option[label='"+ value +"']").click();
+    }},
+    addItemRemark: { value: function (rowIndex, value) {
+        element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$(".itemRemark button").click();
+
+        var EC = protractor.ExpectedConditions;
+        var remarksModal = element(by.id("add-remark-answer-modal-" + rowIndex));
+        var remarksModalHasLoaded = EC.visibilityOf(remarksModal);
+        var remarksModalHasExited = EC.invisibilityOf(remarksModal);
+        browser.wait(remarksModalHasLoaded, 5000, "Timeout waiting for remarks modal to load");
+
+        element(by.css("#add-remark-answer-modal-" + rowIndex + " textarea")).clear().sendKeys(value);
+        element(by.partialButtonText('OK')).click();
+        browser.wait(remarksModalHasExited, 5000, "Timeout waiting for remarks modal to exit");
+    }},
+
+    saveItemConfirmation: { value: function () {
+        element(by.id('saveBtn')).click();
     }}
 
 });
