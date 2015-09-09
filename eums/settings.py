@@ -97,7 +97,7 @@ CONTACTS_SERVICE_URL = environ('CONTACTS_SERVICE_URL', 'http://localhost:8005/ap
 
 # RapidPro settings
 RAPIDPRO_API_TOKEN = environ('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
-RAPIDPRO_URL = environ('https://app.rapidpro.io/api/v1/')
+RAPIDPRO_URL = environ('RAPIDPRO_URL', 'https://app.rapidpro.io/api/v1/')
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
     'RUNS': "%sruns.json" % RAPIDPRO_URL
