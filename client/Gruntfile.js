@@ -5,7 +5,6 @@ module.exports = function(grunt) {
   require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
   var _ = require('lodash');
-  var proxySnippet = require('grunt-connect-proxy/lib/utils').proxyRequest;
 
   // Configurable paths for the application
   var venvHome = grunt.option('venvHome') || '~/.virtualenvs/';
@@ -34,23 +33,6 @@ module.exports = function(grunt) {
           }
         }
       },
-      functional: {
-        options: {
-          port: 8150,
-          middleware: function(connect, options) {
-            return [proxySnippet];
-          }
-        },
-        proxies: [{
-          context: '/api/contact',
-          host: 'localhost',
-          port: 9005
-        }, {
-          context: '/',
-          host: 'localhost',
-          port: 9000
-        }]
-      }
     },
 
     less: {
@@ -223,7 +205,7 @@ module.exports = function(grunt) {
           dot: true,
           src: [
             '../build/{,*/}*',
-            '../build/.git*'
+            '!../build/.git*'
           ]
         }]
       }
@@ -242,7 +224,7 @@ module.exports = function(grunt) {
         quiet: Infinity
       },
       djangoServer: {
-        exec: 'python ../build/manage.py runserver 0.0.0.0:9000 --settings=eums.test_settings'
+        exec: 'python ../build/manage.py runserver 0.0.0.0:9000'
       }
     },
 
@@ -274,14 +256,8 @@ module.exports = function(grunt) {
     },
 
     shell: {
-      dropDb: {
-        command: 'echo "drop database eums_test" | psql -U postgres'
-      },
-      createDb: {
-        command: 'echo "create database eums_test" | psql -U postgres'
-      },
       runMigrations: {
-        command: 'python manage.py migrate --settings=eums.test_settings',
+        command: 'python manage.py migrate',
         options: {
           stderr: false,
           execOptions: {
@@ -290,7 +266,7 @@ module.exports = function(grunt) {
         }
       },
       seedData: {
-        command: 'python manage.py loaddata client/test/functional/fixtures/user.json --settings=eums.test_settings',
+        command: 'python manage.py loaddata client/test/functional/fixtures/user.json',
         options: {
           stderr: false,
           execOptions: {
@@ -299,7 +275,7 @@ module.exports = function(grunt) {
         }
       },
       mapData: {
-        command: 'python manage.py shell < client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
+        command: 'python manage.py shell < client/test/functional/fixtures/mapdata_code.py',
         options: {
           stderr: false,
           execOptions: {
@@ -308,7 +284,7 @@ module.exports = function(grunt) {
         }
       },
       setupPermissions: {
-        command: 'python manage.py setup_permissions --settings=eums.test_settings',
+        command: 'python manage.py setup_permissions',
         options: {
           stderr: false,
           execOptions: {
@@ -316,40 +292,8 @@ module.exports = function(grunt) {
           }
         }
       },
-      processConfigs: {
-        command: function(url) {
-          return 'sed "s/localhost/' + url + '/" config/development.json > config/environment.json';
-        }
-      }
     },
 
-    apimocker: {
-      options: {
-        configFile: 'test/functional/apimock/apimock.json'
-      }
-    }
-
-
-  });
-
-  grunt.registerTask('build-staging', 'builds staging with the specified url in the config', function(url) {
-    if (url) {
-      return grunt.task.run([
-        'clean:dist',
-        'shell:processConfigs:' + url,
-        'ngconstant:staging',
-        'uglify:all',
-        'less'
-      ]);
-    } else {
-      return grunt.task.run([
-        'clean:dist',
-        'shell:processConfigs:localhost',
-        'ngconstant:staging',
-        'uglify:all',
-        'less'
-      ]);
-    }
   });
 
   grunt.registerTask('unit', [
@@ -389,24 +333,12 @@ module.exports = function(grunt) {
     'copy:eumsManage'
   ]);
 
-  grunt.registerTask('test:run', [
-    'package',
-    'configureProxies:local',
-    'run:djangoServer',
-    'connect:local'
-  ]);
-
   grunt.registerTask('prep-test-env', 'Prepare test environment before running tests', [
-    'shell:dropDb',
-    'shell:createDb',
     'shell:runMigrations',
     'shell:setupPermissions',
     'shell:seedData',
     'shell:mapData',
-    'configureProxies:functional',
-    'apimocker',
     'run:djangoServer',
-    'connect:functional'
   ]);
 
   grunt.registerTask('functional', 'Run functional tests using chrome', [
@@ -423,10 +355,4 @@ module.exports = function(grunt) {
     'protractor:performance'
   ]);
 
-  grunt.registerTask('default', [
-    'newer:jshint',
-    'build',
-    'unit',
-    'functional'
-  ]);
 };
