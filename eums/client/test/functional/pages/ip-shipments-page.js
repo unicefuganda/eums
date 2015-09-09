@@ -12,6 +12,10 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     searchForShipment: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
+        var EC = protractor.ExpectedConditions;
+        var loadingModal = element.all(by.css('.modal.fade')).get(0);
+        var shipmentsHaveLoaded = EC.invisibilityOf(loadingModal);
+        browser.wait(shipmentsHaveLoaded, 5000, "Timeout waiting to shipments to load");
     }},
 
 
