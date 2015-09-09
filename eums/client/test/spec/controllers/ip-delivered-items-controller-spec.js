@@ -53,6 +53,13 @@ describe('IP Delivered Items Controller', function () {
             "value": "10",
             "position": 1
         },
+        {
+            "text": "Was product in good order?",
+            "type": "text",
+            "question_label": "quality",
+            "value": "",
+            "position": 4
+        }
     ];
     var secondNodeAnswers = [
         {
@@ -70,6 +77,13 @@ describe('IP Delivered Items Controller', function () {
             "value": "5",
             "position": 1
         },
+        {
+            "text": "Was product in good order?",
+            "type": "text",
+            "question_label": "quality",
+            "value": "",
+            "position": 4
+        }
     ];
     var nodeAnswers = [
         {
@@ -193,7 +207,7 @@ describe('IP Delivered Items Controller', function () {
                 {
                     "question_label": "qualityOfProduct",
                     "text": "What is the quality of the product?",
-                    "value": "",
+                    "value": "Good",
                     "position": 3,
                     "type": "multipleChoice",
                     "options": [
