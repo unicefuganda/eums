@@ -17,11 +17,7 @@ class CSVExportService(object):
         wr.writerows(data)
 
     @classmethod
-    def notify(cls, user, filename):
-        subject = "Warehouse Delivery Download"
-        csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, filename)
-        first_name = getattr(user, 'first_name', 'EUMS User')
-        message = settings.EMAIL_NOTIFICATION_CONTENT % (first_name, csv_url)
+    def notify(cls, user, subject, message):
         if getattr(user, 'email', None):
             mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 
@@ -32,4 +28,4 @@ def generate_waybill_csv(user):
     csv_export_service = DeliveryCSVExport(ReleaseOrderItem.WAYBILL)
     data = csv_export_service.data()
     CSVExportService.generate(data, csv_export_service.FILENAME)
-    CSVExportService.notify(user, csv_export_service.FILENAME)
+    CSVExportService.notify(user, *csv_export_service.notification_details())

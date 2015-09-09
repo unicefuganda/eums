@@ -1,3 +1,4 @@
+from eums import settings
 from eums.models import ReleaseOrderItem, DistributionPlanNode
 
 __author__ = 'jafari'
@@ -5,6 +6,7 @@ __author__ = 'jafari'
 
 class DeliveryCSVExport(object):
     END_USER_RESPONSE = {True: 'Yes', False: 'No'}
+    SUBJECT_TYPE = {ReleaseOrderItem.WAYBILL: 'Warehouse'}
     FILENAME = 'warehouse_deliveries.csv'
     HEADER = [
         'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
@@ -14,6 +16,16 @@ class DeliveryCSVExport(object):
 
     def __init__(self, type_):
         self.type = type_
+
+    def _message(self):
+        csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.FILENAME)
+        return settings.EMAIL_NOTIFICATION_CONTENT % (self.FILENAME, csv_url)
+
+    def _subject(self):
+        return "%s Delivery Download" % self.SUBJECT_TYPE[self.type]
+
+    def notification_details(self):
+        return self._subject(), self._message()
 
     def data(self):
         release_order_item_ids = ReleaseOrderItem.objects.values_list('id', flat=True)
