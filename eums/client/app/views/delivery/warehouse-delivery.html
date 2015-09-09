@@ -3,7 +3,7 @@
 <div class="container-fluid">
 
     <div class="row">
-        <div class="col-xs-3 pull-right">
+        <div class="col-xs-3 pull-right filter-bar">
             <div class="col-md-6 pad-small">
                 <span class="input-group" eums-date-picker>
                     <input type="text"
@@ -14,6 +14,8 @@
                            datepicker-options="dateOptions"
                            show-button-bar="false"
                            ng-required="true"
+                           ng-disabled="true"
+                           placeholder="From date"
                            required="required"
                            value="{{ fromDate | date : 'dd-MM-yyyy' }}"/>
                         <span class="input-group-btn">
@@ -32,6 +34,8 @@
                            datepicker-options="dateOptions"
                            show-button-bar="false"
                            ng-required="true"
+                           ng-disabled="true"
+                           placeholder="To date"
                            required="required"
                            value="{{ toDate | date : 'yyyy-MM-DD' }}"/>
                         <span class="input-group-btn">
