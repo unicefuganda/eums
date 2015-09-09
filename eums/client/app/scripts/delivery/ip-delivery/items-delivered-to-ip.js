@@ -68,6 +68,7 @@ angular.module('ItemsDeliveredToIp', ['eums.config', 'ngTable', 'siTable', 'Load
                             answerSet.answers[0].value = answerSet.answers[0].value || "Yes";
                             answerSet.answers[1].value = answerSet.answers[1].value || node.quantityIn.toString();
                             answerSet.answers[2].value = answerSet.answers[2].value || 'Good';
+                            answerSet.answers[3].value = answerSet.answers[3].value || 'Yes';
                             return true;
                         }
                         return false;

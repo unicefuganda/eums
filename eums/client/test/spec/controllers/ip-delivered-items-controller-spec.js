@@ -59,6 +59,14 @@ describe('IP Delivered Items Controller', function () {
             "question_label": "quality",
             "value": "",
             "position": 4
+        },
+        {
+            question_label: 'satisfied',
+            type: 'multipleChoice',
+            text: 'are you satisfied?',
+            value: '',
+            options: ['Yes'],
+            position: 3
         }
     ];
     var secondNodeAnswers = [
@@ -83,6 +91,14 @@ describe('IP Delivered Items Controller', function () {
             "question_label": "quality",
             "value": "",
             "position": 4
+        },
+        {
+            question_label: 'satisfied',
+            type: 'multipleChoice',
+            text: 'are you satisfied?',
+            value: '',
+            options: ['Yes'],
+            position: 0
         }
     ];
     var nodeAnswers = [
@@ -221,7 +237,7 @@ describe('IP Delivered Items Controller', function () {
                 {
                     "question_label": "satisfiedWithProduct",
                     "text": "Are you satisfied with the product?",
-                    "value": "",
+                    "value": "Yes",
                     "position": 4,
                     "type": "multipleChoice",
                     "options": [
