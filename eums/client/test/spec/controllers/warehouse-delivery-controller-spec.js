@@ -59,15 +59,25 @@ describe('Warehouse Delivery Controller', function () {
 
     });
 
-    it('should show toast with right message', function () {
+    it('should show toast with success message', function () {
         var message = 'Generating CSV, you will be notified via email once it is done.';
-        deferredExportResult.resolve({data:{message: message}, status: 200});
+        deferredExportResult.resolve({data: {message: message}, status: 200});
 
         scope.exportToCSV();
         scope.$apply();
         expect(mockToast.create).toHaveBeenCalledWith({
             content: message,
             class: 'info'
+        });
+    });
+    it('should show toast with error message', function () {
+        deferredExportResult.reject({status: 500});
+
+        scope.exportToCSV();
+        scope.$apply();
+        expect(mockToast.create).toHaveBeenCalledWith({
+            content: "Error while generating CSV. Please contact the system's admin.",
+            class: 'danger'
         });
     });
 
@@ -143,7 +153,8 @@ describe('Warehouse Delivery Controller', function () {
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'});
+
         });
     });
 });
