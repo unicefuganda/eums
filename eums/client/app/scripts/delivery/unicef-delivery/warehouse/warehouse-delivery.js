@@ -1,11 +1,11 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact', 'ExportDeliveries', 'ngToast'])
+angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast, LoaderService) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -19,14 +19,14 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         $scope.dateColumnTitle = 'Date Shipped';
         $scope.descriptionColumnTitle = 'Programme Name';
 
-        $scope.initialize = function () {
-            angular.element('#loading').modal();
+        $scope.initialize = function (urlArgs) {
+            LoaderService.showLoader();
             this.sortBy('orderNumber');
             this.sort.descending = false;
 
-            ReleaseOrderService.all().then(function (releaseOrders) {
+            ReleaseOrderService.all(undefined, urlArgs).then(function (releaseOrders) {
                 $scope.releaseOrders = releaseOrders.sort();
-                angular.element('#loading').modal('hide');
+                LoaderService.hideLoader();
             });
         };
 
@@ -50,6 +50,23 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
             ExportDeliveriesService.export().then(function (response) {
                 ngToast.create({content: response.data.message, class: 'info'});
             });
+        };
+
+        $scope.$watch('[fromDate,toDate,query]', function () {
+            var hasDateRange = ($scope.fromDate && $scope.toDate);
+            if ($scope.query || hasDateRange) {
+                var urlArgs;
+                urlArgs = !hasDateRange ?
+                {query: $scope.query} :
+                    !$scope.query ?
+                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate)} :
+                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate), query: $scope.query};
+                $scope.initialize(urlArgs);
+            }
+        }, true);
+
+        function formatDate(date) {
+            return moment(date).format('YYYY-MM-DD')
         }
     });
 
