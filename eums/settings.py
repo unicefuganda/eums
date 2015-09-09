@@ -16,7 +16,7 @@ SECRET_KEY = environ('DJANGO_SECRET_KEY', '3=$_20f=x$+*wp(xm07^8m-n=n2zy+w6hc7u9
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ('DJANGO_DEBUG', 'false')
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = environ('DJANGO_TEMPLATE_DEBUG', DEBUG)
 
 ALLOWED_HOSTS = []
 
@@ -51,7 +51,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': environ('PG_DATABASE_NAME', 'postgres'),
         'USER': environ('PG_USERNAME', 'postgres'),
-        'HOST': environ('PG_PASSWORD', 'postgres'),
+        'PASSWORD': environ('PG_PASSWORD', 'postgres'),
+        'HOST': environ('PG_HOST', 'postgres'),
         'PORT': '5432'
     }
 }
@@ -92,8 +93,6 @@ MAX_ALLOWED_REPLY_PERIOD = 7
 DELIVERY_BUFFER_IN_SECONDS = 10
 
 # Contacts service settings
-import os
-
 CONTACTS_SERVICE_URL = environ('CONTACTS_SERVICE_URL', 'http://localhost:8005/api/contacts/')
 
 # RapidPro settings
