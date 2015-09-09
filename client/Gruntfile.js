@@ -239,13 +239,12 @@ module.exports = function(grunt) {
       },
       chrome: {
         options: {
-          configFile: (function() {
-            if (grunt.option('multi')) {
-              return 'test/functional_multi_conf.js'
-            } else {
-              return 'test/functional_chrome_conf.js'
-            }
-          })()
+          configFile: 'test/functional_chrome_conf.js'
+        }
+      },
+      chromeMulti: {
+        options: {
+          configFile: 'test/functional_multi_conf.js'
         }
       },
       headless: {
@@ -265,17 +264,8 @@ module.exports = function(grunt) {
           }
         }
       },
-      seedData: {
-        command: 'python manage.py loaddata client/test/functional/fixtures/user.json',
-        options: {
-          stderr: false,
-          execOptions: {
-            cwd: '../'
-          }
-        }
-      },
       mapData: {
-        command: 'python manage.py shell < client/test/functional/fixtures/mapdata_code.py',
+        command: 'python manage.py shell <  client/test/functional/fixtures/mapdata_code.py',
         options: {
           stderr: false,
           execOptions: {
@@ -326,7 +316,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('package', 'Build, Copy to Build', [
-    // 'clean:build',
+    'clean:build',
     'build',
     'copy:toBuild',
     'copy:eums',
@@ -336,7 +326,6 @@ module.exports = function(grunt) {
   grunt.registerTask('prep-test-env', 'Prepare test environment before running tests', [
     'shell:runMigrations',
     'shell:setupPermissions',
-    'shell:seedData',
     'shell:mapData',
     'run:djangoServer',
   ]);
@@ -344,6 +333,11 @@ module.exports = function(grunt) {
   grunt.registerTask('functional', 'Run functional tests using chrome', [
     'prep-test-env',
     'protractor:chrome'
+  ]);
+
+  grunt.registerTask('functional:multi', 'Run functional tests using multiple chrome instances', [
+    'prep-test-env',
+    'protractor:chromeMulti'
   ]);
 
   grunt.registerTask('functional:headless', 'Run functional tests in headless mode using selenium', [

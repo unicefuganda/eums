@@ -93,7 +93,6 @@ function resetdb {
     python manage.py migrate --settings=eums.test_settings
     python manage.py setup_permissions --settings=eums.test_settings
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-    python manage.py loaddata client/test/functional/fixtures/user.json --settings=eums.test_settings
   else
     echo "+++ Resetting database eums..."
     echo "drop database
@@ -101,7 +100,6 @@ function resetdb {
     python manage.py migrate
     python manage.py setup_permissions
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-    python manage.py loaddata client/test/functional/fixtures/user.json
   fi
 }
 

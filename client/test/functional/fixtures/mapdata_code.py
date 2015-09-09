@@ -1,3 +1,4 @@
+from client.test.functional.fixtures.mapdata_users import *
 from client.test.functional.fixtures.mapdata_runs import *
 from client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.models import DistributionReport, Alert
