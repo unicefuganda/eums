@@ -5,7 +5,7 @@ from django.test import override_settings
 from mock import patch, MagicMock
 
 from eums.models import DistributionPlanNode
-from eums.services.csv_export_service import CSVExportService
+from eums.services.delivery_csv_export import DeliveryCSVExport
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -51,7 +51,7 @@ class ExportServiceTest(TestCase):
                 contact['phone'], luweero, 'Yes', 'No']
 
 
-        csv_exporter = CSVExportService('Waybill')
+        csv_exporter = DeliveryCSVExport('Waybill')
 
         expected_data = [self.header, row_one]
         data = csv_exporter.data()

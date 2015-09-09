@@ -5,7 +5,8 @@ from django.test import override_settings
 from mock import patch, MagicMock
 
 from eums.models import DistributionPlanNode
-from eums.services.csv_export_service import CSVExportService, RealCSVExportService
+from eums.services.csv_export_service import CSVExportService
+from eums.services.delivery_csv_export import DeliveryCSVExport
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -30,7 +31,7 @@ class ExportServiceTest(TestCase):
 
         expected_data = [header, row_one]
         filename = 'warehouse_deliveries.csv'
-        RealCSVExportService.generate(expected_data, filename)
+        CSVExportService.generate(expected_data, filename)
 
         csv_filename = 'eums/client/exports/' + filename
         actual_data = self._read_csv(csv_filename)
@@ -41,14 +42,14 @@ class ExportServiceTest(TestCase):
     @override_settings(HOSTNAME=HOSTNAME, DEFAULT_FROM_EMAIL=DEFAULT_FROM_EMAIL, EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     @patch('django.core.mail.send_mail')
     def test_notify_should_send_email_to_user(self, mock_send_email):
-        csv_exporter = CSVExportService('Waybill')
+        csv_exporter = DeliveryCSVExport('Waybill')
         user = MagicMock()
         email = 'haha@ha.ha'
         name = 'manchester united'
         user.email = email
         user.first_name = name
         filename = 'some filename.csv'
-        RealCSVExportService.notify(user, filename)
+        CSVExportService.notify(user, filename)
 
         expected_link = 'http://%s/static/exports/%s' % (HOSTNAME, filename)
         expected_message = EMAIL_NOTIFICATION_CONTENT % (name, expected_link)
