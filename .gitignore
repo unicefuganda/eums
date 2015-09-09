@@ -8,6 +8,8 @@ dump.rdb
 local_settings.py
 *.DS_Store
 
+*.env
+
 # virtualenv
 .Python
 eums/bin/
