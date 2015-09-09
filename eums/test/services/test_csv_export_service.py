@@ -5,7 +5,7 @@ from django.test import override_settings
 from mock import patch, MagicMock
 
 from eums.models import DistributionPlanNode
-from eums.services.csv_export_service import CSVExportService
+from eums.services.csv_export_service import CSVExportService, RealCSVExportService
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -20,54 +20,19 @@ EMAIL_NOTIFICATION_CONTENT = "%s some content %s other content"
 
 class ExportServiceTest(TestCase):
 
-    def setUp(self):
-        self.header = [
-                'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
-                'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
-                'Is Tracked' ]
-
-    def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
-
-    @patch('eums.models.DistributionPlanNode.build_contact')
-    def test_should_get_export_list_for_warehouse(self, mock_build_contact):
-        contact = {'firstName': 'John', 'lastName': 'Ssenteza', 'phone': '+256 782 123456'}
-        mock_build_contact.return_value = contact
-        delivery = DeliveryFactory(track=True)
-        consignee_name = 'the consignee'
-        consignee = ConsigneeFactory(name=consignee_name)
-        waybill = 5404939
-        mama_kit = 'Mama kit'
-        material_code = 'Code 30'
-        ro_item = ReleaseOrderItemFactory(item=ItemFactory(description=mama_kit, material_code=material_code),
-                                          release_order=ReleaseOrderFactory(waybill=waybill))
-        delivery_date = '2015-09-06'
-        luweero = 'Luweero'
-        DeliveryNodeFactory(distribution_plan=delivery, delivery_date=delivery_date,
-                            consignee=consignee, item=ro_item, location=luweero)
-
-        row_one=[waybill, mama_kit, material_code, 10, delivery_date, consignee_name,
-                '%s %s' % (contact['firstName'], contact['lastName']),
-                contact['phone'], luweero, 'Yes', 'No']
-
-
-        csv_exporter = CSVExportService('Waybill')
-
-        expected_data = [self.header, row_one]
-        data = csv_exporter.data()
-        self.assertEqual(data, expected_data)
-
-    @patch('eums.services.csv_export_service.CSVExportService.data')
-    def test_should_generate_csv_and_saves_in_static(self, mock_node_data):
+    def test_should_generate_csv_and_saves_in_static(self):
+        header = [
+            'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
+            'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
+            'Is Tracked' ]
         row_one = ['123', 'mama kit', 'material code', '10', 'delivery date', 'consignee name',
                    'some name', 'phone', 'location', 'Yes', 'No']
 
-        expected_data = [self.header, row_one]
-        mock_node_data.return_value = expected_data
-        csv_exporter = CSVExportService('Waybill')
-        csv_exporter.generate()
+        expected_data = [header, row_one]
+        filename = 'warehouse_deliveries.csv'
+        RealCSVExportService.generate(expected_data, filename)
 
-        csv_filename = 'eums/client/exports/warehouse_deliveries.csv'
+        csv_filename = 'eums/client/exports/' + filename
         actual_data = self._read_csv(csv_filename)
         self.assertEqual(actual_data, expected_data)
 
@@ -82,9 +47,10 @@ class ExportServiceTest(TestCase):
         name = 'manchester united'
         user.email = email
         user.first_name = name
-        csv_exporter.notify(user)
+        filename = 'some filename.csv'
+        RealCSVExportService.notify(user, filename)
 
-        expected_link = 'http://%s/static/exports/warehouse_deliveries.csv' % HOSTNAME
+        expected_link = 'http://%s/static/exports/%s' % (HOSTNAME, filename)
         expected_message = EMAIL_NOTIFICATION_CONTENT % (name, expected_link)
 
         mock_send_email.assert_called_once_with("Warehouse Delivery Download", expected_message, DEFAULT_FROM_EMAIL, [email])
