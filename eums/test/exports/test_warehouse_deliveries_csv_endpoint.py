@@ -13,8 +13,8 @@ class TestWarehouseDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
         DistributionPlanNode.objects.all().delete()
 
     @override_settings(CELERY_ALWAYS_EAGER=True)
-    @patch('eums.services.csv_export_service.CSV_Export_Service.notify')
-    @patch('eums.services.csv_export_service.CSV_Export_Service.generate')
+    @patch('eums.services.csv_export_service.CSVExportService.notify')
+    @patch('eums.services.csv_export_service.CSVExportService.generate')
     def test_should_start_async_csv_generation_with_warehouse_deliveries(self, mock_generate_csv, mock_notify_user):
         expected_data = {'message': 'Generating CSV, you will be notified via email once it is done.'}
 

@@ -5,7 +5,7 @@ from eums.celery import app
 from django.conf import settings
 
 
-class CSV_Export_Service(object):
+class CSVExportService(object):
     END_USER_RESPONSE = {True: 'Yes', False: 'No'}
     FILENAME = 'warehouse_deliveries.csv'
     HEADER = [
@@ -14,26 +14,24 @@ class CSV_Export_Service(object):
         'Is Tracked'
     ]
 
-    def __init__(self, type):
-        self.type = type
+    def __init__(self, type_):
+        self.type = type_
 
     def data(self):
-        release_order_item_ids = ReleaseOrderItem.objects.values_list('id', flat=True);
+        release_order_item_ids = ReleaseOrderItem.objects.values_list('id', flat=True)
         warehouse_nodes = DistributionPlanNode.objects.filter(item__id__in=release_order_item_ids)
         response_nodes = [self.HEADER]
         for node in warehouse_nodes:
-            response_nodes.append(self._get_data(node))
+            response_nodes.append(self._export_data(node))
         return response_nodes
 
-    def _get_data(self, node):
+    def _export_data(self, node):
         contact = node.contact
-        contact_person = contact.full_name()
-        contact_number = contact.phone
         is_end_user = self.END_USER_RESPONSE[node.is_end_user()]
         is_tracked = self.END_USER_RESPONSE[node.track]
 
         return [node.number(), node.item_description(), node.item.item.material_code, node.quantity_in(),
-                node.delivery_date.isoformat(), node.ip.name, contact_person, contact_number,
+                node.delivery_date.isoformat(), node.ip.name, contact.full_name(), contact.phone,
                 node.location, is_end_user, is_tracked]
 
     def generate(self):
@@ -53,6 +51,6 @@ class CSV_Export_Service(object):
 
 @app.task
 def generate_waybill_csv(user):
-    csv = CSV_Export_Service(ReleaseOrderItem.WAYBILL)
-    csv.generate()
-    csv.notify(user)
+    _csv = CSVExportService(ReleaseOrderItem.WAYBILL)
+    _csv.generate()
+    _csv.notify(user)

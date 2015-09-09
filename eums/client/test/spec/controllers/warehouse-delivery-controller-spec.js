@@ -59,13 +59,13 @@ describe('Warehouse Delivery Controller', function () {
 
     it('should show toast with right message', function () {
         var message = 'Generating CSV, you will be notified via email once it is done.';
-        deferredExportResult.resolve({message: message, status: 200});
+        deferredExportResult.resolve({data:{message: message}, status: 200});
 
         scope.exportToCSV();
         scope.$apply();
         expect(mockToast.create).toHaveBeenCalledWith({
             content: message,
-            class: 'success'
+            class: 'info'
         });
     });
 });

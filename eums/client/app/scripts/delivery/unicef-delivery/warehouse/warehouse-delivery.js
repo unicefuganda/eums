@@ -3,7 +3,8 @@
 
 angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact', 'ExportDeliveries', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
-        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center',
+                           dismissButton: true, timeout: 5000});
     }])
     .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast) {
         $scope.sortBy = $sorter;
@@ -48,7 +49,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
 
         $scope.exportToCSV = function () {
             ExportDeliveriesService.export().then(function (response) {
-                ngToast.create({content: response.message, class: 'success'});
+                ngToast.create({content: response.data.message, class: 'info'});
             });
         }
     });
