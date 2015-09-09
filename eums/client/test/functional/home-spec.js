@@ -1,30 +1,32 @@
 'use strict';
 
+var loginPage = require('./pages/login-page.js');
+var homePage = require('./pages/home-page.js');
+var responsePage = require('./pages/response-page.js');
+
 describe('Home Page', function () {
-    var loginPage, homePage, responsePage;
 
     describe('Admin User', function () {
+
         beforeEach(function () {
-            loginPage = require('./pages/login-page.js');
-            homePage = require('./pages/home-page.js');
             loginPage.visit();
             loginPage.loginAs('admin', 'admin');
         });
 
         it('should get global stats on map', function () {
-            expect(homePage.mapLocation.getText()).toEqual('');
-            expect(homePage.numberSent.getText()).toEqual('17');
-            expect(homePage.numberDelivered.getText()).toEqual('13');
-            expect(homePage.numberNotDelivered.getText()).toEqual('4');
+            expect(homePage.mapLocation).toEqual('');
+            expect(homePage.numberSent).toEqual('17');
+            expect(homePage.numberDelivered).toEqual('13');
+            expect(homePage.numberNotDelivered).toEqual('4');
         });
 
         it('should click on wakiso district', function () {
             homePage.clickMapLayer('wakiso');
-            expect(homePage.mapLocation.getText()).toEqual('Responses for WAKISO');
+            expect(homePage.mapLocation).toEqual('Responses for WAKISO');
             expect(homePage.getMapZoomLevel()).toBe(10);
-            expect(homePage.numberSent.getText()).toEqual('3');
-            expect(homePage.numberDelivered.getText()).toEqual('3');
-            expect(homePage.numberNotDelivered.getText()).toEqual('0');
+            expect(homePage.numberSent).toEqual('3');
+            expect(homePage.numberDelivered).toEqual('3');
+            expect(homePage.numberNotDelivered).toEqual('0');
         });
 
         it('when I click on district number of responses should be 10 or less', function () {
@@ -47,7 +49,7 @@ describe('Home Page', function () {
 
         it('should navigate to detail responses page when page link is clicked', function () {
             homePage.clickMapLayer('wakiso');
-            responsePage = homePage.goToResponseDetailsPage();
+            homePage.goToResponseDetailsPage();
 
             expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
             responsePage.numberOfResponses.then(function (rows) {
@@ -57,7 +59,7 @@ describe('Home Page', function () {
 
         it('should search for "no" product received in Wakiso district', function () {
             homePage.clickMapLayer('wakiso');
-            responsePage = homePage.goToResponseDetailsPage();
+            homePage.goToResponseDetailsPage();
             responsePage.searchResponsesFor('no');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(0);
@@ -67,7 +69,7 @@ describe('Home Page', function () {
         it('should search for "yes" product received in Wakiso district', function () {
             var expectedItems = ['IEHK2006,kit,suppl.1-drugs', 'Safety box f.used syrgs/ndls 5lt/BOX-25'];
             homePage.clickMapLayer('wakiso');
-            responsePage = homePage.goToResponseDetailsPage();
+            homePage.goToResponseDetailsPage();
             responsePage.searchResponsesFor('yes');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(3);
@@ -83,26 +85,23 @@ describe('Home Page', function () {
             homePage.clickMapLayer('wakiso');
             homePage.clickZoomOutIcon();
             expect(homePage.getMapZoomLevel()).toBe(7);
-            expect(homePage.numberSent.getText()).toEqual('17');
-            expect(homePage.numberDelivered.getText()).toEqual('13');
-            expect(homePage.numberNotDelivered.getText()).toEqual('4');
+            expect(homePage.numberSent).toEqual('17');
+            expect(homePage.numberDelivered).toEqual('13');
+            expect(homePage.numberNotDelivered).toEqual('4');
         });
-
     });
 
     describe('IP User', function () {
         beforeEach(function () {
-            loginPage = require('./pages/login-page.js');
-            homePage = require('./pages/home-page.js');
             loginPage.visit();
             loginPage.loginAs('wakiso', 'wakiso');
         });
 
         it('should get global stats on map only for IP', function () {
-            expect(homePage.mapLocation.getText()).toEqual('');
-            expect(homePage.numberSent.getText()).toEqual('3');
-            expect(homePage.numberDelivered.getText()).toEqual('3');
-            expect(homePage.numberNotDelivered.getText()).toEqual('0');
+            expect(homePage.mapLocation).toEqual('');
+            expect(homePage.numberSent).toEqual('3');
+            expect(homePage.numberDelivered).toEqual('3');
+            expect(homePage.numberNotDelivered).toEqual('0');
         });
     });
 });

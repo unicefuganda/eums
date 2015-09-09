@@ -1,77 +1,100 @@
-var HomePage = function () {
-    this.homePageTitle = element(by.css('.white.navbar-brand'));
-    this.ipElement = element(by.model('filter.programme'));
-    this.map = element(by.id('map'));
-    this.mapLocation = element(by.binding('totalStats.location'));
-    this.numberSent = element(by.binding('totalStats.totalSent'));
-    this.numberDelivered = element(by.binding('totalStats.totalReceived'));
-    this.numberNotDelivered = element(by.binding('totalStats.totalNotReceived'));
-    this.numberOfResponses = element.all(by.repeater('response in responses'));
-    this.responsesPageLink = element(by.id('response-page-btn'));
-    this.windmill = element(by.id('loading'));
+var homePage = function () {};
 
-    this.pageTitle = function () {
-        return this.homePageTitle.getText();
-    };
+homePage.prototype = Object.create({}, {
+    url: { get: function () { return ''; }},
+    visit: { value: function () {
+        browser.get(this.url);
+    }},
 
-    this.clickZoomOutIcon = function(){
+    pageTitle: { get: function () {
+        return element(by.css('.white.navbar-brand')).getText();
+    }},
+    ipElement: { get: function () {
+        return element(by.model('filter.programme'));
+    }},
+    map: { get: function () {
+        return element(by.id('map'));
+    }},
+    mapLocation: { get: function () {
+        return element(by.binding('totalStats.location')).getText();
+    }},
+    numberSent: { get: function () {
+        return element(by.binding('totalStats.totalSent')).getText();
+    }},
+    numberDelivered: { get: function () {
+        return element(by.binding('totalStats.totalReceived')).getText();
+    }},
+    numberNotDelivered: { get: function () {
+        return element(by.binding('totalStats.totalNotReceived')).getText();
+    }},
+    numberOfResponses: { get: function () {
+        return element.all(by.repeater('response in responses'));
+    }},
+    responsesPageLink: { get: function () {
+        return element(by.id('response-page-btn'));
+    }},
+    windmill: { get: function () {
+        return element(by.id('loading'));
+    }},
+
+
+    clickZoomOutIcon: { value: function () {
         browser.sleep(2000);
         element(by.css('.view-thumbnail img')).click();
-    };
+    }},
 
-    this.clickMapLayer = function (district) {
+    clickMapLayer: { value: function (district) {
         browser.executeScript(function (district) {
             window.map.clickLayer(district);
         }, district);
-    };
+    }},
 
-    this.highLightMapLayer = function (district) {
+    highLightMapLayer: { value: function (district) {
         browser.executeScript(function (district) {
             window.map.highlightLayer(district);
         }, district);
-    };
+    }},
 
-    this.getHighlightedLayer = function (district) {
+    getHighlightedLayer: { value: function () {
         return browser.executeScript(function (district) {
             return window.map.getHighlightedLayer(district);
         }, district).then(function (highlightedLayer) {
             return highlightedLayer;
         });
-    };
-    this.getHighlightedLayerName = function () {
+    }},
+
+    getHighlightedLayerName: { value: function () {
         return browser.executeScript(function () {
             return window.map.getLayerName();
         }).then(function (highlightedLayerName) {
             return highlightedLayerName;
         });
-    };
+    }},
 
-    this.getHighlightedStyle = function (district) {
+    getHighlightedStyle: { value: function (district) {
         return browser.executeScript(function (district) {
             return window.map.getStyle(district);
         }, district).then(function (style) {
             return style;
         });
-    };
+    }},
 
-    this.enterImplementingPartnerToFilterBy = function (selectedIp) {
+    enterImplementingPartnerToFilterBy: { value: function () {
         this.ipElement.sendKeys(selectedIp);
-    };
+    }},
 
-    this.getMapZoomLevel = function () {
+    getMapZoomLevel: { value: function () {
         browser.sleep(5000);
         return browser.executeScript(function () {
             return window.map.getZoom();
         }).then(function (zoomLevel) {
             return zoomLevel;
         });
-    };
+    }},
 
-    this.goToResponseDetailsPage = function () {
+    goToResponseDetailsPage: { value: function () {
         this.responsesPageLink.click();
-        return require('./response-page');
-    }
+    }}
+});
 
-};
-
-module.exports = new HomePage;
+module.exports = new homePage();

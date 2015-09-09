@@ -18,6 +18,6 @@ describe('Login Page', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
-        expect(homePage.pageTitle()).toEqual('Supply End User Monitoring System');
+        expect(homePage.pageTitle).toEqual('Supply End User Monitoring System');
     });
 });
