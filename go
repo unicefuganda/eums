@@ -95,8 +95,7 @@ function resetdb {
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
   else
     echo "+++ Resetting database eums..."
-    echo "drop database
-    eums; create database eums;" | psql -h localhost -U postgres
+    echo "drop database eums; create database eums;" | psql -h localhost -U postgres
     python manage.py migrate
     python manage.py setup_permissions
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
@@ -137,7 +136,7 @@ function testfunctional {
   if [ "$1" = "--headless" ]; then
     grunt functional:headless
   elif [ "$1" = "--multi" ]; then
-    grunt functional --multi
+    grunt functional:multi
   else
     grunt functional
   fi

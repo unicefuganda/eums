@@ -4,14 +4,6 @@ module.exports = function(grunt) {
 
   require('time-grunt')(grunt);
   require('load-grunt-tasks')(grunt);
-  var _ = require('lodash');
-
-  // Configurable paths for the application
-  var venvHome = grunt.option('venvHome') || '~/.virtualenvs/';
-  var appConfig = {
-    app: require('./bower.json').appPath || 'app',
-    dist: 'dist'
-  };
 
   grunt.initConfig({
 
@@ -33,6 +25,29 @@ module.exports = function(grunt) {
           }
         }
       },
+    },
+
+    jshint: {
+      options: {
+        jshintrc: '.jshintrc',
+        reporter: require('jshint-stylish')
+      },
+      all: {
+        src: [
+          'Gruntfile.js',
+          'app/scripts/{,*/}*.js',
+          '!app/scripts/map/map.js'
+        ]
+      },
+      test: {
+        options: {
+          jshintrc: 'test/.jshintrc'
+        },
+        src: [
+          'test/spec/{,*/}*.js',
+          'test/functional/{,*/}*.js'
+        ]
+      }
     },
 
     less: {
@@ -167,28 +182,6 @@ module.exports = function(grunt) {
       }
     },
 
-    jshint: {
-      options: {
-        jshintrc: '.jshintrc',
-        reporter: require('jshint-stylish')
-      },
-      all: {
-        src: [
-          'Gruntfile.js',
-          'app/scripts/{,*/}*.js',
-          '!app/scripts/map/map.js'
-        ]
-      },
-      test: {
-        options: {
-          jshintrc: 'test/.jshintrc'
-        },
-        src: [
-          'test/spec/{,*/}*.js'
-        ]
-      }
-    },
-
     clean: {
       dist: {
         files: [{
@@ -215,16 +208,6 @@ module.exports = function(grunt) {
       unit: {
         configFile: 'test/karma.conf.js',
         singleRun: true
-      }
-    },
-
-    run: {
-      options: {
-        wait: false,
-        quiet: Infinity
-      },
-      djangoServer: {
-        exec: 'python ../build/manage.py runserver 0.0.0.0:9000'
       }
     },
 
@@ -264,8 +247,8 @@ module.exports = function(grunt) {
           }
         }
       },
-      mapData: {
-        command: 'python manage.py shell <  client/test/functional/fixtures/mapdata_code.py',
+      setupPermissions: {
+        command: 'python manage.py setup_permissions',
         options: {
           stderr: false,
           execOptions: {
@@ -273,8 +256,8 @@ module.exports = function(grunt) {
           }
         }
       },
-      setupPermissions: {
-        command: 'python manage.py setup_permissions',
+      mapData: {
+        command: 'python manage.py shell <  client/test/functional/fixtures/mapdata_code.py',
         options: {
           stderr: false,
           execOptions: {
@@ -307,6 +290,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
+    'jshint:all',
     'ngAnnotate:all',
     'uglify:all',
     'less',
@@ -316,7 +300,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('package', 'Build, Copy to Build', [
-    'clean:build',
+    //'clean:build',
     'build',
     'copy:toBuild',
     'copy:eums',
