@@ -118,14 +118,6 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
             };
         }
 
-        function queryStringFrom(filterParams) {
-            var queryString = '?';
-            Object.each(filterParams, function (key, value) {
-                queryString += key + '=' + value + '&';
-            });
-            return queryString.to(queryString.length - 1);
-        }
-
         function getObject(uri, options, nestedFields) {
             return $http.get(uri).then(function (response) {
                 return buildObject.call(this, response.data, nestedFields || [], options.propertyServiceMap).then(function (builtObject) {
@@ -142,7 +134,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
 
                 var service = {
                     all: function (nestedFields, urlArgs) {
-                        var uri = urlArgs ? options.uri + queryStringFrom(urlArgs) : options.uri;
+                        var uri = urlArgs ? options.uri + this.queryStringFrom(urlArgs) : options.uri;
                         return $http.get(uri).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
@@ -183,12 +175,12 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         return this._del(object);
                     },
                     filter: function (filterParams, nestedFields) {
-                        return $http.get(options.uri + queryStringFrom(filterParams)).then(function (response) {
+                        return $http.get(options.uri + this.queryStringFrom(filterParams)).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
                     },
                     search: function (searchTerm, nestedFields, extras) {
-                        var uri = extras ? options.uri + queryStringFrom(extras) + '&' : options.uri + '?';
+                        var uri = extras ? options.uri + this.queryStringFrom(extras) + '&' : options.uri + '?';
                         uri += 'search=' + searchTerm;
                         return $http.get(uri).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
@@ -203,8 +195,16 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         return $http.get(options.uri + url).then(function (response) {
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
-                    }
-                };
+                    },
+                    queryStringFrom: function(filterParams) {
+                        var queryString = '?';
+                        Object.each(filterParams, function (key, value) {
+                            queryString += key + '=' + value + '&';
+                        });
+                        return queryString.to(queryString.length - 1);
+                }
+
+            };
                 options.methods && Object.each(options.methods, function (name, impl) {
                     service[name] = impl.bind(service);
                 });

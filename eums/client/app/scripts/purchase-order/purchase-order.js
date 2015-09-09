@@ -9,8 +9,10 @@ angular.module('PurchaseOrder', ['eums.config', 'SalesOrder', 'PurchaseOrderItem
                 purchaseorderitem_set: PurchaseOrderItemService
             },
             methods: {
-                forDirectDelivery: function (nestedFields) {
-                    return this._listEndpointMethod('for_direct_delivery/', nestedFields);
+                forDirectDelivery: function (nestedFields, urlArgs) {
+                    var directDeliveryUrl = 'for_direct_delivery/';
+                    var uri = urlArgs ? directDeliveryUrl + this.queryStringFrom(urlArgs) : directDeliveryUrl;
+                    return this._listEndpointMethod(uri, nestedFields);
                 },
                 forUser: function (user, nestedFields) {
                     return user.consignee_id ?
