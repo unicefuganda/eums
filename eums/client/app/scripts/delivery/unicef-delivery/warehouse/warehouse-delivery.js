@@ -3,8 +3,7 @@
 
 angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact', 'ExportDeliveries', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
-        ngToast.configure({maxNumber: 1, horizontalPosition: 'center',
-                           dismissButton: true, timeout: 5000});
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast) {
         $scope.sortBy = $sorter;
