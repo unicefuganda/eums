@@ -1,12 +1,12 @@
 'use strict';
 
-var feedbackReportPage = require('./pages/feedback-report-page.js');
 var loginPage = require('./pages/login-page.js');
 var importDataPage = require('./pages/import-data-page.js');
 
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
 var consigneesPage = require('./pages/consignees-page.js');
+var homePage = require('./pages/home-page.js');
 
 describe('Vision Data Imports', function () {
 
@@ -28,14 +28,12 @@ describe('Vision Data Imports', function () {
         expect(consigneesPage.consigneeIDs).toContain('customer id of test consignee');
     });
 
-    xit('should show programmes imported from vision on the feedback report page', function () {
-
+    it('should show programmes imported from vision on the feedback report page', function () {
         importDataPage.uploadProgrammes('../files/programs.xlsx');
 
-        feedbackReportPage.visit();
-        feedbackReportPage.programmeSelect.click();
-
-        expect(feedbackReportPage.programmeResults).toContain('YI100 - PCR 3 Test Programme Name');
+        homePage.visit();
+        homePage.searchForProgramme('YI100 - PCR 3 Test Programme Name');
+        expect(homePage.programmeSearchResults).toContain('YI100 - PCR 3 Test Programme Name');
     });
 
     it('should show purchase orders and waybills imported from the spreadsheets', function () {
@@ -125,13 +123,12 @@ describe('Vision Data Imports', function () {
         expect(directDeliveryPage.purchaseOrderValues).toContain('$8,900.00');
     });
 
-    xit('should update existing outcomes with data from newly imported spreadsheets', function () {
+    it('should update existing outcomes with data from newly imported spreadsheets', function () {
         importDataPage.uploadProgrammes('../files/programs-update.xlsx');
 
-        feedbackReportPage.visit();
-        feedbackReportPage.programmeSelect.click();
-
-        expect(feedbackReportPage.programmeResults).toContain('YI100 - PCR 3 Updated Test Programme Name');
+        homePage.visit();
+        homePage.searchForProgramme('YI100 - PCR 3 Updated Test Programme Name');
+        expect(homePage.programmeSearchResults).toContain('YI100 - PCR 3 Updated Test Programme Name');
     });
 
     it('should update existing consignees with data from newly imported spreadsheets', function () {

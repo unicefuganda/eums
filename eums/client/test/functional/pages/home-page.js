@@ -2,8 +2,15 @@ var homePage = function () {};
 
 homePage.prototype = Object.create({}, {
     url: { get: function () { return ''; }},
+
     visit: { value: function () {
         browser.get(this.url);
+
+        var EC = protractor.ExpectedConditions;
+        var loadingModal = element(by.id('loading'));
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
+        var mapHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
+        browser.wait(mapHasLoaded, 5000, "Timeout exceeded while loading map");
     }},
 
     pageTitle: { get: function () {
@@ -94,6 +101,15 @@ homePage.prototype = Object.create({}, {
 
     goToResponseDetailsPage: { value: function () {
         this.responsesPageLink.click();
+    }},
+
+    searchForProgramme: { value: function (searchTerm) {
+        element(by.id('s2id_select-program')).click();
+        element(by.css('.select2-input.select2-focused')).clear().sendKeys(searchTerm);
+    }},
+
+    programmeSearchResults: { get: function () {
+        return element(by.css('.select2-results li')).getText();
     }}
 });
 
