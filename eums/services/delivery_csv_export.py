@@ -8,27 +8,26 @@ class DeliveryCSVExport(object):
                      'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
                      'Is Tracked']
 
-    def __init__(self, type_str):
-        self.type = eval(type_str)()
+    def __init__(self):
         self.header = self._set_export_header()
 
     def _set_export_header(self):
-        header = [self.type.export_header]
+        header = [self.export_header]
         header.extend(self.COMMON_HEADER)
         return header
 
     def _message(self):
-        csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.type.export_filename)
+        csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.export_filename)
         return settings.EMAIL_NOTIFICATION_CONTENT.format(csv_url)
 
     def _subject(self):
-        return "%s Delivery Download" % self.type.export_label
+        return "%s Delivery Download" % self.export_label
 
     def notification_details(self):
         return self._subject(), self._message()
 
     def data(self):
-        release_order_item_ids = self.type.item_class.objects.values_list('id', flat=True)
+        release_order_item_ids = self.item_class.objects.values_list('id', flat=True)
         warehouse_nodes = DistributionPlanNode.objects.filter(item__id__in=release_order_item_ids)
         response_nodes = [self.header]
         for node in warehouse_nodes:
@@ -45,19 +44,28 @@ class DeliveryCSVExport(object):
                 node.location, is_end_user, is_tracked]
 
 
-class Warehouse(object):
+class DeliveryExportFactory(object):
+
+    @staticmethod
+    def create(type_str):
+        return eval(type_str + 'Export')()
+
+
+class WarehouseExport(DeliveryCSVExport):
 
     def __init__(self):
         self.export_header = 'Waybill'
         self.export_label = 'Warehouse'
         self.export_filename = 'warehouse_deliveries.csv'
         self.item_class = ReleaseOrderItem
+        super(WarehouseExport, self).__init__()
 
 
-class Direct(object):
+class DirectExport(DeliveryCSVExport):
 
     def __init__(self):
         self.export_header = 'Purchase Order Number'
         self.export_label = 'Direct'
         self.export_filename = 'direct_deliveries.csv'
         self.item_class = PurchaseOrderItem
+        super(DirectExport, self).__init__()

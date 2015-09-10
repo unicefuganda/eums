@@ -4,7 +4,7 @@ from django.core import mail
 from django.conf import settings
 
 from eums.celery import app
-from eums.services.delivery_csv_export import DeliveryCSVExport
+from eums.services.delivery_csv_export import DeliveryExportFactory
 
 
 class CSVExportService(object):
@@ -25,7 +25,7 @@ class CSVExportService(object):
 
 @app.task
 def generate_waybill_csv(user):
-    csv_export_service = DeliveryCSVExport('Warehouse')
+    csv_export_service = DeliveryExportFactory.create('Warehouse')
     data = csv_export_service.data()
-    CSVExportService.generate(data, csv_export_service.type.export_filename)
+    CSVExportService.generate(data, csv_export_service.export_filename)
     CSVExportService.notify(user, *csv_export_service.notification_details())
