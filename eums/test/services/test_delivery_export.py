@@ -9,10 +9,11 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
+from django.test import override_settings
 
-DEFAULT_FROM_EMAIL = "hoho@ha.ha"
+
 HOSTNAME = "ha.ha"
-EMAIL_NOTIFICATION_CONTENT = "%s some content %s other content"
+EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content"
 
 
 class ExportServiceTest(TestCase):
@@ -52,10 +53,9 @@ class ExportServiceTest(TestCase):
         data = csv_exporter.data()
         self.assertEqual(data, expected_data)
 
+    @override_settings(HOSTNAME=HOSTNAME, EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_warehouse_delivery(self):
         warehouse_csv_export = DeliveryCSVExport(ReleaseOrderItem.WAYBILL)
         details = ('Warehouse Delivery Download',
-                   '\nDear warehouse_deliveries.csv,\n\nYou have requested to export all Warehouse deliveries.\n'
-                   'Please download it through the following link:\nhttp://eums.unicefuganda.org/static/exports/warehouse_deliveries.csv\n\n'
-                   'Thank you.\n')
+                   '%s some content http://ha.ha/static/exports/warehouse_deliveries.csv other content')
         self.assertEqual(warehouse_csv_export.notification_details(), details)

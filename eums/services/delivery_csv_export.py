@@ -1,7 +1,5 @@
-from eums import settings
+from django.conf import settings
 from eums.models import ReleaseOrderItem, DistributionPlanNode
-
-__author__ = 'jafari'
 
 
 class DeliveryCSVExport(object):
@@ -19,7 +17,7 @@ class DeliveryCSVExport(object):
 
     def _message(self):
         csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.FILENAME)
-        return settings.EMAIL_NOTIFICATION_CONTENT % (self.FILENAME, csv_url)
+        return settings.EMAIL_NOTIFICATION_CONTENT.format(csv_url)
 
     def _subject(self):
         return "%s Delivery Download" % self.SUBJECT_TYPE[self.type]

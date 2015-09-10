@@ -5,10 +5,7 @@ from django.test import override_settings
 from mock import patch, MagicMock
 from eums.services.csv_export_service import CSVExportService
 
-
 DEFAULT_FROM_EMAIL = "hoho@ha.ha"
-HOSTNAME = "ha.ha"
-EMAIL_NOTIFICATION_CONTENT = "%s some content %s other content"
 
 
 class ExportServiceTest(TestCase):
@@ -30,8 +27,7 @@ class ExportServiceTest(TestCase):
 
         self.remove_csv_file(csv_filename)
 
-    @override_settings(HOSTNAME=HOSTNAME, DEFAULT_FROM_EMAIL=DEFAULT_FROM_EMAIL,
-                       EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
+    @override_settings(DEFAULT_FROM_EMAIL=DEFAULT_FROM_EMAIL)
     @patch('django.core.mail.send_mail')
     def test_notify_should_send_email_to_user(self, mock_send_email):
         user = MagicMock()
@@ -40,11 +36,13 @@ class ExportServiceTest(TestCase):
         user.email = email
         user.first_name = name
         subject = "some subject"
-        message = "some message"
+        message = "some %s message"
+
         CSVExportService.notify(user, subject, message)
 
-        mock_send_email.assert_called_once_with(subject, message, DEFAULT_FROM_EMAIL, [email])
+        expected_message = "some manchester united message"
 
+        mock_send_email.assert_called_once_with(subject, expected_message, DEFAULT_FROM_EMAIL, [email])
 
     def _read_csv(self, filename):
         file_ = open(filename, 'r')

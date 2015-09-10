@@ -6,7 +6,7 @@ Dear %s,
 
 You have requested to export all Warehouse deliveries.
 Please download it through the following link:
-%s
+{0}
 
 Thank you.
 """
