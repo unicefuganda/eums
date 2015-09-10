@@ -5,9 +5,6 @@ ENV PYTHONUNBUFFERED 1
 
 RUN export DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y \
-  supervisor
-
 # Add unpriviledged worker user
 RUN adduser --disabled-password --gecos '' worker
 
@@ -16,23 +13,12 @@ RUN pip install -r requirements.txt
 
 COPY scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
 COPY scripts/deployment/celery.sh /celery.sh
-COPY scripts/supervisor/celeryd.conf /etc/supervisor/conf.d/celery.conf
-
-RUN mkdir -p /eums/client
-WORKDIR /eums/client/
-
-RUN mkdir /fixtures
-COPY ./client/test/functional/fixtures/ /fixtures/
-
 COPY ./build/ /eums/
-VOLUME ./build/:/eums/
+COPY ./build/eums.sh /eums/eums.sh
+RUN chmod +x /eums/eums.sh
+
 
 WORKDIR /eums/
 EXPOSE 8000
 
-# RUN python build/manage.py syncdb --noinput
-# RUN python manage.py migrate
-# RUN python manage.py setup_permissions
-# RUN python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-
-CMD /usr/local/bin/uwsgi --emperor /etc/uwsgi/sites --env DJANGO_SETTINGS_MODULE=eums.staging_settings
+CMD /eums/eums.sh

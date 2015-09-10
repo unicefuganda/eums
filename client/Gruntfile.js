@@ -177,7 +177,7 @@ module.exports = function(grunt) {
       eumsManage: {
         expand: true,
         cwd: '../',
-        src: 'manage.py',
+        src: [ 'manage.py', 'eums.sh' ],
         dest: '../build/'
       }
     },
@@ -290,7 +290,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean:dist',
-    'jshint:all',
+    // 'jshint:all',
     'ngAnnotate:all',
     'uglify:all',
     'less',
