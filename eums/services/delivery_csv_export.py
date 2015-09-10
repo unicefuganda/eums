@@ -27,8 +27,8 @@ class DeliveryCSVExport(object):
         return self._subject(), self._message()
 
     def data(self):
-        release_order_item_ids = self.item_class.objects.values_list('id', flat=True)
-        warehouse_nodes = DistributionPlanNode.objects.filter(item__id__in=release_order_item_ids)
+        item_ids = self.item_class.objects.values_list('id', flat=True)
+        warehouse_nodes = DistributionPlanNode.objects.filter(item__id__in=item_ids)
         response_nodes = [self.header]
         for node in warehouse_nodes:
             response_nodes.append(self._export_data(node))
@@ -48,24 +48,24 @@ class DeliveryExportFactory(object):
 
     @staticmethod
     def create(type_str):
-        return eval(type_str + 'Export')()
+        return eval(type_str + 'DeliveryExport')()
 
 
-class WarehouseExport(DeliveryCSVExport):
+class WarehouseDeliveryExport(DeliveryCSVExport):
 
     def __init__(self):
         self.export_header = 'Waybill'
         self.export_label = 'Warehouse'
         self.export_filename = 'warehouse_deliveries.csv'
         self.item_class = ReleaseOrderItem
-        super(WarehouseExport, self).__init__()
+        super(WarehouseDeliveryExport, self).__init__()
 
 
-class DirectExport(DeliveryCSVExport):
+class DirectDeliveryExport(DeliveryCSVExport):
 
     def __init__(self):
         self.export_header = 'Purchase Order Number'
         self.export_label = 'Direct'
         self.export_filename = 'direct_deliveries.csv'
         self.item_class = PurchaseOrderItem
-        super(DirectExport, self).__init__()
+        super(DirectDeliveryExport, self).__init__()

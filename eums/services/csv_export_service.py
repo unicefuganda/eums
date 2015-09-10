@@ -24,8 +24,8 @@ class CSVExportService(object):
 
 
 @app.task
-def generate_waybill_csv(user):
-    csv_export_service = DeliveryExportFactory.create('Warehouse')
+def generate_delivery_export_csv(user, delivery_type):
+    csv_export_service = DeliveryExportFactory.create(delivery_type.capitalize())
     data = csv_export_service.data()
     CSVExportService.generate(data, csv_export_service.export_filename)
     CSVExportService.notify(user, *csv_export_service.notification_details())
