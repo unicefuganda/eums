@@ -47,7 +47,7 @@ class ExportServiceTest(TestCase):
                    '%s %s' % (contact['firstName'], contact['lastName']),
                    contact['phone'], luweero, 'Yes', 'No']
 
-        csv_exporter = DeliveryCSVExport('Waybill')
+        csv_exporter = DeliveryCSVExport('Warehouse')
 
         expected_data = [self.header, row_one]
         data = csv_exporter.data()
@@ -55,7 +55,7 @@ class ExportServiceTest(TestCase):
 
     @override_settings(HOSTNAME=HOSTNAME, EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_warehouse_delivery(self):
-        warehouse_csv_export = DeliveryCSVExport(ReleaseOrderItem.WAYBILL)
+        warehouse_csv_export = DeliveryCSVExport('Warehouse')
         details = ('Warehouse Delivery Download',
                    '%s some content http://ha.ha/static/exports/warehouse_deliveries.csv other content')
         self.assertEqual(warehouse_csv_export.notification_details(), details)

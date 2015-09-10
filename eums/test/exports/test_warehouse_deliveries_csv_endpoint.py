@@ -31,5 +31,5 @@ class TestWarehouseDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, expected_data)
         self.assertTrue(mock_data.called)
-        mock_generate_csv.assert_called_once_with(some_data, DeliveryCSVExport.FILENAME)
+        mock_generate_csv.assert_called_once_with(some_data, 'warehouse_deliveries.csv')
         mock_notify_user.assert_called_once_with(user, 'subject', 'message')
