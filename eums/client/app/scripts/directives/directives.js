@@ -150,7 +150,6 @@ angular.module('Directives', [])
 
         return {
             restrict: 'A',
-            scope: true,
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 var filters = Object.has(attrs, 'onlyIps') ? {imported_from_vision: 'True'} : {};
