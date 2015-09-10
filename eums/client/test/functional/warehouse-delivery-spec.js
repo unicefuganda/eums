@@ -3,6 +3,7 @@
 var loginPage = require('./pages/login-page.js');
 var warehouseDeliveryPage = require('./pages/warehouse-delivery-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
+var ipWarehousePage = require('./pages/ip-warehouse-page.js');
 
 describe('Warehouse Delivery', function () {
 
@@ -51,5 +52,17 @@ describe('Warehouse Delivery', function () {
         ipShipmentsPage.addItemRemark(itemRowIndex, 'All Good');
 
         ipShipmentsPage.saveItemConfirmation();
+    });
+
+    it('Acknowledged items are displayed in the IPs warehouse', function () {
+        ipWarehousePage.visit();
+
+        ipWarehousePage.searchForItem('random non-existent item');
+        expect(ipWarehousePage.warehouseItemCount).toEqual(0);
+
+        ipWarehousePage.searchForItem('birth cushion');
+        expect(ipWarehousePage.warehouseItemCount).not.toEqual(0);
+        expect(ipWarehousePage.itemDescriptions).toContain('Birth Cushion set');
+        expect(ipWarehousePage.itemBalances).toContain('50');
     });
 });
