@@ -6,13 +6,14 @@ describe('ExportDeliveryService', function () {
         inject(function ($httpBackend, ExportDeliveriesService, EumsConfig) {
             mockBackend = $httpBackend;
             exportService = ExportDeliveriesService;
-            exportCSVEndpoint = EumsConfig.BACKEND_URLS.EXPORT_WAREHOUSE_DELIVERIES;
+            exportCSVEndpoint = EumsConfig.BACKEND_URLS.DELIVERY_EXPORTS;
         })
     });
 
     it('should call export deliveries endpoint', function(){
-        mockBackend.whenGET(exportCSVEndpoint).respond(fakeResponse);
-        exportService.export().then(function(response){
+        var type_filter = 'haha';
+        mockBackend.whenGET(exportCSVEndpoint + '?type=' + type_filter).respond(fakeResponse);
+        exportService.export(type_filter).then(function(response){
              expect(response).toEqual(fakeResponse)
             });
     });

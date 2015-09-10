@@ -1,9 +1,10 @@
 angular.module('ExportDeliveries', ['eums.config'])
     .factory('ExportDeliveriesService', function ($http, EumsConfig) {
-        var endPoint = EumsConfig.BACKEND_URLS.EXPORT_WAREHOUSE_DELIVERIES;
+        var endPoint = EumsConfig.BACKEND_URLS.DELIVERY_EXPORTS;
+        var url_filter_by = function(type){return endPoint + '?type=' + type};
         return {
-            export: function () {
-                return $http.get(endPoint);
+            export: function (type) {
+                return $http.get(url_filter_by(type));
             }
         };
     });

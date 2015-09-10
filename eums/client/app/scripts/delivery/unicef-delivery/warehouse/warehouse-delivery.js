@@ -47,7 +47,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         };
 
         $scope.exportToCSV = function () {
-            ExportDeliveriesService.export().then(function (response) {
+            ExportDeliveriesService.export('warehouse').then(function (response) {
                 ngToast.create({content: response.data.message, class: 'info'});
             }, function () {
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
