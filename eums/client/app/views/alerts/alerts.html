@@ -46,14 +46,14 @@
                     <span class="alerts-bolder">{{ alert.consigneeName }}</span>
                 </td>
                 <td>
-                    <button class="btn btn-primary resolve-alert-button"
+                    <button class="btn btn-primary btn-sm resolve-alert-button"
                             ng-if="!alert.isResolved"
                             type="button"
                             ng-click="addRemark($index)">
                         Resolve
                     </button>
 
-                    <button class="btn btn-default blue-border-button resolve-alert-button"
+                    <button class="btn btn-default btn-sm blue-border-button resolve-alert-button"
                             type="button"
                             ng-if="alert.isResolved"
                             ng-click="showRemark($index)">
