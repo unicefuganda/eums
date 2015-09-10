@@ -1,7 +1,10 @@
 describe('Warehouse Delivery Controller', function () {
     var scope, mockReleaseOrderService, location, deferredReleaseOrders, mockExportDeliveryService, mockToast, mockLoader,
         deferredExportResult;
-    var releaseOrders = [{id: 1}, {id: 2}];
+    var releaseOrders = [
+        {id: 1},
+        {id: 2}
+    ];
 
     var fakeElement = {
         modal: function () {
@@ -52,33 +55,36 @@ describe('Warehouse Delivery Controller', function () {
         expect(location.path()).toBe('/warehouse-delivery/new/' + id);
     });
 
-    it('should call the export warehouse deliveries to csv', function () {
+    describe('export to csv', function () {
+        it('should call the export warehouse deliveries to csv', function () {
 
-        scope.exportToCSV();
-        expect(mockExportDeliveryService.export).toHaveBeenCalled();
+            scope.exportToCSV();
+            expect(mockExportDeliveryService.export).toHaveBeenCalledWith('warehouse');
 
-    });
-
-    it('should show toast with success message', function () {
-        var message = 'Generating CSV, you will be notified via email once it is done.';
-        deferredExportResult.resolve({data: {message: message}, status: 200});
-
-        scope.exportToCSV();
-        scope.$apply();
-        expect(mockToast.create).toHaveBeenCalledWith({
-            content: message,
-            class: 'info'
         });
-    });
-    it('should show toast with error message', function () {
-        deferredExportResult.reject({status: 500});
 
-        scope.exportToCSV();
-        scope.$apply();
-        expect(mockToast.create).toHaveBeenCalledWith({
-            content: "Error while generating CSV. Please contact the system's admin.",
-            class: 'danger'
+        it('should show toast with success message', function () {
+            var message = 'Generating CSV, you will be notified via email once it is done.';
+            deferredExportResult.resolve({data: {message: message}, status: 200});
+
+            scope.exportToCSV();
+            scope.$apply();
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: message,
+                class: 'info'
+            });
         });
+        it('should show toast with error message', function () {
+            deferredExportResult.reject({status: 500});
+
+            scope.exportToCSV();
+            scope.$apply();
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: "Error while generating CSV. Please contact the system's admin.",
+                class: 'danger'
+            });
+        });
+
     });
 
     describe('on filter by date range', function () {

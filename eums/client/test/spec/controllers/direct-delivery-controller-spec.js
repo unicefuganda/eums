@@ -3,7 +3,8 @@ describe('DirectDeliveryController', function () {
     var scope, sorter, filter;
     var location, distPlanEndpointUrl;
     var mockContactService, mockProgrammeService, mockPurchaseOrderService, mockLoaderService;
-    var deferred, deferredPlan, deferredPurchaseOrder;
+    var deferred, deferredPlan, deferredPurchaseOrder, mockExportDeliveryService, mockToast,
+        deferredExportResult;
 
     var programmeOne = {
         id: 1, name: 'Test Programme'
@@ -18,16 +19,20 @@ describe('DirectDeliveryController', function () {
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
+        mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
+        mockToast = jasmine.createSpyObj('mockToast', ['create']);
 
         inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
             deferred = $q.defer();
             deferredPlan = $q.defer();
             deferredPurchaseOrder = $q.defer();
+            deferredExportResult = $q.defer();
             mockContactService.create.and.returnValue(deferred.promise);
             mockProgrammeService.get.and.returnValue(deferred.promise);
             mockProgrammeService.all.and.returnValue(deferred.promise);
             mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrder.promise);
             mockPurchaseOrderService.forDirectDelivery.and.returnValue(deferredPurchaseOrder.promise);
+            mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
 
             location = $location;
             scope = $rootScope.$new();
@@ -43,7 +48,9 @@ describe('DirectDeliveryController', function () {
                     $sorter: sorter,
                     $filter: filter,
                     $location: location,
-                    LoaderService: mockLoaderService
+                    LoaderService: mockLoaderService,
+                    ExportDeliveriesService: mockExportDeliveryService,
+                    ngToast: mockToast
                 });
         });
     });
@@ -199,5 +206,37 @@ describe('DirectDeliveryController', function () {
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
         });
-    })
+    });
+
+    describe('export to CSV', function () {
+
+        it('should call the export direct deliveries to csv', function () {
+            scope.exportToCSV();
+            expect(mockExportDeliveryService.export).toHaveBeenCalledWith('direct');
+
+        });
+
+        it('should show toast with success message', function () {
+            var message = 'Generating CSV, you will be notified via email once it is done.';
+            deferredExportResult.resolve({data: {message: message}, status: 200});
+
+            scope.exportToCSV();
+            scope.$apply();
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: message,
+                class: 'info'
+            });
+        });
+        it('should show toast with error message', function () {
+            deferredExportResult.reject({status: 500});
+
+            scope.exportToCSV();
+            scope.$apply();
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: "Error while generating CSV. Please contact the system's admin.",
+                class: 'danger'
+            });
+        });
+
+    });
 });

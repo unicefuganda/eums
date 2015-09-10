@@ -1,7 +1,10 @@
 'use strict';
 
-angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'EumsFilters', 'Loader'])
-    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService) {
+angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'ngToast'])
+    .config(['ngToastProvider', function (ngToast) {
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+    }])
+    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast) {
 
         $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'date'];
@@ -59,6 +62,15 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
             $location.path('/direct-delivery/new/' + selectedPurchaseOrder.id);
+        };
+
+        $scope.exportToCSV = function () {
+            ExportDeliveriesService.export('direct').then(function (response) {
+                ngToast.create({content: response.data.message, class: 'info'});
+            }, function () {
+                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                ngToast.create({content: errorMessage, class: 'danger'})
+            });
         };
 
     })

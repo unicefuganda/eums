@@ -1,5 +1,5 @@
 <ng-include src="'/static/app/views/delivery/partials/unicef-delivery-header.html'"></ng-include>
-
+<ng-toast></ng-toast>
 <div class="container-fluid">
 
     <div class="row pad-right-5 filter-bar">
@@ -71,6 +71,9 @@
             <li>
                 <span class="glyphicon glyphicon-remove text-danger pad-right-5"></span>Not Shipped
             </li>
+            <li>
+                <a ng-click="exportToCSV()" class="btn btn-default blue-border-button btn-xs">Export to CSV</a>
+            </li>
         </ul>
     </div>
 
@@ -80,7 +83,8 @@
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
                 <th style="width: 18%">
-                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
+                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
+                            ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
                 <th style="width: 30%">
                     <a ng-click="sortBy('date')">{{ dateColumnTitle }}
@@ -91,7 +95,8 @@
                     <a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i ng-class="sortArrowClass('poType');"></i></a>
                 </th>
                 <th style="width: 18%">
-                    <a ng-click="sortBy('programmeName')">{{ outcomeColumnTitle }} <i ng-class="sortArrowClass('programmeName');"></i></a>
+                    <a ng-click="sortBy('programmeName')">{{ outcomeColumnTitle }} <i
+                            ng-class="sortArrowClass('programmeName');"></i></a>
                 </th>
                 <th class="col-xs-6" ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
