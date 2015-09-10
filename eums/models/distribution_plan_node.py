@@ -13,6 +13,7 @@ class DistributionPlanNode(Runnable):
     item = models.ForeignKey('OrderItem')
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)
+    acknowledged = models.IntegerField(null=True, blank=True, default=0)
     parents = None
     quantity = None
     objects = DeliveryNodeManager()
@@ -27,7 +28,11 @@ class DistributionPlanNode(Runnable):
         if self.id and self.quantity_in() == 0 and self.track:
             self.delete()
             return self
-        self.balance = self.quantity_in() - self.quantity_out()
+        if _is_root:
+            self.balance = self.acknowledged - self.quantity_out() if self.acknowledged else 0
+        else:
+            self.balance = self.quantity_in() - self.quantity_out()
+
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())
 
@@ -82,7 +87,10 @@ class DistributionPlanNode(Runnable):
             self.save()
 
     def update_balance(self):
-        self.balance = self.quantity_in() - self.quantity_out()
+        if self.is_root:
+            self.balance = self.acknowledged - self.quantity_out() if self.acknowledged else 0
+        else:
+            self.balance = self.quantity_in() - self.quantity_out()
         self.save()
 
     @staticmethod

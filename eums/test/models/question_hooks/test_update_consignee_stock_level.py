@@ -1,5 +1,5 @@
 from unittest import TestCase
-from eums.models import NumericQuestion, Item, ConsigneeItem, NumericAnswer, Flow, SalesOrderItem
+from eums.models import NumericQuestion, Item, ConsigneeItem, NumericAnswer, Flow, SalesOrderItem, DistributionPlanNode
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -52,8 +52,16 @@ class UpdateConsigneeStockLevelTest(TestCase):
         answer.save()
         self.assertEqual(self._get_consignee_item().amount_received, 75)
 
+    def test_should_update_node_balance_with_quantity_acknowledged(self):
+        initial_balance = self.node.balance
+        NumericAnswerFactory(question=self.amount_received, value=103, run=self.run)
+        node = DistributionPlanNode.objects.get(pk=self.node.id)
+        self.assertNotEquals(node.balance, initial_balance)
+        self.assertEquals(node.balance, 103)
+
     def _get_consignee_item(self):
         return ConsigneeItem.objects.get(consignee=self.consignee, item=self.item)
+
 
 
 class UpdateConsigneeStockLevelTestWithoutAnsweringItemReceivedQuestion(TestCase):

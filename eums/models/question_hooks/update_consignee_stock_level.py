@@ -14,6 +14,8 @@ class UpdateConsigneeStockLevel:
         entry = self._get_item_entry()
         entry.amount_received += int(self.amount_received)
         entry.save()
+        self.node.acknowledged = int(self.amount_received)
+        self.node.save()
 
     def rollback(self):
         entry = self._get_item_entry()

@@ -208,7 +208,8 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
     def test_should_filter_out_distributable_nodes(self):
         distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee)
         delivery = DeliveryFactory(confirmed=True)
-        distributable_confirmed_parent = DeliveryNodeFactory(quantity=50, consignee=self.consignee, distribution_plan=delivery)
+        distributable_confirmed_parent = DeliveryNodeFactory(quantity=50, consignee=self.consignee, distribution_plan=delivery,
+                                                             acknowledged=50)
         DeliveryNodeFactory(parents=[(distributable_parent, 50)])
         DeliveryNodeFactory(parents=[(distributable_confirmed_parent, 30)])
         closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee)

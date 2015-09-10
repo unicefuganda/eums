@@ -346,10 +346,12 @@ class DeliveryNodeTest(TestCase):
 
     def test_should_set_balance_on_node_when_saved(self):
         node = DeliveryNodeFactory(quantity=100)
-        self.assertEqual(node.balance, 100)
+        self.assertEqual(node.balance, 0)
+        node = DeliveryNodeFactory(quantity=100, acknowledged=73)
+        self.assertEqual(node.balance, 73)
 
     def test_should_update_balance_when_node_quantities_change(self):
-        node = DeliveryNodeFactory(quantity=100)
+        node = DeliveryNodeFactory(quantity=100, acknowledged=100)
         child = DeliveryNodeFactory(parents=[(node, 50)])
 
         self.assertEqual(child.balance, 50)
@@ -361,6 +363,14 @@ class DeliveryNodeTest(TestCase):
 
         child_two.delete()
         self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 50)
+
+    def test_should_save_acknowledged_quantity(self):
+        node = DeliveryNodeFactory(quantity=100, acknowledged=100)
+        child = DeliveryNodeFactory(parents=[(node, 50)])
+
+        self.assertEqual(node.acknowledged, 100)
+        self.assertEqual(child.acknowledged, 0)
+        self.assertEqual(child.balance, 50)
 
     def test_should_know_its_order_number(self):
         purchase_order = PurchaseOrderFactory(order_number=200)
