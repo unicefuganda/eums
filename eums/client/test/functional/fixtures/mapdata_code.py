@@ -106,9 +106,9 @@ DeliveryNodeFactory(parents=[(wakiso_node_1, 40)], tree_position="MIDDLE_MAN", i
 DeliveryNodeFactory(parents=[(wakiso_node_2, 58)], tree_position="END_USER", item=po_item_2, distribution_plan=plan)
 
 # alerts
-AlertFactory(order_type=ReleaseOrderItem.WAYBILL, order_number=123456, issue=Alert.ISSUE_TYPES.not_received,
+AlertFactory(order_type=ReleaseOrderItem.WAYBILL, order_number=123456, issue=Alert.ISSUE_TYPES.not_received, is_resolved=False,
              consignee_name='Some Consignee Name', contact_name='Some Contact Name', item_description="Some Description")
-AlertFactory(order_type=PurchaseOrderItem.PURCHASE_ORDER, order_number=654321, issue=Alert.ISSUE_TYPES.bad_condition)
+AlertFactory(order_type=PurchaseOrderItem.PURCHASE_ORDER, order_number=654321, issue=Alert.ISSUE_TYPES.bad_condition, is_resolved=True)
 
 # web answers
 

@@ -28,4 +28,4 @@ class Alert(models.Model):
         return self.ISSUE_TYPES[self.issue]
 
     class Meta:
-        ordering = ['-created_on']
+        ordering = ['is_resolved']
