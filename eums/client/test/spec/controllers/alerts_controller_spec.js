@@ -151,11 +151,18 @@ describe('AlertsController', function () {
             expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to resolve alert', class: 'danger'});
         });
 
-        it('should set model flag to true when add remark button is clicked', function () {
+        it('should set modal flag to true when add remark button is clicked', function () {
             scope.addRemark(0);
             scope.$apply();
 
             expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolve-alert-modal-0');
+        });
+
+        it('should set modal flag to true when show remark button is clicked', function () {
+            scope.showRemark(1);
+            scope.$apply();
+
+            expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolved-alert-modal-1');
         });
     });
 

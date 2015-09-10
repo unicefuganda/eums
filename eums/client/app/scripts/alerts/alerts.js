@@ -48,6 +48,11 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             LoaderService.showModal(remarksModalId)
         };
 
+        $scope.showRemark = function (index) {
+            var remarksModalId = 'resolved-alert-modal-' + index;
+            LoaderService.showModal(remarksModalId)
+        };
+
         $scope.resolveAlert = function (alertId, alertRemarks) {
             AlertsService.update({id: alertId, remarks: alertRemarks}, 'PATCH')
                 .then(function () {

@@ -11,21 +11,39 @@
 <ng-toast></ng-toast>
 
 <div class="container-fluid alerts-container">
-    <div class="col-lg-9 col-md-12 table-container">
-        <table>
+    <div class="table-wrapper">
+        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <thead ng-init="initialize()">
+            <tr>
+                <th>STATUS</th>
+                <th>DATE</th>
+                <th>PO/WAYBILL</th>
+                <th>ITEM</th>
+                <th>REPORTED BY</th>
+                <th>IMPLEMENTING PARTNER</th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
             <tr ng-repeat="($index, alert) in alerts">
                 <td>
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
                 <td>
                     <span class="alerts-grey">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
-                    <span class="alerts-bolder">{{ alert.contactName }}</span>
-                    reported <span ng-show="alert.itemDescription">
-                    item <span class="alerts-bolder">{{ alert.itemDescription }}</span> from </span>
-                    </span>
+                </td>
+                <td>
                     <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
-                    sent to <span class="alerts-bolder">{{ alert.consigneeName }}</span>
-
+                </td>
+                <td>
+                    <span class="alerts-bolder">{{ alert.itemDescription }}</span>
+                </td>
+                <td>
+                    <span class="alerts-bolder">{{ alert.contactName }}</span>
+                </td>
+                <td>
+                    <span class="alerts-bolder">{{ alert.consigneeName }}</span>
                 </td>
                 <td>
                     <button class="btn btn-primary"
@@ -38,20 +56,50 @@
                     <button class="btn btn-default blue-border-button"
                             type="button"
                             ng-if="alert.isResolved"
-                            ng-click="addRemark($index)">
+                            ng-click="showRemark($index)">
                         Resolved
                     </button>
-                    <div class="modal fade text-left" id="resolve-alert-modal-{{$index}}">
-                        <div class="modal-dialog">
+
+                    <div class="modal fade text-left" id="resolved-alert-modal-{{$index}}">
+                        <div class="modal-dialog modal-sixty-percent-size">
                             <div class="modal-content col-md-offset-3 col-md-6">
                                 <div class="modal-header">
                                     <button type="button"
                                             class="close"
                                             data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
                                         <span class="sr-only">Close</span>
                                     </button>
-                                    <h4 class="modal-title">Resolve alert</h4>
+                                    <h4 class="eums-modal-header">Alert Resolution</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="text-warning pad-bottom-5">The following action was taken to resolve
+                                        this Alert.
+                                    </div>
+                                    <div class="eums-modal-content">
+                                        {{alert.remarks}}
+                                    </div>
+                                </div>
+                                <div class="modal-footer centered">
+                                    <button type="button"
+                                            class="btn btn-primary"
+                                            data-dismiss="modal"><span class='glyphicon glyphicon-ok-sign text-white'></span> OK
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade text-left" id="resolve-alert-modal-{{$index}}">
+                        <div class="modal-dialog modal-sixty-percent-size">
+                            <div class="modal-content col-md-offset-3 col-md-6">
+                                <div class="modal-header">
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="modal">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove-sign text-"></span>
+                                        <span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="eums-modal-header">Resolve alert</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="text-warning pad-bottom-5">Please make notes of any actions taken.
@@ -67,15 +115,15 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button"
-                                            class="btn btn-default"
-                                            data-dismiss="modal">Cancel
+                                            class="btn btn-default bg-grey text-white"
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-remove-sign"></span> Cancel
                                     </button>
 
                                     <button type="button"
                                             class="btn btn-primary"
                                             ng-disabled="!alert.remarks"
                                             ng-click="resolveAlert(alert.id, alert.remarks)"
-                                            data-dismiss="modal">Mark as resolved
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span>Mark as resolved
                                     </button>
                                 </div>
                             </div>
@@ -83,6 +131,7 @@
                     </div>
                 </td>
             </tr>
+            </tbody>
         </table>
         <div class="centered" ng-show="alerts.length">
             <pagination total-items="count" ng-model="currentPage" boundary-links="true"
