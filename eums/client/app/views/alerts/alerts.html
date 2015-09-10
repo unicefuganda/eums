@@ -14,7 +14,7 @@
     <div class="table-wrapper">
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead ng-init="initialize()">
-            <tr>
+            <tr ng-show="alerts">
                 <th>STATUS</th>
                 <th>DATE</th>
                 <th>PO/WAYBILL</th>
@@ -46,14 +46,14 @@
                     <span class="alerts-bolder">{{ alert.consigneeName }}</span>
                 </td>
                 <td>
-                    <button class="btn btn-primary"
+                    <button class="btn btn-primary resolve-alert-button"
                             ng-if="!alert.isResolved"
                             type="button"
                             ng-click="addRemark($index)">
                         Resolve
                     </button>
 
-                    <button class="btn btn-default blue-border-button"
+                    <button class="btn btn-default blue-border-button resolve-alert-button"
                             type="button"
                             ng-if="alert.isResolved"
                             ng-click="showRemark($index)">
@@ -123,7 +123,7 @@
                                             class="btn btn-primary"
                                             ng-disabled="!alert.remarks"
                                             ng-click="resolveAlert(alert.id, alert.remarks)"
-                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span>Mark as resolved
+                                            data-dismiss="modal"><span class="glyphicon glyphicon-ok-sign"></span> Mark as resolved
                                     </button>
                                 </div>
                             </div>
