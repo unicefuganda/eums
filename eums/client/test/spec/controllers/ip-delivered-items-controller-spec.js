@@ -223,7 +223,7 @@ describe('IP Delivered Items Controller', function () {
                 {
                     "question_label": "qualityOfProduct",
                     "text": "What is the quality of the product?",
-                    "value": "Good",
+                    "value": "",
                     "position": 3,
                     "type": "multipleChoice",
                     "options": [
@@ -319,6 +319,105 @@ describe('IP Delivered Items Controller', function () {
             expect(scope.totalValue).toBe(6000)
         });
 
+        it('should load answers for a delivery', function () {
+            initializeController();
+            scope.$apply();
+
+            expect(mockDeliveryService.getDetail).toHaveBeenCalledWith(activeDelivery, 'answers');
+        });
+
+        it('should set default values when not satisfied and not in good condition', function () {
+            mockDeliveryService.getDetail.and.returnValue(q.when([{
+                "question_label": "isDeliveryInGoodOrder",
+                "text": "Was delivery in good condition?",
+                "value": "No",
+                "position": 3,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }, {
+                "question_label": "satisfiedWithDelivery",
+                "text": "Are you satisfied with the delivery?",
+                "value": "No",
+                "position": 4,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }]));
+            initializeController();
+            scope.$apply();
+
+            expect(scope.defaultItemCondition).toEqual('');
+            expect(scope.isSatisfied).toEqual('No');
+        });
+
+        it('should set default values when not satisfied and in good condition', function () {
+            mockDeliveryService.getDetail.and.returnValue(q.when([{
+                "question_label": "isDeliveryInGoodOrder",
+                "text": "Was delivery in good condition?",
+                "value": "Yes",
+                "position": 3,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }, {
+                "question_label": "satisfiedWithDelivery",
+                "text": "Are you satisfied with the delivery?",
+                "value": "No",
+                "position": 4,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }]));
+            initializeController();
+            scope.$apply();
+
+            expect(scope.defaultItemCondition).toEqual('Good');
+            expect(scope.isSatisfied).toEqual('No');
+        });
+
+        it('should set default values when satisfied and in good condition', function () {
+            mockDeliveryService.getDetail.and.returnValue(q.when([{
+                "question_label": "isDeliveryInGoodOrder",
+                "text": "Was delivery in good condition?",
+                "value": "Yes",
+                "position": 3,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }, {
+                "question_label": "satisfiedWithDelivery",
+                "text": "Are you satisfied with the delivery?",
+                "value": "Yes",
+                "position": 4,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }]));
+            initializeController();
+            scope.$apply();
+
+            expect(scope.defaultItemCondition).toEqual('Good');
+            expect(scope.isSatisfied).toEqual('Yes');
+        });
+
+        it('should set default values when satisfied and not in good condition', function () {
+            mockDeliveryService.getDetail.and.returnValue(q.when([{
+                "question_label": "isDeliveryInGoodOrder",
+                "text": "Was delivery in good condition?",
+                "value": "No",
+                "position": 3,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }, {
+                "question_label": "satisfiedWithDelivery",
+                "text": "Are you satisfied with the delivery?",
+                "value": "Yes",
+                "position": 4,
+                "type": "multipleChoice",
+                "options": ["No", "Yes"]
+            }]));
+            initializeController();
+            scope.$apply();
+
+            expect(scope.defaultItemCondition).toEqual('');
+            expect(scope.isSatisfied).toEqual('Yes');
+        });
+
         it('should get all the answers for all nodes belonging to a delivery', function () {
             initializeController();
             scope.$apply();
@@ -334,7 +433,28 @@ describe('IP Delivered Items Controller', function () {
         });
 
         it('should default itemReceived to yes and quantityReceived to quantity shipped when no values exist for those answers', function () {
-            mockDeliveryService.getDetail.and.returnValue(q.when(nodeAnswersWithoutValues));
+            var isFirstTime = true;
+            mockDeliveryService.getDetail.and.callFake(function () {
+                if (isFirstTime) {
+                    isFirstTime = false;
+                    return q.when([{
+                        "question_label": "isDeliveryInGoodOrder",
+                        "text": "Was delivery in good condition?",
+                        "value": "No",
+                        "position": 3,
+                        "type": "multipleChoice",
+                        "options": ["No", "Yes"]
+                    }, {
+                        "question_label": "satisfiedWithDelivery",
+                        "text": "Are you satisfied with the delivery?",
+                        "value": "Yes",
+                        "position": 4,
+                        "type": "multipleChoice",
+                        "options": ["No", "Yes"]
+                    }])
+                }
+                return q.when(nodeAnswersWithoutValues)
+            });
             initializeController();
             scope.$apply();
 

@@ -59,16 +59,29 @@ angular.module('ItemsDeliveredToIp', ['eums.config', 'ngTable', 'siTable', 'Load
             return isValid.indexOf(false) <= -1;
         }
 
-        function combineNodeAnswers(answers) {
+        function setDefaultAnswers(deliveryAnswers) {
+            deliveryAnswers.forEach(function (answer) {
+                if (answer.question_label == 'isDeliveryInGoodOrder') {
+                    $scope.defaultItemCondition = answer.value == 'Yes' ? 'Good' : '';
+                }
+
+                if (answer.question_label == 'satisfiedWithDelivery') {
+                    $scope.isSatisfied = answer.value;
+                }
+
+            })
+        }
+
+        function combineNodeAnswers(nodeAnswers) {
             $scope.combinedDeliveryNodes = [];
             if ($scope.deliveryNodes) {
                 $scope.deliveryNodes.forEach(function (node) {
-                    var result = answers.filter(function (answerSet) {
+                    var result = nodeAnswers.filter(function (answerSet) {
                         if (answerSet.id == node.id) {
                             answerSet.answers[0].value = answerSet.answers[0].value || "Yes";
                             answerSet.answers[1].value = answerSet.answers[1].value || node.quantityIn.toString();
-                            answerSet.answers[2].value = answerSet.answers[2].value || 'Good';
-                            answerSet.answers[3].value = answerSet.answers[3].value || 'Yes';
+                            answerSet.answers[2].value = answerSet.answers[2].value || $scope.defaultItemCondition;
+                            answerSet.answers[3].value = answerSet.answers[3].value || $scope.isSatisfied;
                             return true;
                         }
                         return false;
@@ -84,20 +97,28 @@ angular.module('ItemsDeliveredToIp', ['eums.config', 'ngTable', 'siTable', 'Load
 
         function loadData() {
             LoaderService.showLoader();
-            DeliveryService.get($routeParams.activeDeliveryId).then(function (delivery) {
-                $scope.shipmentDate = delivery.deliveryDate;
-                $scope.totalValue = delivery.totalValue;
-                $scope.activeDelivery = delivery;
-            }).then(function () {
-                DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id}).then(function (nodes) {
-                    $scope.deliveryNodes = nodes;
+            DeliveryService.get($routeParams.activeDeliveryId)
+                .then(function (delivery) {
+                    $scope.shipmentDate = delivery.deliveryDate;
+                    $scope.totalValue = delivery.totalValue;
+                    $scope.activeDelivery = delivery;
                 }).then(function () {
-                    DeliveryService.getDetail($scope.activeDelivery, 'node_answers').then(function (answers) {
-                        combineNodeAnswers(answers);
-                    }).finally(function () {
-                        LoaderService.hideLoader();
-                    });
+                    DeliveryNodeService.filter({distribution_plan: $scope.activeDelivery.id})
+                        .then(function (nodes) {
+                            $scope.deliveryNodes = nodes;
+                        }).then(function () {
+                            DeliveryService.getDetail($scope.activeDelivery, 'answers')
+                                .then(function (deliveryAnswers) {
+                                    setDefaultAnswers(deliveryAnswers);
+                                    DeliveryService.getDetail($scope.activeDelivery, 'node_answers')
+                                        .then(function (answers) {
+                                            combineNodeAnswers(answers);
+                                        })
+                                })
+                                .finally(function () {
+                                    LoaderService.hideLoader();
+                                });
+                        })
                 })
-            })
         }
     });
