@@ -6,7 +6,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from mock import patch
 
 
-ENDPOINT_URL = '/exports/warehouse-deliveries/'
+ENDPOINT_URL = '/exports/deliveries/'
 
 
 class TestWarehouseDeliveriesCSVEndpoint(AuthenticatedAPITestCase):

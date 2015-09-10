@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
-class WarehouseDeliveriesCSV(APIView):
+class ExportDeliveriesCSV(APIView):
 
     def get(self, request, *args, **kwargs):
         generate_waybill_csv.delay(request.user)

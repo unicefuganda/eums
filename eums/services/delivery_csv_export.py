@@ -10,8 +10,12 @@ class DeliveryCSVExport(object):
 
     def __init__(self, type_str):
         self.type = eval(type_str)()
-        self.header = self.COMMON_HEADER
-        self.header.insert(0, self.type.export_header)
+        self.header = self._set_export_header()
+
+    def _set_export_header(self):
+        header = [self.type.export_header]
+        header.extend(self.COMMON_HEADER)
+        return header
 
     def _message(self):
         csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.type.export_filename)

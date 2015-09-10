@@ -17,11 +17,6 @@ EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content"
 
 
 class ExportServiceTest(TestCase):
-    def setUp(self):
-        self.header = [
-            'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
-            'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
-            'Is Tracked']
 
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
@@ -43,15 +38,19 @@ class ExportServiceTest(TestCase):
         DeliveryNodeFactory(distribution_plan=delivery, delivery_date=delivery_date,
                             consignee=consignee, item=ro_item, location=luweero)
 
+        header = [
+            'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
+            'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
+            'Is Tracked']
         row_one = [waybill, mama_kit, material_code, 10, delivery_date, consignee_name,
                    '%s %s' % (contact['firstName'], contact['lastName']),
                    contact['phone'], luweero, 'Yes', 'No']
 
+        expected_data = [header, row_one]
+
         csv_exporter = DeliveryCSVExport('Warehouse')
 
-        expected_data = [self.header, row_one]
-        data = csv_exporter.data()
-        self.assertEqual(data, expected_data)
+        self.assertEqual(csv_exporter.data(), expected_data)
 
     @override_settings(HOSTNAME=HOSTNAME, EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_warehouse_delivery(self):
