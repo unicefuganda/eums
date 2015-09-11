@@ -21,4 +21,5 @@ RUN chmod +x /eums/eums.sh
 WORKDIR /eums/
 EXPOSE 8000
 
-CMD /eums/eums.sh
+ENTRYPOINT [ "/eums/eums.sh" ]
+CMD [ "uwsgi" ]
