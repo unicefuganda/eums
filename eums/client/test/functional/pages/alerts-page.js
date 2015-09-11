@@ -11,6 +11,10 @@ AlertsPage.prototype = Object.create({}, {
 
     firstAlert: { get: function () { return element.all(by.repeater('($index, alert) in alerts')).get(0).getText(); }},
 
+    alertStatuses: { get: function () { return element.all(by.css('.alerts-issue')).getText(); }},
+    alertOrderNumbers: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.orderNumber')).getText(); }},
+    alertItems: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.itemDescription')).getText(); }},
+
     resolveAlert: { value: function (remark) {
         element.all(by.css('.resolve-alert-button')).get(0).click();
         waitForModalToLoad();

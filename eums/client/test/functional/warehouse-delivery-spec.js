@@ -57,9 +57,6 @@ describe('Warehouse Delivery', function () {
     it('Acknowledged items are displayed in the IPs warehouse', function () {
         ipWarehousePage.visit();
 
-        ipWarehousePage.searchForItem('random non-existent item');
-        expect(ipWarehousePage.warehouseItemCount).toEqual(0);
-
         ipWarehousePage.searchForItem('birth cushion');
         expect(ipWarehousePage.warehouseItemCount).not.toEqual(0);
         expect(ipWarehousePage.itemDescriptions).toContain('Birth Cushion set');

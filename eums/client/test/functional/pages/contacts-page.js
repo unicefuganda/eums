@@ -37,7 +37,8 @@ var visibilityFunction = function (conditions, modal) {
 };
 
 var invisibilityFunction = function (conditions, modal) {
-    return conditions.invisibilityOf(modal);
+    var fadingModal = element(by.css('.modal-backdrop.fade'));
+    return conditions.and(conditions.invisibilityOf(modal), conditions.stalenessOf(fadingModal));
 };
 
 var waitForContactModalCondition = function (conditionFunction) {

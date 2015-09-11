@@ -13,13 +13,12 @@ IpWarehousePage.prototype = Object.create({}, {
     searchForItem: { value: function (searchTerm) {
         var EC = protractor.ExpectedConditions;
         var loadingCog = element(by.css('.glyphicon-cog'));
-
-        var searchReady = EC.visibilityOf(this.searchBar);
-        var searchComplete = EC.stalenessOf(loadingCog);
+        var searchReady = EC.and(EC.visibilityOf(this.searchBar), EC.stalenessOf(loadingCog));
 
         browser.wait(searchReady, 5000, "Timeout exceeded while waiting for search to be ready");
         this.searchBar.clear().sendKeys(searchTerm);
-        browser.wait(searchComplete, 5000, "Timeout exceeded while retrieving search results");
+        browser.sleep(2000);
+        browser.wait(searchReady, 5000, "Timeout exceeded while retrieving search results");
     }},
 
     warehouseItemCount: { get: function () {

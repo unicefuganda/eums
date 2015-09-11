@@ -4,6 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
+var alertsPage = require('./pages/alerts-page.js');
 
 describe('Direct Delivery', function () {
 
@@ -100,7 +101,7 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
     });
 
-    it('Acknowledge direct delivery for purchase order', function () {
+    it('should acknowledge direct delivery for PO and generate alerts', function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
@@ -117,11 +118,19 @@ describe('Direct Delivery', function () {
         var itemRowIndex = 0;
         ipShipmentsPage.specifyItemReceived(itemRowIndex, 'Yes');
         ipShipmentsPage.specifyQtyReceived(itemRowIndex, 500);
-        ipShipmentsPage.specifyItemCondition(itemRowIndex, 'Good');
-        ipShipmentsPage.specifyItemSatisfaction(itemRowIndex, 'Yes');
+        ipShipmentsPage.specifyItemCondition(itemRowIndex, 'Damaged');
+        ipShipmentsPage.specifyItemSatisfaction(itemRowIndex, 'No');
         ipShipmentsPage.addItemRemark(itemRowIndex, 'All Good');
 
         ipShipmentsPage.saveItemConfirmation();
+
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        alertsPage.visit();
+
+        expect(alertsPage.alertStatuses).toContain('DAMAGED');
+        expect(alertsPage.alertOrderNumbers).toContain('Purchase Order ' + PURCHASE_ORDER_NUMBER1);
+        expect(alertsPage.alertItems).toContain('How Business Affects Us');
     })
 
 });

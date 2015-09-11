@@ -1,4 +1,5 @@
 var IpShipmentsPage = function () {};
+var EC = protractor.ExpectedConditions;
 
 IpShipmentsPage.prototype = Object.create({}, {
     url: { get: function () { return '#/ip-deliveries'; }},
@@ -12,7 +13,6 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     searchForShipment: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
-        var EC = protractor.ExpectedConditions;
         var loadingModal = element.all(by.css('.modal.fade')).get(0);
         var shipmentsHaveLoaded = EC.invisibilityOf(loadingModal);
         browser.wait(shipmentsHaveLoaded, 5000, "Timeout waiting to shipments to load");
@@ -57,10 +57,11 @@ IpShipmentsPage.prototype = Object.create({}, {
     addItemRemark: { value: function (rowIndex, value) {
         element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(rowIndex).$(".itemRemark button").click();
 
-        var EC = protractor.ExpectedConditions;
         var remarksModal = element(by.id("add-remark-answer-modal-" + rowIndex));
+        var fadingModal = element(by.css('.modal-backdrop.fade'));
         var remarksModalHasLoaded = EC.visibilityOf(remarksModal);
-        var remarksModalHasExited = EC.invisibilityOf(remarksModal);
+        var remarksModalHasExited = EC.and(EC.invisibilityOf(remarksModal), EC.stalenessOf(fadingModal));
+
         browser.wait(remarksModalHasLoaded, 5000, "Timeout waiting for remarks modal to load");
 
         element(by.css("#add-remark-answer-modal-" + rowIndex + " textarea")).clear().sendKeys(value);
