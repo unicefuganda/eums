@@ -143,8 +143,13 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                         var uri = '{1}{2}/'.assign(options.uri, id);
                         return getObject.call(this, uri, options, nestedFields);
                     },
-                    getDetail: function (object, detailRouteName, nestedFields) {
+                    getDetail: function (object, detailRouteName, nestedFields, filterParams) {
+                        var queryString = this.queryStringFrom(filterParams);
+
                         var uri = '{1}{2}/{3}'.assign(options.uri, object.id, detailRouteName);
+                        if (queryString) {
+                            uri = '{1}/{2}'.assign(uri, queryString);
+                        }
                         var opts = Object.merge({model: undefined}, options.model);
                         return getObject.call(this, uri, opts, nestedFields);
                     },
@@ -156,7 +161,7 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                             var createdObject = response.data;
                             createdObject = extraOptions.changeCaseOnResponse ? changeCase(createdObject, toCamelCase) : createdObject;
                             createdObject = options.model ? new options.model(createdObject) : createdObject;
-                            return  createdObject;
+                            return createdObject;
                         });
                     },
                     update: function (object, verb) {
@@ -196,15 +201,15 @@ angular.module('eums.service-factory', ['gs.to-camel-case', 'gs.to-snake-case'])
                             return buildListResponse.call(this, response, nestedFields, options);
                         }.bind(this));
                     },
-                    queryStringFrom: function(filterParams) {
+                    queryStringFrom: function (filterParams) {
                         var queryString = '?';
                         Object.each(filterParams, function (key, value) {
                             queryString += key + '=' + value + '&';
                         });
                         return queryString.to(queryString.length - 1);
-                }
+                    }
 
-            };
+                };
                 options.methods && Object.each(options.methods, function (name, impl) {
                     service[name] = impl.bind(service);
                 });

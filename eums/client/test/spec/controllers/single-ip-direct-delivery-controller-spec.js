@@ -170,7 +170,7 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should load purchase order deliveries and put untracked one on the scope', function () {
             mockPurchaseOrderService.getDetail.and.returnValue(q.when(deliveries));
             scope.$apply();
-            expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries');
+            expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries', undefined, {is_root: 'True'});
             expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
             expect(scope.delivery).toEqual(untrackedDelivery);
         });
@@ -178,7 +178,7 @@ describe('Single IP Direct Delivery Controller', function () {
         it('should load purchase order deliveries and put tracked ones on the scope', function () {
             mockPurchaseOrderService.getDetail.and.returnValue(q.when(deliveries));
             scope.$apply();
-            expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries');
+            expect(mockPurchaseOrderService.getDetail).toHaveBeenCalledWith(jasmine.any(Object), 'deliveries', undefined, {is_root: 'True'});
             expect(mockPurchaseOrderService.getDetail.calls.mostRecent().args.first().id).toBe(purchaseOrder.id);
             expect(scope.trackedDeliveries).toEqual([trackedDelivery]);
         });
@@ -371,7 +371,7 @@ describe('Single IP Direct Delivery Controller', function () {
             var updateNodeArgs = mockDeliveryNodeService.update.calls.allArgs();
             expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith({
                 distribution_plan: createdTrackedDelivery.id,
-                parent__isnull: true
+                is_root: true
             });
             expect(mockDeliveryNodeService.update.calls.count()).toBe(2);
             expect(JSON.stringify(updateNodeArgs.first().first())).toEqual(JSON.stringify(nodeOneClone));

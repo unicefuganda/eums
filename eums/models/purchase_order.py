@@ -10,13 +10,13 @@ class PurchaseOrderManager(models.Manager):
 
         if from_date and to_date:
             return po_orders.filter(release_order_count=0, date__range=[from_date, to_date]
-                                    ) if search_term is None else po_orders.filter(
+            ) if search_term is None else po_orders.filter(
                 release_order_count=0,
                 date__range=[from_date, to_date],
                 order_number__icontains=search_term)
         else:
             return po_orders.filter(release_order_count=0
-                                    ) if search_term is None else po_orders.filter(
+            ) if search_term is None else po_orders.filter(
                 release_order_count=0,
                 order_number__icontains=search_term)
 
@@ -46,9 +46,13 @@ class PurchaseOrder(models.Model):
             return total_quantity_distributed == total_quantity
         return False
 
-    def deliveries(self):
-        plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list(
-            'distribution_plan_id').distinct()
+    def deliveries(self, is_root=False):
+        if is_root:
+            plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all(),
+                                                   arcs_in__source__isnull=True).values_list('distribution_plan_id').distinct()
+        else:
+            plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list('distribution_plan_id').distinct()
+
         return DistributionPlan.objects.filter(id__in=plan_ids)
 
     def total_value(self):

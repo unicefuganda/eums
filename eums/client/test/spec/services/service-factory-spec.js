@@ -144,6 +144,16 @@ describe('Service Factory', function () {
         mockBackend.flush();
     });
 
+    it('should filter results from a detail route if filter-params are provided', function (done) {
+        mockBackend.whenGET(levelOneEndpoint + '1/detail/?param=value&other=1').respond(fakeObjects);
+        levelOneService.getDetail({id:1}, 'detail', undefined, {param: 'value', other: 1}).then(function (objects) {
+            expect(objects).toEqual(fakeObjects);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+
     it('should convert objects to camelCase after fetching them from api', function (done) {
         mockBackend.whenGET('{1}{2}/'.assign(levelOneEndpoint, fakeOne.id)).respond({
             id: 1,

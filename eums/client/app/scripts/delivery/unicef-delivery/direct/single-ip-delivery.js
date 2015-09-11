@@ -111,7 +111,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
 
         function attachNodesToItems(items) {
             if ($scope.delivery && $scope.delivery.id) {
-                var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
+                var filterParams = {distribution_plan: $scope.delivery.id, is_root: true};
                 return DeliveryNodeService.filter(filterParams).then(function (nodes) {
                     return items.map(function (item) {
                         var matchingNode = findNodeForItem(item, nodes);
@@ -170,7 +170,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         }
 
         function loadPurchaseOrderDeliveries(purchaseOrder) {
-            return PurchaseOrderService.getDetail(purchaseOrder, 'deliveries').then(function (deliveries) {
+            return PurchaseOrderService.getDetail(purchaseOrder, 'deliveries', undefined, {is_root: 'True'}).then(function (deliveries) {
                 $scope.trackedDeliveries = deliveries.filter(function (delivery) {
                     return delivery.track;
                 });
@@ -224,7 +224,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         }
 
         function updateOrCreateDeliveryNodes() {
-            var filterParams = {distribution_plan: $scope.delivery.id, parent__isnull: true};
+            var filterParams = {distribution_plan: $scope.delivery.id, is_root: true};
             return DeliveryNodeService.filter(filterParams).then(function (nodes) {
                 var mappedItems = $scope.purchaseOrderItems.map(function (item) {
                     var matchingNode = findNodeForItem(item, nodes);

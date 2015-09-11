@@ -42,9 +42,10 @@ class PurchaseOrderViewSet(ModelViewSet):
         return Response(self.get_serializer(purchase_orders, many=True).data)
 
     @detail_route()
-    def deliveries(self, _, pk=None):
+    def deliveries(self, request, pk=None):
+        is_root = request.GET.get('is_root')
         purchase_order = self.get_object()
-        deliveries = purchase_order.deliveries()
+        deliveries = purchase_order.deliveries(is_root)
         return Response(DistributionPlanSerialiser(deliveries, many=True).data)
 
     @detail_route()
