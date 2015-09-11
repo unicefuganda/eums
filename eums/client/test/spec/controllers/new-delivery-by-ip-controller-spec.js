@@ -13,17 +13,17 @@ describe('New IP Delivery Controller', function () {
         module('NewDeliveryByIp');
 
         ipNodes = [
-            {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10},
-            {id: 2, item: orderItemId, orderNumber: '12345678', quantityShipped: 20},
-            {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30},
-            {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40},
-            {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10},
-            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20},
+            {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10, balance: 10},
+            {id: 2, item: orderItemId, orderNumber: '12345678', quantityShipped: 20, balance: 20},
+            {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30, balance: 30},
+            {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40, balance: 40},
+            {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10, balance: 10},
+            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20, balance: 20},
         ];
 
         deliveryGroups = [
-            {orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4},
-            {orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2}
+            {orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4, isOpen: function(){}},
+            {orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2, isOpen: function(){}}
         ];
 
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
@@ -94,21 +94,28 @@ describe('New IP Delivery Controller', function () {
         var filterParams = {item__item: routeParams.itemId, is_distributable: true};
         expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams);
         expect(scope.allDeliveries).toEqual(ipNodes);
-        expect(scope.deliveryGroups).toEqual(deliveryGroups);
+        expect(scope.deliveryGroups.count()).toBe(2);
+        expect(scope.deliveryGroups.first().orderNumber).toEqual('12345678');
+        expect(scope.deliveryGroups[1].orderNumber).toEqual('98765432');
+        expect(scope.deliveryGroups.first().totalQuantity).toBe(100);
+        expect(scope.deliveryGroups.first().numberOfShipments).toBe(4);
     });
 
     it('should load list of POs or Waybills for which deliveries have been made', function () {
         scope.$apply();
-        expect(scope.deliveryGroups).toEqual(deliveryGroups);
+        expect(scope.deliveryGroups.first().orderNumber).toEqual('12345678');
+        expect(scope.deliveryGroups[1].orderNumber).toEqual('98765432');
+        expect(scope.deliveryGroups.first().totalQuantity).toBe(100);
+        expect(scope.deliveryGroups.first().numberOfShipments).toBe(4);
     });
 
     it('should select deliveries for the first PO or Waybill', function () {
         scope.$apply();
         var selectedDeliveries = [
-            {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10},
-            {id: 2, item: orderItemId, orderNumber: '12345678', quantityShipped: 20},
-            {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30},
-            {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40}
+            {id: 1, item: orderItemId, orderNumber: '12345678', quantityShipped: 10, balance: 10},
+            {id: 2, item: orderItemId, orderNumber: '12345678', quantityShipped: 20, balance: 20},
+            {id: 3, item: orderItemId, orderNumber: '12345678', quantityShipped: 30, balance: 30},
+            {id: 4, item: orderItemId, orderNumber: '12345678', quantityShipped: 40, balance: 40}
         ];
 
         expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
@@ -119,10 +126,26 @@ describe('New IP Delivery Controller', function () {
         scope.selectedOrderNumber = '98765432';
         scope.$apply();
         var selectedDeliveries = [
-            {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10},
-            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20},
+            {id: 1, item: orderItemId, orderNumber: '98765432', quantityShipped: 10, balance: 10},
+            {id: 2, item: orderItemId, orderNumber: '98765432', quantityShipped: 20, balance: 20},
         ];
         expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
+    });
+
+    it('it should open delivery group when order number is the selected order number', function() {
+        scope.$apply();
+        scope.selectedOrderNumber = '98765432';
+        scope.$apply();
+        expect(scope.deliveryGroups.first().isOpen()).toBeFalsy();
+        expect(scope.deliveryGroups[1].isOpen()).toBeTruthy();
+    });
+
+    it('it should change selected order number and selected deliveries', function() {
+        scope.$apply();
+        var orderNumber = '98765432';
+        scope.updateSelectedOrderNumber(orderNumber);
+        scope.$apply();
+        expect(scope.selectedOrderNumber).toEqual(orderNumber);
     });
 
     it('should fetch item details and put them on scope', function () {

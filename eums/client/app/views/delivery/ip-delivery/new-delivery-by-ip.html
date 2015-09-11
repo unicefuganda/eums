@@ -123,37 +123,57 @@
     <div>
         <span class="sub-header">CHOOSE A QUANTITY TO SHIP: </span><span>You can only select quantities from a single Purchase Order or Waybill</span>
     </div>
-    <div>
-        <div class="panel-body col-lg-12">
-            <table id="singleIPDeliveryItemsTable"
-                   class="table table-bordered table-hover table-condensed col-lg-6">
-                <tr class="summary-row">
-                    <th class="item-list-col-header">Date Shipped</th>
-                    <th class="item-list-col-header">Shipment</th>
-                    <th class="item-list-col-header">Avail. Qty</th>
-                    <th class="item-list-col-header">Quantity Shipped</th>
-                </tr>
-                <tr ng-repeat="delivery in selectedDeliveries">
-                    <td>{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
-                    <td>{{ delivery.orderNumber }}</td>
-                    <td>{{ delivery.balance }}</td>
-                    <td class="table-row-input-column">
-                        <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
-                            <input type="text" id="quantity-shipped" class="form-control" only-digits
-                                   ng-model="delivery.quantityShipped">
-                        </div>
-                    </td>
-                </tr>
-                <tfoot class="summary-row">
-                <tr>
-                    <td colspan="3">TOTAL QUANTITY SHIPPED</td>
-                    <td>{{ totalQuantityShipped }}</td>
-                </tr>
-                </tfoot>
-            </table>
+    <div class="panel-body col-lg-12">
+        <table class="table-hover table-condensed col-lg-12">
+            <tr class="summary-row">
+                <th class="item-list-col-header" width="2%">&nbsp;</th>
+                <th class="item-list-col-header" width="25%">PO/Waybill</th>
+                <th class="item-list-col-header" width="25%">Available Quantity</th>
+                <th class="item-list-col-header">&nbsp;</th>
+            </tr>
+        </table>
+        <div class="panel panel-default">
+            <div ng-repeat="deliveryGroup in deliveryGroups">
+                <div class="custom-panel-heading col-lg-12">
+                    <table class="table-hover table-condensed col-lg-12">
+                        <tr>
+                            <td width="2%"><i class="pull-left glyphicon text-danger"
+                                              ng-class="{'glyphicon-chevron-down': deliveryGroup.isOpen(), 'glyphicon-chevron-right': !deliveryGroup.isOpen()}"
+                                    ng-click="updateSelectedOrderNumber(deliveryGroup.orderNumber)"></i>
+                            </td>
+                            <td width="25%">{{ deliveryGroup.orderNumber }}</td>
+                            <td width="25%">{{ deliveryGroup.totalQuantity }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="panel-body col-lg-12" style="padding-left: 35px" ng-show="deliveryGroup.isOpen()">
+                    <table id="singleIPDeliveryItemsTable"
+                           class="table table-hover table-condensed col-lg-6">
+                        <tr ng-repeat="delivery in selectedDeliveries">
+                            <td width="25%">{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                            <td width="25%">{{ delivery.balance }}</td>
+                            <td width="25%" class="table-row-input-column">
+                                <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
+                                    <input type="text" id="quantity-shipped" class="form-control" only-digits
+                                           ng-model="delivery.quantityShipped">
+                                </div>
+                            </td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tfoot class="summary-row">
+                        <tr>
+                            <td colspan="2">TOTAL QUANTITY SHIPPED</td>
+                            <td>{{ totalQuantityShipped }}</td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-    <div>
+    <div class="col-lg-12">
         <div class="pad-20 row">
             <div class="pull-right">
                 <button id="save-delivery-report" type="button" class="btn btn-primary" ng-click="save()">
