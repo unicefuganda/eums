@@ -19,4 +19,12 @@ describe('Alerts', function () {
         expect(alertsPage.firstAlert).toContain('Some Contact Name');
         expect(alertsPage.firstAlert).toContain('Some Description');
     });
+
+    it('should resolve alerts', function () {
+        alertsPage.resolveAlert('This is now resolved');
+        expect(alertsPage.firstAlert).toContain('Resolved');
+
+        alertsPage.viewResolutionDetails();
+        expect(alertsPage.alertResolutionRemarks).toContain('This is now resolved');
+    });
 });
