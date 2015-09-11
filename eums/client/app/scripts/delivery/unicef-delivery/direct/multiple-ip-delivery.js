@@ -95,7 +95,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         var loadDeliveryDataFor = function (purchaseOrderItem) {
-            var filterParams = {item: purchaseOrderItem.id, parent__isnull: 'true'};
+            var filterParams = {item: purchaseOrderItem.id, is_root: 'true'};
             return DeliveryNodeService.filter(filterParams, ['consignee', 'contact_person_id']).then(function (nodes) {
                 $scope.distributionPlanNodes = nodes;
                 resetFields();

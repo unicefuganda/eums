@@ -453,7 +453,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             deferredPurchaseOrderItem.resolve(stubPurchaseOrderItem);
             deferredTopLevelNodes.resolve(topLevelNodes);
             scope.$apply();
-            expect(mockNodeService.filter).toHaveBeenCalledWith({item : 1, parent__isnull : 'true' }, [ 'consignee', 'contact_person_id' ]);
+            expect(mockNodeService.filter).toHaveBeenCalledWith({item : 1, is_root : 'true' }, [ 'consignee', 'contact_person_id' ]);
         });
 
         it('should navigate to same page with POid and POItemId specified', function () {

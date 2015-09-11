@@ -21,6 +21,9 @@ class DeliveryNodeManager(PolymorphicManager):
             return node
         return self.model(**kwargs)
 
+    def root_nodes(self):
+        return self.model.objects.filter(arcs_in__source__isnull=True)
+
     def root_nodes_for(self, delivery=None, order_items=None, **kwargs):
         kwargs['arcs_in__source__isnull'] = True
         if delivery:

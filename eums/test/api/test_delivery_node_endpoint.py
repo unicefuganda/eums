@@ -254,7 +254,21 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(node_ids), 3)
         self.assertItemsEqual(node_ids, [root.id, child.id, grandchild.id])
 
-    def test_returned_nodes_should_have_order_type_field(self):
+    def test_should_exclude_downstream_delivery_nodes_when_unicef_users_is_logged_in(self):
+        root = DeliveryNodeFactory(consignee=self.consignee, quantity=100)
+        child = DeliveryNodeFactory(parents=[(root, 10)])
+        grandchild = DeliveryNodeFactory(parents=[(child, 5)])
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'is_root=True'))
+        node_ids = [node['id'] for node in response.data]
+
+        self.assertEqual(len(node_ids), 1)
+        self.assertItemsEqual(node_ids, [root.id])
+        self.assertNotIn(grandchild.id, node_ids)
+        self.assertNotIn(child.id, node_ids)
+
+
+def test_returned_nodes_should_have_order_type_field(self):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))
         ro_node = DeliveryNodeFactory(item=ReleaseOrderItemFactory(release_order=(ReleaseOrderFactory())))
 

@@ -126,6 +126,19 @@ class DeliveryNodeTest(TestCase):
         self.assertIn(root_node_two.id, root_node_ids)
         self.assertNotIn(child_node.id, root_node_ids)
 
+    def test_should_list_all_root_nodes(self):
+        root_node_one = DeliveryNodeFactory(quantity=7)
+        root_node_two = DeliveryNodeFactory(quantity=8)
+        child_node = DeliveryNodeFactory(parents=[{'id': root_node_one.id, 'quantity': 5}])
+
+        root_nodes = DeliveryNode.objects.root_nodes()
+        self.assertEqual(root_nodes.count(), 2)
+
+        root_node_ids = [node.id for node in root_nodes]
+        self.assertIn(root_node_one.id, root_node_ids)
+        self.assertIn(root_node_two.id, root_node_ids)
+        self.assertNotIn(child_node.id, root_node_ids)
+
     def test_update_should_override_parents_when_parents_list_is_passed(self):
         node_one = DeliveryNodeFactory()
         node_two = DeliveryNodeFactory()

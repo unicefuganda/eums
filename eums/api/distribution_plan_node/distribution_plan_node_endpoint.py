@@ -30,7 +30,12 @@ class DistributionPlanNodeViewSet(ModelViewSet):
 
     def get_queryset(self):
         user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
-        return self._get_consignee_queryset(user_profile) if user_profile else self.queryset._clone()
+        if user_profile:
+            return self._get_consignee_queryset(user_profile)
+        is_root = self.request.GET.get('is_root')
+        if is_root:
+            return DeliveryNode.objects.root_nodes()
+        return self.queryset._clone()
 
     def _get_consignee_queryset(self, user_profile):
         item_id = self.request.GET.get('consignee_deliveries_for_item')
