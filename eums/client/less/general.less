@@ -23,6 +23,11 @@ input[type=date]::-webkit-inner-spin-button {
   display: none;
 }
 
+.bold-label {
+  font-weight: bold;
+  margin: 5px;
+}
+
 .label-round {
   border-radius: 1em;
   font-size: 90%;
@@ -109,6 +114,10 @@ h4.page-header {
   padding-right: 5px;
 }
 
+.pad-6 {
+  padding: 6px;
+}
+
 .pad-bottom-5 {
   padding-bottom: 5px;
 }
@@ -135,6 +144,7 @@ h4.page-header {
   background-color: #f5f5f5;
   border-color: #ddd;
 }
+
 .section-header {
   font-size: 1.2em;
   color: #8ac43e;
@@ -200,6 +210,11 @@ h4.page-header {
 
 .item-quantity-label {
   font-size: 1.1em;
+  max-width: 191px;
+  display: inline-block;
+  white-space: normal;
+  line-height: 1.25;
+  text-align: justify;
 }
 
 .label-as-badge {
@@ -476,7 +491,7 @@ h4.page-header {
   border-radius: 10px;
 }
 
-.black{
+.black {
   color: black;
 }
 
@@ -493,4 +508,104 @@ h4.page-header {
 
 .align-center {
   text-align: center;
+}
+
+.rounded-border {
+  border: 1px solid #ddd;
+  border-radius: 7px;
+  padding: 10px;
+}
+
+.item-details-table tr td {
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+
+.margin-right-20 {
+  margin-right: 20px;
+}
+
+.margin-bottom-10 {
+  margin-bottom: 10px;
+}
+
+.form-new-indented {
+  margin-left: 50px;
+  margin-right: 20px;
+}
+
+.form-new-sub-header {
+  margin-bottom: 10px;
+  margin-left: 5px;
+}
+
+.form-new-save-button {
+  position: absolute;
+  right: 20px;
+  bottom: 0;
+}
+
+.form-new-last-column {
+  min-height: 410px;
+  display: inline-block;
+}
+
+.form-new-input-qtty {
+  width: 65px;
+  height: 30px;
+}
+
+.table-header {
+  font-size: 1.1em;
+  text-align: center;
+  color: white;
+  background-color: @brand-primary;
+  padding-top: 10px;
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+
+.accordion th {
+  background: #E2E2E2;
+  color: black;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.accordion th:hover {
+  background: #E2E2E2;
+  border: none;
+}
+
+.accordion-header{
+  text-align: left;
+  width: 117px;;
+}
+.accordion td {
+  font-size: 85%;
+  padding: 5px;
+}
+
+.accordion td.pad-10 {
+  padding: 10px;
+}
+
+.accordion tr {
+  border: 1px solid #E2E2E2;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.label-100 {
+  color: white;
+  font-weight: bold;
+  font-size: 100%;
+  border-radius: 5px;
 }
