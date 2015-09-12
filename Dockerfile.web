@@ -6,18 +6,20 @@ ENV PYTHONUNBUFFERED 1
 RUN export DEBIAN_FRONTEND=noninteractive
 
 # Add unpriviledged worker user
-RUN adduser --disabled-password --gecos '' worker
-
-COPY requirements.txt .
+COPY requirements.txt /requirements.txt
 RUN pip install -r requirements.txt
 
-COPY scripts/packaging/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
-COPY scripts/deployment/celery.sh /celery.sh
+COPY ./config/uwsgi/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
+
+RUN adduser --disabled-password --gecos '' worker
+
 COPY ./build/ /eums/
 COPY ./build/eums.sh /eums/eums.sh
-RUN chmod +x /eums/eums.sh
 
+RUN chown -R worker:worker /eums
+RUN chmod 755 /eums/eums.sh
 
+USER worker
 WORKDIR /eums/
 EXPOSE 8000
 

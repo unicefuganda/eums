@@ -2,8 +2,8 @@ FROM nginx
 
 RUN mkdir -p /etc/nginx/sites-enabled
 
-COPY scripts/packaging/nginx.config /etc/nginx/nginx.conf
-COPY scripts/packaging/eums.nginx.config /etc/nginx/sites-available/eums
+COPY config/nginx/nginx.config /etc/nginx/nginx.conf
+COPY config/nginx/eums.nginx.config /etc/nginx/sites-available/eums
 RUN ln -sf /etc/nginx/sites-available/eums /etc/nginx/sites-enabled/eums
 
 COPY ./build/eums/client/ /assets/

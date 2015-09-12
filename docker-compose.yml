@@ -46,7 +46,7 @@ celery_worker:
   links:
     - redis
     - postgres
-  command: /bin/sh /celery.sh
+  command: celery
 
 nginx:
   build: .

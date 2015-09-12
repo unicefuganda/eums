@@ -84,7 +84,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
 STATIC_URL = '/static/'
 
 # Number of days after expected delivery date after which messages to consignees are sent out
-DELIVERY_STATUS_CHECK_DELAY = environ('DELIVERY_STATUS_CHECK_DELAY', 7)
+DELIVERY_STATUS_CHECK_DELAY = int(environ('DELIVERY_STATUS_CHECK_DELAY', 7))
 
 # Expiry time (days) for a scheduled flow ** This should match the one set in rapid pro! and has a max value of 30 days
 MAX_ALLOWED_REPLY_PERIOD = 7

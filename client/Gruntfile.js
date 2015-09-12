@@ -315,7 +315,7 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('functional', 'Run functional tests using chrome', [
-    'prep-test-env',
+    //'prep-test-env',
     'protractor:chrome'
   ]);
 
