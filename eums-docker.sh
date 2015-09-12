@@ -48,7 +48,7 @@ function remove_containers {
 }
 
 function load_fixtures {
-  PROJECT_DIR="`pwd`"
+  PROJECT_DIR=$(pwd)
 
   docker run -i --rm \
   --volume ${PROJECT_DIR}:/eums/ \
