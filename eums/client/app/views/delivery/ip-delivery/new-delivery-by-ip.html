@@ -14,9 +14,9 @@
     <div><span class="well-sm"></span></div>
 
 
-    <div class="row col-lg-11 form-new-indented">
+    <div class="row col-lg-11 three-columns-form-indented">
         <div class="col-md-4">
-            <div class="sub-header form-new-sub-header">ITEM DETAILS</div>
+            <div class="sub-header three-columns-form-sub-header">ITEM DETAILS</div>
             <div class="rounded-border">
                 <table class="item-details-table">
                     <tr>
@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="col-md-4">
-            <div class="sub-header form-new-sub-header ">ADD CONSIGNEE DETAILS</div>
+            <div class="sub-header three-columns-form-sub-header ">ADD CONSIGNEE DETAILS</div>
             <div class="rounded-border col-md-12">
                 <div class="col-md-12 margin-bottom-10">
                     <div class="bold-label pad-small">Date Shipped</div>
@@ -121,8 +121,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 form-new-last-column">
-            <div class="sub-header form-new-sub-header">CHOOSE A QUANTITY TO SHIP</div>
+        <div class="col-md-4 three-columns-form-last-column">
+            <div class="sub-header three-columns-form-sub-header">CHOOSE A QUANTITY TO SHIP</div>
             <div>
                 <table class="table-hover table-condensed col-lg-12">
                     <thead>
@@ -134,6 +134,7 @@
                     </tr>
                     </thead>
                 </table>
+
                 <div ng-repeat="deliveryGroup in deliveryGroups">
                     <table class=" accordion  col-lg-12">
                         <thead>
@@ -154,8 +155,9 @@
                             <td width="25%" >{{ delivery.balance }}</td>
                             <td width="25%">
                                 <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
-                                    <input type="text" id="quantity-shipped" class="form-new-input-qtty"
+                                    <input type="text" id="quantity-shipped" class="three-columns-form-input-number"
                                            only-digits
+                                           required
                                            ng-model="delivery.quantityShipped">
                                 </div>
                             </td>
@@ -171,7 +173,7 @@
 
             </div>
             <div class="pad-20 ">
-                <div class="form-new-save-button">
+                <div class="three-columns-form-save-button">
                     <button id="save-delivery-report" type="button" class="btn btn-primary"
                             ng-click="save()">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
