@@ -148,6 +148,18 @@ describe('New IP Delivery Controller', function () {
         expect(scope.selectedOrderNumber).toEqual(orderNumber);
     });
 
+    it('it should have no selected order number and deliveries, if updated/clicked twice', function() {
+        scope.$apply();
+        var orderNumber = '98765432';
+        scope.updateSelectedOrderNumber(orderNumber);
+        scope.$apply();
+        scope.updateSelectedOrderNumber(orderNumber);
+        scope.$apply();
+        expect(scope.selectedOrderNumber).toBe(undefined);
+        expect(scope.deliveryGroups.first().isOpen()).toBeFalsy();
+        expect(scope.deliveryGroups[1].isOpen()).toBeFalsy();
+    });
+
     it('should fetch item details and put them on scope', function () {
         scope.$apply();
         expect(scope.item).toEqual(fetchedItem);

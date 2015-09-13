@@ -155,7 +155,11 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
         }
 
         $scope.updateSelectedOrderNumber = function(orderNumber) {
-            $scope.selectedOrderNumber = orderNumber;
+            if ($scope.selectedOrderNumber != orderNumber){
+                $scope.selectedOrderNumber = orderNumber;
+            }else{
+                $scope.selectedOrderNumber = undefined;
+            }
         };
 
         function createNewDeliveryNode() {
