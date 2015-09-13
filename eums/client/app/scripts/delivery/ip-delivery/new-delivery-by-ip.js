@@ -4,9 +4,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
-                                                       DeliveryNode, ngToast, LoaderService, $q, ItemService,
-                                                       ConsigneeItemService, $location, DeliveryService) {
+    .controller('NewDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams, DeliveryNode, ngToast, LoaderService, $q, ItemService, ConsigneeItemService, $location, DeliveryService) {
         $scope.districts = [];
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.errors = false;
@@ -36,33 +34,39 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
         }).then(function (nodes) {
             $scope.deliveryGroups = [];
             $scope.selectedOrderNumber = "";
-            nodes.forEach(function (node) {
-                var deliveryGroups = $scope.deliveryGroups.filter(function (deliveryGroup) {
-                    return deliveryGroup.orderNumber == node.orderNumber;
-                });
-                if (deliveryGroups.length == 0) {
-                    var deliveryGroup = {orderNumber: node.orderNumber};
-                    deliveryGroup.totalQuantity = nodes.reduce(function (acc, delivery) {
-                        if (delivery.orderNumber == node.orderNumber) {
-                            acc.balance += delivery.balance || 0;
-                        }
-                        return acc;
-                    }, {balance: 0}).balance;
-                    deliveryGroup.numberOfShipments = nodes.reduce(function (acc, delivery) {
-                        if (delivery.orderNumber == node.orderNumber) {
-                            acc.numberOfShipments += 1;
-                        }
-                        return acc;
-                    }, {numberOfShipments: 0}).numberOfShipments;
-                    deliveryGroup.isOpen = function(){
-                        return this.orderNumber == $scope.selectedOrderNumber;
-                    };
-                    $scope.deliveryGroups.push(deliveryGroup);
-                }
-            });
+            nodes.forEach(function (node) { updateDeliveryGroups(node, nodes); });
             $scope.allDeliveries = nodes;
             $scope.selectedOrderNumber = $scope.deliveryGroups.first().orderNumber;
         }));
+
+        function updateDeliveryGroups(node, nodes) {
+            var orderNumber = node.orderNumber;
+            var deliveryGroups = $scope.deliveryGroups.filter(function (deliveryGroup) {
+                return deliveryGroup.orderNumber == orderNumber;
+            });
+            if (deliveryGroups.length == 0) {
+                var deliveryGroup = {orderNumber: orderNumber};
+                deliveryGroup.totalQuantity = getTotalValueFrom(nodes, orderNumber, 'balance', function (balance) {
+                    return balance || 0;
+                });
+                deliveryGroup.numberOfShipments = getTotalValueFrom(nodes, orderNumber, 'numberOfShipment', function (balance) {
+                    return 1;
+                });
+                deliveryGroup.isOpen = function () {
+                    return this.orderNumber == $scope.selectedOrderNumber;
+                };
+                $scope.deliveryGroups.push(deliveryGroup);
+            }
+        }
+
+        function getTotalValueFrom(nodes, orderNumber, key, rule) {
+            return nodes.reduce(function (acc, delivery) {
+                if (delivery.orderNumber == orderNumber) {
+                    acc += rule(delivery[key]);
+                }
+                return acc;
+            }, 0);
+        }
 
         $q.all(loadPromises).catch(function () {
             createToast('failed to load deliveries', 'danger');
@@ -93,8 +97,8 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             event.stopPropagation();
         });
 
-        $scope.$watch('selectedOrderNumber', function(selectedOrderNumber) {
-            if($scope.allDeliveries) {
+        $scope.$watch('selectedOrderNumber', function (selectedOrderNumber) {
+            if ($scope.allDeliveries) {
                 $scope.selectedDeliveries = $scope.allDeliveries.filter(function (delivery) {
                     return delivery.orderNumber == selectedOrderNumber;
                 });
@@ -154,10 +158,10 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             });
         }
 
-        $scope.updateSelectedOrderNumber = function(orderNumber) {
-            if ($scope.selectedOrderNumber != orderNumber){
+        $scope.updateSelectedOrderNumber = function (orderNumber) {
+            if ($scope.selectedOrderNumber != orderNumber) {
                 $scope.selectedOrderNumber = orderNumber;
-            }else{
+            } else {
                 $scope.selectedOrderNumber = undefined;
             }
         };
