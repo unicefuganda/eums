@@ -124,38 +124,38 @@
         <div class="col-md-4 last-column">
             <div class="sub-header">CHOOSE A QUANTITY TO SHIP</div>
             <div>
-                <table class="table-hover table-condensed col-lg-12">
+                <table class="table-condensed col-lg-12">
                     <thead>
                     <tr class="summary-row table-header">
-                        <th class="item-list-col-header" width="5%">&nbsp;</th>
-                        <th class="item-list-col-header" width="25%">PO/Waybill</th>
-                        <th class="item-list-col-header centered" width="25%">Avail. Qty</th>
-                        <th class="item-list-col-header">&nbsp;</th>
+                        <th class="item-list-col-header col-lg-1">&nbsp;</th>
+                        <th class="item-list-col-header centered col-lg-4">PO/Waybill</th>
+                        <th class="item-list-col-header centered col-lg-4" width="25%">Avail. Qty</th>
+                        <th class="item-list-col-header col-lg-3">&nbsp;</th>
                     </tr>
                     </thead>
                 </table>
 
                 <div ng-repeat="deliveryGroup in deliveryGroups">
-                    <table class=" accordion  col-lg-12">
+                    <table class="accordion col-lg-12">
                         <thead>
                         <tr>
-                            <th width="2%" class="pad-5"><i class="pad-5 pull-left glyphicon text-danger"
+                            <th class="col-lg-1"><i class="pull-left glyphicon text-danger"
                                                             ng-class="{'glyphicon-chevron-down': deliveryGroup.isOpen(), 'glyphicon-chevron-right': !deliveryGroup.isOpen()}"
                                                             ng-click="updateSelectedOrderNumber(deliveryGroup.orderNumber)"></i>
                             </th>
-                            <th width="25%" class="pad-5 header-text">{{ deliveryGroup.orderNumber }}</th>
-                            <th width="25%" class="header-text">{{ deliveryGroup.totalQuantity }}</th>
-                            <th>&nbsp;</th>
+                            <th class="col-lg-4 centered">{{ deliveryGroup.orderNumber }}</th>
+                            <th class="col-lg-4 centered">{{ deliveryGroup.totalQuantity }}</th>
+                            <th class="col-lg-3">&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-show="deliveryGroup.isOpen()" ng-repeat="delivery in selectedDeliveries">
-                            <td>&nbsp;</td>
-                            <td width="25%">{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
-                            <td width="25%">{{ delivery.balance }}</td>
-                            <td width="25%">
+                            <td class="col-lg-1">&nbsp;</td>
+                            <td class="col-lg-4 centered">{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                            <td class="col-lg-4 centered">{{ delivery.balance }}</td>
+                            <td class="col-lg-3" >
                                 <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
-                                    <input type="text" id="quantity-shipped" class="input-number"
+                                    <input type="text" id="quantity-shipped" class="input-number form-control"
                                            only-digits
                                            required
                                            ng-model="delivery.quantityShipped">
