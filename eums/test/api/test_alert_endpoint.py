@@ -3,6 +3,8 @@ from eums.models.alert import Alert
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.alert_factory import AlertFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.runnable_factory import RunnableFactory
 
 ENDPOINT_URL = BACKEND_URL + 'alert/'
@@ -105,6 +107,24 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(updated_alert.remarks, None)
         self.assertEqual(updated_alert.is_resolved, False)
+
+    def test_should_filter_alerts_by_runnable_type(self):
+        delivery_alert = AlertFactory(runnable=DeliveryFactory())
+        item_alert = AlertFactory(runnable=DeliveryNodeFactory())
+
+        item_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'item-alert'))
+        item_alerts = item_alerts_response.data
+        item_alert_ids = [alert['id'] for alert in item_alerts]
+
+        delivery_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'delivery-alert'))
+        delivery_alerts = delivery_alerts_response.data
+        delivery_alert_ids = [alert['id'] for alert in delivery_alerts]
+
+        self.assertEqual(Alert.objects.count(), 2)
+        self.assertEqual(len(item_alerts), 1)
+        self.assertEqual(len(delivery_alerts), 1)
+        self.assertIn(item_alert.id, item_alert_ids)
+        self.assertIn(delivery_alert.id, delivery_alert_ids)
 
 
 class AlertCountEndpointTest(AuthenticatedAPITestCase):

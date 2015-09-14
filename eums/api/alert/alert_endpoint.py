@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.views import APIView
@@ -5,11 +6,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
-from eums.models import Alert, UserProfile
+from eums.models import Alert, UserProfile, DistributionPlanNode, DistributionPlan
 
 
 class AlertSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Alert
         fields = (
@@ -31,6 +31,17 @@ class AlertViewSet(ReadOnlyModelViewSet):
     pagination_class = StandardResultsSetPagination
     queryset = Alert.objects.all()
     serializer_class = AlertSerializer
+
+    def get_queryset(self):
+        type = self.request.GET.get('type', None)
+        if type == 'item-alert':
+            return Alert.objects.filter(
+                runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
+        elif type == 'delivery-alert':
+            return Alert.objects.filter(
+                runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
+        else:
+            return self.queryset._clone()
 
     def patch(self, request, *args, **kwargs):
         logged_in_user = request.user
@@ -79,7 +90,6 @@ alert_router.register(r'alert', AlertViewSet)
 
 
 class AlertCount(APIView):
-
     def get(self, request, *args, **kwargs):
         total_count = Alert.objects.count()
         unresolved = Alert.objects.filter(is_resolved=False).count()
