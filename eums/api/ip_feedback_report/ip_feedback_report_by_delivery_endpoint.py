@@ -10,7 +10,7 @@ def ip_feedback_by_delivery_endpoint(request):
     if UserProfile.objects.filter(user=logged_in_user).exists():
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    return Response(data=_build_delivery_answers(), status=status.HTTP_200_OK)
+    return Response(data={'results':_build_delivery_answers()}, status=status.HTTP_200_OK)
 
 
 def _build_delivery_answers():

@@ -56,7 +56,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected_response)
+        self.assertEqual(response.data['results'], expected_response)
 
     def test_should_return_delivery_empty_value_if_no_answers(self):
         self._create_questions()
@@ -83,7 +83,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected_response)
+        self.assertEqual(response.data['results'], expected_response)
 
     def test_should_return_delivery_answers_for_tracked_deliveries(self):
         self._create_questions()
@@ -115,7 +115,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
                               'additionalDeliveryComments': not_satisfied}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, expected_response)
+        self.assertEqual(response.data['results'], expected_response)
 
     def _create_questions(self):
         flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
