@@ -1,12 +1,15 @@
 <div class="container-fluid">
     <div class="eums page-header">Delivery</div>
-    <div class="content">
+    <div class="content margin-bottom-20">
         <ul class="nav nav-pills" style="margin-top: 1em;" ng-controller="NavigationTabsController">
             <li role="presentation" ng-class="{active : isActive('/direct-delivery')}">
                 <a href="#/direct-delivery" class="btn btn-default blue-border-button btn-xs">Direct Delivery</a>
             </li>
             <li role="presentation" ng-class="{active : isActive('/warehouse-delivery')}">
                 <a href="#/warehouse-delivery" class="btn btn-default blue-border-button btn-xs">Warehouse Delivery</a>
+            </li>
+            <li class="pull-right active">
+                <a ng-click="exportToCSV()" class="btn btn-default blue-border-button btn-xs"><i class="glyphicon glyphicon-log-out"></i> Export to CSV</a>
             </li>
         </ul>
     </div>
