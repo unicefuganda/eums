@@ -76,4 +76,17 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
+    it('should get ip feedback by delivery with no filters', function(){
+        var fakeReport = {results:[{id:2}]};
+        var url = '/api/ip-feedback-report-by-delivery';
+
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        reportService.ipFeedbackReportByDelivery().then(function(response){
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
+
 });

@@ -14,33 +14,26 @@
             <table si-table class="table table-bordered table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th class="table-header">Item Description</th>
-                    <th class="table-header">Outcome</th>
-                    <th class="table-header">Implementing Partner</th>
-                    <th class="table-header">PO/Waybill</th>
-                    <th class="table-header">Qty Shipped</th>
-
                     <th class="table-header">Received</th>
                     <th class="table-header">Date Received</th>
-                    <th class="table-header">Qty Received</th>
-                    <th class="table-header">Quality</th>
+                    <th class="table-header">PO/Waybill</th>
+                    <th class="table-header">Outcome</th>
+                    <th class="table-header">Implementing Partner</th>
+                    <th class="table-header">Condition</th>
                     <th class="table-header">Satisfied</th>
+                    <th class="table-header">Remarks</th>
                 </tr>
                 </thead>
-
                 <tbody>
                 <tr ng-repeat="itemReport in report">
-                    <td class="table-body">{{ itemReport.item_description }}</td>
-                    <td class="table-body">{{ itemReport.programme }}</td>
-                    <td class="table-body">{{ itemReport.consignee }}</td>
-                    <td class="table-body">{{itemReport.order_number}}</td>
-                    <td class="table-body">{{itemReport.quantity_shipped}}</td>
-
-                    <td class="table-body">{{ itemReport.answers[0].value }}</td>
-                    <td class="table-body">{{ itemReport.date_of_receipt  | date: 'dd/MM/yyyy'}}</td>
-                    <td class="table-body">{{ itemReport.answers[1].value }}</td>
-                    <td class="table-body">{{ itemReport.answers[2].value }}</td>
-                    <td class="table-body">{{ itemReport.answers[3].value }}</td>
+                    <td class="table-body">{{ itemReport.deliveryReceived }}</td>
+                    <td class="table-body">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</td>
+                    <td class="table-body">{{ itemReport.orderNumber }}</td>
+                    <td class="table-body">{{itemReport.programme}}</td>
+                    <td class="table-body">{{itemReport.consignee}}</td>
+                    <td class="table-body">{{ itemReport.isDeliveryInGoodOrder }}</td>
+                    <td class="table-body">{{ itemReport.satisfiedWithDelivery }}</td>
+                    <td class="table-body">{{ itemReport.additionalDeliveryComments }}</td>
                 </tr>
                 </tbody>
                 <tfoot>

@@ -134,4 +134,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('IpFeedbackReportController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-report.html');
     });
+
+    it('should have ip feedback report by delivery route pointing to the right controller', function () {
+        var route = '/ip-feedback-report-by-delivery';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('IpFeedbackReportByDeliveryController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-report-by-delivery.html');
+    });
 });

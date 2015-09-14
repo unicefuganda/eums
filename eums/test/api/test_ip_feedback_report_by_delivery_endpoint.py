@@ -1,4 +1,4 @@
-from eums.models import Question
+from eums.models import Question, DistributionPlanNode
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
@@ -18,6 +18,9 @@ ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery/'
 
 
 class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
+    def tearDown(self):
+        DistributionPlanNode.objects.all().delete()
+
     def test_returns_401_unless_admin(self):
         consignee = ConsigneeFactory()
         self.logout()
