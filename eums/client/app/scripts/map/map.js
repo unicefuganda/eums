@@ -26,9 +26,9 @@
 
     function getHeatMapStyle(allDistricts, location) {
         var style = {
-            fillColor: '#F1EEE8',
-            fillOpacity: 0.6,
-            weight: 1
+            fillColor: '#FFFFCC',
+            fillOpacity: 1,
+            weight: 1.5
         };
         allDistricts.forEach(function (district) {
             if (district.district === location) {
@@ -123,15 +123,9 @@
                 zoomControl: false,
                 scrollWheelZoom: false,
                 touchZoom: false,
-                doubleClickZoom: false
+                doubleClickZoom: false,
+                attributionControl: false
             }).setView(EumsConfig.MAP_OPTIONS.CENTER, EumsConfig.MAP_OPTIONS.ZOOM_LEVEL);
-
-            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
-                maxZoom: 13,
-                minZoom: 6
-            }).addTo(map);
-
 
             map.on('zoomend', function () {
                 if (window.map.getZoom() < 8) {
