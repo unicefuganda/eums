@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from unittest import TestCase
 from eums.models import Alert
 from eums.test.factories.alert_factory import AlertFactory
@@ -50,3 +51,16 @@ class AlertTest(TestCase):
 
         self.assertEqual(alert.location(), node_location)
         self.assertEqual(delivery_alert.location(), delivery_location)
+
+    def test_should_provide_delivery_date_for_runnable(self):
+        node_date = datetime.strptime('24052010', "%d%m%Y").date()
+        node = DeliveryNodeFactory(delivery_date=node_date)
+
+        delivery_date = datetime.strptime('24052011', "%d%m%Y").date()
+        delivery = DeliveryNodeFactory(location=delivery_date)
+
+        alert = AlertFactory(runnable=node)
+        delivery_alert = AlertFactory(runnable=delivery)
+
+        self.assertEqual(alert.date_shipped(), node_date)
+        self.assertEqual(delivery_alert.location(), delivery_date)

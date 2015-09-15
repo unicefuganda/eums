@@ -37,5 +37,8 @@ class Alert(models.Model):
     def location(self):
         return self.runnable.location
 
+    def date_shipped(self):
+        return self.runnable.delivery_date
+
     class Meta:
         ordering = ['is_resolved']
