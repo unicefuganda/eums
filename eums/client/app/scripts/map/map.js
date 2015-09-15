@@ -109,7 +109,8 @@
         }
     });
 
-    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService, $q, MapFilterService, DeliveryService, UserService) {
+    module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService,
+                                           $q, MapFilterService, DeliveryService, UserService) {
         var map, mapScope;
 
         var zoomControl = L.control.zoom({
@@ -320,7 +321,8 @@
         }
     });
 
-    module.directive('map', function (MapService, $window, IPService, DeliveryService) {
+    module
+        .directive('map', function (MapService, $window, IPService, DeliveryService) {
         return {
             scope: false,
             link: function (scope, element, attrs) {
@@ -355,7 +357,8 @@
 
             }
         }
-    }).directive('panel', function () {
+    })
+        .directive('panel', function () {
         return {
             scope: true,
             link: function (scope, element, attrs) {
@@ -390,19 +393,22 @@
                 });
             }
         }
-    }).directive('mapFilter', function () {
+    })
+        .directive('mapFilter', function () {
         return {
             restrict: 'E',
             scope: false,
             templateUrl: '/static/app/views/partials/filters.html'
         }
-    }).directive('mapSummary', function () {
+    })
+        .directive('mapSummary', function () {
         return {
             restrict: 'A',
             scope: false,
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
-    }).directive('mapFilters', function (DeliveryService) {
+    })
+        .directive('mapFilters', function (DeliveryService) {
         function removeEmptyArray(filteredResponses) {
             return filteredResponses.filter(function (response) {
                 return response.length > 0;
@@ -480,7 +486,8 @@
             }
         }
 
-    }).directive('selectProgram', function (ProgrammeService) {
+    })
+        .directive('selectProgram', function (ProgrammeService) {
             return {
                 restrict: 'A',
                 scope: false,
@@ -500,8 +507,8 @@
 
                 }
             }
-        }
-    ).directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
+        })
+        .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
             return {
                 restrict: 'A',
                 link: function (scope, elem) {
@@ -521,7 +528,8 @@
                     });
                 }
             }
-        }).directive('deliveryStatus', function (DeliveryService, UserService) {
+        })
+        .directive('deliveryStatus', function (DeliveryService, UserService) {
             function filterResponsesForUser(responsesToPlot) {
                 return UserService.getCurrentUser().then(function (user) {
                     if (user.consignee_id) {
@@ -621,7 +629,8 @@
                     });
                 }
             }
-        }).directive('dateRangeFilter', function (DeliveryService, UserService) {
+        })
+        .directive('dateRangeFilter', function (DeliveryService, UserService) {
             function removeEmptyArray(filteredResponses) {
                 return filteredResponses.filter(function (response) {
                     return response.length > 0;

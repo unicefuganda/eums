@@ -99,11 +99,17 @@ angular.module('map.layers', ['Delivery'])
                 layerOptions.districtLayerStyle.fillColor = layerStyle ? layerStyle.fillColor : layerOptions.districtLayerStyle.fillColor;
                 layer.setStyle(layerOptions.districtLayerStyle);
                 selected = true;
+
+                var responses = scope.allResponsesMap;
+                changeGlobalStats(layerName, responses, scope);
             };
 
             this.unhighlight = function () {
                 layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
                 selected = false;
+
+                var responses = scope.allResponsesMap;
+                changeGlobalStats(undefined, responses, scope);
             };
 
             this.isHighlighted = function () {

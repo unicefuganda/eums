@@ -111,15 +111,16 @@ describe('eums.layers', function () {
         });
 
         describe('METHOD: highlight', function () {
-            it('should highlight layer', function () {
-                var optionsMock = jasmine.createSpyObj('optionsMock', ['onClickHandler']);
-                optionsMock = { selectedLayerStyle: { fillColor: 'red', weight: 2.0}, districtLayerStyle: {fillColor: 'Blue', weight: 3.0}};
-                var districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, {}, 'Gulu');
+            it('should highlight layer', inject(function () {
+                jasmine.createSpyObj('optionsMock', ['onClickHandler']);
+                scope = jasmine.createSpyObj('scope', ['$apply']);
+                var optionsMock = { selectedLayerStyle: { fillColor: 'red', weight: 2.0}, districtLayerStyle: {fillColor: 'Blue', weight: 3.0}};
+                var districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
 
                 districtLayer.highlight();
                 expect(mockMapLayer.setStyle).toHaveBeenCalledWith({ fillColor: 'Blue', weight: 3.5 });
                 expect(districtLayer.isHighlighted()).toBeTruthy();
-            });
+            }));
         });
 
         describe('METHOD: getCenter', function () {
