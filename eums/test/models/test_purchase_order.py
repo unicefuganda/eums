@@ -1,4 +1,5 @@
 from unittest import TestCase
+import datetime
 
 from django.db import IntegrityError
 
@@ -10,6 +11,7 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
+from eums.test.helpers.fake_datetime import FakeDate
 
 
 class PurchaseOrderTest(TestCase):
@@ -139,3 +141,22 @@ class PurchaseOrderTest(TestCase):
 
         self.assertEquals(len(PurchaseOrder.objects.for_direct_delivery(123)), 1)
         self.assertEquals(PurchaseOrder.objects.for_direct_delivery(search_term='123').first().id, po_one.id)
+
+    def test_for_direct_delivery_filtered_by_date(self):
+        fake_today = FakeDate.today()
+        fake_last_week = fake_today - datetime.timedelta(days=7)
+        po_one = PurchaseOrderFactory(order_number=12345, date=fake_today)
+        po_two = PurchaseOrderFactory(order_number=9876, date=fake_last_week)
+
+        fake_two_days_ago = fake_today - datetime.timedelta(days=2)
+
+        PurchaseOrderItemFactory(purchase_order=po_one, quantity=1000)
+        PurchaseOrderItemFactory(purchase_order=po_two, quantity=100)
+
+        from_two_days_ago = PurchaseOrder.objects.for_direct_delivery(from_date=fake_two_days_ago)
+        self.assertEquals(len(from_two_days_ago), 1)
+        self.assertEquals(from_two_days_ago.first().id, po_one.id)
+
+        to_two_days_ago = PurchaseOrder.objects.for_direct_delivery(to_date=fake_two_days_ago)
+        self.assertEquals(len(to_two_days_ago), 1)
+        self.assertEquals(to_two_days_ago.first().id, po_two.id)

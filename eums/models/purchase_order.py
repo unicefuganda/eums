@@ -7,18 +7,14 @@ from eums.models import SalesOrder, DistributionPlanNode as DeliveryNode, Purcha
 class PurchaseOrderManager(models.Manager):
     def for_direct_delivery(self, search_term=None, from_date=None, to_date=None):
         po_orders = self.model.objects.annotate(release_order_count=Count('release_orders'))
-
-        if from_date and to_date:
-            return po_orders.filter(release_order_count=0, date__range=[from_date, to_date]
-            ) if search_term is None else po_orders.filter(
-                release_order_count=0,
-                date__range=[from_date, to_date],
-                order_number__icontains=search_term)
-        else:
-            return po_orders.filter(release_order_count=0
-            ) if search_term is None else po_orders.filter(
-                release_order_count=0,
-                order_number__icontains=search_term)
+        no_release_orders = po_orders.filter(release_order_count=0)
+        if from_date:
+            no_release_orders = no_release_orders.filter(date__gte=from_date)
+        if to_date:
+            no_release_orders = no_release_orders.filter(date__lte=to_date)
+        if search_term:
+            no_release_orders = no_release_orders.filter(order_number__icontains=search_term)
+        return no_release_orders
 
     def for_consignee(self, consignee_id):
         order_item_ids = DeliveryNode.objects.filter(consignee__id=consignee_id).values_list('item')
