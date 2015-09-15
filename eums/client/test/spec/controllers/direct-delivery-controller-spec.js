@@ -141,24 +141,26 @@ describe('DirectDeliveryController', function () {
     });
 
     describe('on filter by date range', function () {
-        it('should not filter when fromDate and toDate is empty', function () {
+        it('should not filter empty when query, fromDate and toDate are empty', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(0);
         });
 
-        it('should not filter when toDate is empty', function () {
+        it('should still filter fromDate when toDate is empty', function () {
             scope.fromDate = '2014-07-07';
             scope.$apply();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(0);
+            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-07-07'});
         });
 
-        it('should not filter when fromDate is empty', function () {
+        it('should still filter toDate when fromDate is empty', function () {
             scope.toDate = '2014-07-07';
             scope.$apply();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(0);
+            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {to: '2014-07-07'});
         });
 
         it('should filter deliveries when date range is given', function () {
@@ -182,29 +184,10 @@ describe('DirectDeliveryController', function () {
         it('should filter deliveries when date range is given with additional query', function () {
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-05-07';
-            scope.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
-        });
-
-        it('should filter deliveries without date when fromDate is not given with additional query', function () {
-            scope.query = 'wakiso programme';
-            scope.toDate = '2014-07-07';
-            scope.$apply();
-
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
-        });
-
-        it('should not filter deliveries when toDate is not given with additional query', function () {
-            scope.query = 'wakiso programme';
-            scope.fromDate = '2014-07-07';
-            scope.$apply();
-
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-05-07', query: 'wakiso programme'})
         });
     });
 
