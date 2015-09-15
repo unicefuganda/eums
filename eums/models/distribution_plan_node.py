@@ -137,3 +137,6 @@ class DistributionPlanNode(Runnable):
         if self.is_end_user():
             return Flow.objects.get(for_runnable_type=self.tree_position)
         return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
+
+    def total_value(self):
+        return self.item.unit_value() * self.quantity_in()

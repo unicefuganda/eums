@@ -482,3 +482,13 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(root.ip, consignee)
         self.assertEqual(child.ip, consignee)
         self.assertEqual(grandchild.ip, consignee)
+
+    def test_node_should_calculate_total_value_from_order_item_value(self):
+        po_item_one = PurchaseOrderItemFactory(value=400, quantity=200)
+        po_item_two = PurchaseOrderItemFactory(value=600, quantity=100)
+
+        node_one = DeliveryNodeFactory(item=po_item_one, quantity=50)
+        node_two = DeliveryNodeFactory(item=po_item_two, quantity=50)
+
+        self.assertEqual(node_one.total_value(), 100)
+        self.assertEqual(node_two.total_value(), 300)
