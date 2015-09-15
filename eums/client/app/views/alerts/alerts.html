@@ -26,11 +26,14 @@
             <thead ng-init="initialize()">
             <tr ng-show="alerts">
                 <th>STATUS</th>
-                <th>DATE</th>
+                <th>ALERT DATE</th>
                 <th>PO/WAYBILL</th>
+                <th>DATE SHIPPED</th>
+                <th>VALUE</th>
                 <th>ITEM</th>
                 <th>REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
+                <th>DISTRICT</th>
                 <th></th>
             </tr>
             </thead>
@@ -47,6 +50,12 @@
                     <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
                 </td>
                 <td>
+                    <span class="alerts-grey">{{ alert.dateShipped | date: 'dd-MM-yyyy' }}</span>
+                </td>
+                <td>
+                    <span class="alerts-bolder">{{ alert.totalValue | currency }}</span>
+                </td>
+                <td>
                     <span class="alerts-bolder">{{ alert.itemDescription }}</span>
                 </td>
                 <td>
@@ -54,6 +63,9 @@
                 </td>
                 <td>
                     <span class="alerts-bolder">{{ alert.consigneeName }}</span>
+                </td>
+                <td>
+                    <span class="alerts-bolder">{{ alert.location }}</span>
                 </td>
                 <td>
                     <button class="btn btn-primary btn-sm resolve-alert-button"
