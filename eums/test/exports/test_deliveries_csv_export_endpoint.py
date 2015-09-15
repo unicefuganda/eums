@@ -10,6 +10,14 @@ ENDPOINT_URL = '/exports/deliveries/'
 
 class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
 
+    @patch('eums.services.csv_export_service.generate_delivery_export_csv.delay')
+    def test_should_use_hostname(self, mock_generate_task_delay):
+        response = self.client.get(ENDPOINT_URL+'?type=warehouse')
+        user = User.objects.get(username='test')
+
+        self.assertEqual(response.status_code, 200)
+        mock_generate_task_delay.assert_called_once_with(user, 'warehouse', 'http://testserver/')
+
     @override_settings(CELERY_ALWAYS_EAGER=True)
     @patch('eums.services.csv_export_service.CSVExportService.notify')
     @patch('eums.services.delivery_csv_export.DeliveryCSVExport.notification_details')

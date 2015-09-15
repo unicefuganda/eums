@@ -8,8 +8,12 @@ class DeliveryCSVExport(object):
                      'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
                      'Is Tracked']
 
-    def __init__(self):
+    def __init__(self, host_name):
         self.header = self._set_export_header()
+        self.csv_url = self._set_csv_url(host_name)
+
+    def _set_csv_url(self, host_name):
+        return '%s/static/exports/%s' % (host_name, self.export_filename)
 
     def _set_export_header(self):
         header = [self.export_header]
@@ -17,8 +21,7 @@ class DeliveryCSVExport(object):
         return header
 
     def _message(self):
-        csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.export_filename)
-        return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, csv_url)
+        return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, self.csv_url)
 
     def _subject(self):
         return "%s Delivery Download" % self.export_label
@@ -47,25 +50,25 @@ class DeliveryCSVExport(object):
 class DeliveryExportFactory(object):
 
     @staticmethod
-    def create(type_str):
-        return eval(type_str + 'DeliveryExport')()
+    def create(type_str, host_name):
+        return eval(type_str + 'DeliveryExport')(host_name)
 
 
 class WarehouseDeliveryExport(DeliveryCSVExport):
 
-    def __init__(self):
+    def __init__(self, host_name):
         self.export_header = 'Waybill'
         self.export_label = 'Warehouse'
         self.export_filename = 'warehouse_deliveries.csv'
         self.item_class = ReleaseOrderItem
-        super(WarehouseDeliveryExport, self).__init__()
+        super(WarehouseDeliveryExport, self).__init__(host_name)
 
 
 class DirectDeliveryExport(DeliveryCSVExport):
 
-    def __init__(self):
+    def __init__(self, host_name):
         self.export_header = 'Purchase Order Number'
         self.export_label = 'Direct'
         self.export_filename = 'direct_deliveries.csv'
         self.item_class = PurchaseOrderItem
-        super(DirectDeliveryExport, self).__init__()
+        super(DirectDeliveryExport, self).__init__(host_name)

@@ -15,7 +15,7 @@ from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
 
-HOSTNAME = "ha.ha"
+HOSTNAME = "http://ha.ha"
 EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
 
 
@@ -51,13 +51,13 @@ class WareHouseDeliveryExportTest(TestCase):
 
         expected_data = [header, row_one]
 
-        csv_exporter = DeliveryExportFactory.create('Warehouse')
+        csv_exporter = DeliveryExportFactory.create('Warehouse', HOSTNAME)
 
         self.assertEqual(csv_exporter.data(), expected_data)
 
-    @override_settings(HOSTNAME=HOSTNAME, EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
+    @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_warehouse_delivery(self):
-        warehouse_csv_export = DeliveryExportFactory.create('Warehouse')
+        warehouse_csv_export = DeliveryExportFactory.create('Warehouse', HOSTNAME)
         details = ('Warehouse Delivery Download',
                    '%s some content Warehouse other content http://ha.ha/static/exports/warehouse_deliveries.csv')
         self.assertEqual(warehouse_csv_export.notification_details(), details)
@@ -97,13 +97,13 @@ class DirectDeliveryExportTest(TestCase):
 
         expected_data = [header, row_one]
 
-        csv_exporter = DeliveryExportFactory.create('Direct')
+        csv_exporter = DeliveryExportFactory.create('Direct', HOSTNAME)
 
         self.assertEqual(csv_exporter.data(), expected_data)
 
-    @override_settings(HOSTNAME=HOSTNAME, EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
+    @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_direct_delivery(self):
-        warehouse_csv_export = DeliveryExportFactory.create('Direct')
+        warehouse_csv_export = DeliveryExportFactory.create('Direct', HOSTNAME)
         details = ('Direct Delivery Download',
                    '%s some content Direct other content http://ha.ha/static/exports/direct_deliveries.csv')
         self.assertEqual(warehouse_csv_export.notification_details(), details)
