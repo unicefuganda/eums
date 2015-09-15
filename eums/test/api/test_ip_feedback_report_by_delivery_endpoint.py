@@ -1,4 +1,4 @@
-from eums.models import Question, DistributionPlanNode
+from eums.models import Question, DistributionPlan
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
@@ -19,7 +19,7 @@ ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery/'
 
 class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
     def tearDown(self):
-        DistributionPlanNode.objects.all().delete()
+        DistributionPlan.objects.all().delete()
 
     def test_returns_401_unless_admin(self):
         consignee = ConsigneeFactory()
@@ -34,28 +34,17 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         self._create_questions()
         programme_name = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
-        delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
-                                   consignee=ConsigneeFactory(name=wakiso))
-        order_number = 34230304
-        DeliveryNodeFactory(distribution_plan=delivery,
-                            item=PurchaseOrderItemFactory(
-                                purchase_order=PurchaseOrderFactory(order_number=order_number)))
-        run = RunFactory(runnable=delivery)
-
-        MultipleChoiceAnswerFactory(run=run, question=self.delivery_received_qtn, value=self.yes_one)
-        delivery_date = '12/03/2015'
-        TextAnswerFactory(run=run, question=self.date_received_qtn, value=delivery_date)
-        MultipleChoiceAnswerFactory(run=run, question=self.delivery_in_good_order, value=self.yes_two)
-        MultipleChoiceAnswerFactory(run=run, question=self.satisfied_with_delivery, value=self.no_three)
-        not_satisfied = 'Not Satisfied!!'
-        TextAnswerFactory(run=run, question=self.additional_comments, value=not_satisfied)
+        order_number = 34230305
+        comment = 'Not Satisfied!!'
+        number_of_deliveries = 1
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment)
 
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
                               'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': not_satisfied}]
+                              'additionalDeliveryComments': comment}]
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
@@ -67,7 +56,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         wakiso = 'WAKISO DHO'
         delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
                                    consignee=ConsigneeFactory(name=wakiso))
-        order_number = 34230334
+        order_number = 34230335
         DeliveryNodeFactory(distribution_plan=delivery,
                             item=PurchaseOrderItemFactory(
                                 purchase_order=PurchaseOrderFactory(order_number=order_number)))
@@ -92,33 +81,48 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         self._create_questions()
         programme_name = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
-        delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
-                                   consignee=ConsigneeFactory(name=wakiso))
-        order_number = 34230304
-        DeliveryNodeFactory(distribution_plan=delivery,
-                            item=PurchaseOrderItemFactory(
-                                purchase_order=PurchaseOrderFactory(order_number=order_number)))
-        DeliveryNodeFactory()
-        DeliveryNodeFactory()
-        run = RunFactory(runnable=delivery)
+        order_number = 34230305
+        comment = 'Not Satisfied!!'
+        number_of_deliveries = 1
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment)
 
-        MultipleChoiceAnswerFactory(run=run, question=self.delivery_received_qtn, value=self.yes_one)
-        delivery_date = '12/03/2015'
-        TextAnswerFactory(run=run, question=self.date_received_qtn, value=delivery_date)
-        MultipleChoiceAnswerFactory(run=run, question=self.delivery_in_good_order, value=self.yes_two)
-        MultipleChoiceAnswerFactory(run=run, question=self.satisfied_with_delivery, value=self.no_three)
-        not_satisfied = 'Not Satisfied!!'
-        TextAnswerFactory(run=run, question=self.additional_comments, value=not_satisfied)
+        DeliveryNodeFactory()
+        DeliveryNodeFactory()
 
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
                               'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': not_satisfied}]
+                              'additionalDeliveryComments': comment}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['results'], expected_response)
+
+    def test_should_return_paginated_answers(self):
+        self._create_questions()
+        programme_name = 'YP104 MANAGEMENT RESULTS'
+        wakiso = 'WAKISO DHO'
+        order_number = 34230305
+        comment = 'Satisfied!!'
+        number_of_deliveries = 20
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment)
+
+        response = self.client.get(ENDPOINT_URL, content_type='application/json')
+
+        self.assertEqual(len(response.data['results']), 10)
+        self.assertIn('/api/ip-feedback-report-by-delivery/?page=2', response.data['next'])
+        self.assertEqual(response.data['previous'], None)
+        self.assertEqual(response.data['count'], number_of_deliveries)
+        self.assertEqual(response.data['pageSize'], 10)
+
+        response = self.client.get(ENDPOINT_URL + '?page=2', content_type='application/json')
+
+        self.assertEqual(len(response.data['results']), 10)
+        self.assertEqual(response.data['next'], None)
+        self.assertIn('/api/ip-feedback-report-by-delivery/?page=1', response.data['previous'])
+        self.assertEqual(response.data['count'], number_of_deliveries)
+        self.assertEqual(response.data['pageSize'], 10)
 
     def _create_questions(self):
         flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
@@ -146,3 +150,20 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
 
         self.additional_comments = TextQuestionFactory(text='Additional Remarks', flow=flow, position=5,
                                                        label='additionalDeliveryComments')
+
+    def create_node_and_answers(self, number_of_deliveries, order_number, programme_name, consignee, comment):
+        while number_of_deliveries > 0:
+            delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
+                                       consignee=ConsigneeFactory(name=consignee))
+            DeliveryNodeFactory(distribution_plan=delivery,
+                                item=PurchaseOrderItemFactory(
+                                    purchase_order=PurchaseOrderFactory(order_number=order_number)))
+            run = RunFactory(runnable=delivery)
+            MultipleChoiceAnswerFactory(run=run, question=self.delivery_received_qtn, value=self.yes_one)
+            delivery_date = '12/03/2015'
+            TextAnswerFactory(run=run, question=self.date_received_qtn, value=delivery_date)
+            MultipleChoiceAnswerFactory(run=run, question=self.delivery_in_good_order, value=self.yes_two)
+            MultipleChoiceAnswerFactory(run=run, question=self.satisfied_with_delivery, value=self.no_three)
+            TextAnswerFactory(run=run, question=self.additional_comments, value=comment)
+            number_of_deliveries -= 1
+            order_number += 1
