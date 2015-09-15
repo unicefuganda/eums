@@ -30,7 +30,7 @@
                 <th>PO/WAYBILL</th>
                 <th>DATE SHIPPED</th>
                 <th>VALUE</th>
-                <th>ITEM</th>
+                <th ng-hide="type=='delivery'">ITEM</th>
                 <th>REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
@@ -55,7 +55,7 @@
                 <td>
                     <span class="alerts-bolder">{{ alert.totalValue | currency }}</span>
                 </td>
-                <td>
+                <td ng-hide="type=='delivery'">
                     <span class="alerts-bolder">{{ alert.itemDescription }}</span>
                 </td>
                 <td>
@@ -75,12 +75,12 @@
                         Resolve
                     </button>
 
-                    <button class="btn btn-default btn-sm blue-border-button resolve-alert-button resolved"
+                    <a class=""
                             type="button"
                             ng-if="alert.isResolved"
                             ng-click="showRemark($index)">
-                        Resolved
-                    </button>
+                        View Resolution
+                    </a>
 
                     <div class="modal fade text-left" id="resolved-alert-modal-{{$index}}">
                         <div class="modal-dialog modal-sixty-percent-size">
