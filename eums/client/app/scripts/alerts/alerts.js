@@ -74,4 +74,8 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                 })
         };
 
+        $scope.isActiveAlertType = function(type) {
+            return $scope.type == type;
+        }
+
     });

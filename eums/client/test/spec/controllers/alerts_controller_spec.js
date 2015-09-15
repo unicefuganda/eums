@@ -115,6 +115,16 @@ describe('AlertsController', function () {
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
 
+    it('should check whether alert type is the active type', function() {
+       scope.$apply();
+        expect(scope.isActiveAlertType('delivery')).toBeTruthy();
+        expect(scope.isActiveAlertType('item')).toBeFalsy();
+
+        scope.type = 'item';
+        expect(scope.isActiveAlertType('delivery')).toBeFalsy();
+        expect(scope.isActiveAlertType('item')).toBeTruthy();
+    });
+
     describe('Resolve Alerts ', function () {
         it('should call the update with remarks and alert id', function () {
             var alertId = 1;

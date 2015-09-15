@@ -3,13 +3,13 @@
     <div class="content alerts-sub-header" ng-show="alerts.length">
         Here you will find alerts from consignees and end-users that require a response from you
     </div>
-    <div class="content margin-bottom-20">
+    <div class="content">
         <ul class="nav nav-pills" style="margin-top: 1em;">
-            <li role="presentation" id="delivery-alerts-button" ng-class="{active : type == 'delivery'}">
+            <li role="presentation" id="delivery-alerts-button" ng-class="{active : isActiveAlertType('delivery')}">
                 <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType('delivery')">Alerts for
-                    Delivery</a>
+                    Deliveries</a>
             </li>
-            <li role="presentation" id="item-alerts-button" ng-class="{active :  type == 'item'}">
+            <li role="presentation" id="item-alerts-button" ng-class="{active :  isActiveAlertType('item')}">
                 <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType('item')">Alerts for
                     Items</a>
             </li>
@@ -32,7 +32,7 @@
                 <th>PO/WAYBILL</th>
                 <th>DATE SHIPPED</th>
                 <th>VALUE</th>
-                <th ng-hide="type=='delivery'">ITEM</th>
+                <th ng-hide="isActiveAlertType('delivery')">ITEM</th>
                 <th>REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
@@ -46,27 +46,27 @@
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
                 <td>
-                    <span class="alerts-grey">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
+                    <span class="alerts-bolder">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.orderType }} {{ alert.orderNumber }}</span>
+                    <span class="alerts-bolder">{{ alert.orderNumber }}</span>
                 </td>
                 <td>
-                    <span class="alerts-grey">{{ alert.dateShipped | date: 'dd-MM-yyyy' }}</span>
+                    <span class="alerts-bolder">{{ alert.dateShipped | date: 'dd-MM-yyyy' }}</span>
                 </td>
                 <td>
                     <span class="alerts-bolder">{{ alert.totalValue | currency }}</span>
                 </td>
-                <td ng-hide="type=='delivery'">
+                <td class="text-left pad-left-15" ng-hide="isActiveAlertType('delivery')">
                     <span class="alerts-bolder">{{ alert.itemDescription }}</span>
                 </td>
-                <td>
+                <td class="text-left pad-left-15">
                     <span class="alerts-bolder">{{ alert.contactName }}</span>
                 </td>
-                <td>
+                <td class="text-left pad-left-15">
                     <span class="alerts-bolder">{{ alert.consigneeName }}</span>
                 </td>
-                <td>
+                <td class="text-left pad-left-15">
                     <span class="alerts-bolder">{{ alert.location }}</span>
                 </td>
                 <td>
