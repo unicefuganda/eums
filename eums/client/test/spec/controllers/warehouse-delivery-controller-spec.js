@@ -1,6 +1,6 @@
 describe('Warehouse Delivery Controller', function () {
     var scope, mockReleaseOrderService, location, deferredReleaseOrders, mockExportDeliveryService, mockToast, mockLoader,
-        deferredExportResult;
+        deferredExportResult, timeout;
     var releaseOrders = [
         {id: 1},
         {id: 2}
@@ -18,13 +18,14 @@ describe('Warehouse Delivery Controller', function () {
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
-        inject(function ($controller, $rootScope, $location, $q, $sorter) {
+        inject(function ($controller, $rootScope, $location, $q, $sorter, $timeout) {
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
             scope = $rootScope.$new();
             location = $location;
+            timeout = $timeout;
 
             spyOn(angular, 'element').and.returnValue(fakeElement);
 
@@ -35,7 +36,8 @@ describe('Warehouse Delivery Controller', function () {
                 ngToast: mockToast,
                 LoaderService: mockLoader,
                 ReleaseOrderService: mockReleaseOrderService,
-                ExportDeliveriesService: mockExportDeliveryService
+                ExportDeliveriesService: mockExportDeliveryService,
+                $timeout: timeout
             });
         });
     });
@@ -97,8 +99,10 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should filter when toDate is empty', function () {
             scope.initialize();
+            scope.$apply();
             scope.fromDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-07-07'});
@@ -106,8 +110,11 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should still filter when fromDate is empty', function () {
             scope.initialize();
+            scope.$apply();
             scope.toDate = '2014-07-07';
             scope.$apply();
+
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {to: '2014-07-07'});
@@ -115,9 +122,12 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should filter deliveries when date range is given', function () {
             scope.initialize();
+            scope.$apply();
             scope.fromDate = '2014-05-07';
             scope.toDate = '2014-07-07';
             scope.$apply();
+
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07'});
@@ -125,9 +135,12 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should format dates before filtering deliveries ', function () {
             scope.initialize();
+            scope.$apply();
             scope.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
             scope.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
             scope.$apply();
+
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2015-08-30', to: '2015-09-10'});
@@ -135,10 +148,13 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should filter deliveries when date range is given with additional query', function () {
             scope.initialize();
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-05-07';
             scope.toDate = '2014-07-07';
             scope.$apply();
+
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
@@ -146,9 +162,12 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should filter deliveries when fromDate is not given with additional query', function () {
             scope.initialize();
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.toDate = '2014-07-07';
             scope.$apply();
+
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme', to: '2014-07-07'})
@@ -156,9 +175,12 @@ describe('Warehouse Delivery Controller', function () {
 
         it('should filter deliveries when toDate is not given with additional query', function () {
             scope.initialize();
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-07-07';
             scope.$apply();
+
+            timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme', from: '2014-07-07'});

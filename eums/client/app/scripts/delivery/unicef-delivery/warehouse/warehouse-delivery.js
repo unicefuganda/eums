@@ -5,7 +5,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast, LoaderService) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -55,21 +55,35 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
             });
         };
 
+        var timer, initializing = true;
+
         $scope.$watch('[fromDate,toDate,query]', function () {
-            if($scope.fromDate || $scope.toDate || $scope.query ){
-                $scope.initialize(changedFilters());
+            if (initializing){
+                initializing = false;
+            }
+            else {
+                if (timer) {
+                    $timeout.cancel(timer);
+                }
+                delaySearch();
             }
         }, true);
 
-        function changedFilters(){
+        function delaySearch() {
+            timer = $timeout(function () {
+                $scope.initialize(changedFilters());
+            }, 1000);
+        }
+
+        function changedFilters() {
             var urlArgs = {};
-            if ($scope.fromDate){
+            if ($scope.fromDate) {
                 urlArgs.from = formatDate($scope.fromDate);
             }
-            if ($scope.toDate){
+            if ($scope.toDate) {
                 urlArgs.to = formatDate($scope.toDate);
             }
-            if ($scope.query){
+            if ($scope.query) {
                 urlArgs.query = $scope.query;
             }
             return urlArgs
@@ -78,5 +92,6 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
         }
-    });
+    })
+;
 
