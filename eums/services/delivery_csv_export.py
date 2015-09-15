@@ -6,7 +6,7 @@ class DeliveryCSVExport(object):
     END_USER_RESPONSE = {True: 'Yes', False: 'No'}
     COMMON_HEADER = ['Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
                      'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
-                     'Is Tracked']
+                     'Is Tracked', 'Remarks']
 
     def __init__(self, host_name):
         self.header = self._set_export_header()
@@ -44,7 +44,7 @@ class DeliveryCSVExport(object):
 
         return [node.number(), node.item_description(), node.item.item.material_code, node.quantity_in(),
                 node.delivery_date.isoformat(), node.ip.name, contact.full_name(), contact.phone,
-                node.location, is_end_user, is_tracked]
+                node.location, is_end_user, is_tracked, node.remark]
 
 
 class DeliveryExportFactory(object):

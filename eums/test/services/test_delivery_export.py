@@ -38,16 +38,17 @@ class WareHouseDeliveryExportTest(TestCase):
                                           release_order=ReleaseOrderFactory(waybill=waybill))
         delivery_date = '2015-09-06'
         luweero = 'Luweero'
+        remark = 'manchester united beat liverpool'
         DeliveryNodeFactory(distribution_plan=delivery, delivery_date=delivery_date,
-                            consignee=consignee, item=ro_item, location=luweero)
+                            consignee=consignee, item=ro_item, location=luweero, remark=remark)
 
         header = [
             'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
             'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
-            'Is Tracked']
+            'Is Tracked', 'Remarks']
         row_one = [waybill, mama_kit, material_code, 10, delivery_date, consignee_name,
                    '%s %s' % (contact['firstName'], contact['lastName']),
-                   contact['phone'], luweero, 'Yes', 'No']
+                   contact['phone'], luweero, 'Yes', 'No', remark]
 
         expected_data = [header, row_one]
 
@@ -84,16 +85,17 @@ class DirectDeliveryExportTest(TestCase):
                                            purchase_order=PurchaseOrderFactory(order_number=order_number))
         delivery_date = '2015-09-06'
         luweero = 'Luweero'
+        remark = 'some remark'
         DeliveryNodeFactory(distribution_plan=delivery, delivery_date=delivery_date,
-                            consignee=consignee, item=ro_item, location=luweero)
+                            consignee=consignee, item=ro_item, location=luweero, remark=remark)
 
         header = [
             'Purchase Order Number', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
             'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
-            'Is Tracked']
+            'Is Tracked', 'Remarks']
         row_one = [order_number, mama_kit, material_code, 10, delivery_date, consignee_name,
                    '%s %s' % (contact['firstName'], contact['lastName']),
-                   contact['phone'], luweero, 'Yes', 'No']
+                   contact['phone'], luweero, 'Yes', 'No', remark]
 
         expected_data = [header, row_one]
 
