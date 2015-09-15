@@ -4,7 +4,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast) {
+    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast, $timeout) {
 
         $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'date'];
@@ -31,11 +31,25 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             });
         };
 
+        var timer, initializing = true;
+
         $scope.$watch('[fromDate,toDate,query]', function () {
-            if($scope.fromDate || $scope.toDate || $scope.query ){
-                $scope.initialize(changedFilters());
+            if (initializing){
+                initializing = false;
+            }
+            else {
+                if (timer) {
+                    $timeout.cancel(timer);
+                }
+                delaySearch();
             }
         }, true);
+
+        function delaySearch() {
+            timer = $timeout(function () {
+                $scope.initialize(changedFilters());
+            }, 1000);
+        }
 
         function changedFilters(){
             var urlArgs = {};

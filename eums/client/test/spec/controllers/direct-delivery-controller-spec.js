@@ -4,7 +4,7 @@ describe('DirectDeliveryController', function () {
     var location, distPlanEndpointUrl;
     var mockContactService, mockProgrammeService, mockPurchaseOrderService, mockLoaderService;
     var deferred, deferredPlan, deferredPurchaseOrder, mockExportDeliveryService, mockToast,
-        deferredExportResult;
+        deferredExportResult, timeout;
 
     var programmeOne = {
         id: 1, name: 'Test Programme'
@@ -22,7 +22,7 @@ describe('DirectDeliveryController', function () {
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
 
-        inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig) {
+        inject(function ($controller, $rootScope, ContactService, $location, $q, $sorter, $filter, $httpBackend, EumsConfig, $timeout) {
             deferred = $q.defer();
             deferredPlan = $q.defer();
             deferredPurchaseOrder = $q.defer();
@@ -33,6 +33,8 @@ describe('DirectDeliveryController', function () {
             mockPurchaseOrderService.all.and.returnValue(deferredPurchaseOrder.promise);
             mockPurchaseOrderService.forDirectDelivery.and.returnValue(deferredPurchaseOrder.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
+
+            timeout = $timeout;
 
             location = $location;
             scope = $rootScope.$new();
@@ -50,7 +52,8 @@ describe('DirectDeliveryController', function () {
                     $location: location,
                     LoaderService: mockLoaderService,
                     ExportDeliveriesService: mockExportDeliveryService,
-                    ngToast: mockToast
+                    ngToast: mockToast,
+                    $timeout: timeout
                 });
         });
     });
@@ -148,43 +151,53 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should still filter fromDate when toDate is empty', function () {
+            scope.$apply();
             scope.fromDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-07-07'});
         });
 
         it('should still filter toDate when fromDate is empty', function () {
+            scope.$apply();
             scope.toDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {to: '2014-07-07'});
         });
 
         it('should filter deliveries when date range is given', function () {
+            scope.$apply();
             scope.fromDate = '2014-05-07';
             scope.toDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07'});
         });
 
         it('should format dates before filtering deliveries ', function () {
+            scope.$apply();
             scope.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
             scope.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
             scope.$apply();
+            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2015-08-30', to: '2015-09-10'});
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-05-07';
             scope.$apply();
+            timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
             expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-05-07', query: 'wakiso programme'})
