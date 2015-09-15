@@ -56,17 +56,24 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         };
 
         $scope.$watch('[fromDate,toDate,query]', function () {
-            var hasDateRange = ($scope.fromDate && $scope.toDate);
-            if ($scope.query || hasDateRange) {
-                var urlArgs;
-                urlArgs = !hasDateRange ?
-                {query: $scope.query} :
-                    !$scope.query ?
-                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate)} :
-                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate), query: $scope.query};
-                $scope.initialize(urlArgs);
+            if($scope.fromDate || $scope.toDate || $scope.query ){
+                $scope.initialize(changedFilters());
             }
         }, true);
+
+        function changedFilters(){
+            var urlArgs = {};
+            if ($scope.fromDate){
+                urlArgs.from = formatDate($scope.fromDate);
+            }
+            if ($scope.toDate){
+                urlArgs.to = formatDate($scope.toDate);
+            }
+            if ($scope.query){
+                urlArgs.query = $scope.query;
+            }
+            return urlArgs
+        }
 
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')

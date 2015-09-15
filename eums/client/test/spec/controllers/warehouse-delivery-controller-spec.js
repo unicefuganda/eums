@@ -95,20 +95,22 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
         });
 
-        it('should not filter when toDate is empty', function () {
+        it('should filter when toDate is empty', function () {
             scope.initialize();
             scope.fromDate = '2014-07-07';
             scope.$apply();
 
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-07-07'});
         });
 
-        it('should not filter when fromDate is empty', function () {
+        it('should still filter when fromDate is empty', function () {
             scope.initialize();
             scope.toDate = '2014-07-07';
             scope.$apply();
 
-            expect(mockReleaseOrderService.all.calls.count()).toEqual(1);
+            expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {to: '2014-07-07'});
         });
 
         it('should filter deliveries when date range is given', function () {
@@ -142,24 +144,24 @@ describe('Warehouse Delivery Controller', function () {
             expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
         });
 
-        it('should filter deliveries without date when fromDate is not given with additional query', function () {
+        it('should filter deliveries when fromDate is not given with additional query', function () {
             scope.initialize();
             scope.query = 'wakiso programme';
             scope.toDate = '2014-07-07';
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme', to: '2014-07-07'})
         });
 
-        it('should not filter deliveries when toDate is not given with additional query', function () {
+        it('should filter deliveries when toDate is not given with additional query', function () {
             scope.initialize();
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-07-07';
             scope.$apply();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme', from: '2014-07-07'});
 
         });
     });
