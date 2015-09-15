@@ -31,7 +31,7 @@ describe('Warehouse Delivery', function () {
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-success');
     });
 
-    it('IP should be able to confirm Waybill delivery', function () {
+    it('Condition and satisfaction responses should assume the appropriate defaults', function () {
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
 
@@ -40,9 +40,39 @@ describe('Warehouse Delivery', function () {
         ipShipmentsPage.specifyDeliveryAsReceived();
         ipShipmentsPage.specifyDeliveryReceiptDate('10/08/2015');
         ipShipmentsPage.specifyDeliveryConditionAsGood();
+        ipShipmentsPage.specifyDeliverySatisfactionAsNo();
+        ipShipmentsPage.saveAndProceedToItemsInDelivery();
+
+        expect(ipShipmentsPage.itemConditions).toContain('Good');
+        expect(ipShipmentsPage.itemSatisfactions).toContain('No');
+
+        ipShipmentsPage.goBackToShipmentsPage();
+        ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
+        ipShipmentsPage.viewDeliveryDetails();
+        ipShipmentsPage.specifyDeliveryReceiptDate('10/08/2015');
+        ipShipmentsPage.specifyDeliveryConditionAsNotGood();
+        ipShipmentsPage.specifyDeliverySatisfactionAsNo();
+        ipShipmentsPage.saveAndProceedToItemsInDelivery();
+
+        expect(ipShipmentsPage.itemConditions).toContain('Select');
+        expect(ipShipmentsPage.itemSatisfactions).toContain('No');
+
+    });
+
+    it('IP should be able to confirm Waybill delivery', function () {
+        loginPage.loginAs('wakiso', 'wakiso');
+        ipShipmentsPage.visit();
+
+        ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
+        ipShipmentsPage.viewDeliveryDetails();
+        ipShipmentsPage.specifyDeliveryReceiptDate('10/08/2015');
+        ipShipmentsPage.specifyDeliveryConditionAsGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsYes();
         ipShipmentsPage.addRemarks('The delivery was good');
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
+
+        expect(ipShipmentsPage.itemConditions).toContain('Good');
+        expect(ipShipmentsPage.itemSatisfactions).toContain('Yes');
 
         var itemRowIndex = 0;
         ipShipmentsPage.specifyItemReceived(itemRowIndex, 'Yes');

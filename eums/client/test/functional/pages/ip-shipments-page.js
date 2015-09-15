@@ -13,9 +13,7 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     searchForShipment: { value: function (searchTerm) {
         this.searchBar.clear().sendKeys(searchTerm);
-        var loadingModal = element.all(by.css('.modal.fade')).get(0);
-        var shipmentsHaveLoaded = EC.invisibilityOf(loadingModal);
-        browser.wait(shipmentsHaveLoaded, 5000, "Timeout waiting to shipments to load");
+        waitForPageToLoad();
     }},
 
 
@@ -26,13 +24,19 @@ IpShipmentsPage.prototype = Object.create({}, {
         element(by.id('deliveryConfirmationSelect')).$('[value="1"]').click();
     }},
     specifyDeliveryReceiptDate: { value: function (date) {
-        element(by.css('#answer-2 input')).sendKeys(date);
+        element(by.css('#answer-2 input')).clear().sendKeys(date);
     }},
     specifyDeliveryConditionAsGood: { value: function () {
         element(by.css('#answer-3 select')).$('[value="1"]').click()
     }},
+    specifyDeliveryConditionAsNotGood: { value: function () {
+        element(by.css('#answer-3 select')).$('[value="0"]').click()
+    }},
     specifyDeliverySatisfactionAsYes: { value: function () {
         element(by.css('#answer-4 select')).$('[value="1"]').click()
+    }},
+    specifyDeliverySatisfactionAsNo: { value: function () {
+        element(by.css('#answer-4 select')).$('[value="0"]').click()
     }},
     addRemarks: { value: function (remarks) {
         element(by.css('#answer-5 textarea')).sendKeys(remarks);
@@ -71,8 +75,27 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     saveItemConfirmation: { value: function () {
         element(by.id('saveBtn')).click();
+    }},
+    goBackToShipmentsPage: { value: function () {
+        element(by.id('backToShipmentsBtn')).click();
+        waitForPageToLoad();
+    }},
+
+
+    itemConditions: { get: function () {
+        return element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(0).$(".itemCondition").getText();
+    }},
+    itemSatisfactions: { get: function () {
+        return element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(0).$(".itemSatisfaction").getText();
     }}
 
 });
 
 module.exports = new IpShipmentsPage;
+
+
+waitForPageToLoad = function() {
+    var loadingModal = element.all(by.css('.modal.fade')).get(0);
+    var shipmentsHaveLoaded = EC.invisibilityOf(loadingModal);
+    browser.wait(shipmentsHaveLoaded, 5000, "Timeout waiting to shipments to load");
+};
