@@ -29,3 +29,11 @@ class AlertTest(TestCase):
 
         self.assertEqual(node_alert.total_value(), 100)
         self.assertEqual(delivery_alert.total_value(), 280)
+
+    def test_should_provide_quantity_delivered_for_node_alert(self):
+        node = DeliveryNodeFactory(quantity=20)
+        alert = AlertFactory(runnable=node)
+        delivery_alert = AlertFactory(runnable=DeliveryFactory())
+
+        self.assertEqual(alert.quantity_delivered(), 20)
+        self.assertEqual(delivery_alert.quantity_delivered(), None)

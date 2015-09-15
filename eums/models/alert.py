@@ -1,7 +1,7 @@
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField
-from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem
+from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, DistributionPlanNode
 
 
 class Alert(models.Model):
@@ -29,6 +29,10 @@ class Alert(models.Model):
 
     def total_value(self):
         return self.runnable.total_value()
+
+    def quantity_delivered(self):
+        if isinstance(self.runnable, DistributionPlanNode):
+            return self.runnable.quantity_in()
 
     class Meta:
         ordering = ['is_resolved']
