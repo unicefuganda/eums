@@ -37,3 +37,16 @@ class AlertTest(TestCase):
 
         self.assertEqual(alert.quantity_delivered(), 20)
         self.assertEqual(delivery_alert.quantity_delivered(), None)
+
+    def test_should_provide_location_for_runnable(self):
+        node_location = "Kampala"
+        node = DeliveryNodeFactory(location=node_location)
+
+        delivery_location = "Wakiso"
+        delivery = DeliveryNodeFactory(location=("%s" % delivery_location))
+
+        alert = AlertFactory(runnable=node)
+        delivery_alert = AlertFactory(runnable=delivery)
+
+        self.assertEqual(alert.location(), node_location)
+        self.assertEqual(delivery_alert.location(), delivery_location)

@@ -34,5 +34,8 @@ class Alert(models.Model):
         if isinstance(self.runnable, DistributionPlanNode):
             return self.runnable.quantity_in()
 
+    def location(self):
+        return self.runnable.location
+
     class Meta:
         ordering = ['is_resolved']

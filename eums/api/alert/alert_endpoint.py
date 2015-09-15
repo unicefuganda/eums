@@ -25,7 +25,8 @@ class AlertSerializer(serializers.ModelSerializer):
             'issue_display_name',
             'item_description',
             'total_value',
-            'quantity_delivered'
+            'quantity_delivered',
+            'location'
         )
 
 
