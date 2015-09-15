@@ -13,7 +13,7 @@ class DeliveryCSVExport(object):
         self.csv_url = self._set_csv_url(host_name)
 
     def _set_csv_url(self, host_name):
-        return '%s/static/exports/%s' % (host_name, self.export_filename)
+        return '%sstatic/exports/%s' % (host_name, self.export_filename)
 
     def _set_export_header(self):
         header = [self.export_header]

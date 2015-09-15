@@ -15,7 +15,7 @@ from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
 
-HOSTNAME = "http://ha.ha"
+HOSTNAME = "http://ha.ha/"
 EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
 
 

@@ -22,7 +22,8 @@ class ExportServiceTest(TestCase):
         CSVExportService.generate(expected_data, filename)
 
         csv_filename = 'eums/client/exports/' + filename
-        actual_data = self._read_csv(csv_filename)
+        first_row, actual_data = self._read_csv(csv_filename)
+        self.assertEqual(first_row, 'sep=,\n')
         self.assertEqual(actual_data, expected_data)
 
         self.remove_csv_file(csv_filename)
@@ -47,7 +48,7 @@ class ExportServiceTest(TestCase):
     def _read_csv(self, filename):
         file_ = open(filename, 'r')
         lines = file_.readlines()
-        return [list(eval(line.strip())) for line in lines]
+        return lines[0], [list(eval(line.strip())) for line in lines[1:]]
 
     def remove_csv_file(self, filename):
         os.remove(filename)

@@ -13,6 +13,7 @@ class CSVExportService(object):
     def generate(cls, data, filename):
         file_location = settings.EXPORTS_DIR + filename
         export_file = open(file_location, 'wb')
+        export_file.write('sep=,\n')
         wr = csv.writer(export_file, quoting=csv.QUOTE_ALL)
         wr.writerows(data)
 
