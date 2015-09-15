@@ -2,6 +2,7 @@ describe('AlertsController', function () {
 
     var scope;
     var mockAlertsService, mockLoaderService, mockToast, q;
+    var type = 'delivery';
     var deferredAlerts,
         expectedAlerts = [
             {
@@ -71,7 +72,7 @@ describe('AlertsController', function () {
             deferredAlerts = $q.defer();
             deferredAlerts.resolve(alertsResponses);
             mockAlertsService.all.and.returnValue(deferredAlerts.promise);
-            mockAlertsService.get.and.returnValue($q.when({'total':4, 'unresolved':2}));
+            mockAlertsService.get.and.returnValue($q.when({'total': 4, 'unresolved': 2}));
 
             mockAlertsService.update.and.returnValue($q.when({}));
             mockToast = ngToast;
@@ -88,10 +89,19 @@ describe('AlertsController', function () {
         });
     });
 
-    it('should set alerts on scope from result of service call', function () {
+    it('should set delivery alerts on scope from result of service call', function () {
         scope.$apply();
-        expect(mockAlertsService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 1});
+        expect(mockAlertsService.all).toHaveBeenCalledWith([], {type: type, paginate: 'true', page: 1});
         expect(scope.alerts).toEqual(expectedAlerts);
+        expect(mockLoaderService.showLoader).toHaveBeenCalled();
+        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+    });
+
+    it('should set item alerts on scope when type is changed to item', function () {
+        var item_type = 'item';
+        scope.changeAlertType(item_type);
+        scope.$apply();
+        expect(mockAlertsService.all).toHaveBeenCalledWith([], {type: item_type, paginate: 'true', page: 1});
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
@@ -99,7 +109,7 @@ describe('AlertsController', function () {
     it('should fetch new page when pageChanged is called and put the consignees on that page on scope', function () {
         scope.goToPage(10);
         scope.$apply();
-        expect(mockAlertsService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 10});
+        expect(mockAlertsService.all).toHaveBeenCalledWith([], {type: type, paginate: 'true', page: 10});
         expect(scope.alerts).toEqual(expectedAlerts);
         expect(mockLoaderService.showLoader).toHaveBeenCalled();
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
@@ -135,7 +145,7 @@ describe('AlertsController', function () {
             scope.resolveAlert(alertId, 'some remarks about an alert');
             scope.$apply();
 
-            expect(mockAlertsService.all).toHaveBeenCalledWith([], {paginate: 'true', page: 1});
+            expect(mockAlertsService.all).toHaveBeenCalledWith([], {type: type, paginate: 'true', page: 1});
             expect(mockAlertsService.all.calls.count()).toEqual(2);
         });
 

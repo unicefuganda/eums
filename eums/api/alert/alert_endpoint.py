@@ -34,10 +34,10 @@ class AlertViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         type = self.request.GET.get('type', None)
-        if type == 'item-alert':
+        if type == 'item':
             return Alert.objects.filter(
                 runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
-        elif type == 'delivery-alert':
+        elif type == 'delivery':
             return Alert.objects.filter(
                 runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
         else:

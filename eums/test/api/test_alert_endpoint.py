@@ -112,11 +112,11 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         delivery_alert = AlertFactory(runnable=DeliveryFactory())
         item_alert = AlertFactory(runnable=DeliveryNodeFactory())
 
-        item_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'item-alert'))
+        item_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'item'))
         item_alerts = item_alerts_response.data
         item_alert_ids = [alert['id'] for alert in item_alerts]
 
-        delivery_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'delivery-alert'))
+        delivery_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'delivery'))
         delivery_alerts = delivery_alerts_response.data
         delivery_alert_ids = [alert['id'] for alert in delivery_alerts]
 

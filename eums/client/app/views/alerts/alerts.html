@@ -3,6 +3,16 @@
     <div class="content alerts-sub-header" ng-show="alerts.length">
         Here you will find alerts from consignees and end-users that require a response from you
     </div>
+    <div class="content margin-bottom-20">
+        <ul class="nav nav-pills" style="margin-top: 1em;">
+            <li role="presentation" ng-class="{active : type == 'delivery'}">
+                <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType('delivery')">Alerts for Delivery</a>
+            </li>
+            <li role="presentation" ng-class="{active :  type == 'item'}">
+                <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType('item')">Alerts for Items</a>
+            </li>
+        </ul>
+    </div>
     <div class="content alerts-sub-header" ng-hide="alerts.length">
         There are currently no alerts.
     </div>
