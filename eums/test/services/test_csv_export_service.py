@@ -9,6 +9,20 @@ DEFAULT_FROM_EMAIL = "hoho@ha.ha"
 
 
 class ExportServiceTest(TestCase):
+    def test_should_excel_separator_identifier_on_the_first_line(self):
+        header = ['header1', 'header2']
+        row_one = ['value1', 'value2']
+
+        data = [header, row_one]
+        filename = 'direct_deliveries.csv'
+        CSVExportService.generate(data, filename)
+
+        csv_filename = 'eums/client/exports/' + filename
+        first_row, written_data = self._read_csv(csv_filename)
+        self.assertEqual(first_row, 'sep=,\n')
+
+        self.remove_csv_file(csv_filename)
+
     def test_should_generate_csv_and_saves_in_static(self):
         header = [
             'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
@@ -23,7 +37,6 @@ class ExportServiceTest(TestCase):
 
         csv_filename = 'eums/client/exports/' + filename
         first_row, actual_data = self._read_csv(csv_filename)
-        self.assertEqual(first_row, 'sep=,\n')
         self.assertEqual(actual_data, expected_data)
 
         self.remove_csv_file(csv_filename)

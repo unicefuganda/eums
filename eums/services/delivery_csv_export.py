@@ -31,9 +31,9 @@ class DeliveryCSVExport(object):
 
     def data(self):
         item_ids = self.item_class.objects.values_list('id', flat=True)
-        warehouse_nodes = DistributionPlanNode.objects.filter(item__id__in=item_ids)
+        nodes = DistributionPlanNode.objects.filter(item__id__in=item_ids)
         response_nodes = [self.header]
-        for node in warehouse_nodes:
+        for node in nodes:
             response_nodes.append(self._export_data(node))
         return response_nodes
 
