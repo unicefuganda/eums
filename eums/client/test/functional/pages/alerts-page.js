@@ -24,12 +24,16 @@ AlertsPage.prototype = Object.create({}, {
     }},
 
     viewResolutionDetails: { value: function () {
-        element.all(by.css('.resolve-alert-button.resolved')).get(1).click();
+        element(by.id('resolved-alert-link-1')).click();
         waitForModalToLoad();
     }},
 
     alertResolutionRemarks: { get: function () {
         return element.all(by.repeater('($index, alert) in alerts').column('alert.remarks')).getText();
+    }},
+
+    goToItemAlerts: {value: function() {
+        element(by.id('item-alerts-button')).click();
     }}
 });
 

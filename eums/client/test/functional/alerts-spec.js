@@ -17,12 +17,11 @@ describe('Alerts', function () {
         expect(alertsPage.firstAlert).toContain('NOT RECEIVED');
         expect(alertsPage.firstAlert).toContain('Some Consignee Name');
         expect(alertsPage.firstAlert).toContain('Some Contact Name');
-        expect(alertsPage.firstAlert).toContain('Some Description');
     });
 
     it('should resolve alerts', function () {
         alertsPage.resolveAlert('This is now resolved');
-        expect(alertsPage.firstAlert).toContain('Resolved');
+        expect(alertsPage.firstAlert).toContain('View Resolution');
 
         alertsPage.viewResolutionDetails();
         expect(alertsPage.alertResolutionRemarks).toContain('This is now resolved');

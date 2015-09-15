@@ -127,6 +127,7 @@ describe('Direct Delivery', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         alertsPage.visit();
+        alertsPage.goToItemAlerts();
 
         expect(alertsPage.alertStatuses).toContain('DAMAGED');
         expect(alertsPage.alertOrderNumbers).toContain('Purchase Order ' + PURCHASE_ORDER_NUMBER1);
