@@ -26,9 +26,9 @@
 
     function getHeatMapStyle(allDistricts, location) {
         var style = {
-            fillColor: '#FFFFCC',
-            fillOpacity: 1,
-            weight: 1.5
+            fillColor: '#F1EEE8',
+            fillOpacity: 0.9,
+            weight: 1
         };
         allDistricts.forEach(function (district) {
             if (district.district === location) {
