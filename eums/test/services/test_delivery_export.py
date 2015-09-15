@@ -16,7 +16,7 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 
 
 HOSTNAME = "ha.ha"
-EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content"
+EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
 
 
 class WareHouseDeliveryExportTest(TestCase):
@@ -59,7 +59,7 @@ class WareHouseDeliveryExportTest(TestCase):
     def test_should_return_correct_notification_details_for_warehouse_delivery(self):
         warehouse_csv_export = DeliveryExportFactory.create('Warehouse')
         details = ('Warehouse Delivery Download',
-                   '%s some content http://ha.ha/static/exports/warehouse_deliveries.csv other content')
+                   '%s some content Warehouse other content http://ha.ha/static/exports/warehouse_deliveries.csv')
         self.assertEqual(warehouse_csv_export.notification_details(), details)
 
 
@@ -105,5 +105,5 @@ class DirectDeliveryExportTest(TestCase):
     def test_should_return_correct_notification_details_for_direct_delivery(self):
         warehouse_csv_export = DeliveryExportFactory.create('Direct')
         details = ('Direct Delivery Download',
-                   '%s some content http://ha.ha/static/exports/direct_deliveries.csv other content')
+                   '%s some content Direct other content http://ha.ha/static/exports/direct_deliveries.csv')
         self.assertEqual(warehouse_csv_export.notification_details(), details)

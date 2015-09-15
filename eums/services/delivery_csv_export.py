@@ -18,7 +18,7 @@ class DeliveryCSVExport(object):
 
     def _message(self):
         csv_url = 'http://%s/static/exports/%s' % (settings.HOSTNAME, self.export_filename)
-        return settings.EMAIL_NOTIFICATION_CONTENT.format(csv_url)
+        return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, csv_url)
 
     def _subject(self):
         return "%s Delivery Download" % self.export_label
