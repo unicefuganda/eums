@@ -64,3 +64,24 @@ class ReleaseOrderEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['id'], order.id)
+
+    def test_should_return_release_orders_filtered_by_from_or_to_date_separately(self):
+        order = ReleaseOrderFactory(delivery_date=datetime.date(2014, 10, 5))
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-04'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], order.id)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-10'))
+
+        self.assertEqual(len(response.data), 0)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-10'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], order.id)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-04'))
+
+        self.assertEqual(len(response.data), 0)
