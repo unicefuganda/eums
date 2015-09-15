@@ -13,7 +13,6 @@ ENDPOINT_URL = BACKEND_URL + 'alert/'
 class AlertEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_return_information_on_an_alert(self):
-        runnable = RunnableFactory()
         AlertFactory(
             order_type=ReleaseOrderItem.WAYBILL,
             order_number=123456,
@@ -22,7 +21,6 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
             remarks='some remarks',
             consignee_name='wakiso',
             contact_name='john doe',
-            runnable=runnable,
             item_description="some description")
 
         response = self.client.get(ENDPOINT_URL)

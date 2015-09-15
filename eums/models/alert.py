@@ -27,5 +27,8 @@ class Alert(models.Model):
     def issue_display_name(self):
         return self.ISSUE_TYPES[self.issue]
 
+    def total_value(self):
+        return self.runnable.total_value()
+
     class Meta:
         ordering = ['is_resolved']

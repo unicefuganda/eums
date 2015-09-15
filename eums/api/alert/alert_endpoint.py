@@ -23,7 +23,8 @@ class AlertSerializer(serializers.ModelSerializer):
             'contact_name',
             'created_on',
             'issue_display_name',
-            'item_description'
+            'item_description',
+            'total_value'
         )
 
 
