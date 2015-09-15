@@ -12,7 +12,6 @@ describe('Alerts', function () {
     });
 
     it('should show alert for waybill that was not received', function () {
-        expect(alertsPage.firstAlert).toContain('Waybill');
         expect(alertsPage.firstAlert).toContain('123456');
         expect(alertsPage.firstAlert).toContain('NOT RECEIVED');
         expect(alertsPage.firstAlert).toContain('Some Consignee Name');

@@ -130,7 +130,7 @@ describe('Direct Delivery', function () {
         alertsPage.goToItemAlerts();
 
         expect(alertsPage.alertStatuses).toContain('DAMAGED');
-        expect(alertsPage.alertOrderNumbers).toContain('Purchase Order ' + PURCHASE_ORDER_NUMBER1);
+        expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).toContain('How Business Affects Us');
     })
 
