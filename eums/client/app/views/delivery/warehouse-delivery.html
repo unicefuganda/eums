@@ -3,6 +3,16 @@
 <div class="container-fluid">
 
     <div class="row">
+        <div class="col-xs-3 text-muted pad-top-10">
+            <ul class="list-inline">
+                <li>
+                    <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivered
+                </li>
+                <li>
+                    <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Not Delivered
+                </li>
+            </ul>
+        </div>
         <div class="col-xs-3 pull-right filter-bar">
             <div class="col-md-6 pad-small">
                 <span class="input-group" eums-date-picker>
@@ -61,27 +71,17 @@
         </div>
     </div>
 
-    <div class="text-muted pad-top-10">
-        <ul class="list-inline">
-            <li>
-                <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivered
-            </li>
-            <li>
-                <span class="glyphicon glyphicon-exclamation-sign text-warning pad-right-5"></span>Not Delivered
-            </li>
-        </ul>
-    </div>
-
     <div class="table-wrapper">
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
                 <th style="width: 18%">
-                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i ng-class="sortArrowClass('orderNumber');"></i></a>
+                    <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
+                            ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
                 <th style="width: 20%">
-                    <a ng-click="sortBy('date')">{{dateColumnTitle}}
+                    <a ng-click="sortBy('date')">{{ dateColumnTitle }}
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
@@ -106,7 +106,7 @@
                 <td data-header="Date Created">
                     {{ releaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}
                 </td>
-                <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
+                <td data-header="{{ descriptionColumnTitle }}" ng-if="descriptionColumnTitle">
                     {{ releaseOrder.programme }}
                 </td>
                 <td data-header="Consignee">{{ releaseOrder.consigneeName }}</td>
