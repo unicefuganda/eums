@@ -34,7 +34,6 @@ describe('Warehouse Delivery', function () {
     it('Condition and satisfaction responses should assume the appropriate defaults', function () {
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
-
         ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
