@@ -19,11 +19,11 @@
             <div class="sub-header">ITEM DETAILS</div>
             <div class="rounded-border">
                 <table class="item-details-table">
-                    <tr>
+                    <tr id="itemNameLabel">
                         <td class="bold-label">Item Name:</td>
                         <td><span class="label label-success item-quantity-label">{{ item.description }}</span></td>
                     </tr>
-                    <tr>
+                    <tr id="itemQtyLabel">
                         <td class="bold-label">Quantity Available:</td>
                         <td><span class="label label-success item-quantity-label">{{ quantityAvailable }}</span></td>
                     </tr>
@@ -113,7 +113,8 @@
                     <div class="bold-label pad-small">End-User</div>
                     <div class="pad-small">
                         <div class="pad-small">
-                            <input type="checkbox" class="end-user-checkbox"
+                            <input id="end-user-check"
+                                   type="checkbox" class="end-user-checkbox"
                                    value="{{ isEndUser }}"
                                    ng-model="newDelivery.isEndUser">
                         </div>
