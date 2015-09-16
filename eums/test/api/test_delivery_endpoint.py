@@ -1,7 +1,8 @@
 import datetime
+import json
 
-from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, Flow, DistributionPlan, \
-    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem
+from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
+    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
@@ -18,11 +19,11 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, 
     NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
+
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
 
 class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
-
     @classmethod
     def setUpClass(cls):
         PermissionsTestCase.setUpClass()
@@ -409,6 +410,39 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         response = self.client.get('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'node_answers'))
 
         self.assertEqual(len(response.data), 2)
+
+    def test_should_not_return_deliveries_for_ip_if_received_is_false(self):
+        first_consignee = ConsigneeFactory()
+
+        date = datetime.date(2014, 07, 9)
+        first_delivery = DeliveryFactory(consignee=first_consignee, track=True, delivery_date=date)
+        second_delivery = DeliveryFactory(consignee=first_consignee, track=True)
+
+        self.logout()
+        self.log_consignee_in(consignee=first_consignee)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(first_delivery.id, ids)
+        self.assertIn(second_delivery.id, ids)
+
+        flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        delivery_received_qn = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow)
+        OptionFactory(question=delivery_received_qn, text='Yes')
+        option_no = OptionFactory(question=delivery_received_qn, text='No')
+
+        run = RunFactory(runnable=first_delivery)
+        MultipleChoiceAnswerFactory(run=run, question=delivery_received_qn, value=option_no)
+
+        response = self.client.get(ENDPOINT_URL)
+
+        ids = map(lambda delivery: delivery['id'], response.data)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn(first_delivery.id, ids)
+        self.assertIn(second_delivery.id, ids)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()

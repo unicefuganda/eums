@@ -38,7 +38,7 @@ class DistributionPlan(Runnable):
 
         items_received = DistributionPlan._has_received_all_items(delivery_nodes)
 
-        return True if delivery_answer and delivery_answer.value.text == 'Yes' and items_received else False
+        return None if not delivery_answer else delivery_answer.value.text == 'Yes' and items_received
 
     def _shipment_received_answer(self):
         delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
