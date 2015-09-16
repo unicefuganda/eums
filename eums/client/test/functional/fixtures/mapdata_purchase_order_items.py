@@ -436,3 +436,7 @@ po_item_426 = PurchaseOrderItem.objects.create(purchase_order=po_105, sales_orde
 po_item_427 = PurchaseOrderItem.objects.create(purchase_order=po_105, sales_order_item=so_item_422, value=401.53, item=item_279, item_number=20, quantity=500.00)
 po_item_428 = PurchaseOrderItem.objects.create(purchase_order=po_105, sales_order_item=so_item_423, value=395.66, item=item_280, item_number=40, quantity=500.00)
 po_item_429 = PurchaseOrderItem.objects.create(purchase_order=po_106, sales_order_item=so_item_418, value=17712.00, item=item_180, item_number=10, quantity=100.00)
+po_item_434 = PurchaseOrderItem.objects.create(purchase_order=po_107, sales_order_item=so_item_424, value=327.98, item=item_285, item_number=50, quantity=500.00)
+po_item_435 = PurchaseOrderItem.objects.create(purchase_order=po_107, sales_order_item=so_item_425, value=218.65, item=item_286, item_number=30, quantity=500.00)
+po_item_436 = PurchaseOrderItem.objects.create(purchase_order=po_107, sales_order_item=so_item_426, value=327.98, item=item_287, item_number=10, quantity=500.00)
+po_item_437 = PurchaseOrderItem.objects.create(purchase_order=po_107, sales_order_item=so_item_427, value=218.65, item=item_288, item_number=20, quantity=500.00)

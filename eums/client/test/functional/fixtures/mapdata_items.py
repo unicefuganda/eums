@@ -291,3 +291,7 @@ item_281 = Item.objects.create(material_code="SL009122", description="Ess. Packa
 item_282 = Item.objects.create(material_code="SL009123", description="Complete Imm. Schedule - CSZ Eng Ver.", unit=item_unit_2)
 item_283 = Item.objects.create(material_code="SL009124", description="Complete Imm. Schedule - CSZ Som Ver.", unit=item_unit_2)
 item_284 = Item.objects.create(material_code="SL009125", description="Fully Imm. Children - CSZ Eng Ver.", unit=item_unit_2)
+item_285 = Item.objects.create(material_code="SL009999", description="Kindle Fire HDX", unit=item_unit_1)
+item_286 = Item.objects.create(material_code="SL009999", description="SanDisk Clip Sport", unit=item_unit_1)
+item_287 = Item.objects.create(material_code="SL009999", description="AmazonBasics PowerBank", unit=item_unit_1)
+item_288 = Item.objects.create(material_code="SL009999", description="Hamilton Stylus", unit=item_unit_1)

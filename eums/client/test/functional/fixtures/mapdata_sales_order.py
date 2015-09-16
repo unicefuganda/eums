@@ -107,3 +107,4 @@ sales_order_103 = SalesOrder.objects.create(date="2014-01-09", description="None
 sales_order_104 = SalesOrder.objects.create(date="2014-01-03", description="None", order_number=20146879, programme=programme_2)
 sales_order_105 = SalesOrder.objects.create(date="2014-03-27", description="None", order_number=20129353, programme=programme_17)
 sales_order_106 = SalesOrder.objects.create(date="2014-10-13", description="None", order_number=20157313, programme=programme_18)
+sales_order_107 = SalesOrder.objects.create(date="2014-10-23", description="None", order_number=20157314, programme=programme_18)
