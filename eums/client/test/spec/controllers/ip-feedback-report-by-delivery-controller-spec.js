@@ -59,4 +59,20 @@ describe('IpFeedbackReportController', function () {
         });
     });
 
+    describe('on filtering', function () {
+        it('should call endpoint with query params after ', function () {
+            deferredResult.resolve({results: []});
+            scope.$apply();
+
+            var searchTerm = 'something';
+            scope.searchTerm = searchTerm;
+            scope.$apply();
+
+            timeout.flush();
+            expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({query: searchTerm});
+        });
+
+    });
+
 });
