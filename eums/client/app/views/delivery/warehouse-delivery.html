@@ -2,8 +2,8 @@
 <ng-toast></ng-toast>
 <div class="container-fluid">
 
-    <div class="row">
-        <div class="col-xs-3 text-muted pad-top-10">
+    <div class="filter-bar">
+        <div class="col-xs-3 text-muted">
             <ul class="list-inline">
                 <li>
                     <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivered
@@ -13,7 +13,7 @@
                 </li>
             </ul>
         </div>
-        <div class="col-xs-3 pull-right filter-bar">
+        <div class="col-xs-3 pull-right">
             <div class="col-md-6 pad-small">
                 <span class="input-group" eums-date-picker>
                     <input type="text"
@@ -59,14 +59,14 @@
             </div>
         </div>
         <div class="col-xs-3 pull-right">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon glyphicon-search"></i>
+            <div class="inner-addon right-addon">
                 <input type="text"
                        id="filter"
                        class="form-control"
                        name="filter"
                        ng-model="query"
                        placeholder="Search by waybill number"/>
+                <i class="glyphicon glyphicon-search"></i>
             </div>
         </div>
     </div>
