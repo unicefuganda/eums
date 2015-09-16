@@ -24,6 +24,8 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
             ReportService.ipFeedbackReportByDelivery(filterParams).then(function (response) {
                 $scope.report = response.results;
+                $scope.count = response.count;
+                $scope.pageSize = response.pageSize;
 
                 LoaderService.hideLoader();
                 $scope.searching = false;

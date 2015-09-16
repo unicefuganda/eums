@@ -1,5 +1,7 @@
 from django.core.paginator import Paginator
-from eums.models import UserProfile, DistributionPlan, Question
+from django.db.models import Q
+from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
+    DistributionPlanNode
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -14,7 +16,8 @@ def ip_feedback_by_delivery_endpoint(request):
     if UserProfile.objects.filter(user=logged_in_user).exists():
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    results = _build_delivery_answers()
+    deliveries = _get_filtered_deliveries(request)
+    results = _build_delivery_answers(deliveries)
     paginated_results = Paginator(results, PAGE_SIZE)
 
     page_number = _get_page_number(request)
@@ -31,8 +34,7 @@ def ip_feedback_by_delivery_endpoint(request):
     return Response(data=data, status=status.HTTP_200_OK)
 
 
-def _build_delivery_answers():
-    deliveries = DistributionPlan.objects.filter(track=True)
+def _build_delivery_answers(deliveries):
     delivery_answers = []
     for delivery in deliveries:
         answers = delivery.answers()
@@ -65,3 +67,19 @@ def _get_page_number(request):
 def _has_page(has_page, page, request):
     base_url = replace_query_param(request.build_absolute_uri(), 'page', page)
     return None if has_page is False else base_url
+
+
+def _get_filtered_deliveries(request):
+    if request.GET.get('query'):
+        params = request.GET.get('query')
+        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
+        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
+        nodes = DistributionPlanNode.objects.filter(Q(distribution_plan__track=True),
+                                                    Q(distribution_plan__consignee__name__icontains=params) |
+                                                    Q(distribution_plan__programme__name__icontains=params) |
+                                                    Q(item=purchase_order_item) |
+                                                    Q(item=release_order_item))
+        return map(lambda node: node.distribution_plan, nodes)
+    else:
+        return DistributionPlan.objects.filter(track=True)
+
