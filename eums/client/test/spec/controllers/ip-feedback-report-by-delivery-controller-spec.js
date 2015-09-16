@@ -46,5 +46,17 @@ describe('IpFeedbackReportController', function () {
         });
     });
 
+    describe('on paginate', function () {
+        it('should call the service with page number', function () {
+            deferredResult.resolve({});
+            scope.$apply();
+
+            scope.goToPage(2);
+            scope.$digest();
+
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({page: 2});
+            expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
+        });
+    });
 
 });

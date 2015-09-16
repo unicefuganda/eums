@@ -5,6 +5,10 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
         loadIpFeedbackReport();
 
+        $scope.goToPage = function (page) {
+            loadIpFeedbackReport({page: page})
+        };
+
         function loadIpFeedbackReport(filterParams) {
             $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
             ReportService.ipFeedbackReportByDelivery(filterParams).then(function (response) {
