@@ -8,7 +8,7 @@
             "is_superuser": true,
             "is_staff": true,
             "last_login": "2014-11-12T18:01:17.689",
-            "groups": [],
+            "groups": [1],
             "user_permissions": [],
             "password": "pbkdf2_sha256$12000$Qm6uxNGdbAJk$bia6J/PwzJ67iK9gC1fbY0nlKgNNK0F1x8fcST48BAY=",
             "email": "admin@tw.org",
