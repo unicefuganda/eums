@@ -14,6 +14,11 @@ AlertsPage.prototype = Object.create({}, {
     alertStatuses: { get: function () { return element.all(by.css('.alerts-issue')).getText(); }},
     alertOrderNumbers: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.orderNumber')).getText(); }},
     alertItems: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.itemDescription')).getText(); }},
+    alertOrderDate: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.dateShipped')).getText(); }},
+    alertOrderValue: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.totalValue')).getText(); }},
+    alertReporter: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.contactName')).getText(); }},
+    alertIP: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.consigneeName')).getText(); }},
+    alertLocation: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.location')).getText(); }},
 
     resolveAlert: { value: function (remark) {
         element.all(by.css('.resolve-alert-button')).get(0).click();

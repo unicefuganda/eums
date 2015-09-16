@@ -110,7 +110,7 @@ describe('Direct Delivery', function () {
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
         ipShipmentsPage.specifyDeliveryReceiptDate('12/08/2015');
-        ipShipmentsPage.specifyDeliveryConditionAsGood();
+        ipShipmentsPage.specifyDeliveryConditionAsNotGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsYes();
         ipShipmentsPage.addRemarks('The delivery was awesome');
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
@@ -126,12 +126,26 @@ describe('Direct Delivery', function () {
 
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
-        alertsPage.visit();
-        alertsPage.goToItemAlerts();
 
+        alertsPage.visit();
+        expect(alertsPage.alertStatuses).toContain('IN BAD CONDITION');
+        expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
+        expect(alertsPage.alertItems).not.toContain('How Business Affects Us');
+        expect(alertsPage.alertOrderDate).toContain('10-10-2021');
+        expect(alertsPage.alertOrderValue).toContain('$80.31');
+        expect(alertsPage.alertReporter).toContain('John Doe');
+        expect(alertsPage.alertIP).toContain('WAKISO DHO');
+        expect(alertsPage.alertLocation).toContain('Wakiso');
+
+        alertsPage.goToItemAlerts();
         expect(alertsPage.alertStatuses).toContain('DAMAGED');
         expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).toContain('How Business Affects Us');
+        expect(alertsPage.alertOrderDate).toContain('10-10-2021');
+        expect(alertsPage.alertOrderValue).toContain('$80.31');
+        expect(alertsPage.alertReporter).toContain('John Doe');
+        expect(alertsPage.alertIP).toContain('WAKISO DHO');
+        expect(alertsPage.alertLocation).toContain('Wakiso');
     })
 
 });
