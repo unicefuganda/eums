@@ -65,10 +65,6 @@ describe('Direct Delivery', function () {
         expect(contactsPage.contactModal.isDisplayed()).toBeTruthy();
         contactsPage.closeContactModal();
         expect(contactsPage.contactModal.isDisplayed()).toBeFalsy();
-        directDeliveryPage.saveDraftDelivery();
-        expect(directDeliveryPage.toastMessage).toContain('Cannot save. Please fill out or fix values for all fields marked in red');
-        directDeliveryPage.saveAndTrackDelivery();
-        expect(directDeliveryPage.toastMessage).toContain('Cannot save. Please fill out or fix values for all fields marked in red');
 
         directDeliveryPage.setConsignee('Wakiso');
         directDeliveryPage.setDeliveryDateForSingleIP('10/10/2021');
