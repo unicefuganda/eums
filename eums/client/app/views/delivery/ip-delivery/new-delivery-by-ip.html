@@ -34,7 +34,7 @@
             <div class="sub-header">ADD CONSIGNEE DETAILS</div>
             <div class="rounded-border col-md-12">
                 <div class="col-md-12 margin-bottom-10">
-                    <div class="bold-label pad-small">Date Shipped</div>
+                    <div class="bold-label pad-small">Date Distributed</div>
                     <div id="input-delivery-date" class="pad-small col-md-6">
                         <div class="pad-small">
                             <span class="input-group" eums-date-picker
@@ -129,9 +129,10 @@
                     <thead>
                     <tr class="summary-row table-header">
                         <th class="item-list-col-header col-lg-1">&nbsp;</th>
-                        <th class="item-list-col-header centered col-lg-4">PO/Waybill</th>
-                        <th class="item-list-col-header centered col-lg-4" width="25%">Avail. Qty</th>
-                        <th class="item-list-col-header col-lg-3">&nbsp;</th>
+                        <th class="item-list-col-header centered col-lg-3">PO/Waybill</th>
+                        <th class="item-list-col-header centered col-lg-3">UNICEF Delivery Date</th>
+                        <th class="item-list-col-header centered col-lg-3">Avail. Qty</th>
+                        <th class="item-list-col-header col-lg-2">&nbsp;</th>
                     </tr>
                     </thead>
                 </table>
@@ -144,17 +145,19 @@
                                                             ng-class="{'glyphicon-chevron-down': deliveryGroup.isOpen(), 'glyphicon-chevron-right': !deliveryGroup.isOpen()}"
                                                             ng-click="updateSelectedOrderNumber(deliveryGroup.orderNumber)"></i>
                             </th>
-                            <th class="col-lg-4 centered">{{ deliveryGroup.orderNumber }}</th>
-                            <th class="col-lg-4 centered">{{ deliveryGroup.totalQuantity }}</th>
-                            <th class="col-lg-3">&nbsp;</th>
+                            <th class="col-lg-3 centered">{{ deliveryGroup.orderNumber }}</th>
+                            <th class="col-lg-3 centered">&nbsp;</th>
+                            <th class="col-lg-3 centered">{{ deliveryGroup.totalQuantity }}</th>
+                            <th class="col-lg-2">&nbsp;</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-show="deliveryGroup.isOpen()" ng-repeat="delivery in selectedDeliveries">
                             <td class="col-lg-1">&nbsp;</td>
-                            <td class="col-lg-4 centered">{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
-                            <td class="col-lg-4 centered">{{ delivery.balance }}</td>
-                            <td class="col-lg-3" >
+                            <td class="col-lg-3">&nbsp;</td>
+                            <td class="col-lg-3 centered">{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                            <td class="col-lg-3 centered">{{ delivery.balance }}</td>
+                            <td class="col-lg-2" >
                                 <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">
                                     <input type="text" id="quantity-shipped" class="input-number form-control"
                                            only-digits
@@ -165,7 +168,7 @@
                         </tr>
                         <tr class="pad-10" ng-show="deliveryGroup.isOpen()">
                             <td>&nbsp;</td>
-                            <td colspan="2" class="align-right pad-10 bold-label">TOTAL SELECTED QTY</td>
+                            <td colspan="3" class="align-right pad-10 bold-label">TOTAL SELECTED QTY</td>
                             <td><span class="label-100 pad-6 label-success">{{ totalQuantityShipped }}</span></td>
                         </tr>
                         </tbody>
@@ -173,6 +176,7 @@
                 </div>
 
             </div>
+
             <div class="save-buttons">
                 <a href="#/deliveries-by-ip/{{ item.id }}" class="btn warning-border-button"
                    ng-show="quantityAvailable">
