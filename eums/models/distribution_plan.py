@@ -40,6 +40,10 @@ class DistributionPlan(Runnable):
 
         return None if not delivery_answer else delivery_answer.value.text == 'Yes' and items_received
 
+    def is_partially_received(self):
+        delivery_answer = self._shipment_received_answer()
+        return None if not delivery_answer else delivery_answer.value.text == 'Yes'
+
     def _shipment_received_answer(self):
         delivery_answer = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=self.id),
                                                               Q(question__label=Question.LABEL.deliveryReceived),

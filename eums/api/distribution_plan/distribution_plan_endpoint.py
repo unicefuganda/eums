@@ -46,7 +46,7 @@ class DistributionPlanViewSet(ModelViewSet):
         to_date = request.GET.get('to')
         if user_profile and consignee:
             deliveries = DistributionPlanViewSet._deliveries_for_ip(programme, query, consignee, from_date, to_date)
-            filtered_deliveries = filter(lambda x: x.is_received() is None or x.is_received() is True, deliveries)
+            filtered_deliveries = filter(lambda x: x.is_partially_received() is None or x.is_partially_received() is True, deliveries)
             return Response(self.get_serializer(filtered_deliveries, many=True).data)
 
         admin_deliveries = DistributionPlanViewSet._deliveries_for_admin(programme, query, from_date, to_date)
