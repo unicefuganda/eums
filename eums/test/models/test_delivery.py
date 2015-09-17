@@ -63,6 +63,30 @@ class DeliveryTest(TestCase):
 
         self.assertFalse(delivery.is_received())
 
+    def test_should_return_false_when_delivery_is_not_partially_received(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='No', question=question)
+        run = RunFactory(runnable=delivery)
+
+        self.assertFalse(delivery.is_received())
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        self.assertFalse(delivery.is_partially_received())
+
+    def test_should_return_true_when_delivery_is_partially_received(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label='deliveryReceived')
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+
+        self.assertFalse(delivery.is_received())
+
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        self.assertTrue(delivery.is_partially_received())
+
     def test_should_return_true_when_shipment_is_received_regardless_of_confirmation_of_items(self):
         delivery = DeliveryFactory()
         question = MultipleChoiceQuestionFactory(label='deliveryReceived')
