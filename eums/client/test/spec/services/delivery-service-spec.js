@@ -356,6 +356,21 @@ describe('UNICEF IP', function () {
             });
         });
 
+        it('should return null state aggregates when there are no responses', function () {
+            var aggregates = distributionPlanService.aggregateStats([], undefined);
+            var emptyState = '--';
+            expect(aggregates).toEqual({
+                location: undefined,
+                totalSent: emptyState,
+                totalReceived: emptyState,
+                totalNotReceived: emptyState,
+                totalValueSent: emptyState,
+                totalValueReceived: emptyState,
+                percentageReceived: emptyState,
+                percentageNotReceived: emptyState
+            });
+        });
+
         it('should aggregate all consignee responses', function (done) {
             distributionPlanService.aggregateResponses().then(function (aggregates) {
                 // TODO: Change back to this when using all responses, not just end user responses

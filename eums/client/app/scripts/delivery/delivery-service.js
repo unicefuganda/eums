@@ -135,6 +135,18 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
                     percentageReceived: percentageReceived,
                     percentageNotReceived: 100 - percentageReceived
                 };
+            } else {
+                var emptyState = '--';
+                return {
+                    location: location,
+                    totalSent: emptyState,
+                    totalReceived: emptyState,
+                    totalNotReceived: emptyState,
+                    totalValueSent: emptyState,
+                    totalValueReceived: emptyState,
+                    percentageReceived: emptyState,
+                    percentageNotReceived: emptyState
+                };
             }
 
 
