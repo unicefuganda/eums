@@ -31,6 +31,7 @@
                 <th>ALERT DATE</th>
                 <th>PO/WAYBILL</th>
                 <th>DATE SHIPPED</th>
+                <th ng-hide="isActiveAlertType('delivery')">QUANTITY SHIPPED</th>
                 <th>VALUE</th>
                 <th ng-hide="isActiveAlertType('delivery')">ITEM</th>
                 <th>REPORTED BY</th>
@@ -53,6 +54,9 @@
                 </td>
                 <td>
                     <span class="alerts-bolder">{{ alert.dateShipped | date: 'dd-MM-yyyy' }}</span>
+                </td>
+                <td class="text-left pad-left-15" ng-hide="isActiveAlertType('delivery')">
+                    <span class="alerts-bolder">{{ alert.quantityDelivered }}</span>
                 </td>
                 <td>
                     <span class="alerts-bolder">{{ alert.totalValue | currency }}</span>
