@@ -105,16 +105,39 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
 
         function aggregateAllResponses(data, location) {
             var totalSent = data.length;
-            var totalYes = data.reduce(function (total, current) {
-                return current.productReceived && current.productReceived.toLowerCase() === 'yes' ? total + 1 : total;
-            }, 0);
+            if(totalSent > 0) {
+                var totalYes = data.reduce(function (total, current) {
+                    return current.productReceived && current.productReceived.toLowerCase() === 'yes' ? total + 1 : total;
+                }, 0);
 
-            return {
-                location: location,
-                totalSent: totalSent,
-                totalReceived: totalYes,
-                totalNotReceived: totalSent - totalYes
-            };
+
+                var totalValueSent = data.reduce(function (total, current) {
+                    return (current.amountSent * current.value) + total;
+                }, 0);
+
+                var totalValueReceived = data.reduce(function (total, current) {
+                    total = isNaN(total) ? 0 : total;
+                    return (Number(current.amountReceived) * current.value) + total;
+                }, 0);
+
+
+                var percentageReceived = 0;
+                if (totalValueSent > 0) {
+                    percentageReceived = Math.round((totalValueReceived / totalValueSent) * 100);
+                }
+                return {
+                    location: location,
+                    totalSent: totalSent,
+                    totalReceived: totalYes,
+                    totalNotReceived: totalSent - totalYes,
+                    totalValueSent: totalValueSent,
+                    totalValueReceived: totalValueReceived,
+                    percentageReceived: percentageReceived,
+                    percentageNotReceived: 100 - percentageReceived
+                };
+            }
+
+
         }
 
         function aggregateAllResponseFor(responsesWithLocation, district) {

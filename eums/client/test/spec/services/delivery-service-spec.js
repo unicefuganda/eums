@@ -8,12 +8,6 @@ describe('Distribution Plan Service', function () {
         distributionplannode_set: [1, 2, 3, 4]
     };
 
-    var stubPlanTwo = {
-        id: planId,
-        programme: 1,
-        distributionplannode_set: [1]
-    };
-
     var fullNodeOne = {
         id: 1,
         parent: null,
@@ -69,13 +63,6 @@ describe('Distribution Plan Service', function () {
             },
             fullNodeFour
         ]
-    };
-
-    var expectedPlan = {
-        id: planId,
-        programme: 1,
-        distributionplannodeSet: [1, 2, 3, 4],
-        nodeTree: expectedNodeTree
     };
 
     beforeEach(function () {
@@ -190,6 +177,7 @@ describe('UNICEF IP', function () {
             'node': planNodeOne,
             'amountSent': 100,
             'amountReceived': '50',
+            'value': 1000,
             'consignee': {
                 'id': 10,
                 'name': 'PADER DHO',
@@ -212,6 +200,7 @@ describe('UNICEF IP', function () {
             'node': planNodeOne,
             'amountSent': 100,
             'amountReceived': '50',
+            'value': 500,
             'consignee': {
                 'id': 10,
                 'name': 'PADER DHO',
@@ -239,6 +228,7 @@ describe('UNICEF IP', function () {
             },
             'amountReceived': '30',
             'amountSent': 30,
+            'value': 300,
             'programme': {
                 'id': 3,
                 'name': 'YI107 - PCR 3 KEEP CHILDREN SAFE'
@@ -250,6 +240,7 @@ describe('UNICEF IP', function () {
             'node': planNodeOne,
             'amountSent': 100,
             'amountReceived': '50',
+            'value': 1000,
             'consignee': {
                 'id': 10,
                 'name': 'PADER DHO',
@@ -273,6 +264,7 @@ describe('UNICEF IP', function () {
             'node': planNodeOne,
             'amountSent': 100,
             'amountReceived': '50',
+            'value': 500,
             'consignee': {
                 'id': 10,
                 'name': 'PADER DHO',
@@ -290,6 +282,7 @@ describe('UNICEF IP', function () {
             location: 'Mbarara'
         }
     ];
+    var locationResponses = [{location: 'Mbarara', consigneeResponses: stubEndUserResponses}];
 
     var scope, distributionPlanNodeService, distributionPlanService, deferredPlanNodePromise, httpBackend, eumsConfig, deferredNodePromise;
 
@@ -349,11 +342,30 @@ describe('UNICEF IP', function () {
             httpBackend.flush();
         });
 
+        it('should aggregate all responses', function () {
+            var aggregates = distributionPlanService.aggregateStats(locationResponses, undefined);
+            expect(aggregates).toEqual({
+                location: undefined,
+                totalSent: 2,
+                totalReceived: 1,
+                totalNotReceived: 1,
+                totalValueSent: 150000,
+                totalValueReceived: 75000,
+                percentageReceived: 50,
+                percentageNotReceived: 50
+            });
+        });
+
         it('should aggregate all consignee responses', function (done) {
             distributionPlanService.aggregateResponses().then(function (aggregates) {
                 // TODO: Change back to this when using all responses, not just end user responses
                 // expect(aggregates).toEqual({ location: 'UGANDA', totalSent: 3, totalReceived: 1, totalNotReceived: 2 });
-                expect(aggregates).toEqual({location: undefined, totalSent: 2, totalReceived: 1, totalNotReceived: 1});
+                expect(aggregates).toEqual({
+                    location: undefined, totalSent: 2, totalReceived: 1, totalNotReceived: 1, totalValueSent: 150000,
+                    totalValueReceived: 75000,
+                    percentageReceived: 50,
+                    percentageNotReceived: 50
+                });
                 done();
             });
             httpBackend.flush();
@@ -443,6 +455,7 @@ describe('UNICEF IP', function () {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
+                        value: 1000,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',
@@ -466,6 +479,7 @@ describe('UNICEF IP', function () {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
+                        value: 500,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',
@@ -495,6 +509,7 @@ describe('UNICEF IP', function () {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
+                        value: 500,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',
@@ -514,6 +529,7 @@ describe('UNICEF IP', function () {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
+                        value: 1000,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',

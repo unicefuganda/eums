@@ -21,12 +21,20 @@
                         Total Responses
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.totalReceived }}</span>
-                        Total Received
+                        <span class="badge alert-info">{{ data.totalStats.percentageReceived }}%</span>
+                        Received
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.totalNotReceived }}</span>
-                        Total Not Received
+                        <span class="badge alert-info">{{ data.totalStats.percentageNotReceived }}%</span>
+                        Not Received
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge alert-info">{{ data.totalStats.totalValueReceived | currency}}</span>
+                        Supply received
+                    </li>
+                    <li class="list-group-item">
+                        <span class="badge alert-info">{{ data.totalStats.totalValueSent | currency}}</span>
+                        Supply sent
                     </li>
                 </ul>
             </div>
