@@ -48,16 +48,15 @@ describe('IP Deliveries', function () {
         ipWarehousePage.visit();
 
         ipWarehousePage.searchForItem('kindle fire');
-        ipWarehousePage.viewFirstItem();
+        ipWarehousePage.reportOnFirstItem();
 
         expect(ipWarehousePage.itemName).toBe('Item Name: Kindle Fire HDX');
         expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 500');
 
         ipWarehousePage.specifyShipmentDate('1');
         ipWarehousePage.specifyConsignee('Buikwe DHO');
-        ipWarehousePage.specifyContact('John Doe');
+        ipWarehousePage.specifyContact('John');
         ipWarehousePage.specifyLocation('Buikwe');
-        ipWarehousePage.markAsEndUser();
         ipWarehousePage.specifyQuantity('200');
 
         ipWarehousePage.saveDelivery();
@@ -68,6 +67,38 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.deliveryConsignees).toContain('BUIKWE DHO');
         expect(ipWarehousePage.deliveryContacts).toContain('John Doe');
         expect(ipWarehousePage.deliveryLocations).toContain('Buikwe');
+    });
+
+    it('should create a new delivery to an end-user', function () {
+        ipWarehousePage.visit();
+        ipWarehousePage.searchForItem('kindle fire');
+        ipWarehousePage.viewFirstItem();
+
+        ipWarehousePage.createNewDelivery();
+        expect(ipWarehousePage.itemName).toBe('Item Name: Kindle Fire HDX');
+        expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 300');
+        ipWarehousePage.discardDelivery();
+
+        ipWarehousePage.viewSubconsignees();
+        expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 200');
+
+        ipWarehousePage.addSubconsignee();
+
+        ipWarehousePage.specifyQuantity('150');
+        ipWarehousePage.specifyShipmentDate('1');
+        ipWarehousePage.specifyConsignee('Agago DHO');
+        ipWarehousePage.specifyContact('John');
+        ipWarehousePage.specifyLocation('Agago');
+        ipWarehousePage.markAsEndUser();
+
+        ipWarehousePage.saveDelivery();
+
+        expect(ipWarehousePage.subDeliveryCount).toBe(1);
+        expect(ipWarehousePage.subDeliveryQuantities).toContain('150');
+        expect(ipWarehousePage.subDeliveryDates).toContain('01/01/2001');
+        expect(ipWarehousePage.subDeliveryConsignees).toContain('AGAGO DHO');
+        expect(ipWarehousePage.subDeliveryContacts).toContain('John Doe');
+        expect(ipWarehousePage.subDeliveryLocations).toContain('Agago');
     });
 
 });

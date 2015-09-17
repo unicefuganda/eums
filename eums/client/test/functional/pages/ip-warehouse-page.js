@@ -22,6 +22,7 @@ IpWarehousePage.prototype = Object.create({}, {
         browser.wait(searchReady, 5000, "Timeout exceeded while retrieving search results");
     }},
 
+
     warehouseItemCount: { get: function () {
         return element.all(by.repeater('($index, item) in items')).count();
     }},
@@ -29,15 +30,16 @@ IpWarehousePage.prototype = Object.create({}, {
     itemDescriptions: { get: function () { return element.all(by.repeater('($index, item) in items').column('item.itemDescription')).getText(); }},
     itemBalances: { get: function () { return element.all(by.repeater('($index, item) in items').column('item.availableBalance')).getText(); }},
 
-    reportOnFirstItem: { value: function () {
+    viewFirstItem: { value: function () {
         element.all(by.css('.viewDelivery')).get(0).click();
     }},
-    viewFirstItem: { value: function () {
+    reportOnFirstItem: { value: function () {
         element.all(by.css('.reportDelivery')).get(0).click();
     }},
 
+
     itemName: { get: function () { return element(by.id('itemNameLabel')).getText(); }},
-    itemAvailableQty: { get: function () { return element(by.id('itemQtyLabel')).getText(); }},
+    itemAvailableQty: { get: function () { return element(by.id('qty-available-label')).getText(); }},
 
     specifyShipmentDate: { value: function (date) {
         element(by.css('#input-delivery-date input')).clear().sendKeys(date);
@@ -60,18 +62,41 @@ IpWarehousePage.prototype = Object.create({}, {
     }},
 
     saveDelivery: { value: function () { element(by.id('save-delivery-report')).click(); }},
+    discardDelivery: { value: function () { element(by.id('discard-delivery-report')).click(); }},
 
 
     deliveryCount: { get: function () {
         return element.all(by.repeater('($index, node) in deliveryNodes')).count();
     }},
 
-    deliveryQuantities: { get: function () { return element.all(by.repeater('').column('node.quantityIn')).getText(); }},
-    deliveryDates: { get: function () { return element.all(by.repeater('').column('node.deliveryDate')).getText(); }},
-    deliveryConsignees: { get: function () { return element.all(by.repeater('').column('node.consigneeName')).getText(); }},
-    deliveryContacts: { get: function () { return element.all(by.repeater('').column('node.contactPerson.firstName')).getText(); }},
-    deliveryLocations: { get: function () { return element.all(by.repeater('').column('node.location')).getText(); }}
+    deliveryQuantities: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.quantityIn')).getText(); }},
+    deliveryDates: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.deliveryDate')).getText(); }},
+    deliveryConsignees: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.consigneeName')).getText(); }},
+    deliveryContacts: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.contactPerson.firstName')).getText(); }},
+    deliveryLocations: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.location')).getText(); }},
 
+
+    createNewDelivery: { value: function () {
+        element(by.id('create-new-delivery')).click();
+    }},
+    viewSubconsignees: { value: function () {
+        element.all(by.css('.subconsignee-column')).get(0).click();
+    }},
+
+
+    addSubconsignee: { value: function () { element(by.id('new-subconsignee-btn')).click(); }},
+    specifySubQuantity: { value: function (input) { element(by.css('#quantity-shipped input')).clear().sendKeys(input); }},
+
+
+    subDeliveryCount: { get: function () {
+        return element.all(by.repeater('delivery in deliveries')).count();
+    }},
+
+    subDeliveryQuantities: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.quantityIn')).getText(); }},
+    subDeliveryDates: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.deliveryDate')).getText(); }},
+    subDeliveryConsignees: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.consigneeName')).getText(); }},
+    subDeliveryContacts: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.contactPerson.firstName')).getText(); }},
+    subDeliveryLocations: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.location')).getText(); }}
 });
 
 module.exports = new IpWarehousePage;

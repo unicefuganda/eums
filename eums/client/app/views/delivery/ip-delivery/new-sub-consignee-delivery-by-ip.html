@@ -20,7 +20,7 @@
 <div class="row pad-15">
     <div ng-show="parentNode.balance">
         <div class="pull-left">
-            <div class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
+            <div id="new-subconsignee-btn" class="btn btn-primary" ng-hide="addingNewDelivery" ng-click="toggleNewDeliveryForm()">
                 <span class="glyphicon glyphicon-plus"></span>
                 New Sub-Consignee
             </div>
@@ -32,8 +32,8 @@
             </div>
         </div>
     </div>
-    <div class="pull-right pad-top-10">
-        <span class="pad-right-5 item-quantity-label">Quantity Available</span>
+    <div id="qty-available-label" class="pull-right pad-top-10">
+        <span class="pad-right-5 item-quantity-label">Quantity Available: </span>
         <span class="label label-success item-quantity-label">{{ parentNode.balance }}</span>
     </div>
 
@@ -140,13 +140,13 @@
             </td>
             <td class="col-md-1 centered">
                 <div class="text-center">
-                    <input type="checkbox" class="end-user-checkbox"
+                    <input id="end-user-check" type="checkbox" class="end-user-checkbox"
                            value="{{ isEndUser }}"
                            ng-model="newDelivery.isEndUser">
                 </div>
             </td>
             <td class="col-md-1 centered">
-                <div class="btn btn-primary" ng-click="createNewDelivery()">
+                <div id="save-delivery-report" class="btn btn-primary" ng-click="createNewDelivery()">
                     Save
                 </div>
             </td>

@@ -23,7 +23,7 @@
                         <td class="bold-label">Item Name:</td>
                         <td><span class="label label-success item-quantity-label">{{ item.description }}</span></td>
                     </tr>
-                    <tr id="itemQtyLabel">
+                    <tr id="qty-available-label">
                         <td class="bold-label">Quantity Available:</td>
                         <td><span class="label label-success item-quantity-label">{{ quantityAvailable }}</span></td>
                     </tr>
@@ -179,7 +179,7 @@
             </div>
 
             <div class="row pull-right">
-                <a href="#/deliveries-by-ip/{{ item.id }}" class="btn warning-border-button"
+                <a id="discard-delivery-report" href="#/deliveries-by-ip/{{ item.id }}" class="btn warning-border-button"
                    ng-show="quantityAvailable">
                     <span class="glyphicon glyphicon-remove"></span>
                     Discard

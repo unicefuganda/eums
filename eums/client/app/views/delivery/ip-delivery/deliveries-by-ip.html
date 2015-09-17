@@ -12,7 +12,7 @@
 
     <div class="row pad-15">
         <div class="pull-left" ng-show="quantityAvailable">
-            <a href="#/deliveries-by-ip/{{ item.id }}/new" class="btn btn-primary">
+            <a id="create-new-delivery" href="#/deliveries-by-ip/{{ item.id }}/new" class="btn btn-primary">
                 <span class="glyphicon glyphicon-plus"></span>
                 New Delivery Report
             </a>
@@ -68,7 +68,7 @@
                 </td>
                 <td ng-if="!node.contactPerson" class="left-aligned">Contact Not Found</td>
                 <td class="left-aligned">{{ node.location }}</td>
-                <td class="table-row-input-column">
+                <td class="table-row-input-column subconsignee-column">
                     <a href="#/deliveries-by-ip/{{ itemId }}/{{ node.id }}/new"
                        class="btn blue-border-button btn-sm" ng-hide="node.isEndUser">
                         Sub-consignees
