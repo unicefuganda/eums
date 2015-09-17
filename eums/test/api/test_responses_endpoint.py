@@ -4,6 +4,7 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import NumericAnswerFactory, MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
 from eums.test.factories.option_factory import OptionFactory
@@ -27,7 +28,8 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.numeric_question = NumericQuestionFactory(label='amountReceived')
 
         salt = ItemFactory(description='Salt')
-        self.item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
+        self.sales_order_item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
+        self.item = PurchaseOrderItemFactory(item=salt, value=1000)
 
     def create_nodes(self):
         self.ip_node = DeliveryNodeFactory(quantity=100)
@@ -62,7 +64,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                                                                question=self.numeric_question)
 
     def expected_response_data(self, node, consignee, programme, type):
-        expected_data = {u'item': u'Salt', u'amountSent': 100, u'node': node.id,
+        expected_data = {u'item': u'Salt', u'amountSent': 100, u'value': 1000, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name,
                                         u'type': type},
                          u'ip': node.get_ip(),
@@ -186,7 +188,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         yes_option = OptionFactory(text='Yes', question=question)
 
         item = ItemFactory(description='Salt')
-        order_item = SalesOrderItemFactory(item=item, description='10 bags of salt')
+        order_item = PurchaseOrderItemFactory(item=item, value=1000)
 
         node_ip_one = DeliveryNodeFactory(tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER, item=order_item)
         node_end_user = DeliveryNodeFactory(tree_position=DistributionPlanNode.END_USER, item=order_item)

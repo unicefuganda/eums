@@ -45,7 +45,9 @@ class ResponseSerializer(object):
         formatted_run_responses = self.format_run_responses(node, programme)
         for item_run, responses in node_responses.iteritems():
             formatted_run_responses.update({'item': item_run.runnable.item.item.description,
-                                            'amountSent': item_run.runnable.quantity_in()})
+                                            'amountSent': item_run.runnable.quantity_in(),
+                                            'value': item_run.runnable.item.value
+                                            })
             for response in responses:
                 formatted_run_responses.update({response.question.label: response.format()})
             node_results.append(self.add_product_satisfied_field(formatted_run_responses))
