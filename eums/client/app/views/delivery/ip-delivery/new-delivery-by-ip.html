@@ -130,7 +130,8 @@
                     <tr class="summary-row table-header">
                         <th class="item-list-col-header col-lg-1">&nbsp;</th>
                         <th class="item-list-col-header centered col-lg-3">PO/Waybill</th>
-                        <th class="item-list-col-header centered col-lg-3">UNICEF Delivery Date</th>
+                        <th class="item-list-col-header centered col-lg-3" ng-hide="!selectedOrderNumber">UNICEF Delivery Date</th>
+                        <th class="item-list-col-header centered col-lg-3" ng-hide="selectedOrderNumber">&nbsp;</th>
                         <th class="item-list-col-header centered col-lg-3">Avail. Qty</th>
                         <th class="item-list-col-header col-lg-2">&nbsp;</th>
                     </tr>
