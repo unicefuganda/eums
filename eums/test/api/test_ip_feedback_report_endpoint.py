@@ -21,7 +21,7 @@ from eums.test.factories.run_factory import RunFactory
 
 from eums.test.config import BACKEND_URL
 
-ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report/'
+ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-item/'
 
 
 class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
@@ -104,7 +104,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
         self.assertEqual(len(response.data['results']), 10)
-        self.assertIn('/api/ip-feedback-report/?page=2', response.data['next'])
+        self.assertIn('/api/ip-feedback-report-by-item/?page=2', response.data['next'])
         self.assertEqual(response.data['previous'], None)
         self.assertEqual(response.data['count'], total_number_of_items)
         self.assertEqual(response.data['pageSize'], 10)
@@ -113,7 +113,7 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data['results']), 10)
         self.assertEqual(response.data['next'], None)
-        self.assertIn('/api/ip-feedback-report/?page=1', response.data['previous'])
+        self.assertIn('/api/ip-feedback-report-by-item/?page=1', response.data['previous'])
         self.assertEqual(response.data['count'], total_number_of_items)
         self.assertEqual(response.data['pageSize'], 10)
 

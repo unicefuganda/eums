@@ -26,7 +26,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with no filters', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report';
+        var url = '/api/ip-feedback-report-by-item';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -39,7 +39,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with filters', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report?query=something';
+        var url = '/api/ip-feedback-report-by-item?query=something';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -52,7 +52,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with filters of multiple words', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report?query=something%20interesting';
+        var url = '/api/ip-feedback-report-by-item?query=something%20interesting';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -65,7 +65,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback report paginated', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report?page=2';
+        var url = '/api/ip-feedback-report-by-item?page=2';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);

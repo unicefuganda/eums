@@ -13,7 +13,7 @@ PAGE_SIZE = 10
 
 
 @api_view(['GET', ])
-def ip_feedback_report(request):
+def ip_feedback_report_by_item(request):
     logged_in_user = request.user
 
     if UserProfile.objects.filter(user=logged_in_user).exists():

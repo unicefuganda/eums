@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('IpFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
-    .controller('IpFeedbackReportController', function ($scope, $q, $location, $timeout, ReportService, LoaderService) {
+angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loader'])
+    .controller('IpFeedbackReportByItemController', function ($scope, $q, $location, $timeout, ReportService, LoaderService) {
         var timer;
 
         $scope.$watch('searchTerm', function () {
