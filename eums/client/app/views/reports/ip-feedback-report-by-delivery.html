@@ -11,29 +11,53 @@
         </div>
 
         <div class="table-wrapper">
-            <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <table class="table table-bordered table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th class="table-header">Received</th>
-                    <th class="table-header">Date Received</th>
-                    <th class="table-header">PO/Waybill</th>
-                    <th class="table-header">Outcome</th>
-                    <th class="table-header">Implementing Partner</th>
-                    <th class="table-header">Condition</th>
-                    <th class="table-header">Satisfied</th>
-                    <th class="table-header">Remarks</th>
+                    <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
+                    <th class="align-left"><span class="pad-left-10">DATE RECEIVED</span></th>
+                    <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
+                    <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
+                    <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
+                    <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
+                    <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
+                    <th class="align-left"><span class="pad-left-10">REMARKS</span></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="itemReport in report">
-                    <td class="table-body">{{ itemReport.deliveryReceived }}</td>
-                    <td class="table-body">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</td>
-                    <td class="table-body">{{ itemReport.orderNumber }}</td>
-                    <td class="table-body">{{itemReport.programme}}</td>
-                    <td class="table-body">{{itemReport.consignee}}</td>
-                    <td class="table-body">{{ itemReport.isDeliveryInGoodOrder }}</td>
-                    <td class="table-body">{{ itemReport.satisfiedWithDelivery }}</td>
-                    <td class="table-body">{{ itemReport.additionalDeliveryComments }}</td>
+                <tr ng-repeat="itemReport in report" class="align-left">
+                    <td><span class="pad-left-10 eums-border-status eums-border-center eums-border-width-35"
+                              ng-class="{ 'eums-bg-yes': itemReport.deliveryReceived == 'Yes',
+                              'eums-bg-no': itemReport.deliveryReceived == 'No'}">
+                        {{ itemReport.deliveryReceived }}
+                    </span></td>
+                    <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.programme }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.consignee }}</span></td>
+                    <td>
+                        <span ng-if="itemReport.isDeliveryInGoodOrder == 'Yes'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Good</span>
+                        <span ng-if="itemReport.isDeliveryInGoodOrder == 'No'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-no">Bad</span>
+                    </td>
+                    <td>
+                        <div class="align-center">
+                            <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
+                                  ng-class="{'glyphicon-ok-sign': itemReport.satisfiedWithDelivery == 'Yes',
+                                                'eums-text-ok': itemReport.satisfiedWithDelivery == 'Yes',
+                                  'glyphicon-remove-sign': itemReport.satisfiedWithDelivery == 'No',
+                                                'eums-text-no': itemReport.satisfiedWithDelivery == 'No',
+                                }">
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="align-center">
+                                <a class="button"><span class="button glyphicon glyphicon-comment glyphicon-comment-color glyphicon-size-17 glyphicon-top-5">
+                        </span></a>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
                 <tfoot>
