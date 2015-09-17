@@ -16,7 +16,7 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 from eums.test.factories.run_factory import RunFactory
 
 
-ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery/'
+ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery'
 
 
 class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
@@ -39,7 +39,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         order_number = 34230305
         comment = 'Not Satisfied!!'
         number_of_deliveries = 1
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True)
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
 
         yes = 'Yes'
         no = 'No'
@@ -79,17 +79,17 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['results'], expected_response)
 
-    def test_should_return_delivery_answers_for_tracked_deliveries(self):
+    def test_should_return_delivery_answers_for_tracked_deliveries_and_nodes(self):
         self._create_questions()
         programme_name = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
         order_number = 34230305
         comment = 'Not Satisfied!!'
         number_of_deliveries = 1
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True)
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
 
         DeliveryNodeFactory()
-        DeliveryNodeFactory()
+        self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, False)
 
         yes = 'Yes'
         no = 'No'
@@ -99,7 +99,10 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
                               'additionalDeliveryComments': comment}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['results'], expected_response)
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results, expected_response)
 
     def test_should_return_paginated_answers(self):
         self._create_questions()
@@ -108,12 +111,12 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         order_number = 34230305
         comment = 'Satisfied!!'
         number_of_deliveries = 20
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, False)
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, False, True)
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
         self.assertEqual(len(response.data['results']), 10)
-        self.assertIn('/api/ip-feedback-report-by-delivery/?page=2', response.data['next'])
+        self.assertIn('/api/ip-feedback-report-by-delivery?page=2', response.data['next'])
         self.assertEqual(response.data['previous'], None)
         self.assertEqual(response.data['count'], number_of_deliveries)
         self.assertEqual(response.data['pageSize'], 10)
@@ -122,7 +125,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data['results']), 10)
         self.assertEqual(response.data['next'], None)
-        self.assertIn('/api/ip-feedback-report-by-delivery/?page=1', response.data['previous'])
+        self.assertIn('/api/ip-feedback-report-by-delivery?page=1', response.data['previous'])
         self.assertEqual(response.data['count'], number_of_deliveries)
         self.assertEqual(response.data['pageSize'], 10)
 
@@ -131,10 +134,13 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         number_of_deliveries = 1
         management_results = 'YP104 MANAGEMENT RESULTS'
         self.create_node_and_answers(number_of_deliveries, 34230305, management_results, 'WAKISO DHO',
-                                     'Satisfied!!', False)
+                                     'Satisfied!!', False, True)
+
+        self.create_node_and_answers(number_of_deliveries, 34230343, management_results, 'WAKISO DHO',
+                                     'Satisfied!!', False, False)
         number_of_deliveries = 1
         self.create_node_and_answers(number_of_deliveries, 34230356, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
-                                     'Not Satisfied!!', True)
+                                     'Not Satisfied!!', True, True)
 
         response = self.client.get(ENDPOINT_URL + '?query=YP104%20MANA', content_type='application/json')
 
@@ -148,11 +154,12 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         management_results = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
         self.create_node_and_answers(number_of_deliveries, 34230305, management_results, wakiso,
-                                     'Satisfied!!', True)
+                                     'Satisfied!!', True, True)
+        self.create_node_and_answers(number_of_deliveries, 34230343, management_results, wakiso,
+                                     'Satisfied!!', True, False)
         number_of_deliveries = 1
         self.create_node_and_answers(number_of_deliveries, 34230356, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
-                                     'Not Satisfied!!', False)
-
+                                     'Not Satisfied!!', False, True)
         response = self.client.get(ENDPOINT_URL + '?query=wakiso', content_type='application/json')
 
         results = response.data['results']
@@ -167,10 +174,10 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         wakiso = 'WAKISO DHO'
         order_number = 34230305
         self.create_node_and_answers(number_of_deliveries, order_number, management_results, wakiso,
-                                     'Satisfied!!', True)
+                                     'Satisfied!!', True, True)
         number_of_deliveries = 1
         self.create_node_and_answers(number_of_deliveries, 34230356, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
-                                     'Not Satisfied!!', False)
+                                     'Not Satisfied!!', False, True)
 
         response = self.client.get(ENDPOINT_URL + '?query=34230305', content_type='application/json')
 
@@ -185,17 +192,16 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         wakiso = 'WAKISO DHO'
         order_number = 34230356
         self.create_node_and_answers(number_of_deliveries, 34230305, management_results, wakiso,
-                                     'Satisfied!!', True)
+                                     'Satisfied!!', True, True)
         number_of_deliveries = 1
         self.create_node_and_answers(number_of_deliveries, order_number, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
-                                     'Not Satisfied!!', False)
+                                     'Not Satisfied!!', False, True)
 
         response = self.client.get(ENDPOINT_URL + '?query=34230356', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['orderNumber'], order_number)
-
 
     def _create_questions(self):
         flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
@@ -224,19 +230,23 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         self.additional_comments = TextQuestionFactory(text='Additional Remarks', flow=flow, position=5,
                                                        label='additionalDeliveryComments')
 
+    def _create_node(self, delivery, is_purchase, order_number, track):
+        if is_purchase:
+            DeliveryNodeFactory(track=track, distribution_plan=delivery,
+                                item=PurchaseOrderItemFactory(
+                                    purchase_order=PurchaseOrderFactory(order_number=order_number)))
+        else:
+            DeliveryNodeFactory(track=track, distribution_plan=delivery,
+                                item=ReleaseOrderItemFactory(
+                                    release_order=ReleaseOrderFactory(waybill=order_number)))
+
     def create_node_and_answers(self, number_of_deliveries, order_number, programme_name, consignee, comment,
-                                is_purchase):
+                                is_purchase, track):
         while number_of_deliveries > 0:
-            delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
+            delivery = DeliveryFactory(track=track, programme=ProgrammeFactory(name=programme_name),
                                        consignee=ConsigneeFactory(name=consignee))
-            if is_purchase:
-                DeliveryNodeFactory(distribution_plan=delivery,
-                                    item=PurchaseOrderItemFactory(
-                                        purchase_order=PurchaseOrderFactory(order_number=order_number)))
-            else:
-                DeliveryNodeFactory(distribution_plan=delivery,
-                                    item=ReleaseOrderItemFactory(
-                                        release_order=ReleaseOrderFactory(waybill=order_number)))
+
+            self._create_node(delivery, is_purchase, order_number, track)
 
             run = RunFactory(runnable=delivery)
             MultipleChoiceAnswerFactory(run=run, question=self.delivery_received_qtn, value=self.yes_one)

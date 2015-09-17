@@ -70,16 +70,17 @@ def _has_page(has_page, page, request):
 
 
 def _get_filtered_deliveries(request):
-    if request.GET.get('query'):
-        params = request.GET.get('query')
-        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
-        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
-        nodes = DistributionPlanNode.objects.filter(Q(distribution_plan__track=True),
-                                                    Q(distribution_plan__consignee__name__icontains=params) |
-                                                    Q(distribution_plan__programme__name__icontains=params) |
-                                                    Q(item=purchase_order_item) |
-                                                    Q(item=release_order_item))
-        return map(lambda node: node.distribution_plan, nodes)
-    else:
-        return DistributionPlan.objects.filter(track=True)
+    search_query = request.GET.get('query')
+    if search_query:
+        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=search_query)
+        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=search_query)
+        delivery_ids = DistributionPlanNode.objects.filter(track=True, distribution_plan__track=True) \
+            .filter(Q(distribution_plan__consignee__name__icontains=search_query) |
+                    Q(distribution_plan__programme__name__icontains=search_query) |
+                    Q(item__in=purchase_order_item) |
+                    Q(item__in=release_order_item)).values_list('distribution_plan', flat=True)
+
+        return DistributionPlan.objects.filter(id__in=delivery_ids)
+
+    return DistributionPlan.objects.filter(track=True)
 

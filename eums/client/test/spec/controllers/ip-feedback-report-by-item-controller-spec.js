@@ -1,8 +1,8 @@
-describe('IpFeedbackReportController', function () {
+describe('IpFeedbackReportByItemController', function () {
     var scope, location, mockReportService, deferredResult, mockLoader, timeout;
 
     beforeEach(function () {
-        module('IpFeedbackReport');
+        module('IpFeedbackReportByItem');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
@@ -15,7 +15,7 @@ describe('IpFeedbackReportController', function () {
 
             mockReportService.ipFeedbackReport.and.returnValue(deferredResult.promise);
 
-            $controller('IpFeedbackReportController', {
+            $controller('IpFeedbackReportByItemController', {
                 $scope: scope,
                 $location: location,
                 ReportService: mockReportService,
