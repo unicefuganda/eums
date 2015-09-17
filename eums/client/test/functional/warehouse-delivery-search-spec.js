@@ -14,7 +14,6 @@ describe('Search Delivery by Date range', function () {
 
     it('Search Warehouse Delivery by From Date', function () {
        warehouseDeliverySearchPage.searchFromDate('06-11-2014');
-       warehouseDeliverySearchPage.clickOutSideToChangeFocus();
        warehouseDeliverySearchPage.verifyPOExists('72089797');
        warehouseDeliverySearchPage.clearFromDate();
 
@@ -23,7 +22,6 @@ describe('Search Delivery by Date range', function () {
     it('Search Warehouse Delivery by To Date', function () {
 
         warehouseDeliverySearchPage.searchToDate('18/11/2014');
-        warehouseDeliverySearchPage.clickOutSideToChangeFocus();
         warehouseDeliverySearchPage.verifyPOExists('72090975');
         warehouseDeliverySearchPage.clearToDate();
 
@@ -34,11 +32,8 @@ describe('Search Delivery by Date range', function () {
         warehouseDeliverySearchPage.clearToDate();
         warehouseDeliverySearchPage.searchFromDate('06-11-2014');
         warehouseDeliverySearchPage.searchToDate('18/11/2014');
-        warehouseDeliverySearchPage.clickOutSideToChangeFocus();
         warehouseDeliverySearchPage.verifyPOExists('72089797');
         warehouseDeliverySearchPage.verifyPOExists('72090975');
-
-
 
     })
 

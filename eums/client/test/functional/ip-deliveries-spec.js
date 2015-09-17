@@ -4,6 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var ipWarehousePage = require('./pages/ip-warehouse-page.js');
+var ipShipmentDelivery = require('./pages/direct-ip-delivery-search-page.js');
 
 describe('IP Deliveries', function () {
 
@@ -99,6 +100,17 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.subDeliveryConsignees).toContain('AGAGO DHO');
         expect(ipWarehousePage.subDeliveryContacts).toContain('John Doe');
         expect(ipWarehousePage.subDeliveryLocations).toContain('Agago');
+    });
+
+    it('Search for IP Delivery by To  and From Date', function(){
+        loginPage.visit();
+        loginPage.loginAs('wakiso', 'wakiso');
+        ipShipmentDelivery.visit();
+        ipShipmentDelivery.searchFromDate('10/02/2020');
+        ipShipmentDelivery.searchToDate('10/02/2031')
+        ipShipmentDelivery.clickOutSideToChangeFocus();
+        //ipShipmentDelivery.verifyPOExists('81026399');
+
     });
 
 });
