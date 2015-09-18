@@ -22,7 +22,7 @@ class PurchaseOrderItem(OrderItem):
         return reduce(lambda total, node: total + node.quantity_in(), nodes, 0)
 
     def unit_value(self):
-        return self.value / Decimal(self.quantity)
+        return self.value / self.quantity
 
     def number(self):
         return self.purchase_order.order_number
