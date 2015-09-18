@@ -37,4 +37,9 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.searching = false;
             });
         }
+
+        $scope.showRemarks = function (index) {
+            var remarksModalId = 'remarks-modal-' + index;
+            LoaderService.showModal(remarksModalId)
+        };
     });

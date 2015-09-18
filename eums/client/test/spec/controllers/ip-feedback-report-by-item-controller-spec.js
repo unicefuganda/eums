@@ -5,7 +5,7 @@ describe('IpFeedbackReportByItemController', function () {
         module('IpFeedbackReportByItem');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReport']);
-        mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
+        mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -74,5 +74,13 @@ describe('IpFeedbackReportByItemController', function () {
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
         });
     });
+
+    describe('on show remark', function(){
+        it('should call show modal with right index', function(){
+            scope.showRemarks(4);
+
+            expect(mockLoader.showModal).toHaveBeenCalledWith('remarks-modal-4');
+        })
+    })
 
 });
