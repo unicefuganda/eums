@@ -32,16 +32,18 @@ fi
 
 echo "Running image..."
 HOST_IP=$1
+RAPIDPRO_API_TOKEN=$2
+EMAIL_PASSWORD=$3
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 \
 -e "LC_ALL=C" \
--e "RAPIDPRO_API_TOKEN=$RAPIDPRO_API_TOKEN" \
--e "EMAIL_PASSWORD=$EMAIL_PASSWORD" \
+-e "RAPIDPRO_API_TOKEN=${RAPIDPRO_API_TOKEN}" \
+-e "EMAIL_PASSWORD=${EMAIL_PASSWORD}" \
 -d --name=eums \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
 %IMAGENAME%:latest \
-/bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} && /usr/bin/supervisord"
+/bin/bash -c "opt/scripts/buildConfigs.sh ${HOST_IP} ${RAPIDPRO_API_TOKEN} ${EMAIL_PASSWORD}&& /usr/bin/supervisord"
 
 echo "Cleaning older eums docker images..."
 sudo docker images | grep -P '^\S+eums\s+([0-9]+)\b' | awk 'NR >=3 {print$3}' | xargs -I {} sudo docker rmi {} || true
