@@ -3,13 +3,23 @@
 angular.module('ReportService', ['eums.config'])
     .factory('ReportService', function ($http, $q, EumsConfig) {
 
-        function buildReportUrlParams(params, byItem) {
+        function buildIPReportUrlParams(params, byItem) {
             var reportEndpoint =
                 byItem ? EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT : EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY;
             var query = params ? '?query=' + encodeURI(params.query) : undefined;
             var page = params ? '?page=' + params.page : undefined;
-            var url;
+            return buildReportUrlParams(reportEndpoint, query, page, params);
+        }
 
+        function buildEndUserReportUrlParams(params) {
+            var reportEndpoint = EumsConfig.BACKEND_URLS.END_USER_FEEDBACK_REPORT;
+            var query = params ? '?query=' + encodeURI(params.query) : undefined;
+            var page = params ? '?page=' + params.page : undefined;
+            return buildReportUrlParams(reportEndpoint, query, page, params);
+        }
+
+        function buildReportUrlParams(reportEndpoint, query, page, params) {
+            var url;
             if (params) {
                 if (params.query && params.page) {
                     url = reportEndpoint + query + '&' + page
@@ -37,7 +47,7 @@ angular.module('ReportService', ['eums.config'])
 
             ipFeedbackReport: function (params) {
                 var result = $q.defer();
-                var url = buildReportUrlParams(params, true);
+                var url = buildIPReportUrlParams(params, true);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
@@ -45,9 +55,21 @@ angular.module('ReportService', ['eums.config'])
 
                 return result.promise
             },
+
             ipFeedbackReportByDelivery: function (params) {
                 var result = $q.defer();
-                var url = buildReportUrlParams(params, false);
+                var url = buildIPReportUrlParams(params, false);
+                $http.get(url)
+                    .then(function (response) {
+                        result.resolve(response.data);
+                    });
+
+                return result.promise
+            },
+
+            endUserFeedbackReport: function (params) {
+                var result = $q.defer();
+                var url = buildEndUserReportUrlParams(params);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
