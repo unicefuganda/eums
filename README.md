@@ -35,7 +35,7 @@ Local Environment Setup
         *Example 1 - Using virtualenvwrapper*
 		
 		```
-       $ source /usr/local/bin/virutalenvwrapper.sh
+       $ source /usr/local/bin/virtualenvwrapper.sh
        $ mkvirtualenv eums
        ```
         
