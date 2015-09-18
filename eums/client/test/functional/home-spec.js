@@ -4,7 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var homePage = require('./pages/home-page.js');
 var responsePage = require('./pages/response-page.js');
 
-fdescribe('Home Page', function () {
+describe('Home Page', function () {
 
     describe('Admin User', function () {
 
