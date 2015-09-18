@@ -380,7 +380,7 @@ describe('UNICEF IP', function () {
         });
 
         it('should aggregate all responses', function () {
-            var aggregates = distributionPlanService.aggregateStats(locationResponses, undefined);
+            var aggregates = deliveryService.aggregateStats(locationResponses, undefined);
             expect(aggregates).toEqual({
                 location: undefined,
                 totalSent: 2,
@@ -394,7 +394,7 @@ describe('UNICEF IP', function () {
         });
 
         it('should return null state aggregates when there are no responses', function () {
-            var aggregates = distributionPlanService.aggregateStats([], undefined);
+            var aggregates = deliveryService.aggregateStats([], undefined);
             var emptyState = '--';
             expect(aggregates).toEqual({
                 location: undefined,
@@ -561,7 +561,7 @@ describe('UNICEF IP', function () {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
-                        value: 500,
+                        value: 1000,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',
@@ -585,7 +585,7 @@ describe('UNICEF IP', function () {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
-                        value: 1000,
+                        value: 500,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',
