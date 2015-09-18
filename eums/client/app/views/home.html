@@ -13,27 +13,23 @@
 
             <div map-summary consigneeDetails></div>
             <div id="stats-panel">
-                <div class="panel-header" ng-show="data.totalStats.location">Responses for {{ data.totalStats.location }}</div>
-                <div class="panel-header" ng-show="!data.totalStats.location">All Responses</div>
+                <div class="panel-header" ng-show="data.totalStats.location">{{ data.totalStats.location }}</div>
+                <div class="panel-header" ng-show="!data.totalStats.location">All Districts</div>
                 <ul class="list-group">
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.totalSent }}</span>
-                        Total Responses
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.percentageReceived }}%</span>
                         Received
+                        <span class="badge alert-info supply-value">{{ data.totalStats.percentageReceived }}%</span>
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.percentageNotReceived }}%</span>
-                        Not Received
+                        Not received
+                        <span class="badge alert-info supply-value">{{ data.totalStats.percentageNotReceived }}%</span>
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.totalValueReceived | currency}}</span>
+                        <span class="badge alert-info supply-value">{{ data.totalStats.totalValueReceived | currency}}</span>
                         Supply received
                     </li>
                     <li class="list-group-item">
-                        <span class="badge alert-info">{{ data.totalStats.totalValueSent | currency}}</span>
+                        <span class="badge alert-info supply-value">{{ data.totalStats.totalValueSent | currency}}</span>
                         Supply sent
                     </li>
                 </ul>

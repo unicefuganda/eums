@@ -116,8 +116,8 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
                 }, 0);
 
                 var totalValueReceived = data.reduce(function (total, current) {
-                    total = isNaN(total) ? 0 : total;
-                    return (Number(current.amountReceived) * current.value) + total;
+                    var amountReceived = isNaN(current.amountReceived) ? 0 : current.amountReceived;
+                    return (Number(amountReceived) * current.value) + total;
                 }, 0);
 
 

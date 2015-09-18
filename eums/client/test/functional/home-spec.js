@@ -4,7 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var homePage = require('./pages/home-page.js');
 var responsePage = require('./pages/response-page.js');
 
-describe('Home Page', function () {
+fdescribe('Home Page', function () {
 
     describe('Admin User', function () {
 
@@ -15,18 +15,18 @@ describe('Home Page', function () {
 
         it('should get global stats on map', function () {
             expect(homePage.mapLocation).toEqual('');
-            expect(homePage.numberSent).toEqual('17');
-            expect(homePage.numberDelivered).toEqual('13');
-            expect(homePage.numberNotDelivered).toEqual('4');
+            expect(homePage.numberSent).toEqual('$76,500.00');
+            expect(homePage.numberDelivered).toEqual('$32,700.00');
+            expect(homePage.numberNotDelivered).toEqual('57%');
         });
 
         it('should click on wakiso district', function () {
             homePage.clickMapLayer('wakiso');
-            expect(homePage.mapLocation).toEqual('Responses for WAKISO');
+            expect(homePage.mapLocation).toEqual('WAKISO');
             expect(homePage.getMapZoomLevel()).toBe(10);
-            expect(homePage.numberSent).toEqual('3');
-            expect(homePage.numberDelivered).toEqual('3');
-            expect(homePage.numberNotDelivered).toEqual('0');
+            expect(homePage.numberSent).toEqual('$1,200.00');
+            expect(homePage.numberDelivered).toEqual('$1,200.00');
+            expect(homePage.numberNotDelivered).toEqual('0%');
         });
 
         it('when I click on district number of responses should be 10 or less', function () {
@@ -85,9 +85,9 @@ describe('Home Page', function () {
             homePage.clickMapLayer('wakiso');
             homePage.clickZoomOutIcon();
             expect(homePage.getMapZoomLevel()).toBe(7);
-            expect(homePage.numberSent).toEqual('17');
-            expect(homePage.numberDelivered).toEqual('13');
-            expect(homePage.numberNotDelivered).toEqual('4');
+            expect(homePage.numberSent).toEqual('$76,500.00');
+            expect(homePage.numberDelivered).toEqual('$32,700.00');
+            expect(homePage.numberNotDelivered).toEqual('57%');
         });
     });
 
@@ -99,9 +99,9 @@ describe('Home Page', function () {
 
         it('should get global stats on map only for IP', function () {
             expect(homePage.mapLocation).toEqual('');
-            expect(homePage.numberSent).toEqual('3');
-            expect(homePage.numberDelivered).toEqual('3');
-            expect(homePage.numberNotDelivered).toEqual('0');
+            expect(homePage.numberSent).toEqual('$1,200.00');
+            expect(homePage.numberDelivered).toEqual('$1,200.00');
+            expect(homePage.numberNotDelivered).toEqual('0%');
         });
     });
 });

@@ -26,13 +26,13 @@ homePage.prototype = Object.create({}, {
         return element(by.binding('totalStats.location')).getText();
     }},
     numberSent: { get: function () {
-        return element(by.binding('totalStats.totalSent')).getText();
+        return element(by.binding('totalStats.totalValueSent')).getText();
     }},
     numberDelivered: { get: function () {
-        return element(by.binding('totalStats.totalReceived')).getText();
+        return element(by.binding('totalStats.totalValueReceived')).getText();
     }},
     numberNotDelivered: { get: function () {
-        return element(by.binding('totalStats.totalNotReceived')).getText();
+        return element(by.binding('totalStats.percentageNotReceived')).getText();
     }},
     numberOfResponses: { get: function () {
         return element.all(by.repeater('response in responses'));
