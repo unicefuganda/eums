@@ -35,6 +35,8 @@ HOST_IP=$1
 
 sudo docker run -p 50000:22 -p 80:80 -p 8005:8005 \
 -e "LC_ALL=C" \
+-e "RAPIDPRO_API_TOKEN=$RAPIDPRO_API_TOKEN" \
+-e "EMAIL_PASSWORD=$EMAIL_PASSWORD" \
 -d --name=eums \
 -v /opt/app/mongodb:/data/db \
 -v /opt/app/postgresql:/var/lib/postgresql \
