@@ -15,11 +15,10 @@ from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
-
 ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery'
 
 
-class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
+class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
     def tearDown(self):
         DistributionPlan.objects.all().delete()
 
@@ -46,7 +45,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
                               'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': comment}]
+                              'additionalDeliveryComments': comment, 'value': 100}]
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
@@ -73,7 +72,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': empty, 'orderNumber': order_number,
                               'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: empty, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': empty}]
+                              'additionalDeliveryComments': empty, 'value': 100}]
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
@@ -96,7 +95,7 @@ class IpFeedBackReportByDeliveryEndpoint(AuthenticatedAPITestCase):
         expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
                               'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
-                              'additionalDeliveryComments': comment}]
+                              'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
 

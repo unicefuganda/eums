@@ -48,7 +48,8 @@ def _build_delivery_answers(deliveries):
                                  Question.LABEL.satisfiedWithDelivery:
                                      _value(Question.LABEL.satisfiedWithDelivery, answers),
                                  Question.LABEL.additionalDeliveryComments:
-                                     _value(Question.LABEL.additionalDeliveryComments, answers)
+                                     _value(Question.LABEL.additionalDeliveryComments, answers),
+                                 'value': int(delivery.total_value)
                                  })
     return delivery_answers
 

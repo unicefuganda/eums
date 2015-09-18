@@ -4,9 +4,9 @@
 
 <div class="container-fluid">
     <div class="content">
-        <div class="col-xs-4 pull-right margin-bottom-20">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon "
+        <div class="col-xs-4 pull-right margin-bottom-20 pad-small">
+            <div class="inner-addon right-addon">
+                <i class="glyphicon"
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
                        placeholder="Search by item, outcome, purchase order or waybill"/>
@@ -17,14 +17,15 @@
             <table class="table table-bordered table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th class="align-center"><span class="padded-multi-line-5">RECEIVED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">DATE RECEIVED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">OUTCOME</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">IMPLEMENTING PARTNER</span></th>
-                    <th class="align-center"><span class="padded-multi-line-5">CONDITION</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">REMARKS</span></th>
+                    <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
+                    <th class="align-left"><span class="pad-left-10">DATE RECEIVED</span></th>
+                    <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
+                    <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
+                    <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
+                    <th class="align-left"><span class="pad-left-10">VALUE</span></th>
+                    <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
+                    <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
+                    <th class="align-left"><span class="pad-left-10">REMARKS</span></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -34,10 +35,11 @@
                               'eums-bg-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.orderNumber }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.programme }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.consignee }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.value | currency }}</span></td>
                     <td>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'Yes'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Good</span>
@@ -50,7 +52,7 @@
                                   ng-class="{'glyphicon-ok-sign': itemReport.satisfiedWithDelivery == 'Yes',
                                                 'eums-text-ok': itemReport.satisfiedWithDelivery == 'Yes',
                                   'glyphicon-remove-sign': itemReport.satisfiedWithDelivery == 'No',
-                                                'eums-text-no': itemReport.satisfiedWithDelivery == 'No',
+                                                'eums-text-no': itemReport.satisfiedWithDelivery == 'No'
                                 }">
                             </span>
                         </div>
