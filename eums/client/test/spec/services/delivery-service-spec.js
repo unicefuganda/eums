@@ -1,5 +1,5 @@
 describe('Distribution Plan Service', function () {
-    var distributionPlanService, mockBackend, distPlanEndpointUrl, salesOrdersEndpointUrl, mockNodeService, q, http, config, mockContactService;
+    var deliveryService, mockBackend, distPlanEndpointUrl, salesOrdersEndpointUrl, mockNodeService, q, http, config, mockContactService;
     var planId = 1;
 
     var stubPlanOne = {
@@ -85,17 +85,54 @@ describe('Distribution Plan Service', function () {
             mockBackend = $httpBackend;
             distPlanEndpointUrl = EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN;
             salesOrdersEndpointUrl = EumsConfig.BACKEND_URLS.SALES_ORDER;
-            distributionPlanService = DeliveryService;
+            deliveryService = DeliveryService;
         });
     });
 
     it('should fetch all distribution plans', function (done) {
         mockBackend.whenGET(distPlanEndpointUrl).respond(stubDistributionPlans);
-        distributionPlanService.fetchPlans().then(function (response) {
+        deliveryService.fetchPlans().then(function (response) {
             expect(response.data).toEqual(stubDistributionPlans);
             done();
         });
         mockBackend.flush();
+    });
+
+    it('should filter deliveries of the latest items delivered', function () {
+        var item1_different_location = {
+            dateOfReceipt: "06/12/2014",
+            item: "item 1"
+        };
+        var item1 = {
+            dateOfReceipt: "06/10/2014",
+            item: "item 1"
+        };
+        var item2 = {
+            dateOfReceipt: "06/09/2014",
+            item: "item 2"
+        };
+        var item3 = {
+            dateOfReceipt: "06/11/2014",
+            item: "item 3"
+        };
+        var item1_later = {
+            dateOfReceipt: "07/11/2014",
+            item: "item 1"
+        };
+        var item2_later = {
+            dateOfReceipt: "08/11/2014",
+            item: "item 2"
+        };
+        var responses = [
+            {consigneeResponses: [item1_different_location], location: "bukoto"},
+            {consigneeResponses: [item1, item2, item3, item1_later, item2_later], location: "wakiso"},
+        ];
+
+        expect(deliveryService.getLatestItemDeliveries(responses, "wakiso", 2)).toEqual([item2_later, item1_later]);
+
+        expect(deliveryService.getLatestItemDeliveries(responses, "wakiso", 1)).toEqual([item2_later]);
+
+        expect(deliveryService.getLatestItemDeliveries(responses, "wakiso", 3)).toEqual([item2_later, item1_later, item3]);
     });
 
     var fakeGetNodeDetails = function () {
@@ -284,7 +321,7 @@ describe('UNICEF IP', function () {
     ];
     var locationResponses = [{location: 'Mbarara', consigneeResponses: stubEndUserResponses}];
 
-    var scope, distributionPlanNodeService, distributionPlanService, deferredPlanNodePromise, httpBackend, eumsConfig, deferredNodePromise;
+    var scope, distributionPlanNodeService, deliveryService, deferredPlanNodePromise, httpBackend, eumsConfig, deferredNodePromise;
 
     beforeEach(function () {
         module('Delivery');
@@ -300,7 +337,7 @@ describe('UNICEF IP', function () {
             httpBackend = $httpBackend;
             deferredPlanNodePromise = $q.defer();
             deferredNodePromise = $q.defer();
-            distributionPlanService = DeliveryService;
+            deliveryService = DeliveryService;
             distributionPlanNodeService.getPlanNodeDetails.and.returnValue(deferredPlanNodePromise.promise);
             distributionPlanNodeService.get.and.returnValue(deferredNodePromise.promise);
         });
@@ -312,7 +349,7 @@ describe('UNICEF IP', function () {
         var expectedPlanNode = stubDeliveryNodes[0];
         deferredNodePromise.resolve(expectedPlanNode);
         httpBackend.whenGET(eumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + planNodeOne + '/').respond(expectedPlanNode);
-        distributionPlanService.getNodes(stubPlan).then(function (expectedDeliveryNodes) {
+        deliveryService.getNodes(stubPlan).then(function (expectedDeliveryNodes) {
             expect(expectedDeliveryNodes).toEqual([expectedPlanNode]);
             done();
         });
@@ -329,14 +366,14 @@ describe('UNICEF IP', function () {
         });
 
         it('should get all consignee responses', function () {
-            distributionPlanService.getAllConsigneeResponses().then(function (responses) {
+            deliveryService.getAllConsigneeResponses().then(function (responses) {
                 expect(responses.data).toEqual(stubConsigneeResponses);
             });
             httpBackend.flush();
         });
 
         it('should get all end user responses', function () {
-            distributionPlanService.getAllEndUserResponses().then(function (responses) {
+            deliveryService.getAllEndUserResponses().then(function (responses) {
                 expect(responses.data).toEqual(stubEndUserResponses);
             });
             httpBackend.flush();
@@ -372,7 +409,7 @@ describe('UNICEF IP', function () {
         });
 
         it('should aggregate all consignee responses', function (done) {
-            distributionPlanService.aggregateResponses().then(function (aggregates) {
+            deliveryService.aggregateResponses().then(function (aggregates) {
                 // TODO: Change back to this when using all responses, not just end user responses
                 // expect(aggregates).toEqual({ location: 'UGANDA', totalSent: 3, totalReceived: 1, totalNotReceived: 2 });
                 expect(aggregates).toEqual({
@@ -388,7 +425,7 @@ describe('UNICEF IP', function () {
 
         it('should aggregate consignee responses for a district', function (done) {
             var district = 'Gulu';
-            distributionPlanService.aggregateResponsesForDistrict(district).then(function (aggregates) {
+            deliveryService.aggregateResponsesForDistrict(district).then(function (aggregates) {
                 // TODO: Change back to this when using all responses, not just end user responses
                 // expect(aggregates).toEqual({location: 'Gulu', totalSent: 1, totalReceived: 0, totalNotReceived: 1});
                 expect(aggregates).toEqual({});
@@ -398,7 +435,7 @@ describe('UNICEF IP', function () {
         });
 
         it('should map all consignee responses to node location', function (done) {
-            distributionPlanService.mapConsigneesResponsesToNodeLocation().then(function (consigneesWithLocation) {
+            deliveryService.mapConsigneesResponsesToNodeLocation().then(function (consigneesWithLocation) {
                 expect(consigneesWithLocation[0].location).toBe(stubDeliveryNodes[0].location);
                 done();
             });
@@ -409,7 +446,7 @@ describe('UNICEF IP', function () {
             stubConsigneeResponses[0].location = stubDeliveryNodes[0].location;
             stubConsigneeResponses[1].location = stubDeliveryNodes[0].location;
             stubConsigneeResponses[2].location = stubDeliveryNodes[1].location;
-            distributionPlanService.groupAllResponsesByLocation().then(function (responsesByLocation) {
+            deliveryService.groupAllResponsesByLocation().then(function (responsesByLocation) {
 //                TODO: Replace lower expectation with this when getAllUserResponses is replaced with getAllResponses
 //                expect(responsesByLocation).toEqual([
 //                    {
@@ -436,7 +473,7 @@ describe('UNICEF IP', function () {
         //TODO un-x this
         xit('should group responses for a given location', function (done) {
             var district = 'Gulu';
-            distributionPlanService.getResponsesByLocation(district).then(function (responses) {
+            deliveryService.getResponsesByLocation(district).then(function (responses) {
                 expect(responses).toEqual([
                     {
                         node: 4,
@@ -464,7 +501,7 @@ describe('UNICEF IP', function () {
 
         it('should group responses for a given location', function (done) {
             var district = 'Mbarara';
-            distributionPlanService.getResponsesByLocation(district).then(function (responses) {
+            deliveryService.getResponsesByLocation(district).then(function (responses) {
                 expect(responses).toEqual([
                     {
                         node: 3,
@@ -518,33 +555,13 @@ describe('UNICEF IP', function () {
 
         it('should order responses for a given location by receipt date', function (done) {
             var district = 'Mbarara';
-            distributionPlanService.orderAllResponsesByDate(district).then(function (responses) {
+            deliveryService.orderAllResponsesByDate(district).then(function (responses) {
                 expect(responses).toEqual([
                     {
                         node: 3,
                         amountSent: 100,
                         amountReceived: '50',
                         value: 500,
-                        consignee: {
-                            id: 10,
-                            name: 'PADER DHO',
-                            type: 'END_USER'
-                        }, productReceived: 'No',
-                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
-                        qualityOfProduct: 'Good',
-                        informedOfDelay: 'No',
-                        dateOfReceipt: '6/10/2014',
-                        programme: {
-                            id: 3,
-                            name: 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
-                        },
-                        location: 'Mbarara'
-                    },
-                    {
-                        node: 3,
-                        amountSent: 100,
-                        amountReceived: '50',
-                        value: 1000,
                         consignee: {
                             id: 10,
                             name: 'PADER DHO',
@@ -563,8 +580,27 @@ describe('UNICEF IP', function () {
                             name: 'YI107 - PCR 3 KEEP CHILDREN SAFE'
                         },
                         location: 'Mbarara'
+                    },
+                    {
+                        node: 3,
+                        amountSent: 100,
+                        amountReceived: '50',
+                        value: 1000,
+                        consignee: {
+                            id: 10,
+                            name: 'PADER DHO',
+                            type: 'END_USER'
+                        }, productReceived: 'No',
+                        item: 'Safety box f.used syrgs/ndls 5lt/BOX-25',
+                        qualityOfProduct: 'Good',
+                        informedOfDelay: 'No',
+                        dateOfReceipt: '6/10/2014',
+                        programme: {
+                            id: 3,
+                            name: 'YI107 - PCR 3 KEEP MY CHILDREN SAFE'
+                        },
+                        location: 'Mbarara'
                     }
-
                 ]);
                 done();
             });

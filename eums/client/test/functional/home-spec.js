@@ -44,7 +44,7 @@ describe('Home Page', function () {
 
         it('responses panel should have a link to more details', function () {
             homePage.clickMapLayer('wakiso');
-            expect(homePage.responsesPageLink.getText()).toEqual('View All Responses');
+            expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
         });
 
         it('should navigate to detail responses page when page link is clicked', function () {

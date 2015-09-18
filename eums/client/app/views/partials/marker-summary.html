@@ -1,26 +1,27 @@
-<div id='marker-summary' class="table-responsive">
-    <div class="panel-header">
-        <span ng-show="data.responses">Delivery Status for {{ data.district }} district</span>
-        <button type="button"
-                class="close"
-                ng-show="data.responses"
-                ng-click="hideMapMarkerDetails()">
-            <span ng-show="data.responses" aria-hidden="true">&times;</span>
+<div ng-show="data.responses" id='marker-summary' class="table-responsive map-summary">
+    <div class="map-summary-header centered">
+        <span class="sub-header title">Latest Deliveries to {{ data.district }}</span>
+        <button type="button" class="close" ng-click="hideMapMarkerDetails()">
+            <span aria-hidden="true" class="blue-unicef">&times;</span>
         </button>
     </div>
-    <ul class="list-group">
-        <li href="#" class="list-group-item" ng-repeat="response in data.responses">
-            <h6 class="list-group-item-heading response-item-font-weight">{{ response.item }}</h6>
+    <ul class="list-group margin-bottom-none">
+        <li href="#" class="list-group-item border-none" ng-repeat="response in data.responses">
+            <h6 class="list-group-item-heading response-item-font-weight bold-label">{{ response.item }}</h6>
 
             <p class="list-group-item-text">
-                <span class="label label-default"> {{ response.amountSent }} Sent</span>
-                <span ng-show="response.amountReceived" class="label label-primary"> {{ response.amountReceived }} Received</span>
+                <span class="label label-primary text-uppercase"> {{ response.amountSent }} Sent</span>
+                <span ng-show="response.amountReceived"
+                      class="label label-default text-uppercase"> {{ response.amountReceived }} Received</span>
                 <span ng-show="response.qualityOfProduct"
-                      class="label label-info"> {{ response.qualityOfProduct }} </span>
+                      class="label {{ response.qualityOfProduct.toLowerCase() }} text-uppercase"> {{ response.qualityOfProduct }} </span>
             </p>
         </li>
-        <button ng-show="data.responses" ng-click="showDetailedResponses()" id="response-page-btn" type="button"
-                class="btn btn-primary">View All Responses
-        </button>
+
+        <li class="centered list-group-item border-none">
+            <button  ng-click="showDetailedResponses()" id="response-page-btn" type="button"
+                    class="btn btn-default btn-xs blue-border-button"><span class="glyphicon glyphicon-new-window"></span> View District Responses
+            </button>
+        </li>
     </ul>
 </div>

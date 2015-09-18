@@ -93,9 +93,22 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
                     return $http.get(EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN_NODE + '?search=MIDDLE_MAN', {cache: true}).then(function (response) {
                         return response.data;
                     });
+                },
+                getLatestItemDeliveries: function (responsesLocationMap, location, number) {
+                    var allResponses = this.orderResponsesByDate(responsesLocationMap, location);
+                    var responses = [];
+                    var items = [];
+                    allResponses.forEach(function (response) {
+                        if (items.length < number && !_.contains(items, response.item)) {
+                            items.push(response.item);
+                            responses.push(response);
+                        }
+                    });
+                    return responses;
                 }
             }
-        });
+        })
+            ;
 
         function getUniqueLocations(consigneesResponsesWithNodeLocation) {
             return _.uniq(consigneesResponsesWithNodeLocation, function (responseWithNodeLocation) {
@@ -163,7 +176,7 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
         }
 
         function compareReceiptDate(firstResponse, secondResponse) {
-            return moment(firstResponse.dateOfReceipt, 'DD/MM/YYY') - moment(secondResponse.dateOfReceipt, 'DD/MM/YYY');
+            return moment(secondResponse.dateOfReceipt, 'DD/MM/YYY') - moment(firstResponse.dateOfReceipt, 'DD/MM/YYY');
         }
 
         function orderResponsesByDateReceived(consigneeResponses) {
@@ -185,7 +198,7 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
             }
             return _.flatten(responses);
         }
-
-    });
+    })
+;
 
 

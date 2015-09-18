@@ -54,9 +54,9 @@ angular.module('map.layers', ['Delivery'])
 
 
         function showResponsesForDistrict(layerName, responses, scope) {
-            var allResponses = DeliveryService.orderResponsesByDate(responses, layerName);
+            var allResponses = DeliveryService.getLatestItemDeliveries(responses, layerName, 3);
             scope.$apply(function () {
-                scope.data.responses = allResponses.slice(0, 5);
+                scope.data.responses = allResponses;
                 scope.data.district = layerName;
             });
         }
