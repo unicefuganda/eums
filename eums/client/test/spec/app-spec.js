@@ -134,11 +134,17 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('IpFeedbackReportByItemController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-report-by-item.html');
     });
-
     it('should have ip feedback report by delivery route pointing to the right controller', function () {
         var route = '/ip-feedback-report-by-delivery';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('IpFeedbackReportByDeliveryController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-report-by-delivery.html');
+    });
+
+    it('should have end user feedback report route pointing to the right controller', function () {
+        var route = '/end-user-feedback-report';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('EndUserFeedbackReportController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/end-user-feedback-report.html');
     });
 });

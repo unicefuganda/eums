@@ -109,6 +109,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
+        .when('/end-user-feedback-report', {
+            templateUrl: '/static/app/views/reports/end-user-feedback-report.html',
+            controller: 'EndUserFeedbackReportController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_reports');
+                }
+            }
+        })
         .when('/ip-feedback-report-by-delivery', {
             templateUrl: '/static/app/views/reports/ip-feedback-report-by-delivery.html',
             controller: 'IpFeedbackReportByDeliveryController',
