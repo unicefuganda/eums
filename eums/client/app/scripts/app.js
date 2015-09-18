@@ -17,7 +17,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport', 'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems',
     'ImportData', 'IpFeedbackReportByItem', 'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
     'DirectDeliveryIpChoice', 'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp',
-    'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery'])
+    'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'EndUserFeedbackReport'])
 
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);
