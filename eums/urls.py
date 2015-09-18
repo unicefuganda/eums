@@ -11,6 +11,7 @@ from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswe
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
+from eums.api.map_stats_endpoints import DistrictStats
 from eums.views.export_deliveries import ExportDeliveriesCSV
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
@@ -73,6 +74,7 @@ urlpatterns = patterns(
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
     url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
+    url(r'^api/map-stats/$', DistrictStats.as_view(), name='map_stats'),
     url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),

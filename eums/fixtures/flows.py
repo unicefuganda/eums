@@ -1,6 +1,5 @@
 from eums.models import Flow, Runnable
 
-
 def seed_flows():
     Flow.objects.all().delete()
     end_user_flow, _ = Flow.objects.get_or_create(rapid_pro_id=2436, for_runnable_type=Runnable.END_USER)

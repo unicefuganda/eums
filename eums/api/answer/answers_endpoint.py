@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from eums.models import DistributionPlanNode
+from eums.models import DistributionPlanNode as DeliveryNode
 from eums.models.answers import MultipleChoiceAnswer
 
 
@@ -18,14 +18,14 @@ class ResponseSerializer(object):
         return responses
 
     def get_all_nodes(self, for_user):
-        if for_user is DistributionPlanNode.END_USER:
-            all_nodes = DistributionPlanNode.objects.filter(tree_position=DistributionPlanNode.END_USER)
-        elif for_user is DistributionPlanNode.IMPLEMENTING_PARTNER:
-            all_nodes = DistributionPlanNode.objects.filter(tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        if for_user is DeliveryNode.END_USER:
+            all_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER)
+        elif for_user is DeliveryNode.IMPLEMENTING_PARTNER:
+            all_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         else:
-            all_nodes = DistributionPlanNode.objects.all()
+            all_nodes = DeliveryNode.objects.all()
         if self.consignee_id:
-            all_nodes = DistributionPlanNode.objects.filter(consignee_id=self.consignee_id)
+            all_nodes = DeliveryNode.objects.filter(consignee_id=self.consignee_id)
         return all_nodes
 
     @staticmethod
@@ -91,19 +91,19 @@ class AllConsigneeResponses(APIView):
 
 class AllEndUserResponses(APIView):
     def get(self, request, *args, **kwargs):
-        result = ResponseSerializer().serialize_responses(for_user=DistributionPlanNode.END_USER)
+        result = ResponseSerializer().serialize_responses(for_user=DeliveryNode.END_USER)
         return Response(result, status=status.HTTP_200_OK)
 
 
 class AllIPResponses(APIView):
     def get(self, request, *args, **kwargs):
-        result = ResponseSerializer().serialize_responses(for_user=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        result = ResponseSerializer().serialize_responses(for_user=DeliveryNode.IMPLEMENTING_PARTNER)
         return Response(result, status=status.HTTP_200_OK)
 
 
 class NodeResponses(APIView):
     def get(self, request, node_id, *args, **kwargs):
-        planNode = DistributionPlanNode.objects.filter(id=node_id).first()
+        planNode = DeliveryNode.objects.filter(id=node_id).first()
         result = {}
         if planNode and planNode.tree_position == 'END_USER':
             node_responses = planNode.responses()
