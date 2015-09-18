@@ -38,4 +38,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 loadIpFeedbackReportByDelivery({query: $scope.searchTerm})
             }, 1000);
         }
+
+        $scope.showRemarks = function (index) {
+            var remarksModalId = 'remarks-modal-' + index;
+            LoaderService.showModal(remarksModalId)
+        };
     });
