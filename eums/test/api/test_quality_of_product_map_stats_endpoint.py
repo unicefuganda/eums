@@ -23,57 +23,49 @@ class QualityOfProductStatsTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('numberOfDeliveriesInGoodOrder'), 2)
 
+    def test_should_get_number_of_deliveries_in_bad_order(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('numberOfDeliveriesInBadOrder'), 4)
+
+    def test_should_get_number_of_non_responses_to_quality_of_product_question(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('numberOfNonResponseToQualityOfProduct'), 1)
+
     def test_should_get_percentage_of_total_deliveries_in_good_order(self):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-        self.assertEqual(response.data.get('percentageOfDeliveriesInGoodOrder'), 33.3)
-#
-    # def test_should_get_number_of_unsuccessful_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('numberOfUnsuccessfulProductDeliveries'), 3)
-    #
-    # def test_should_get_percentage_of_total_deliveries_that_were_unsuccessful(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('percentageOfUnsuccessfulDeliveries'), 50)
-    #
-    # def test_should_get_number_of_non_responses_to_product_received_question(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('numberOfNonResponseToProductReceived'), 1)
-    #
-    # def test_should_get_percentage_of_non_responses_to_product_received_question(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('percentageOfNonResponseToProductReceived'), 16.7)
-    #
-    # def test_should_get_total_number_of_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
-    #
-    # def test_should_get_total_value_of_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('totalValueOfDeliveries'), 2100)
-    #
-    # def test_should_get_total_value_of_successful_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('totalValueOfSuccessfulDeliveries'), 300)
-    #
-    # def test_should_get_percentage_of_total_value_of_successful_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('percentageValueOfSuccessfulDeliveries'), 14.3)
-    #
-    # def test_should_get_total_value_of_unsuccessful_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('totalValueOfUnsuccessfulProductDeliveries'), 1200)
-    #
-    # def test_should_get_percentage_of_total_value_of_unsuccessful_deliveries(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('percentageValueOfUnsuccessfulDeliveries'), 57.1)
-    #
-    # def test_should_get_total_value_of_non_responses_to_product_received_question(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('totalValueOfNonResponseToProductReceived'), 600)
-    #
-    # def test_should_get_percentage_of_value_of_non_responses_to_product_received_question(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     self.assertEqual(response.data.get('percentageValueOfNonResponseToProductReceived'), 28.6)
+        self.assertEqual(response.data.get('percentageOfDeliveriesInGoodOrder'), 28.6)
+
+    def test_should_get_percentage_of_total_deliveries_in_bad_order(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('percentageOfDeliveriesInBadOrder'), 57.1)
+
+    def test_should_get_percentage_of_non_responses_to_quality_of_product_question(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('percentageOfNonResponseToQualityOfProduct'), 14.3)
+
+    def test_should_get_total_value_of_deliveries_in_good_order(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('totalValueOfDeliveriesInGoodOrder'), 300)
+
+    def test_should_get_total_value_of_deliveries_in_bad_order(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('totalValueOfDeliveriesInBadOrder'), 1200)
+
+    def test_should_get_total_value_of_non_responses_to_quality_of_product_question(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('totalValueOfNonResponseToQualityOfProduct'), 600)
+
+    def test_should_get_percentage_of_total_value_of_deliveries_in_good_order(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('percentageValueOfDeliveriesInGoodOrder'), 14.3)
+
+    def test_should_get_percentage_of_total_value_of_deliveries_in_bad_order(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('percentageValueOfDeliveriesInBadOrder'), 57.1)
+
+    def test_should_get_percentage_of_value_of_non_responses_to_quality_of_product_question(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('percentageValueOfNonResponseToQualityOfProduct'), 28.6)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()
@@ -132,21 +124,6 @@ class QualityOfProductStatsTest(AuthenticatedAPITestCase):
 
 
 '''
-        - value NO-ISSUES
-        - percent NO-ISSUES/TV
-        - #of NO-ISSUES responses
-        - percent of NO-ISSUES/TQ
-
-        - value WITH-ISSUES
-        - percent WITH-ISSUES/TV
-        - #of WITH-ISSUES responses
-        - percent of WITH-ISSUES/TQ
-
-        - value NO-RESPONSE to Quality qn
-        - percent NO-RESPONSE/TV
-        - #of NO-RESPONSE responses
-        - percent of NO-RESPONSE/TQ
-
         - value SATISFIED
         - percent SATISFIED/TV
         - #of SATISFIED responses

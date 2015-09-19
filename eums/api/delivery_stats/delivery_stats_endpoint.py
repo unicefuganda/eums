@@ -4,14 +4,14 @@ from django.db.models import Sum
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
+from eums.api.delivery_stats.quality_of_product_stats import get_quality_of_product_base_query_sets
 
-from eums.api.delivery_stats.quality_of_product_stats import QualityOfProductMixin
 from eums.api.delivery_stats.stats_structure import DeliveryStats
 from eums.api.delivery_stats.was_product_received_stats import get_product_received_base_query_sets
 from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable
 
 
-class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
+class DeliveryStatsEndpoint(APIView):
     def __init__(self):
         self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
@@ -19,11 +19,15 @@ class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
+
         product_received_stats = self._get_product_received_stats()
+        quality_of_product_stats = self._get_quality_of_product_stats()
 
         if consignee_type == DeliveryNode.END_USER:
             return Response({
                 'totalNumberOfDeliveries': self.total_deliveries(),
+                'totalValueOfDeliveries': self.total_delivery_value(),
+
                 'numberOfSuccessfulProductDeliveries': product_received_stats.count_positive,
                 'numberOfUnsuccessfulProductDeliveries': product_received_stats.count_negative,
                 'numberOfNonResponseToProductReceived': product_received_stats.count_non_response,
@@ -32,7 +36,6 @@ class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
                 'percentageOfUnsuccessfulDeliveries': product_received_stats.percent_negative,
                 'percentageOfNonResponseToProductReceived': product_received_stats.percent_non_response,
 
-                'totalValueOfDeliveries': self.total_delivery_value(),
                 'totalValueOfSuccessfulDeliveries': product_received_stats.value_positive,
                 'totalValueOfUnsuccessfulProductDeliveries': product_received_stats.value_negative,
                 'totalValueOfNonResponseToProductReceived': product_received_stats.value_non_response,
@@ -41,7 +44,21 @@ class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
                 'percentageValueOfUnsuccessfulDeliveries': product_received_stats.percent_value_negative,
                 'percentageValueOfNonResponseToProductReceived': product_received_stats.percent_value_non_response,
 
-                'numberOfDeliveriesInGoodOrder': self.number_of_deliveries_in_good_order()
+                'numberOfDeliveriesInGoodOrder': quality_of_product_stats.count_positive,
+                'numberOfDeliveriesInBadOrder': quality_of_product_stats.count_negative,
+                'numberOfNonResponseToQualityOfProduct': quality_of_product_stats.count_non_response,
+
+                'percentageOfDeliveriesInGoodOrder': quality_of_product_stats.percent_positive,
+                'percentageOfDeliveriesInBadOrder': quality_of_product_stats.percent_negative,
+                'percentageOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_non_response,
+
+                'totalValueOfDeliveriesInGoodOrder': quality_of_product_stats.value_positive,
+                'totalValueOfDeliveriesInBadOrder': quality_of_product_stats.value_negative,
+                'totalValueOfNonResponseToQualityOfProduct': quality_of_product_stats.value_non_response,
+
+                'percentageValueOfDeliveriesInGoodOrder': quality_of_product_stats.percent_value_positive,
+                'percentageValueOfDeliveriesInBadOrder': quality_of_product_stats.percent_value_negative,
+                'percentageValueOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_value_non_response,
             })
 
     def total_deliveries(self):
@@ -50,22 +67,12 @@ class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
     def total_delivery_value(self):
         return self._get_nodes_total_value(self.end_user_nodes)
 
-    @staticmethod
-    def _get_nodes_total_value(queryset):
-        return queryset.aggregate(total_value=Sum('total_value'))['total_value']
-
-    def _percentage_of_total_deliveries(self, quantity):
-        total_deliveries = self.total_deliveries()
-        percent = Decimal(quantity) / total_deliveries * 100
-        return round(percent, 1)
-
-    def _percentage_of_total_value_delivered(self, quantity):
-        total_delivery_value = self.total_delivery_value()
-        percent = Decimal(quantity or 0) / total_delivery_value * 100
-        return round(percent, 1)
-
     def _get_product_received_stats(self):
         base_query_sets = get_product_received_base_query_sets()
+        return self._get_question_stats(base_query_sets)
+
+    def _get_quality_of_product_stats(self):
+        base_query_sets = get_quality_of_product_base_query_sets()
         return self._get_question_stats(base_query_sets)
 
     def _get_question_stats(self, raw_stats):
@@ -110,3 +117,17 @@ class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
         successful_delivery_runs = answers.values_list('run_id')
         nodes = self.end_user_nodes.filter(run__id__in=successful_delivery_runs)
         return self._get_nodes_total_value(nodes)
+
+    @staticmethod
+    def _get_nodes_total_value(queryset):
+        return queryset.aggregate(total_value=Sum('total_value'))['total_value']
+
+    def _percentage_of_total_deliveries(self, quantity):
+        total_deliveries = self.total_deliveries()
+        percent = Decimal(quantity) / total_deliveries * 100
+        return round(percent, 1)
+
+    def _percentage_of_total_value_delivered(self, quantity):
+        total_delivery_value = self.total_delivery_value()
+        percent = Decimal(quantity or 0) / total_delivery_value * 100
+        return round(percent, 1)
