@@ -16,12 +16,12 @@ class DistrictStats(APIView):
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.successful_delivery_answers = MultipleChoiceAnswer.objects.filter(
             question=self.was_product_received, value=self.product_was_received).filter(
-                Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
-            )
+            Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
+        )
         self.unsuccessful_delivery_answers = MultipleChoiceAnswer.objects.filter(
             question=self.was_product_received, value=self.product_was_not_received).filter(
-                Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
-            )
+            Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
+        )
 
     def number_of_successful_deliveries(self):
         return self.successful_delivery_answers.count()
@@ -53,7 +53,9 @@ class DistrictStats(APIView):
                 'totalValueOfSuccessfulDeliveries': self.total_successful_delivery_value(),
                 'percentageValueOfSuccessfulDeliveries': self.percentage_value_of_successful_deliveries(),
                 'totalValueOfUnsuccessfulProductDeliveries': self.total_unsuccessful_delivery_value(),
-                'percentageValueOfUnsuccessfulDeliveries': self.percentage_value_of_unsuccessful_deliveries()
+                'percentageValueOfUnsuccessfulDeliveries': self.percentage_value_of_unsuccessful_deliveries(),
+                'totalValueOfNonResponseToProductReceived': self.total_value_of_non_response_deliveries(),
+                'percentageValueOfNonResponseToProductReceived': self.percentage_value_of_non_response_deliveries(),
             })
 
     def percent_successful_deliveries(self):
@@ -97,3 +99,9 @@ class DistrictStats(APIView):
 
     def percentage_value_of_unsuccessful_deliveries(self):
         return self._percentage_of_total_value_delivered(self.total_unsuccessful_delivery_value())
+
+    def total_value_of_non_response_deliveries(self):
+        return self.total_delivery_value() - self.total_successful_delivery_value() - self.total_unsuccessful_delivery_value()
+
+    def percentage_value_of_non_response_deliveries(self):
+        return self._percentage_of_total_value_delivered(self.total_value_of_non_response_deliveries())
