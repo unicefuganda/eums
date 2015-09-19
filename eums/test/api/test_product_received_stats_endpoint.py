@@ -11,12 +11,12 @@ from eums.test.factories.run_factory import RunFactory
 ENDPOINT_URL = BACKEND_URL + 'map-stats/'
 
 
-class DeliveryStatsEndpointTest(AuthenticatedAPITestCase):
+class ProductReceivedStatsTest(AuthenticatedAPITestCase):
     def tearDown(self):
         DeliveryNode.objects.all().delete()
 
     def setUp(self):
-        super(DeliveryStatsEndpointTest, self).setUp()
+        super(ProductReceivedStatsTest, self).setUp()
         self.setup_responses()
 
     def test_should_get_number_of_successful_deliveries(self):
@@ -130,30 +130,3 @@ class DeliveryStatsEndpointTest(AuthenticatedAPITestCase):
         non_response_node = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=60,
                                                 item=po_item)
         RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
-
-'''
-        - value NO-ISSUES
-        - percent NO-ISSUES/TV
-        - #of NO-ISSUES responses
-        - percent of NO-ISSUES/TQ
-
-        - value WITH-ISSUES
-        - percent WITH-ISSUES/TV
-        - #of WITH-ISSUES responses
-        - percent of WITH-ISSUES/TQ
-
-        - value NO-RESPONSE to Quality qn
-        - percent NO-RESPONSE/TV
-        - #of NO-RESPONSE responses
-        - percent of NO-RESPONSE/TQ
-
-        - value SATISFIED
-        - percent SATISFIED/TV
-        - #of SATISFIED responses
-        - percent of SATISFIED/TQ
-
-        - value NOT-SATISFIED
-        - percent NOT-SATISFIED/TV
-        - #of NOT-SATISFIED responses
-        - percent of NOT-SATISFIED/TQ
-    '''
