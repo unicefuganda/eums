@@ -75,6 +75,10 @@ class DistrictStatsEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
 
+    def test_should_get_number_of_unsuccessful_deliveries(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('numberOfUnSuccessfulProductDeliveries'), 3)
+
 
 '''
 'percentageOfSuccessfulDeliveries': Decimal('33.3'),

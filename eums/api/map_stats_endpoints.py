@@ -17,17 +17,26 @@ class DistrictStats(APIView):
         number_of_successful_product_deliveries = MultipleChoiceAnswer.objects.filter(
             question=self.was_product_received,
             value=self.product_was_received).filter(
-            Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
-        ).count()
+                Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
+            ).count()
         return number_of_successful_product_deliveries
+
+    def number_of_non_response_deliveries(self):
+        runs_with_answers = Run.objects.filter(multi_choice_answers__question=self.was_product_received)
+        return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).exclude(runs__in=runs_with_answers).count()
+
+    @staticmethod
+    def total_deliveries():
+        return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).count()
 
     def percent_successful_deliveries(self):
         successful_deliveries = self.number_of_successful_deliveries()
-        total_deliveries = Run.objects.filter(
-            Q(status=Run.STATUS.scheduled) | Q(status=Run.STATUS.completed),
-            runnable__track=True).count()
+        total_deliveries = self.total_deliveries()
         percent = Decimal(successful_deliveries) / total_deliveries * 100
         return round(percent, 1)
+
+    def number_of_unsuccessful_deliveries(self):
+        return self.total_deliveries() - self.number_of_successful_deliveries() - self.number_of_non_response_deliveries()
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
@@ -35,5 +44,6 @@ class DistrictStats(APIView):
         if consignee_type == DeliveryNode.END_USER:
             return Response({
                 'numberOfSuccessfulProductDeliveries': self.number_of_successful_deliveries(),
-                'percentageOfSuccessfulDeliveries': self.percent_successful_deliveries()
+                'percentageOfSuccessfulDeliveries': self.percent_successful_deliveries(),
+                'numberOfUnSuccessfulProductDeliveries': self.number_of_unsuccessful_deliveries()
             })
