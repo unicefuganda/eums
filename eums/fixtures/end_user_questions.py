@@ -3,12 +3,24 @@ from eums.models import MultipleChoiceQuestion, Option, TextQuestion, NumericQue
 WAS_PRODUCT_RECEIVED = None
 PRODUCT_WAS_RECEIVED = None
 PRODUCT_WAS_NOT_RECEIVED = None
+EU_DATE_RECEIVED = None
+EU_AMOUNT_RECEIVED = None
+EU_QUALITY_OF_PRODUCT = None
+EU_SATISFACTION = None
+EU_INFORMED_OF_DELAY = None
+EU_REVISED_DELIVERY_DATE = None
+EU_DISSATISFACTION_FEEDBACK = None
+EU_OPT_DAMAGED = None
+EU_OPT_GOOD = None
+EU_OPT_SATISFIED = None
+EU_OPT_NOT_SATISFIED = None
+EU_OPT_EXPIRED = None
 
 
 def seed_questions():
-    global WAS_PRODUCT_RECEIVED
-    global PRODUCT_WAS_RECEIVED
-    global PRODUCT_WAS_NOT_RECEIVED
+    global WAS_PRODUCT_RECEIVED, PRODUCT_WAS_RECEIVED, PRODUCT_WAS_NOT_RECEIVED, EU_DATE_RECEIVED, EU_AMOUNT_RECEIVED
+    global EU_QUALITY_OF_PRODUCT, EU_SATISFACTION, EU_INFORMED_OF_DELAY, EU_REVISED_DELIVERY_DATE, EU_OPT_EXPIRED
+    global EU_DISSATISFACTION_FEEDBACK, EU_OPT_DAMAGED, EU_OPT_GOOD, EU_OPT_SATISFIED, EU_OPT_NOT_SATISFIED
 
     end_user_flow, _ = Flow.objects.get_or_create(rapid_pro_id=2436, for_runnable_type=Runnable.END_USER)
 
@@ -20,59 +32,59 @@ def seed_questions():
     PRODUCT_WAS_RECEIVED, _ = Option.objects.get_or_create(text='Yes', question=WAS_PRODUCT_RECEIVED)
     PRODUCT_WAS_NOT_RECEIVED, _ = Option.objects.get_or_create(text='No', question=WAS_PRODUCT_RECEIVED)
 
-    eu_question_2, _ = TextQuestion.objects.get_or_create(
+    EU_DATE_RECEIVED, _ = TextQuestion.objects.get_or_create(
         uuids=['abc9c005-7a7c-44f8-b946-e970a361b6cf', '884ed6d8-1cef-4878-999d-bce7de85e27c'],
         text='What date was it received?', label='dateOfReceipt', flow=end_user_flow, position=2)
 
-    eu_question_3, _ = NumericQuestion.objects.get_or_create(
+    EU_AMOUNT_RECEIVED, _ = NumericQuestion.objects.get_or_create(
         uuids=['69de6032-f4de-412a-9c9e-ed98fb9bca93', '9af2907a-d3a6-41ee-8a12-0b3197d30baf'],
         text='How much was received?', label='amountReceived', flow=end_user_flow, position=3)
 
-    eu_question_4, _ = MultipleChoiceQuestion.objects.get_or_create(
+    EU_QUALITY_OF_PRODUCT, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['6c1cf92d-59b8-4bd3-815b-783abd3dfad9', 'fe368546-1b9c-4a15-926d-68b7caaa0380'],
         text='What is the quality of the product?', label='qualityOfProduct', flow=end_user_flow, position=4)
-    eu_q4_option_good, _ = Option.objects.get_or_create(text='Good', question=eu_question_4)
-    eu_q4_option_damaged, _ = Option.objects.get_or_create(text='Damaged', question=eu_question_4)
-    eu_q4_option_substandard, _ = Option.objects.get_or_create(text='Substandard', question=eu_question_4)
-    eu_q4_option_expired, _ = Option.objects.get_or_create(text='Expired', question=eu_question_4)
-    eu_q4_option_incomplete, _ = Option.objects.get_or_create(text='Incomplete', question=eu_question_4)
+    EU_OPT_GOOD, _ = Option.objects.get_or_create(text='Good', question=EU_QUALITY_OF_PRODUCT)
+    EU_OPT_DAMAGED, _ = Option.objects.get_or_create(text='Damaged', question=EU_QUALITY_OF_PRODUCT)
+    eu_q4_option_substandard, _ = Option.objects.get_or_create(text='Substandard', question=EU_QUALITY_OF_PRODUCT)
+    EU_OPT_EXPIRED, _ = Option.objects.get_or_create(text='Expired', question=EU_QUALITY_OF_PRODUCT)
+    eu_q4_option_incomplete, _ = Option.objects.get_or_create(text='Incomplete', question=EU_QUALITY_OF_PRODUCT)
     end_user_flow.end_nodes = [
-        [eu_question_4.id, eu_q4_option_damaged.id],
-        [eu_question_4.id, eu_q4_option_substandard.id],
-        [eu_question_4.id, eu_q4_option_expired.id],
-        [eu_question_4.id, eu_q4_option_incomplete.id]
+        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_DAMAGED.id],
+        [EU_QUALITY_OF_PRODUCT.id, eu_q4_option_substandard.id],
+        [EU_QUALITY_OF_PRODUCT.id, EU_OPT_EXPIRED.id],
+        [EU_QUALITY_OF_PRODUCT.id, eu_q4_option_incomplete.id]
     ]
     end_user_flow.save()
 
-    eu_question_5, _ = MultipleChoiceQuestion.objects.get_or_create(
+    EU_SATISFACTION, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['7a5c8f57-5c3f-4659-b717-0de556898157', 'dc27480e-4931-46a8-9bea-ad0dadbec1d8'],
         text='Are you satisfied with the product?', label='satisfiedWithProduct', flow=end_user_flow, position=5)
-    eu_q5_option_yes, _ = Option.objects.get_or_create(text='Yes', question=eu_question_5)
-    eu_q5_option_no, _ = Option.objects.get_or_create(text='No', question=eu_question_5)
-    end_user_flow.end_nodes.append([eu_question_5.id, eu_q5_option_yes.id])
+    EU_OPT_SATISFIED, _ = Option.objects.get_or_create(text='Yes', question=EU_SATISFACTION)
+    EU_OPT_NOT_SATISFIED, _ = Option.objects.get_or_create(text='No', question=EU_SATISFACTION)
+    end_user_flow.end_nodes.append([EU_SATISFACTION.id, EU_OPT_SATISFIED.id])
     end_user_flow.save()
 
-    eu_question_6, _ = MultipleChoiceQuestion.objects.get_or_create(
+    EU_INFORMED_OF_DELAY, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['18b2ea96-cb63-40d8-8c26-1985a944ff1c', '84150f15-b18b-4efa-be6b-ad24bc68a08f',
                '4e46a52d-8ea1-4bc4-824c-f8da74ce7ad0', '269aa1f7-7ca5-46f6-9bc0-6ad3fb7a5629'],
         text='Have you been informed of the delay?', label='informedOfDelay', flow=end_user_flow, position=6)
-    eu_q6_option_yes, _ = Option.objects.get_or_create(text='Yes', question=eu_question_6)
-    eu_q6_option_no, _ = Option.objects.get_or_create(text='No', question=eu_question_6)
-    end_user_flow.end_nodes.append([eu_question_6.id, eu_q6_option_no.id])
+    eu_q6_option_yes, _ = Option.objects.get_or_create(text='Yes', question=EU_INFORMED_OF_DELAY)
+    eu_q6_option_no, _ = Option.objects.get_or_create(text='No', question=EU_INFORMED_OF_DELAY)
+    end_user_flow.end_nodes.append([EU_INFORMED_OF_DELAY.id, eu_q6_option_no.id])
     end_user_flow.save()
 
-    eu_question_7, _ = TextQuestion.objects.get_or_create(
+    EU_REVISED_DELIVERY_DATE, _ = TextQuestion.objects.get_or_create(
         uuids=['e9c35020-e751-4611-b222-5573b7040c49', '3f5d290a-067d-4cb9-bb09-ed7c424a6abd'],
         text='What did the partner say is the revised delivery date?', label='revisedDeliveryDate',
         flow=end_user_flow, position=7)
-    end_user_flow.end_nodes.append([eu_question_7.id, Flow.NO_OPTION])
+    end_user_flow.end_nodes.append([EU_REVISED_DELIVERY_DATE.id, Flow.NO_OPTION])
     end_user_flow.save()
 
-    eu_question_8, _ = TextQuestion.objects.get_or_create(
+    EU_DISSATISFACTION_FEEDBACK, _ = TextQuestion.objects.get_or_create(
         uuids=['4dd1a813-27d4-4511-82e3-cc470fcd3baa'],
         text='Feedback about Dissatisfaction', label='feedbackAboutDissatisfaction',
         flow=end_user_flow, position=8)
-    end_user_flow.end_nodes.append([eu_question_8.id, Flow.NO_OPTION])
+    end_user_flow.end_nodes.append([EU_DISSATISFACTION_FEEDBACK.id, Flow.NO_OPTION])
     end_user_flow.save()
 
 

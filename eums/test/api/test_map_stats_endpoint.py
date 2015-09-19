@@ -10,6 +10,7 @@ from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'map-stats/'
 
+
 class DistrictStatsEndpointTest(AuthenticatedAPITestCase):
     @classmethod
     def setUpClass(cls):
