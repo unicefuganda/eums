@@ -1,6 +1,6 @@
 from decimal import Decimal
-
 from eums.fixtures.end_user_questions import *
+from eums.models import Run
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
@@ -21,57 +21,68 @@ class DistrictStatsEndpointTest(AuthenticatedAPITestCase):
         super(DistrictStatsEndpointTest, self).setUp()
         end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_one),
+            run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
             question=WAS_PRODUCT_RECEIVED,
             value=PRODUCT_WAS_RECEIVED
         )
 
-        end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_two),
+            run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
             question=WAS_PRODUCT_RECEIVED,
             value=PRODUCT_WAS_RECEIVED
         )
 
         end_user_node_three = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_three),
+            run=RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled),
             question=WAS_PRODUCT_RECEIVED,
             value=PRODUCT_WAS_NOT_RECEIVED
         )
 
-        end_user_node_four = DeliveryNodeFactory()
+        end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_four),
+            run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
             question=WAS_PRODUCT_RECEIVED,
             value=PRODUCT_WAS_NOT_RECEIVED
         )
 
         end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_five),
+            run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),
             question=WAS_PRODUCT_RECEIVED,
             value=PRODUCT_WAS_NOT_RECEIVED
         )
 
         non_response_node = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        RunFactory(runnable=non_response_node)
+        RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
 
-    # def test_should_get_counts_and_percentages_of_answers_to_product_received_question(self):
-    #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-    #     print '********************, data:', response.data
-    #     expected = {
-    #         'numberOfSuccessfulProductDeliveries': 2,
-    #         'percentageOfSuccessfulDeliveries': Decimal('33.3'),
-    #         'numberOfUnSuccessfulProductDeliveries': 3,
-    #         'percentageOfUnSuccessfulDeliveries': Decimal('50.0'),
-    #         'numberOfNonResponseToProductReceived': 1,
-    #         'percentageOfNonResponseToProductReceived': Decimal('16.7'),
-    #     }
-    #     self.assertDictContainsSubset(expected, response.data)
+    def test_should_get_number_of_successful_deliveries(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
+
+    def test_should_get_number_of_successful_deliveries_from_only_the_latest_scheduled_or_completed_runs(self):
+        canceled_run = RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.cancelled)
+        MultipleChoiceAnswerFactory(
+            run=canceled_run,
+            question=WAS_PRODUCT_RECEIVED,
+            value=PRODUCT_WAS_RECEIVED
+        )
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
+
+    def test_should_get_percentage_of_total_deliveries_that_were_successful(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
 
 
 '''
+'percentageOfSuccessfulDeliveries': Decimal('33.3'),
+            'numberOfUnSuccessfulProductDeliveries': 3,
+            'percentageOfUnSuccessfulDeliveries': Decimal('50.0'),
+            'numberOfNonResponseToProductReceived': 1,
+            'percentageOfNonResponseToProductReceived': Decimal('16.7'),
+
         - Total Value sent (TV)
 
         - total value received
