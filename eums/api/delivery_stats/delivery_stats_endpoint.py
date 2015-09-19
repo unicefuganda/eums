@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from eums.api.delivery_stats.quality_of_product_stats import QualityOfProductMixin
 from eums.api.delivery_stats.stats_structure import DeliveryStats
-from eums.api.delivery_stats.was_product_received_stats import get_product_received_basic_values
+from eums.api.delivery_stats.was_product_received_stats import get_product_received_base_query_sets
 from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable
 
 
@@ -65,27 +65,46 @@ class DeliveryStatsEndpoint(QualityOfProductMixin, APIView):
         return round(percent, 1)
 
     def _get_product_received_stats(self):
-        raw_stats = get_product_received_basic_values()
+        base_query_sets = get_product_received_base_query_sets()
+        return self._get_question_stats(base_query_sets)
+
+    def _get_question_stats(self, raw_stats):
         positive_count = raw_stats.positive_answers.count()
         non_response_count = self.end_user_nodes.exclude(run__id__in=raw_stats.runs_with_answers).distinct().count()
         negative_count = self.total_deliveries() - positive_count - non_response_count
 
-        percent_positive = self._percentage_of_total_deliveries(positive_count)
-        percent_negative = self._percentage_of_total_deliveries(negative_count)
-        percent_non_response = self._percentage_of_total_deliveries(non_response_count)
+        percent_negative, percent_non_response, percent_positive = self._get_count_percentages(
+            negative_count, non_response_count, positive_count)
 
-        value_positive = self._get_value(raw_stats.positive_answers) or 0
-        value_negative = self._get_value(raw_stats.negative_answers) or 0
-        value_non_response = self.total_delivery_value() - value_positive - value_negative
+        value_negative, value_non_response, value_positive = self._get_values(raw_stats)
 
+        percent_value_negative, percent_value_non_response, percent_value_positive = self._get_value_percentages(
+            value_negative, value_non_response, value_positive)
+
+        return DeliveryStats(
+            positive_count, negative_count, non_response_count,
+            percent_positive, percent_negative, percent_non_response,
+            value_positive, value_negative, value_non_response,
+            percent_value_positive, percent_value_negative, percent_value_non_response
+        )
+
+    def _get_value_percentages(self, value_negative, value_non_response, value_positive):
         percent_value_positive = self._percentage_of_total_value_delivered(value_positive)
         percent_value_negative = self._percentage_of_total_value_delivered(value_negative)
         percent_value_non_response = self._percentage_of_total_value_delivered(value_non_response)
+        return percent_value_negative, percent_value_non_response, percent_value_positive
 
-        return DeliveryStats(positive_count, negative_count, non_response_count,
-                             percent_positive, percent_negative, percent_non_response,
-                             value_positive, value_negative, value_non_response,
-                             percent_value_positive, percent_value_negative, percent_value_non_response)
+    def _get_values(self, raw_stats):
+        value_positive = self._get_value(raw_stats.positive_answers) or 0
+        value_negative = self._get_value(raw_stats.negative_answers) or 0
+        value_non_response = self.total_delivery_value() - value_positive - value_negative
+        return value_negative, value_non_response, value_positive
+
+    def _get_count_percentages(self, negative_count, non_response_count, positive_count):
+        percent_positive = self._percentage_of_total_deliveries(positive_count)
+        percent_negative = self._percentage_of_total_deliveries(negative_count)
+        percent_non_response = self._percentage_of_total_deliveries(non_response_count)
+        return percent_negative, percent_non_response, percent_positive
 
     def _get_value(self, answers):
         successful_delivery_runs = answers.values_list('run_id')

@@ -1,10 +1,10 @@
 from django.db.models import Q
 
-from eums.api.delivery_stats.stats_structure import RawStats
+from eums.api.delivery_stats.stats_structure import BaseQuerySets
 from eums.models import MultipleChoiceQuestion, Option, MultipleChoiceAnswer, Run, Runnable, Flow
 
 
-def get_product_received_basic_values():
+def get_product_received_base_query_sets():
     end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
     was_product_received = MultipleChoiceQuestion.objects.get(label='productReceived', flow=end_user_flow)
     product_was_received = Option.objects.get(text='Yes', question=was_product_received)
@@ -22,4 +22,4 @@ def get_product_received_basic_values():
     
     runs_with_answers = MultipleChoiceAnswer.objects.filter(question=was_product_received).values_list('run_id')
     
-    return RawStats(successful_delivery_answers, unsuccessful_delivery_answers, runs_with_answers)
+    return BaseQuerySets(successful_delivery_answers, unsuccessful_delivery_answers, runs_with_answers)
