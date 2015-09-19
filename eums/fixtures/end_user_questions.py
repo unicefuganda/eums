@@ -45,14 +45,14 @@ def seed_questions():
         text='What is the quality of the product?', label='qualityOfProduct', flow=end_user_flow, position=4)
     EU_OPT_GOOD, _ = Option.objects.get_or_create(text='Good', question=EU_QUALITY_OF_PRODUCT)
     EU_OPT_DAMAGED, _ = Option.objects.get_or_create(text='Damaged', question=EU_QUALITY_OF_PRODUCT)
-    eu_q4_option_substandard, _ = Option.objects.get_or_create(text='Substandard', question=EU_QUALITY_OF_PRODUCT)
+    eu_opt_substandard, _ = Option.objects.get_or_create(text='Substandard', question=EU_QUALITY_OF_PRODUCT)
     EU_OPT_EXPIRED, _ = Option.objects.get_or_create(text='Expired', question=EU_QUALITY_OF_PRODUCT)
-    eu_q4_option_incomplete, _ = Option.objects.get_or_create(text='Incomplete', question=EU_QUALITY_OF_PRODUCT)
+    eu_opt_incomplete, _ = Option.objects.get_or_create(text='Incomplete', question=EU_QUALITY_OF_PRODUCT)
     end_user_flow.end_nodes = [
         [EU_QUALITY_OF_PRODUCT.id, EU_OPT_DAMAGED.id],
-        [EU_QUALITY_OF_PRODUCT.id, eu_q4_option_substandard.id],
+        [EU_QUALITY_OF_PRODUCT.id, eu_opt_substandard.id],
         [EU_QUALITY_OF_PRODUCT.id, EU_OPT_EXPIRED.id],
-        [EU_QUALITY_OF_PRODUCT.id, eu_q4_option_incomplete.id]
+        [EU_QUALITY_OF_PRODUCT.id, eu_opt_incomplete.id]
     ]
     end_user_flow.save()
 
@@ -87,11 +87,17 @@ def seed_questions():
     end_user_flow.end_nodes.append([EU_DISSATISFACTION_FEEDBACK.id, Flow.NO_OPTION])
     end_user_flow.save()
 
-    return {'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED}, \
-           {
-               'PRODUCT_WAS_RECEIVED': PRODUCT_WAS_RECEIVED,
-               'PRODUCT_WAS_NOT_RECEIVED': PRODUCT_WAS_NOT_RECEIVED
-           }
+    questions = {'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED, 'QUALITY_OF_PRODUCT': EU_QUALITY_OF_PRODUCT}
+    options = {
+        'PRODUCT_WAS_RECEIVED': PRODUCT_WAS_RECEIVED,
+        'PRODUCT_WAS_NOT_RECEIVED': PRODUCT_WAS_NOT_RECEIVED,
+        'IN_GOOD_CONDITION': EU_OPT_GOOD,
+        'DAMAGED': EU_OPT_DAMAGED,
+        'SUB_STANDARD': eu_opt_substandard,
+        'EXPIRED': EU_OPT_EXPIRED,
+        'INCOMPLETE': eu_opt_incomplete
+    }
+    return questions, options
 
 
 seed_questions()
