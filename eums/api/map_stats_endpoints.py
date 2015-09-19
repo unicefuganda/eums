@@ -12,9 +12,14 @@ class DistrictStats(APIView):
         self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.was_product_received = MultipleChoiceQuestion.objects.get(label='productReceived', flow=self.end_user_flow)
         self.product_was_received = Option.objects.get(text='Yes', question=self.was_product_received)
+        self.product_was_not_received = Option.objects.get(text='No', question=self.was_product_received)
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.successful_delivery_answers = MultipleChoiceAnswer.objects.filter(
             question=self.was_product_received, value=self.product_was_received).filter(
+                Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
+            )
+        self.unsuccessful_delivery_answers = MultipleChoiceAnswer.objects.filter(
+            question=self.was_product_received, value=self.product_was_not_received).filter(
                 Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
             )
 
@@ -46,7 +51,9 @@ class DistrictStats(APIView):
                 'percentageOfNonResponseToProductReceived': self.percent_non_response_deliveries(),
                 'totalValueOfDeliveries': self.total_delivery_value(),
                 'totalValueOfSuccessfulDeliveries': self.total_successful_delivery_value(),
-                'percentageValueOfSuccessfulDeliveries': self.percentage_value_of_successful_deliveries()
+                'percentageValueOfSuccessfulDeliveries': self.percentage_value_of_successful_deliveries(),
+                'totalValueOfUnsuccessfulProductDeliveries': self.total_unsuccessful_delivery_value(),
+                'percentageValueOfUnsuccessfulDeliveries': self.percentage_value_of_unsuccessful_deliveries()
             })
 
     def percent_successful_deliveries(self):
@@ -82,3 +89,11 @@ class DistrictStats(APIView):
         total_delivery_value = self.total_delivery_value()
         percent = Decimal(quantity) / total_delivery_value * 100
         return round(percent, 1)
+
+    def total_unsuccessful_delivery_value(self):
+        unsuccessful_delivery_runs = self.unsuccessful_delivery_answers.values_list('run_id')
+        unsuccessful_nodes = self.end_user_nodes.filter(run__id__in=unsuccessful_delivery_runs)
+        return self._get_nodes_total_value(unsuccessful_nodes)
+
+    def percentage_value_of_unsuccessful_deliveries(self):
+        return self._percentage_of_total_value_delivered(self.total_unsuccessful_delivery_value())
