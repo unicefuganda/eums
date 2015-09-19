@@ -13,19 +13,18 @@ class DistrictStats(APIView):
         self.was_product_received = MultipleChoiceQuestion.objects.get(label='productReceived', flow=self.end_user_flow)
         self.product_was_received = Option.objects.get(text='Yes', question=self.was_product_received)
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
+        self.successful_delivery_answers = MultipleChoiceAnswer.objects.filter(
+            question=self.was_product_received, value=self.product_was_received).filter(
+                Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
+            )
 
     def number_of_successful_deliveries(self):
-        number_of_successful_product_deliveries = MultipleChoiceAnswer.objects.filter(
-            question=self.was_product_received,
-            value=self.product_was_received).filter(
-            Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
-        ).count()
-        return number_of_successful_product_deliveries
+        return self.successful_delivery_answers.count()
 
     def number_of_non_response_deliveries(self):
-        runs_with_answers = MultipleChoiceAnswer.objects.filter(question=self.was_product_received).values_list('run_id')
-        return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).exclude(
-            run__id__in=runs_with_answers).distinct().count()
+        runs_with_answers = MultipleChoiceAnswer.objects.filter(question=self.was_product_received).values_list(
+            'run_id')
+        return self.end_user_nodes.exclude(run__id__in=runs_with_answers).distinct().count()
 
     def total_deliveries(self):
         return self.end_user_nodes.count()
@@ -45,7 +44,8 @@ class DistrictStats(APIView):
                 'percentageOfUnsuccessfulDeliveries': self.percent_unsuccessful_deliveries(),
                 'numberOfNonResponseToProductReceived': self.number_of_non_response_deliveries(),
                 'percentageOfNonResponseToProductReceived': self.percent_non_response_deliveries(),
-                'totalValueOfDeliveries': self.total_delivery_value()
+                'totalValueOfDeliveries': self.total_delivery_value(),
+                'totalValueOfSuccessfulDeliveries': self.total_successful_delivery_value()
             })
 
     def percent_successful_deliveries(self):
@@ -63,6 +63,13 @@ class DistrictStats(APIView):
         return round(percent, 1)
 
     def total_delivery_value(self):
-        return self.end_user_nodes.aggregate(total_value=Sum('total_value'))['total_value']
+        return self._get_nodes_total_value(self.end_user_nodes)
 
+    def total_successful_delivery_value(self):
+        successful_delivery_runs = self.successful_delivery_answers.values_list('run_id')
+        successful_nodes = self.end_user_nodes.filter(run__id__in=successful_delivery_runs)
+        return self._get_nodes_total_value(successful_nodes)
 
+    @staticmethod
+    def _get_nodes_total_value(queryset):
+        return queryset.aggregate(total_value=Sum('total_value'))['total_value']

@@ -107,16 +107,10 @@ class DeliveryStatsEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 2100)
 
-        # def test_should_get_number_of_successful_deliveries_from_only_the_latest_scheduled_or_completed_runs(self):
-        # canceled_run = RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.cancelled)
-        #     MultipleChoiceAnswerFactory(
-        #         run=canceled_run,
-        #         question=WAS_PRODUCT_RECEIVED,
-        #         value=PRODUCT_WAS_RECEIVED
-        #     )
-        #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-        #     self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
-        #
+    def test_should_get_total_value_of_successful_deliveries(self):
+        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        self.assertEqual(response.data.get('totalValueOfSuccessfulDeliveries'), 300)
+
         # def test_should_get_percentage_of_total_deliveries_that_were_successful(self):
         #     response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         #     self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
