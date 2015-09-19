@@ -89,7 +89,7 @@ class DistrictStats(APIView):
 
     def _percentage_of_total_value_delivered(self, quantity):
         total_delivery_value = self.total_delivery_value()
-        percent = Decimal(quantity) / total_delivery_value * 100
+        percent = Decimal(quantity or 0) / total_delivery_value * 100
         return round(percent, 1)
 
     def total_unsuccessful_delivery_value(self):
@@ -101,7 +101,9 @@ class DistrictStats(APIView):
         return self._percentage_of_total_value_delivered(self.total_unsuccessful_delivery_value())
 
     def total_value_of_non_response_deliveries(self):
-        return self.total_delivery_value() - self.total_successful_delivery_value() - self.total_unsuccessful_delivery_value()
+        total_successful_delivery_value = self.total_successful_delivery_value() or 0
+        total_unsuccessful_delivery_value = self.total_unsuccessful_delivery_value() or 0
+        return self.total_delivery_value() - total_successful_delivery_value - total_unsuccessful_delivery_value
 
     def percentage_value_of_non_response_deliveries(self):
         return self._percentage_of_total_value_delivered(self.total_value_of_non_response_deliveries())
