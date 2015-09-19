@@ -379,6 +379,15 @@ class DeliveryNodeTest(TestCase):
         node = DeliveryNodeFactory(quantity=80, item=po_item)
         self.assertEqual(node.total_value, 800)
 
+    def test_should_set_total_value_on_multiple_parent_node_when_saved(self):
+        parent_one = DeliveryNodeFactory(quantity=100)
+        parent_two = DeliveryNodeFactory(quantity=100)
+        po_item = PurchaseOrderItemFactory(quantity=100, value=1000.0)
+
+        node = DeliveryNodeFactory(parents=[(parent_one, 50), (parent_two, 40)], item=po_item)
+
+        self.assertEqual(node.total_value, 900)
+
     def test_should_save_acknowledged_quantity(self):
         node = DeliveryNodeFactory(quantity=100, acknowledged=100)
         child = DeliveryNodeFactory(parents=[(node, 50)])
