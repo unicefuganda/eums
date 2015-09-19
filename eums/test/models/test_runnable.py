@@ -57,11 +57,11 @@ class RunnableTest(TestCase):
         numeric_question = NumericQuestionFactory(label='AmountReceived')
         item = SalesOrderItemFactory(item=salt, description='10 bags of salt')
 
-        salt_node = DeliveryNodeFactory(quantity=100, item=item)
+        salt_node = DeliveryNodeFactory(quantity=100, item=PurchaseOrderItemFactory(sales_order_item=item))
         run = RunFactory(runnable=salt_node, status='completed')
 
         sugar_item = SalesOrderItemFactory(item=sugar, description='10 bags of sugar')
-        sugar_node = DeliveryNodeFactory(quantity=100, item=sugar_item)
+        sugar_node = DeliveryNodeFactory(quantity=100, item=PurchaseOrderItemFactory(sales_order_item=sugar_item))
         sugar_run = RunFactory(runnable=sugar_node, status='completed')
 
         multiple_answer_one = MultipleChoiceAnswerFactory(run=run, question=multichoice_question, value=yes_option)

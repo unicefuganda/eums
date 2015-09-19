@@ -92,7 +92,7 @@ class NumericAnswer(Answer):
 
 
 class MultipleChoiceAnswer(Answer):
-    run = models.ForeignKey(Run, related_name="multi_choice_answers")
+    run = models.ForeignKey(Run)
     question = models.ForeignKey(MultipleChoiceQuestion, related_name='answers')
     value = models.ForeignKey(Option)
 

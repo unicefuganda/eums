@@ -22,19 +22,13 @@ class DistrictStats(APIView):
         return number_of_successful_product_deliveries
 
     def number_of_non_response_deliveries(self):
-        runs_with_answers = Run.objects.filter(multi_choice_answers__question=self.was_product_received)
+        runs_with_answers = MultipleChoiceAnswer.objects.filter(question=self.was_product_received).values_list('run_id')
         return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).exclude(
-            runs__in=runs_with_answers).count()
+            run__id__in=runs_with_answers).distinct().count()
 
     @staticmethod
     def total_deliveries():
         return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).count()
-
-    def percent_successful_deliveries(self):
-        successful_deliveries = self.number_of_successful_deliveries()
-        total_deliveries = self.total_deliveries()
-        percent = Decimal(successful_deliveries) / total_deliveries * 100
-        return round(percent, 1)
 
     def number_of_unsuccessful_deliveries(self):
         return self.total_deliveries() - self.number_of_successful_deliveries() - self.number_of_non_response_deliveries()
@@ -52,17 +46,18 @@ class DistrictStats(APIView):
                 'percentageOfNonResponseToProductReceived': self.percent_non_response_deliveries(),
             })
 
+    def percent_successful_deliveries(self):
+        return self._percentage_of_total_deliveries(self.number_of_successful_deliveries())
+
     def percent_unsuccessful_deliveries(self):
-        unsuccessful_deliveries = self.number_of_unsuccessful_deliveries()
-        total_deliveries = self.total_deliveries()
-        percent = Decimal(unsuccessful_deliveries) / total_deliveries * 100
-        return round(percent, 1)
+        return self._percentage_of_total_deliveries(self.number_of_unsuccessful_deliveries())
 
     def percent_non_response_deliveries(self):
-        non_response_deliveries = self.number_of_non_response_deliveries()
-        total_deliveries = self.total_deliveries()
-        percent = Decimal(non_response_deliveries) / total_deliveries * 100
-        return round(percent, 1)
+        return self._percentage_of_total_deliveries(self.number_of_non_response_deliveries())
 
+    def _percentage_of_total_deliveries(self, quantity):
+        total_deliveries = self.total_deliveries()
+        percent = Decimal(quantity) / total_deliveries * 100
+        return round(percent, 1)
 
 

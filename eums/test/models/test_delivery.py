@@ -45,11 +45,11 @@ class DeliveryTest(TestCase):
             self.assertTrue(hasattr(delivery, expected_field))
 
     def test_should_compute_total_value_delivered_from_order_item_values(self):
-        self.assertEqual(self.delivery.total_value(), 280)
+        self.assertEqual(self.delivery.total_value, 280)
 
     def test_should_ignore_child_nodes_value_when_computing_total_value(self):
         DeliveryNodeFactory(parents=[(self.node_one, 10)], item=self.po_item_one, distribution_plan=self.delivery)
-        self.assertEqual(self.delivery.total_value(), 280)
+        self.assertEqual(self.delivery.total_value, 280)
 
     def test_should_return_false_when_delivery_is_not_received(self):
         delivery = DeliveryFactory()

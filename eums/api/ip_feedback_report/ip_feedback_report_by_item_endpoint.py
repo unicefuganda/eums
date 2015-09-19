@@ -71,7 +71,7 @@ def build_answers_for_nodes(delivery, nodes, response):
             'order_number': node.item.number(),
             'date_of_receipt': date_of_receipt,
             'quantity_shipped': node.quantity_in(),
-            'value': node.total_value(),
+            'value': node.total_value,
             'answers': _filter_answers_by_id(node_answers, node.id)
         })
 

@@ -14,6 +14,7 @@ class DistributionPlanNode(Runnable):
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)
     acknowledged = models.IntegerField(null=True, blank=True, default=0)
+    total_value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     parents = None
     quantity = None
     objects = DeliveryNodeManager()
@@ -33,8 +34,11 @@ class DistributionPlanNode(Runnable):
         else:
             self.balance = self.quantity_in() - self.quantity_out()
 
+        self.total_value = self._get_total_value()
+
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())
+
 
     def assign_ip(self):
         parent = self._parents().first()
@@ -138,5 +142,5 @@ class DistributionPlanNode(Runnable):
             return Flow.objects.get(for_runnable_type=self.tree_position)
         return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
 
-    def total_value(self):
+    def _get_total_value(self):
         return self.item.unit_value() * self.quantity_in()

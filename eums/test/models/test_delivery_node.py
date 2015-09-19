@@ -30,15 +30,12 @@ class DeliveryNodeTest(TestCase):
         self.clean_up()
 
     def test_should_create_itself_with_any_type_of_order_item(self):
-        sales_order_item = SalesOrderItemFactory()
         purchase_order_item = PurchaseOrderItemFactory()
         release_order_item = ReleaseOrderItemFactory()
 
-        node_with_so_item = DeliveryNodeFactory(item=sales_order_item)
         node_with_po_item = DeliveryNodeFactory(item=purchase_order_item)
         node_with_ro_item = DeliveryNodeFactory(item=release_order_item)
 
-        self.assertEqual(DeliveryNode.objects.get(item=sales_order_item), node_with_so_item)
         self.assertEqual(DeliveryNode.objects.get(item=purchase_order_item), node_with_po_item)
         self.assertEqual(DeliveryNode.objects.get(item=release_order_item), node_with_ro_item)
 
@@ -377,6 +374,11 @@ class DeliveryNodeTest(TestCase):
         child_two.delete()
         self.assertEqual(DeliveryNode.objects.get(id=node.id).balance, 50)
 
+    def test_should_set_total_value_on_single_parent_node_when_saved(self):
+        po_item = PurchaseOrderItemFactory(quantity=100, value=1000.0)
+        node = DeliveryNodeFactory(quantity=80, item=po_item)
+        self.assertEqual(node.total_value, 800)
+
     def test_should_save_acknowledged_quantity(self):
         node = DeliveryNodeFactory(quantity=100, acknowledged=100)
         child = DeliveryNodeFactory(parents=[(node, 50)])
@@ -490,5 +492,5 @@ class DeliveryNodeTest(TestCase):
         node_one = DeliveryNodeFactory(item=po_item_one, quantity=50)
         node_two = DeliveryNodeFactory(item=po_item_two, quantity=50)
 
-        self.assertEqual(node_one.total_value(), 100)
-        self.assertEqual(node_two.total_value(), 300)
+        self.assertEqual(node_one.total_value, 100)
+        self.assertEqual(node_two.total_value, 300)

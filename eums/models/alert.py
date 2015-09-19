@@ -28,7 +28,7 @@ class Alert(models.Model):
         return self.ISSUE_TYPES[self.issue]
 
     def total_value(self):
-        return self.runnable.total_value()
+        return self.runnable.total_value
 
     def quantity_delivered(self):
         if isinstance(self.runnable, DistributionPlanNode):

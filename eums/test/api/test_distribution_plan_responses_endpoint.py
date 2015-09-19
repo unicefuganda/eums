@@ -4,6 +4,7 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, NumericQuestionFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -19,7 +20,8 @@ class DistributionPlanResponsesEndpointTest(AuthenticatedAPITestCase):
         salt = ItemFactory(description='Salt')
 
         sales_order = SalesOrderFactory()
-        item = SalesOrderItemFactory(item=salt, description='10 bags of salt', sales_order=sales_order)
+        sales_order_item = SalesOrderItemFactory(item=salt, description='10 bags of salt', sales_order=sales_order)
+        item = PurchaseOrderItemFactory(sales_order_item=sales_order_item)
 
         node = DeliveryNodeFactory(quantity=100, item=item)
         child_node_one = DeliveryNodeFactory(parents=[(node, 50)], item=item)

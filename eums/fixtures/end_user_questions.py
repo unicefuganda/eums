@@ -87,5 +87,11 @@ def seed_questions():
     end_user_flow.end_nodes.append([EU_DISSATISFACTION_FEEDBACK.id, Flow.NO_OPTION])
     end_user_flow.save()
 
+    return {'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED}, \
+           {
+               'PRODUCT_WAS_RECEIVED': PRODUCT_WAS_RECEIVED,
+               'PRODUCT_WAS_NOT_RECEIVED': PRODUCT_WAS_NOT_RECEIVED
+           }
+
 
 seed_questions()

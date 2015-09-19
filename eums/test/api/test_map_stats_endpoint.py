@@ -1,4 +1,3 @@
-from decimal import Decimal
 from eums.fixtures.end_user_questions import *
 from eums.models import Run
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -12,50 +11,12 @@ ENDPOINT_URL = BACKEND_URL + 'map-stats/'
 
 
 class DistrictStatsEndpointTest(AuthenticatedAPITestCase):
-    @classmethod
-    def setUpClass(cls):
-        super(DistrictStatsEndpointTest, cls).setUpClass()
-        seed_questions()
+    def tearDown(self):
+        DeliveryNode.objects.all().delete()
 
     def setUp(self):
         super(DistrictStatsEndpointTest, self).setUp()
-        end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
-            question=WAS_PRODUCT_RECEIVED,
-            value=PRODUCT_WAS_RECEIVED
-        )
-
-        self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
-            question=WAS_PRODUCT_RECEIVED,
-            value=PRODUCT_WAS_RECEIVED
-        )
-
-        end_user_node_three = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled),
-            question=WAS_PRODUCT_RECEIVED,
-            value=PRODUCT_WAS_NOT_RECEIVED
-        )
-
-        end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
-            question=WAS_PRODUCT_RECEIVED,
-            value=PRODUCT_WAS_NOT_RECEIVED
-        )
-
-        end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),
-            question=WAS_PRODUCT_RECEIVED,
-            value=PRODUCT_WAS_NOT_RECEIVED
-        )
-
-        non_response_node = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
-        RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
+        self.setup_responses()
 
     def test_should_get_number_of_successful_deliveries(self):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
@@ -90,6 +51,45 @@ class DistrictStatsEndpointTest(AuthenticatedAPITestCase):
     def test_should_get_percentage_of_non_responses_to_product_received_question(self):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageOfNonResponseToProductReceived'), 16.7)
+
+    def setup_responses(self):
+        DeliveryNode.objects.all().delete()
+        MultipleChoiceQuestion.objects.all().delete()
+
+        questions, options = seed_questions()
+
+        end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        MultipleChoiceAnswerFactory(
+            run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
+            question=questions['WAS_PRODUCT_RECEIVED'],
+            value=options['PRODUCT_WAS_RECEIVED']
+        )
+        self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        MultipleChoiceAnswerFactory(
+            run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
+            question=questions['WAS_PRODUCT_RECEIVED'],
+            value=options['PRODUCT_WAS_RECEIVED']
+        )
+        end_user_node_three = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        MultipleChoiceAnswerFactory(
+            run=RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled),
+            question=questions['WAS_PRODUCT_RECEIVED'],
+            value=options['PRODUCT_WAS_NOT_RECEIVED']
+        )
+        end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        MultipleChoiceAnswerFactory(
+            run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
+            question=questions['WAS_PRODUCT_RECEIVED'],
+            value=options['PRODUCT_WAS_NOT_RECEIVED']
+        )
+        end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        MultipleChoiceAnswerFactory(
+            run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),
+            question=questions['WAS_PRODUCT_RECEIVED'],
+            value=options['PRODUCT_WAS_NOT_RECEIVED']
+        )
+        non_response_node = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True)
+        RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
 
 
 '''
