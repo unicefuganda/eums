@@ -45,7 +45,8 @@ class DistrictStats(APIView):
                 'numberOfNonResponseToProductReceived': self.number_of_non_response_deliveries(),
                 'percentageOfNonResponseToProductReceived': self.percent_non_response_deliveries(),
                 'totalValueOfDeliveries': self.total_delivery_value(),
-                'totalValueOfSuccessfulDeliveries': self.total_successful_delivery_value()
+                'totalValueOfSuccessfulDeliveries': self.total_successful_delivery_value(),
+                'percentageValueOfSuccessfulDeliveries': self.percentage_value_of_successful_deliveries()
             })
 
     def percent_successful_deliveries(self):
@@ -73,3 +74,11 @@ class DistrictStats(APIView):
     @staticmethod
     def _get_nodes_total_value(queryset):
         return queryset.aggregate(total_value=Sum('total_value'))['total_value']
+
+    def percentage_value_of_successful_deliveries(self):
+        return self._percentage_of_total_value_delivered(self.total_successful_delivery_value())
+
+    def _percentage_of_total_value_delivered(self, quantity):
+        total_delivery_value = self.total_delivery_value()
+        percent = Decimal(quantity) / total_delivery_value * 100
+        return round(percent, 1)
