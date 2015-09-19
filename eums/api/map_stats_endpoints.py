@@ -1,5 +1,5 @@
 from decimal import Decimal
-from django.db.models import Q
+from django.db.models import Q, Sum
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from eums.models import DistributionPlanNode as DeliveryNode, MultipleChoiceQuestion, Flow, Runnable, Option, \
@@ -12,6 +12,7 @@ class DistrictStats(APIView):
         self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.was_product_received = MultipleChoiceQuestion.objects.get(label='productReceived', flow=self.end_user_flow)
         self.product_was_received = Option.objects.get(text='Yes', question=self.was_product_received)
+        self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
 
     def number_of_successful_deliveries(self):
         number_of_successful_product_deliveries = MultipleChoiceAnswer.objects.filter(
@@ -26,9 +27,8 @@ class DistrictStats(APIView):
         return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).exclude(
             run__id__in=runs_with_answers).distinct().count()
 
-    @staticmethod
-    def total_deliveries():
-        return DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True).count()
+    def total_deliveries(self):
+        return self.end_user_nodes.count()
 
     def number_of_unsuccessful_deliveries(self):
         return self.total_deliveries() - self.number_of_successful_deliveries() - self.number_of_non_response_deliveries()
@@ -38,12 +38,14 @@ class DistrictStats(APIView):
 
         if consignee_type == DeliveryNode.END_USER:
             return Response({
+                'totalNumberOfDeliveries': self.total_deliveries(),
                 'numberOfSuccessfulProductDeliveries': self.number_of_successful_deliveries(),
                 'percentageOfSuccessfulDeliveries': self.percent_successful_deliveries(),
                 'numberOfUnsuccessfulProductDeliveries': self.number_of_unsuccessful_deliveries(),
                 'percentageOfUnsuccessfulDeliveries': self.percent_unsuccessful_deliveries(),
                 'numberOfNonResponseToProductReceived': self.number_of_non_response_deliveries(),
                 'percentageOfNonResponseToProductReceived': self.percent_non_response_deliveries(),
+                'totalValueOfDeliveries': self.total_delivery_value()
             })
 
     def percent_successful_deliveries(self):
@@ -59,5 +61,8 @@ class DistrictStats(APIView):
         total_deliveries = self.total_deliveries()
         percent = Decimal(quantity) / total_deliveries * 100
         return round(percent, 1)
+
+    def total_delivery_value(self):
+        return self.end_user_nodes.aggregate(total_value=Sum('total_value'))['total_value']
 
 
