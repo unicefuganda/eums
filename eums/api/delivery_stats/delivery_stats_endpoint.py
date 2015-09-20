@@ -20,8 +20,12 @@ class DeliveryStatsEndpoint(APIView):
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
+        location = request.GET.get('location')
 
-        product_received_stats = self._get_product_received_stats()
+        if location:
+            self.end_user_nodes = self.end_user_nodes.filter(location=location)
+
+        product_received_stats = self._get_product_received_stats(location=location)
         quality_of_product_stats = self._get_quality_of_product_stats()
         satisfied_with_product_stats = self._get_satisfied_with_product_stats()
 
@@ -85,8 +89,8 @@ class DeliveryStatsEndpoint(APIView):
     def total_delivery_value(self):
         return self._get_nodes_total_value(self.end_user_nodes)
 
-    def _get_product_received_stats(self):
-        base_query_sets = get_product_received_base_query_sets()
+    def _get_product_received_stats(self, location):
+        base_query_sets = get_product_received_base_query_sets(location=location)
         return self._get_question_stats(base_query_sets)
 
     def _get_quality_of_product_stats(self):
