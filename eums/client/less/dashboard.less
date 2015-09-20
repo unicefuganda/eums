@@ -15,20 +15,21 @@
 }
 
 .view-thumbnail {
-  position: absolute;
-  width: 50px;
-  height: 50px;
-  z-index: 20000;
-  left: 290px;
-  bottom: 10px;
-  background-color: white;
-  box-shadow: 0 0 5px #6D6D6D;
-  border-radius: 2px;
-  padding: 5px;
+    position: absolute;
+    width: 34px;
+    height: 35px;
+    z-index: 20000;
+    left: 320px;
+    top: 115px;
+    background-color: white;
+    box-shadow: 0 1px 5px #888888;
+    border: 1px solid @brand-primary;
+    border-radius: 2px;
+    padding: 5px;
 
-  img {
-    width: 40px;
-  }
+    img {
+      width: 25px;
+    }
 }
 
 #summary-panel {
@@ -57,9 +58,9 @@
 
 #marker-summary {
   position: absolute;
-  top: 10px;
-  right: 15px;
   width: 280px;
+  top: 25px;
+  right: 25px;
 }
 
 #marker-summary button.close {
@@ -162,10 +163,12 @@
   z-index: 1000;
   position: absolute;
   width: 274px;
-  height: inherit;
   background: white;
   border: 1px solid @brand-primary;
+  border-radius: 7px;
+  box-shadow: 4px 4px 7px #888888;
   opacity: 0.9;
+  margin: 25px;
 }
 
 .filter-panel .close-panel {

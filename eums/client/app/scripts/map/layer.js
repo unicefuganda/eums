@@ -76,7 +76,7 @@ angular.module('map.layers', ['Delivery'])
                 changeGlobalStats(layerName, responses, scope);
                 showResponsesForDistrict(layerName, responses, scope);
                 map.fitBounds(layer.getBounds());
-                window.map.addCustomZoomControl();
+                //window.map.addCustomZoomControl();
             };
             this.setStyle = function (style) {
                 layerStyle = style;

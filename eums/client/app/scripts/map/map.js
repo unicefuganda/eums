@@ -352,42 +352,6 @@
             }
         }
     })
-        .directive('panel', function () {
-        return {
-            scope: true,
-            link: function (scope, element, attrs) {
-                scope.expanded = true;
-
-                var expandAnimation = JSON.parse(attrs.panelExpand);
-                var collapseAnimation = JSON.parse(attrs.panelCollapse);
-                var panel = $(element);
-
-                var togglePanel = function () {
-                    var $closePanel = $('.close-panel span'),
-                        zoomControl = $('.leaflet-control-zoom');
-                    if (scope.expanded) {
-                        panel.animate(collapseAnimation);
-                        scope.expanded = false;
-                        $closePanel.removeClass("glyphicon-chevron-down");
-                        $closePanel.addClass("glyphicon-chevron-up");
-                        zoomControl.addClass('leaflet-control-zoom-left');
-                        zoomControl.removeClass('leaflet-control-zoom');
-
-                    } else {
-                        panel.animate(expandAnimation);
-                        scope.expanded = true;
-                        $('.leaflet-control-zoom-left').addClass('leaflet-control-zoom');
-                        $closePanel.removeClass("glyphicon-chevron-up");
-                        $closePanel.addClass("glyphicon-chevron-down");
-                    }
-                    return false;
-                };
-                $(".close-panel").click(function () {
-                    togglePanel();
-                });
-            }
-        }
-    })
         .directive('mapFilter', function () {
         return {
             restrict: 'E',

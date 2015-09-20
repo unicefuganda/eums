@@ -16,8 +16,8 @@ describe('Home Page', function () {
         it('should get global stats on map', function () {
             expect(homePage.mapLocation).toEqual('');
             expect(homePage.numberSent).toEqual('$76,500.00');
-            expect(homePage.numberDelivered).toEqual('$32,700.00');
-            expect(homePage.numberNotDelivered).toEqual('57%');
+            expect(homePage.numberDelivered).toEqual('$47,400.00');
+            expect(homePage.numberNotDelivered).toEqual('38%');
         });
 
         it('should click on wakiso district', function () {
@@ -39,7 +39,7 @@ describe('Home Page', function () {
         it('should highlight a layer', function () {
             homePage.highLightMapLayer('wakiso');
             expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
-            expect(homePage.getHighlightedStyle('wakiso')).toEqual({ fillColor: '#FDAE61', fillOpacity: 0.6, weight: 1 });
+            expect(homePage.getHighlightedStyle('wakiso')).toEqual({ fillColor: '#FDAE61', fillOpacity: 1, weight: 1.5 });
         });
 
         it('responses panel should have a link to more details', function () {
@@ -84,7 +84,7 @@ describe('Home Page', function () {
         it('should unzoom when the zoom out icon is clicked', function () {
             homePage.clickMapLayer('wakiso');
             homePage.clickZoomOutIcon();
-            expect(homePage.getMapZoomLevel()).toBe(7);
+            expect(homePage.getMapZoomLevel()).toBe(7.25);
             expect(homePage.numberSent).toEqual('$76,500.00');
             expect(homePage.numberDelivered).toEqual('$32,700.00');
             expect(homePage.numberNotDelivered).toEqual('57%');

@@ -54,6 +54,7 @@ homePage.prototype = Object.create({}, {
         browser.executeScript(function (district) {
             window.map.clickLayer(district);
         }, district);
+        browser.sleep(2000);
     }},
 
     highLightMapLayer: { value: function (district) {
