@@ -471,9 +471,9 @@
                         var layerName = scope.data.district;
                         //TODO: refactor this, to use same function with district on click
                         (function showResponsesForDistrict() {
-                            var allResponses = DeliveryService.orderResponsesByDate(scope.allResponsesMap, scope.data.district);
-                            scope.data.responses = allResponses.slice(0, 5);
+                            scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
                             scope.data.district = layerName;
+                            console.log(scope.data.responses);
                         })();
                     }
                 });

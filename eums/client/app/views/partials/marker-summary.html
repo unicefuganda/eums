@@ -1,27 +1,29 @@
-<div ng-show="data.responses" id='marker-summary' class="table-responsive map-summary">
+<div ng-show="data.district" id='marker-summary' class="table-responsive map-summary">
     <div class="map-summary-header centered">
         <span class="sub-header title">Latest Deliveries to {{ data.district }}</span>
-        <button type="button" class="close" ng-click="hideMapMarkerDetails()">
-            <span aria-hidden="true" class="blue-unicef">&times;</span>
-        </button>
     </div>
-    <ul class="list-group margin-bottom-none">
-        <li href="#" class="list-group-item border-none" ng-repeat="response in data.responses">
-            <h6 class="list-group-item-heading response-item-font-weight">{{ response.item }}</h6>
+    <div ng-show="data.responses">
+        <ul class="list-group">
+            <li href="#" class="list-group-item border-none" ng-repeat="response in data.responses">
+                <h6 class="list-group-item-heading response-item-font-weight">{{ response.item }}</h6>
 
-            <p class="list-group-item-text">
-                <span class="label label-primary text-uppercase"> {{ response.amountSent }} Sent</span>
+                <p class="list-group-item-text">
+                    <span class="label label-primary text-uppercase"> {{ response.amountSent }} Sent</span>
                 <span ng-show="response.amountReceived"
                       class="label label-default text-uppercase"> {{ response.amountReceived }} Received</span>
                 <span ng-show="response.qualityOfProduct"
-                      class="label {{ response.qualityOfProduct.toLowerCase() }} text-uppercase"> {{ response.qualityOfProduct }} </span>
-            </p>
-        </li>
-
-        <li class="centered list-group-item border-none">
-            <button  ng-click="showDetailedResponses()" id="response-page-btn" type="button"
-                    class="btn btn-default btn-xs blue-border-button"><span class="glyphicon glyphicon-new-window"></span> View District Responses
-            </button>
-        </li>
-    </ul>
+                      class="label {{ response.qualityOfProduct.toLowerCase()}} text-uppercase"> {{ response.qualityOfProduct }} </span>
+                </p>
+            </li>
+        </ul>
+    </div>
+    <div ng-hide="data.responses" class="centered pad-10">
+        No deliveries made to this district.
+    </div>
+    <div class="centered margin-bottom-none pad-10 border-none">
+        <button ng-click="showDetailedResponses()" id="response-page-btn" type="button"
+                class="btn btn-default btn-xs blue-border-button pad-5"><span class="glyphicon glyphicon-new-window"></span>
+            View District Responses
+        </button>
+    </div>
 </div>
