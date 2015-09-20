@@ -93,16 +93,3 @@ class QualityOfProductStatsTest(AuthenticatedAPITestCase):
         non_response_node = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER,
                                                 track=True, quantity=60, item=po_item)
         RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
-
-
-'''
-        - value SATISFIED
-        - percent SATISFIED/TV
-        - #of SATISFIED responses
-        - percent of SATISFIED/TQ
-
-        - value NOT-SATISFIED
-        - percent NOT-SATISFIED/TV
-        - #of NOT-SATISFIED responses
-        - percent of NOT-SATISFIED/TQ
-    '''

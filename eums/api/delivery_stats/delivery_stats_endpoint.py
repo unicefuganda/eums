@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from rest_framework.views import APIView
 from eums.api.delivery_stats.quality_of_product_stats import get_quality_of_product_base_query_sets
+from eums.api.delivery_stats.satisfied_with_product_stats import get_satisfied_with_product_base_query_sets
 
 from eums.api.delivery_stats.stats_structure import DeliveryStats
 from eums.api.delivery_stats.was_product_received_stats import get_product_received_base_query_sets
@@ -22,6 +23,7 @@ class DeliveryStatsEndpoint(APIView):
 
         product_received_stats = self._get_product_received_stats()
         quality_of_product_stats = self._get_quality_of_product_stats()
+        satisfied_with_product_stats = self._get_satisfied_with_product_stats()
 
         if consignee_type == DeliveryNode.END_USER:
             return Response({
@@ -59,6 +61,22 @@ class DeliveryStatsEndpoint(APIView):
                 'percentageValueOfDeliveriesInGoodOrder': quality_of_product_stats.percent_value_positive,
                 'percentageValueOfDeliveriesInBadOrder': quality_of_product_stats.percent_value_negative,
                 'percentageValueOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_value_non_response,
+
+                'numberOfSatisfactoryDeliveries': satisfied_with_product_stats.count_positive,
+                'numberOfUnsatisfactoryDeliveries': satisfied_with_product_stats.count_negative,
+                'numberOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.count_non_response,
+
+                'percentageOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_positive,
+                'percentageOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_negative,
+                'percentageOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_non_response,
+
+                'totalValueOfSatisfactoryDeliveries': satisfied_with_product_stats.value_positive,
+                'totalValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.value_negative,
+                'totalValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.value_non_response,
+
+                'percentageValueOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_value_positive,
+                'percentageValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_value_negative,
+                'percentageValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_non_response,
             })
 
     def total_deliveries(self):
@@ -73,6 +91,10 @@ class DeliveryStatsEndpoint(APIView):
 
     def _get_quality_of_product_stats(self):
         base_query_sets = get_quality_of_product_base_query_sets()
+        return self._get_question_stats(base_query_sets)
+
+    def _get_satisfied_with_product_stats(self):
+        base_query_sets = get_satisfied_with_product_base_query_sets()
         return self._get_question_stats(base_query_sets)
 
     def _get_question_stats(self, raw_stats):

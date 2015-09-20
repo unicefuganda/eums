@@ -87,7 +87,11 @@ def seed_questions():
     end_user_flow.end_nodes.append([EU_DISSATISFACTION_FEEDBACK.id, Flow.NO_OPTION])
     end_user_flow.save()
 
-    questions = {'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED, 'QUALITY_OF_PRODUCT': EU_QUALITY_OF_PRODUCT}
+    questions = {
+        'WAS_PRODUCT_RECEIVED': WAS_PRODUCT_RECEIVED,
+        'QUALITY_OF_PRODUCT': EU_QUALITY_OF_PRODUCT,
+        'SATISFACTION_WITH_PRODUCT': EU_SATISFACTION
+    }
     options = {
         'PRODUCT_WAS_RECEIVED': PRODUCT_WAS_RECEIVED,
         'PRODUCT_WAS_NOT_RECEIVED': PRODUCT_WAS_NOT_RECEIVED,
@@ -95,7 +99,9 @@ def seed_questions():
         'DAMAGED': EU_OPT_DAMAGED,
         'SUB_STANDARD': eu_opt_substandard,
         'EXPIRED': EU_OPT_EXPIRED,
-        'INCOMPLETE': eu_opt_incomplete
+        'INCOMPLETE': eu_opt_incomplete,
+        'SATISFIED': EU_OPT_SATISFIED,
+        'NOT_SATISFIED': EU_OPT_NOT_SATISFIED
     }
     return questions, options
 

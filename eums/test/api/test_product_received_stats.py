@@ -34,19 +34,19 @@ class ProductReceivedStatsTest(AuthenticatedAPITestCase):
     def test_should_product_received_question_stats(self):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
 
-        self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
-        self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
-        self.assertEqual(response.data.get('numberOfUnsuccessfulProductDeliveries'), 3)
-        self.assertEqual(response.data.get('percentageOfUnsuccessfulDeliveries'), 50)
-        self.assertEqual(response.data.get('numberOfNonResponseToProductReceived'), 1)
-        self.assertEqual(response.data.get('percentageOfNonResponseToProductReceived'), 16.7)
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 2100)
+        self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
+        self.assertEqual(response.data.get('numberOfUnsuccessfulProductDeliveries'), 3)
+        self.assertEqual(response.data.get('numberOfNonResponseToProductReceived'), 1)
+        self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
+        self.assertEqual(response.data.get('percentageOfUnsuccessfulDeliveries'), 50)
+        self.assertEqual(response.data.get('percentageOfNonResponseToProductReceived'), 16.7)
         self.assertEqual(response.data.get('totalValueOfSuccessfulDeliveries'), 300)
-        self.assertEqual(response.data.get('percentageValueOfSuccessfulDeliveries'), 14.3)
         self.assertEqual(response.data.get('totalValueOfUnsuccessfulProductDeliveries'), 1200)
-        self.assertEqual(response.data.get('percentageValueOfUnsuccessfulDeliveries'), 57.1)
         self.assertEqual(response.data.get('totalValueOfNonResponseToProductReceived'), 600)
+        self.assertEqual(response.data.get('percentageValueOfSuccessfulDeliveries'), 14.3)
+        self.assertEqual(response.data.get('percentageValueOfUnsuccessfulDeliveries'), 57.1)
         self.assertEqual(response.data.get('percentageValueOfNonResponseToProductReceived'), 28.6)
 
     def setup_responses(self):
