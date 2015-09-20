@@ -13,7 +13,7 @@ describe('Home Page', function () {
             loginPage.loginAs('admin', 'admin');
         });
 
-        it('should get global stats on map', function () {
+        xit('should get global stats on map', function () {
             expect(homePage.mapLocation).toEqual('');
             expect(homePage.numberSent).toEqual('$76,500.00');
             expect(homePage.numberDelivered).toEqual('$47,400.00');
