@@ -1,6 +1,6 @@
 from eums.fixtures.end_user_questions import *
-from eums.models import Run, Question
-from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.models import Run
+from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -11,13 +11,7 @@ from eums.test.factories.run_factory import RunFactory
 ENDPOINT_URL = BACKEND_URL + 'delivery-stats/'
 
 
-class ProductReceivedStatsTest(AuthenticatedAPITestCase):
-    @classmethod
-    def tearDownClass(cls):
-        Flow.objects.all().delete()
-        DeliveryNode.objects.all().delete()
-        Question.objects.all().delete()
-
+class ProductReceivedStatsTest(DeliveryStatsTestCase):
     def setUp(self):
         super(ProductReceivedStatsTest, self).setUp()
         self.setup_responses()
