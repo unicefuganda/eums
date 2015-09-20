@@ -142,14 +142,14 @@ class DeliveryStatsEndpoint(APIView):
 
     @staticmethod
     def _get_nodes_total_value(queryset):
-        return queryset.aggregate(total_value=Sum('total_value'))['total_value']
+        return queryset.aggregate(total_value=Sum('total_value'))['total_value'] or 0
 
     def _percentage_of_total_deliveries(self, quantity):
         total_deliveries = self.total_deliveries()
-        percent = Decimal(quantity) / total_deliveries * 100
+        percent = Decimal(quantity) / (total_deliveries or 1) * 100
         return round(percent, 1)
 
     def _percentage_of_total_value_delivered(self, quantity):
         total_delivery_value = self.total_delivery_value()
-        percent = Decimal(quantity or 0) / total_delivery_value * 100
+        percent = Decimal(quantity or 0) / (total_delivery_value or 1) * 100
         return round(percent, 1)
