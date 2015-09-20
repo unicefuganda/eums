@@ -14,6 +14,7 @@ ENDPOINT_URL = BACKEND_URL + 'map-stats/'
 class ProductReceivedStatsTest(AuthenticatedAPITestCase):
     @classmethod
     def tearDownClass(cls):
+        Flow.objects.all().delete()
         DeliveryNode.objects.all().delete()
         Question.objects.all().delete()
 
