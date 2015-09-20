@@ -19,10 +19,6 @@ class ProductReceivedStatsTest(AuthenticatedAPITestCase):
         super(ProductReceivedStatsTest, self).setUp()
         self.setup_responses()
 
-    def test_should_get_number_of_successful_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
-        self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
-
     def test_should_get_number_of_successful_deliveries_from_only_the_latest_scheduled_or_completed_runs(self):
         canceled_run = RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.cancelled)
         MultipleChoiceAnswerFactory(
@@ -33,56 +29,22 @@ class ProductReceivedStatsTest(AuthenticatedAPITestCase):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
 
-    def test_should_get_percentage_of_total_deliveries_that_were_successful(self):
+    def test_should_product_received_question_stats(self):
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+
+        self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
         self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
-
-    def test_should_get_number_of_unsuccessful_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('numberOfUnsuccessfulProductDeliveries'), 3)
-
-    def test_should_get_percentage_of_total_deliveries_that_were_unsuccessful(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageOfUnsuccessfulDeliveries'), 50)
-
-    def test_should_get_number_of_non_responses_to_product_received_question(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('numberOfNonResponseToProductReceived'), 1)
-
-    def test_should_get_percentage_of_non_responses_to_product_received_question(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageOfNonResponseToProductReceived'), 16.7)
-
-    def test_should_get_total_number_of_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
-
-    def test_should_get_total_value_of_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 2100)
-
-    def test_should_get_total_value_of_successful_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalValueOfSuccessfulDeliveries'), 300)
-
-    def test_should_get_percentage_of_total_value_of_successful_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageValueOfSuccessfulDeliveries'), 14.3)
-
-    def test_should_get_total_value_of_unsuccessful_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalValueOfUnsuccessfulProductDeliveries'), 1200)
-
-    def test_should_get_percentage_of_total_value_of_unsuccessful_deliveries(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageValueOfUnsuccessfulDeliveries'), 57.1)
-
-    def test_should_get_total_value_of_non_responses_to_product_received_question(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalValueOfNonResponseToProductReceived'), 600)
-
-    def test_should_get_percentage_of_value_of_non_responses_to_product_received_question(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('percentageValueOfNonResponseToProductReceived'), 28.6)
 
     def setup_responses(self):
