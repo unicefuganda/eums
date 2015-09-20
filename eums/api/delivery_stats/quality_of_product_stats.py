@@ -4,7 +4,7 @@ from eums.api.delivery_stats.stats_structure import BaseQuerySets
 from eums.models import MultipleChoiceQuestion, Option, MultipleChoiceAnswer, Run, Runnable, Flow
 
 
-def get_quality_of_product_base_query_sets():
+def get_quality_of_product_base_query_sets(location):
     end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
     quality_of_product_qn = MultipleChoiceQuestion.objects.get(label='qualityOfProduct', flow=end_user_flow)
     was_good = Option.objects.get(text='Good', question=quality_of_product_qn)
@@ -13,6 +13,8 @@ def get_quality_of_product_base_query_sets():
         question=quality_of_product_qn, value=was_good).filter(
         Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)
     )
+    if location:
+        good_quality_delivery_answers = good_quality_delivery_answers.filter(run__runnable__location=location)
 
     bad_order_delivery_answers = MultipleChoiceAnswer.objects.filter(
         question=quality_of_product_qn).filter(~Q(value=was_good)).filter(
