@@ -12,7 +12,6 @@ IpWarehousePage.prototype = Object.create({}, {
     }},
 
     searchForItem: { value: function (searchTerm) {
-        var EC = protractor.ExpectedConditions;
         var loadingCog = element(by.css('.glyphicon-cog'));
         var searchReady = EC.and(EC.visibilityOf(this.searchBar), EC.stalenessOf(loadingCog));
 
@@ -62,7 +61,10 @@ IpWarehousePage.prototype = Object.create({}, {
     }},
 
     saveDelivery: { value: function () { element(by.id('save-delivery-report')).click(); }},
-    discardDelivery: { value: function () { element(by.id('discard-delivery-report')).click(); }},
+    discardDelivery: { value: function () {
+        element(by.id('discard-delivery-report')).click();
+        waitForPageToLoad();
+    }},
 
 
     deliveryCount: { get: function () {
@@ -105,4 +107,11 @@ function fillSelect2Chosen (id, input) {
     element(by.id(id)).click();
     element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
     element(by.css('.select2-results li')).click();
+}
+
+function waitForPageToLoad () {
+    var loadingModal = element(by.id('loading'));
+    var fadingModal = element(by.css('.modal-backdrop.fade'));
+    var pageHasLoaded = EC.and(EC.invisibilityOf(loadingModal), EC.stalenessOf(fadingModal));
+    browser.wait(pageHasLoaded, 5000, "Timeout exceeded while loading page");
 }
