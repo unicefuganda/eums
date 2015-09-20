@@ -9,26 +9,129 @@
 
             <div map-summary consigneeDetails></div>
             <div id="stats-panel">
-                <div class="panel-header" ng-show="data.totalStats.location">{{ data.totalStats.location }}</div>
-                <div class="panel-header" ng-show="!data.totalStats.location">All Districts</div>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        Received
-                        <span class="badge alert-info supply-value">{{ data.totalStats.percentageReceived }}%</span>
-                    </li>
-                    <li class="list-group-item">
-                        Not received
-                        <span class="badge alert-info supply-value">{{ data.totalStats.percentageNotReceived }}%</span>
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge alert-info supply-value">{{ data.totalStats.totalValueReceived | currency}}</span>
-                        Supply received
-                    </li>
-                    <li class="list-group-item">
-                        <span class="badge alert-info supply-value">{{ data.totalStats.totalValueSent | currency}}</span>
-                        Supply sent
-                    </li>
-                </ul>
+                <table class="panel pad-10 col-lg-12">
+                    <tr>
+                        <td colspan="2" class="align-left stats-td">
+                            <div class="stats-div-no-border">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Total Supplies Sent</li>
+                                    <li class="bold-label">$187,012</li>
+                                    <li class="stats-gray-text">423 Total Deliveries Sent</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="stats-panel-header align-right" ng-show="data.totalStats.location">{{ data.totalStats.location }}</div>
+                            <div class="stats-panel-header align-right" ng-show="!data.totalStats.location">All Districts</div>
+                        </td>
+                    </tr>
+                    <tr class="td-border-top">
+                        <td class="stats-td">
+                            <div class="stats-div">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Supplies Received</li>
+                                    <li class="bold-label">$121,340&nbsp;
+                                        <span class="label label-success">62%</span>
+                                    </li>
+                                    <li class="stats-gray-text">387 Responses (87%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="stats-td">
+                            <div class="stats-div">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Supplies Not Received</li>
+                                    <li class="bold-label">$41,720&nbsp;
+                                        <span class="label label-danger">23%</span>
+                                    </li>
+                                    <li class="stats-gray-text">25 Responses (24%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="stats-td">
+                            <div class="stats-div-no-border">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Supplies Not Responded</li>
+                                    <li class="bold-label">$19,200&nbsp;
+                                        <span class="label label-default">8%</span>
+                                    </li>
+                                    <li class="stats-gray-text">12 Responses (11%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="td-border-top">
+                        <td class="stats-td">
+                            <div class="stats-div">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Received in Good Order</li>
+                                    <li class="bold-label">$91,340&nbsp;
+                                        <span class="label label-success">82%</span>
+                                    </li>
+                                    <li class="stats-gray-text">220 Responses (62%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="stats-td">
+                            <div class="stats-div">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Received in Bad Order</li>
+                                    <li class="bold-label">$31,000&nbsp;
+                                        <span class="label label-danger">62%</span>
+                                    </li>
+                                    <li class="stats-gray-text">104 Responses (42%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="stats-td">
+                            <div class="stats-div-no-border">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Not Responded</li>
+                                    <li class="bold-label">$9,230&nbsp;
+                                        <span class="label label-default">17%</span>
+                                    </li>
+                                    <li class="stats-gray-text">32 Responses (3%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="td-border-top">
+                        <td class="stats-td">
+                            <div class="stats-div">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Satisfied with Delivery</li>
+                                    <li class="bold-label">$42,890&nbsp;
+                                        <span class="label label-danger">37%</span>
+                                    </li>
+                                    <li class="stats-gray-text">25 Responses (24%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="stats-td">
+                            <div class="stats-div">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Not Satisfied with Delivery</li>
+                                    <li class="bold-label">$75,140&nbsp;
+                                        <span class="label label-default">59%</span>
+                                    </li>
+                                    <li class="stats-gray-text">12 Responses (11%)</li>
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="stats-td">
+                            <div class="stats-div-no-border">
+                                <ul class="list-unstyled">
+                                    <li class="stats-blue-text">Not Responded</li>
+                                    <li class="bold-label">$9,320&nbsp;
+                                        <span class="label label-success">6%</span>
+                                    </li>
+                                    <li class="stats-gray-text">32 Responses (9%)</li>
+                                </ul>
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
