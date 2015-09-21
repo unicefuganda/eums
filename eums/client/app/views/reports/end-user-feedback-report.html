@@ -1,10 +1,13 @@
 <div class="container-fluid">
     <div class="eums page-header">End User Feedback Reports</div>
 </div>
+
+<ng-toast></ng-toast>
+
 <div class="container-fluid">
     <div class="content">
-        <div class="col-xs-4 pull-right margin-top-20 margin-bottom-20">
-            <div class="inner-addon left-addon">
+        <div class="col-xs-4 pull-right margin-bottom-20 margin-top-20 pad-small">
+            <div class="inner-addon right-addon">
                 <i class="glyphicon "
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
@@ -13,41 +16,112 @@
         </div>
 
         <div class="table-wrapper">
-            <table si-table class="table table-bordered table-hover table-striped table-condensed">
+            <table class="table table-bordered table-hover table-striped table-condensed">
                 <thead>
                 <tr>
-                    <th class="table-header">Item Description</th>
-                    <th class="table-header">Outcome</th>
-                    <th class="table-header">Implementing Partner</th>
-                    <th class="table-header">PO/Waybill</th>
-                    <th class="table-header">Qty Shipped</th>
-
-                    <th class="table-header">Received</th>
-                    <th class="table-header">Date Received</th>
-                    <th class="table-header">Qty Received</th>
-                    <th class="table-header">Quality</th>
-                    <th class="table-header">Satisfied</th>
+                    <th class="align-left"><span class="padded-multi-line-5">ITEM DESCRIPTION</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">OUTCOME</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">IMPLEMENTING PARTNER</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">END USER</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY SHIPPED</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">VALUE</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">DATE RECEIVED</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY RECEIVED</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">REMARKS</span></th>
                 </tr>
                 </thead>
 
                 <tbody>
-                <tr ng-repeat="itemReport in report">
-                    <td class="table-body">{{ itemReport.item_description }}</td>
-                    <td class="table-body">{{ itemReport.programme }}</td>
-                    <td class="table-body">{{ itemReport.consignee }}</td>
-                    <td class="table-body">{{itemReport.order_number}}</td>
-                    <td class="table-body">{{itemReport.quantity_shipped}}</td>
+                <tr ng-repeat="($index, itemReport) in report" class="align-left">
+                    <td><span class="padded-multi-line-5">{{ itemReport.item_description }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.value | number:2 }}</span></td>
 
-                    <td class="table-body">{{ itemReport.answers[0].value }}</td>
-                    <td class="table-body">{{ itemReport.date_of_receipt  | date: 'dd/MM/yyyy'}}</td>
-                    <td class="table-body">{{ itemReport.answers[1].value }}</td>
-                    <td class="table-body">{{ itemReport.answers[2].value }}</td>
-                    <td class="table-body">{{ itemReport.answers[3].value }}</td>
+                    <td>
+                        <span ng-if="itemReport.answers[0].value == 'Yes'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Good</span>
+                        <span ng-if="itemReport.answers[0].value == 'No'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-no">Bad</span>
+                    <td><span class="padded-multi-line-5">{{ itemReport.date_of_receipt | date: 'dd/MM/yyyy'}}</span>
+                    </td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.answers[1].value }}</span></td>
+                    <td>
+                        <span ng-if="itemReport.answers[2].value == 'Good'"
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-yes">Good</span>
+
+                        <span ng-if="itemReport.answers[2].value == 'Substandard'"
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-substandard">Substandard</span>
+
+                        <span ng-if="itemReport.answers[2].value == 'Incomplete'"
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-incomplete">Incomplete</span>
+
+                        <span ng-if="itemReport.answers[2].value == 'Expired'"
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-expired">Expired</span>
+
+                        <span ng-if="itemReport.answers[2].value == 'Damaged'"
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-no">Damaged</span>
+                    </td>
+                    <td>
+                        <div class="align-center">
+                        <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
+                              ng-class="{'glyphicon-ok-sign': itemReport.answers[3].value == 'Yes',
+                                                'eums-text-ok': itemReport.answers[3].value == 'Yes',
+                                  'glyphicon-remove-sign': itemReport.answers[3].value == 'No',
+                                                'eums-text-no': itemReport.answers[3].value == 'No'
+                                }">
+                            </span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="align-center">
+                            <a class="button" ng-click="showRemarks($index)"
+                               ng-hide=" itemReport.answers[4].value == '' ">
+                                <span class="button glyphicon glyphicon-comment glyphicon-comment-color
+                                        glyphicon-size-17 glyphicon-top-5">
+                                </span>
+                            </a>
+                        </div>
+                        <div class="modal fade text-left" id="remarks-modal-{{$index}}">
+                            <div class="modal-dialog modal-sixty-percent-size">
+                                <div class="modal-content col-md-offset-3 col-md-6">
+                                    <div class="modal-header">
+                                        <button type="button"
+                                                class="close"
+                                                data-dismiss="modal">
+                                            <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+                                            <span class="sr-only">Close</span>
+                                        </button>
+                                        <h4 class="eums-modal-header">Additional Remarks</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="eums-modal-content">
+                                            {{ itemReport.answers[4].value }}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer centered">
+                                        <button type="button"
+                                                class="btn btn-primary"
+                                                data-dismiss="modal"><span
+                                                class='glyphicon glyphicon-ok-sign text-white'></span> OK
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="10" class="centered">
+                    <td colspan="13" class="centered">
                         <pagination total-items="count"
                                     ng-model="currentPage"
                                     boundary-links="true"

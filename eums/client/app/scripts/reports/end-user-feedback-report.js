@@ -37,4 +37,42 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
                 $scope.searching = false;
             });
         }
+
+        $scope.showRemarks = function (index) {
+            var remarksModalId = 'remarks-modal-' + index;
+            LoaderService.showModal(remarksModalId)
+        };
+
+
+        function getAllResponsesByDate() {
+            return DeliveryService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {
+                var nodePromises = [];
+                var poItemPromises = [];
+
+                allResponses.forEach(function (response) {
+                    if (response.node) {
+                        nodePromises.push(
+                            DeliveryNodeService.get(response.node, ['contact_person_id']).then(function (planNode) {
+                                response.contactPerson = planNode.contactPerson;
+                                var purchaseOrderItemId = planNode.item;
+                                poItemPromises.push(
+                                    PurchaseOrderItemService.get(purchaseOrderItemId).then(function (purchaseOrderItem) {
+                                        return PurchaseOrderService.get(purchaseOrderItem.purchaseOrder).then(function (order) {
+                                            response.purchaseOrder = order;
+                                        });
+                                    })
+                                );
+                            })
+                        );
+                    }
+                });
+
+                return $q.all(nodePromises).then(function () {
+                    return $q.all(poItemPromises).then(function () {
+                        return allResponses;
+                    });
+                });
+
+            });
+        }
     });
