@@ -117,6 +117,9 @@ h4.page-header {
 .pad-6 {
   padding: 6px;
 }
+.pad-bottom-none {
+  padding-bottom: 0;
+}
 
 .pad-bottom-5 {
   padding-bottom: 5px;
@@ -134,6 +137,10 @@ h4.page-header {
   margin-bottom: 20px;
 }
 
+.margin-bottom-5 {
+  margin-bottom: 5px;
+}
+
 .pad-medium {
   padding-left: 5px;
   padding-right: 10px;
@@ -147,6 +154,12 @@ h4.page-header {
 
 .section-header {
   font-size: 1.2em;
+  color: #8ac43e;
+  font-weight: bold;
+}
+
+.section-sub-header {
+  font-size: 0.9em;
   color: #8ac43e;
   font-weight: bold;
 }
@@ -248,6 +261,16 @@ h4.page-header {
   font-weight: bold;
 }
 
+.blue-table-header th {
+  background-color: #1CABE2;
+  color: #FFF;
+}
+
+.light-blue-table-header th {
+  background-color: #5ABCE8;
+  color: #FFF;
+}
+
 .item-list-col-header {
   font-weight: bolder;
 }
@@ -335,6 +358,10 @@ h4.page-header {
 
 .description-label {
   color: darken(@brand-primary, 13.5%);
+}
+
+.table-select {
+  width: 80px;
 }
 
 .table-select {
@@ -508,6 +535,10 @@ h4.page-header {
   border-radius: 10px;
 }
 
+.border-radius-5 {
+  border-radius: 5px;
+}
+
 .black {
   color: black;
 }
@@ -659,8 +690,8 @@ h4.page-header {
   text-align: center;
 }
 
-.eums-border-center{
-  margin:0 auto;
+.eums-border-center {
+  margin: 0 auto;
 }
 
 .eums-border-width-35 {
@@ -680,7 +711,7 @@ h4.page-header {
 }
 
 .eums-bg-no {
-  background:@color_no;
+  background: @color_no;
 }
 
 .eums-bg-substandard {
@@ -707,15 +738,15 @@ h4.page-header {
   color: @color_no;
 }
 
-.glyphicon-size-17{
+.glyphicon-size-17 {
   font-size: 17px;
 }
 
-.glyphicon-top-5{
-  top:5px
+.glyphicon-top-5 {
+  top: 5px
 }
 
-.glyphicon-comment-color{
+.glyphicon-comment-color {
   color: @brand-primary;
 }
 
@@ -728,4 +759,35 @@ h4.page-header {
   -o-box-decoration-break: clone;
   -ms-box-decoration-break: clone;
   box-decoration-break: clone;
+}
+
+.table-curved {
+  border-collapse: separate;
+  border: solid #ddd 1px;
+  border-radius: 6px;
+  border-left: 0px;
+  border-top: 0px;
+}
+
+.table-curved > thead:first-child > tr:first-child > th {
+  border-bottom: 0px;
+  border-top: solid #ddd 1px;
+}
+
+.table-curved td, .table-curved th {
+  border-left: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+}
+
+.table-curved > :first-child > :first-child > :first-child {
+  border-top-left-radius: 6px;
+}
+
+.table-curved > :first-child > :first-child > :last-child {
+  border-top-right-radius: 6px;
+}
+
+.container {
+  border: 1px solid #ddd;
+  overflow: hidden;
 }

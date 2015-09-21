@@ -3,7 +3,7 @@
         {{ purchaseOrder.programmeName }}
     </div>
     <div>
-        Create a Direct Delivery for Purchase Order: {{ purchaseOrder.orderNumber }}
+        Create a Single IP Delivery
     </div>
 </div>
 
@@ -11,39 +11,50 @@
     <div class="content">
         <ng-toast></ng-toast>
         <div>
-            <div class="pad-left-5 pad-top-10">
-                <span class="section-header" ng-if="!delivery.id && !trackedDeliveries.length">
-                    Select an Implementing Partner and the Delivery details
-                </span>
-                <span class="section-header" ng-if="delivery.id">
-                    You are editing a draft delivery.
-                </span>
-                <span class="section-header" ng-if="trackedDeliveries.length">
-                    You have already delivered items to this IP from this Purchase Order.
-                    You cannot change the IP, but you can deliver more items to them. Other fields are editable.
-                </span>
-            </div>
-            <div class="pad-left-5 pad-top-10">
-                <div class="col-md-12 form-horizontal">
-                    <div class="form-group col-md-2" ng-class="{'has-error': !delivery.consignee && errors}">
-                        <label for="input-consignee" class="col-md-2 control-label description-label pad-small">
-                            IP:
-                        </label>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="blue-unicef section-sub-header">PURCHASE ORDER DETAILS</label>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <span class="label label-success label-as-badge border-radius-5"
+                                  id="po-number">{{ purchaseOrder.orderNumber }}</span>
+                            <span>PO Number</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="label label-success label-as-badge border-radius-5" id="po-type">{{ purchaseOrder.poType }}</span>
+                            PO Type
+                        </li>
+                        <li class="list-group-item">
+                            <span class="label label-success label-as-badge border-radius-5"
+                                  id="po-total-value">{{ purchaseOrder.totalValue | currency }}</span>
+                            Approximate Total Value
+                        </li>
+                    </ul>
+                </div>
 
-                        <div id='input-consignee' class="col-md-10 pad-small" ng-if="contentLoaded">
-                            <input type="hidden" search-consignees only-ips
-                                   ng-model="delivery.consignee"
-                                   ng-attr-id="{{ 'ip-select' }}"
-                                   ng-disabled="cannotChangeIp()"
-                                   value="{{ delivery.consignee }}">
+                <div class="col-md-4">
+                    <label class="section-sub-header blue-unicef col-md-12">DELIVERY DETAILS</label>
+
+                    <div class="container border-radius-5">
+                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                             ng-class="{'has-error': !delivery.consignee && errors}">
+                            <label for="input-consignee" class="col-md-5 control-label pad-small">IP</label>
+
+                            <div id='input-consignee' class="col-md-11 pad-small" ng-if="contentLoaded">
+                                <input type="hidden" search-consignees only-ips
+                                       ng-model="delivery.consignee"
+                                       ng-attr-id="{{ 'ip-select' }}"
+                                       ng-disabled="cannotChangeIp()"
+                                       value="{{ delivery.consignee }}"
+                                       tooltip-placement="top"
+                                       tooltip="ipFieldTitle()">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group col-md-3" ng-class="{'has-error': !delivery.delivery_date && errors}">
-                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
-                            Shipment Date
-                        </label>
+                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                             ng-class="{'has-error': !delivery.delivery_date && errors}">
+                            <label for="input-delivery-date" class="col-md-12 control-label pad-small">Shipment Date</label>
 
-                        <div id="input-delivery-date" class="col-md-7 pad-small" ng-if="contentLoaded">
+                            <div id="input-delivery-date" class="col-md-11 pad-small" ng-if="contentLoaded">
                             <span class="input-group" eums-date-picker>
                                 <input type="text" class="form-control"
                                        datepicker-popup="dd/MM/yyyy"
@@ -60,143 +71,124 @@
                                   </button>
                                 </span>
                             </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                             ng-class="{'has-error': !delivery.contact_person_id && errors}">
+                            <label for="input-contact" class="col-md-11 control-label pad-small">Contact</label>
+
+                            <div id="input-contact" class="col-md-11 control-label pad-small" ng-if="contentLoaded">
+                                <div class="form-group col-md-10 pad-small">
+                                    <input type="hidden"
+                                           search-contacts
+                                           required="required"
+                                           value="{{ delivery.contact_person_id }}"
+                                           ng-model="delivery.contact_person_id"
+                                           ng-attr-id="{{ 'contact-select' }}">
+                                </div>
+                                <div class="form-group col-md-2 pad-small">
+                                    <button type="button" class="btn btn-default "
+                                            ng-click="addContact(item, $index)">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5" ng-if="districtsLoaded"
+                             ng-class="{'has-error': !delivery.location && errors}">
+                            <label for="input-location" class="col-md-12 control-label pad-small">Choose District</label>
+
+                            <div id="input-location" class="col-md-11 pad-small" ng-if="districtsLoaded && contentLoaded">
+                                <input type="hidden"
+                                       search-from-list
+                                       list="{{ districts }}"
+                                       ng-model="delivery.location"
+                                       ng-attr-id="{{ 'location-select' }}"
+                                       value="{{ delivery.location }}">
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-3" ng-class="{'has-error': !delivery.contact_person_id && errors}">
-                        <label class="col-md-4 control-label description-label pad-medium">
-                            Contact:
-                        </label>
+                </div>
 
-                        <div id="input-contact" class="col-md-8 pad-small" ng-if="contentLoaded">
-                            <div class="form-group col-md-10 pad-small">
-                                <input type="hidden"
-                                       search-contacts
-                                       required="required"
-                                       value="{{ delivery.contact_person_id }}"
-                                       ng-model="delivery.contact_person_id"
-                                       ng-attr-id="{{ 'contact-select' }}">
-                            </div>
-                            <div class="form-group col-md-2 pad-small">
-                                <button type="button" class="btn btn-default "
-                                        ng-click="addContact(item, $index)">
-                                    <i class="glyphicon glyphicon-plus"></i>
+                <div class="col-md-4 pull-right">
+                    <label class="section-sub-header blue-unicef">PREVIOUS DELIVERIES</label>
+
+                    <table id="trackedDeliveriesTable" class="table table-curved light-blue-table-header" ng-show="trackedDeliveries">
+                        <tr>
+                            <th class="item-list-col-header">#</th>
+                            <th class="item-list-col-header">Date</th>
+                            <th class="item-list-col-header">Approximate Total Value</th>
+                        </tr>
+                        <tr ng-repeat="(index, delivery) in trackedDeliveries">
+                            <td>{{ index + 1 }}</td>
+                            <td ng-click="viewDelivery(delivery)"
+                                class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy' }}
+                            </td>
+                            <td>{{ delivery.total_value | currency }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="pad-left-5 pad-top-10">
+            <div>
+                <div ng-show="purchaseOrderItems.length">
+                    <div class="panel-body">
+                        <table id="singleIPDeliveryItemsTable" class="table table-curved blue-table-header ">
+                            <thead>
+                            <tr>
+                                <th class="item-list-col-header">No.</th>
+                                <th class="item-list-col-header">Material No.</th>
+                                <th class="item-list-col-header">Item Description</th>
+                                <th class="item-list-col-header">Qty in PO</th>
+                                <th class="item-list-col-header">Value in PO</th>
+                                <th class="item-list-col-header">Avail. Balance</th>
+                                <th class="item-list-col-header">Qty Shipped</th>
+                                <th class="item-list-col-header">Approximate Value</th>
+                            </tr>
+                            </thead>
+                            <tr ng-repeat="(index, item) in purchaseOrderItems">
+                                <td>{{ index + 1 }}</td>
+                                <td>{{ item.item.materialCode }}</td>
+                                <td>{{ item.item.description }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>{{ item.value | currency }}</td>
+                                <td>{{ item.availableBalance }}</td>
+                                <td class="table-row-input-column">
+                                    <input type="text" id="quantity-shipped" class="form-control"
+                                           ng-model="item.quantityShipped" only-digits
+                                           ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
+                                </td>
+                                <td>{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
+                            </tr>
+                        </table>
+
+                        <div class="pad-20 row">
+                            <div ng-show="purchaseOrderItems.length" class="pull-right">
+                                <button id="save-draft" type="button" class="btn btn-primary"
+                                        ng-click="save()">
+                                    <i class="glyphicon glyphicon-floppy-save"> </i>
+                                    Save draft
+                                </button>
+                                <button id="save-and-track" type="button" class="btn btn-primary"
+                                        ng-click="save(true)">
+                                    Save & Track
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group col-md-2" ng-if="districtsLoaded"
-                         ng-class="{'has-error': !delivery.location && errors}">
-                        <label class="col-md-4 control-label description-label pad-small">
-                            District:
-                        </label>
-
-                        <div id="input-location" class="col-md-8 pad-small" ng-if="districtsLoaded && contentLoaded">
-                            <input type="hidden"
-                                   search-from-list
-                                   list="{{ districts }}"
-                                   ng-model="delivery.location"
-                                   ng-attr-id="{{ 'location-select' }}"
-                                   value="{{ delivery.location }}">
-                        </div>
-                    </div>
-                    <div class="text-center col-md-2">
-                        <label for="input-consignee" class="col-md-5 control-label description-label pad-small">
-                            Remarks
-                        </label>
-                        <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
-                                ng-click="addRemark()">
-                        </button>
-                    </div>
-                </div>
-                <div class="row pad-20">
-                    <div class="well well-sm col-md-3 pull-right">
-                        <div class="col-md-12 no-side-padding">
-                            <ul class="list-group">
-                                <li class="list-group-item">
-                                    <span class="label label-success label-as-badge"
-                                          id="po-type">{{ purchaseOrder.poType }}</span>
-                                    PO Type
-                                </li>
-                                <li class="list-group-item">
-                                    <span class="label label-success label-as-badge" id="po-total-value">
-                                        {{ purchaseOrder.totalValue | currency }}
-                                    </span>
-                                    Approximate Total Value
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="well well-sm col-md-3 pull-left" ng-show="trackedDeliveries">
-                        <h5>Previous Deliveries</h5>
-                        <table id="trackedDeliveriesTable"
-                               class="table table-bordered margin-bottom-none">
-                            <tr>
-                                <th class="item-list-col-header">#</th>
-                                <th class="item-list-col-header">Date</th>
-                                <th class="item-list-col-header">Approximate Total Value</th>
-                            </tr>
-                            <tr ng-repeat="(index, delivery) in trackedDeliveries">
-                                <td>{{ index + 1 }}</td>
-                                <td ng-click="viewDelivery(delivery)"
-                                    class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy' }}</td>
-                                <td>{{ delivery.total_value | currency }}</td>
-                            </tr>
-                        </table>
-                    </div>
                 </div>
 
-                <div>
-                    <div ng-show="purchaseOrderItems.length">
-                        <div class="panel-body ">
-                            <table id="singleIPDeliveryItemsTable"
-                                   class="table table-bordered table-striped table-hover table-condensed">
-                                <tr>
-                                    <th class="item-list-col-header">No.</th>
-                                    <th class="item-list-col-header">Material No.</th>
-                                    <th class="item-list-col-header">Item Description</th>
-                                    <th class="item-list-col-header">Qty in PO</th>
-                                    <th class="item-list-col-header">Value in PO</th>
-                                    <th class="item-list-col-header">Avail. Balance</th>
-                                    <th class="item-list-col-header">Qty Shipped</th>
-                                    <th class="item-list-col-header">Approximate Value</th>
-                                </tr>
-                                <tr ng-repeat="(index, item) in purchaseOrderItems">
-                                    <td>{{ index + 1 }}</td>
-                                    <td>{{ item.item.materialCode }}</td>
-                                    <td>{{ item.item.description }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td>{{ item.value | currency }}</td>
-                                    <td>{{ item.availableBalance }}</td>
-                                    <td class="table-row-input-column">
-                                        <input type="text" id="quantity-shipped" class="form-control"
-                                               ng-model="item.quantityShipped" only-digits
-                                               ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
-                                    </td>
-                                    <td>{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="pad-20 row">
-                        <div ng-show="purchaseOrderItems.length" class="pull-right">
-                            <button id="save-draft" type="button" class="btn btn-primary"
-                                    ng-click="save()">
-                                <i class="glyphicon glyphicon-floppy-save"> </i>
-                                Save draft
-                            </button>
-                            <button id="save-and-track" type="button" class="btn btn-primary"
-                                    ng-click="save(true)">
-                                Save & Track
-                            </button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
-        <eums-contact></eums-contact>
-        <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>
-        <ng-include src="'/static/app/views/delivery/partials/add-remark-modal.html'"></ng-include>
-        <ng-include src="'/static/app/views/delivery/partials/view-delivery-modal.html'"></ng-include>
     </div>
+    <eums-contact></eums-contact>
+    <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>
+    <ng-include src="'/static/app/views/delivery/partials/add-remark-modal.html'"></ng-include>
+    <ng-include src="'/static/app/views/delivery/partials/view-delivery-modal.html'"></ng-include>
+</div>
 </div>
 </div>
