@@ -89,7 +89,7 @@ class DeliveryStatsEndpoint(APIView):
 
     def _apply_filters_to_nodes(self):
         if self.location:
-            self.end_user_nodes = self.end_user_nodes.filter(location=self.location)
+            self.end_user_nodes = self.end_user_nodes.filter(location__iexact=self.location)
         if self.user_profile:
             self.ip = self.user_profile.consignee
         if self.ip:
@@ -119,7 +119,7 @@ class DeliveryStatsEndpoint(APIView):
     def _apply_filters(self, base_query_sets):
         filtered_positive_answers = base_query_sets.positive_answers
         if self.location:
-            filtered_positive_answers = base_query_sets.positive_answers.filter(run__runnable__location=self.location)
+            filtered_positive_answers = base_query_sets.positive_answers.filter(run__runnable__location__iexact=self.location)
         if self.ip:
             filtered_positive_answers = filtered_positive_answers.filter(run__runnable__ip=self.ip)
 

@@ -40,7 +40,7 @@
 
     <div date-range-filter>
         <p class="input-group col-md-7">
-            <input type="text" class="form-control" datepicker-popup="dd/MM/yyyy"
+            <input type="text" class="form-control inherit-font" datepicker-popup="dd/MM/yyyy"
                    ng-model="dateFilter.from" is-open="datepicker.from"
                    datepicker-options="dateOptions" show-button-bar="false"
                    value="{{ dateFilter.to | date : 'dd/MM/yyyy' }}" eums-date-picker
@@ -54,7 +54,7 @@
         </p>
 
         <p class="input-group col-md-7">
-            <input type="text" min="{{ dateFilter.from }}" class="form-control" datepicker-popup="dd/MM/yyyy"
+            <input type="text" min="{{ dateFilter.from }}" class="form-control inherit-font" datepicker-popup="dd/MM/yyyy"
                    ng-model="dateFilter.to" is-open="datepicker.to"
                    datepicker-options="dateOptions" show-button-bar="false" eums-date-picker
                     placeholder="End"/>

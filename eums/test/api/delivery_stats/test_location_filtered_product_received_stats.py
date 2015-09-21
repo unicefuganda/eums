@@ -23,7 +23,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
 
     def test_should_product_received_question_stats_for_a_location(self):
-        response = self.client.get('%s?consigneeType=END_USER&location=%s' % (ENDPOINT_URL, self.selected_location))
+        response = self.client.get('%s?consigneeType=END_USER&location=%s' % (ENDPOINT_URL, self.selected_location.upper()))
 
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 3)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 1000)
