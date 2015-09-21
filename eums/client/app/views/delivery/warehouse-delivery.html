@@ -3,7 +3,7 @@
 <div class="container-fluid">
 
     <div class="filter-bar">
-        <div class="col-xs-3 text-muted">
+        <div class="col-xs-4 text-muted">
             <ul class="list-inline">
                 <li>
                     <span class="glyphicon glyphicon-ok-sign text-success pad-right-5"></span>Delivered
@@ -72,20 +72,20 @@
     </div>
 
     <div class="table-wrapper">
-        <table si-table class="table table-bordered table-hover table-striped table-condensed">
+        <table si-table class="table table-bordered table-hover table-striped delivery">
             <thead ng-init="initialize()">
             <tr>
                 <th style="width: 2%;">&nbsp;</th>
-                <th style="width: 18%">
+                <th>
                     <a ng-click="sortBy('orderNumber')">{{ documentColumnTitle }} <i
                             ng-class="sortArrowClass('orderNumber');"></i></a>
                 </th>
-                <th style="width: 20%">
+                <th>
                     <a ng-click="sortBy('date')">{{ dateColumnTitle }}
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
-                <th style="width: 30%" ng-if="descriptionColumnTitle">
+                <th ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
                 </th>
                 <th style="width: 30%">
