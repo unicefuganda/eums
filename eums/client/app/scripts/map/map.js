@@ -439,6 +439,10 @@
                         });
                         //TODO: refactor this, to use same function with district on click
                         scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
+                        (function showResponsesForDistrict() {
+                            scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
+                            scope.data.district = layerName;
+                        })();
                     }
                 });
             }
@@ -493,7 +497,7 @@
                     if (user.consignee_id) {
                         var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
                             return responsesWithLocation.consigneeResponses.filter(function (response) {
-                                return parseInt(response.consignee.id) === parseInt(user.consignee_id);
+                                return parseInt(response.ip.id) === parseInt(user.consignee_id);
                             });
                         });
                         return DeliveryService.groupResponsesByLocation(_.flatten(filteredIPResponses));

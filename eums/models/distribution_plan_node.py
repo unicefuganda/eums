@@ -34,6 +34,7 @@ class DistributionPlanNode(Runnable):
             self.balance = self.quantity_in() - self.quantity_out()
 
         self.total_value = self._get_total_value()
+        self.assign_ip()
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())

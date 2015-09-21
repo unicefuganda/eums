@@ -67,7 +67,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         expected_data = {u'item': u'Salt', u'amountSent': 100, u'value': 1000, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name,
                                         u'type': type},
-                         u'ip': node.get_ip(),
+                         u'ip': {'id': node.ip.id, 'location': node.ip.location},
                          u'%s' % self.numeric_question.label: u'%s' % self.run_one_numeric_answer_one.format(),
                          u'%s' % self.multiple_choice_question.label: u'%s' % self.run_one_multiple_answer_one.format(),
                          u'%s' % self.multiple_choice_question_two.label: u'%s' % self.run_one_multiple_answer_two.format(),
@@ -209,7 +209,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(node_item['item'], 'Salt')
         self.assertEqual(node_item['programme'], {'id': node_ip_one.distribution_plan.programme.id,
                                                   'name': node_ip_one.distribution_plan.programme.name})
-        self.assertEqual(node_item['ip'], node_ip_one.get_ip())
+        self.assertEqual(node_item['ip'], {'id': node_ip_one.ip.id, 'location': unicode(node_ip_one.ip.location)})
         self.assertEqual(node_item[question.label], answer_one.format())
 
 

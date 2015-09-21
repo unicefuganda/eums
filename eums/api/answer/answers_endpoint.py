@@ -30,8 +30,9 @@ class ResponseSerializer(object):
 
     @staticmethod
     def format_run_responses(node, programme):
+        ip_dict = {'id': node.ip.id, 'location': node.ip.location} if node.ip else {'id': None, 'location': 'None'}
         formatted_run_responses = {'node': node.id,
-                                   'ip': node.get_ip(),
+                                   'ip': ip_dict,
                                    'programme': {'id': programme.id, 'name': programme.name},
                                    'location': node.location,
                                    'consignee': {'id': node.consignee.id, 'name': node.consignee.name,
