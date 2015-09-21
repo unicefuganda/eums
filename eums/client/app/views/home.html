@@ -30,7 +30,7 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Supplies Received</li>
-                                    <li class="bold-label font-size-large">{{ data.totalStats.totalValueOfSuccessfulDeliveries | currency}}&nbsp;
+                                    <li class="stats-bold-label-lg">{{ data.totalStats.totalValueOfSuccessfulDeliveries | currency}}&nbsp;
                                         <span class="label label-success">{{ data.totalStats.percentageValueOfSuccessfulDeliveries }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfSuccessfulProductDeliveries }} Responses ({{ data.totalStats.percentageOfSuccessfulDeliveries }}%)</li>
@@ -41,7 +41,7 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Supplies Not Received</li>
-                                    <li class="bold-label font-size-large">{{ data.totalStats.totalValueOfUnsuccessfulProductDeliveries | currency}}&nbsp;
+                                    <li class="stats-bold-label-lg">{{ data.totalStats.totalValueOfUnsuccessfulProductDeliveries | currency}}&nbsp;
                                         <span class="label label-danger">{{ data.totalStats.percentageValueOfUnsuccessfulDeliveries }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfUnsuccessfulProductDeliveries }} Responses ({{data.totalStats.percentageOfUnsuccessfulDeliveries }}%)</li>
@@ -52,7 +52,7 @@
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Responded</li>
-                                    <li class="bold-label font-size-large">{{ data.totalStats.totalValueOfNonResponseToProductReceived | currency}}&nbsp;
+                                    <li class="stats-bold-label-lg">{{ data.totalStats.totalValueOfNonResponseToProductReceived | currency}}&nbsp;
                                         <span class="label label-default">{{ data.totalStats.percentageValueOfNonResponseToProductReceived }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfNonResponseToProductReceived }} Responses ({{data.totalStats.percentageOfNonResponseToProductReceived }}%)</li>
@@ -65,7 +65,7 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Received in Good Order</li>
-                                    <li class="bold-label">{{ data.totalStats.totalValueOfDeliveriesInGoodOrder | currency}}&nbsp;
+                                    <li class="stats-bold-label">{{ data.totalStats.totalValueOfDeliveriesInGoodOrder | currency}}&nbsp;
                                         <span class="label label-success">{{ data.totalStats.percentageValueOfDeliveriesInGoodOrder }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfDeliveriesInGoodOrder }} Responses ({{data.totalStats.percentageOfDeliveriesInGoodOrder }}%)</li>
@@ -76,7 +76,7 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Received in Bad Order</li>
-                                    <li class="bold-label">{{ data.totalStats.totalValueOfDeliveriesInBadOrder | currency}}&nbsp;
+                                    <li class="stats-bold-label">{{ data.totalStats.totalValueOfDeliveriesInBadOrder | currency}}&nbsp;
                                         <span class="label label-danger">{{ data.totalStats.percentageValueOfDeliveriesInBadOrder }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfDeliveriesInBadOrder }} Responses ({{data.totalStats.percentageOfDeliveriesInBadOrder }}%)</li>
@@ -87,7 +87,7 @@
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Responded</li>
-                                    <li class="bold-label">{{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | currency}}&nbsp;
+                                    <li class="stats-bold-label">{{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | currency}}&nbsp;
                                         <span class="label label-default">{{ data.totalStats.percentageValueOfNonResponseToQualityOfProduct }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfNonResponseToQualityOfProduct }} Responses ({{data.totalStats.percentageOfNonResponseToQualityOfProduct }}%)</li>
@@ -100,7 +100,7 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Satisfied with Delivery</li>
-                                    <li class="bold-label">{{ data.totalStats.totalValueOfSatisfactoryDeliveries | currency}}&nbsp;
+                                    <li class="stats-bold-label">{{ data.totalStats.totalValueOfSatisfactoryDeliveries | currency}}&nbsp;
                                         <span class="label label-success">{{ data.totalStats.percentageValueOfSatisfactoryDeliveries }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfSatisfactoryDeliveries }} Responses ({{data.totalStats.percentageOfSatisfactoryDeliveries }}%)</li>
@@ -111,7 +111,7 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Satisfied with Delivery</li>
-                                    <li class="bold-label">{{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | currency}}&nbsp;
+                                    <li class="stats-bold-label">{{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | currency}}&nbsp;
                                         <span class="label label-danger">{{ data.totalStats.percentageValueOfUnsatisfactoryDeliveries }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfUnsatisfactoryDeliveries }} Responses ({{data.totalStats.percentageOfUnsatisfactoryDeliveries }}%)</li>
@@ -122,7 +122,7 @@
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Responded</li>
-                                    <li class="bold-label">{{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | currency}}&nbsp;
+                                    <li class="stats-bold-label">{{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | currency}}&nbsp;
                                         <span class="label label-default">{{ data.totalStats.percentageValueOfNonResponseToSatisfactionWithProduct }}%</span>
                                     </li>
                                     <li class="stats-gray-text">{{ data.totalStats.numberOfNonResponseToSatisfactionWithProduct }} Responses ({{data.totalStats.percentageOfNonResponseToSatisfactionWithProduct }}%)</li>
