@@ -9,6 +9,7 @@ from eums.services.contacts import ContactService
 class Runnable(PolymorphicModel):
     location = models.CharField(max_length=255)
     consignee = models.ForeignKey(Consignee)
+    ip = models.ForeignKey(Consignee, null=True, blank=True, related_name='runnables')
     contact_person_id = models.CharField(max_length=255)
     track = models.BooleanField(default=False)
     delivery_date = models.DateField(null=False)

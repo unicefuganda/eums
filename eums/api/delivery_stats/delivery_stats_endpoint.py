@@ -17,14 +17,18 @@ class DeliveryStatsEndpoint(APIView):
         self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.location = None
+        self.ip = None
         super(DeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
         self.location = request.GET.get('location')
+        self.ip = request.GET.get('ip')
 
         if self.location:
             self.end_user_nodes = self.end_user_nodes.filter(location=self.location)
+        if self.ip:
+            self.end_user_nodes = self.end_user_nodes.filter(ip=self.ip)
 
         product_received_stats = self._get_product_received_stats()
         quality_of_product_stats = self._get_quality_of_product_stats()
@@ -109,6 +113,9 @@ class DeliveryStatsEndpoint(APIView):
         filtered_positive_answers = base_query_sets.positive_answers
         if self.location:
             filtered_positive_answers = base_query_sets.positive_answers.filter(run__runnable__location=self.location)
+        if self.ip:
+            filtered_positive_answers = filtered_positive_answers.filter(run__runnable__ip=self.ip)
+
         return BaseQuerySets(
             filtered_positive_answers,
             base_query_sets.negative_answers,
