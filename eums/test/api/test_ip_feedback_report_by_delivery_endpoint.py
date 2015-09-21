@@ -1,4 +1,4 @@
-from eums.models import Question, DistributionPlan
+from eums.models import Question, DistributionPlan, Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
@@ -58,7 +58,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
                                    consignee=ConsigneeFactory(name=wakiso))
         order_number = 34230335
-        DeliveryNodeFactory(distribution_plan=delivery,
+        DeliveryNodeFactory(distribution_plan=delivery,track=True, tree_position=Runnable.IMPLEMENTING_PARTNER,
                             item=PurchaseOrderItemFactory(
                                 purchase_order=PurchaseOrderFactory(order_number=order_number)))
         run = RunFactory(runnable=delivery)
@@ -89,6 +89,56 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         DeliveryNodeFactory()
         self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, False)
+
+        yes = 'Yes'
+        no = 'No'
+        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
+                              'programme': programme_name, 'consignee': wakiso,
+                              Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
+                              'additionalDeliveryComments': comment, 'value': 100}]
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.status_code, 200)
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results, expected_response)
+
+    def test_should_not_return_delivery_answers_for_end_users(self):
+        self._create_questions()
+        programme_name = 'YP104 MANAGEMENT RESULTS'
+        wakiso = 'WAKISO DHO'
+        order_number = 34230305
+        comment = 'Not Satisfied!!'
+        number_of_deliveries = 1
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
+
+        self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, True,
+                                     tree_position=Runnable.END_USER)
+
+        yes = 'Yes'
+        no = 'No'
+        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
+                              'programme': programme_name, 'consignee': wakiso,
+                              Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
+                              'additionalDeliveryComments': comment, 'value': 100}]
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.status_code, 200)
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results, expected_response)
+
+    def test_should_not_return_delivery_answers_for_middle_man(self):
+        self._create_questions()
+        programme_name = 'YP104 MANAGEMENT RESULTS'
+        wakiso = 'WAKISO DHO'
+        order_number = 34230305
+        comment = 'Not Satisfied!!'
+        number_of_deliveries = 1
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
+
+        self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, True,
+                                     tree_position=Runnable.MIDDLE_MAN)
 
         yes = 'Yes'
         no = 'No'
@@ -229,23 +279,23 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.additional_comments = TextQuestionFactory(text='Additional Remarks', flow=flow, position=5,
                                                        label='additionalDeliveryComments')
 
-    def _create_node(self, delivery, is_purchase, order_number, track):
+    def _create_node(self, delivery, is_purchase, order_number, track, tree_position):
         if is_purchase:
-            DeliveryNodeFactory(track=track, distribution_plan=delivery,
+            DeliveryNodeFactory(track=track, distribution_plan=delivery, tree_position=tree_position,
                                 item=PurchaseOrderItemFactory(
                                     purchase_order=PurchaseOrderFactory(order_number=order_number)))
         else:
-            DeliveryNodeFactory(track=track, distribution_plan=delivery,
+            DeliveryNodeFactory(track=track, distribution_plan=delivery, tree_position=tree_position,
                                 item=ReleaseOrderItemFactory(
                                     release_order=ReleaseOrderFactory(waybill=order_number)))
 
     def create_node_and_answers(self, number_of_deliveries, order_number, programme_name, consignee, comment,
-                                is_purchase, track):
+                                is_purchase, track, tree_position=Runnable.IMPLEMENTING_PARTNER):
         while number_of_deliveries > 0:
             delivery = DeliveryFactory(track=track, programme=ProgrammeFactory(name=programme_name),
                                        consignee=ConsigneeFactory(name=consignee))
 
-            self._create_node(delivery, is_purchase, order_number, track)
+            self._create_node(delivery, is_purchase, order_number, track, tree_position)
 
             run = RunFactory(runnable=delivery)
             MultipleChoiceAnswerFactory(run=run, question=self.delivery_received_qtn, value=self.yes_one)

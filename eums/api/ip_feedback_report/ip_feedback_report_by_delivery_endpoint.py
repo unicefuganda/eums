@@ -1,7 +1,7 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode
+    DistributionPlanNode, Runnable
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -75,7 +75,8 @@ def _get_filtered_deliveries(request):
     if search_query:
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=search_query)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=search_query)
-        delivery_ids = DistributionPlanNode.objects.filter(track=True, distribution_plan__track=True) \
+        delivery_ids = DistributionPlanNode.objects \
+            .filter(track=True, distribution_plan__track=True, tree_position=Runnable.IMPLEMENTING_PARTNER) \
             .filter(Q(distribution_plan__consignee__name__icontains=search_query) |
                     Q(distribution_plan__programme__name__icontains=search_query) |
                     Q(item__in=purchase_order_item) |
@@ -83,5 +84,9 @@ def _get_filtered_deliveries(request):
 
         return DistributionPlan.objects.filter(id__in=delivery_ids)
 
-    return DistributionPlan.objects.filter(track=True)
+    delivery_ids = DistributionPlanNode.objects \
+        .filter(track=True, distribution_plan__track=True, tree_position=Runnable.IMPLEMENTING_PARTNER) \
+        .values_list('distribution_plan',
+                     flat=True)
+    return DistributionPlan.objects.filter(id__in=delivery_ids)
 
