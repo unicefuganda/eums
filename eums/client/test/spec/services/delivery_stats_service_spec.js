@@ -1,25 +1,19 @@
 describe('DeliveryStatsService', function () {
-
-    var mockServiceFactory, config;
-
+    var mockBackend, deliveryStatsService, deliveryStatsEndpoint,
+        fakeResponse = {message: 'some message'};
     beforeEach(function () {
-
         module('DeliveryStats');
-        mockServiceFactory = jasmine.createSpyObj('mockServiceFactory', ['create']);
-
-        module(function ($provide) {
-            $provide.value('ServiceFactory', mockServiceFactory);
-        });
-
-        inject(function (DeliveryStatsService, EumsConfig) {
-            mockServiceFactory.create.and.returnValue({});
-            config = EumsConfig;
-        });
+        inject(function ($httpBackend, DeliveryStatsService, EumsConfig) {
+            mockBackend = $httpBackend;
+            deliveryStatsService = DeliveryStatsService;
+            deliveryStatsEndpoint = EumsConfig.BACKEND_URLS.DELIVERY_STATS;
+        })
     });
 
-    it('should delegate down to service factory with correct url', function () {
-        expect(mockServiceFactory.create).toHaveBeenCalledWith({
-            uri: config.BACKEND_URLS.DELIVERY_STATS,
+    it('should call delivery stats endpoint', function(){
+        mockBackend.whenGET(deliveryStatsEndpoint).respond(fakeResponse);
+        deliveryStatsService.getStats().then(function(response){
+            expect(response).toEqual(fakeResponse)
         });
     });
 });

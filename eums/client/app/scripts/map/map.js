@@ -110,7 +110,7 @@
     });
 
     module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService,
-                                           $q, MapFilterService, DeliveryService, UserService) {
+                                           $q, MapFilterService, DeliveryService, UserService, DeliveryStatsService) {
         var map, mapScope;
 
         var zoomControl = L.control.zoom({
@@ -178,7 +178,7 @@
                     });
                     markersGroup = L.layerGroup(allMarkers);
                     markersGroup.addTo(map);
-                    scope.data.totalStats = DeliveryService.aggregateStats(scope.allResponsesMap);
+                    scope.data.totalStats = DeliveryStatsService.getStats();
                     showLoadingModal(false);
                 });
             });
@@ -366,7 +366,7 @@
             templateUrl: '/static/app/views/partials/marker-summary.html'
         }
     })
-        .directive('mapFilters', function (DeliveryService) {
+        .directive('mapFilters', function (DeliveryService, DeliveryStatsService) {
         function removeEmptyArray(filteredResponses) {
             return filteredResponses.filter(function (response) {
                 return response.length > 0;
@@ -429,7 +429,7 @@
                         scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
                     }
 
-                    if (scope.allResponsesMap)  scope.data.totalStats = DeliveryService.aggregateStats(scope.allResponsesMap, scope.data.district);
+                    //if (scope.allResponsesMap)  scope.data.totalStats = DeliveryStatsService.getStats({location: scope.data.district});
 
                     if (scope.data.district) {
                         var layerName = scope.data.district;
@@ -649,5 +649,5 @@
 
         });
 })
-(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'eums.mapFilter', 'map.layers']));
+(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'eums.mapFilter', 'map.layers', 'DeliveryStats']));
 

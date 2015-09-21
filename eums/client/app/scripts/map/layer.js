@@ -1,4 +1,4 @@
-angular.module('map.layers', ['Delivery'])
+angular.module('map.layers', ['Delivery', 'DeliveryStats'])
     .factory('LayerMap', function () {
         var layerList = {};
         var highlightedLayerName = '';
@@ -44,12 +44,12 @@ angular.module('map.layers', ['Delivery'])
                 layerList[layerName].click();
             }
         };
-    }).factory('Layer', function (DeliveryService) {
-        function changeGlobalStats(layerName, responses, scope) {
+    }).factory('Layer', function (DeliveryService, DeliveryStatsService) {
+        function changeGlobalStats(layerName, scope) {
+            var filter = layerName? {location: layerName} : {};
             scope.$apply(function () {
-                scope.data.totalStats = DeliveryService.aggregateStats(responses, layerName);
+                scope.data.totalStats = DeliveryStatsService.getStats(filter);
             });
-
         }
 
 
@@ -73,7 +73,7 @@ angular.module('map.layers', ['Delivery'])
 
             this.click = function () {
                 var responses = scope.allResponsesMap;
-                changeGlobalStats(layerName, responses, scope);
+                changeGlobalStats(layerName, scope);
                 showResponsesForDistrict(layerName, responses, scope);
                 map.fitBounds(layer.getBounds());
                 //window.map.addCustomZoomControl();
@@ -100,16 +100,14 @@ angular.module('map.layers', ['Delivery'])
                 layer.setStyle(layerOptions.districtLayerStyle);
                 selected = true;
 
-                var responses = scope.allResponsesMap;
-                changeGlobalStats(layerName, responses, scope);
+                changeGlobalStats(layerName, scope);
             };
 
             this.unhighlight = function () {
                 layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
                 selected = false;
 
-                var responses = scope.allResponsesMap;
-                changeGlobalStats(undefined, responses, scope);
+                changeGlobalStats(undefined, scope);
             };
 
             this.isHighlighted = function () {
