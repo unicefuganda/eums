@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
 from eums.models import UserProfile, DistributionPlan, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem
+    ReleaseOrderItem, Runnable
 
 PAGE_SIZE = 10
 
@@ -22,7 +22,7 @@ def end_user_feedback_report(request):
     response = []
     deliveries = DistributionPlan.objects.filter(track=True)
     for delivery in deliveries:
-        nodes = get_tracked_nodes(delivery, request)
+        nodes = end_user_tracked_nodes(delivery, request)
         if nodes:
             build_answers_for_nodes(delivery, nodes, response)
 
@@ -75,12 +75,13 @@ def build_answers_for_nodes(delivery, nodes, response):
         })
 
 
-def get_tracked_nodes(delivery, request):
+def end_user_tracked_nodes(delivery, request):
     if request.GET.get('query'):
         params = request.GET.get('query')
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
         nodes = DistributionPlanNode.objects.filter(Q(distribution_plan=delivery),
+                                                    Q(tree_position=Runnable.END_USER),
                                                     Q(item__item__description__icontains=params) |
                                                     Q(consignee__name__icontains=params) |
                                                     Q(item=purchase_order_item) |
