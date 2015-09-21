@@ -44,7 +44,8 @@
         "SATISFIED_OPTIONS": "api/satisfied-options/",
         "PERMISSION": "/api/permission",
         "ALERTS": "/api/alert/",
-        "DELIVERY_EXPORTS": "/exports/deliveries/"
+        "DELIVERY_EXPORTS": "/exports/deliveries/",
+        "DELIVERY_STATS": "/api/delivery-stats/"
     },
     "CONTACT_SERVICE_URL": "http://localhost:8005/api/contacts/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",
