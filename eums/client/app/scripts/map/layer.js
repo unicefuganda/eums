@@ -48,7 +48,9 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
         function changeGlobalStats(layerName, scope) {
             var filter = layerName? {location: layerName} : {};
             scope.$apply(function () {
-                scope.data.totalStats = DeliveryStatsService.getStats(filter);
+                DeliveryStatsService.getStats(filter).then(function(responses){
+                    scope.data.totalStats =responses.data;
+                });
             });
         }
 

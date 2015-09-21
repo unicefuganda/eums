@@ -178,7 +178,10 @@
                     });
                     markersGroup = L.layerGroup(allMarkers);
                     markersGroup.addTo(map);
-                    scope.data.totalStats = DeliveryStatsService.getStats();
+                    DeliveryStatsService.getStats().then(function(responses){
+                        scope.data.totalStats =responses.data;
+                    });
+
                     showLoadingModal(false);
                 });
             });
@@ -429,16 +432,12 @@
                         scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
                     }
 
-                    //if (scope.allResponsesMap)  scope.data.totalStats = DeliveryStatsService.getStats({location: scope.data.district});
-
                     if (scope.data.district) {
-                        var layerName = scope.data.district;
+                        DeliveryStatsService.getStats({location: scope.data.district}).then(function(responses){
+                            scope.data.totalStats =responses.data;
+                        });
                         //TODO: refactor this, to use same function with district on click
-                        (function showResponsesForDistrict() {
-                            scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
-                            scope.data.district = layerName;
-                            console.log(scope.data.responses);
-                        })();
+                        scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
                     }
                 });
             }
