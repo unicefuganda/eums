@@ -50,10 +50,15 @@
 
 #stats-panel {
   position: absolute;
-  bottom: 23px;
-  right: 15px;
+  bottom: 0;
+  right: 25px;
+  background: white;
   border: 1px solid @brand-primary;
-  width: 450px;
+  border-radius: 7px;
+  box-shadow: 4px 4px 7px #888888;
+  overflow: hidden;
+  padding: 10px;
+  width: 490px;
 }
 
 #marker-summary {
@@ -298,12 +303,14 @@ div[class*="-aggregate-marker-icon"] div {
 .stats-blue-text {
   color: @brand-primary;
   text-transform: uppercase;
-  font-size: 0.7em;
+  font-size: 0.8em;
+  font-weight: bold;
 }
 .stats-gray-text {
   color: #9F9F9F;
   text-transform: uppercase;
-  font-size: 0.7em;
+  font-size: 0.8em;
+  font-weight: bold;
 }
 .stats-div {
   margin: 5px;
@@ -314,6 +321,12 @@ div[class*="-aggregate-marker-icon"] div {
 }
 .stats-td {
   width: 33%;
+}
+.stats-td-last-column {
+  width: 25%;
+}
+.stats-td-first-column {
+  width: 28%;
 }
 .stats-panel-header {
   margin: 5px;

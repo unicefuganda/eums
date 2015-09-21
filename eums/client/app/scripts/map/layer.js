@@ -50,6 +50,7 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
             scope.$apply(function () {
                 DeliveryStatsService.getStats(filter).then(function(responses){
                     scope.data.totalStats =responses.data;
+                    scope.data.totalStats.location = layerName;
                 });
             });
         }

@@ -435,6 +435,7 @@
                     if (scope.data.district) {
                         DeliveryStatsService.getStats({location: scope.data.district}).then(function(responses){
                             scope.data.totalStats =responses.data;
+                            scope.data.totalStats.location = scope.data.district;
                         });
                         //TODO: refactor this, to use same function with district on click
                         scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);

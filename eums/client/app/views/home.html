@@ -9,31 +9,31 @@
 
             <div map-summary consigneeDetails></div>
             <div id="stats-panel">
-                <table class="panel pad-10 col-lg-12">
+                <table class=" pad-10 col-lg-12">
                     <tr>
-                        <td colspan="2" class="align-left stats-td">
+                        <td colspan="2" class="align-left stats-td-first-column">
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Total Supplies Sent</li>
-                                    <li class="bold-label">$187,012</li>
-                                    <li class="stats-gray-text">423 Total Deliveries Sent</li>
+                                    <li class="bold-label font-size-x-large">{{ data.totalStats.totalValueOfDeliveries | currency}}</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.totalNumberOfDeliveries }} Total Deliveries Sent</li>
                                 </ul>
                             </div>
                         </td>
-                        <td>
+                        <td class="stats-td-last-column">
                             <div class="stats-panel-header align-right" ng-show="data.totalStats.location">{{ data.totalStats.location }}</div>
                             <div class="stats-panel-header align-right" ng-show="!data.totalStats.location">All Districts</div>
                         </td>
                     </tr>
                     <tr class="td-border-top">
-                        <td class="stats-td">
+                        <td class="stats-td-first-column">
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Supplies Received</li>
-                                    <li class="bold-label">$121,340&nbsp;
-                                        <span class="label label-success">62%</span>
+                                    <li class="bold-label font-size-large">{{ data.totalStats.totalValueOfSuccessfulDeliveries | currency}}&nbsp;
+                                        <span class="label label-success">{{ data.totalStats.percentageValueOfSuccessfulDeliveries }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">387 Responses (87%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfSuccessfulProductDeliveries }} Responses ({{ data.totalStats.percentageOfSuccessfulDeliveries }}%)</li>
                                 </ul>
                             </div>
                         </td>
@@ -41,34 +41,34 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Supplies Not Received</li>
-                                    <li class="bold-label">$41,720&nbsp;
-                                        <span class="label label-danger">23%</span>
+                                    <li class="bold-label font-size-large">{{ data.totalStats.totalValueOfUnsuccessfulProductDeliveries | currency}}&nbsp;
+                                        <span class="label label-danger">{{ data.totalStats.percentageValueOfUnsuccessfulDeliveries }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">25 Responses (24%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfUnsuccessfulProductDeliveries }} Responses ({{data.totalStats.percentageOfUnsuccessfulDeliveries }}%)</li>
                                 </ul>
                             </div>
                         </td>
-                        <td class="stats-td">
+                        <td class="stats-td-last-column">
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
-                                    <li class="stats-blue-text">Supplies Not Responded</li>
-                                    <li class="bold-label">$19,200&nbsp;
-                                        <span class="label label-default">8%</span>
+                                    <li class="stats-blue-text">Not Responded</li>
+                                    <li class="bold-label font-size-large">{{ data.totalStats.totalValueOfNonResponseToProductReceived | currency}}&nbsp;
+                                        <span class="label label-default">{{ data.totalStats.percentageValueOfNonResponseToProductReceived }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">12 Responses (11%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfNonResponseToProductReceived }} Responses ({{data.totalStats.percentageOfNonResponseToProductReceived }}%)</li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
                     <tr class="td-border-top">
-                        <td class="stats-td">
+                        <td class="stats-td-first-column">
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Received in Good Order</li>
-                                    <li class="bold-label">$91,340&nbsp;
-                                        <span class="label label-success">82%</span>
+                                    <li class="bold-label">{{ data.totalStats.totalValueOfDeliveriesInGoodOrder | currency}}&nbsp;
+                                        <span class="label label-success">{{ data.totalStats.percentageValueOfDeliveriesInGoodOrder }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">220 Responses (62%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfDeliveriesInGoodOrder }} Responses ({{data.totalStats.percentageOfDeliveriesInGoodOrder }}%)</li>
                                 </ul>
                             </div>
                         </td>
@@ -76,34 +76,34 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Received in Bad Order</li>
-                                    <li class="bold-label">$31,000&nbsp;
-                                        <span class="label label-danger">62%</span>
+                                    <li class="bold-label">{{ data.totalStats.totalValueOfDeliveriesInBadOrder | currency}}&nbsp;
+                                        <span class="label label-danger">{{ data.totalStats.percentageValueOfDeliveriesInBadOrder }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">104 Responses (42%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfDeliveriesInBadOrder }} Responses ({{data.totalStats.percentageOfDeliveriesInBadOrder }}%)</li>
                                 </ul>
                             </div>
                         </td>
-                        <td class="stats-td">
+                        <td class="stats-td-last-column">
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Responded</li>
-                                    <li class="bold-label">$9,230&nbsp;
-                                        <span class="label label-default">17%</span>
+                                    <li class="bold-label">{{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | currency}}&nbsp;
+                                        <span class="label label-default">{{ data.totalStats.percentageValueOfNonResponseToQualityOfProduct }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">32 Responses (3%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfNonResponseToQualityOfProduct }} Responses ({{data.totalStats.percentageOfNonResponseToQualityOfProduct }}%)</li>
                                 </ul>
                             </div>
                         </td>
                     </tr>
                     <tr class="td-border-top">
-                        <td class="stats-td">
+                        <td class="stats-td-first-column">
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Satisfied with Delivery</li>
-                                    <li class="bold-label">$42,890&nbsp;
-                                        <span class="label label-danger">37%</span>
+                                    <li class="bold-label">{{ data.totalStats.totalValueOfSatisfactoryDeliveries | currency}}&nbsp;
+                                        <span class="label label-success">{{ data.totalStats.percentageValueOfSatisfactoryDeliveries }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">25 Responses (24%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfSatisfactoryDeliveries }} Responses ({{data.totalStats.percentageOfSatisfactoryDeliveries }}%)</li>
                                 </ul>
                             </div>
                         </td>
@@ -111,21 +111,21 @@
                             <div class="stats-div">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Satisfied with Delivery</li>
-                                    <li class="bold-label">$75,140&nbsp;
-                                        <span class="label label-default">59%</span>
+                                    <li class="bold-label">{{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | currency}}&nbsp;
+                                        <span class="label label-danger">{{ data.totalStats.percentageValueOfUnsatisfactoryDeliveries }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">12 Responses (11%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfUnsatisfactoryDeliveries }} Responses ({{data.totalStats.percentageOfUnsatisfactoryDeliveries }}%)</li>
                                 </ul>
                             </div>
                         </td>
-                        <td class="stats-td">
+                        <td class="stats-td-last-column">
                             <div class="stats-div-no-border">
                                 <ul class="list-unstyled">
                                     <li class="stats-blue-text">Not Responded</li>
-                                    <li class="bold-label">$9,320&nbsp;
-                                        <span class="label label-success">6%</span>
+                                    <li class="bold-label">{{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | currency}}&nbsp;
+                                        <span class="label label-default">{{ data.totalStats.percentageValueOfNonResponseToSatisfactionWithProduct }}%</span>
                                     </li>
-                                    <li class="stats-gray-text">32 Responses (9%)</li>
+                                    <li class="stats-gray-text">{{ data.totalStats.numberOfNonResponseToSatisfactionWithProduct }} Responses ({{data.totalStats.percentageOfNonResponseToSatisfactionWithProduct }}%)</li>
                                 </ul>
                             </div>
                         </td>
