@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from eums.api.delivery_stats.quality_of_product_stats import get_quality_of_product_base_query_sets
 from eums.api.delivery_stats.satisfied_with_product_stats import get_satisfied_with_product_base_query_sets
 
-from eums.api.delivery_stats.stats_structure import DeliveryStats
+from eums.api.delivery_stats.stats_structure import DeliveryStats, BaseQuerySets
 from eums.api.delivery_stats.was_product_received_stats import get_product_received_base_query_sets
 from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable
 
@@ -16,18 +16,19 @@ class DeliveryStatsEndpoint(APIView):
     def __init__(self):
         self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
+        self.location = None
         super(DeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
-        location = request.GET.get('location')
+        self.location = request.GET.get('location')
 
-        if location:
-            self.end_user_nodes = self.end_user_nodes.filter(location=location)
+        if self.location:
+            self.end_user_nodes = self.end_user_nodes.filter(location=self.location)
 
-        product_received_stats = self._get_product_received_stats(location=location)
-        quality_of_product_stats = self._get_quality_of_product_stats(location=location)
-        satisfied_with_product_stats = self._get_satisfied_with_product_stats(location=location)
+        product_received_stats = self._get_product_received_stats()
+        quality_of_product_stats = self._get_quality_of_product_stats()
+        satisfied_with_product_stats = self._get_satisfied_with_product_stats()
 
         if consignee_type == DeliveryNode.END_USER:
             return Response({
@@ -89,17 +90,30 @@ class DeliveryStatsEndpoint(APIView):
     def total_delivery_value(self):
         return self._get_nodes_total_value(self.end_user_nodes)
 
-    def _get_product_received_stats(self, location):
-        base_query_sets = get_product_received_base_query_sets(location=location)
-        return self._get_question_stats(base_query_sets)
+    def _get_product_received_stats(self):
+        base_query_sets = get_product_received_base_query_sets()
+        filtered_query_sets = self._apply_filters(base_query_sets)
+        return self._get_question_stats(filtered_query_sets)
 
-    def _get_quality_of_product_stats(self, location):
-        base_query_sets = get_quality_of_product_base_query_sets(location=location)
-        return self._get_question_stats(base_query_sets)
+    def _get_quality_of_product_stats(self):
+        base_query_sets = get_quality_of_product_base_query_sets()
+        filtered_query_sets = self._apply_filters(base_query_sets)
+        return self._get_question_stats(filtered_query_sets)
 
-    def _get_satisfied_with_product_stats(self, location):
-        base_query_sets = get_satisfied_with_product_base_query_sets(location=location)
-        return self._get_question_stats(base_query_sets)
+    def _get_satisfied_with_product_stats(self):
+        base_query_sets = get_satisfied_with_product_base_query_sets()
+        filtered_query_sets = self._apply_filters(base_query_sets)
+        return self._get_question_stats(filtered_query_sets)
+
+    def _apply_filters(self, base_query_sets):
+        filtered_positive_answers = base_query_sets.positive_answers
+        if self.location:
+            filtered_positive_answers = base_query_sets.positive_answers.filter(run__runnable__location=self.location)
+        return BaseQuerySets(
+            filtered_positive_answers,
+            base_query_sets.negative_answers,
+            base_query_sets.runs_with_answers
+        )
 
     def _get_question_stats(self, raw_stats):
         positive_count = raw_stats.positive_answers.count()
