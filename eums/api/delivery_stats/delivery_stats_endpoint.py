@@ -9,7 +9,7 @@ from eums.api.delivery_stats.satisfied_with_product_stats import get_satisfied_w
 
 from eums.api.delivery_stats.stats_structure import DeliveryStats, BaseQuerySets
 from eums.api.delivery_stats.was_product_received_stats import get_product_received_base_query_sets
-from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable
+from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, UserProfile
 
 
 class DeliveryStatsEndpoint(APIView):
@@ -18,17 +18,16 @@ class DeliveryStatsEndpoint(APIView):
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.location = None
         self.ip = None
+        self.user_profile = None
         super(DeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
         self.location = request.GET.get('location')
         self.ip = request.GET.get('ip')
+        self.user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
 
-        if self.location:
-            self.end_user_nodes = self.end_user_nodes.filter(location=self.location)
-        if self.ip:
-            self.end_user_nodes = self.end_user_nodes.filter(ip=self.ip)
+        self._apply_filters_to_nodes()
 
         product_received_stats = self._get_product_received_stats()
         quality_of_product_stats = self._get_quality_of_product_stats()
@@ -87,6 +86,14 @@ class DeliveryStatsEndpoint(APIView):
                 'percentageValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_value_negative,
                 'percentageValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_non_response,
             })
+
+    def _apply_filters_to_nodes(self):
+        if self.location:
+            self.end_user_nodes = self.end_user_nodes.filter(location=self.location)
+        if self.user_profile:
+            self.ip = self.user_profile.consignee
+        if self.ip:
+            self.end_user_nodes = self.end_user_nodes.filter(ip=self.ip)
 
     def total_deliveries(self):
         return self.end_user_nodes.count()

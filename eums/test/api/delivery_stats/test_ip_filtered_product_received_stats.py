@@ -25,7 +25,15 @@ class ProductReceivedStatsForIPTest(DeliveryStatsTestCase):
 
     def test_should_provide_product_received_question_stats_for_an_ip(self):
         response = self.client.get('%s?consigneeType=END_USER&ip=%s' % (ENDPOINT_URL, self.selected_ip.id))
+        self.assert_delivery_stats_are_filtered_for_selected_ip(response)
 
+    def test_should_provide_only_relevant_stats_for_logged_in_ip(self):
+        self.logout()
+        self.log_consignee_in(self.selected_ip)
+        response = self.client.get(ENDPOINT_URL)
+        self.assert_delivery_stats_are_filtered_for_selected_ip(response)
+
+    def assert_delivery_stats_are_filtered_for_selected_ip(self, response):
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 3)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 1000)
         self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 1)
