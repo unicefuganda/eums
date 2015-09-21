@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
 from eums.models import UserProfile, DistributionPlan, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem
+    ReleaseOrderItem, Runnable
 
 PAGE_SIZE = 10
 
@@ -81,14 +81,15 @@ def get_tracked_nodes(delivery, request):
         params = request.GET.get('query')
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
-        nodes = DistributionPlanNode.objects.filter(Q(distribution_plan=delivery),
-                                                    Q(item__item__description__icontains=params) |
-                                                    Q(consignee__name__icontains=params) |
-                                                    Q(item=purchase_order_item) |
-                                                    Q(item=release_order_item) |
-                                                    Q(distribution_plan__programme__name__icontains=params))
+        nodes = DistributionPlanNode.objects \
+            .filter(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER) \
+            .filter(Q(item__item__description__icontains=params) | Q(consignee__name__icontains=params) |
+                    Q(item=purchase_order_item) |
+                    Q(item=release_order_item) |
+                    Q(distribution_plan__programme__name__icontains=params))
     else:
-        nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery)
+        nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery,
+                                                    tree_position=Runnable.IMPLEMENTING_PARTNER)
     return nodes
 
 

@@ -87,6 +87,42 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'value': int(node_one.total_value)}, results)
         self.assertEqual(len(results['answers']), 5)
 
+    def test_should_not_return_items_and_answers_for_end_users(self):
+        delivery_one, node_one, purchase_order_item, _, _ = self.setup_nodes_with_answers(
+            node_two_position=Runnable.END_USER)
+        self.setup_flow_with_questions(delivery_one)
+        response = self.client.get(ENDPOINT_URL, content_type='application/json')
+
+        self.assertEqual(len(response.data['results']), 1)
+
+        results = response.data['results'][0]
+
+        self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
+        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
+        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
+        self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
+        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
+        self.assertDictContainsSubset({'value': int(node_one.total_value)}, results)
+        self.assertEqual(len(results['answers']), 5)
+
+    def test_should_not_returns_and_answers_for_middle_man(self):
+        delivery_one, node_one, purchase_order_item, _, _ = self.setup_nodes_with_answers(
+            node_two_position=Runnable.MIDDLE_MAN)
+        self.setup_flow_with_questions(delivery_one)
+        response = self.client.get(ENDPOINT_URL, content_type='application/json')
+
+        self.assertEqual(len(response.data['results']), 1)
+
+        results = response.data['results'][0]
+
+        self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
+        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
+        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
+        self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
+        self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
+        self.assertDictContainsSubset({'value': int(node_one.total_value)}, results)
+        self.assertEqual(len(results['answers']), 5)
+
     def test_should_return_date_from_delivery(self):
         delivery, _, _, _, _ = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery)
@@ -168,7 +204,9 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results), 1)
         self.assertDictContainsSubset({'order_number': node_two.item.number()}, results[0])
 
-    def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True):
+    def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True,
+                                 node_one_position=Runnable.IMPLEMENTING_PARTNER,
+                                 node_two_position=Runnable.IMPLEMENTING_PARTNER):
         consignee_one = ConsigneeFactory(name='consignee one')
         consignee_two = ConsigneeFactory(name='consignee two')
         programme_one = ProgrammeFactory(name='my first programme')
@@ -180,9 +218,9 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         delivery_one = DeliveryFactory(programme=programme_one, track=track_delivery_one)
         delivery_two = DeliveryFactory(programme=programme_two, track=track_delivery_two)
         node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=consignee_one,
-                                       item=purchase_order_item, quantity=1000)
+                                       item=purchase_order_item, quantity=1000, tree_position=node_one_position)
         node_two = DeliveryNodeFactory(distribution_plan=delivery_two, consignee=consignee_two, item=release_order_item,
-                                       quantity=500)
+                                       quantity=500, tree_position=node_two_position)
         flow = FlowFactory(for_runnable_type='WEB')
         question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
                                                    position=1)
@@ -230,7 +268,8 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         question_5 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
 
         for index in range(number_of_nodes):
-            node = DeliveryNodeFactory(distribution_plan=delivery, consignee=consignee_one, item=po_item)
+            node = DeliveryNodeFactory(distribution_plan=delivery, consignee=consignee_one, item=po_item,
+                                       tree_position=Runnable.IMPLEMENTING_PARTNER)
 
             run_one = RunFactory(runnable=node)
             MultipleChoiceAnswerFactory(question=question_1, run=run_one, value=option_1)
