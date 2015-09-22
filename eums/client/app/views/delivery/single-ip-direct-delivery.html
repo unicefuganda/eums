@@ -46,8 +46,8 @@
                                        ng-attr-id="{{ 'ip-select' }}"
                                        ng-disabled="cannotChangeIp()"
                                        value="{{ delivery.consignee }}"
-                                       tooltip-placement="top"
-                                       tooltip="ipFieldTitle()">
+                                       {{ ipFieldTitle()? title="You can not change IP for this PO but you can still deliver more items" :
+                                       title="" }}>
                             </div>
                         </div>
                         <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
@@ -137,7 +137,7 @@
             <div>
                 <div ng-show="purchaseOrderItems.length">
                     <div class="panel-body">
-                        <table id="singleIPDeliveryItemsTable" class="table table-curved blue-table-header ">
+                        <table id="singleIPDeliveryItemsTable" class="table table-curved blue-table-header vertical-align-middle">
                             <thead>
                             <tr>
                                 <th class="item-list-col-header">No.</th>
@@ -154,15 +154,15 @@
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ item.item.materialCode }}</td>
                                 <td>{{ item.item.description }}</td>
-                                <td>{{ item.quantity }}</td>
-                                <td>{{ item.value | currency }}</td>
-                                <td>{{ item.availableBalance }}</td>
+                                <td class="align-right pad-right-20">{{ item.quantity }}</td>
+                                <td class="align-right pad-right-20">{{ item.value | currency }}</td>
+                                <td class="align-right pad-right-20">{{ item.availableBalance }}</td>
                                 <td class="table-row-input-column">
                                     <input type="text" id="quantity-shipped" class="form-control"
                                            ng-model="item.quantityShipped" only-digits
                                            ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
                                 </td>
-                                <td>{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
+                                <td class="align-right pad-right-20">{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
                             </tr>
                         </table>
 
