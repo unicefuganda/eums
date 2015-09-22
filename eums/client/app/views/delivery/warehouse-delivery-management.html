@@ -1,113 +1,131 @@
 <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
     <div class="content">
         <ng-toast></ng-toast>
-        <h4 class="page-header">Waybill No:
-            <span class="text-primary">{{ selectedReleaseOrder.waybill }}</span>
-        </h4>
 
-        <h4 class="page-header">Implementing Partner:
-            <span class="text-primary">{{ selectedReleaseOrder.consignee.name }}</span>
-        </h4>
-        <div class="row">
-            <div class="form-horizontal">
-                <div class="form-group col-lg-3">
-                    <label class="col-lg-6 control-label description-label">
-                        Shipment Date:
-                    </label>
-                    <div class="col-lg-6">
-                        <label class="control-label text-success">{{ selectedReleaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}</label>
-                    </div>
-                </div>
-                <div class="form-group col-lg-4">
-                    <label class="col-lg-4 control-label description-label">
-                        Contact Person:
-                    </label>
-                    <div class="col-lg-8 form-inline" ng-class="{'has-error': !contact.id && errors}">
-                        <div class="form-group table-contact-form-group col-md-10">
-                            <input type="hidden" search-contacts required="required"
-                                   value="{{ contact.id }}" ng-model="contact.id"
-                                   ng-attr-id="{{ 'contact-select' }}">
-                        </div>
-                        <div class="form-group table-contact-form-group col-md-2">
-                            <button type="button" class="btn btn-default "
-                                    ng-click="addContact(item, $index)">
-                                <i class="glyphicon glyphicon-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group col-lg-3" ng-if="districtsLoaded" ng-class="{'has-error': !selectedLocation.id && errors}">
-                    <label class="col-lg-4 control-label description-label">
-                        District:
-                    </label>
-                    <div class="col-lg-8">
-                        <input type="hidden" search-from-list list="{{ districts }}"
-                           ng-model="selectedLocation.id"
-                           ng-attr-id="{{ 'location-select' }}"
-                           value="{{ selectedLocation.id }}">
-                    </div>
-                </div>
-
-                <div class="checkbox col-lg-2">
-                    <label class="control-label description-label">
-                        <input type="checkbox"
-                               ng-model="track">
-                        Track delivery
-                    </label>
+        <div class="row col-lg-11 three-columns-form stripped-form">
+            <div class="col-md-4">
+                <div class="sub-header">IMPLEMENTING PARTNER</div>
+                <div>
+                    <table class="stripped-bordered">
+                        <tr id="itemNameLabel">
+                            <td class="bold-label">Implementing Partner:</td>
+                            <td class="align-right"><span
+                                    class="label label-success item-quantity-label">{{ selectedReleaseOrder.consignee.name }}</span>
+                            </td>
+                        </tr>
+                        <tr id="qty-available-label">
+                            <td class="bold-label">Shipping Date:</td>
+                            <td class="align-right"><span
+                                    class="label label-success item-quantity-label">{{ selectedReleaseOrder.deliveryDate | date : 'dd/MM/yyyy' }}</span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
-            <div class="material-items well col-lg-7 pull-left">
-                <div class="col-lg-6 no-side-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <span class="label label-success label-as-badge">{{ selectedReleaseOrder.totalValue | number }}</span>
-                            Total Value (USD)
-                        </li>
-                    </ul>
+            <div class="waybill-details">
+                <div class="sub-header">WAYBILL DETAILS</div>
+                <div>
+                    <table class="stripped-bordered">
+                        <tr id="itemNameLabel">
+                            <td class="bold-label">Waybill No:</td>
+                            <td class="align-right"><span
+                                    class="label label-success item-quantity-label">{{ selectedReleaseOrder.waybill }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold-label">Total Items</td>
+                            <td class="align-right"><span
+                                    class="label label-success item-quantity-label">{{ selectedReleaseOrder.items.length }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="bold-label">Total Value</td>
+                            <td class="align-right"><span
+                                    class="label label-success item-quantity-label">{{ selectedReleaseOrder.totalValue | currency }}</span>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
-                <div class="col-lg-6 no-side-padding">
-                    <ul class="list-group">
-                        <li class="list-group-item">
+            </div>
+            <div class="col-md-4">
+                <div class="sub-header">DELIVERY DETAILS</div>
+                <div class="rounded-border col-md-12">
+                    <div class="col-md-12 margin-bottom-10">
+                        <div class="bold-label pad-small">Contact Person</div>
+                        <div class="col-md-10 pad-small" ng-class="{'has-error': !contact.id && errors}">
+                            <div class="form-group table-contact-form-group col-md-10">
+                                <input type="hidden" search-contacts required="required"
+                                       value="{{ contact.id }}" ng-model="contact.id"
+                                       ng-attr-id="{{ 'contact-select' }}">
+                            </div>
+                            <div class="form-group table-contact-form-group plus-btn col-md-2">
+                                <button type="button" class="btn btn-default "
+                                        ng-click="addContact(item, $index)">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                            <span class="label label-success label-as-badge">{{ selectedReleaseOrder.items.length }}</span>
-                            Total Items
-                        </li>
-                    </ul>
+                    <div class="col-md-12 margin-bottom-10">
+                        <div class="bold-label pad-small">Choose District</div>
+                        <div id="input-location" class="pad-small col-md-8" ng-if="districtsLoaded"
+                             ng-class="{'has-error': !selectedLocation.id && errors}">
+                            <div class="pad-small">
+                                <input type="hidden" search-from-list list="{{ districts }}"
+                                       ng-model="selectedLocation.id"
+                                       ng-attr-id="{{ 'location-select' }}"
+                                       value="{{ selectedLocation.id }}"></div>
+                        </div>
+                        <div class="margin-10 col-mg-4">
+                            <label class="control-label description-label">
+                                <input type="checkbox"
+                                       ng-model="track">
+                                Track delivery
+                            </label>
+                        </div>
+
+                    </div>
                 </div>
-             </div>
+            </div>
         </div>
 
         <div ng-show="releaseOrderItems.length">
-            <div class="panel-body ">
-                <table id="warehouseDeliveryTable" class="table table-bordered table-striped table-hover table-condensed">
+            <div class="panel-body">
+                <table si-table id="warehouseDeliveryTable"
+                       class="table table-bordered table-hover table-striped delivery">
+                    <thead>
                     <tr>
-                        <th class="item-list-col-header">No.</th>
-                        <th class="item-list-col-header">Material</th>
-                        <th class="item-list-col-header">Description</th>
-                        <th class="item-list-col-header">Quantity</th>
-                        <th class="item-list-col-header">Unit</th>
-                        <th class="item-list-col-header">Value</th>
+                        <th width="2%">NO.</th>
+                        <th>MATERIAL NO.</th>
+                        <th>Item Description</th>
+                        <th>QUANTITY</th>
+                        <th>VALUE</th>
+                        <th>UNIT</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     <tr ng-repeat="(itemIndex, releaseOrderItem) in releaseOrderItems">
                         <td>{{ itemIndex + 1 }}</td>
                         <td>{{ releaseOrderItem.item.materialCode }}</td>
                         <td>{{ releaseOrderItem.item.description }}</td>
                         <td>{{ releaseOrderItem.quantity }}</td>
-                        <td>{{ releaseOrderItem.item.unit.name }}</td>
-                        <td>{{ releaseOrderItem.value }}</td>
+                        <td>{{ releaseOrderItem.value | currency }}</td>
+                        <td>{{ releaseOrderItem.item.unit.name.capitalize() }}</td>
                     </tr>
+                    </tbody>
                 </table>
             </div>
             <div class="pad-20 row">
                 <div class="pull-right">
                     <button id="warehouseSaveBtn" type="button" class="btn btn-primary" ng-click="saveDelivery()">
                         <i class="glyphicon glyphicon-floppy-save"> </i>
-                        Save
+                        Save Delivery
                     </button>
                 </div>
             </div>
         </div>
     </div>
-    <eums-contact ></eums-contact>
+    <eums-contact></eums-contact>
     <ng-include src="'/static/app/views/delivery/partials/add-remark-modal.html'"></ng-include>
 </div>
