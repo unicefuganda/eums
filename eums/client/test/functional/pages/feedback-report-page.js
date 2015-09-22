@@ -1,7 +1,7 @@
 var FeedbackReportPage = function () {};
 
 FeedbackReportPage.prototype = Object.create({}, {
-    url: { get: function(){ return '#/end-user-responses' }},
+    url: { get: function(){ return '/#/end-user-responses' }},
 
     visit: { value: function(){
         browser.get(this.url);

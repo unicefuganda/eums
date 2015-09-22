@@ -2,7 +2,7 @@ var LoginPage = function () {};
 
 LoginPage.prototype = Object.create({}, {
 
-    url: { get: function () { return 'login'; }},
+    url: { get: function () { return '/login'; }},
 
     visit: { value: function () {
         browser.ignoreSynchronization = true;

@@ -1,7 +1,7 @@
 var IPShipmentSearchPage = function () {};
 
 IPShipmentSearchPage.prototype = Object.create({}, {
-    url: { get: function () { return '#/ip-deliveries'; }},
+    url: { get: function () { return '/#/ip-deliveries'; }},
 
     visit: { value: function () {
         browser.get(this.url);

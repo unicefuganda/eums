@@ -1,7 +1,7 @@
 var DirectDeliverySearchPage = function () {};
 
 DirectDeliverySearchPage.prototype = Object.create({}, {
-    url: { get: function () { return '#/direct-delivery'; }},
+    url: { get: function () { return '/#/direct-delivery'; }},
 
     visit: { value: function () {
         browser.get(this.url);

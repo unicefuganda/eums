@@ -2,7 +2,7 @@ var EC = protractor.ExpectedConditions;
 var IpWarehousePage = function () {};
 
 IpWarehousePage.prototype = Object.create({}, {
-    url: { get: function () { return '#/ip-items'; }},
+    url: { get: function () { return '/#/ip-items'; }},
     visit: { value: function () {
         browser.get(this.url);
     }},

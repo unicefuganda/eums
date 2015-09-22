@@ -1,7 +1,7 @@
 var ContactsPage = function () {};
 
 ContactsPage.prototype = Object.create({}, {
-    url: { get: function () { return '#/contacts'; }},
+    url: { get: function () { return '/#/contacts'; }},
     visit: { value: function () {
         browser.get(this.url);
     }},

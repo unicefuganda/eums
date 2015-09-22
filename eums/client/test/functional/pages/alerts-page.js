@@ -2,7 +2,7 @@ var AlertsPage = function () {};
 var EC = protractor.ExpectedConditions;
 
 AlertsPage.prototype = Object.create({}, {
-    url: { get: function () { return '#/alerts'; }},
+    url: { get: function () { return '/#/alerts'; }},
 
     visit: { value: function () {
         browser.get(this.url);

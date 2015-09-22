@@ -1,7 +1,7 @@
 var consigneesPage = function () {};
 
 consigneesPage.prototype = Object.create({}, {
-    url: { get: function () { return '#/consignees'; }},
+    url: { get: function () { return '/#/consignees'; }},
 
     visit: { value: function () {
         browser.get(this.url);

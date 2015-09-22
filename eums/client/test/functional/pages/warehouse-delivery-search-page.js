@@ -1,7 +1,7 @@
 var WarehouseDeliverySearchPage = function () {};
 
 WarehouseDeliverySearchPage.prototype = Object.create({}, {
-    url: { get: function () { return '#/warehouse-delivery'; }},
+    url: { get: function () { return '/#/warehouse-delivery'; }},
 
     visit: { value: function () {
         browser.get(this.url);
