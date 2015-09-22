@@ -10,14 +10,14 @@
     ng-class="{ active: isActive('/field-verification-reports')}">
     <a href="#/field-verification-reports">Field Verification</a>
 </li>
-<li class="dropdown" ng-class="{ active: isActive('/reports,/ip-feedback-report-by-item,/ip-responses')}">
+<li id="reports-nav" class="dropdown" ng-class="{ active: isActive('/reports,/ip-feedback-report-by-item,/ip-responses')}">
     <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
     <ul class="dropdown-menu" role="menu">
-        <li><a href="#/ip-feedback-report-by-item">IP Feedback Report</a></li>
+        <li id="ip-feedback-nav" ><a href="#/ip-feedback-report-by-item">IP Feedback Report</a></li>
         <li class="divider"></li>
-        <li><a href="#/end-user-feedback-report">End User Feedback Report</a></li>
+        <li id="end-user-feedback-nav" ><a href="#/end-user-feedback-report">End User Feedback Report</a></li>
         <li class="divider"></li>
-        <li><a href="#/reports">IP Stock Report</a></li>
+        <li id="ip-stock-nav" ><a href="#/reports">IP Stock Report</a></li>
     </ul>
 </li>
 <li class="dropdown" ng-class="{ active: isActive('/consignees')}">

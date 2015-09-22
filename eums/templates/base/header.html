@@ -8,8 +8,8 @@
         <ul class="nav navbar-nav navbar-right">
             <li><span id="user-icon" class="glyphicon glyphicon-user white"><span id="user">{{ user }}
             <li>
-            <li><a href="/password_change">Change Password</a></li>
-            <li><a href="{% url "logout" %}">Logout</a>
+            <li id="change-password-nav" ><a href="/password_change">Change Password</a></li>
+            <li id="logout-nav" > <a href="{% url "logout" %}">Logout</a>
             <li>
         </ul>
     </div>
@@ -34,9 +34,9 @@
                     <a href="" data-toggle="dropdown" role="button" aria-expanded="false">Admin<span
                             class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="/#/import-data">Import Vision Data</a></li>
+                        <li id="import-nav" ><a href="/#/import-data">Import Vision Data</a></li>
                         <li class="divider"></li>
-                        <li><a href="/users">Users</a></li>
+                        <li id="users-nav" ><a href="/users">Users</a></li>
                         <li class="divider"></li>
                         <li id="contact-nav"><a href="/#/contacts">Contacts</a></li>
                     </ul>
