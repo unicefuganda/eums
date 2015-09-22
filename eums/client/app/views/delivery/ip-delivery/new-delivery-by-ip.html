@@ -1,11 +1,11 @@
 <ng-toast></ng-toast>
 <div class="container-fluid">
     <div class="eums page-header row">
-        <div class="pull-left pad-top-10">Create a Delivery</div>
+        <div class="pull-left pad-top-10">Report a New Distribution</div>
         <div class="pull-right">
-            <a href="#/ip-items" class="btn blue-border-button">
+            <a href="#/deliveries-by-ip/{{ item.id }}" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
-                Back to My Warehouse
+                Back to Previous
             </a>
         </div>
     </div>
@@ -179,11 +179,6 @@
             </div>
 
             <div class="row pull-right">
-                <a id="discard-delivery-report" href="#/deliveries-by-ip/{{ item.id }}" class="btn warning-border-button"
-                   ng-show="quantityAvailable">
-                    <span class="glyphicon glyphicon-remove"></span>
-                    Discard
-                </a>
                 <button id="save-delivery-report" type="button" class="btn btn-primary"
                         ng-click="save()">
                     <i class="glyphicon glyphicon-floppy-save"> </i>

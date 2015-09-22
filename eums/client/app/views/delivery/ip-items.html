@@ -3,12 +3,12 @@
 <div class="container-fluid">
     <div class="row" ng-hide="!items.length && !searchTerm.length">
         <div class="col-xs-4 pull-right">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon "
+            <div class="inner-addon right-addon">
+                <i class="glyphicon blue-unicef"
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by item description"/>
-                <span class="text-info" ng-show="searchTerm.length && !items.length">
+                       placeholder="Search for an item"/>
+                <span class="text-warning" ng-show="searchTerm.length && !items.length">
                     There are no matches to your search criteria.
                 </span>
             </div>
@@ -32,9 +32,13 @@
             <td class="v-align-middle">{{ item.itemDescription }}</td>
             <td class="v-align-middle">{{ item.availableBalance }}</td>
             <td class="v-align-middle">
-                <a href="#/deliveries-by-ip/{{ item.item }}" class="btn btn-sm btn-success viewDelivery">View Distributions</a>
+                <a href="#/deliveries-by-ip/{{ item.item }}" class="btn btn-sm btn-success viewDelivery">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                    View Distributions</a>
                 <a ng-disabled="!item.availableBalance" href="#/deliveries-by-ip/{{ item.item }}/new"
-                   class="btn btn-sm btn-info reportDelivery">Report Distributions</a>
+                   class="btn btn-sm btn-primary reportDelivery">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Report New Distribution</a>
             </td>
         </tr>
         </tbody>

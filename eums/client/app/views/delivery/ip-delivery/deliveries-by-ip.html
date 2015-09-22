@@ -1,47 +1,57 @@
 <ng-toast></ng-toast>
 <div class="container-fluid">
     <div class="eums page-header row">
-        <div class="pull-left pad-top-10">Item: {{ item.description }}</div>
+        <div class="pull-left pad-top-10">View Distributions for Item</div>
         <div class="pull-right">
             <a href="#/ip-items" class="btn blue-border-button">
                 <span class="glyphicon glyphicon-share-alt flip-horizontal"></span>
-                Back to My Warehouse
+                Back to Previous
             </a>
         </div>
     </div>
 
-    <div class="row pad-15">
-        <div class="pull-left" ng-show="quantityAvailable">
-            <a id="create-new-delivery" href="#/deliveries-by-ip/{{ item.id }}/new" class="btn btn-primary">
-                <span class="glyphicon glyphicon-plus"></span>
-                New Delivery Report
-            </a>
+    <div class="col-lg-12 row-padding">
+        <div class="col-lg-4 no-side-padding align-left">
+            <div class="sub-header">ITEM DETAILS</div>
+            <div class="rounded-border">
+                <table class="item-details-table">
+                    <tr id="itemNameLabel">
+                        <td class="bold-label">Item Name:</td>
+                        <td><span class="label label-success item-quantity-label">{{ item.description }}</span></td>
+                    </tr>
+                    <tr id="qty-available-label">
+                        <td class="bold-label">Quantity Available:</td>
+                        <td><span class="label label-success item-quantity-label">{{ quantityAvailable }}</span></td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <div class="pull-left content alerts-sub-header" ng-hide="quantityAvailable">
-            You have run out of inventory for this item.
-        </div>
-        <div class="pull-right pad-top-10">
-            <span class="pad-right-5 item-quantity-label">Quantity Available</span>
-            <span class="label label-success item-quantity-label">{{ quantityAvailable }}</span>
+        <div class="col-lg-8 no-side-padding">
+            <div class="align-right pad-top-100" ng-show="quantityAvailable">
+                <a id="create-new-delivery" href="#/deliveries-by-ip/{{ item.id }}/new" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Report New Distribution
+                </a>
+            </div>
         </div>
     </div>
 
-    <span class="well-sm"></span>
+    <div class="well-sm"></div>
 
     <div class="row" ng-hide="!deliveryNodes.length && !searchTerm.length">
         <div class="col-xs-4 pull-right">
-            <div class="inner-addon left-addon">
-                <i class="glyphicon"
+            <div class="inner-addon right-addon">
+                <i class="glyphicon blue-unicef"
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" ng-model="searchTerm"
                        placeholder="Search by Consignee, District or Date in format 'YYYY-MM-DD'"/>
-                <span class="text-info" ng-show="searchTerm.length && !deliveryNodes.length">
+                <span class="text-warning" ng-show="searchTerm.length && !deliveryNodes.length">
                     There are no matches to your search criteria.
                 </span>
             </div>
         </div>
     </div>
-    <span class="well-sm"></span>
+    <div class="well-sm"></div>
 
     <div ng-if="deliveryNodes.length">
         <table si-table class="table table-bordered table-hover table-striped table-condensed">
@@ -70,7 +80,7 @@
                 <td class="left-aligned">{{ node.location }}</td>
                 <td class="table-row-input-column subconsignee-column">
                     <a href="#/deliveries-by-ip/{{ itemId }}/{{ node.id }}/new"
-                       class="btn blue-border-button btn-sm" ng-hide="node.isEndUser">
+                       class="btn btn-sm btn-primary" ng-hide="node.isEndUser">
                         Sub-consignees
                     </a>
                     <span ng-show="node.isEndUser">End User</span>
@@ -89,7 +99,10 @@
             </tfoot>
         </table>
     </div>
-    <h4 class="text-warning" ng-show="!deliveryNodes.length && !searchTerm.length">
-        You have not made any deliveries for this item yet.
-    </h4>
+
+    <div class="col-lg-12 row-padding" ng-show="!deliveryNodes.length && !searchTerm.length">
+        <div class="no-items-div">
+            <span class="glyphicon glyphicon-warning-sign font-size-large text-warning"></span>&nbsp;You have not reported any deliveries for this item. Please click the button above to start reporting deliveries to sub-consignees.
+        </div>
+    </div>
 </div>
