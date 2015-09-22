@@ -132,7 +132,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
-        self.assertListEqual(response.data, expected_data)
+        self.assertItemsEqual(response.data, expected_data)
 
     def setup_responses(self):
         self.setup_runs()

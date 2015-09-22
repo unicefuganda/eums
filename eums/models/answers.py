@@ -1,5 +1,7 @@
+import datetime
 from django.db import models
 from django.db.models import Q
+from django.utils import timezone
 from eums.models import Run, Option
 from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQuestion
 from eums.models import question_hooks
@@ -71,6 +73,7 @@ class TextAnswer(Answer):
     run = models.ForeignKey(Run)
     question = models.ForeignKey(TextQuestion)
     value = models.CharField(max_length=255)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def format(self):
         return self.value
@@ -83,6 +86,7 @@ class NumericAnswer(Answer):
     run = models.ForeignKey(Run)
     question = models.ForeignKey(NumericQuestion)
     value = models.BigIntegerField()
+    date_created = models.DateTimeField(default=timezone.now)
 
     def format(self):
         return u'%s' % self.value
@@ -95,6 +99,7 @@ class MultipleChoiceAnswer(Answer):
     run = models.ForeignKey(Run)
     question = models.ForeignKey(MultipleChoiceQuestion, related_name='answers')
     value = models.ForeignKey(Option)
+    date_created = models.DateTimeField(default=timezone.now)
 
     def format(self):
         return self.value.text
