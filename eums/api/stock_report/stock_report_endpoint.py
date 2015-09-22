@@ -24,11 +24,11 @@ def _build_stock_report(consignee_id):
 
 
 def _get_report_details_for_node(node):
-    purchase_order_number = node.item.purchase_order.order_number
+    purchase_order_number = node.item.number()
     quantity_received = _compute_quantity_received(node)
-    total_value_received = quantity_received * node.item.sales_order_item.net_price
+    total_value_received = quantity_received * node.item.unit_value()
     quantity_dispensed = _compute_quantity_dispensed(node)
-    value_dispensed = quantity_dispensed * node.item.sales_order_item.net_price
+    value_dispensed = quantity_dispensed * node.item.unit_value()
 
     return {
         'document_number': purchase_order_number,

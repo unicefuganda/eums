@@ -1,6 +1,7 @@
 from decimal import Decimal
 
-from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, Flow, Runnable
+from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, DistributionPlan, PurchaseOrder, \
+    PurchaseOrderItem, Run, SalesOrderItem, SalesOrder
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -18,18 +19,33 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(StockReportResponsesEndpointTest, self).setUp()
+        self.clean()
+
         self.setup_questions()
         self.setup_actors()
         self.setup_purchase_orders_and_items()
         self.setup_distribution_plans()
+
+    def clean(self):
+        DistributionPlanNode.objects.all().delete()
+        Consignee.objects.all().delete()
+        NumericQuestion.objects.all().delete()
+        TextQuestion.objects.all().delete()
+        Consignee.objects.all().delete()
+        DistributionPlan.objects.all().delete()
+        PurchaseOrder.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
+        Run.objects.all().delete()
+        SalesOrder.objects.all().delete()
+        SalesOrderItem.objects.all().delete()
 
     def test_gets_stock_value_for_all_purchase_orders_for_an_ip(self):
         self.setup_responses()
 
         expected_data = [
             {'document_number': self.po_two.order_number,
-             'total_value_received': Decimal('10.0000'),
-             'total_value_dispensed': Decimal('10.0000'),
+             'total_value_received': Decimal('500.0000'),
+             'total_value_dispensed': Decimal('500.0000'),
              'balance': Decimal('0.0000'),
              'items': [{'code': unicode(self.po_item_three.item.material_code),
                         'description': unicode(self.po_item_three.item.description),
@@ -41,9 +57,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'balance': 0L
                         }]},
             {'document_number': self.po_one.order_number,
-             'total_value_received': Decimal('60.0000'),
-             'total_value_dispensed': Decimal('20.0000'),
-             'balance': Decimal('40.0000'),
+             'total_value_received': Decimal('800.0000'),
+             'total_value_dispensed': Decimal('300.0000'),
+             'balance': Decimal('500.0000'),
              'items': [{'code': unicode(self.po_item_two.item.material_code),
                         'description': unicode(self.po_item_two.item.description),
                         'quantity_delivered': 3,
