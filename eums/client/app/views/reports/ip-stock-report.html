@@ -3,12 +3,13 @@
         <h4 class="page-header">IP Stock Report</h4>
         <ng-toast></ng-toast>
 
-        <div class="panel-body">
+        <div>
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
-                    <label class="col-lg-3 control-label description-label" for="select-ip">Select IP</label>
-
-                    <div class="col-lg-9">
+                    <div class="col-lg-3 pad-left-5">
+                        <label class="control-label description-label" for="select-ip">Select IP</label>
+                    </div>
+                    <div class="col-lg-8">
                         <input id="select-ip" class="form-control" type="hidden" search-consignees
                                ng-model="selectedIPId" placeholder="Select IP">
                     </div>
@@ -18,9 +19,9 @@
 
             <br/><br/><br/>
 
-            <div class="table-wrapper">
+            <div>
                 <div class="panel-body" ng-show="reportData">
-                    <table class="table table-bordered table-striped table-hover table-condensed">
+                    <table class="table table-bordered table-striped table-hover table-condensed text-left">
                         <thead>
                         <tr>
                             <td class="col-lg-1">PO Number</td>
