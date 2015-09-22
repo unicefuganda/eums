@@ -19,7 +19,7 @@ class CSVExportService(object):
 
     @classmethod
     def notify(cls, user, subject, message):
-        message = message % user.first_name
+        message = message % user.username
         if getattr(user, 'email', None):
             mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 

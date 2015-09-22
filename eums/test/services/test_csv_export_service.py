@@ -48,7 +48,7 @@ class ExportServiceTest(TestCase):
         email = 'haha@ha.ha'
         name = 'manchester united'
         user.email = email
-        user.first_name = name
+        user.username = name
         subject = "some subject"
         message = "some %s message"
 
