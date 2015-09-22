@@ -44,9 +44,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         expected_data = [
             {'document_number': self.po_two.order_number,
-             'total_value_received': Decimal('500.0000'),
-             'total_value_dispensed': Decimal('500.0000'),
-             'balance': Decimal('0.0000'),
+             'total_value_received': Decimal('500'),
+             'total_value_dispensed': Decimal('500'),
+             'balance': Decimal('0'),
              'items': [{'code': unicode(self.po_item_three.item.material_code),
                         'description': unicode(self.po_item_three.item.description),
                         'quantity_delivered': 2,
@@ -57,9 +57,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'balance': 0L
                         }]},
             {'document_number': self.po_one.order_number,
-             'total_value_received': Decimal('800.0000'),
-             'total_value_dispensed': Decimal('300.0000'),
-             'balance': Decimal('500.0000'),
+             'total_value_received': Decimal('800'),
+             'total_value_dispensed': Decimal('300'),
+             'balance': Decimal('500'),
              'items': [{'code': unicode(self.po_item_two.item.material_code),
                         'description': unicode(self.po_item_two.item.description),
                         'quantity_delivered': 3,
@@ -82,7 +82,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
-        self.assertListEqual(response.data, expected_data)
+        self.assertIn(expected_data[0], response.data)
+        self.assertIn(expected_data[1], response.data)
 
     # TODO Fix this test. The actual code works but the data in the test is bad.
     def xtest_returns_empty_list_if_no_matching_purchase_order_linked_to_the_node_exists(self):
@@ -94,9 +95,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def test_returns_empty_list_if_no_runs_where_created_for_the_line_items(self):
         expected_data = [
             {'document_number': self.po_two.order_number,
-             'total_value_received': Decimal('0.0000'),
-             'total_value_dispensed': Decimal('0.0000'),
-             'balance': Decimal('0.0000'),
+             'total_value_received': Decimal('0'),
+             'total_value_dispensed': Decimal('0'),
+             'balance': Decimal('0'),
              'items': [{'code': unicode(self.po_item_three.item.material_code),
                         'description': unicode(self.po_item_three.item.description),
                         'quantity_delivered': 2,
@@ -107,9 +108,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'balance': 0
                         }]},
             {'document_number': self.po_one.order_number,
-             'total_value_received': Decimal('0.0000'),
-             'total_value_dispensed': Decimal('0.0000'),
-             'balance': Decimal('0.0000'),
+             'total_value_received': Decimal('0'),
+             'total_value_dispensed': Decimal('0'),
+             'balance': Decimal('0'),
              'items': [{'code': unicode(self.po_item_two.item.material_code),
                         'description': unicode(self.po_item_two.item.description),
                         'quantity_delivered': 3,
@@ -132,7 +133,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
-        self.assertItemsEqual(response.data, expected_data)
+        self.assertIn(expected_data[0], response.data)
+        self.assertIn(expected_data[1], response.data)
 
     def setup_responses(self):
         self.setup_runs()
