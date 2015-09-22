@@ -179,6 +179,11 @@
             </div>
 
             <div class="row pull-right">
+                <a id="discard-delivery-report" href="#/deliveries-by-ip/{{ item.id }}"
+                   ng-show="quantityAvailable">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Discard
+                </a>
                 <button id="save-delivery-report" type="button" class="btn btn-primary"
                         ng-click="save()">
                     <i class="glyphicon glyphicon-floppy-save"> </i>
