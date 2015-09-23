@@ -64,7 +64,7 @@ class ResponsesEndPointTest(AuthenticatedAPITestCase):
                                                                question=self.numeric_question)
 
     def expected_response_data(self, node, consignee, programme, type):
-        expected_data = {u'item': u'Salt', u'amountSent': 100, u'value': 1000, u'node': node.id,
+        expected_data = {u'item': u'Salt', u'amountSent': 100, u'value': 1000, u'latestResponseDate': node.latest_response().date_created, u'node': node.id,
                          u'consignee': {u'id': consignee.id, u'name': consignee.name,
                                         u'type': type},
                          u'ip': {'id': node.ip.id, 'location': node.ip.location},
