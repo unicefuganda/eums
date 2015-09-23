@@ -67,7 +67,7 @@ describe('Vision Data Imports', function () {
         expect(warehouseDeliveryPage.waybillItems).toContain('IT Accessories');
 
         expect(warehouseDeliveryPage.waybillQuantities).toContain('3.00');
-        expect(warehouseDeliveryPage.waybillValues).toContain('3091.26');
+        expect(warehouseDeliveryPage.waybillValues).toContain('$3,091.26');
     });
 
     it('should show errors if the spreadsheets have missing required information', function () {
@@ -105,8 +105,8 @@ describe('Vision Data Imports', function () {
         warehouseDeliveryPage.selectWaybillByNumber('72095454');
 
         expect(warehouseDeliveryPage.waybillQuantities).toContain('2.00');
-        expect(warehouseDeliveryPage.waybillValues).toContain('4000.00');
-        expect(warehouseDeliveryPage.waybillValues).toContain('200.00');
+        expect(warehouseDeliveryPage.waybillValues).toContain('$4,000.00');
+        expect(warehouseDeliveryPage.waybillValues).toContain('$200.00');
     });
 
     it('should update existing purchase orders with data from newly imported spreadsheets', function () {
