@@ -105,12 +105,21 @@
   color: #FFF;
 }
 
-.eums-modal-header {
+.eums-modal-header-no-color {
   padding: 15px 0 5px 0;
   font-size: 1.4em;
   font-weight: bold;
-  color: @brand-primary;
   margin: 0;
+}
+
+.eums-modal-header {
+  .eums-modal-header-no-color;
+  color: @brand-primary;
+}
+
+.eums-modal-header-warning {
+  .eums-modal-header-no-color;
+  color: @color_incomplete;
 }
 
 .eums-modal-content {

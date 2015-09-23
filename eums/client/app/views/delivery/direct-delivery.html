@@ -110,6 +110,49 @@
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
                     <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
+
+                    <div class="modal fade text-left" id="select-modal-{{ purchaseOrder.id }}">
+
+                        <div class="modal-dialog modal-sixty-percent-size">
+                            <div class="modal-content col-md-offset-3 col-md-6">
+                                <div class="modal-header">
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="modal">
+                                        <span aria-hidden="true" class="glyphicon glyphicon-remove-sign text-"></span>
+                                        <span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="eums-modal-header-warning">
+                                        <i class="glyphicon glyphicon-warning-sign pad-right-5"></i>
+                                        Please Select the type of Delivery
+                                    </h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="pad-bottom-5 text-color-grey">Please note that you will not be able to
+                                        switch between Single IP and Multiple IP delivery for this Purchase Order after
+                                        saving
+                                        the delivery.
+                                    </div>
+                                </div>
+                                <div class="modal-footer align-center">
+                                    <button type="button"
+                                            class="btn btn-primary eums-border-width-95"
+                                            ng-click="showSingleIpMode(purchaseOrder)"
+                                            data-dismiss="modal">
+                                        Single IP
+                                    </button>
+                                    <span class="bold pad-left-15 pad-right-15"> OR </span>
+                                    <button type="button"
+                                            class="btn btn-primary"
+                                            ng-click="showMultipleIpMode(purchaseOrder)"
+                                            data-dismiss="modal">
+                                        Multiple IP
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </td>
                 <td data-header="Date Created">
                     {{ purchaseOrder.date | date : 'dd/MM/yyyy' }}

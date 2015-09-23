@@ -23,8 +23,12 @@ input[type=date]::-webkit-inner-spin-button {
   display: none;
 }
 
-.bold-label {
+.bold {
   font-weight: bold;
+}
+
+.bold-label {
+  .bold;
   margin: 5px;
 }
 
@@ -334,6 +338,10 @@ h4.page-header {
 
 .pad-left-15 {
   padding-left: 15px !important;
+}
+
+.pad-right-15 {
+  padding-right: 15px !important;
 }
 
 .modal-content.wide {
@@ -876,4 +884,12 @@ h4.page-header {
     width: 27%;
     float: left;
     padding-left: 40px;
+}
+
+.text-color-grey {
+  color: @modal-content-fallback-border-color;
+}
+
+.text-color-warning {
+  color: @brand-warning;
 }

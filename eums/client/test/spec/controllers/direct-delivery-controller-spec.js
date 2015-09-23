@@ -10,7 +10,14 @@ describe('DirectDeliveryController', function () {
         id: 1, name: 'Test Programme'
     };
 
-    var purchaseOrderOne = {id: 1, 'order_number': '00001', 'date': '2014-10-02', programme: programmeOne.id, description: 'sale', hasPlan: 'true'};
+    var purchaseOrderOne = {
+        id: 1,
+        'order_number': '00001',
+        'date': '2014-10-02',
+        programme: programmeOne.id,
+        description: 'sale',
+        hasPlan: 'true'
+    };
     var purchaseOrderDetails = [purchaseOrderOne];
 
     beforeEach(function () {
@@ -18,7 +25,7 @@ describe('DirectDeliveryController', function () {
         mockContactService = jasmine.createSpyObj('mockContactService', ['create']);
         mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['get', 'all']);
         mockPurchaseOrderService = jasmine.createSpyObj('mockPurchaseOrderService', ['all', 'forDirectDelivery']);
-        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
 
@@ -135,12 +142,38 @@ describe('DirectDeliveryController', function () {
     });
 
     describe('when purchase order is selected', function () {
-        it('should change location to create direct delivery path', function () {
-            deferredPurchaseOrder.resolve(purchaseOrderOne);
+        it('should show modal', function () {
             scope.selectPurchaseOrder(purchaseOrderOne);
-            scope.$apply();
-            expect(location.path()).toEqual('/direct-delivery/new/1');
+            expect(mockLoaderService.showModal).toHaveBeenCalledWith('select-modal-1');
         });
+
+        it('should route to single ip when single ip is selected', function () {
+            scope.showSingleIpMode(purchaseOrderOne);
+            scope.$apply();
+            expect(location.path()).toBe('/direct-delivery/new/1/single');
+        });
+
+        it('should route to multiple ip when multiple ip is selected', function () {
+            scope.showMultipleIpMode(purchaseOrderOne);
+            scope.$apply();
+            expect(location.path()).toBe('/direct-delivery/new/1/multiple');
+        });
+
+        it('should not show modal if purchase order is multiple and redirect', function(){
+            purchaseOrderOne.isSingleIp = false;
+            scope.selectPurchaseOrder(purchaseOrderOne);
+            expect(mockLoaderService.showModal).not.toHaveBeenCalled();
+            expect(location.path()).toBe('/direct-delivery/new/1/multiple');
+
+        });
+
+        it('should not show modal if purchase order is multiple and redirect', function(){
+            purchaseOrderOne.isSingleIp = true;
+            scope.selectPurchaseOrder(purchaseOrderOne);
+            expect(mockLoaderService.showModal).not.toHaveBeenCalled();
+            expect(location.path()).toBe('/direct-delivery/new/1/single');
+
+        })
     });
 
     describe('on filter by date range', function () {
@@ -178,7 +211,10 @@ describe('DirectDeliveryController', function () {
             timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07'});
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {
+                from: '2014-05-07',
+                to: '2014-07-07'
+            });
         });
 
         it('should format dates before filtering deliveries ', function () {
@@ -189,7 +225,10 @@ describe('DirectDeliveryController', function () {
             timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2015-08-30', to: '2015-09-10'});
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {
+                from: '2015-08-30',
+                to: '2015-09-10'
+            });
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
@@ -200,7 +239,10 @@ describe('DirectDeliveryController', function () {
             timeout.flush();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-05-07', query: 'wakiso programme'})
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {
+                from: '2014-05-07',
+                query: 'wakiso programme'
+            })
         });
     });
 

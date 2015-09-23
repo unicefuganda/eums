@@ -6,6 +6,8 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
     }])
     .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast, $timeout) {
 
+        var rootPath = '/direct-delivery/new/';
+
         $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'date'];
         $scope.errorMessage = '';
@@ -34,7 +36,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         var timer, initializing = true;
 
         $scope.$watch('[fromDate,toDate,query]', function () {
-            if (initializing){
+            if (initializing) {
                 initializing = false;
             }
             else {
@@ -51,15 +53,15 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             }, 1000);
         }
 
-        function changedFilters(){
+        function changedFilters() {
             var urlArgs = {};
-            if ($scope.fromDate){
+            if ($scope.fromDate) {
                 urlArgs.from = formatDate($scope.fromDate);
             }
-            if ($scope.toDate){
+            if ($scope.toDate) {
                 urlArgs.to = formatDate($scope.toDate);
             }
-            if ($scope.query){
+            if ($scope.query) {
                 urlArgs.query = $scope.query;
             }
             return urlArgs
@@ -82,7 +84,21 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         };
 
         $scope.selectPurchaseOrder = function (selectedPurchaseOrder) {
-            $location.path('/direct-delivery/new/' + selectedPurchaseOrder.id);
+            if (selectedPurchaseOrder.isSingleIp == true) {
+                $scope.showSingleIpMode(selectedPurchaseOrder);
+            } else if (selectedPurchaseOrder.isSingleIp == false) {
+                $scope.showMultipleIpMode(selectedPurchaseOrder);
+            } else {
+                LoaderService.showModal('select-modal-' + selectedPurchaseOrder.id);
+            }
+        };
+
+        $scope.showSingleIpMode = function (selectedPurchaseOrder) {
+            $location.path(rootPath + selectedPurchaseOrder.id + '/single');
+        };
+
+        $scope.showMultipleIpMode = function (selectedPurchaseOrder) {
+            $location.path(rootPath + selectedPurchaseOrder.id + '/multiple');
         };
 
         $scope.exportToCSV = function () {
