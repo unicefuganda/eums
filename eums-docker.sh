@@ -1,42 +1,57 @@
 #!/bin/sh
 #EUMS Management script
-set -e
+# set -e
 
+EUMS_MONGO_DATA="eums_mongo_data"
 EUMS_MONGO="eums_mongo"
 EUMS_CONTACTS="eums_contacts"
-EUMS_WEB="eums_web"
+EUMS_POSTGRES_DATA="eums_postgres_data"
 EUMS_POSTGRES="eums_postgres"
+EUMS_WEB="eums_web"
+EUMS_REDIS="eums_redis"
+EUMS_CELERY_WORKER="eums_celery_worker"
 EUMS_NGINX="eums_nginx"
-CONTAINER_NAMES="${EUMS_NGINX} ${EUMS_WEB} ${EUMS_POSTGRES} ${EUMS_CONTACTS} ${EUMS_MONGO}"
-
-function create_contacts {
-  docker create --name ${EUMS_MONGO} mongo
-  docker create --name ${EUMS_CONTACTS} --link ${EUMS_MONGO}:mongo cuevee/contacts
-}
+CONTAINER_NAMES="${EUMS_NGINX} ${EUMS_WEB} ${EUMS_CELERY_WORKER} ${EUMS_POSTGRES} ${EUMS_REDIS} ${EUMS_CONTACTS} ${EUMS_MONGO}"
 
 function start_contacts {
-  docker start ${EUMS_MONGO}
-  docker start ${EUMS_CONTACTS}
+  docker create --name ${EUMS_MONGO_DATA} --entrypoint="/bin/true" -v /data/mongo mongo
+  docker run -d --name ${EUMS_MONGO} --volumes-from ${EUMS_MONGO_DATA} mongo
+  docker run -d --name ${EUMS_CONTACTS} --link ${EUMS_MONGO}:mongo cuevee/contacts
 }
 
-function create_eums {
-  docker create --name ${EUMS_POSTGRES} postgres
-  docker create --name ${EUMS_WEB} --env-file local.env --link ${EUMS_POSTGRES}:postgres --link ${EUMS_CONTACTS}:contacts eums_web
+function start_postgres {
+  docker create --name ${EUMS_POSTGRES_DATA} --entrypoint="/bin/true" -v /data/postgres postgres
+  docker run -d --name ${EUMS_POSTGRES} -e "PGDATA=/data/postgres" --volumes-from ${EUMS_POSTGRES_DATA} postgres
 }
 
 function start_eums {
-  docker start ${EUMS_POSTGRES}
-  sleep 5
-  docker start ${EUMS_WEB}
-  sleep 5
+  docker run -d --name ${EUMS_WEB} \
+  -p 8000:8000 \
+  --env-file local.env \
+  --link ${EUMS_POSTGRES}:postgres \
+  --link ${EUMS_CONTACTS}:contacts \
+  eums_web \
+  "${@}"
 }
 
-function create_nginx {
-  docker create --name ${EUMS_NGINX} -p 80:80 -p 443:443 --link ${EUMS_WEB}:web --link ${EUMS_CONTACTS}:contacts eums_nginx
+function start_eums_prod {
+  sleep 5
+  start_eums
+}
+
+function start_eums_dev {
+  sleep 5
+  start_eums manage.py runserver 0.0.0.0:8000
+}
+
+function start_eums_celery {
+  sleep 5
+  docker run -d --name ${EUMS_REDIS} redis
+  docker run -d --name ${EUMS_CELERY_WORKER} --env-file local.env --link ${EUMS_POSTGRES} --link ${EUMS_REDIS}:redis eums_web celery
 }
 
 function start_nginx {
-  docker start ${EUMS_NGINX}
+  docker run -d --name ${EUMS_NGINX} -p 80:80 -p 443:443 --link ${EUMS_WEB}:web --link ${EUMS_CONTACTS}:contacts eums_nginx
 }
 
 function stop_containers {
@@ -44,7 +59,7 @@ function stop_containers {
 }
 
 function remove_containers {
-  docker rm ${CONTAINER_NAMES}
+  docker rm -v ${CONTAINER_NAMES}
 }
 
 function load_fixtures {
@@ -68,16 +83,18 @@ case "${1}" in
     echo 'Usage: eums-docker.sh {start|stop|clean|load}';;
   'start' )
     start_contacts
+    start_postgres
     start_eums
+    start_eums_celery
     start_nginx;;
+  'start_dev' )
+    start_contacts
+    start_postgres
+    start_eums_dev;;
   'stop' )
     stop_containers;;
   'clean' )
     remove_containers;;
-  'create' )
-    create_contacts
-    create_eums
-    create_nginx;;
   'load' )
     load_fixtures;;
 esac
