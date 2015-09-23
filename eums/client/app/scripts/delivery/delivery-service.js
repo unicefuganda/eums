@@ -58,6 +58,9 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
                 orderResponsesByDate: function (responsesLocationMap, location) {
                     return orderResponsesByDateReceived(getResponseFor(responsesLocationMap, location));
                 },
+                orderResponsesByLatestResponseDate: function (responsesLocationMap, location) {
+                    return orderResponsesByLatestResponseDate(getResponseFor(responsesLocationMap, location));
+                },
                 mapConsigneesResponsesToNodeLocation: function () {
                     return this.getAllEndUserResponses().then(function (responses) {
                         return $q.all(responses.data);
@@ -96,6 +99,18 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
                 },
                 getLatestItemDeliveries: function (responsesLocationMap, location, number) {
                     var allResponses = this.orderResponsesByDate(responsesLocationMap, location);
+                    var responses = [];
+                    var items = [];
+                    allResponses.forEach(function (response) {
+                        if (items.length < number && !_.contains(items, response.item)) {
+                            items.push(response.item);
+                            responses.push(response);
+                        }
+                    });
+                    return responses;
+                },
+                getLatestRespondedItemDeliveries: function(responsesLocationMap, location, number) {
+                    var allResponses = this.orderResponsesByLatestResponseDate(responsesLocationMap, location);
                     var responses = [];
                     var items = [];
                     allResponses.forEach(function (response) {
@@ -179,8 +194,16 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
             return moment(secondResponse.dateOfReceipt, 'DD/MM/YYY') - moment(firstResponse.dateOfReceipt, 'DD/MM/YYY');
         }
 
+        function compareLastResponseDate(firstResponse, secondResponse) {
+            return moment(secondResponse.latestResponseDate) - moment(firstResponse.latestResponseDate);
+        }
+
         function orderResponsesByDateReceived(consigneeResponses) {
             return consigneeResponses.sort(compareReceiptDate);
+        }
+
+        function orderResponsesByLatestResponseDate(responses) {
+            return responses.sort(compareLastResponseDate);
         }
 
         function getResponseFor(responsesWithLocation, district) {

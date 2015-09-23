@@ -57,7 +57,7 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
 
 
         function showResponsesForDistrict(layerName, responses, scope) {
-            var allResponses = DeliveryService.getLatestItemDeliveries(responses, layerName, 3);
+            var allResponses = DeliveryService.getLatestRespondedItemDeliveries(responses, layerName, 3);
             scope.$apply(function () {
                 scope.data.responses = allResponses;
                 scope.data.district = layerName;

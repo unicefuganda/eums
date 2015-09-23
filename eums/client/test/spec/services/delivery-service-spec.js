@@ -135,6 +135,43 @@ describe('Distribution Plan Service', function () {
         expect(deliveryService.getLatestItemDeliveries(responses, "wakiso", 3)).toEqual([item2_later, item1_later, item3]);
     });
 
+    iit('should filter deliveries by the latest response date', function () {
+        var item1_different_location = {
+            latestResponseDate: "2014-12-06T16:03:07.493",
+            item: "item 1"
+        };
+        var item1 = {
+            latestResponseDate: "2014-10-06T16:03:07.493",
+            item: "item 1"
+        };
+        var item2 = {
+            latestResponseDate: "2014-09-06T16:03:07.493",
+            item: "item 2"
+        };
+        var item3 = {
+            latestResponseDate: "2014-11-06T16:03:07.493",
+            item: "item 3"
+        };
+        var item1_later = {
+            latestResponseDate: "2014-11-07T16:03:07.493",
+            item: "item 1"
+        };
+        var item2_later = {
+            latestResponseDate: "2014-11-08T16:03:07.493",
+            item: "item 2"
+        };
+        var responses = [
+            {consigneeResponses: [item1_different_location], location: "bukoto"},
+            {consigneeResponses: [item1, item2, item3, item1_later, item2_later], location: "wakiso"},
+        ];
+
+        expect(deliveryService.getLatestRespondedItemDeliveries(responses, "wakiso", 2)).toEqual([item2_later, item1_later]);
+
+        expect(deliveryService.getLatestRespondedItemDeliveries(responses, "wakiso", 1)).toEqual([item2_later]);
+
+        expect(deliveryService.getLatestRespondedItemDeliveries(responses, "wakiso", 3)).toEqual([item2_later, item1_later, item3]);
+    });
+
     var fakeGetNodeDetails = function () {
         var nodeId = arguments[0];
         var deferred = q.defer();
