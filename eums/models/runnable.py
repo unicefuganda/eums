@@ -42,6 +42,14 @@ class Runnable(PolymorphicModel):
     def responses(self):
         return dict(map(lambda run: (run, run.answers()), self._completed_runs()))
 
+    def latest_response(self):
+        latest_run = self.latest_run()
+        if latest_run:
+            answers = latest_run.answers()
+            if answers:
+                sorted_answers = sorted(answers, key=lambda answer: answer.date_created, reverse=True)
+                return sorted_answers[0]
+
     @property
     def contact(self):
         contact = self.build_contact()

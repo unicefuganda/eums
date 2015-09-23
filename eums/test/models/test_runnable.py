@@ -105,6 +105,25 @@ class RunnableTest(TestCase):
         second_run = RunFactory(runnable=self.node)
         self.assertEqual(self.node.latest_run(), second_run)
 
+    def test_should_get_latest_response(self):
+        multichoice_question = MultipleChoiceQuestionFactory(label='productReceived')
+        no_option = OptionFactory(text='No', question=multichoice_question)
+
+        sugar = ItemFactory(description='Sugar')
+
+        numeric_question = NumericQuestionFactory(label='AmountReceived')
+
+        node = DeliveryNodeFactory(quantity=100, item=PurchaseOrderItemFactory(item=sugar))
+        run = RunFactory(runnable=node, status='completed')
+
+        self.assertIsNone(node.latest_response())
+
+        multiple_answer = MultipleChoiceAnswerFactory(run=run, question=multichoice_question, value=no_option)
+        self.assertEqual(node.latest_response(), multiple_answer)
+
+        numeric_answer = NumericAnswerFactory(run=run, value=80, question=numeric_question)
+        self.assertEqual(node.latest_response(), numeric_answer)
+
     @patch('eums.models.runnable.Runnable.build_contact')
     def test_should_create_alert(self, mock_contact):
         purchase_order = PurchaseOrderFactory(order_number=5678)
