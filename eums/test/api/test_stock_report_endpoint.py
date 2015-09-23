@@ -82,8 +82,15 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
-        self.assertIn(expected_data[0], response.data)
-        self.assertIn(expected_data[1], response.data)
+        self.assert_api_response(response, expected_data)
+
+    def assert_api_response(self, response, expected_data):
+        for stock in expected_data:
+            stock_in_response = filter(lambda stock_: stock_['document_number'] == stock['document_number'], response.data)[0]
+            for key in ['total_value_received', 'total_value_dispensed', 'balance']:
+                self.assertEquals(stock_in_response[key], stock[key])
+            for item in stock['items']:
+                self.assertIn(item, stock_in_response['items'])
 
     # TODO Fix this test. The actual code works but the data in the test is bad.
     def xtest_returns_empty_list_if_no_matching_purchase_order_linked_to_the_node_exists(self):
@@ -133,8 +140,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
         response = self.client.get(endpoint_url)
-        self.assertIn(expected_data[0], response.data)
-        self.assertIn(expected_data[1], response.data)
+        self.assert_api_response(response, expected_data)
 
     def setup_responses(self):
         self.setup_runs()
