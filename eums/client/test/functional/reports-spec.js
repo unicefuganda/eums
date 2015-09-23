@@ -11,9 +11,10 @@ describe('Reports', function () {
         reportsPage.visit();
 
         reportsPage.selectConsignee('Adjumani');
+
         expect(reportsPage.stockDocumentNumbers).toContain('12345');
-        expect(reportsPage.stockReceivedValues).toContain('422.7');
-        expect(reportsPage.stockBalances).toContain('422.7');
+        expect(reportsPage.stockReceivedValues).toContain('7.143');
+        expect(reportsPage.stockBalances).toContain('7.143');
 
         reportsPage.selectFirstPO();
         expect(reportsPage.itemCodes).toContain('S0782208');
@@ -27,6 +28,7 @@ describe('Reports', function () {
         expect(reportsPage.itemDeliveryDate).toContain('2014-06-10');
         expect(reportsPage.itemBalances).toContain('30');
         expect(reportsPage.itemBalances).toContain('0');
+
     });
 
 });
