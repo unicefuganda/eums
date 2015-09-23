@@ -22,12 +22,6 @@ describe('Route Provider', function () {
         expect(routes.routes['/direct-delivery'].templateUrl).toBe('/static/app/views/delivery/direct-delivery.html');
     });
 
-    it('should know new direct delivery route exists', function () {
-        expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].controller).toBe('DirectDeliveryIpChoiceController');
-        expect(routes.routes['/direct-delivery/new/:purchaseOrderId'].templateUrl).toBe('/static/app/views/delivery/direct-delivery-ip-choice.html');
-    });
-
     it('should know new direct delivery, select purchase order type route exists', function () {
         expect((Object.keys(routes.routes))).toContain('/direct-delivery/new/:purchaseOrderId/multiple');
         expect(routes.routes['/direct-delivery/new/:purchaseOrderId/multiple'].controller).toBe('MultipleIpDirectDeliveryController');

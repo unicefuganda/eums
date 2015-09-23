@@ -5,7 +5,6 @@ var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var alertsPage = require('./pages/alerts-page.js');
-
 describe('Direct Delivery', function () {
 
     var PURCHASE_ORDER_NUMBER1 = '81026395';
