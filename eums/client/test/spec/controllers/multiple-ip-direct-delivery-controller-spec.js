@@ -867,42 +867,39 @@ describe('MultipleIpDirectDeliveryController', function () {
         });
     });
 
-    describe('isSingleIp modal', function () {
-        it('Should show a confirmation modal if isSingleIp on purchase order not yet set ', function () {
+    describe('isSingleIp update', function () {
+        it('Should update isSingleIp flag if it is not yet set on the purchase order', function () {
             deferredPurchaseOrder.resolve({id:1, purchaseorderitemSet:[{id:2, value:50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
 
-            scope.warnBeforeSaving();
+            scope.save();
             scope.$apply();
 
-            expect(mockLoaderService.showModal).toHaveBeenCalled();
-            expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
+            expect(mockPurchaseOrderService.update).toHaveBeenCalledWith({id: 1, isSingleIp: false}, 'PATCH');
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });
 
-        it('should not show confirmation modal if single IP on purchase order is already set to single', function () {
+        it('should not update isSingleIP flag on purchase order if flag is already set to single', function () {
             deferredPurchaseOrder.resolve({id:1, isSingleIp: true, purchaseorderitemSet:[{id:2, value:50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
 
-            scope.warnBeforeSaving();
+            scope.save();
             scope.$apply();
 
-            expect(mockLoaderService.showModal).not.toHaveBeenCalled();
             expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeTruthy();
         });
 
-        it('should not show confirmation modal if single IP on purchase order is already set to multiple', function () {
+        it('should not update isSingleIP flag on purchase order if flag is already set to multiple', function () {
             deferredPurchaseOrder.resolve({id:1, isSingleIp: false, purchaseorderitemSet:[{id:2, value:50}]});
             scope.purchaseOrderItems = {sum: 50};
             scope.$apply();
 
-            scope.warnBeforeSaving();
+            scope.save();
             scope.$apply();
 
-            expect(mockLoaderService.showModal).not.toHaveBeenCalled();
             expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });

@@ -31,7 +31,7 @@ describe('Direct Delivery', function () {
         directDeliveryPage.enableTracking();
 
         directDeliveryPage.saveDelivery();
-        directDeliveryPage.confirmDelivery();
+        directDeliveryPage.waitForSaveSuccessToast();
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);

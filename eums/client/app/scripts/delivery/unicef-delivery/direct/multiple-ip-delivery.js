@@ -233,17 +233,10 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             return deferred.promise;
         }
 
-        $scope.warnBeforeSaving = function () {
-            if ($scope.selectedPurchaseOrder.isSingleIp || $scope.selectedPurchaseOrder.isSingleIp == false) {
-                $scope.saveDeliveryNodes();
-            } else {
-                LoaderService.showModal('confirmation-modal');
+        $scope.save = function () {
+            if ($scope.selectedPurchaseOrder.isSingleIp == null) {
+                updateDeliveryStatus();
             }
-        };
-
-        $scope.warningAccepted = function () {
-            LoaderService.hideModal('confirmation-modal');
-            updateDeliveryStatus();
             $scope.saveDeliveryNodes();
         };
 

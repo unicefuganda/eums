@@ -6,7 +6,7 @@
         Create a Direct Delivery for Purchase Order: {{ selectedPurchaseOrder.orderNumber }}
     </div>
 </div>
-
+<ng-toast></ng-toast>
 <div class="container-fluid margin-top-50">
     <div class="content">
         <div>
@@ -178,7 +178,7 @@
                         </button>
                         <div ng-show="distributionPlanNodes.length" class="pull-right">
                             <button id="directDeliverySaveBtn" type="button" class="btn btn-primary"
-                                    ng-click="warnBeforeSaving()"
+                                    ng-click="save()"
                                     ng-disabled="invalidNodes">
                                 <i class="glyphicon glyphicon-floppy-save"> </i>
                                 Save
@@ -189,7 +189,6 @@
             </div>
         </div>
         <eums-contact></eums-contact>
-        <ng-include src="'/static/app/views/delivery/partials/confirmation-dialog.html'"></ng-include>
         <ng-include src="'/static/app/views/delivery/partials/add-remark-modal.html'"></ng-include>
     </div>
 </div>
