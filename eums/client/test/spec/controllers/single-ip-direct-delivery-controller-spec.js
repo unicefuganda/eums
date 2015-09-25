@@ -214,34 +214,6 @@ describe('Single IP Direct Delivery Controller', function () {
             expect(scope.errors).toBeTruthy();
         });
 
-        it('should show warning modal if purchase order is not already in single IP mode', function () {
-            makeScopeFixture();
-            setScopeData();
-            scope.purchaseOrder = {};
-            scope.save(true);
-            scope.$apply();
-            expect(mockModal.modal).toHaveBeenCalled();
-        });
-
-        it('should NOT show warning modal if purchase order is already in single IP mode', function () {
-            makeScopeFixture();
-            setScopeData();
-            scope.purchaseOrder = {isSingleIp: true};
-            scope.save(true);
-            scope.$apply();
-            expect(mockModal.modal).not.toHaveBeenCalled();
-        });
-
-        it('should NOT show warning modal if some data on scope is blank', function () {
-            makeScopeFixture();
-            setScopeData();
-            scope.delivery.delivery_date = undefined;
-            scope.purchaseOrder = {isSingleIp: false};
-            scope.save(true);
-            scope.$apply();
-            expect(mockModal.modal).not.toHaveBeenCalled();
-        });
-
         function testErrorIsOnScope(scopeField, nullState) {
             var fields = ['contact', 'consignee', 'deliveryDate', 'district'];
             fields.forEach(function (field) {

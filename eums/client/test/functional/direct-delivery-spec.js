@@ -79,7 +79,7 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$41.00');
 
         directDeliveryPage.saveDraftDelivery();
-        directDeliveryPage.confirmDelivery();
+        directDeliveryPage.waitForSaveSuccessToast();
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);

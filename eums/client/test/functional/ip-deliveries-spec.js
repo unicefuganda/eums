@@ -27,7 +27,7 @@ describe('IP Deliveries', function () {
         directDeliveryPage.setDistrict('Wakiso');
 
         directDeliveryPage.saveAndTrackDelivery();
-        directDeliveryPage.confirmDelivery();
+        directDeliveryPage.waitForSaveSuccessToast();
 
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');

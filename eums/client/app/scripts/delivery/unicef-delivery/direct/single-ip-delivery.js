@@ -19,17 +19,12 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             $scope.tracked = tracked || false;
             if (scopeDataIsValid()) {
                 $scope.errors = false;
-                $scope.purchaseOrder.isSingleIp ? saveDelivery() : angular.element('#confirmation-modal').modal();
+                saveDelivery();
             }
             else {
                 $scope.errors = true;
                 createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger')
             }
-        };
-
-        $scope.warningAccepted = function () {
-            angular.element('#confirmation-modal').modal('hide');
-            saveDelivery();
         };
 
         $scope.cannotChangeIp = function () {
