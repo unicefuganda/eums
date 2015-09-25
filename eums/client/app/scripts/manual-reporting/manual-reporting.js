@@ -18,6 +18,9 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'eums.ip', 'PurchaseOrd
             documentPromises.push(
                 PurchaseOrderService.all().then(function (responses) {
                     purchaseOrders = responses;
+                    responses.forEach(function (response) {
+                        response.programme = response.programmeName;
+                    });
                 })
             );
 

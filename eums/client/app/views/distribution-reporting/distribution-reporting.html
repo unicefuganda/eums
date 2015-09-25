@@ -40,13 +40,13 @@
                 <table si-table class="table table-bordered table-hover table-striped table-condensed">
                     <thead ng-init="initialize()">
                     <tr>
-                        <th style="width: 20%">
+                        <th class="centered" style="width: 20%">
                             <a ng-if="currentDocumentType === 'PO'" ng-click="sortBy('orderNumber')">Purchase Order
                                 <i ng-class="sortArrowClass('orderNumber')"></i></a>
                             <a ng-if="currentDocumentType === 'WB'" ng-click="sortBy('orderNumber')">Waybill
                                 <i ng-class="sortArrowClass('orderNumber')"></i></a>
                         </th>
-                        <th style="width: 30%">
+                        <th class="centered" style="width: 30%">
                             <a ng-click="sortBy('date')">Date Created
                                 <i ng-class="sortArrowClass('date');"></i>
                             </a>
@@ -67,7 +67,7 @@
                         <td data-header="Date Created">
                             {{ document.date }}
                         </td>
-                        <td data-header="Programme">
+                        <td data-header="Programme" class="text-left">
                             {{ document.programme }}
                         </td>
                     </tr>

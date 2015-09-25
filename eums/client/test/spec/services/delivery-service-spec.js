@@ -135,7 +135,7 @@ describe('Distribution Plan Service', function () {
         expect(deliveryService.getLatestItemDeliveries(responses, "wakiso", 3)).toEqual([item2_later, item1_later, item3]);
     });
 
-    iit('should filter deliveries by the latest response date', function () {
+    it('should filter deliveries by the latest response date', function () {
         var item1_different_location = {
             latestResponseDate: "2014-12-06T16:03:07.493",
             item: "item 1"

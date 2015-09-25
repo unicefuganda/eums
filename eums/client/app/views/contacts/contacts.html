@@ -44,9 +44,9 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="contact in contacts | contactsFilter: query | orderBy: sort.criteria:!sort.descending  track by contact._id">
-                        <td>{{ contact.firstName }}</td>
-                        <td>{{ contact.lastName }}</td>
-                        <td>{{ contact.phone }}</td>
+                        <td class="text-left">{{ contact.firstName }}</td>
+                        <td class="text-left">{{ contact.lastName }}</td>
+                        <td class="text-left">{{ contact.phone }}</td>
                         <td>
                             <button class="btn btn-primary"
                                     ng-click="showEditContact(contact)">
