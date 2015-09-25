@@ -54,7 +54,8 @@ xdescribe('Home Page', function () {
             expect(responsePage.header.getText()).toEqual('All responses for WAKISO district');
             responsePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toEqual(3);
-            })
+            });
+            expect(responsePage.endUsers).toContain('William Shatner');
         });
 
         it('should search for "no" product received in Wakiso district', function () {

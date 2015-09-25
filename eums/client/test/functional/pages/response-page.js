@@ -10,6 +10,10 @@ ResponsePage.prototype = Object.create({}, {
         return element.all(by.repeater('response in allResponses').column('response.item'));
     }},
 
+    endUsers: { get: function() {
+        return element.all(by.repeater('response in allResponses').column('response.contactPerson')).getText();
+    }},
+
     searchTxtBox: { get: function () {
         return element(by.id('filter'));
     }},

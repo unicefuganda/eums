@@ -39,7 +39,7 @@
                 <td class="table-body">{{ response.consignee.name }}</td>
                 <td class="table-body"><a ng-click="clickPurchaseOrder(response.purchaseOrder)">{{ response.purchaseOrder.orderNumber }}</a></td>
                 <td class="table-body">
-                    <span class="table-body-end-user">{{ response.contact_person ? (response.contact_person.firstName +' '+ response.contact_person.lastName) : 'Not Found' }}</span>
+                    <span class="table-body-end-user">{{ response.contactPerson ? (response.contactPerson.firstName +' '+ response.contactPerson.lastName) : 'Not Found' }}</span>
                     <a custom-popover class="btn btn-default btn-xs glyphicon glyphicon-earphone pull-right"
                        ng-show="response.contactPerson.phone" popover-html="{{ response.contact_person.phone }}"></a>
                 </td>

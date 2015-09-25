@@ -17,6 +17,11 @@
       "mockFile": "contact.json",
       "latency": 20,
       "verbs": ["get"]
+    },
+    "api/contacts/54213ccc797221e84ac993fe": {
+      "mockFile": "wakiso-response-contact.json",
+      "latency": 20,
+      "verbs": ["get"]
     }
   }
 }
