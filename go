@@ -60,7 +60,7 @@ function main {
 }
 
 function build {
-  cd eums/client
+  cd client/
   grunt build
   cd -
 }
@@ -78,7 +78,7 @@ function prepbackend {
 }
 
 function prepfrontend {
-  cd eums/client
+  cd client/
   sudo npm install -g grunt-cli
   npm install
   sudo npm install -g bower
@@ -93,15 +93,12 @@ function resetdb {
     python manage.py migrate --settings=eums.test_settings
     python manage.py setup_permissions --settings=eums.test_settings
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-    python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings
   else
     echo "+++ Resetting database eums..."
-    echo "drop database
-    eums; create database eums;" | psql -h localhost -U postgres
+    echo "drop database eums; create database eums;" | psql -h localhost -U postgres
     python manage.py migrate
     python manage.py setup_permissions
     python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
-    python manage.py loaddata eums/client/test/functional/fixtures/user.json
   fi
 }
 
@@ -112,13 +109,13 @@ function testbackend {
 }
 
 function testjsunit {
-  cd eums/client
+  cd client/
   grunt unit
   cd -
 }
 
 function performance {
-  cd eums/client
+  cd client/
   if [ "$1" ]; then
     echo "Measuring load time for EUMS at $1..."
     grunt performance --baseUrl=$1
@@ -133,15 +130,13 @@ function performance {
 function testfunctional {
   killtestdbconnections
   if [ $(lsof -t -i :9000) ]; then kill -9 $(lsof -t -i :9000); fi
-  cd eums/client
+  cd client/
   source ~/.virtualenvs/eums/bin/activate
 
   if [ "$1" = "--headless" ]; then
-    grunt prep-test-env
-    python ../../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
-    grunt functional-headless
+    grunt functional:headless
   elif [ "$1" = "--multi" ]; then
-    grunt functional --multi
+    grunt functional:multi
   else
     grunt functional
   fi
@@ -158,7 +153,7 @@ function killtestdbconnections {
 }
 
 function runserver {
-  cd eums/client
+  cd client/
   npm install
   bower install
   grunt build
@@ -170,7 +165,7 @@ function runserver {
 }
 
 function seed {
-  python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py
+  python manage.py shell < client/test/functional/fixtures/mapdata_code.py
 }
 
 main $@

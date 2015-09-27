@@ -1,0 +1,27 @@
+FROM python:2.7
+MAINTAINER eums <eums@thoughtworks.com>
+
+ENV PYTHONUNBUFFERED 1
+
+RUN export DEBIAN_FRONTEND=noninteractive
+
+# Add unpriviledged worker user
+COPY requirements.txt /requirements.txt
+RUN pip install -r requirements.txt
+
+COPY ./config/uwsgi/eums.uwsgi.ini /etc/uwsgi/sites/eums.uwsgi.ini
+
+RUN adduser --disabled-password --gecos '' worker
+
+COPY ./build/ /eums/
+COPY ./build/eums.sh /eums/eums.sh
+
+RUN chown -R worker:worker /eums
+RUN chmod 755 /eums/eums.sh
+
+USER worker
+WORKDIR /eums/
+EXPOSE 8000
+
+ENTRYPOINT [ "/eums/eums.sh" ]
+CMD [ "uwsgi" ]

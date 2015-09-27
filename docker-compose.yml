@@ -1,0 +1,58 @@
+data_mongo:
+  image: mongo
+  command: /bin/echo MongoDB data-only container
+  volumes:
+    - /data/mongo
+
+mongo:
+  image: mongo
+  volumes_from:
+    - data_mongo
+
+contacts:
+  image: cuevee/contacts
+  links:
+    - mongo
+
+data_postgres:
+  image: postgres
+  command: /bin/echo PostgreSQL data-only container
+  volumes:
+    - /data/postgres
+
+postgres:
+  image: postgres
+  environment:
+    PGDATA: /data/postgres
+  volumes_from:
+    - data_postgres
+
+web:
+  build: .
+  dockerfile: Dockerfile.web
+  env_file: local.env
+  expose:
+    - "8000:8000"
+  links:
+    - postgres
+    - contacts
+
+redis:
+  image: redis
+
+celery_worker:
+  build: .
+  dockerfile: Dockerfile.web
+  links:
+    - redis
+    - postgres
+  command: celery
+
+nginx:
+  build: .
+  dockerfile: Dockerfile.nginx
+  ports:
+    - "80:80"
+  links:
+    - web
+    - contacts

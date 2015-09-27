@@ -1,14 +1,22 @@
 import os
 
+def environ(name, default=None):
+    var = os.getenv(name, default)
+
+    if str(var).lower() == 'true':
+        return True
+    elif str(var).lower() == 'false':
+        return False
+    return var
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3=$_20f=x$+*wp(xm07^8m-n=n2zy+w6hc7u985p@4$wad3q3t'
+SECRET_KEY = environ('DJANGO_SECRET_KEY', '3=$_20f=x$+*wp(xm07^8m-n=n2zy+w6hc7u985p@4$wad3q3t')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
+DEBUG = environ('DJANGO_DEBUG', 'false')
+TEMPLATE_DEBUG = environ('DJANGO_TEMPLATE_DEBUG', DEBUG)
 
 ALLOWED_HOSTS = []
 
@@ -41,9 +49,10 @@ MIDDLEWARE_CLASSES = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'eums',
-        'USER': 'postgres',
-        'HOST': 'localhost',
+        'NAME': environ('PG_DATABASE_NAME', 'postgres'),
+        'USER': environ('PG_USERNAME', 'postgres'),
+        'PASSWORD': environ('PG_PASSWORD', 'postgres'),
+        'HOST': environ('PG_HOST', 'postgres'),
         'PORT': '5432'
     }
 }
@@ -75,7 +84,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, 'eums/client'),)
 STATIC_URL = '/static/'
 
 # Number of days after expected delivery date after which messages to consignees are sent out
-DELIVERY_STATUS_CHECK_DELAY = 7
+DELIVERY_STATUS_CHECK_DELAY = int(environ('DELIVERY_STATUS_CHECK_DELAY', 7))
 
 # Expiry time (days) for a scheduled flow ** This should match the one set in rapid pro! and has a max value of 30 days
 MAX_ALLOWED_REPLY_PERIOD = 7
@@ -84,13 +93,11 @@ MAX_ALLOWED_REPLY_PERIOD = 7
 DELIVERY_BUFFER_IN_SECONDS = 10
 
 # Contacts service settings
-import os
-
-CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
+CONTACTS_SERVICE_URL = environ('CONTACTS_SERVICE_URL', 'http://localhost:8005/api/contacts/')
 
 # RapidPro settings
-RAPIDPRO_API_TOKEN = os.getenv('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
-RAPIDPRO_URL = 'https://app.rapidpro.io/api/v1/'
+RAPIDPRO_API_TOKEN = environ('RAPIDPRO_API_TOKEN', 'invalid_token_if_no_token')
+RAPIDPRO_URL = environ('RAPIDPRO_URL', 'https://app.rapidpro.io/api/v1/')
 RAPIDPRO_URLS = {
     'FLOWS': "%sflows.json" % RAPIDPRO_URL,
     'RUNS': "%sruns.json" % RAPIDPRO_URL
@@ -98,7 +105,7 @@ RAPIDPRO_URLS = {
 RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT': 'product'}
 
 # WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
-RAPIDPRO_LIVE = False
+RAPIDPRO_LIVE = environ('RAPIDPRO_LIVE', 'false')
 
 LOGIN_REDIRECT_URL = "/"
 
@@ -110,9 +117,9 @@ REST_FRAMEWORK = {
 }
 
 EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
-MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY', '')
-MAILGUN_SERVER_NAME = 'sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org'
-MAILGUN_SENDER = "UNICEF EUM <postmaster@sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org>"
+MAILGUN_ACCESS_KEY = environ('MAILGUN_ACCESS_KEY', '')
+MAILGUN_SERVER_NAME = environ('MAILGUN_SERVER_NAME','sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org')
+MAILGUN_SENDER = environ('MAILGUN_SENDER', "UNICEF EUM <postmaster@sandbox6c2b4eb4198643d5be6e7d696f7309ae.mailgun.org>")
 
 HOSTNAME = 'eums.unicefuganda.org'
 DEFAULT_FROM_EMAIL = 'admin@eums.unicefuganda.org'
