@@ -132,31 +132,13 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             if (parentDeliveries.length && scopeDataIsValid(parentDeliveries)) {
                 LoaderService.showLoader();
                 $scope.newDelivery.item = parentDeliveries.first().item;
-                createDistributionPlanAndNode(parentDeliveries.first());
+                createNewDeliveryNode();
             }
             else {
                 $scope.errors = true;
                 createToast('Cannot save. Please fill out or fix values for all fields marked in red', 'danger');
             }
         };
-
-        function createDistributionPlanAndNode(parentNode) {
-            DeliveryService.get(parentNode.distributionPlan).then(function (distributionPlan) {
-                var distributionPlan = {
-                    programme: distributionPlan.programme,
-                    consignee: $scope.newDelivery.consignee,
-                    location: $scope.newDelivery.location,
-                    contact_person_id: $scope.newDelivery.contact_person_id,
-                    delivery_date: $scope.newDelivery.deliveryDate,
-                    remark: $scope.newDelivery.remark,
-                    track: $scope.newDelivery.track
-                };
-                DeliveryService.create(distributionPlan).then(function (createdPlan) {
-                    $scope.newDelivery.distributionPlan = createdPlan.id;
-                    createNewDeliveryNode();
-                });
-            });
-        }
 
         $scope.updateSelectedOrderNumber = function (orderNumber) {
             if ($scope.selectedOrderNumber != orderNumber) {

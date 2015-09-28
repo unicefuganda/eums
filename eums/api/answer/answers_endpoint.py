@@ -42,7 +42,7 @@ class ResponseSerializer(object):
     def node_responses(self, node):
         node_results = []
         node_responses = node.responses()
-        programme = node.distribution_plan.programme
+        programme = node.programme
         formatted_run_responses = self.format_run_responses(node, programme)
         for item_run, responses in node_responses.iteritems():
             formatted_run_responses.update({'item': item_run.runnable.item.item.description,

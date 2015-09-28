@@ -1,6 +1,6 @@
 from django.db import models
 from eums.models.flow import Flow
-from eums.models import Runnable, Arc
+from eums.models import Runnable, Arc, Programme
 from eums.models.delivery_node_manager import DeliveryNodeManager
 
 positions = ((Runnable.MIDDLE_MAN, 'Middleman'), (Runnable.END_USER, 'End User'),
@@ -9,6 +9,7 @@ positions = ((Runnable.MIDDLE_MAN, 'Middleman'), (Runnable.END_USER, 'End User')
 
 class DistributionPlanNode(Runnable):
     distribution_plan = models.ForeignKey('DistributionPlan', null=True, blank=True)
+    programme = models.ForeignKey(Programme, null=True, blank=True)
     item = models.ForeignKey('OrderItem')
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)
@@ -33,11 +34,20 @@ class DistributionPlanNode(Runnable):
         else:
             self.balance = self.quantity_in() - self.quantity_out()
 
+        self.programme = self.get_programme()
+
         self.total_value = self._get_total_value()
         self.assign_ip()
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())
+
+    def get_programme(self):
+        if self.distribution_plan:
+            return self.distribution_plan.programme
+        else:
+            first_parent = self._parents().first()
+            return first_parent.get_programme() if first_parent else None
 
     def assign_ip(self):
         parent = self._parents().first()

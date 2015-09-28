@@ -1,8 +1,8 @@
 from unittest import TestCase
 from datetime import datetime
+
 from django.db import IntegrityError
 from mock import patch
-
 from eums.models import DistributionPlanNode as DeliveryNode, SalesOrder, DistributionPlan, Arc, PurchaseOrderItem, \
     Item, Consignee, Alert, Runnable, Flow
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
@@ -19,7 +19,6 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
-from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 
 class DeliveryNodeTest(TestCase):
@@ -28,6 +27,12 @@ class DeliveryNodeTest(TestCase):
 
     def tearDown(self):
         self.clean_up()
+
+    def test_should_have_all_expected_fields(self):
+        node = DeliveryNodeFactory()
+        for expected_field in ['distribution_plan', 'programme', 'item', 'tree_position', 'balance', 'acknowledged', 'total_value',
+                               'parents', 'quantity']:
+            self.assertTrue(hasattr(node, expected_field))
 
     def test_should_create_itself_with_any_type_of_order_item(self):
         purchase_order_item = PurchaseOrderItemFactory()
@@ -503,3 +508,23 @@ class DeliveryNodeTest(TestCase):
 
         self.assertEqual(node_one.total_value, 100)
         self.assertEqual(node_two.total_value, 300)
+
+    def should_set_programme_on_root_node(self):
+        delivery = DeliveryFactory()
+        node = DeliveryNodeFactory(distribution_plan=delivery)
+        self.assertEqual(delivery.programme, node.programme)
+
+    def should_set_programme_on_none_root_node(self):
+        delivery = DeliveryFactory()
+        consignee = ConsigneeFactory()
+
+        root = DeliveryNodeFactory(consignee=consignee, quantity=100, distribution_plan=delivery)
+        child = DeliveryNodeFactory(parents=[(root, 60)], distribution_plan=None)
+        grandchild = DeliveryNodeFactory(parents=[(child, 30)], distribution_plan=None)
+        second_grand_child = DeliveryNodeFactory(parents=[(grandchild, 30)], distribution_plan=None)
+
+        self.assertEqual(child.programme, delivery.programme)
+        self.assertEqual(grandchild.programme, delivery.programme)
+        self.assertEqual(second_grand_child.programme, delivery.programme)
+
+
