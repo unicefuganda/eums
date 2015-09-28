@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
 from eums.models import UserProfile, DistributionPlan, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Runnable
+    ReleaseOrderItem, Runnable, Consignee
 
 PAGE_SIZE = 10
 
@@ -64,10 +64,18 @@ def build_answers_for_nodes(delivery, nodes, response):
     date_of_receipt = _get_delivery_data(delivery_answers)
     node_answers = delivery.node_answers()
     for node in nodes:
+        ip = node.get_ip()
+        try:
+            implementing_partner = Consignee.objects.get(pk=ip['id'])
+            ip_name = implementing_partner.name if implementing_partner else node.consignee.name
+        except Consignee.DoesNotExist:
+            ip_name = node.consignee.name
+
         response.append({
             'item_description': node.item.item.description,
             'programme': node.distribution_plan.programme.name,
             'consignee': node.consignee.name,
+            'implementing_partner': ip_name,
             'order_number': node.item.number(),
             'date_of_receipt': date_of_receipt,
             'quantity_shipped': node.quantity_in(),

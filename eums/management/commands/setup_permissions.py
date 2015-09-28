@@ -32,7 +32,8 @@ GROUP_PERMISSIONS = {
         'change_distributionplan',
         'can_view_distribution_plans',
         'can_track_deliveries',
-        'can_view_unicef_menu'
+        'can_view_unicef_menu',
+        'can_view_reports',
     ],
     'UNICEF_viewer': [
         'can_view_dashboard',
