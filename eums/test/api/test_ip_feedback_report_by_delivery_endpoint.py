@@ -1,3 +1,4 @@
+from datetime import date
 from eums.models import Question, DistributionPlan, Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -42,8 +43,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         yes = 'Yes'
         no = 'No'
-        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
-                              'programme': programme_name, 'consignee': wakiso,
+        expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
+                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
 
@@ -55,8 +56,9 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self._create_questions()
         programme_name = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
-        delivery = DeliveryFactory(track=True, programme=ProgrammeFactory(name=programme_name),
-                                   consignee=ConsigneeFactory(name=wakiso))
+        delivery = DeliveryFactory(
+            track=True, programme=ProgrammeFactory(name=programme_name),
+            consignee=ConsigneeFactory(name=wakiso), delivery_date=date(2015, 3, 10))
         order_number = 34230335
         DeliveryNodeFactory(distribution_plan=delivery,track=True, tree_position=Runnable.IMPLEMENTING_PARTNER,
                             item=PurchaseOrderItemFactory(
@@ -69,8 +71,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         yes = 'Yes'
         no = 'No'
         empty = ''
-        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': empty, 'orderNumber': order_number,
-                              'programme': programme_name, 'consignee': wakiso,
+        expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': empty,
+                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: empty, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': empty, 'value': 100}]
 
@@ -92,8 +94,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         yes = 'Yes'
         no = 'No'
-        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
-                              'programme': programme_name, 'consignee': wakiso,
+        expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
+                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
@@ -117,8 +119,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         yes = 'Yes'
         no = 'No'
-        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
-                              'programme': programme_name, 'consignee': wakiso,
+        expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
+                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
@@ -142,8 +144,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         yes = 'Yes'
         no = 'No'
-        expected_response = [{'deliveryReceived': yes, 'dateOfReceipt': '12/03/2015', 'orderNumber': order_number,
-                              'programme': programme_name, 'consignee': wakiso,
+        expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
+                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
@@ -281,19 +283,20 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
     def _create_node(self, delivery, is_purchase, order_number, track, tree_position):
         if is_purchase:
-            DeliveryNodeFactory(track=track, distribution_plan=delivery, tree_position=tree_position,
-                                item=PurchaseOrderItemFactory(
-                                    purchase_order=PurchaseOrderFactory(order_number=order_number)))
+            DeliveryNodeFactory(
+                track=track, distribution_plan=delivery, tree_position=tree_position,
+                item=PurchaseOrderItemFactory(purchase_order=PurchaseOrderFactory(order_number=order_number)))
         else:
-            DeliveryNodeFactory(track=track, distribution_plan=delivery, tree_position=tree_position,
-                                item=ReleaseOrderItemFactory(
-                                    release_order=ReleaseOrderFactory(waybill=order_number)))
+            DeliveryNodeFactory(
+                track=track, distribution_plan=delivery, tree_position=tree_position,
+                item=ReleaseOrderItemFactory(release_order=ReleaseOrderFactory(waybill=order_number)))
 
     def create_node_and_answers(self, number_of_deliveries, order_number, programme_name, consignee, comment,
                                 is_purchase, track, tree_position=Runnable.IMPLEMENTING_PARTNER):
         while number_of_deliveries > 0:
-            delivery = DeliveryFactory(track=track, programme=ProgrammeFactory(name=programme_name),
-                                       consignee=ConsigneeFactory(name=consignee))
+            delivery = DeliveryFactory(
+                track=track, programme=ProgrammeFactory(name=programme_name),
+                consignee=ConsigneeFactory(name=consignee), delivery_date=date(2015, 3, 10))
 
             self._create_node(delivery, is_purchase, order_number, track, tree_position)
 

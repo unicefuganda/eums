@@ -39,6 +39,7 @@ def _build_delivery_answers(deliveries):
     for delivery in deliveries:
         answers = delivery.answers()
         delivery_answers.append({Question.LABEL.deliveryReceived: _value(Question.LABEL.deliveryReceived, answers),
+                                 'shipmentDate': delivery.delivery_date,
                                  Question.LABEL.dateOfReceipt: _value(Question.LABEL.dateOfReceipt, answers),
                                  'orderNumber': delivery.number(),
                                  'programme': delivery.programme.name,

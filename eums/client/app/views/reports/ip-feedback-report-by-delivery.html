@@ -18,6 +18,7 @@
                 <thead>
                 <tr>
                     <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
+                    <th class="align-left"><span class="pad-left-10">SHIPMENT DATE</span></th>
                     <th class="align-left"><span class="pad-left-10">DATE RECEIVED</span></th>
                     <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
                     <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
@@ -35,6 +36,7 @@
                               'eums-bg-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
+                    <td><span class="pad-left-10">{{ itemReport.shipmentDate | date: 'dd/MM/yyyy'}}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.programme }}</span></td>
