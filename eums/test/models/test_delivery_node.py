@@ -218,6 +218,23 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(leaf_node.get_ip(),
                          {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
 
+    def test_should_get_a_nodes_ip_from_the_root_node_of_its_first_parent(self):
+        root_node = DeliveryNodeFactory()
+        self.assertEqual(root_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+
+        second_parent = DeliveryNodeFactory()
+        self.assertEqual(second_parent.get_ip(),
+                         {'id': second_parent.id, 'consignee': second_parent.consignee, 'location': second_parent.location})
+
+        first_level_child_node = DeliveryNodeFactory(parents=[(root_node, 2), (second_parent, 3)])
+        self.assertEqual(first_level_child_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+
+        second_level_child_node = DeliveryNodeFactory(parents=[(first_level_child_node, 2)])
+        self.assertEqual(second_level_child_node.get_ip(),
+                     {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+
     def test_should_get_sender_name(self):
         sender_name = 'Save the children'
         root_node = DeliveryNodeFactory(consignee=ConsigneeFactory(name=sender_name))

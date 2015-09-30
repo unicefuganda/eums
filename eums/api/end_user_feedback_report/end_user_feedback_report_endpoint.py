@@ -76,6 +76,7 @@ def build_answers_for_nodes(nodes, response):
                 'order_number': node.item.number(),
                 'date_of_receipt': date_of_receipt,
                 'quantity_shipped': node.quantity_in(),
+                'value': node.total_value,
                 'answers': answer_list
             })
 

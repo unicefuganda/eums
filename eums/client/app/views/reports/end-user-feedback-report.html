@@ -43,7 +43,7 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.value | number:2 }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
 
                     <td>
                         <span ng-if="itemReport.answers.productReceived == 'Yes'"

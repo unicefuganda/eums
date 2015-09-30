@@ -79,6 +79,7 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'implementing_partner': implementing_partner.name}, results)
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
+        self.assertDictContainsSubset({'value': node_one.total_value}, results)
         self.assertEqual(len(results['answers']), 5)
 
     def test_should_return_paginated_items_and_all_their_answers(self):
