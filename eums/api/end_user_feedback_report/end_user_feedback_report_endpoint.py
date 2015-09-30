@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
 from eums.models import UserProfile, DistributionPlan, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Runnable, Consignee
+    ReleaseOrderItem, Runnable, Consignee, Option
 
 PAGE_SIZE = 10
 
@@ -20,11 +20,9 @@ def end_user_feedback_report(request):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
     response = []
-    deliveries = DistributionPlan.objects.filter(track=True)
-    for delivery in deliveries:
-        nodes = end_user_tracked_nodes(delivery, request)
-        if nodes:
-            build_answers_for_nodes(delivery, nodes, response)
+    nodes = end_user_tracked_nodes(request)
+    if nodes:
+        build_answers_for_nodes(nodes, response)
 
     paginated_results = Paginator(response, PAGE_SIZE)
     page_number = get_page_number(request)
@@ -54,49 +52,46 @@ def get_page_number(request):
         return 1
 
 
-def _get_delivery_data(delivery_answers):
-    date_answer = filter(lambda answers: answers['question_label'] == 'dateOfReceipt', delivery_answers)[0]
-    return date_answer['value']
+def _get_delivery_date(delivery_answers):
+    date_answers = filter(lambda answer: answer.question.label == 'dateOfReceipt', delivery_answers)
+    if len(date_answers):
+        return date_answers[0].value
 
 
-def build_answers_for_nodes(delivery, nodes, response):
-    delivery_answers = delivery.answers()
-    date_of_receipt = _get_delivery_data(delivery_answers)
-    node_answers = delivery.node_answers()
+def build_answers_for_nodes(nodes, response):
     for node in nodes:
-        ip = node.get_ip()
-        try:
-            implementing_partner = Consignee.objects.get(pk=ip['id'])
-            ip_name = implementing_partner.name if implementing_partner else node.consignee.name
-        except Consignee.DoesNotExist:
-            ip_name = node.consignee.name
+        node_responses = node.responses()
+        for run, answers in node_responses.iteritems():
+            date_of_receipt = _get_delivery_date(answers)
+            ip = node.get_ip()
+            implementing_partner = ip['consignee']
+            answer_list = {}
+            for answer in answers:
+                answer_list.update({answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
+            response.append({
+                'item_description': node.item.item.description,
+                'programme': node.programme.name,
+                'consignee': node.consignee.name,
+                'implementing_partner': implementing_partner.name,
+                'order_number': node.item.number(),
+                'date_of_receipt': date_of_receipt,
+                'quantity_shipped': node.quantity_in(),
+                'answers': answer_list
+            })
 
-        response.append({
-            'item_description': node.item.item.description,
-            'programme': node.distribution_plan.programme.name,
-            'consignee': node.consignee.name,
-            'implementing_partner': ip_name,
-            'order_number': node.item.number(),
-            'date_of_receipt': date_of_receipt,
-            'quantity_shipped': node.quantity_in(),
-            'answers': _filter_answers_by_id(node_answers, node.id)
-        })
-
-
-def end_user_tracked_nodes(delivery, request):
+def end_user_tracked_nodes(request):
     if request.GET.get('query'):
         params = request.GET.get('query')
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
-        nodes = DistributionPlanNode.objects.filter(Q(distribution_plan=delivery),
-                                                    Q(tree_position=Runnable.END_USER),
+        nodes = DistributionPlanNode.objects.filter(Q(tree_position=Runnable.END_USER),
                                                     Q(item__item__description__icontains=params) |
                                                     Q(consignee__name__icontains=params) |
                                                     Q(item=purchase_order_item) |
                                                     Q(item=release_order_item) |
-                                                    Q(distribution_plan__programme__name__icontains=params))
+                                                    Q(programme__name__icontains=params))
     else:
-        nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery)
+        nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.END_USER)
     return nodes
 
 

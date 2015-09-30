@@ -65,7 +65,13 @@ class DistributionPlanNode(Runnable):
         return reduce(lambda total, arc: total + arc.quantity, self.arcs_out.all(), 0)
 
     def get_ip(self):
-        root_node = DistributionPlanNode.objects.root_nodes_for(delivery=self.distribution_plan).first()
+        if self.distribution_plan:
+            root_node = DistributionPlanNode.objects.root_nodes_for(delivery=self.distribution_plan).first()
+        elif self.parents:
+            root_node = DistributionPlanNode.objects.filter(pk__in=self.parents, parents=None).first()
+        else:
+            root_node = self
+
         if root_node:
             return {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location}
         return self._parents().first().get_ip()
