@@ -62,9 +62,6 @@ def build_answers_for_nodes(nodes, response):
     for node in nodes:
         node_responses = node.responses()
         for run, answers in node_responses.iteritems():
-            date_of_receipt = _get_delivery_date(answers)
-            ip = node.get_ip()
-            implementing_partner = ip['consignee']
             answer_list = {}
             for answer in answers:
                 answer_list.update({answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
@@ -72,9 +69,8 @@ def build_answers_for_nodes(nodes, response):
                 'item_description': node.item.item.description,
                 'programme': node.programme.name,
                 'consignee': node.consignee.name,
-                'implementing_partner': implementing_partner.name,
+                'implementing_partner': node.ip.name,
                 'order_number': node.item.number(),
-                'date_of_receipt': date_of_receipt,
                 'quantity_shipped': node.quantity_in(),
                 'value': node.total_value,
                 'answers': answer_list

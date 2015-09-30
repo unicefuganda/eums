@@ -70,13 +70,11 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         results = response.data['results'][0]
 
-        ip = node_one.get_ip()
-        implementing_partner = ip['consignee']
         self.assertEqual(len(response.data['results']), 2)
         self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
         self.assertDictContainsSubset({'programme': node_one.programme.name}, results)
         self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
-        self.assertDictContainsSubset({'implementing_partner': implementing_partner.name}, results)
+        self.assertDictContainsSubset({'implementing_partner': node_one.ip.name}, results)
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertDictContainsSubset({'value': node_one.total_value}, results)
