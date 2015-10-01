@@ -4,7 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var homePage = require('./pages/home-page.js');
 var responsePage = require('./pages/response-page.js');
 
-fdescribe('Home Page', function () {
+xdescribe('Home Page', function () {
 
     describe('Admin User', function () {
 
@@ -14,7 +14,6 @@ fdescribe('Home Page', function () {
         });
 
         fit('should get global stats on map', function () {
-            browser.pause();
             expect(homePage.mapLocation).toEqual('');
             expect(homePage.numberSent).toEqual('$76,500.00');
             expect(homePage.numberDelivered).toEqual('$47,400.00');
