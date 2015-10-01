@@ -11,7 +11,7 @@
                 <i class="glyphicon "
                    ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
                 <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by Item, Outcome, Purchase Order or Waybill"/>
+                       placeholder="Search by item, outcome, purchase order or waybill"/>
             </div>
         </div>
 
@@ -43,39 +43,39 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.value | number:2 }}</span></td>
 
                     <td>
-                        <span ng-if="itemReport.answers.productReceived == 'Yes'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Yes</span>
-                        <span ng-if="itemReport.answers.productReceived == 'No'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-no">No</span>
-                    <td><span class="padded-multi-line-5">{{ itemReport.answers.dateOfReceipt | date: 'dd/MM/yyyy'}}</span>
+                        <span ng-if="itemReport.answers[0].value == 'Yes'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Good</span>
+                        <span ng-if="itemReport.answers[0].value == 'No'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-no">Bad</span>
+                    <td><span class="padded-multi-line-5">{{ itemReport.date_of_receipt | date: 'dd/MM/yyyy'}}</span>
                     </td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.answers[1].value }}</span></td>
                     <td>
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Good'"
+                        <span ng-if="itemReport.answers[2].value == 'Good'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-yes">Good</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Substandard'"
+                        <span ng-if="itemReport.answers[2].value == 'Substandard'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-substandard">Substandard</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Incomplete'"
+                        <span ng-if="itemReport.answers[2].value == 'Incomplete'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-incomplete">Incomplete</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Expired'"
+                        <span ng-if="itemReport.answers[2].value == 'Expired'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-expired">Expired</span>
 
-                        <span ng-if="itemReport.answers.qualityOfProduct == 'Damaged'"
+                        <span ng-if="itemReport.answers[2].value == 'Damaged'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-no">Damaged</span>
                     </td>
                     <td>
                         <div class="align-center">
                         <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
-                              ng-class="{'glyphicon-ok-sign': itemReport.answers.satisfiedWithProduct == 'Yes',
-                                                'eums-text-ok': itemReport.answers.satisfiedWithProduct == 'Yes',
-                                  'glyphicon-remove-sign': itemReport.answers.satisfiedWithProduct == 'No',
-                                                'eums-text-no': itemReport.answers.satisfiedWithProduct == 'No'
+                              ng-class="{'glyphicon-ok-sign': itemReport.answers[3].value == 'Yes',
+                                                'eums-text-ok': itemReport.answers[3].value == 'Yes',
+                                  'glyphicon-remove-sign': itemReport.answers[3].value == 'No',
+                                                'eums-text-no': itemReport.answers[3].value == 'No'
                                 }">
                             </span>
                         </div>
@@ -83,7 +83,7 @@
                     <td>
                         <div class="align-center">
                             <a class="button" ng-click="showRemarks($index)"
-                               ng-hide=" itemReport.answers.additionalRemarks == '' ">
+                               ng-hide=" itemReport.answers[4].value == '' ">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="eums-modal-content">
-                                            {{ itemReport.answers.additionalRemarks }}
+                                            {{ itemReport.answers[4].value }}
                                         </div>
                                     </div>
                                     <div class="modal-footer centered">

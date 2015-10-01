@@ -1,5 +1,4 @@
 import factory
-from eums.test.factories.programme_factory import ProgrammeFactory
 
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.helpers.fake_datetime import FakeDate
@@ -13,7 +12,6 @@ class DeliveryNodeFactory(factory.DjangoModelFactory):
         model = DistributionPlanNode
 
     distribution_plan = factory.SubFactory(DeliveryFactory)
-    programme = factory.SubFactory(ProgrammeFactory)
     consignee = factory.SubFactory(ConsigneeFactory)
     tree_position = DistributionPlanNode.END_USER
     location = "Kampala"

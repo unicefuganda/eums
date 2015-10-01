@@ -32,6 +32,7 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
+
                 LoaderService.hideLoader();
                 $scope.searching = false;
             });
