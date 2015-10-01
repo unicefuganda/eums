@@ -13,14 +13,14 @@ xdescribe('Home Page', function () {
             loginPage.loginAs('admin', 'admin');
         });
 
-        fit('should get global stats on map', function () {
+        it('should get global stats on map', function () {
             expect(homePage.mapLocation).toEqual('');
             expect(homePage.numberSent).toEqual('$76,500.00');
             expect(homePage.numberDelivered).toEqual('$47,400.00');
             expect(homePage.numberNotDelivered).toEqual('38%');
         });
 
-        xit('should click on wakiso district', function () {
+        it('should click on wakiso district', function () {
             homePage.clickMapLayer('wakiso');
             expect(homePage.mapLocation).toEqual('WAKISO');
             expect(homePage.getMapZoomLevel()).toBe(10);
@@ -29,7 +29,7 @@ xdescribe('Home Page', function () {
             expect(homePage.numberNotDelivered).toEqual('0%');
         });
 
-        xit('when I click on district number of responses should be 10 or less', function () {
+        it('when I click on district number of responses should be 10 or less', function () {
             homePage.clickMapLayer('wakiso');
             homePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toBeLessThan(6);
@@ -58,7 +58,7 @@ xdescribe('Home Page', function () {
             expect(responsePage.endUsers).toContain('William Shatner');
         });
 
-        xit('should search for "no" product received in Wakiso district', function () {
+        it('should search for "no" product received in Wakiso district', function () {
             homePage.clickMapLayer('wakiso');
             homePage.goToResponseDetailsPage();
             responsePage.searchResponsesFor('no');
@@ -67,7 +67,7 @@ xdescribe('Home Page', function () {
             })
         });
 
-        xit('should search for "yes" product received in Wakiso district', function () {
+        it('should search for "yes" product received in Wakiso district', function () {
             var expectedItems = ['IEHK2006,kit,suppl.1-drugs', 'Safety box f.used syrgs/ndls 5lt/BOX-25'];
             homePage.clickMapLayer('wakiso');
             homePage.goToResponseDetailsPage();
