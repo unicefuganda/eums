@@ -1,60 +1,59 @@
-<div class="eums page-header fixed">
-    <div class="secondary-header">
-        {{ purchaseOrder.programmeName }}
-    </div>
-    <div>
-        Create a Single IP Delivery
-    </div>
-</div>
-
-<div class="container-fluid margin-top-50">
-    <div class="content">
-        <ng-toast></ng-toast>
+<div class="eums-fixed-header eums-solid-bottom-border">
+    <div class="eums page-header">
+        <div class="secondary-header">
+            {{ purchaseOrder.programmeName }}
+        </div>
         <div>
-            <div class="row">
-                <div class="col-md-3">
-                    <label class="blue-unicef section-sub-header">PURCHASE ORDER DETAILS</label>
-                    <ul class="list-group">
-                        <li class="list-group-item">
+            Create a Single IP Delivery
+        </div>
+    </div>
+    <div class="pad-top-10">
+        <div class="row">
+            <div class="col-md-3">
+                <label class="blue-unicef section-sub-header">PURCHASE ORDER DETAILS</label>
+                <ul class="list-group">
+                    <li class="list-group-item">
                             <span class="label label-success label-as-badge border-radius-5"
                                   id="po-number">{{ purchaseOrder.orderNumber }}</span>
-                            <span>PO Number</span>
-                        </li>
-                        <li class="list-group-item">
-                            <span class="label label-success label-as-badge border-radius-5" id="po-type">{{ purchaseOrder.poType }}</span>
-                            PO Type
-                        </li>
-                        <li class="list-group-item">
+                        <span>PO Number</span>
+                    </li>
+                    <li class="list-group-item">
+                        <span class="label label-success label-as-badge border-radius-5" id="po-type">{{ purchaseOrder.poType }}</span>
+                        PO Type
+                    </li>
+                    <li class="list-group-item">
                             <span class="label label-success label-as-badge border-radius-5"
                                   id="po-total-value">{{ purchaseOrder.totalValue | currency }}</span>
-                            Approximate Total Value
-                        </li>
-                    </ul>
-                </div>
+                        Approximate Total Value
+                    </li>
+                </ul>
+            </div>
 
-                <div class="col-md-4">
-                    <label class="section-sub-header blue-unicef col-md-12">DELIVERY DETAILS</label>
+            <div class="col-md-4">
+                <label class="section-sub-header blue-unicef col-md-12">DELIVERY DETAILS</label>
 
-                    <div class="container-details eums-clearfix">
-                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
-                             ng-class="{'has-error': !delivery.consignee && errors}">
-                            <label for="input-consignee" class="col-md-5 control-label pad-small">IP</label>
+                <div class="container-details eums-clearfix">
+                    <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                         ng-class="{'has-error': !delivery.consignee && errors}">
+                        <label for="input-consignee" class="col-md-5 control-label pad-small">IP</label>
 
-                            <div id='input-consignee' class="col-md-11 pad-small" ng-if="contentLoaded">
-                                <input type="hidden" search-consignees only-ips
-                                       ng-model="delivery.consignee"
-                                       ng-attr-id="{{ 'ip-select' }}"
-                                       ng-disabled="cannotChangeIp()"
-                                       value="{{ delivery.consignee }}"
-                                       {{ ipFieldTitle()? title="You can not change IP for this PO but you can still deliver more items" :
-                                       title="" }}>
-                            </div>
+                        <div id='input-consignee' class="col-md-11 pad-small" ng-if="contentLoaded">
+                            <input type="hidden" search-consignees only-ips
+                                   ng-model="delivery.consignee"
+                                   ng-attr-id="{{ 'ip-select' }}"
+                                   ng-disabled="cannotChangeIp()"
+                                   value="{{ delivery.consignee }}"
+                                   {{ ipFieldTitle()?
+                                   title="You can not change IP for this PO but you can still deliver more items" :
+                                   title="" }}>
                         </div>
-                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
-                             ng-class="{'has-error': !delivery.delivery_date && errors}">
-                            <label for="input-delivery-date" class="col-md-12 control-label pad-small">Shipment Date</label>
+                    </div>
+                    <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                         ng-class="{'has-error': !delivery.delivery_date && errors}">
+                        <label for="input-delivery-date" class="col-md-12 control-label pad-small">Shipment
+                            Date</label>
 
-                            <div id="input-delivery-date" class="col-md-11 pad-small" ng-if="contentLoaded">
+                        <div id="input-delivery-date" class="col-md-11 pad-small" ng-if="contentLoaded">
                             <span class="input-group" eums-date-picker>
                                 <input type="text" class="form-control"
                                        datepicker-popup="dd/MM/yyyy"
@@ -71,73 +70,82 @@
                                   </button>
                                 </span>
                             </span>
-                            </div>
                         </div>
+                    </div>
 
-                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
-                             ng-class="{'has-error': !delivery.contact_person_id && errors}">
-                            <label for="input-contact" class="col-md-11 control-label pad-small">Contact</label>
+                    <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                         ng-class="{'has-error': !delivery.contact_person_id && errors}">
+                        <label for="input-contact" class="col-md-11 control-label pad-small">Contact</label>
 
-                            <div id="input-contact" class="col-md-11 control-label pad-small" ng-if="contentLoaded">
-                                <div class="form-group col-md-10 pad-small">
-                                    <input type="hidden"
-                                           search-contacts
-                                           required="required"
-                                           value="{{ delivery.contact_person_id }}"
-                                           ng-model="delivery.contact_person_id"
-                                           ng-attr-id="{{ 'contact-select' }}">
-                                </div>
-                                <div class="form-group col-md-2 pad-small">
-                                    <button type="button" class="btn btn-default "
-                                            ng-click="addContact(item, $index)">
-                                        <i class="glyphicon glyphicon-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5" ng-if="districtsLoaded"
-                             ng-class="{'has-error': !delivery.location && errors}">
-                            <label for="input-location" class="col-md-12 control-label pad-small">Choose District</label>
-
-                            <div id="input-location" class="col-md-11 pad-small" ng-if="districtsLoaded && contentLoaded">
+                        <div id="input-contact" class="col-md-11 control-label pad-small" ng-if="contentLoaded">
+                            <div class="form-group col-md-10 pad-small">
                                 <input type="hidden"
-                                       search-from-list
-                                       list="{{ districts }}"
-                                       ng-model="delivery.location"
-                                       ng-attr-id="{{ 'location-select' }}"
-                                       value="{{ delivery.location }}">
+                                       search-contacts
+                                       required="required"
+                                       value="{{ delivery.contact_person_id }}"
+                                       ng-model="delivery.contact_person_id"
+                                       ng-attr-id="{{ 'contact-select' }}">
+                            </div>
+                            <div class="form-group col-md-2 pad-small">
+                                <button type="button" class="btn btn-default "
+                                        ng-click="addContact(item, $index)">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="col-md-4 pull-right">
-                    <label class="section-sub-header blue-unicef">PREVIOUS DELIVERIES</label>
+                    <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-bottom-5"
+                         ng-if="districtsLoaded"
+                         ng-class="{'has-error': !delivery.location && errors}">
+                        <label for="input-location" class="col-md-12 control-label pad-small">Choose
+                            District</label>
 
-                    <table id="trackedDeliveriesTable" class="table table-curved light-blue-table-header" ng-show="trackedDeliveries">
-                        <tr>
-                            <th class="item-list-col-header">#</th>
-                            <th class="item-list-col-header">Date</th>
-                            <th class="item-list-col-header">Approximate Total Value</th>
-                        </tr>
-                        <tr ng-repeat="(index, delivery) in trackedDeliveries">
-                            <td>{{ index + 1 }}</td>
-                            <td ng-click="viewDelivery(delivery)"
-                                class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy' }}
-                            </td>
-                            <td>{{ delivery.total_value | currency }}</td>
-                        </tr>
-                    </table>
+                        <div id="input-location" class="col-md-11 pad-small"
+                             ng-if="districtsLoaded && contentLoaded">
+                            <input type="hidden"
+                                   search-from-list
+                                   list="{{ districts }}"
+                                   ng-model="delivery.location"
+                                   ng-attr-id="{{ 'location-select' }}"
+                                   value="{{ delivery.location }}">
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="pad-left-5 pad-top-10">
+            <div class="col-md-4 pull-right eums-border-height-175 eums-auto-scroll">
+                <label class="section-sub-header blue-unicef">PREVIOUS DELIVERIES</label>
+
+                <table id="trackedDeliveriesTable" class="table table-curved light-blue-table-header"
+                       ng-show="trackedDeliveries">
+                    <tr>
+                        <th class="item-list-col-header">#</th>
+                        <th class="item-list-col-header">Date</th>
+                        <th class="item-list-col-header">Approximate Total Value</th>
+                    </tr>
+                    <tr ng-repeat="(index, delivery) in trackedDeliveries">
+                        <td>{{ index + 1 }}</td>
+                        <td ng-click="viewDelivery(delivery)"
+                            class="btn-link">{{ delivery.delivery_date | date : 'dd MMM yyyy' }}
+                        </td>
+                        <td>{{ delivery.total_value | currency }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid margin-top-250">
+    <div class="content">
+        <ng-toast></ng-toast>
+        <div class="pad-left-5">
             <div>
                 <div ng-show="purchaseOrderItems.length">
                     <div class="panel-body">
-                        <table id="singleIPDeliveryItemsTable" class="table table-curved blue-table-header vertical-align-middle">
+                        <table id="singleIPDeliveryItemsTable"
+                               class="table table-curved blue-table-header vertical-align-middle">
                             <thead>
                             <tr>
                                 <th class="item-list-col-header">No.</th>
@@ -162,7 +170,9 @@
                                            ng-model="item.quantityShipped" only-digits
                                            ng-class="{'border-red': item.isInvalid(item.quantityShipped) && errors}">
                                 </td>
-                                <td class="align-right pad-right-20">{{ item.deliveryValue(item.quantityShipped) | currency }}</td>
+                                <td class="align-right pad-right-20">{{ item.deliveryValue(item.quantityShipped) |
+                                    currency }}
+                                </td>
                             </tr>
                         </table>
 
