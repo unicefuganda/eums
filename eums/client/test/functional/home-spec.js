@@ -4,7 +4,7 @@ var loginPage = require('./pages/login-page.js');
 var homePage = require('./pages/home-page.js');
 var responsePage = require('./pages/response-page.js');
 
-xdescribe('Home Page', function () {
+fdescribe('Home Page', function () {
 
     describe('Admin User', function () {
 
@@ -13,14 +13,15 @@ xdescribe('Home Page', function () {
             loginPage.loginAs('admin', 'admin');
         });
 
-        xit('should get global stats on map', function () {
+        fit('should get global stats on map', function () {
+            browser.pause();
             expect(homePage.mapLocation).toEqual('');
             expect(homePage.numberSent).toEqual('$76,500.00');
             expect(homePage.numberDelivered).toEqual('$47,400.00');
             expect(homePage.numberNotDelivered).toEqual('38%');
         });
 
-        it('should click on wakiso district', function () {
+        xit('should click on wakiso district', function () {
             homePage.clickMapLayer('wakiso');
             expect(homePage.mapLocation).toEqual('WAKISO');
             expect(homePage.getMapZoomLevel()).toBe(10);
@@ -29,7 +30,7 @@ xdescribe('Home Page', function () {
             expect(homePage.numberNotDelivered).toEqual('0%');
         });
 
-        it('when I click on district number of responses should be 10 or less', function () {
+        xit('when I click on district number of responses should be 10 or less', function () {
             homePage.clickMapLayer('wakiso');
             homePage.numberOfResponses.then(function (rows) {
                 expect(rows.length).toBeLessThan(6);
@@ -58,7 +59,7 @@ xdescribe('Home Page', function () {
             expect(responsePage.endUsers).toContain('William Shatner');
         });
 
-        it('should search for "no" product received in Wakiso district', function () {
+        xit('should search for "no" product received in Wakiso district', function () {
             homePage.clickMapLayer('wakiso');
             homePage.goToResponseDetailsPage();
             responsePage.searchResponsesFor('no');
@@ -67,7 +68,7 @@ xdescribe('Home Page', function () {
             })
         });
 
-        it('should search for "yes" product received in Wakiso district', function () {
+        xit('should search for "yes" product received in Wakiso district', function () {
             var expectedItems = ['IEHK2006,kit,suppl.1-drugs', 'Safety box f.used syrgs/ndls 5lt/BOX-25'];
             homePage.clickMapLayer('wakiso');
             homePage.goToResponseDetailsPage();
