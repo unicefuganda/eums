@@ -27,7 +27,8 @@ def _get_report_details_for_node(node):
     purchase_order_number = node.item.number()
     quantity_received = _compute_quantity_received(node)
     total_value_received = quantity_received * node.item.unit_value()
-    quantity_dispensed = _compute_quantity_dispensed(node)
+    quantity_dispensed = node.quantity_out()
+
     value_dispensed = quantity_dispensed * node.item.unit_value()
 
     return {
@@ -63,12 +64,12 @@ def _get_date_received(node):
     return responses.get('dateOfReceipt', None)
 
 
-def _compute_quantity_dispensed(node):
-    total_quantity_dispensed = 0
-    for child_node in node.children():
-        responses = _get_responses(child_node)
-        total_quantity_dispensed += responses.get('amountReceived', 0)
-    return total_quantity_dispensed
+# def _compute_quantity_dispensed(node):
+#     total_quantity_dispensed = 0
+#     for child_node in node.children():
+#         responses = _get_responses(child_node)
+#         total_quantity_dispensed += responses.get('amountReceived', 0)
+#     return total_quantity_dispensed
 
 
 def _reduce_stock_report(stock_report):
