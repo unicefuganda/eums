@@ -11,8 +11,6 @@ describe('IP Deliveries', function () {
     var PO_NUMBER = '81026399';
 
     it('Set up to ensure that IP has items in their warehouse', function () {
-        //TODO - Add IP delivery as a fixture so that this spec is not necessary
-
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
@@ -27,7 +25,7 @@ describe('IP Deliveries', function () {
         directDeliveryPage.setDistrict('Wakiso');
 
         directDeliveryPage.saveAndTrackDelivery();
-        directDeliveryPage.waitForSaveSuccessToast();
+        expect(directDeliveryPage.toastMessage).toContain('Delivery created');
 
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
@@ -93,6 +91,7 @@ describe('IP Deliveries', function () {
         ipWarehousePage.markAsEndUser();
 
         ipWarehousePage.saveDelivery();
+        expect(directDeliveryPage.toastMessage).toContain('Sub-consignee Successfully Created');
 
         expect(ipWarehousePage.subDeliveryCount).toBe(1);
         expect(ipWarehousePage.subDeliveryQuantities).toContain('150');
@@ -107,10 +106,8 @@ describe('IP Deliveries', function () {
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentDelivery.visit();
         ipShipmentDelivery.searchFromDate('10/02/2020');
-        ipShipmentDelivery.searchToDate('10/02/2031')
-        ipShipmentDelivery.clickOutSideToChangeFocus();
-        //ipShipmentDelivery.verifyPOExists('81026399');
-
+        ipShipmentDelivery.searchToDate('10/02/2031');
+//        ipShipmentDelivery.verifyPOExists('81026399');
     });
 
 });

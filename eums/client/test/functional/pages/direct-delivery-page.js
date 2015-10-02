@@ -241,27 +241,6 @@ DirectDeliveryPage.prototype = Object.create({}, {
         }
     },
 
-    confirmDelivery: {
-        value: function () {
-            var EC = protractor.ExpectedConditions;
-
-            var confirmButton = element.all(by.id('deliveryConfirmYes')).get(0);
-            var confirmationIsVisible = EC.visibilityOf(confirmButton);
-            browser.wait(confirmationIsVisible, 5000, "Timeout exceeded while waiting for visibility of confirmation modal");
-
-            confirmButton.click();
-
-            waitForSuccess(EC)
-        }
-    },
-
-    waitForSaveSuccessToast: {
-        value: function () {
-            var EC = protractor.ExpectedConditions;
-            waitForSuccess(EC);
-        }
-    },
-
     toastMessage: {
         get: function () {
             return element(by.repeater('message in messages')).getText();
@@ -322,10 +301,4 @@ function waitForPageToLoad() {
     var spinner = element(by.css('#loading'));
     var screenHasLoaded = EC.invisibilityOf(spinner);
     browser.wait(screenHasLoaded, 5000, "Timeout exceeded while waiting for screen to load");
-}
-
-function waitForSuccess(EC){
-    var successToast = element(by.repeater('message in messages'));
-    var deliveryIsSaved = EC.stalenessOf(successToast);
-    browser.wait(deliveryIsSaved, 5000, "Timeout exceeded while while waiting for delivery saved notifcation");
 }

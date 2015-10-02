@@ -2,7 +2,9 @@ var EC = protractor.ExpectedConditions;
 var IpWarehousePage = function () {};
 
 IpWarehousePage.prototype = Object.create({}, {
+
     url: { get: function () { return '/#/ip-items'; }},
+
     visit: { value: function () {
         browser.get(this.url);
     }},
@@ -21,7 +23,6 @@ IpWarehousePage.prototype = Object.create({}, {
         browser.wait(searchReady, 5000, "Timeout exceeded while retrieving search results");
     }},
 
-
     warehouseItemCount: { get: function () {
         return element.all(by.repeater('($index, item) in items')).count();
     }},
@@ -31,11 +32,12 @@ IpWarehousePage.prototype = Object.create({}, {
 
     viewFirstItem: { value: function () {
         element.all(by.css('.viewDelivery')).get(0).click();
+        waitForPageToLoad();
     }},
     reportOnFirstItem: { value: function () {
         element.all(by.css('.reportDelivery')).get(0).click();
+        waitForPageToLoad();
     }},
-
 
     itemName: { get: function () { return element(by.id('itemNameLabel')).getText(); }},
     itemAvailableQty: { get: function () { return element(by.id('qty-available-label')).getText(); }},
@@ -60,12 +62,14 @@ IpWarehousePage.prototype = Object.create({}, {
         element(by.id('quantity-shipped')).clear().sendKeys(input);
     }},
 
-    saveDelivery: { value: function () { element(by.id('save-delivery-report')).click(); }},
+    saveDelivery: { value: function () {
+        element(by.id('save-delivery-report')).click();
+    }},
+
     discardDelivery: { value: function () {
         element(by.id('discard-delivery-report')).click();
         waitForPageToLoad();
     }},
-
 
     deliveryCount: { get: function () {
         return element.all(by.repeater('($index, node) in deliveryNodes')).count();
@@ -77,18 +81,23 @@ IpWarehousePage.prototype = Object.create({}, {
     deliveryContacts: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.contactPerson.firstName')).getText(); }},
     deliveryLocations: { get: function () { return element.all(by.repeater('($index, node) in deliveryNodes').column('node.location')).getText(); }},
 
-
     createNewDelivery: { value: function () {
         element(by.id('create-new-delivery')).click();
+        waitForPageToLoad();
     }},
+
     viewSubconsignees: { value: function () {
         element.all(by.css('.subconsignee-column')).get(0).click();
+        waitForPageToLoad();
     }},
 
+    addSubconsignee: { value: function () {
+        element(by.id('new-subconsignee-btn')).click();
+    }},
 
-    addSubconsignee: { value: function () { element(by.id('new-subconsignee-btn')).click(); }},
-    specifySubQuantity: { value: function (input) { element(by.css('#quantity-shipped input')).clear().sendKeys(input); }},
-
+    specifySubQuantity: { value: function (input) {
+        element(by.css('#quantity-shipped input')).clear().sendKeys(input);
+    }},
 
     subDeliveryCount: { get: function () {
         return element.all(by.repeater('delivery in deliveries')).count();

@@ -16,7 +16,6 @@ IpShipmentsPage.prototype = Object.create({}, {
         waitForPageToLoad();
     }},
 
-
     viewDeliveryDetails: { value: function () {
        element.all(by.css('.viewDeliveryDetailsBtn')).get(0).click();
     }},
@@ -43,6 +42,7 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     saveAndProceedToItemsInDelivery: { value: function () {
         element(by.id('deliveryConfirmYes')).click();
+        waitForPageToLoad();
     }},
 
 
@@ -75,6 +75,7 @@ IpShipmentsPage.prototype = Object.create({}, {
 
     saveItemConfirmation: { value: function () {
         element(by.id('saveBtn')).click();
+        waitForPageToLoad();
     }},
     goBackToShipmentsPage: { value: function () {
         element(by.id('backToShipmentsBtn')).click();

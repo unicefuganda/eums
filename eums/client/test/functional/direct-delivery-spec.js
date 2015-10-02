@@ -5,6 +5,7 @@ var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var contactsPage = require('./pages/contacts-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var alertsPage = require('./pages/alerts-page.js');
+
 describe('Direct Delivery', function () {
 
     var PURCHASE_ORDER_NUMBER1 = '81026395';
@@ -31,13 +32,12 @@ describe('Direct Delivery', function () {
         directDeliveryPage.enableTracking();
 
         directDeliveryPage.saveDelivery();
-        directDeliveryPage.waitForSaveSuccessToast();
+        expect(directDeliveryPage.toastMessage).toContain('Delivery Saved!');
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
     });
-
 
     it('Admin should be able to create a direct delivery to a single IP', function () {
         loginPage.visit();
@@ -79,7 +79,7 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$41.00');
 
         directDeliveryPage.saveDraftDelivery();
-        directDeliveryPage.waitForSaveSuccessToast();
+        expect(directDeliveryPage.toastMessage).toContain('Delivery created');
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
@@ -88,8 +88,8 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.purchaseOrderQuantities).toContain('125');
         expect(directDeliveryPage.purchaseOrderItemDeliveryValues).toContain('$41.00');
 
-        //TODO Check that previous deliveries are shown accurately
         directDeliveryPage.saveAndTrackDelivery();
+        expect(directDeliveryPage.toastMessage).toContain('Delivery updated');
 
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER2);
@@ -141,6 +141,5 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertReporter).toContain('John Doe');
         expect(alertsPage.alertIP).toContain('WAKISO DHO');
         expect(alertsPage.alertLocation).toContain('Wakiso');
-    })
-
+    });
 });
