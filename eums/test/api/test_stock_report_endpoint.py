@@ -7,10 +7,10 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.answer_factory import NumericAnswerFactory
-
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
@@ -85,9 +85,96 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get(endpoint_url)
         self.assert_api_response(response, expected_data)
 
+    def test_gets_stock_value_for_all_purchase_orders_for_all_ips(self):
+        self.setup_responses()
+        self.add_a_node_with_response()
+
+        expected_data = [
+            {'document_number': self.po_two.order_number,
+             'total_value_received': Decimal('20'),
+             'total_value_dispensed': Decimal('20'),
+             'balance': Decimal('0'),
+             'items': [{'code': unicode(self.po_item_three.item.material_code),
+                        'description': unicode(self.po_item_three.item.description),
+                        'quantity_delivered': 2,
+                        'date_delivered': str(self.ip_node_three.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-03',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        }]},
+            {'document_number': self.po_one.order_number,
+             'total_value_received': Decimal('60'),
+             'total_value_dispensed': Decimal('40'),
+             'balance': Decimal('20'),
+             'items': [{'code': unicode(self.po_item_two.item.material_code),
+                        'description': unicode(self.po_item_two.item.description),
+                        'quantity_delivered': 3,
+                        'date_delivered': str(self.ip_node_two.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-02',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        },
+                       {'code': unicode(self.po_item_one.item.material_code),
+                        'description': unicode(self.po_item_one.item.description),
+                        'quantity_delivered': 5,
+                        'date_delivered': str(self.ip_node_one.delivery_date),
+                        'quantity_confirmed': 4,
+                        'date_confirmed': '2014-01-01',
+                        'quantity_dispatched': 2,
+                        'balance': 2
+                        }]
+             },
+            {
+                'document_number': 4748278,
+                'balance': 100.0,
+                'total_value_received': 400.0,
+                'total_value_dispensed': 300.0,
+                'items': [{'code': 'Code 23',
+                           'quantity_dispatched': 30,
+                           'quantity_delivered': 40,
+                           'description': 'Jerrycans',
+                           'date_delivered': '2014-09-25',
+                           'date_confirmed': 'None',
+                           'balance': 10,
+                           'quantity_confirmed': 40
+                           }]
+            }]
+
+        endpoint_url = BACKEND_URL + 'stock-report/'
+        response = self.client.get(endpoint_url)
+
+        self.assertEqual(len(response.data), 3)
+        self.assert_api_response(response, expected_data)
+
+    def add_a_node_with_response(self):
+        delivery = DeliveryFactory(track=True)
+        purchase_order = PurchaseOrderFactory(order_number=4748278)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
+                                           item=ItemFactory(material_code='Code 23', description='Jerrycans'))
+        ip_node_one = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery, item=po_item,
+                                          quantity=40, acknowledged=40, balance=40,
+                                          tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        run_one = RunFactory(runnable=ip_node_one)
+
+        quantity_received_qn = NumericQuestion.objects.get(label='amountReceived')
+
+        NumericAnswerFactory(question=quantity_received_qn, value=40, run=run_one)
+
+        end_node_one = DeliveryNodeFactory(programme=delivery.programme,
+                                           consignee=self.end_user,
+                                           parents=[(ip_node_one, 30)],
+                                           tree_position=DistributionPlanNode.END_USER,
+                                           item=po_item)
+        run_end_node_one = RunFactory(runnable=end_node_one)
+
+        NumericAnswerFactory(question=quantity_received_qn, value=43, run=run_end_node_one)
+
     def assert_api_response(self, response, expected_data):
         for stock in expected_data:
-            stock_in_response = filter(lambda stock_: stock_['document_number'] == stock['document_number'], response.data)[0]
+            stock_in_response = \
+                filter(lambda stock_: stock_['document_number'] == stock['document_number'], response.data)[0]
             for key in ['total_value_received', 'total_value_dispensed', 'balance']:
                 self.assertEquals(stock_in_response[key], stock[key])
             for item in stock['items']:
@@ -99,10 +186,14 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         delivery = DeliveryFactory(consignee=ip, track=True)
         purchase_order = PurchaseOrderFactory()
         po_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
-        ip_node_one = DeliveryNodeFactory(programme=delivery.programme, consignee=ip, distribution_plan=delivery, item=po_item,
-                                          quantity=40, acknowledged=40, balance=40, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        ip_node_two = DeliveryNodeFactory(programme=delivery.programme, consignee=ip, distribution_plan=delivery, item=po_item,
-                                          quantity=30, acknowledged=30, balance=30, tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        ip_node_one = DeliveryNodeFactory(programme=delivery.programme, consignee=ip, distribution_plan=delivery,
+                                          item=po_item,
+                                          quantity=40, acknowledged=40, balance=40,
+                                          tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        ip_node_two = DeliveryNodeFactory(programme=delivery.programme, consignee=ip, distribution_plan=delivery,
+                                          item=po_item,
+                                          quantity=30, acknowledged=30, balance=30,
+                                          tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
 
         run_one = RunFactory(runnable=ip_node_one)
         run_two = RunFactory(runnable=ip_node_two)
@@ -144,7 +235,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': 'None',
                         'quantity_dispatched': 20,
                         'balance': 10
-                       },
+                        },
                        {'code': unicode(po_item.item.material_code),
                         'description': unicode(po_item.item.description),
                         'quantity_delivered': 40,
@@ -153,8 +244,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'date_confirmed': 'None',
                         'quantity_dispatched': 35,
                         'balance': 5
-                       }]
-            }
+                        }]
+             }
         ]
 
         self.assert_api_response(response, expected_data)
@@ -217,9 +308,12 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.po_one = PurchaseOrderFactory()
         self.po_two = PurchaseOrderFactory()
 
-        self.po_item_one = PurchaseOrderItemFactory(purchase_order=self.po_one, quantity=10, sales_order_item=so_item_one, value=100)
-        self.po_item_two = PurchaseOrderItemFactory(purchase_order=self.po_one, quantity=5, sales_order_item=so_item_two, value=50)
-        self.po_item_three = PurchaseOrderItemFactory(purchase_order=self.po_two, quantity=2, sales_order_item=so_item_three, value=20)
+        self.po_item_one = PurchaseOrderItemFactory(purchase_order=self.po_one, quantity=10,
+                                                    sales_order_item=so_item_one, value=100)
+        self.po_item_two = PurchaseOrderItemFactory(purchase_order=self.po_one, quantity=5,
+                                                    sales_order_item=so_item_two, value=50)
+        self.po_item_three = PurchaseOrderItemFactory(purchase_order=self.po_two, quantity=2,
+                                                      sales_order_item=so_item_three, value=20)
 
     def setup_distribution_plans(self):
         self.plan_one = DeliveryFactory()

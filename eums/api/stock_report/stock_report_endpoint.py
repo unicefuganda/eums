@@ -1,4 +1,4 @@
-from eums.models import DistributionPlanNode
+from eums.models import DistributionPlanNode, Runnable
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -6,7 +6,7 @@ from rest_framework import status
 
 class StockReport(APIView):
     @staticmethod
-    def get(_, consignee_id):
+    def get(_, consignee_id=None):
         stock_report = _build_stock_report(consignee_id)
         reduced_stock_report = _reduce_stock_report(stock_report)
         return Response(reduced_stock_report, status=status.HTTP_200_OK)
@@ -19,7 +19,9 @@ def aggregate_nodes_into_stock_report(stock_report, node):
 
 
 def _build_stock_report(consignee_id):
-    nodes = DistributionPlanNode.objects.filter(consignee_id=consignee_id)
+    nodes = DistributionPlanNode.objects.filter(consignee_id=consignee_id) if consignee_id \
+        else DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
+
     return reduce(aggregate_nodes_into_stock_report, nodes, [])
 
 

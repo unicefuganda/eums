@@ -16,29 +16,28 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
         }
 
         $scope.$watch('selectedIPId', function (id) {
-            if (id) {
-                StockReportService.getStockReport(id).then(function (stockReport) {
-                    if (stockReport.data.length > 0) {
-                        $scope.reportData = stockReport.data;
-                        $scope.totals = StockReportService.computeStockTotals($scope.reportData);
-                        $scope.openDocument = undefined;
-                    }
-                    else {
-                        $scope.reportData = [];
-                        createToast('There is no data for this IP', 'danger');
-                    }
-                });
-            }
+            StockReportService.getStockReport(id).then(function (stockReport) {
+                if (stockReport.data.length > 0) {
+                    $scope.reportData = stockReport.data;
+                    $scope.totals = StockReportService.computeStockTotals($scope.reportData);
+                    $scope.openDocument = undefined;
+                }
+                else {
+                    $scope.reportData = [];
+                    createToast('There is no data for this IP', 'danger');
+                }
+            });
         });
 
-        $scope.toggleOpenDocument = function(documentId) {
+        $scope.toggleOpenDocument = function (documentId) {
             $scope.openDocument = $scope.openDocument === documentId ? undefined : documentId;
         };
     })
     .factory('StockReportService', function ($http, EumsConfig) {
         return {
             getStockReport: function (consigneeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT + consigneeId + '/');
+                return consigneeId ? $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT + consigneeId + '/')
+                    : $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT);
             },
             computeStockTotals: function (stockReport) {
                 return stockReport.reduce(function (previousValue, currentValue) {
@@ -49,5 +48,6 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
                     };
 
                 }, {totalReceived: 0, totalDispensed: 0, totalBalance: 0});
-            }};
+            }
+        };
     });

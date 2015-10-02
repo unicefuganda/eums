@@ -62,9 +62,20 @@ describe('Stock Report Service', function() {
     it('should get stock reports for a consignee', function(done) {
         mockBackend.whenGET(endpointUrl + consigneeId + '/').respond(stubStockReport);
 
-        stockReportService.getStockReport(consigneeId).then(function(report) {
-            expect(report).toEqual(stubStockReport);
+        stockReportService.getStockReport(consigneeId).then(function(response) {
+            expect(response.data).toEqual(stubStockReport);
         });
+        mockBackend.flush();
+        done();
+    });
+
+    it('should get all stock reports', function(done) {
+        mockBackend.whenGET(endpointUrl).respond(stubStockReport);
+
+        stockReportService.getStockReport().then(function(response) {
+            expect(response.data).toEqual(stubStockReport);
+        });
+        mockBackend.flush();
         done();
     });
 

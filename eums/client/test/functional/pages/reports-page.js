@@ -1,7 +1,7 @@
 var ReportsPage = function () {};
 
 ReportsPage.prototype = Object.create({}, {
-    url: { get: function () { return '/#/reports' }},
+    url: { get: function () { return '/#/stock-report' }},
     visit: {
         value: function () { browser.get(this.url);
     }},

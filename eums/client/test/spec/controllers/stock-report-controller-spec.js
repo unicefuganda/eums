@@ -78,11 +78,11 @@ describe('StockReportController', function() {
         });
     });
 
-    it('should not try to load stock report when ip is not selected', function() {
+    it('should load stock report at initial load', function() {
         scope.selectedIPId = null;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).not.toHaveBeenCalled();
+        expect(mockStockReportService.getStockReport).toHaveBeenCalled();
     });
 
     it('should load stock report when ip is selected', function() {
