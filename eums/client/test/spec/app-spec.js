@@ -141,4 +141,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('EndUserFeedbackReportController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/end-user-feedback-report.html');
     });
+
+    it('should have Stock report route pointing to the right controller', function () {
+        var route = '/stock-report';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('StockReportController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-stock-report.html');
+    });
 });
