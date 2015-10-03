@@ -120,6 +120,6 @@ Troubleshooting
 		}
 	```
 	
-* At times, `npm` is unable to set the PhantomJS binary to the correct path, even when installing globally. In this case, set it explicitly.
+* At times, `npm` is unable to set the PhantomJS binary to the correct path, even when installing it globally. In this case, set it explicitly.
 
 * Also note that the karma server and PhantomJS will both run on port `8080`. Make sure this port is free when running `grunt`.
