@@ -34,6 +34,9 @@ def _get_report_details_for_node(node):
     value_dispensed = quantity_dispensed * node.item.unit_value()
 
     return {
+        'location': node.location,
+        'consignee': node.consignee.name,
+        'programme': node.programme.name,
         'document_number': purchase_order_number,
         'total_value_received': total_value_received,
         'total_value_dispensed': value_dispensed,
@@ -66,14 +69,6 @@ def _get_date_received(node):
     return responses.get('dateOfReceipt', None)
 
 
-# def _compute_quantity_dispensed(node):
-#     total_quantity_dispensed = 0
-#     for child_node in node.children():
-#         responses = _get_responses(child_node)
-#         total_quantity_dispensed += responses.get('amountReceived', 0)
-#     return total_quantity_dispensed
-
-
 def _reduce_stock_report(stock_report):
     reduced_report = []
     for report_item in stock_report:
@@ -87,7 +82,10 @@ def _reduce_stock_report(stock_report):
 
 def _find_item_in_stock_report(reduced_report, report_item):
     for item in reduced_report:
-        if item['document_number'] == report_item['document_number']:
+        if item['document_number'] == report_item['document_number'] \
+                and item['location'] == report_item['location'] \
+                and item['consignee'] == report_item['consignee'] \
+                and item['programme'] == report_item['programme']:
             return item
     return None
 

@@ -109,4 +109,23 @@ describe('StockReportController', function() {
         });
 
     });
+
+    describe('Toggle document', function(){
+        it('should set the open document identifier', function(){
+            scope.toggleOpenDocument('Kampala', 'Job', 473732, 'Jerrycans');
+            scope.$apply();
+
+            expect(scope.openDocument).toBe('KampalaJob473732Jerrycans');
+        });
+
+        it('should unset the open document identifier', function(){
+            scope.openDocument ='KampalaJob473732Jerrycans';
+            scope.$apply();
+
+            scope.toggleOpenDocument('Kampala', 'Job', 473732, 'Jerrycans');
+            scope.$apply();
+
+            expect(scope.openDocument).toBe(undefined);
+        });
+    })
 });

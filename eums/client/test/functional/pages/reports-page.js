@@ -12,11 +12,16 @@ ReportsPage.prototype = Object.create({}, {
         element(by.css('.select2-results li')).click();
     }},
 
+    totalReceived: { get: function () { return element(by.id('total_received')).getText(); }},
+    totalDispensed: { get: function () { return element(by.id('total_dispensed')).getText(); }},
+    totalBalance: { get: function () { return element(by.id('total_balance')).getText(); }},
+
     stockDocumentNumbers: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.document_number')).getText(); }},
     stockReceivedValues: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.total_value_received')).getText(); }},
     stockBalances: { get: function () { return element.all(by.repeater('reportItem in reportData').column('reportItem.balance')).getText(); }},
 
     selectFirstPO: { value: function () { element.all(by.repeater('reportItem in reportData').column('reportItem.document_number')).get(0).click(); }},
+    selectSecondPO: { value: function () { element.all(by.repeater('reportItem in reportData').column('reportItem.document_number')).get(1).click(); }},
 
     itemCodes: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.code')).getText(); }},
     itemDescriptions: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.description')).getText(); }},

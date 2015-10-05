@@ -8,6 +8,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.answer_factory import NumericAnswerFactory
@@ -148,9 +149,64 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 3)
         self.assert_api_response(response, expected_data)
 
+    def test_gets_ip_location_programme_values_for_stock_report(self):
+        self.setup_responses()
+
+        expected_data = [
+            {'consignee': self.ip.name,
+             'programme': 'programme_two',
+             'location': self.ip_node_three.location,
+             'document_number': self.po_two.order_number,
+             'total_value_received': Decimal('20'),
+             'total_value_dispensed': Decimal('20'),
+             'balance': Decimal('0'),
+             'items': [{'code': unicode(self.po_item_three.item.material_code),
+                        'description': unicode(self.po_item_three.item.description),
+                        'quantity_delivered': 2,
+                        'date_delivered': str(self.ip_node_three.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-03',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        }]},
+            {'consignee': self.ip.name,
+             'programme': 'programme_one',
+             'location': self.ip_node_one.location,
+             'document_number': self.po_one.order_number,
+             'total_value_received': Decimal('60'),
+             'total_value_dispensed': Decimal('40'),
+             'balance': Decimal('20'),
+             'items': [{'code': unicode(self.po_item_two.item.material_code),
+                        'description': unicode(self.po_item_two.item.description),
+                        'quantity_delivered': 3,
+                        'date_delivered': str(self.ip_node_two.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-02',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        },
+                       {'code': unicode(self.po_item_one.item.material_code),
+                        'description': unicode(self.po_item_one.item.description),
+                        'quantity_delivered': 5,
+                        'date_delivered': str(self.ip_node_one.delivery_date),
+                        'quantity_confirmed': 4,
+                        'date_confirmed': '2014-01-01',
+                        'quantity_dispatched': 2,
+                        'balance': 2
+                        }]
+             }]
+
+        endpoint_url = BACKEND_URL + 'stock-report/'
+        response = self.client.get(endpoint_url)
+
+        self.assertEqual(len(response.data), 2)
+        self.assert_api_response_with_ip_location_and_programme(response, expected_data)
+
     def add_a_node_with_response(self):
         delivery = DeliveryFactory(track=True)
-        purchase_order = PurchaseOrderFactory(order_number=4748278)
+        programme = ProgrammeFactory(name='special_program')
+        sales_order = SalesOrderFactory(programme=programme)
+        purchase_order = PurchaseOrderFactory(order_number=4748278, sales_order=sales_order)
         po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
                                            item=ItemFactory(material_code='Code 23', description='Jerrycans'))
         ip_node_one = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery, item=po_item,
@@ -175,6 +231,19 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         for stock in expected_data:
             stock_in_response = \
                 filter(lambda stock_: stock_['document_number'] == stock['document_number'], response.data)[0]
+            for key in ['total_value_received', 'total_value_dispensed', 'balance']:
+                self.assertEquals(stock_in_response[key], stock[key])
+            for item in stock['items']:
+                self.assertIn(item, stock_in_response['items'])
+
+    def assert_api_response_with_ip_location_and_programme(self, response, expected_data):
+        for stock in expected_data:
+            stock_in_response = \
+                filter(lambda stock_: stock_['document_number'] == stock['document_number']
+                                      and stock_['consignee'] == stock['consignee']
+                                      and stock_['location'] == stock['location']
+                                      and stock_['programme'] == stock['programme'], response.data)[0]
+
             for key in ['total_value_received', 'total_value_dispensed', 'balance']:
                 self.assertEquals(stock_in_response[key], stock[key])
             for item in stock['items']:
@@ -298,15 +367,17 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.end_user = ConsigneeFactory(type=Consignee.TYPES.end_user)
 
     def setup_purchase_orders_and_items(self):
-        so_one = SalesOrderFactory()
-        so_two = SalesOrderFactory()
+        self.programme_one = ProgrammeFactory(name='programme_one')
+        self.programme_two = ProgrammeFactory(name='programme_two')
+        so_one = SalesOrderFactory(programme=self.programme_one)
+        so_two = SalesOrderFactory(programme=self.programme_two)
 
         so_item_one = SalesOrderItemFactory(sales_order=so_one, quantity=10, net_price=10, net_value=10 * 10)
         so_item_two = SalesOrderItemFactory(sales_order=so_one, quantity=5, net_price=10, net_value=5 * 10)
         so_item_three = SalesOrderItemFactory(sales_order=so_two, quantity=2, net_price=10, net_value=2 * 10)
 
-        self.po_one = PurchaseOrderFactory()
-        self.po_two = PurchaseOrderFactory()
+        self.po_one = PurchaseOrderFactory(sales_order=so_one)
+        self.po_two = PurchaseOrderFactory(sales_order=so_two)
 
         self.po_item_one = PurchaseOrderItemFactory(purchase_order=self.po_one, quantity=10,
                                                     sales_order_item=so_item_one, value=100)
@@ -316,9 +387,9 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                                       sales_order_item=so_item_three, value=20)
 
     def setup_distribution_plans(self):
-        self.plan_one = DeliveryFactory()
-        self.plan_two = DeliveryFactory()
-        self.plan_three = DeliveryFactory()
+        self.plan_one = DeliveryFactory(programme=self.programme_one)
+        self.plan_two = DeliveryFactory(programme=self.programme_one)
+        self.plan_three = DeliveryFactory(programme=self.programme_two)
         self.setup_nodes()
 
     def setup_nodes(self):

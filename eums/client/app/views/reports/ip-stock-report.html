@@ -32,20 +32,20 @@
                     <div class="bold text-uppercase">
                         <div class="col-lg-7">
                             Value Received:
-                            <span class="float-right eums-font-size-large">
+                            <span id="total_received" class="float-right eums-font-size-large">
                                 {{ totals.totalReceived | currency }}
                             </span>
                         </div>
                         <div class="col-lg-7">
                             Value Dispensed:
-                            <span class="float-right eums-font-size-large">
+                            <span id="total_dispensed" class="float-right eums-font-size-large">
                                 {{ totals.totalDispensed | currency }}
                             </span>
                         </div>
                         <div class="col-lg-9 eums-solid-bottom-border-2px"></div>
                         <div class="col-lg-7">
                             Balance:
-                            <span class="float-right eums-font-size-large eums-text-color-no">
+                            <span id="total_balance" class="float-right eums-font-size-large eums-text-color-no">
                                 {{ totals.totalBalance | currency }}
                             </span>
                         </div>
@@ -60,26 +60,32 @@
                         <table class="table table-bordered table-striped table-hover table-condensed text-left">
                             <thead>
                             <tr>
+                                <td class="col-lg-1">District</td>
+                                <td class="col-lg-2">IP</td>
                                 <td class="col-lg-1">PO Number</td>
-                                <td class="col-lg-3">Value Received ($)</td>
-                                <td class="col-lg-3">Value Dispensed ($)</td>
-                                <td class="col-lg-3">Balance ($)</td>
+                                <td class="col-lg-3">Outcome</td>
+                                <td class="col-lg-2">Value Received ($)</td>
+                                <td class="col-lg-2">Value Dispensed ($)</td>
+                                <td class="col-lg-1">Balance ($)</td>
                             </tr>
                             </thead>
                             <tbody ng-repeat="reportItem in reportData">
                             <tr>
+                                <td>{{ reportItem.location }}</td>
+                                <td>{{ reportItem.consignee }}</td>
                                 <td>
                                     <a href
-                                       ng-click="toggleOpenDocument(reportItem.document_number)">{{
+                                       ng-click="toggleOpenDocument(reportItem.location, reportItem.consignee, reportItem.document_number, reportItem.programme)">{{
                                         reportItem.document_number }}</a>
                                 </td>
+                                <td>{{ reportItem.programme }}</td>
                                 <td>{{ reportItem.total_value_received | number }}</td>
                                 <td>{{ reportItem.total_value_dispensed | number }}</td>
                                 <td>{{ reportItem.balance | number }}</td>
                             </tr>
-                            <tr ng-show="openDocument === reportItem.document_number">
+                            <tr ng-show="openDocument === reportItem.location+reportItem.consignee+reportItem.document_number+reportItem.programme">
                                 <td></td>
-                                <td colspan="3">
+                                <td colspan="6">
                                     <table class="nested table table-bordered table-hover table-condensed">
                                         <thead>
                                         <tr>
