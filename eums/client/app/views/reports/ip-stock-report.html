@@ -6,92 +6,113 @@
         <div>
             <div class="form-horizontal">
                 <div class="form-group col-lg-4">
-                    <div class="col-lg-3 pad-left-5">
-                        <label class="control-label description-label" for="select-ip">Select IP</label>
+                    <div class="pad-bottom-5" style="overflow: hidden;">
+                        <div class="col-lg-3 pad-left-5">
+                            <label class="control-label description-label" for="select-ip">Select District</label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input id="select-district" class="form-control" type="hidden" search-consignees
+                                   ng-model="selectedLocation" placeholder="Select District">
+                        </div>
                     </div>
-                    <div class="col-lg-8">
-                        <input id="select-ip" class="form-control" type="hidden" search-consignees
-                               ng-model="selectedIPId" placeholder="Select IP">
+                    <div>
+                        <div class="col-lg-3 pad-left-5">
+                            <label class="control-label description-label" for="select-ip">Select IP</label>
+                        </div>
+                        <div class="col-lg-8">
+                            <input id="select-ip" class="form-control" type="hidden" search-consignees
+                                   ng-model="selectedIPId" placeholder="Select IP">
+                        </div>
                     </div>
                 </div>
-            </div>
-
-
-            <br/><br/><br/>
-
-            <div>
-                <div class="panel-body" ng-show="reportData">
-                    <table class="table table-bordered table-striped table-hover table-condensed text-left">
-                        <thead>
-                        <tr>
-                            <td class="col-lg-1">PO Number</td>
-                            <td class="col-lg-3">Value Received ($)</td>
-                            <td class="col-lg-3">Value Dispensed ($)</td>
-                            <td class="col-lg-3">Balance ($)</td>
-                        </tr></thead>
-                        <tbody>
-                        <tbody ng-repeat="reportItem in reportData">
-                        <tr>
-                            <td>
-                                <a href
-                                   ng-click="toggleOpenDocument(reportItem.document_number)">{{ reportItem.document_number }}</a>
-                            </td>
-                            <td>{{ reportItem.total_value_received | number }}</td>
-                            <td>{{ reportItem.total_value_dispensed | number }}</td>
-                            <td>{{ reportItem.balance | number }}</td>
-                        </tr>
-                        <tr ng-show="openDocument === reportItem.document_number">
-                            <td></td>
-                            <td colspan="3">
-                                <table class="nested table table-bordered table-hover table-condensed">
-                                    <thead>
-                                    <tr>
-                                        <td>Item (A)</td>
-                                        <td>Description (B)</td>
-                                        <td>Quantity Delivered (C)</td>
-                                        <td>Date Delivered (D)</td>
-                                        <td>Quantity Confirmed (E)</td>
-                                        <td>Date Confirmed (F)</td>
-                                        <td>Quantity Dispatched (G)</td>
-                                        <td>Balance (E - G)</td>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr ng-repeat="item in reportItem.items">
-                                        <td>{{ item.code }}</td>
-                                        <td>{{ item.description }}</td>
-                                        <td>{{ item.quantity_delivered }}</td>
-                                        <td>{{ item.date_delivered }}</td>
-                                        <td>{{ item.quantity_confirmed }}</td>
-                                        <td>{{ item.date_confirmed }}</td>
-                                        <td>{{ item.quantity_dispatched }}</td>
-                                        <td>{{ item.balance }}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                        </tbody>
-                        <tr>
-                            <td>
-                            <span class="badge" ng-class="totals.totalBalance > 0 ? 'alert-danger' : 'alert-success'">
-                                TOTALS
+                <div class="form-group col-lg-4 float-right text-color-dark-grey ">
+                    <div class="font-size-x-large bold">
+                        TOTAL
+                    </div>
+                    <div class="bold text-uppercase">
+                        <div class="col-lg-7">
+                            Value Received:
+                            <span class="float-right eums-font-size-large">
+                                {{ totals.totalReceived | currency }}
                             </span>
-                            </td>
-                            <td style="font-weight: bold;">{{ totals.totalReceived | number }}</td>
-                            <td style="font-weight: bold;">{{ totals.totalDispensed | number }}</td>
-                            <td>
-                            <span class="badge" style="font-weight: bold;"
-                                  ng-class="totals.totalBalance > 0 ? 'alert-danger' : 'alert-success'">
-                                {{ totals.totalBalance | number }}
+                        </div>
+                        <div class="col-lg-7">
+                            Value Dispensed:
+                            <span class="float-right eums-font-size-large">
+                                {{ totals.totalDispensed | currency }}
                             </span>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                        </div>
+                        <div class="col-lg-9 eums-solid-bottom-border-2px"></div>
+                        <div class="col-lg-7">
+                            Balance:
+                            <span class="float-right eums-font-size-large eums-text-color-no">
+                                {{ totals.totalBalance | currency }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <br/><br/><br/>
+
+                <div>
+                    <div class="panel-body" ng-show="reportData">
+                        <table class="table table-bordered table-striped table-hover table-condensed text-left">
+                            <thead>
+                            <tr>
+                                <td class="col-lg-1">PO Number</td>
+                                <td class="col-lg-3">Value Received ($)</td>
+                                <td class="col-lg-3">Value Dispensed ($)</td>
+                                <td class="col-lg-3">Balance ($)</td>
+                            </tr>
+                            </thead>
+                            <tbody ng-repeat="reportItem in reportData">
+                            <tr>
+                                <td>
+                                    <a href
+                                       ng-click="toggleOpenDocument(reportItem.document_number)">{{
+                                        reportItem.document_number }}</a>
+                                </td>
+                                <td>{{ reportItem.total_value_received | number }}</td>
+                                <td>{{ reportItem.total_value_dispensed | number }}</td>
+                                <td>{{ reportItem.balance | number }}</td>
+                            </tr>
+                            <tr ng-show="openDocument === reportItem.document_number">
+                                <td></td>
+                                <td colspan="3">
+                                    <table class="nested table table-bordered table-hover table-condensed">
+                                        <thead>
+                                        <tr>
+                                            <td>Item (A)</td>
+                                            <td>Description (B)</td>
+                                            <td>Quantity Delivered (C)</td>
+                                            <td>Date Delivered (D)</td>
+                                            <td>Quantity Confirmed (E)</td>
+                                            <td>Date Confirmed (F)</td>
+                                            <td>Quantity Dispatched (G)</td>
+                                            <td>Balance (E - G)</td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="item in reportItem.items">
+                                            <td>{{ item.code }}</td>
+                                            <td>{{ item.description }}</td>
+                                            <td>{{ item.quantity_delivered }}</td>
+                                            <td>{{ item.date_delivered }}</td>
+                                            <td>{{ item.quantity_confirmed }}</td>
+                                            <td>{{ item.date_confirmed }}</td>
+                                            <td>{{ item.quantity_dispatched }}</td>
+                                            <td>{{ item.balance }}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 </div>
