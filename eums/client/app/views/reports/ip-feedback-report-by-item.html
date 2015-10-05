@@ -41,35 +41,36 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
                     <td>
                         <span ng-if="itemReport.answers[0].value == 'Yes'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Yes</span>
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
                         <span ng-if="itemReport.answers[0].value == 'No'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-no">No</span>
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
+                    </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.date_of_receipt | date: 'dd/MM/yyyy'}}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers[1].value }}</span></td>
                     <td>
                         <span ng-if="itemReport.answers[2].value == 'Good'"
-                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-yes">Good</span>
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-yes">Good</span>
 
                         <span ng-if="itemReport.answers[2].value == 'Substandard'"
-                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-substandard">Substandard</span>
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-substandard">Substandard</span>
 
                         <span ng-if="itemReport.answers[2].value == 'Incomplete'"
-                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-incomplete">Incomplete</span>
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-incomplete">Incomplete</span>
 
                         <span ng-if="itemReport.answers[2].value == 'Expired'"
-                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-expired">Expired</span>
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-expired">Expired</span>
 
                         <span ng-if="itemReport.answers[2].value == 'Damaged'"
-                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-no">Damaged</span>
+                              class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-no">Damaged</span>
                     </td>
                     <td>
                         <div class="align-center">
                         <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
                               ng-class="{'glyphicon-ok-sign': itemReport.answers[3].value == 'Yes',
-                                                'eums-text-ok': itemReport.answers[3].value == 'Yes',
+                                                'eums-text-color-ok': itemReport.answers[3].value == 'Yes',
                                   'glyphicon-remove-sign': itemReport.answers[3].value == 'No',
-                                                'eums-text-no': itemReport.answers[3].value == 'No'
+                                                'eums-text-color-no': itemReport.answers[3].value == 'No'
                                 }">
                             </span>
                         </div>

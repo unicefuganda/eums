@@ -32,8 +32,8 @@
                 <tbody>
                 <tr ng-repeat="($index, itemReport) in report" class="align-left">
                     <td><span class=" eums-border-status eums-border-center eums-border-width-35"
-                              ng-class="{ 'eums-bg-yes': itemReport.deliveryReceived == 'Yes',
-                              'eums-bg-no': itemReport.deliveryReceived == 'No'}">
+                              ng-class="{ 'eums-bg-color-yes': itemReport.deliveryReceived == 'Yes',
+                              'eums-bg-color-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
                     <td><span class="pad-left-10">{{ itemReport.shipmentDate | date: 'dd/MM/yyyy'}}</span></td>
@@ -44,17 +44,17 @@
                     <td><span class="pad-left-10">{{ itemReport.value | currency }}</span></td>
                     <td>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'Yes'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-yes">Good</span>
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Good</span>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'No'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-no">Bad</span>
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">Bad</span>
                     </td>
                     <td>
                         <div class="align-center">
                             <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
                                   ng-class="{'glyphicon-ok-sign': itemReport.satisfiedWithDelivery == 'Yes',
-                                                'eums-text-ok': itemReport.satisfiedWithDelivery == 'Yes',
+                                                'eums-text-color-ok': itemReport.satisfiedWithDelivery == 'Yes',
                                   'glyphicon-remove-sign': itemReport.satisfiedWithDelivery == 'No',
-                                                'eums-text-no': itemReport.satisfiedWithDelivery == 'No'
+                                                'eums-text-color-no': itemReport.satisfiedWithDelivery == 'No'
                                 }">
                             </span>
                         </div>
