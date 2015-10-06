@@ -158,37 +158,17 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         delivery, _, _, release_order_item, _ = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery)
 
-        response = self.client.get(ENDPOINT_URL + '?query=baba', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?item_description=baba', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
         self.assertDictContainsSubset({'item_description': release_order_item.item.description}, results[0])
 
-    def test_should_filter_answers_by_programme_name(self):
-        delivery_one, _, _, _, _ = self.setup_nodes_with_answers()
-        self.setup_flow_with_questions(delivery_one)
-
-        response = self.client.get(ENDPOINT_URL + '?query=my%20first', content_type='application/json')
-
-        results = response.data['results']
-        self.assertEqual(len(results), 1)
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results[0])
-
-    def test_should_filter_answers_by_implementing_partner(self):
-        delivery, node_one, _, _, _ = self.setup_nodes_with_answers()
-        self.setup_flow_with_questions(delivery)
-
-        response = self.client.get(ENDPOINT_URL + '?query=consignee%20one', content_type='application/json')
-
-        results = response.data['results']
-        self.assertEqual(len(results), 1)
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results[0])
-
     def test_should_filter_answers_by_purchase_order_number(self):
         delivery, node_one, _, _, _ = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery)
 
-        response = self.client.get(ENDPOINT_URL + '?query=329', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?po_waybill=329', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
@@ -198,26 +178,46 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         delivery, _, _, _, node_two = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery)
 
-        response = self.client.get(ENDPOINT_URL + '?query=5540', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?po_waybill=5540', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
         self.assertDictContainsSubset({'order_number': node_two.item.number()}, results[0])
 
+    def test_should_filter_by_programme_id(self):
+        delivery_one, _, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery_one)
+
+        response = self.client.get(ENDPOINT_URL + '?programme_id=%s' % self.programme_one.id, content_type='application/json')
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results[0])
+
+    def test_should_filter_by_ip_id(self):
+        delivery, node_one, _, _, _ = self.setup_nodes_with_answers()
+        self.setup_flow_with_questions(delivery)
+
+        response = self.client.get(ENDPOINT_URL + '?consignee_id=%s' % self.consignee_one.id, content_type='application/json')
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results[0])
+
     def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True,
                                  node_one_position=Runnable.IMPLEMENTING_PARTNER,
                                  node_two_position=Runnable.IMPLEMENTING_PARTNER):
-        consignee_one = ConsigneeFactory(name='consignee one')
+        self.consignee_one = ConsigneeFactory(name='consignee one')
         consignee_two = ConsigneeFactory(name='consignee two')
-        programme_one = ProgrammeFactory(name='my first programme')
+        self.programme_one = ProgrammeFactory(name='my first programme')
         programme_two = ProgrammeFactory(name='my second programme')
         purchase_order_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'),
                                                        purchase_order=PurchaseOrderFactory(order_number=329293))
         release_order_item = ReleaseOrderItemFactory(item=ItemFactory(description='Baba bla bla'),
                                                      release_order=ReleaseOrderFactory(waybill=5540322))
-        delivery_one = DeliveryFactory(programme=programme_one, track=track_delivery_one)
+        delivery_one = DeliveryFactory(programme=self.programme_one, track=track_delivery_one)
         delivery_two = DeliveryFactory(programme=programme_two, track=track_delivery_two)
-        node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=consignee_one,
+        node_one = DeliveryNodeFactory(distribution_plan=delivery_one, consignee=self.consignee_one,
                                        item=purchase_order_item, quantity=1000, tree_position=node_one_position)
         node_two = DeliveryNodeFactory(distribution_plan=delivery_two, consignee=consignee_two, item=release_order_item,
                                        quantity=500, tree_position=node_two_position)

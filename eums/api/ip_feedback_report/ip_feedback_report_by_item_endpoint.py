@@ -77,21 +77,36 @@ def build_answers_for_nodes(delivery, nodes, response):
 
 
 def get_tracked_nodes(delivery, request):
-    if request.GET.get('query'):
-        params = request.GET.get('query')
-        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
-        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
-        nodes = DistributionPlanNode.objects \
-            .filter(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER) \
-            .filter(Q(item__item__description__icontains=params) | Q(consignee__name__icontains=params) |
-                    Q(item=purchase_order_item) |
-                    Q(item=release_order_item) |
-                    Q(distribution_plan__programme__name__icontains=params))
-    else:
-        nodes = DistributionPlanNode.objects.filter(distribution_plan=delivery,
-                                                    tree_position=Runnable.IMPLEMENTING_PARTNER)
+    po_way_bill = request.GET.get('po_waybill')
+    nodes = DistributionPlanNode.objects.filter(**_query_args(request, delivery))
+
+    if po_way_bill:
+        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
+        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_way_bill)
+        return nodes.filter(Q(item=purchase_order_item) |
+                            Q(item=release_order_item))
     return nodes
 
 
+def _query_args(request, delivery):
+    kwargs = {'distribution_plan': delivery,
+              'tree_position': Runnable.IMPLEMENTING_PARTNER}
+    params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
+    kwargs.update(_filter_fields(params))
+    return kwargs
+
+
+def _filter_fields(params):
+    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'consignee_id',
+                    'item_description': 'item__item__description__icontains'}
+    search_params = {}
+    for key, value in params.iteritems():
+        query_field = query_fields.get(key)
+        if query_field:
+            search_params.update({query_field: value})
+    return search_params
+
+
 def _filter_answers_by_id(answers, node_id):
-    return filter(lambda answer: answer['id'] == node_id, answers)[0]['answers']
+    node_answers = filter(lambda answer: answer['id'] == node_id, answers)
+    return node_answers[0]['answers']
