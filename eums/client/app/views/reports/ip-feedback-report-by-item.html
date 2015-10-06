@@ -4,12 +4,38 @@
 
 <div class="container-fluid">
     <div class="content">
-        <div class="col-xs-4 pull-right margin-bottom-20 pad-small">
-            <div class="inner-addon right-addon">
-                <i class="glyphicon "
-                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by Item, Outcome, IP, Purchase Order or Waybill"/>
+        <div class="row">
+            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
+                <div class="inner-addon right-addon">
+                    <i class="glyphicon "
+                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                    <input type="text" id="filter-po-waybill" class="form-control" name="filter" ng-model="searchTerm.poWaybill"
+                           placeholder="PO or Waybill"/>
+                </div>
+            </div>
+            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
+                <div class="inner-addon right-addon">
+                    <i class="glyphicon "
+                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                    <input type="text" id="filter-item" class="form-control" name="filter" ng-model="searchTerm.itemDescription"
+                           placeholder="Item Description"/>
+                </div>
+            </div>
+            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
+                <select id="filter-ip" ng-model="searchTerm.consigneeId"
+                        required="required"
+                        class="form-control">
+                    <option value="">Select IP</option>
+                    <option value="{{ ip.id }} " data-ng-repeat="ip in consignees | orderBy: 'ip.name' track by ip.id"> {{ ip.name }}</option>
+                </select>
+            </div>
+            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
+                <select id="filter-programme" ng-model="searchTerm.programmeId"
+                        required="required"
+                        class="form-control">
+                    <option value="">Select Outcome</option>
+                    <option value="{{ programme.id }} " data-ng-repeat="programme in programmes | orderBy: 'programme.name' track by programme.id"> {{ programme.name }}</option>
+                </select>
             </div>
         </div>
 

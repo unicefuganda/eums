@@ -32,7 +32,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         };
 
         $scope.ipFieldTitle = function () {
-            console.log('I am in here');
             if ($scope.trackedDeliveries.length)
                 return 'You can not change IP for this PO but you can still deliver more items';
             return '';

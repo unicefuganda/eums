@@ -1,11 +1,13 @@
 describe('IpFeedbackReportByItemController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, mockConsigneeService, mockProgrammeService;
 
     beforeEach(function () {
         module('IpFeedbackReportByItem');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['filter']);
+        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -14,12 +16,16 @@ describe('IpFeedbackReportByItemController', function () {
             timeout = $timeout;
 
             mockReportService.ipFeedbackReport.and.returnValue(deferredResult.promise);
+            mockConsigneeService.filter.and.returnValue(deferredResult.promise);
+            mockProgrammeService.all.and.returnValue(deferredResult.promise);
 
             $controller('IpFeedbackReportByItemController', {
                 $scope: scope,
                 $location: location,
                 ReportService: mockReportService,
-                LoaderService: mockLoader
+                LoaderService: mockLoader,
+                ConsigneeService: mockConsigneeService,
+                ProgrammeService: mockProgrammeService
             });
         });
     });
@@ -44,6 +50,24 @@ describe('IpFeedbackReportByItemController', function () {
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalled();
             expect(scope.report).toEqual(response.results)
         });
+
+        it('should load consignees', function () {
+            var consignees = [{id: 1}, {id: 2}];
+            deferredResult.resolve(consignees);
+            scope.$apply();
+
+            expect(mockConsigneeService.filter).toHaveBeenCalledWith({type: 'implementing_partner'});
+            expect(scope.consignees).toEqual(consignees)
+        });
+
+        iit('should load programmes', function () {
+            var programmes = [{id: 1}, {id: 2}];
+            deferredResult.resolve(programmes);
+            scope.$apply();
+
+            expect(mockProgrammeService.all).toHaveBeenCalled();
+            expect(scope.programmes).toEqual(programmes)
+        });
     });
 
     describe('on filtering', function () {
@@ -52,12 +76,25 @@ describe('IpFeedbackReportByItemController', function () {
             scope.$apply();
 
             var searchTerm = 'something';
-            scope.searchTerm = searchTerm;
+            scope.searchTerm = {query: searchTerm};
             scope.$apply();
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
+        });
+
+        it('should call endpoint when searchTerm programme_id changes', function () {
+            deferredResult.resolve({results: []});
+            scope.$apply();
+
+            var programme_id = 2;
+            scope.searchTerm = {programme_id: programme_id};
+            scope.$apply();
+
+            timeout.flush();
+            expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({programme_id: programme_id});
         });
 
     });
@@ -75,8 +112,8 @@ describe('IpFeedbackReportByItemController', function () {
         });
     });
 
-    describe('on show remark', function(){
-        it('should call show modal with right index', function(){
+    describe('on show remark', function () {
+        it('should call show modal with right index', function () {
             scope.showRemarks(4);
 
             expect(mockLoader.showModal).toHaveBeenCalledWith('remarks-modal-4');

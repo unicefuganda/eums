@@ -39,12 +39,25 @@ describe('Report Service', function () {
 
     it('should get ip feedback with filters', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item?query=something';
+        var url = '/api/ip-feedback-report-by-item?programme_id=2';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
 
-        reportService.ipFeedbackReport({query: 'something'}).then(function(response){
+        reportService.ipFeedbackReport({programmeId: 2}).then(function(response){
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
+
+    it('should get ip feedback with multiple filters', function(){
+        var fakeReport = {results:[{id:34}]};
+        var url = '/api/ip-feedback-report-by-item?programme_id=2&consignee_id=1&item_description=something+interesting&po_waybill=309';
+
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        reportService.ipFeedbackReport({programmeId: 2, consigneeId: 1, itemDescription: 'something interesting', poWaybill: 309}).then(function(response){
             expect(response).toEqual(fakeReport);
         });
         mockBackend.flush();
@@ -52,12 +65,12 @@ describe('Report Service', function () {
 
     it('should get ip feedback with filters of multiple words', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item?query=something%20interesting';
+        var url = '/api/ip-feedback-report-by-item?item_description=something+interesting';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
 
-        reportService.ipFeedbackReport({query: 'something interesting'}).then(function(response){
+        reportService.ipFeedbackReport({itemDescription: 'something interesting'}).then(function(response){
             expect(response).toEqual(fakeReport);
         });
         mockBackend.flush();
