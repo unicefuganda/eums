@@ -46,36 +46,36 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
 
                     <td>
-                        <span ng-if="itemReport.answers[0].value == 'Yes'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Good</span>
-                        <span ng-if="itemReport.answers[0].value == 'No'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">Bad</span>
-                    <td><span class="padded-multi-line-5">{{ itemReport.date_of_receipt | date: 'dd/MM/yyyy'}}</span>
+                        <span ng-if="itemReport.answers.productReceived == 'Yes'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
+                        <span ng-if="itemReport.answers.productReceived == 'No'"
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
+                    <td><span class="padded-multi-line-5">{{ itemReport.answers.dateOfReceipt | date: 'dd/MM/yyyy'}}</span>
                     </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
                     <td>
-                        <span ng-if="itemReport.answers[2].value == 'Good'"
+                        <span ng-if="itemReport.answers.qualityOfProduct == 'Good'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-yes">Good</span>
 
-                        <span ng-if="itemReport.answers[2].value == 'Substandard'"
+                        <span ng-if="itemReport.answers.qualityOfProduct == 'Substandard'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-substandard">Substandard</span>
 
-                        <span ng-if="itemReport.answers[2].value == 'Incomplete'"
+                        <span ng-if="itemReport.answers.qualityOfProduct == 'Incomplete'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-incomplete">Incomplete</span>
 
-                        <span ng-if="itemReport.answers[2].value == 'Expired'"
+                        <span ng-if="itemReport.answers.qualityOfProduct == 'Expired'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-expired">Expired</span>
 
-                        <span ng-if="itemReport.answers[2].value == 'Damaged'"
+                        <span ng-if="itemReport.answers.qualityOfProduct == 'Damaged'"
                               class="eums-border-status eums-border-center eums-border-width-95 eums-bg-color-no">Damaged</span>
                     </td>
                     <td>
                         <div class="align-center">
                         <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
-                              ng-class="{'glyphicon-ok-sign': itemReport.answers[3].value == 'Yes',
-                                                'eums-text-color-ok': itemReport.answers[3].value == 'Yes',
-                                  'glyphicon-remove-sign': itemReport.answers[3].value == 'No',
-                                                'eums-text-color-no': itemReport.answers[3].value == 'No'
+                              ng-class="{'glyphicon-ok-sign': itemReport.answers.satisfiedWithProduct == 'Yes',
+                                                'eums-text-color-ok': itemReport.answers.satisfiedWithProduct == 'Yes',
+                                  'glyphicon-remove-sign': itemReport.answers.satisfiedWithProduct == 'No',
+                                                'eums-text-color-no': itemReport.answers.satisfiedWithProduct == 'No'
                                 }">
                             </span>
                         </div>
@@ -83,7 +83,7 @@
                     <td>
                         <div class="align-center">
                             <a class="button" ng-click="showRemarks($index)"
-                               ng-hide=" itemReport.answers.additionalRemarks == '' ">
+                               ng-hide=" itemReport.answers.feedbackAboutDissatisfaction == '' ">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="eums-modal-content">
-                                            {{ itemReport.answers.additionalRemarks }}
+                                            {{ itemReport.answers.feedbackAboutDissatisfaction }}
                                         </div>
                                     </div>
                                     <div class="modal-footer centered">
