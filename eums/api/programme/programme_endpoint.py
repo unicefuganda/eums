@@ -16,6 +16,7 @@ class ProgrammeSerialiser(serializers.ModelSerializer):
 class ProgrammeViewSet(ModelViewSet):
     queryset = Programme.objects.all().order_by('name')
     serializer_class = ProgrammeSerialiser
+    search_fields = ('id', 'name')
 
 
 programmeRouter = DefaultRouter()

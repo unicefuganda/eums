@@ -448,50 +448,7 @@
             }
         }
 
-    })
-        .directive('selectProgram', function (ProgrammeService) {
-            return {
-                restrict: 'A',
-                scope: false,
-                link: function (scope, elem) {
-                    ProgrammeService.all().then(function (response) {
-                        return response.map(function (programe) {
-                            return {id: programe.id, text: programe.name}
-                        });
-
-                    }).then(function (data) {
-                        $(elem).select2({
-                            placeholder: 'All Outcomes',
-                            allowClear: true,
-                            data: data
-                        });
-                    });
-
-                }
-            }
-        })
-        .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
-            return {
-                restrict: 'A',
-                link: function (scope, elem) {
-
-                    ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                        var data = displayedData.map(function (consignee) {
-                            return {id: consignee.id, text: consignee.name}
-                        });
-
-                        $(elem).select2({
-                            placeholder: 'All Implementing Partners',
-                            allowClear: true,
-                            data: _.sortBy(data, function (ip) {
-                                return ip.text;
-                            })
-                        });
-                    });
-                }
-            }
-        })
-        .directive('deliveryStatus', function (DeliveryService, UserService) {
+    }).directive('deliveryStatus', function (DeliveryService, UserService) {
             function filterResponsesForUser(responsesToPlot) {
                 return UserService.getCurrentUser().then(function (user) {
                     if (user.consignee_id) {

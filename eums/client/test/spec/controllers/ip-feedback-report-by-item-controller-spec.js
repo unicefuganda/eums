@@ -60,7 +60,7 @@ describe('IpFeedbackReportByItemController', function () {
             expect(scope.consignees).toEqual(consignees)
         });
 
-        iit('should load programmes', function () {
+        it('should load programmes', function () {
             var programmes = [{id: 1}, {id: 2}];
             deferredResult.resolve(programmes);
             scope.$apply();

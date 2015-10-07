@@ -132,3 +132,33 @@ TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', r
 
 #delivery answers
 TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_80)
+
+MultipleChoiceAnswerFactory(question=ip_questions.ip_question_1, value=ip_questions.ip_yes, run=run_81)
+TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_81)
+
+MultipleChoiceAnswerFactory(question=ip_questions.ip_question_1, value=ip_questions.ip_yes, run=run_82)
+TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_82)
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_83)
+NumericAnswerFactory(question=web_questions.web_question_2, value=80, run=run_83)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.good, run=run_83)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_83)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_83)
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_84)
+NumericAnswerFactory(question=web_questions.web_question_2, value=500, run=run_84)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.good, run=run_84)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_84)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_84)
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_85)
+NumericAnswerFactory(question=web_questions.web_question_2, value=700, run=run_85)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.good, run=run_85)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_85)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_85)
+
+MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_86)
+NumericAnswerFactory(question=web_questions.web_question_2, value=3000, run=run_86)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.good, run=run_86)
+MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_86)
+TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_86)

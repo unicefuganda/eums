@@ -175,7 +175,8 @@ angular.module('Directives', [])
                 });
 
                 element.change(function () {
-                    ngModel.$setViewValue(element.select2('data').id);
+                    var consignee = $(element).select2('data');
+                    ngModel.$setViewValue(consignee && consignee.id);
                     scope.$apply();
                 });
 
@@ -199,6 +200,68 @@ angular.module('Directives', [])
             }
         };
     })
+    .directive('searchProgrammes', function (ProgrammeService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+                ProgrammeService.all().then(function (response) {
+                    return response.map(function (programe) {
+                        return {id: programe.id, text: programe.name}
+                    });
+                }).then(function (data) {
+                    $(element).select2({
+                        placeholder: 'All Outcomes',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                $(element).change(function () {
+                    var programme = $(element).select2('data');
+                    ngModel.$setViewValue(programme && programme.id);
+                    scope.$apply();
+                });
+
+                scope.$on('clear-programme', function () {
+                    var programmeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    programmeSelect2Input.text('');
+                    $(element).val(undefined);
+                });
+                scope.$on('set-programme', function (_, programme) {
+                    var programmeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    programmeSelect2Input.text(programme.name);
+                    $(element).val(programme ? programme.id : undefined);
+                });
+            }
+        };
+    })
+    .directive('selectProgram', function (ProgrammeService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, ngModel) {
+                ProgrammeService.all().then(function (response) {
+                    return response.map(function (programe) {
+                        return {id: programe.id, text: programe.name}
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'All Outcomes',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    console.log('element was changed');
+                    ngModel.$setViewValue($(elem).select2('data').id);
+                    scope.$apply();
+                });
+            }
+        }
+    })
     .directive('onlyDigits', function () {
         return {
             require: 'ngModel',
@@ -220,6 +283,45 @@ angular.module('Directives', [])
                 ngModelCtrl.$parsers.push(inputValue);
             }
         };
+    }).directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+
+                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
+                    var data = displayedData.map(function (consignee) {
+                        return {id: consignee.id, text: consignee.name}
+                    });
+
+                    $(element).select2({
+                        placeholder: 'All Implementing Partners',
+                        allowClear: true,
+                        data: _.sortBy(data, function (ip) {
+                            return ip.text;
+                        })
+                    });
+                });
+
+                element.change(function () {
+                    var consignee = $(element).select2('data');
+                    ngModel.$setViewValue(consignee && consignee.id);
+                    scope.$apply();
+                });
+
+                scope.$on('clear-consignee', function () {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text('');
+                    $(element).val(undefined);
+                });
+
+                scope.$on('set-consignee', function (_, consignee) {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text(consignee.name);
+                    $(element).val(consignee.id);
+                });
+            }
+        }
     });
 
 

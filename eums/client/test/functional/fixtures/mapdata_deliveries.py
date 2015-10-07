@@ -1,4 +1,3 @@
-from datetime import date
 from eums.models import DistributionPlan
 from eums.client.test.functional.fixtures.mapdata_consignees import *
 from eums.client.test.functional.fixtures.mapdata_programmes import *
@@ -12,4 +11,7 @@ delivery_41 = DistributionPlan.objects.create(programme=programme_3, location="B
 delivery_42 = DistributionPlan.objects.create(programme=programme_1, location="Oyam", consignee=consignee_38, contact_person_id="5422bf5999f3eb0000a46ae6", track=False,  delivery_date="2014-10-14", remark="hh")
 
 delivery_43 = DistributionPlan.objects.create(programme=programme_3, location="Bukomansimbi", consignee=consignee_32, contact_person_id="542bfa5108453c32ffd4cade", track=True,  delivery_date=FakeDate.build(2015, 07, 11), remark="blah blah")
+
+delivery_44 = DistributionPlan.objects.create(programme=programme_1, location="Bukomansimbi", consignee=consignee_33, contact_person_id="542bfa5108453c32ffd4cade", track=True,  delivery_date=FakeDate.build(2015, 07, 11), remark="blah blah")
+delivery_45 = DistributionPlan.objects.create(programme=programme_3, location="Kaabong", consignee=consignee_6, contact_person_id="542bfa5108453c32ffd4cade", track=True,  delivery_date=FakeDate.build(2015, 07, 11), remark="blah blah")
 

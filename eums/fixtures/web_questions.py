@@ -15,7 +15,7 @@ web_question_2, _ = NumericQuestion.objects.get_or_create(
 web_question_3, _ = MultipleChoiceQuestion.objects.get_or_create(
     uuids=['6c1cf92d-59b8-4bd3-815b-783abd3dfad9', 'fe368546-1b9c-4a15-926d-68b7caaa0380'],
     text='What is the quality of the product?', label='qualityOfProduct', flow=web_flow, position=3)
-Option.objects.get_or_create(text='Good', question=web_question_3)
+good, _ = Option.objects.get_or_create(text='Good', question=web_question_3)
 damaged, _ = Option.objects.get_or_create(text='Damaged', question=web_question_3)
 substandard, _ = Option.objects.get_or_create(text='Substandard', question=web_question_3)
 expired, _ = Option.objects.get_or_create(text='Expired', question=web_question_3)

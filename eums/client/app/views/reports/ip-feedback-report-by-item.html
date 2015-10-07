@@ -21,21 +21,15 @@
                            placeholder="Item Description"/>
                 </div>
             </div>
-            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
-                <select id="filter-ip" ng-model="searchTerm.consigneeId"
-                        required="required"
-                        class="form-control">
-                    <option value="">Select IP</option>
-                    <option value="{{ ip.id }} " data-ng-repeat="ip in consignees | orderBy: 'ip.name' track by ip.id"> {{ ip.name }}</option>
-                </select>
+            <div class="col-xs-2 pull-right margin-bottom-20 pad-small" id="filter-consignee-container">
+                <input id="filter-by-consignee" type="hidden" select-i-p
+                       ng-model="searchTerm.consigneeId"
+                       value="{{ item.consignee.id }}">
             </div>
-            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
-                <select id="filter-programme" ng-model="searchTerm.programmeId"
-                        required="required"
-                        class="form-control">
-                    <option value="">Select Outcome</option>
-                    <option value="{{ programme.id }} " data-ng-repeat="programme in programmes | orderBy: 'programme.name' track by programme.id"> {{ programme.name }}</option>
-                </select>
+            <div class="col-xs-2 pull-right margin-bottom-20 pad-small" id="filter-programme-container" >
+                <input id="filter-programme" type="hidden" search-programmes
+                       ng-model="searchTerm.programmeId"
+                       value="{{ item.programme.id }}">
             </div>
         </div>
 
@@ -59,7 +53,7 @@
                 </thead>
 
                 <tbody>
-                <tr ng-repeat="($index, itemReport) in report" class="align-left">
+                <tr ng-repeat="itemReport in report" class="align-left report-item">
                     <td><span class="padded-multi-line-5">{{ itemReport.item_description }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>

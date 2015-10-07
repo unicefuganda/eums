@@ -1,6 +1,7 @@
 'use strict';
 
 var loginPage = require('./pages/login-page.js');
+var ftUtils = require('./functional-test-utils.js');
 var directDeliveryPage = require('./pages/direct-delivery-page.js');
 var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var ipWarehousePage = require('./pages/ip-warehouse-page.js');
@@ -47,6 +48,7 @@ describe('IP Deliveries', function () {
         ipWarehousePage.visit();
 
         ipWarehousePage.searchForItem('kindle fire');
+        ftUtils.wait(2000);
         ipWarehousePage.reportOnFirstItem();
 
         expect(ipWarehousePage.itemName).toBe('Item Name: Kindle Fire HDX');
