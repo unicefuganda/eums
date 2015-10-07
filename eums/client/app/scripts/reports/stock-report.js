@@ -29,9 +29,8 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             });
         });
 
-        $scope.toggleOpenDocument = function (location, consignee, documentId, programme) {
-            $scope.openDocument = $scope.openDocument === location + consignee + documentId + programme ?
-                undefined : location + consignee + documentId + programme;
+        $scope.toggleOpenDocument = function (documentId) {
+            $scope.openDocument = $scope.openDocument === documentId ? undefined : documentId;
         };
     })
     .factory('StockReportService', function ($http, EumsConfig) {

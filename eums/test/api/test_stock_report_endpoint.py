@@ -21,14 +21,13 @@ from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(StockReportResponsesEndpointTest, self).setUp()
-        self.clean()
 
         self.setup_questions()
         self.setup_actors()
         self.setup_purchase_orders_and_items()
         self.setup_distribution_plans()
 
-    def clean(self):
+    def tearDown(self):
         DistributionPlanNode.objects.all().delete()
         Consignee.objects.all().delete()
         NumericQuestion.objects.all().delete()
@@ -51,6 +50,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
              'balance': Decimal('0'),
              'items': [{'code': unicode(self.po_item_three.item.material_code),
                         'description': unicode(self.po_item_three.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_three.location,
                         'quantity_delivered': 2,
                         'date_delivered': str(self.ip_node_three.delivery_date),
                         'quantity_confirmed': 2,
@@ -64,6 +65,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
              'balance': Decimal('20'),
              'items': [{'code': unicode(self.po_item_two.item.material_code),
                         'description': unicode(self.po_item_two.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_two.location,
                         'quantity_delivered': 3,
                         'date_delivered': str(self.ip_node_two.delivery_date),
                         'quantity_confirmed': 2,
@@ -73,6 +76,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         },
                        {'code': unicode(self.po_item_one.item.material_code),
                         'description': unicode(self.po_item_one.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_two.location,
                         'quantity_delivered': 5,
                         'date_delivered': str(self.ip_node_one.delivery_date),
                         'quantity_confirmed': 4,
@@ -97,6 +102,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
              'balance': Decimal('0'),
              'items': [{'code': unicode(self.po_item_three.item.material_code),
                         'description': unicode(self.po_item_three.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_three.location,
                         'quantity_delivered': 2,
                         'date_delivered': str(self.ip_node_three.delivery_date),
                         'quantity_confirmed': 2,
@@ -110,6 +117,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
              'balance': Decimal('20'),
              'items': [{'code': unicode(self.po_item_two.item.material_code),
                         'description': unicode(self.po_item_two.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_two.location,
                         'quantity_delivered': 3,
                         'date_delivered': str(self.ip_node_two.delivery_date),
                         'quantity_confirmed': 2,
@@ -119,6 +128,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         },
                        {'code': unicode(self.po_item_one.item.material_code),
                         'description': unicode(self.po_item_one.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_one.location,
                         'quantity_delivered': 5,
                         'date_delivered': str(self.ip_node_one.delivery_date),
                         'quantity_confirmed': 4,
@@ -133,9 +144,11 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                 'total_value_received': 400.0,
                 'total_value_dispensed': 300.0,
                 'items': [{'code': 'Code 23',
+                           'description': 'Jerrycans',
+                           'consignee': self.extra_ip_node.consignee.name,
+                           'location': self.extra_ip_node.location,
                            'quantity_dispatched': 30,
                            'quantity_delivered': 40,
-                           'description': 'Jerrycans',
                            'date_delivered': '2014-09-25',
                            'date_confirmed': 'None',
                            'balance': 10,
@@ -149,19 +162,19 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 3)
         self.assert_api_response(response, expected_data)
 
-    def test_gets_ip_location_programme_values_for_stock_report(self):
+    def test_gets_programme_ip_location_values_for_stock_report(self):
         self.setup_responses()
 
         expected_data = [
-            {'consignee': self.ip.name,
+            {'document_number': self.po_two.order_number,
              'programme': 'programme_two',
-             'location': self.ip_node_three.location,
-             'document_number': self.po_two.order_number,
              'total_value_received': Decimal('20'),
              'total_value_dispensed': Decimal('20'),
              'balance': Decimal('0'),
              'items': [{'code': unicode(self.po_item_three.item.material_code),
                         'description': unicode(self.po_item_three.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_three.location,
                         'quantity_delivered': 2,
                         'date_delivered': str(self.ip_node_three.delivery_date),
                         'quantity_confirmed': 2,
@@ -169,15 +182,15 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'quantity_dispatched': 2,
                         'balance': 0
                         }]},
-            {'consignee': self.ip.name,
+            {'document_number': self.po_one.order_number,
              'programme': 'programme_one',
-             'location': self.ip_node_one.location,
-             'document_number': self.po_one.order_number,
              'total_value_received': Decimal('60'),
              'total_value_dispensed': Decimal('40'),
              'balance': Decimal('20'),
              'items': [{'code': unicode(self.po_item_two.item.material_code),
                         'description': unicode(self.po_item_two.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_two.location,
                         'quantity_delivered': 3,
                         'date_delivered': str(self.ip_node_two.delivery_date),
                         'quantity_confirmed': 2,
@@ -187,6 +200,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         },
                        {'code': unicode(self.po_item_one.item.material_code),
                         'description': unicode(self.po_item_one.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_one.location,
                         'quantity_delivered': 5,
                         'date_delivered': str(self.ip_node_one.delivery_date),
                         'quantity_confirmed': 4,
@@ -200,7 +215,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get(endpoint_url)
 
         self.assertEqual(len(response.data), 2)
-        self.assert_api_response_with_ip_location_and_programme(response, expected_data)
+        self.assert_api_response_with_programme_ip_location(response, expected_data)
 
     def add_a_node_with_response(self):
         delivery = DeliveryFactory(track=True)
@@ -209,10 +224,10 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         purchase_order = PurchaseOrderFactory(order_number=4748278, sales_order=sales_order)
         po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
                                            item=ItemFactory(material_code='Code 23', description='Jerrycans'))
-        ip_node_one = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery, item=po_item,
-                                          quantity=40, acknowledged=40, balance=40,
-                                          tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        run_one = RunFactory(runnable=ip_node_one)
+        self.extra_ip_node = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery, item=po_item,
+                                                 quantity=40, acknowledged=40, balance=40,
+                                                 tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        run_one = RunFactory(runnable=self.extra_ip_node)
 
         quantity_received_qn = NumericQuestion.objects.get(label='amountReceived')
 
@@ -220,7 +235,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         end_node_one = DeliveryNodeFactory(programme=delivery.programme,
                                            consignee=self.end_user,
-                                           parents=[(ip_node_one, 30)],
+                                           parents=[(self.extra_ip_node, 30)],
                                            tree_position=DistributionPlanNode.END_USER,
                                            item=po_item)
         run_end_node_one = RunFactory(runnable=end_node_one)
@@ -236,17 +251,17 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
             for item in stock['items']:
                 self.assertIn(item, stock_in_response['items'])
 
-    def assert_api_response_with_ip_location_and_programme(self, response, expected_data):
+    def assert_api_response_with_programme_ip_location(self, response, expected_data):
         for stock in expected_data:
             stock_in_response = \
                 filter(lambda stock_: stock_['document_number'] == stock['document_number']
-                                      and stock_['consignee'] == stock['consignee']
-                                      and stock_['location'] == stock['location']
                                       and stock_['programme'] == stock['programme'], response.data)[0]
 
             for key in ['total_value_received', 'total_value_dispensed', 'balance']:
                 self.assertEquals(stock_in_response[key], stock[key])
             for item in stock['items']:
+                self.assertIn('consignee', item.keys())
+                self.assertIn('location', item.keys())
                 self.assertIn(item, stock_in_response['items'])
 
     def test_returns_correct_balance(self):
@@ -298,6 +313,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
              'balance': Decimal('150'),
              'items': [{'code': unicode(po_item.item.material_code),
                         'description': unicode(po_item.item.description),
+                        'consignee': ip.name,
+                        'location': end_node_one.location,
                         'quantity_delivered': 30,
                         'date_delivered': str(end_node_one.delivery_date),
                         'quantity_confirmed': 30,
@@ -307,6 +324,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         },
                        {'code': unicode(po_item.item.material_code),
                         'description': unicode(po_item.item.description),
+                        'consignee': ip.name,
+                        'location': end_node_one.location,
                         'quantity_delivered': 40,
                         'date_delivered': str(end_node_one.delivery_date),
                         'quantity_confirmed': 40,

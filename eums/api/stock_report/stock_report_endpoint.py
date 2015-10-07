@@ -34,15 +34,15 @@ def _get_report_details_for_node(node):
     value_dispensed = quantity_dispensed * node.item.unit_value()
 
     return {
-        'location': node.location,
-        'consignee': node.consignee.name,
-        'programme': node.programme.name,
         'document_number': purchase_order_number,
+        'programme': node.programme.name,
         'total_value_received': total_value_received,
         'total_value_dispensed': value_dispensed,
         'balance': (total_value_received - value_dispensed),
         'items': [{'code': node.item.item.material_code,
                    'description': node.item.item.description,
+                   'location': node.location,
+                   'consignee': node.consignee.name,
                    'quantity_delivered': node.quantity_in(),
                    'date_delivered': str(node.delivery_date),
                    'quantity_confirmed': quantity_received,
@@ -82,10 +82,7 @@ def _reduce_stock_report(stock_report):
 
 def _find_item_in_stock_report(reduced_report, report_item):
     for item in reduced_report:
-        if item['document_number'] == report_item['document_number'] \
-                and item['location'] == report_item['location'] \
-                and item['consignee'] == report_item['consignee'] \
-                and item['programme'] == report_item['programme']:
+        if item['document_number'] == report_item['document_number']:
             return item
     return None
 

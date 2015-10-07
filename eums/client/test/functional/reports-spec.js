@@ -5,7 +5,7 @@ var loginPage = require('./pages/login-page.js');
 
 describe('Reports', function () {
 
-    xit('should show the IP stock report', function () {
+    it('should show the IP stock report', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         reportsPage.visit();
