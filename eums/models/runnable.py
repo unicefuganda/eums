@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
 from polymorphic import PolymorphicModel
 import requests
 from eums.models import Consignee
@@ -40,7 +41,8 @@ class Runnable(PolymorphicModel):
         return self.run_set.filter(status='completed')
 
     def responses(self):
-        return dict(map(lambda run: (run, run.answers()), self._completed_runs()))
+        return dict(map(lambda run: (run, run.answers()), self.run_set.filter(Q(status='scheduled') |
+                                                                              Q(status='completed'))))
 
     def latest_response(self):
         latest_run = self.latest_run()

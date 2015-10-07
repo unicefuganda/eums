@@ -30,7 +30,8 @@ class DeliveryNodeTest(TestCase):
 
     def test_should_have_all_expected_fields(self):
         node = DeliveryNodeFactory()
-        for expected_field in ['distribution_plan', 'programme', 'item', 'tree_position', 'balance', 'acknowledged', 'total_value',
+        for expected_field in ['distribution_plan', 'programme', 'item', 'tree_position', 'balance', 'acknowledged',
+                               'total_value',
                                'parents', 'quantity']:
             self.assertTrue(hasattr(node, expected_field))
 
@@ -206,13 +207,33 @@ class DeliveryNodeTest(TestCase):
         delivery = DeliveryFactory()
 
         root_node = DeliveryNodeFactory(distribution_plan=delivery)
-        self.assertEqual(root_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+        self.assertEqual(root_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
 
         intermediary_node = DeliveryNodeFactory(distribution_plan=delivery, parents=[(root_node, 5)])
-        self.assertEqual(intermediary_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+        self.assertEqual(intermediary_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
 
         leaf_node = DeliveryNodeFactory(parents=[(intermediary_node, 3)], distribution_plan=delivery)
-        self.assertEqual(leaf_node.get_ip(), {'id': root_node.id, 'location': root_node.location})
+        self.assertEqual(leaf_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+
+    def test_should_get_a_nodes_ip_from_the_root_node_of_its_first_parent(self):
+        root_node = DeliveryNodeFactory()
+        self.assertEqual(root_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+
+        second_parent = DeliveryNodeFactory()
+        self.assertEqual(second_parent.get_ip(),
+                         {'id': second_parent.id, 'consignee': second_parent.consignee, 'location': second_parent.location})
+
+        first_level_child_node = DeliveryNodeFactory(parents=[(root_node, 2), (second_parent, 3)])
+        self.assertEqual(first_level_child_node.get_ip(),
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+
+        second_level_child_node = DeliveryNodeFactory(parents=[(first_level_child_node, 2)])
+        self.assertEqual(second_level_child_node.get_ip(),
+                     {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
 
     def test_should_get_sender_name(self):
         sender_name = 'Save the children'
@@ -526,5 +547,3 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(child.programme, delivery.programme)
         self.assertEqual(grandchild.programme, delivery.programme)
         self.assertEqual(second_grand_child.programme, delivery.programme)
-
-
