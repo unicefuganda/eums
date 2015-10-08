@@ -13,7 +13,7 @@ class FakeDate(date):
         return cls(2014, 9, 25)
 
     @classmethod
-    def build(cls, year,month, day):
+    def build(cls, year, month, day):
         return date(year, month, day)
 
 

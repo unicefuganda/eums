@@ -16,6 +16,7 @@ from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
+from eums.test.helpers.fake_datetime import FakeDate
 
 
 class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
@@ -162,12 +163,13 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data), 3)
         self.assert_api_response(response, expected_data)
 
-    def test_gets_programme_ip_location_values_for_stock_report(self):
+    def test_gets_programme_last_shipment_date_ip_location_values_for_stock_report(self):
         self.setup_responses()
 
         expected_data = [
             {'document_number': self.po_two.order_number,
              'programme': 'programme_two',
+             'last_shipment_date': str(self.ip_node_three.delivery_date),
              'total_value_received': Decimal('20'),
              'total_value_dispensed': Decimal('20'),
              'balance': Decimal('0'),
@@ -184,6 +186,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         }]},
             {'document_number': self.po_one.order_number,
              'programme': 'programme_one',
+             'last_shipment_date': str(self.ip_node_one.delivery_date),
              'total_value_received': Decimal('60'),
              'total_value_dispensed': Decimal('40'),
              'balance': Decimal('20'),
@@ -216,6 +219,65 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data), 2)
         self.assert_api_response_with_programme_ip_location(response, expected_data)
+        self.assert_api_response_with_correct_last_shipment_date(response, expected_data)
+
+    def test_gets_correct_last_shipment_date_value_for_stock_report(self):
+        programme = ProgrammeFactory(name='special_program')
+        delivery = DeliveryFactory(track=True, programme=programme)
+        sales_order = SalesOrderFactory(programme=programme)
+        purchase_order = PurchaseOrderFactory(order_number=4748278, sales_order=sales_order)
+        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
+                                           item=ItemFactory(material_code='Code 23', description='Jerrycans'))
+
+        ip_node_one = DeliveryNodeFactory(distribution_plan=delivery, item=po_item, quantity=40,
+                                          tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                          delivery_date=FakeDate.build(2015, 03, 19))
+        run_one = RunFactory(runnable=ip_node_one)
+        quantity_received_qn = NumericQuestion.objects.get(label='amountReceived')
+        NumericAnswerFactory(question=quantity_received_qn, value=39, run=run_one)
+
+        last_shipment_date = FakeDate.build(2015, 10, 07)
+        ip_node_two = DeliveryNodeFactory(distribution_plan=delivery, item=po_item, quantity=30,
+                                          tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER,
+                                          delivery_date=last_shipment_date)
+        run_two = RunFactory(runnable=ip_node_two)
+        NumericAnswerFactory(question=quantity_received_qn, value=40, run=run_two)
+
+        expected_data = [
+            {'document_number': purchase_order.order_number,
+             'programme': programme.name,
+             'last_shipment_date': str(last_shipment_date),
+             'total_value_received': Decimal('79'),
+             'total_value_dispensed': Decimal('0'),
+             'balance': Decimal('79'),
+             'items': [{'code': unicode(po_item.item.material_code),
+                        'description': unicode(po_item.item.description),
+                        'consignee': self.ip.name,
+                        'location': ip_node_one.location,
+                        'quantity_delivered': 3,
+                        'date_delivered': str(self.ip_node_two.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-02',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        },
+                       {'code': unicode(po_item.item.material_code),
+                        'description': unicode(po_item.item.description),
+                        'consignee': self.ip.name,
+                        'location': ip_node_two.location,
+                        'quantity_delivered': 5,
+                        'date_delivered': str(self.ip_node_one.delivery_date),
+                        'quantity_confirmed': 4,
+                        'date_confirmed': '2014-01-01',
+                        'quantity_dispatched': 2,
+                        'balance': 2
+                        }]
+             }]
+
+        endpoint_url = BACKEND_URL + 'stock-report/'
+        response = self.client.get(endpoint_url)
+
+        self.assert_api_response_with_correct_last_shipment_date(response, expected_data)
 
     def add_a_node_with_response(self):
         delivery = DeliveryFactory(track=True)
@@ -259,10 +321,19 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
             for key in ['total_value_received', 'total_value_dispensed', 'balance']:
                 self.assertEquals(stock_in_response[key], stock[key])
+
             for item in stock['items']:
                 self.assertIn('consignee', item.keys())
                 self.assertIn('location', item.keys())
                 self.assertIn(item, stock_in_response['items'])
+
+    def assert_api_response_with_correct_last_shipment_date(self, response, expected_data):
+        for stock in expected_data:
+            stock_in_response = \
+                filter(lambda stock_: stock_['document_number'] == stock['document_number']
+                                      and stock_['programme'] == stock['programme'], response.data)[0]
+
+            self.assertEqual(stock['last_shipment_date'], stock_in_response['last_shipment_date'])
 
     def test_returns_correct_balance(self):
         ip = ConsigneeFactory(type=Consignee.TYPES.implementing_partner)

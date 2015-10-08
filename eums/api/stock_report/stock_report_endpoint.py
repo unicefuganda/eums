@@ -36,6 +36,7 @@ def _get_report_details_for_node(node):
     return {
         'document_number': purchase_order_number,
         'programme': node.programme.name,
+        'last_shipment_date': str(node.delivery_date),
         'total_value_received': total_value_received,
         'total_value_dispensed': value_dispensed,
         'balance': (total_value_received - value_dispensed),
@@ -95,3 +96,6 @@ def _update_report_item(matching_report_item, report_item):
     matching_report_item['balance'] = matching_report_item['total_value_received'] - matching_report_item[
         'total_value_dispensed']
     matching_report_item['items'].append(report_item['items'][0])
+
+    if matching_report_item['last_shipment_date'] < report_item['last_shipment_date']:
+        matching_report_item['last_shipment_date'] = report_item['last_shipment_date']

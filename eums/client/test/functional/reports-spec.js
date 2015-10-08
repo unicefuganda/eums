@@ -30,7 +30,7 @@ describe('Reports', function () {
         expect(reportsPage.itemDeliveredQty).toContain('3');
         expect(reportsPage.itemConfirmedQty).toContain('30');
         expect(reportsPage.itemConfirmedQty).toContain('0');
-        expect(reportsPage.itemDeliveryDate).toContain('2014-06-10');
+        expect(reportsPage.itemDeliveryDate).toContain('10-06-2014');
         expect(reportsPage.itemBalances).toContain('30');
         expect(reportsPage.itemBalances).toContain('0');
 
