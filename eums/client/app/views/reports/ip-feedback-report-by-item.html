@@ -2,34 +2,43 @@
 
 <ng-toast></ng-toast>
 
+
 <div class="container-fluid">
     <div class="content">
         <div class="row">
-            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
-                <div class="inner-addon right-addon">
-                    <i class="glyphicon "
-                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                    <input type="text" id="filter-po-waybill" class="form-control" name="filter" ng-model="searchTerm.poWaybill"
-                           placeholder="PO or Waybill"/>
+            <div class="row">
+                <div class="col-lg-9 pull-right">
+                    <label class="blue-unicef pad-left-90">Filter Report By:</label>
                 </div>
             </div>
-            <div class="col-xs-2 pull-right margin-bottom-20 pad-small">
-                <div class="inner-addon right-addon">
-                    <i class="glyphicon "
-                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                    <input type="text" id="filter-item" class="form-control" name="filter" ng-model="searchTerm.itemDescription"
-                           placeholder="Item Description"/>
+            <div class="row margin-right-20">
+                <div class="col-xs-2 margin-bottom-20 pad-small pull-right">
+                    <div class="inner-addon right-addon">
+                        <i class="glyphicon "
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <input type="text" id="filter-po-waybill" class="form-control" name="filter" ng-model="searchTerm.poWaybill"
+                               placeholder="PO or Waybill"/>
+                    </div>
                 </div>
-            </div>
-            <div class="col-xs-2 pull-right margin-bottom-20 pad-small" id="filter-consignee-container">
-                <input id="filter-by-consignee" type="hidden" select-i-p
-                       ng-model="searchTerm.consigneeId"
-                       value="{{ item.consignee.id }}">
-            </div>
-            <div class="col-xs-2 pull-right margin-bottom-20 pad-small" id="filter-programme-container" >
-                <input id="filter-programme" type="hidden" search-programmes
-                       ng-model="searchTerm.programmeId"
-                       value="{{ item.programme.id }}">
+                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-consignee-container">
+                    <input id="filter-by-consignee" type="hidden" select-i-p
+                           ng-model="searchTerm.consigneeId"
+                           value="{{ item.consignee.id }}">
+                </div>
+
+                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-programme-container">
+                    <input id="filter-programme" type="hidden" search-programmes
+                           ng-model="searchTerm.programmeId"
+                           value="{{ item.programme.id }}">
+                </div>
+                <div class="col-xs-2 margin-bottom-20 pad-small pull-right">
+                    <div class="inner-addon right-addon">
+                        <i class="glyphicon "
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <input type="text" id="filter-item" class="form-control" name="filter" ng-model="searchTerm.itemDescription"
+                               placeholder="Item Description"/>
+                    </div>
+                </div>
             </div>
         </div>
 
