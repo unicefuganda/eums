@@ -9,7 +9,7 @@ positions = ((Runnable.MIDDLE_MAN, 'Middleman'), (Runnable.END_USER, 'End User')
 
 class DistributionPlanNode(Runnable):
     distribution_plan = models.ForeignKey('DistributionPlan', null=True, blank=True)
-    programme = models.ForeignKey(Programme, null=True, blank=True)
+    programme = models.ForeignKey(Programme, null=True, blank=True, related_name='nodes')
     item = models.ForeignKey('OrderItem')
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)

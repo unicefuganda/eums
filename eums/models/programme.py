@@ -10,3 +10,8 @@ class Programme(models.Model):
 
     def __unicode__(self):
         return '%s' % self.name
+
+    def to_dict_with_ips(self):
+        return {'id': self.id,
+                'name': self.name,
+                'ips': self.nodes.values_list('ip', flat=True).distinct()}
