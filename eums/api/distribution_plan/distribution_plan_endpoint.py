@@ -77,27 +77,67 @@ class DistributionPlanViewSet(ModelViewSet):
     @staticmethod
     def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
         if from_date and to_date:
-            return DistributionPlanViewSet.filter_deliveries(
-                DistributionPlan.objects.filter(
-                    programme__name__icontains=programme,
-                    delivery_date__range=[from_date, to_date],
-                    consignee=consignee,
-                    track=True
-                ) if programme else DistributionPlan.objects.filter(
-                    consignee=consignee,
-                    track=True,
-                    delivery_date__range=[from_date, to_date]),
-                query)
+            return DistributionPlanViewSet._filter_with_date_range(consignee, from_date, programme, query, to_date)
+        elif from_date:
+            return DistributionPlanViewSet._filter_with_start_date(consignee, from_date, programme, query)
+        elif to_date:
+            return DistributionPlanViewSet._filter_with_end_date(consignee, programme, query, to_date)
         else:
-            return DistributionPlanViewSet.filter_deliveries(
-                DistributionPlan.objects.filter(
-                    programme__name__icontains=programme,
-                    consignee=consignee,
-                    track=True
-                ) if programme else DistributionPlan.objects.filter(
-                    consignee=consignee,
-                    track=True),
-                query)
+            return DistributionPlanViewSet._filter_without_dates(consignee, programme, query)
+
+    @staticmethod
+    def _filter_without_dates(consignee, programme, query):
+        return DistributionPlanViewSet.filter_deliveries(
+            DistributionPlan.objects.filter(
+                programme__name__icontains=programme,
+                consignee=consignee,
+                track=True
+            ) if programme else DistributionPlan.objects.filter(
+                consignee=consignee,
+                track=True),
+            query)
+
+    @staticmethod
+    def _filter_with_end_date(consignee, programme, query, to_date):
+        return DistributionPlanViewSet.filter_deliveries(
+            DistributionPlan.objects.filter(
+                programme__name__icontains=programme,
+                delivery_date__lte=to_date,
+                consignee=consignee,
+                track=True
+            ) if programme else DistributionPlan.objects.filter(
+                consignee=consignee,
+                track=True,
+                delivery_date__lte=to_date),
+            query)
+
+    @staticmethod
+    def _filter_with_start_date(consignee, from_date, programme, query):
+        return DistributionPlanViewSet.filter_deliveries(
+            DistributionPlan.objects.filter(
+                programme__name__icontains=programme,
+                delivery_date__gte=from_date,
+                consignee=consignee,
+                track=True
+            ) if programme else DistributionPlan.objects.filter(
+                consignee=consignee,
+                track=True,
+                delivery_date__gte=from_date),
+            query)
+
+    @staticmethod
+    def _filter_with_date_range(consignee, from_date, programme, query, to_date):
+        return DistributionPlanViewSet.filter_deliveries(
+            DistributionPlan.objects.filter(
+                programme__name__icontains=programme,
+                delivery_date__range=[from_date, to_date],
+                consignee=consignee,
+                track=True
+            ) if programme else DistributionPlan.objects.filter(
+                consignee=consignee,
+                track=True,
+                delivery_date__range=[from_date, to_date]),
+            query)
 
     @staticmethod
     def filter_deliveries(deliveries, query):

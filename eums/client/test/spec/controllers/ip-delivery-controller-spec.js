@@ -1,6 +1,6 @@
 describe('IP Delivery Controller', function () {
     var mockDeliveryService, scope, location, mockLoaderService, q,
-        mockUserService, controller, mockAnswerService;
+        mockUserService, controller, mockAnswerService, timeout;
 
     var firstDelivery = {
         id: 1,
@@ -48,7 +48,8 @@ describe('IP Delivery Controller', function () {
             DeliveryService: mockDeliveryService,
             LoaderService: mockLoaderService,
             UserService: userService || mockUserService,
-            AnswerService: mockAnswerService
+            AnswerService: mockAnswerService,
+            $timeout: timeout
         });
     }
 
@@ -57,7 +58,7 @@ describe('IP Delivery Controller', function () {
         module('IpDelivery');
 
         inject(function ($controller, $rootScope, $location, $q,
-                         LoaderService, UserService, AnswerService, DeliveryService) {
+                         LoaderService, UserService, AnswerService, DeliveryService, $timeout) {
             controller = $controller;
             scope = $rootScope.$new();
             location = $location;
@@ -66,6 +67,7 @@ describe('IP Delivery Controller', function () {
             mockUserService = UserService;
             mockAnswerService = AnswerService;
             mockDeliveryService = DeliveryService;
+            timeout = $timeout;
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
 
@@ -432,71 +434,95 @@ describe('IP Delivery Controller', function () {
             expect(mockDeliveryService.all.calls.count()).toEqual(1);
         });
 
-        it('should not filter when toDate is empty', function () {
+        it('should filter by only fromDate when toDate is empty', function () {
             initializeController();
+            scope.$apply();
             scope.fromDate = '2014-07-07';
             scope.$apply();
-
-            expect(mockDeliveryService.all.calls.count()).toEqual(1);
+            timeout.flush();
+            var callArgs = mockDeliveryService.all.calls.allArgs();
+            expect(mockDeliveryService.all.calls.count()).toEqual(2);
+            expect(callArgs[1]).toEqual([undefined, {from: '2014-07-07'}]);
         });
 
-        it('should not filter when fromDate is empty', function () {
+        it('should filter by only toDate when fromDate is empty', function () {
             initializeController();
+            scope.$apply();
             scope.toDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
-            expect(mockDeliveryService.all.calls.count()).toEqual(1);
+            var callArgs = mockDeliveryService.all.calls.allArgs();
+            expect(mockDeliveryService.all.calls.count()).toEqual(2);
+            expect(callArgs[1]).toEqual([undefined, {to: '2014-07-07'}]);
         });
 
         it('should filter deliveries when date range is given', function () {
             initializeController();
+            scope.$apply();
             scope.fromDate = '2014-05-07';
             scope.toDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
+            var callArgs = mockDeliveryService.all.calls.allArgs();
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07'});
+            expect(callArgs[1]).toEqual([undefined, {from: '2014-05-07', to: '2014-07-07'}]);
         });
 
         it('should format dates before filtering deliveries ', function () {
             initializeController();
+            scope.$apply();
             scope.fromDate = 'Sun Aug 30 2015 00:00:00 GMT+0200 (SAST)';
             scope.toDate = 'Thu Sep 10 2015 00:00:00 GMT+0200 (SAST)';
             scope.$apply();
+            timeout.flush();
 
+            var callArgs = mockDeliveryService.all.calls.allArgs();
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {from: '2015-08-30', to: '2015-09-10'});
+            expect(callArgs[1]).toEqual([undefined, {from: '2015-08-30', to: '2015-09-10'}]);
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
             initializeController();
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-05-07';
             scope.toDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
+            var callArgs = mockDeliveryService.all.calls.allArgs();
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
+            expect(callArgs[1]).toEqual([undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'}]);
         });
 
-        it('should filter deliveries without date when fromDate is not given with additional query', function () {
+        it('should filter deliveries without date when toDate is given with additional query', function () {
             initializeController();
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.toDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
+            var callArgs = mockDeliveryService.all.calls.allArgs();
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
+            expect(callArgs[1]).toEqual([undefined, {to: '2014-07-07', query: 'wakiso programme'}]);
+
         });
 
-        it('should not filter deliveries when toDate is not given with additional query', function () {
+        it('should not filter deliveries when fromDate is given with additional query', function () {
             initializeController();
+            scope.$apply();
             scope.query = 'wakiso programme';
             scope.fromDate = '2014-07-07';
             scope.$apply();
+            timeout.flush();
 
+            var callArgs = mockDeliveryService.all.calls.allArgs();
             expect(mockDeliveryService.all.calls.count()).toEqual(2);
-            expect(mockDeliveryService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme'})
+            expect(callArgs[1]).toEqual([undefined, {from: '2014-07-07', query: 'wakiso programme'}]);
+
         });
     });
 });

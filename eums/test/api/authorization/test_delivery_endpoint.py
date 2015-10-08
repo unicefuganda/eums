@@ -1,3 +1,4 @@
+import datetime
 from eums.auth import create_groups, create_permissions, teardown_groups, teardown_permissions
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -99,7 +100,7 @@ class DeliveryEndpointTest(APITestCase):
         programme = ProgrammeFactory()
         consignee = ConsigneeFactory()
         delivery = DeliveryFactory(programme=programme, consignee=consignee, location='Kampala',
-                                           delivery_date='2015-12-12')
+                                   delivery_date='2015-12-12')
 
         self._login_as('UNICEF_editor')
 
@@ -229,6 +230,40 @@ class DeliveryEndpointTest(APITestCase):
 
         self.assertEqual(response.status_code, 403)
 
+    def test_should_return_deliveries_filtered_by_date(self):
+        consignee = ConsigneeFactory()
+        delivery = DeliveryFactory(delivery_date=datetime.date(2014, 10, 5), consignee=consignee, track=True)
+
+        self._log_consignee_in(consignee)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-04&to=2014-10-10'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+
+    def test_should_return_deliveries_filtered_by_from_or_to_date_separately(self):
+        consignee = ConsigneeFactory();
+        delivery = DeliveryFactory(delivery_date=datetime.date(2014, 10, 5), consignee=consignee, track=True)
+
+        self._log_consignee_in(consignee)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-04'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'from=2014-10-10'))
+        self.assertEqual(len(response.data), 0)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-10'))
+
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['id'], delivery.id)
+
+        response = self.client.get('%s?%s' % (ENDPOINT_URL, 'to=2014-10-04'))
+
+        self.assertEqual(len(response.data), 0)
+
     # Helper methods
 
     def _login_as(self, group_name):
@@ -239,3 +274,9 @@ class DeliveryEndpointTest(APITestCase):
         user = User.objects.create_user(username=username, email='user@email.com', password=password)
         user.groups = [Group.objects.get(name=group_name)]
         user.save()
+
+    def _log_consignee_in(self, consignee):
+        user = User.objects.create_user(username='test_consignee', email='someconignee@email.com', password='test')
+        user.save()
+        UserProfile.objects.create(user=user, consignee=consignee)
+        self.client.login(username='test_consignee', password='test')

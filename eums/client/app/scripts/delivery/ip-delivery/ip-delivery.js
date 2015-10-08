@@ -2,7 +2,7 @@
 
 angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters'])
     .controller('IpDeliveryController', function ($scope, $location, DeliveryService, LoaderService,
-                                                  UserService, AnswerService) {
+                                                  UserService, AnswerService, $timeout) {
         $scope.deliveries = [];
         $scope.answers = [];
         $scope.activeDelivery = undefined;
@@ -106,18 +106,39 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             return answers.length > 0 ? answers.first().options.indexOf(answers.first().value) > -1 : false;
         }
 
+        var timer, initializing = true;
+
         $scope.$watch('[fromDate,toDate,query]', function () {
-            var hasDateRange = ($scope.fromDate && $scope.toDate);
-            if ($scope.query || hasDateRange) {
-                var urlArgs;
-                urlArgs = !hasDateRange ?
-                    {query: $scope.query} :
-                    !$scope.query ?
-                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate)} :
-                    {from: formatDate($scope.fromDate), to: formatDate($scope.toDate), query: $scope.query};
-                loadDeliveries(urlArgs);
+            if (initializing){
+                initializing = false;
+            }
+            else {
+                if (timer) {
+                    $timeout.cancel(timer);
+                }
+                delaySearch();
             }
         }, true);
+
+        function delaySearch() {
+            timer = $timeout(function () {
+                loadDeliveries(changedFilters());
+            }, 1000);
+        }
+
+        function changedFilters() {
+            var urlArgs = {};
+            if ($scope.fromDate) {
+                urlArgs.from = formatDate($scope.fromDate);
+            }
+            if ($scope.toDate) {
+                urlArgs.to = formatDate($scope.toDate);
+            }
+            if ($scope.query) {
+                urlArgs.query = $scope.query;
+            }
+            return urlArgs
+        }
 
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
