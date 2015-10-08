@@ -350,3 +350,114 @@ div[class*="-aggregate-marker-icon"] div {
   margin: 5px;
   font-size: 1.2em;
 }
+
+// New District Stats
+
+#district-stats {
+  position: absolute;
+  bottom: 0;
+  right: 25px;
+  background: white;
+  border: 1px solid #F4F4F4;
+  overflow: hidden;
+  width: 490px;
+}
+
+.district-stats-header {
+  text-align: center;
+  font-size: 2.0em;
+  text-transform: uppercase;
+  background-color: #F4F4F4;
+  color: #7D7D7D;
+  padding: 10px;
+}
+
+.district-stats-subheader {
+  background-color: #F4F4F4;
+  border-bottom: 1px solid #7D7D7D;
+  padding: 5px 0px 0px 10px;
+}
+
+#district-stats-left-side {
+  width: 185px;
+  float: left;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+#district-stats-right-side {
+  width: 278px;
+  float: left;
+  margin-top: 10px;
+  margin-left: 15px;
+}
+
+.stats-subheader-bold-grey {
+  font-weight: bold;
+  color: #7d7d7d;
+}
+
+.stats-large-number-font {
+  font-size: 1.6em;
+}
+
+.stats-med-number-font {
+  font-size: 1.2em;
+}
+
+.stats-subheader-blue { color: @brand-primary; }
+.stats-text-grey { color: #7E7E7E; }
+
+.district-stats-left-section {
+  text-align: center;
+  display: inline-block;
+}
+
+.district-stats-amount-responses {
+  padding-top: 20px;
+}
+
+#district-stats-left-side > .district-stats-subheader:first-child {
+  margin-bottom: 10px;
+}
+
+#district-stats-right-side-lower-section {
+  background-color: #EAEFF3;
+  padding: 10px 0px 5px 15px;
+}
+
+.district-stats-detailed-section {
+  margin-bottom: 10px;
+  margin-right: 5px;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+}
+
+.district-stats-detailed-section-slice {
+  padding: 5px;
+}
+
+.district-stats-detailed-section-label {
+  color: #7d7d7d;
+  font-size: 1.1em;
+}
+
+.percentage-graphic {
+  display: inline-block;
+}
+
+// This is to override vendor CSS to conform to UI requirement
+.ngpercentdisplay:before {
+  width: 90% !important;
+  height: 90% !important;
+}
+
+.district-stats-left-section .ngpercentdisplay {
+  font-size: 1.4em !important;
+}
+
+.district-stats-detailed-section-slice .ngpercentdisplay {
+  font-size: 0.9em !important;
+}
+

@@ -35,6 +35,7 @@ module.exports = function (config) {
             'bower_components/angular-gs-to-snake-case/build/angular-gs-to-snake-case.min.js',
             'app/media/lodash.js',
             'app/scripts/**/*.js',
+            'app/vendor/scripts/**/*.js',
             'test/spec/**/*.js'
         ],
 

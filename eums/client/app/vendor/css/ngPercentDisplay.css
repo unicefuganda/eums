@@ -1,0 +1,71 @@
+/*
+=====================================================================
+Percent Display CSS
+
+Por Walter Staeblein - 2015
+=====================================================================
+*/
+.ngpercentdisplay {
+    background-color: #606060;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    float: left;
+    margin: 10px;
+    font-size: 24px;
+}
+.ngpercentdisplay > div {
+    float: left;
+    width: 50%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+.ngpercentdisplay span {
+    background-color: #DADADA;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+    .ngpercentdisplay .ngperdispleft span {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        -webkit-transform-origin: 100% 50%;
+        -moz-transform-origin: 100% 50%;
+        -ms-transform-origin: 100% 50%;
+        transform-origin: 100% 50%;
+    }
+    .ngpercentdisplay .ngperdispright span {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        -webkit-transform-origin: 0% 50%;
+        -moz-transform-origin: 0% 50%;
+        -ms-transform-origin: 0% 50%;
+        transform-origin: 0% 50%;
+    }
+.ngpercentdisplay:before,
+.ngpercentdisplay:after {
+    border-radius: 50%;
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -ms-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+    .ngpercentdisplay:before {
+        background-color: #FFFFFF;
+        content: "";
+        width: 60%;
+        height: 60%;
+        z-index: 100;
+    }
+    .ngpercentdisplay:after {
+        content: attr(data-percent) "%";
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        z-index: 200;
+        text-align: center;
+    }
