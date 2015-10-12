@@ -59,10 +59,33 @@ describe('Stock Report Service', function() {
         });
     });
 
-    it('should get stock reports for a consignee', function(done) {
-        mockBackend.whenGET(endpointUrl + consigneeId + '/').respond(stubStockReport);
+    it('should get stock report for a consignee', function(done) {
+        mockBackend.whenGET(endpointUrl + '?consignee='+consigneeId).respond(stubStockReport);
 
-        stockReportService.getStockReport(consigneeId).then(function(response) {
+        stockReportService.getStockReportForConsignee(consigneeId).then(function(response) {
+            expect(response.data).toEqual(stubStockReport);
+        });
+        mockBackend.flush();
+        done();
+    });
+
+    it('should get stock report for a location', function(done) {
+        var location = 'Kampala';
+        mockBackend.whenGET(endpointUrl + '?location='+location).respond(stubStockReport);
+
+        stockReportService.getStockReportForLocation(location).then(function(response) {
+            expect(response.data).toEqual(stubStockReport);
+        });
+        mockBackend.flush();
+        done();
+    });
+
+    it('should get stock report for a location and a consignee', function(done) {
+        var location = 'Kampala';
+        var consigneeId =2;
+        mockBackend.whenGET(endpointUrl + '?location='+location +'&consignee='+consigneeId).respond(stubStockReport);
+
+        stockReportService.getStockReportForLocationAndConsignee(location, consigneeId).then(function(response) {
             expect(response.data).toEqual(stubStockReport);
         });
         mockBackend.flush();

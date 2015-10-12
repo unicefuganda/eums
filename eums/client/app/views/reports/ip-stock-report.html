@@ -10,9 +10,9 @@
                         <div class="col-lg-3 pad-left-5">
                             <label class="control-label description-label" for="select-ip">Select District</label>
                         </div>
-                        <div class="col-lg-8">
-                            <input id="select-district" class="form-control" type="hidden" search-consignees
-                                   ng-model="selectedLocation" placeholder="Select District">
+                        <div class="col-lg-8" ng-if="districtsLoaded">
+                            <input id="select-district" class="form-control" type="hidden" search-from-list list="{{ districts }}"
+                                   ng-model="reportParams.selectedLocation" placeholder="Select District">
                         </div>
                     </div>
                     <div>
@@ -21,7 +21,7 @@
                         </div>
                         <div class="col-lg-8">
                             <input id="select-ip" class="form-control" type="hidden" search-consignees
-                                   ng-model="selectedIPId" placeholder="Select IP">
+                                   ng-model="reportParams.selectedIPId" placeholder="Select IP">
                         </div>
                     </div>
                 </div>

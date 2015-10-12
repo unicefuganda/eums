@@ -88,7 +88,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         }
                        ]}]
 
-        endpoint_url = BACKEND_URL + 'stock-report/%s/' % self.ip.id
+        endpoint_url = BACKEND_URL + 'stock-report?consignee=%s' % self.ip.id
         response = self.client.get(endpoint_url)
         self.assert_api_response(response, expected_data)
 
@@ -161,6 +161,82 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         response = self.client.get(endpoint_url)
 
         self.assertEqual(len(response.data), 3)
+        self.assert_api_response(response, expected_data)
+
+    def test_should_get_stock_value_for_all_purchase_orders_for_a_location(self):
+        self.setup_responses()
+        self.ip_node_one.location = 'Luweero'
+        self.ip_node_one.save()
+        self.ip_node_two.location = 'Luweero'
+        self.ip_node_two.save()
+        self.add_a_node_with_response()
+
+        expected_data = [
+            {'document_number': self.po_one.order_number,
+             'total_value_received': Decimal('60'),
+             'total_value_dispensed': Decimal('40'),
+             'balance': Decimal('20'),
+             'items': [{'code': unicode(self.po_item_two.item.material_code),
+                        'description': unicode(self.po_item_two.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_two.location,
+                        'quantity_delivered': 3,
+                        'date_delivered': str(self.ip_node_two.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-02',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        },
+                       {'code': unicode(self.po_item_one.item.material_code),
+                        'description': unicode(self.po_item_one.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_two.location,
+                        'quantity_delivered': 5,
+                        'date_delivered': str(self.ip_node_one.delivery_date),
+                        'quantity_confirmed': 4,
+                        'date_confirmed': '2014-01-01',
+                        'quantity_dispatched': 2,
+                        'balance': 2
+                        }
+                       ]}]
+
+        endpoint_url = BACKEND_URL + 'stock-report?location=luweero'
+        response = self.client.get(endpoint_url)
+        self.assertEqual(len(response.data), 1)
+        self.assert_api_response(response, expected_data)
+
+    def test_should_get_stock_value_for_all_purchase_orders_for_a_location_and_ip(self):
+        self.setup_responses()
+        self.ip_node_one.location = 'Luweero'
+        self.ip_node_one.save()
+        self.ip_node_two.location = 'Luweero'
+        self.ip_node_two.save()
+        self.ip_node_three.location = 'Koboko'
+        self.ip_node_three.save()
+        self.add_a_node_with_response()
+
+        expected_data = [
+            {'document_number': self.po_two.order_number,
+             'total_value_received': Decimal('20'),
+             'total_value_dispensed': Decimal('20'),
+             'balance': Decimal('0'),
+             'items': [{'code': unicode(self.po_item_three.item.material_code),
+                        'description': unicode(self.po_item_three.item.description),
+                        'consignee': self.ip.name,
+                        'location': self.ip_node_three.location,
+                        'quantity_delivered': 2,
+                        'date_delivered': str(self.ip_node_three.delivery_date),
+                        'quantity_confirmed': 2,
+                        'date_confirmed': '2014-01-03',
+                        'quantity_dispatched': 2,
+                        'balance': 0
+                        }]
+             }
+        ]
+
+        endpoint_url = BACKEND_URL + 'stock-report?consignee=%d&location=koboko' % self.ip_node_three.consignee.id
+        response = self.client.get(endpoint_url)
+        self.assertEqual(len(response.data), 1)
         self.assert_api_response(response, expected_data)
 
     def test_gets_programme_last_shipment_date_ip_location_values_for_stock_report(self):
@@ -287,7 +363,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
                                            item=ItemFactory(material_code='Code 23', description='Jerrycans'))
         self.extra_ip_node = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery, item=po_item,
-                                                 quantity=40, acknowledged=40, balance=40,
+                                                 quantity=40, acknowledged=40, balance=40, location='Amudat',
                                                  tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         run_one = RunFactory(runnable=self.extra_ip_node)
 

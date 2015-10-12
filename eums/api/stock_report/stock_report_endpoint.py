@@ -5,9 +5,10 @@ from rest_framework import status
 
 
 class StockReport(APIView):
-    @staticmethod
-    def get(_, consignee_id=None):
-        stock_report = _build_stock_report(consignee_id)
+    def get(self, request):
+        consignee_id = request.GET.get('consignee')
+        location = request.GET.get('location')
+        stock_report = _build_stock_report(consignee_id, location)
         reduced_stock_report = _reduce_stock_report(stock_report)
         return Response(reduced_stock_report, status=status.HTTP_200_OK)
 
@@ -18,9 +19,16 @@ def aggregate_nodes_into_stock_report(stock_report, node):
     return stock_report
 
 
-def _build_stock_report(consignee_id):
-    nodes = DistributionPlanNode.objects.filter(consignee_id=consignee_id) if consignee_id \
-        else DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
+def _build_stock_report(consignee_id, location):
+    ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
+    if consignee_id and location:
+        nodes = ip_nodes.filter(consignee_id=consignee_id, location__icontains=location)
+    elif consignee_id:
+        nodes = ip_nodes.filter(consignee_id=consignee_id)
+    elif location:
+        nodes = ip_nodes.filter(location__icontains=location)
+    else:
+        nodes = ip_nodes.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
 
     return reduce(aggregate_nodes_into_stock_report, nodes, [])
 

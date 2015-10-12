@@ -11,28 +11,27 @@ describe('Reports', function () {
         loginPage.loginAs('admin', 'admin');
         reportsPage.visit();
 
-        reportsPage.selectConsignee('Adjumani');
-
-        expect(reportsPage.totalReceived).toContain('$7.14');
+        reportsPage.selectConsignee('kaabong');
+        expect(reportsPage.totalReceived).toContain('$87.14');
         expect(reportsPage.totalDispensed).toContain('$0.00');
-        expect(reportsPage.totalBalance).toContain('$7.14');
+        expect(reportsPage.totalBalance).toContain('$87.14');
 
         expect(reportsPage.stockDocumentNumbers).toContain('12345');
-        expect(reportsPage.stockReceivedValues).toContain('7.143');
-        expect(reportsPage.stockBalances).toContain('7.143');
+        expect(reportsPage.stockReceivedValues).toContain('87.143');
+        expect(reportsPage.stockBalances).toContain('87.143');
 
         reportsPage.selectFirstPO();
-        expect(reportsPage.itemCodes).toContain('S0782208');
-        expect(reportsPage.itemCodes).toContain('SL004638');
-        expect(reportsPage.itemDescriptions).toContain('Safety box f.used syrgs/ndls 5lt/BOX-25');
-        expect(reportsPage.itemDescriptions).toContain('Fact sheet2013 A4 2013 Full colour 2013 double s');
-        expect(reportsPage.itemDeliveredQty).toContain('30');
-        expect(reportsPage.itemDeliveredQty).toContain('3');
-        expect(reportsPage.itemConfirmedQty).toContain('30');
-        expect(reportsPage.itemConfirmedQty).toContain('0');
-        expect(reportsPage.itemDeliveryDate).toContain('10-06-2014');
-        expect(reportsPage.itemBalances).toContain('30');
-        expect(reportsPage.itemBalances).toContain('0');
+        expect(reportsPage.itemCodes).toContain('S0060240');
+        expect(reportsPage.itemCodes).toContain('S0145620');
+        expect(reportsPage.itemDescriptions).toContain('Therapeutic spread,sachet 92g/CAR-150');
+        expect(reportsPage.itemDescriptions).toContain('MUAC,Child 11.5 Red/PAC-50');
+        expect(reportsPage.itemDeliveredQty).toContain('80');
+        expect(reportsPage.itemDeliveredQty).toContain('500');
+        expect(reportsPage.itemConfirmedQty).toContain('80');
+        expect(reportsPage.itemConfirmedQty).toContain('500');
+        expect(reportsPage.itemDeliveryDate).toContain('11-07-2015');
+        expect(reportsPage.itemBalances).toContain('80');
+        expect(reportsPage.itemBalances).toContain('500');
 
     });
 
