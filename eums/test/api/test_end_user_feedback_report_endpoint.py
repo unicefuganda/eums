@@ -1,11 +1,11 @@
 import urllib
+
 from eums.models import MultipleChoiceQuestion, TextQuestion, NumericAnswer, Flow, Runnable, NumericQuestion, \
     TextAnswer, \
     MultipleChoiceAnswer, Option, Run, DistributionPlan, DistributionPlanNode, Consignee, Programme, PurchaseOrderItem, \
     ReleaseOrderItem, PurchaseOrder, SalesOrder, Item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.flow_factory import FlowFactory
@@ -19,7 +19,6 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, 
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
-
 from eums.test.config import BACKEND_URL
 
 ENDPOINT_URL = BACKEND_URL + 'end-user-feedback-report/'

@@ -50,24 +50,6 @@ describe('IpFeedbackReportByItemController', function () {
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalled();
             expect(scope.report).toEqual(response.results)
         });
-
-        it('should load consignees', function () {
-            var consignees = [{id: 1}, {id: 2}];
-            deferredResult.resolve(consignees);
-            scope.$apply();
-
-            expect(mockConsigneeService.filter).toHaveBeenCalledWith({type: 'implementing_partner'});
-            expect(scope.consignees).toEqual(consignees)
-        });
-
-        it('should load programmes', function () {
-            var programmes = [{id: 1}, {id: 2}];
-            deferredResult.resolve(programmes);
-            scope.$apply();
-
-            expect(mockProgrammeService.all).toHaveBeenCalled();
-            expect(scope.programmes).toEqual(programmes)
-        });
     });
 
     describe('on filtering', function () {

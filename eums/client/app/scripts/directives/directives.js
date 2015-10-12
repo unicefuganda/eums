@@ -203,19 +203,26 @@ angular.module('Directives', [])
     .directive('searchProgrammes', function (ProgrammeService) {
         return {
             restrict: 'A',
+            scope: false,
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                ProgrammeService.all().then(function (response) {
-                    return response.map(function (programe) {
-                        return {id: programe.id, text: programe.name}
+                ProgrammeService.programmesWithIps().then(function (response) {
+                    scope.progAndConsignees.allProgrammes = response.map(function (programe) {
+                        return {id: programe.id, text: programe.name, ips: programe.ips}
                     });
-                }).then(function (data) {
+                    scope.displayProgrammes = scope.progAndConsignees.allProgrammes;
+                    scope.displayProgrammes;
+                }).then(function () {
+                    scope.populateProgrammesSelect2();
+                });
+
+                scope.populateProgrammesSelect2 = function() {
                     $(element).select2({
                         placeholder: 'All Outcomes',
                         allowClear: true,
-                        data: data
+                        data: scope.displayProgrammes
                     });
-                });
+                }
 
                 $(element).change(function () {
                     var programme = $(element).select2('data');
@@ -242,7 +249,7 @@ angular.module('Directives', [])
             scope: false,
             require: 'ngModel',
             link: function (scope, elem, ngModel) {
-                ProgrammeService.all().then(function (response) {
+                ProgrammeService.programmesWithIps().then(function (response) {
                     return response.map(function (programe) {
                         return {id: programe.id, text: programe.name}
                     });
@@ -258,6 +265,51 @@ angular.module('Directives', [])
                     console.log('element was changed');
                     ngModel.$setViewValue($(elem).select2('data').id);
                     scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
+        return {
+            restrict: 'A',
+            require: 'ngModel',
+            link: function (scope, element, attrs, ngModel) {
+
+                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
+                    scope.progAndConsignees.allIps = displayedData.map(function (consignee) {
+                        return {id: consignee.id, text: consignee.name}
+                    });
+                    scope.displayIps = scope.progAndConsignees.allIps;
+                    scope.populateIpsSelect2();
+                });
+
+                scope.populateIpsSelect2 = function() {
+                    $(element).select2({
+                        placeholder: 'All Implementing Partners',
+                        allowClear: true,
+                        data: _.sortBy(scope.displayIps, function (ip) {
+                            return ip.text;
+                        })
+                    });
+                }
+
+                element.change(function () {
+                    var consignee = $(element).select2('data');
+                    ngModel.$setViewValue(consignee && consignee.id);
+                    scope.$apply();
+                });
+
+
+                scope.$on('clear-consignee', function () {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text('');
+                    $(element).val(undefined);
+                });
+
+                scope.$on('set-consignee', function (_, consignee) {
+                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
+                    consigneeSelect2Input.text(consignee.name);
+                    $(element).val(consignee.id);
                 });
             }
         }
@@ -283,45 +335,6 @@ angular.module('Directives', [])
                 ngModelCtrl.$parsers.push(inputValue);
             }
         };
-    }).directive('selectIP', function (ProgrammeService, DeliveryService, ConsigneeService) {
-        return {
-            restrict: 'A',
-            require: 'ngModel',
-            link: function (scope, element, attrs, ngModel) {
-
-                ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    var data = displayedData.map(function (consignee) {
-                        return {id: consignee.id, text: consignee.name}
-                    });
-
-                    $(element).select2({
-                        placeholder: 'All Implementing Partners',
-                        allowClear: true,
-                        data: _.sortBy(data, function (ip) {
-                            return ip.text;
-                        })
-                    });
-                });
-
-                element.change(function () {
-                    var consignee = $(element).select2('data');
-                    ngModel.$setViewValue(consignee && consignee.id);
-                    scope.$apply();
-                });
-
-                scope.$on('clear-consignee', function () {
-                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    consigneeSelect2Input.text('');
-                    $(element).val(undefined);
-                });
-
-                scope.$on('set-consignee', function (_, consignee) {
-                    var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
-                    consigneeSelect2Input.text(consignee.name);
-                    $(element).val(consignee.id);
-                });
-            }
-        }
     });
 
 

@@ -1,3 +1,4 @@
+from eums.models import DistributionPlanNode, Consignee, Programme, Item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -11,6 +12,12 @@ ENDPOINT_URL = BACKEND_URL + 'programme/'
 
 class ProgrammesWithIpsEndPointTest(AuthenticatedAPITestCase):
 
+    def tearDown(self):
+        DistributionPlanNode.objects.all().delete()
+        Consignee.objects.all().delete()
+        Programme.objects.all().delete()
+        Item.objects.all().delete()
+
     def test_should_get_programmes_with_associated_ips(self):
         programme = ProgrammeFactory(name='Our Programme')
         delivery = DeliveryFactory(programme=programme)
@@ -22,7 +29,7 @@ class ProgrammesWithIpsEndPointTest(AuthenticatedAPITestCase):
         DeliveryNodeFactory(consignee=guru, distribution_plan=delivery)
         DeliveryNodeFactory(consignee=kisoro, distribution_plan=delivery)
 
-        response = self.client.get(BACKEND_URL + 'programmes-with-ips/', format='json')
+        response = self.client.get(ENDPOINT_URL + 'with-ips/', format='json')
 
         self.assertEqual(response.status_code, 200)
         expected_response = get_programme(programme, response.data)[0]

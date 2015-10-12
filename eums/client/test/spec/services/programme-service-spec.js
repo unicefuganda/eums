@@ -14,6 +14,9 @@ describe('Programme Service', function () {
     });
 
     it('should create itself with the right parameters', function () {
-        expect(mockServiceFactory.create).toHaveBeenCalledWith({uri: config.BACKEND_URLS.PROGRAMME});
+        expect(mockServiceFactory.create).toHaveBeenCalledWith({
+            uri: config.BACKEND_URLS.PROGRAMME,
+            methods: jasmine.any(Object)
+        });
     });
 });

@@ -66,7 +66,7 @@ urlpatterns = patterns(
         name='permissions'),
     url(r'^api/current-user', 'eums.api.current_user.current_user_endpoint.current_user',
         name='current-user'),
-    url(r'^api/programmes-with-ips', 'eums.api.programme.programmes_with_ips_endpoint.programmes_with_ips', name='programmes_ips'),
+    url(r'^api/programme/with-ips/', 'eums.api.programme.programmes_with_ips_endpoint.programmes_with_ips', name='programmes_ips'),
     url(r'^api/web-answers', 'eums.api.answer.web_answers_endpoint.save_answers', name='save_answers'),
     url(r'^api/so-item-po-item/(?P<sales_order_item_id>\d+)/$',
         soItemPOItem.as_view(), name='so_item_po_item'),
