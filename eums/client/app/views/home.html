@@ -39,8 +39,15 @@
                         </div>
                         <div class="district-stats-amount-responses pull-left">
                             <ul class="list-unstyled">
-                                <li class="stats-large-number-font">{{ data.totalStats.totalValueOfSuccessfulDeliveries | currency}}</li>
-                                <li class="stats-text-grey">{{ data.totalStats.numberOfSuccessfulProductDeliveries }} responses</li>
+                                <li class="stats-large-number-font">
+                                    <span class="stats-currency-symbol">$</span>
+                                    <span class="stats-currency-value">
+                                        {{ data.totalStats.totalValueOfSuccessfulDeliveries | compactNumber }}
+                                    </span>
+                                </li>
+                                <li class="stats-text-grey">
+                                    {{ data.totalStats.numberOfSuccessfulProductDeliveries }} responses
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -57,8 +64,15 @@
                         </div>
                         <div class="district-stats-amount-responses pull-left">
                             <ul class="list-unstyled">
-                                <li class="stats-large-number-font">{{ data.totalStats.totalValueOfUnsuccessfulProductDeliveries | currency}}</li>
-                                <li class="stats-text-grey">{{ data.totalStats.numberOfUnsuccessfulProductDeliveries }} responses</li>
+                                <li class="stats-large-number-font">
+                                    <span class="stats-currency-symbol">$</span>
+                                    <span class="stats-currency-value">
+                                        {{ data.totalStats.totalValueOfUnsuccessfulProductDeliveries | compactNumber }}
+                                    </span>
+                                </li>
+                                <li class="stats-text-grey">
+                                    {{ data.totalStats.numberOfUnsuccessfulProductDeliveries }} responses
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -75,7 +89,12 @@
                         </div>
                         <div class="district-stats-amount-responses pull-left">
                             <ul class="list-unstyled">
-                                <li class="stats-large-number-font">{{ data.totalStats.totalValueOfNonResponseToProductReceived | currency}}</li>
+                                <li class="stats-large-number-font">
+                                    <span class="stats-currency-symbol">$</span>
+                                    <span class="stats-currency-value">
+                                        {{ data.totalStats.totalValueOfNonResponseToProductReceived | compactNumber }}
+                                    </span>
+                                </li>
                                 <li class="stats-text-grey">{{ data.totalStats.numberOfNonResponseToProductReceived }} nonresponses</li>
                             </ul>
                         </div>
@@ -109,7 +128,7 @@
                                 </div>
                                 <div>In Good Order</div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfDeliveriesInGoodOrder | currency}}
+                                    {{ data.totalStats.totalValueOfDeliveriesInGoodOrder | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -122,7 +141,7 @@
                                 </div>
                                 <div>In Bad Order</div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfDeliveriesInBadOrder | currency}}
+                                    {{ data.totalStats.totalValueOfDeliveriesInBadOrder | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -135,7 +154,7 @@
                                 </div>
                                 <div>No response</div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | currency}}
+                                    {{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | compactCurrency}}
                                 </div>
                             </div>
                         </div>
@@ -152,7 +171,7 @@
                                 </div>
                                 <div>Satisfied</div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfSatisfactoryDeliveries | currency}}
+                                    {{ data.totalStats.totalValueOfSatisfactoryDeliveries | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -165,7 +184,7 @@
                                 </div>
                                 <div>Not satisfied</div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | currency}}
+                                    {{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -178,7 +197,7 @@
                                 </div>
                                 <div>No response</div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | currency}}
+                                    {{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | compactCurrency}}
                                 </div>
                             </div>
                         </div>

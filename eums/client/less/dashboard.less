@@ -379,14 +379,14 @@ div[class*="-aggregate-marker-icon"] div {
 }
 
 #district-stats-left-side {
-  width: 185px;
+  width: 175px;
   float: left;
   margin-top: 10px;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 
 #district-stats-right-side {
-  width: 278px;
+  width: 283px;
   float: left;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -399,6 +399,14 @@ div[class*="-aggregate-marker-icon"] div {
 
 .stats-large-number-font {
   font-size: 1.6em;
+}
+
+.stats-large-number-font .stats-currency-symbol {
+  float: left;
+}
+
+.stats-large-number-font .stats-currency-value {
+  float: right;
 }
 
 .stats-med-number-font {
@@ -414,7 +422,16 @@ div[class*="-aggregate-marker-icon"] div {
 }
 
 .district-stats-amount-responses {
+  width: 95px;
   padding-top: 20px;
+}
+
+.district-stats-amount-responses .stats-large-number-font {
+  padding: 0px 10px;
+}
+
+.district-stats-amount-responses .stats-text-grey {
+  display: inline-block;
 }
 
 #district-stats-left-side > .district-stats-subheader:first-child {
@@ -423,12 +440,12 @@ div[class*="-aggregate-marker-icon"] div {
 
 #district-stats-right-side-lower-section {
   background-color: #EAEFF3;
-  padding: 10px 0px 5px 15px;
+  padding: 10px 0px 0px 10px;
 }
 
 .district-stats-detailed-section {
+  width: 263px;
   margin-bottom: 10px;
-  margin-right: 5px;
   background-color: white;
   display: inline-block;
   text-align: center;
