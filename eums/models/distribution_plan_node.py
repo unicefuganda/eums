@@ -159,3 +159,17 @@ class DistributionPlanNode(Runnable):
 
     def _get_total_value(self):
         return self.item.unit_value() * self.quantity_in()
+
+    def lineage(self):
+        return self._get_parent_lineage(self, [])
+
+    def _get_parent_lineage(self, node, parent_list):
+        if node.is_root():
+            return parent_list
+        else:
+            if node is not self:
+                parent_list.append(node)
+            source_ids = node.arcs_in.all().values_list('source_id')
+            parents = DistributionPlanNode.objects.filter(pk__in=source_ids)
+            for parent in parents:
+                return self._get_parent_lineage(parent, parent_list)

@@ -225,7 +225,8 @@ class DeliveryNodeTest(TestCase):
 
         second_parent = DeliveryNodeFactory()
         self.assertEqual(second_parent.get_ip(),
-                         {'id': second_parent.id, 'consignee': second_parent.consignee, 'location': second_parent.location})
+                         {'id': second_parent.id, 'consignee': second_parent.consignee,
+                          'location': second_parent.location})
 
         first_level_child_node = DeliveryNodeFactory(parents=[(root_node, 2), (second_parent, 3)])
         self.assertEqual(first_level_child_node.get_ip(),
@@ -233,7 +234,7 @@ class DeliveryNodeTest(TestCase):
 
         second_level_child_node = DeliveryNodeFactory(parents=[(first_level_child_node, 2)])
         self.assertEqual(second_level_child_node.get_ip(),
-                     {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
+                         {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location})
 
     def test_should_get_sender_name(self):
         sender_name = 'Save the children'
@@ -547,3 +548,26 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(child.programme, delivery.programme)
         self.assertEqual(grandchild.programme, delivery.programme)
         self.assertEqual(second_grand_child.programme, delivery.programme)
+
+    def test_node_should_its_lineage_without_unicef_root_nodes(self):
+        consignee = ConsigneeFactory()
+        delivery = DeliveryFactory(consignee=consignee)
+
+        root_one = DeliveryNodeFactory(consignee=consignee, quantity=100, distribution_plan=delivery)
+        root_two = DeliveryNodeFactory(consignee=consignee, quantity=100, distribution_plan=delivery)
+        child = DeliveryNodeFactory(parents=[(root_one, 60), (root_two, 50)], distribution_plan=None,
+                                    tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
+        grand_child_one = DeliveryNodeFactory(parents=[(child, 30)], distribution_plan=None,
+                                              tree_position=DeliveryNode.MIDDLE_MAN)
+        grand_child_two = DeliveryNodeFactory(parents=[(child, 20)], distribution_plan=None,
+                                              tree_position=DeliveryNode.MIDDLE_MAN)
+        self.assertItemsEqual(grand_child_one.lineage(), [child])
+        self.assertItemsEqual(grand_child_two.lineage(), [child])
+
+        great_grand_child_one = DeliveryNodeFactory(parents=[(grand_child_one, 20)], distribution_plan=None,
+                                                    tree_position=DeliveryNode.END_USER)
+        great_grand_child_two = DeliveryNodeFactory(parents=[(grand_child_two, 10)], distribution_plan=None,
+                                                    tree_position=DeliveryNode.END_USER)
+
+        self.assertItemsEqual(great_grand_child_one.lineage(), [child, grand_child_one])
+        self.assertItemsEqual(great_grand_child_two.lineage(), [child, grand_child_two])
