@@ -1,5 +1,14 @@
 <ng-toast></ng-toast>
 <div class="container-fluid">
+    <div class="row">
+        <ul class="breadcrumb">
+            <li><a href="/#/deliveries-by-ip/{{ itemId }}" class="breadcrumb-link">{{ item.description }}</a></li>
+            <li ng-repeat="delivery in deliveryLineage" ng-class="{'active': delivery.id ==  parentNode.id}">
+                <a href="/#/deliveries-by-ip/{{ itemId }}/{{ delivery.id }}/new" ng-hide="delivery.id ==  parentNode.id" class="breadcrumb-link">{{ delivery.consignee_name }}</a>
+                <span ng-show="delivery.id ==  parentNode.id">{{ delivery.consignee_name }}</span>
+            </li>
+        </ul>
+    </div>
 <div class="eums page-header row">
     <div class="pull-left pad-top-10">
         <div>
