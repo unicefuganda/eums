@@ -97,7 +97,6 @@ describe('IpFeedbackReportByItemController', function () {
     describe('on show remark', function () {
         it('should call show modal with right index', function () {
             scope.showRemarks(4);
-
             expect(mockLoader.showModal).toHaveBeenCalledWith('remarks-modal-4');
         })
     })

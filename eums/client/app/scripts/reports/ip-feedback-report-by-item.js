@@ -22,7 +22,7 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.displayProgrammes = newValue.consigneeId ? $scope.progAndConsignees.allProgrammes.filter(function (programme) {
                     return _.contains(programme.ips, newValue.consigneeId);
                 }) : $scope.progAndConsignees.allProgrammes;
-                $scope.populateProgrammesSelect2();
+                $scope.populateProgrammesSelect2($scope.displayProgrammes);
             }
 
             if (newValue.programmeId != oldValue.programmeId) {
@@ -34,9 +34,10 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.displayIps = programme ? $scope.progAndConsignees.allIps.filter(function (ip) {
                     return _.contains(programme.ips, ip.id);
                 }) : $scope.progAndConsignees.allIps;
-                $scope.populateIpsSelect2();
+                $scope.populateIpsSelect2($scope.displayIps);
             }
         }, true);
+
 
         $scope.goToPage = function (page) {
             loadIpFeedbackReport({page: page})
@@ -59,9 +60,44 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
 
+                updateProgrammes(response.results);
+                updateConsignees(response.results);
+
                 LoaderService.hideLoader();
                 $scope.searching = false;
+
+
             });
+        }
+
+        function updateConsignees(reportResults) {
+            if (reportResults && $scope.displayIps) {
+                var consigneeIds = reportResults.map(function (result) {
+                    return result.consignee.id;
+                });
+
+                $scope.displayIps = consigneeIds ? $scope.progAndConsignees.allIps.filter(function (ip) {
+                    return _.contains(consigneeIds, ip.id);
+                }) : [];
+            } else {
+                $scope.displayIps = $scope.progAndConsignees.allIps;
+            }
+            $scope.populateIpsSelect2($scope.displayIps);
+        }
+
+        function updateProgrammes(reportResults) {
+            if (reportResults && $scope.displayProgrammes) {
+                var programmeIds = reportResults.map(function (result) {
+                    return result.programme.id;
+                });
+
+                $scope.displayProgrammes = programmeIds ? $scope.progAndConsignees.allProgrammes.filter(function (programme) {
+                    return _.contains(programmeIds, programme.id);
+                }) : [];
+            } else {
+                $scope.displayProgrammes = $scope.progAndConsignees.allProgrammes;
+            }
+            $scope.populateProgrammesSelect2($scope.displayProgrammes);
         }
 
         $scope.showRemarks = function (index) {

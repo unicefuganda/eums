@@ -213,14 +213,14 @@ angular.module('Directives', [])
                     scope.displayProgrammes = scope.progAndConsignees.allProgrammes;
                     scope.displayProgrammes;
                 }).then(function () {
-                    scope.populateProgrammesSelect2();
+                    scope.populateProgrammesSelect2(scope.displayProgrammes);
                 });
 
-                scope.populateProgrammesSelect2 = function() {
+                scope.populateProgrammesSelect2 = function(displayProgrammes) {
                     $(element).select2({
                         placeholder: 'All Outcomes',
                         allowClear: true,
-                        data: scope.displayProgrammes
+                        data: displayProgrammes
                     });
                 }
 
@@ -262,7 +262,6 @@ angular.module('Directives', [])
                 });
 
                 elem.change(function () {
-                    console.log('element was changed');
                     ngModel.$setViewValue($(elem).select2('data').id);
                     scope.$apply();
                 });
@@ -280,14 +279,14 @@ angular.module('Directives', [])
                         return {id: consignee.id, text: consignee.name}
                     });
                     scope.displayIps = scope.progAndConsignees.allIps;
-                    scope.populateIpsSelect2();
+                    scope.populateIpsSelect2(scope.displayIps);
                 });
 
-                scope.populateIpsSelect2 = function() {
+                scope.populateIpsSelect2 = function(displayIps) {
                     $(element).select2({
                         placeholder: 'All Implementing Partners',
                         allowClear: true,
-                        data: _.sortBy(scope.displayIps, function (ip) {
+                        data: _.sortBy(displayIps, function (ip) {
                             return ip.text;
                         })
                     });

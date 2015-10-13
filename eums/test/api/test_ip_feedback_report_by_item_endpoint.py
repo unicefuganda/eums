@@ -80,8 +80,10 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data['results']), 2)
         self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
+        self.assertDictContainsSubset(
+            {'programme': {'id': delivery_one.programme.id, 'name': delivery_one.programme.name}}, results)
+        self.assertDictContainsSubset({'consignee': {'id': node_one.consignee.id, 'name': node_one.consignee.name}},
+                                      results)
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertDictContainsSubset({'value': int(node_one.total_value)}, results)
@@ -98,8 +100,10 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         results = response.data['results'][0]
 
         self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
+        self.assertDictContainsSubset(
+            {'programme': {'id': delivery_one.programme.id, 'name': delivery_one.programme.name}}, results)
+        self.assertDictContainsSubset({'consignee': {'id': node_one.consignee.id, 'name': node_one.consignee.name}},
+                                      results)
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertDictContainsSubset({'value': int(node_one.total_value)}, results)
@@ -116,8 +120,10 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         results = response.data['results'][0]
 
         self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results)
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results)
+        self.assertDictContainsSubset(
+            {'programme': {'id': delivery_one.programme.id, 'name': delivery_one.programme.name}}, results)
+        self.assertDictContainsSubset({'consignee': {'id': node_one.consignee.id, 'name': node_one.consignee.name}},
+                                      results)
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertDictContainsSubset({'value': int(node_one.total_value)}, results)
@@ -188,21 +194,25 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         delivery_one, _, _, _, _ = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery_one)
 
-        response = self.client.get(ENDPOINT_URL + '?programme_id=%s' % self.programme_one.id, content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?programme_id=%s' % self.programme_one.id,
+                                   content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
-        self.assertDictContainsSubset({'programme': delivery_one.programme.name}, results[0])
+        self.assertDictContainsSubset(
+            {'programme': {'id': delivery_one.programme.id, 'name': delivery_one.programme.name}}, results[0])
 
     def test_should_filter_by_ip_id(self):
         delivery, node_one, _, _, _ = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery)
 
-        response = self.client.get(ENDPOINT_URL + '?consignee_id=%s' % self.consignee_one.id, content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?consignee_id=%s' % self.consignee_one.id,
+                                   content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
-        self.assertDictContainsSubset({'consignee': node_one.consignee.name}, results[0])
+        self.assertDictContainsSubset({'consignee': {'id': node_one.consignee.id, 'name': node_one.consignee.name}},
+                                      results[0])
 
     def setup_nodes_with_answers(self, track_delivery_one=True, track_delivery_two=True,
                                  node_one_position=Runnable.IMPLEMENTING_PARTNER,

@@ -64,8 +64,8 @@
                 <tbody>
                 <tr ng-repeat="itemReport in report" class="align-left report-item">
                     <td><span class="padded-multi-line-5">{{ itemReport.item_description }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.programme.name }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.consignee.name }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
                     <td>

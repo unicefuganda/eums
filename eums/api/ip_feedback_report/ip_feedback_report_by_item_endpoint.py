@@ -66,8 +66,8 @@ def build_answers_for_nodes(delivery, nodes, response):
     for node in nodes:
         response.append({
             'item_description': node.item.item.description,
-            'programme': node.distribution_plan.programme.name,
-            'consignee': node.consignee.name,
+            'programme': {'id': node.distribution_plan.programme.id, 'name': node.distribution_plan.programme.name},
+            'consignee': {'id': node.consignee.id, 'name': node.consignee.name},
             'order_number': node.item.number(),
             'date_of_receipt': date_of_receipt,
             'quantity_shipped': node.quantity_in(),
