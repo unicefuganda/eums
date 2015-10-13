@@ -41,8 +41,8 @@ describe('IP Feedback Report By Item', function () {
 
         expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(2);
 
-        ipFeedbackReportByItemPage.filterByItemDescription('Therapeutic spread,sachet 92g/CAR-150');
         ipFeedbackReportByItemPage.filterByProgramme('YI107 - PCR 3 KEEP CHILDREN SAFE');
+        ipFeedbackReportByItemPage.filterByItemDescription('Therapeutic spread,sachet 92g/CAR-150');
 
         expect(ipFeedbackReportByItemPage.outComes.count()).toEqual(0);
 
