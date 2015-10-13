@@ -24,10 +24,10 @@
                     <th class="align-left"><span class="padded-multi-line-5">IMPLEMENTING PARTNER</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">END USER</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY SHIPPED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">VALUE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">DATE RECEIVED</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY SHIPPED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUANTITY RECEIVED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
@@ -42,16 +42,16 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.implementing_partner }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
 
                     <td>
                         <span ng-if="itemReport.answers.productReceived == 'Yes'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
+                    class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
                         <span ng-if="itemReport.answers.productReceived == 'No'"
-                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
+                    class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.dateOfReceipt | date: 'dd/MM/yyyy'}}</span>
                     </td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
                     <td>
                         <span ng-if="itemReport.answers.qualityOfProduct == 'Good'"
@@ -81,9 +81,8 @@
                         </div>
                     </td>
                     <td>
-                        <div class="align-center">
-                            <a class="button" ng-click="showRemarks($index)"
-                               ng-hide=" itemReport.answers.feedbackAboutDissatisfaction == '' ">
+                        <div class="align-center"ng-show="itemReport.answers.feedbackAboutDissatisfaction">
+                            <a class="button" ng-click="showRemarks($index)">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
