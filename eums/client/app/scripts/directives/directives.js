@@ -207,16 +207,16 @@ angular.module('Directives', [])
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 ProgrammeService.programmesWithIps().then(function (response) {
-                    scope.progAndConsignees.allProgrammes = response.map(function (programe) {
+                    scope.programmesAndConsignees.allProgrammes = response.map(function (programe) {
                         return {id: programe.id, text: programe.name, ips: programe.ips}
                     });
-                    scope.displayProgrammes = scope.progAndConsignees.allProgrammes;
+                    scope.displayProgrammes = scope.programmesAndConsignees.allProgrammes;
                     scope.displayProgrammes;
                 }).then(function () {
                     scope.populateProgrammesSelect2(scope.displayProgrammes);
                 });
 
-                scope.populateProgrammesSelect2 = function(displayProgrammes) {
+                scope.populateProgrammesSelect2 = function (displayProgrammes) {
                     $(element).select2({
                         placeholder: 'All Outcomes',
                         allowClear: true,
@@ -275,14 +275,16 @@ angular.module('Directives', [])
             link: function (scope, element, attrs, ngModel) {
 
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.progAndConsignees.allIps = displayedData.map(function (consignee) {
+                    console.log(displayedData);
+                    scope.programmesAndConsignees.allIps = displayedData.map(function (consignee) {
                         return {id: consignee.id, text: consignee.name}
                     });
-                    scope.displayIps = scope.progAndConsignees.allIps;
+                    scope.displayIps = scope.programmesAndConsignees.allIps;
+                    console.log(scope.displayIps);
                     scope.populateIpsSelect2(scope.displayIps);
                 });
 
-                scope.populateIpsSelect2 = function(displayIps) {
+                scope.populateIpsSelect2 = function (displayIps) {
                     $(element).select2({
                         placeholder: 'All Implementing Partners',
                         allowClear: true,

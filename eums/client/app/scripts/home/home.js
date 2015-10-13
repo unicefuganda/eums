@@ -15,6 +15,8 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         $scope.isFiltered = false;
         $scope.notDeliveryStatus = false;
 
+        $scope.programmesAndConsignees = {};
+
         UserService.getCurrentUser().then(function (user) {
             $scope.user = user;
         });
@@ -38,7 +40,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
                                 var purchaseOrderItemId = planNode.item;
                                 poItemPromises.push(
                                     PurchaseOrderItemService.get(purchaseOrderItemId).then(function (purchaseOrderItem) {
-                                        return PurchaseOrderService.get(purchaseOrderItem.purchaseOrder).then(function(order) {
+                                        return PurchaseOrderService.get(purchaseOrderItem.purchaseOrder).then(function (order) {
                                             response.purchaseOrder = order;
                                         });
                                     })
