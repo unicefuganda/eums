@@ -1,7 +1,7 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
         mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults, mockWindow,
-        mockHistory, mockItemService, item, mockContactService, contact;
+        mockHistory, mockItemService, item, mockContactService, contact, lineageNodes, parentLineage;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
 
@@ -22,9 +22,24 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         item = {description: 'some description'};
         contact = {firstName: 'Sikatange', lastName: 'Jafari'};
 
+        lineageNodes = [
+            {id: 6, item: orderItemId, quantityShipped: 10},
+            {id: 8, item: orderItemId, quantityShipped: 20},
+            {id: 7, item: orderItemId, quantityShipped: 30},
+            {id: 9, item: orderItemId, quantityShipped: 40}
+        ];
+
+        parentLineage = [
+            {id: 6, item: orderItemId, quantityShipped: 10},
+            {id: 7, item: orderItemId, quantityShipped: 30},
+            {id: 8, item: orderItemId, quantityShipped: 20},
+            {id: 9, item: orderItemId, quantityShipped: 40},
+            parentNode
+        ];
+
         inject(function ($controller, $rootScope, $q, $location, ngToast) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
-            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get', 'search']);
+            mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get', 'search', 'getLineage']);
             mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
             mockContactService = jasmine.createSpyObj('mockContactService', ['get']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
@@ -37,6 +52,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             deferredSearchResults = $q.defer();
             mockIpService.loadAllDistricts.and.returnValue($q.when({data: districts}));
             mockDeliveryNodeService.filter.and.returnValue($q.when(paginatedChildNodes));
+            mockDeliveryNodeService.getLineage.and.returnValue($q.when(lineageNodes));
             mockDeliveryNodeService.create.and.returnValue($q.when({}));
             mockDeliveryNodeService.get.and.returnValue($q.when(parentNode));
             mockDeliveryNodeService.search.and.returnValue(deferredSearchResults.promise);
@@ -101,6 +117,12 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(mockDeliveryNodeService.filter).toHaveBeenCalledWith(filterParams, ['contact_person_id']);
             expect(scope.deliveries).toEqual(childNodes);
         });
+
+        iit('should load the lineage of the parent delivery', function() {
+            scope.$apply();
+            expect(mockDeliveryNodeService.getLineage).toHaveBeenCalledWith(parentNode);
+            expect(scope.deliveryLineage).toEqual(parentLineage);
+        })
     });
 
     describe('pagination and search:', function () {

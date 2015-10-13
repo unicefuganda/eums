@@ -76,6 +76,9 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
                     return $http.get(EumsConfig.BACKEND_URLS.NODE_RESPONSES + nodeId + '/').then(function (response) {
                         return response.data;
                     });
+                },
+                getLineage: function(node) {
+                    return this.getDetail(node, 'lineage/');
                 }
             }
         });

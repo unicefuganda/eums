@@ -49,6 +49,22 @@ describe('Delivery Node Service', function () {
         }
     };
 
+    var expectedNodeLineage = [
+        {
+            'plan_id': 40,
+            'contact_person_id': '54578a695d1b1dbd44790208',
+            'consignee': 17,
+            'id': 108,
+            'location': 'Adjumani'
+        },
+        {
+            'plan_id': 41,
+            'contact_person_id': '54578a695d1b1dyhd44790208',
+            'consignee': 14,
+            'id': 109,
+            'location': 'Adjumani'
+        }
+    ];
     beforeEach(function () {
         module('DeliveryNode');
 
@@ -85,7 +101,7 @@ describe('Delivery Node Service', function () {
         var stubCreatedNode = {
             id: 1, parent: null, distributionPlan: planId, consignee: consigneeId,
             treePosition: 'END_USER', item: itemId,
-            quantity: 10, quantityIn:0,
+            quantity: 10, quantityIn: 0,
             deliveryDate: '2014-02-23',
             remark: 'In bad condition',
             track: true, trackSubmitted: true
@@ -153,6 +169,16 @@ describe('Delivery Node Service', function () {
         mockBackend.whenGET(nodeResponsesEndpointUrl + planNodeId + '/').respond(expectedNodeResponse);
         planNodeService.getNodeResponse(planNodeId).then(function (returnedNodeResponse) {
             expect(returnedNodeResponse).toEqual(expectedNodeResponse);
+            done();
+        });
+        mockBackend.flush();
+    });
+
+    it('should get node lineage', function (done) {
+        var node = {id: 1};
+        mockBackend.whenGET(planNodeEndpointUrl + node.id + '/lineage/').respond(expectedNodeLineage);
+        planNodeService.getLineage(node).then(function (nodeLineageResponse) {
+            expect(nodeLineageResponse).toEqual(expectedNodeLineage);
             done();
         });
         mockBackend.flush();

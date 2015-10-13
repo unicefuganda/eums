@@ -161,6 +161,13 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         function loadParentNode() {
             return DeliveryNodeService.get(parentNodeId).then(function (parent) {
                 $scope.parentNode = parent;
+                DeliveryNodeService.getLineage($scope.parentNode).then(function (parents) {
+                    $scope.deliveryLineage = parents;
+                    $scope.deliveryLineage.push($scope.parentNode);
+                    $scope.deliveryLineage.sort(function(a, b) {
+                        return a.id - b.id;
+                    });
+                });
             });
         }
 
