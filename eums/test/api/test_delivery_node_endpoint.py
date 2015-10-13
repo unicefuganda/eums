@@ -267,6 +267,20 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertNotIn(grandchild.id, node_ids)
         self.assertNotIn(child.id, node_ids)
 
+    def test_should_get_lineage_for_node(self):
+        root = DeliveryNodeFactory(consignee=self.consignee, quantity=100)
+        child = DeliveryNodeFactory(parents=[(root, 10)])
+        grand_child = DeliveryNodeFactory(parents=[(child, 5)])
+        great_grand_child = DeliveryNodeFactory(parents=[(grand_child, 5)])
+
+        response = self.client.get(ENDPOINT_URL + str(great_grand_child.id) + '/lineage/')
+        node_ids = [node['id'] for node in response.data]
+
+        self.assertEqual(len(node_ids), 2)
+        self.assertItemsEqual(node_ids, [child.id, grand_child.id])
+        self.assertNotIn(root.id, node_ids)
+        self.assertNotIn(great_grand_child.id, node_ids)
+
 
 def test_returned_nodes_should_have_order_type_field(self):
         po_node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(purchase_order=(PurchaseOrderFactory())))

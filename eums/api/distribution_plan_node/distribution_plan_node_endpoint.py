@@ -1,3 +1,5 @@
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 from eums.api.standard_pagination import StandardResultsSetPagination
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
@@ -58,6 +60,12 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         if paginate != 'true':
             self.paginator.page_size = 0
         return super(DistributionPlanNodeViewSet, self).list(request, *args, **kwargs)
+
+    @detail_route()
+    def lineage(self, request, pk=None):
+        node = self.get_object()
+        lineage = node.lineage()
+        return Response(self.get_serializer(lineage, many=True).data)
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)
