@@ -268,13 +268,33 @@ div[class*="-aggregate-marker-icon"] div {
 .map-summary-header {
   font-size: 1.1em;
   background-color: white;
+  border-bottom: 1px solid #CAC3C3;
   text-align: center;
   padding: 10px;
 }
 
-.map-summary-header .title {
-  border-bottom: 1px solid #CAC3C3;
-  padding-bottom: 10px;
+.marker-summary-arrow {
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.marker-summary-arrow.expanded {
+  border-top: 10px solid @brand-primary;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  top: 16px;
+  right: 20px;
+}
+
+.marker-summary-arrow.collapsed {
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 10px solid @brand-primary;
+  top: 13px;
+  right: 20px;
 }
 
 .border-none {
@@ -416,7 +436,8 @@ div[class*="-aggregate-marker-icon"] div {
   margin-top: 140px;
 }
 
-// This is to override vendor CSS to conform to UI requirement
+// The styles below are to override vendor CSS to conform to UI requirement
+
 .ngpercentdisplay:before {
   width: 90% !important;
   height: 90% !important;
