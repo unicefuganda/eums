@@ -85,11 +85,24 @@ class TestConsigneeVisionFacade(TestCase):
         with self.assertRaises(ImportException):
             self.facade_for_missing.load_records()
 
-    def test_should_save_consignee_data(self):
+    def test_should_save_consignee_data_on_save_records(self):
         self.assertEqual(Consignee.objects.count(), 0)
-        self.facade.save_records(self.imported_consignee_data)
 
-        self.assert_consignees_were_created()
+        consignee_data = [
+            {'name': 'ADVOCATE COALITION FOR DE', 'customer_id': 'L438000582', 'location': 'KAMPALA'},
+            {'name': 'AGAGO DISTRICT PROBATION', 'customer_id': 'L438000025', 'location': 'AGAGO'}]
+
+        self.facade.save_records(consignee_data)
+
+        self.assertEqual(Consignee.objects.count(), 2)
+
+        db_consignee_one = Consignee.objects.get(name='ADVOCATE COALITION FOR DE')
+        self.assertEqual(db_consignee_one.customer_id, 'L438000582')
+        self.assertEqual(db_consignee_one.location, 'KAMPALA')
+
+        db_consignee_two = Consignee.objects.get(name='AGAGO DISTRICT PROBATION')
+        self.assertEqual(db_consignee_two.customer_id, 'L438000025')
+        self.assertEqual(db_consignee_two.location, 'AGAGO')
 
     def test_should_update_data_for_existing_consignee_customer_data(self):
         self.assertEqual(Consignee.objects.count(), 0)
@@ -121,15 +134,6 @@ class TestConsigneeVisionFacade(TestCase):
 
         self.facade.load_records.assert_called()
         self.facade.save_records.assert_called_with(self.imported_consignee_data)
-
-    def assert_consignees_were_created(self):
-        consignee_one = Consignee(name='ADVOCATE COALITION FOR DE', customer_id='L438000582', imported_from_vision=True,
-                                  type=Consignee.TYPES.implementing_partner, location='KAMPALA')
-        consignee_two = Consignee(name='AGAGO DISTRICT PROBATION', customer_id='L438000025', imported_from_vision=True,
-                                  type=Consignee.TYPES.implementing_partner, location='AGAGO')
-
-        self.assert_consignees_are_equal(consignee_one, Consignee.objects.all()[0])
-        self.assert_consignees_are_equal(consignee_two, Consignee.objects.all()[1])
 
     def assert_consignees_are_equal(self, consignee_one, consignee_two):
         self.assertEqual(consignee_one.name, consignee_two.name)
