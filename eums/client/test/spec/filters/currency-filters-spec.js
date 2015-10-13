@@ -33,6 +33,12 @@ describe('EUMS currency filters', function() {
                 expect(compactCurrencyFilter(9840988.43)).toBe('$9.8m');
             })
         );
+
+        it('should return back $0.00 when amount is undefined',
+            inject(function(compactCurrencyFilter) {
+                expect(compactCurrencyFilter(undefined)).toBe('$0.00');
+            })
+        );
     });
 
     describe('compactNumberFilter', function() {
@@ -40,6 +46,12 @@ describe('EUMS currency filters', function() {
         it('should return back two decimal places for smaller numbers',
             inject(function(compactNumberFilter) {
                 expect(compactNumberFilter(678.40)).toBe('678.40');
+            })
+        );
+
+        it('should return back 0.00 when amount is undefined',
+            inject(function(compactNumberFilter) {
+                expect(compactNumberFilter(undefined)).toBe('0.00');
             })
         );
     });

@@ -3,6 +3,9 @@
 angular.module('eums.currencyFilters', [])
     .filter('compactCurrency', function($filter, compactNumberFilter) {
         return function(amount) {
+            if (amount === undefined) {
+                amount = 0;
+            }
             if (amount >= 1000000) {
                 return '$' + compactNumberFilter(amount);
             } else if (amount >= 1000) {
@@ -13,6 +16,9 @@ angular.module('eums.currencyFilters', [])
     })
     .filter('compactNumber', function() {
         return function(amount) {
+            if (amount === undefined) {
+                amount = 0;
+            }
             if (amount >= 1000000) {
                 return (amount / 1.0e6).toFixed(1) + 'm';
             } else if (amount >= 1000) {
