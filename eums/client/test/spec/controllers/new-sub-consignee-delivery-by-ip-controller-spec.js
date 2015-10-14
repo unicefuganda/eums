@@ -118,7 +118,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.deliveries).toEqual(childNodes);
         });
 
-        iit('should load the lineage of the parent delivery', function() {
+        it('should load the lineage of the parent delivery', function() {
             scope.$apply();
             expect(mockDeliveryNodeService.getLineage).toHaveBeenCalledWith(parentNode);
             expect(scope.deliveryLineage).toEqual(parentLineage);

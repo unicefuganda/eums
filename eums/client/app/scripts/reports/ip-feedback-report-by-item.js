@@ -3,17 +3,13 @@
 angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loader', 'Consignee', 'Programme'])
     .controller('IpFeedbackReportByItemController', function ($scope, $q, $location, $timeout, ReportService,
                                                               LoaderService) {
-        var timer;
         $scope.searchTerm = {};
         $scope.programmesAndConsignees = {};
 
         $scope.$watchCollection('searchTerm', function (newValue, oldValue) {
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
-                if (timer) {
-                    $timeout.cancel(timer);
-                }
-                startTimer();
+                loadIpFeedbackReport($scope.searchTerm);
             } else {
                 loadIpFeedbackReport()
             }
@@ -22,7 +18,7 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.displayProgrammes = newValue.consigneeId ? $scope.programmesAndConsignees.allProgrammes.filter(function (programme) {
                     return _.contains(programme.ips, newValue.consigneeId);
                 }) : $scope.programmesAndConsignees.allProgrammes;
-                $scope.populateProgrammesSelect2($scope.displayProgrammes);
+                $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
             }
 
             if (newValue.programmeId != oldValue.programmeId) {
@@ -34,20 +30,13 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.displayIps = programme ? $scope.programmesAndConsignees.allIps.filter(function (ip) {
                     return _.contains(programme.ips, ip.id);
                 }) : $scope.programmesAndConsignees.allIps;
-                $scope.populateIpsSelect2($scope.displayIps);
+                $scope.populateIpsSelect2 && $scope.populateIpsSelect2($scope.displayIps);
             }
         }, true);
 
-
         $scope.goToPage = function (page) {
-            loadIpFeedbackReport({page: page})
+            $scope.searchTerm.page = page;
         };
-
-        function startTimer() {
-            timer = $timeout(function () {
-                loadIpFeedbackReport($scope.searchTerm)
-            }, 1000);
-        }
 
         function hasFields(searchTerm) {
             return Object.keys(searchTerm).length > 0;
@@ -76,7 +65,7 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
             } else {
                 $scope.displayIps = $scope.programmesAndConsignees.allIps;
             }
-            $scope.populateIpsSelect2($scope.displayIps);
+            $scope.populateIpsSelect2 && $scope.populateIpsSelect2($scope.displayIps);
         }
 
         function updateProgrammes(programmeIds) {
@@ -87,15 +76,12 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
             } else {
                 $scope.displayProgrammes = $scope.programmesAndConsignees.allProgrammes;
             }
-            $scope.populateProgrammesSelect2($scope.displayProgrammes);
+
+            $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
         }
 
         $scope.showRemarks = function (index) {
             var remarksModalId = 'remarks-modal-' + index;
             LoaderService.showModal(remarksModalId)
-        };
-
-        $scope.goToPage = function (page) {
-            $scope.searchTerm.page = page;
         };
     });
