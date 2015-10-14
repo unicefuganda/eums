@@ -36,7 +36,9 @@ def ip_feedback_report_by_item(request):
         'previous': _has_page(reports_current_page.has_previous(), get_page_number(request) - 1, request),
         'count': len(response),
         'pageSize': PAGE_SIZE,
-        'results': reports_current_page.object_list
+        'results': reports_current_page.object_list,
+        'ipIds': _get_ip_ids(response),
+        'programmeIds': _get_programme_ids(response),
     }
 
     return Response(data, status=status.HTTP_200_OK)
@@ -45,6 +47,22 @@ def ip_feedback_report_by_item(request):
 def _has_page(has_page, page, request):
     base_url = replace_query_param(request.build_absolute_uri(), 'page', page)
     return None if has_page is False else base_url
+
+
+def _get_ip_ids(items):
+    ip_ids = []
+    for item in items:
+        if not ip_ids.__contains__(item['consignee']['id']):
+            ip_ids.append(item['consignee']['id'])
+    return ip_ids
+
+
+def _get_programme_ids(items):
+    programme_ids = []
+    for item in items:
+        if not programme_ids.__contains__(item['programme']['id']):
+            programme_ids.append(item['programme']['id'])
+    return programme_ids
 
 
 def get_page_number(request):

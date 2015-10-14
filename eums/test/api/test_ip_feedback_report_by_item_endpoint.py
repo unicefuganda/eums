@@ -71,13 +71,15 @@ class IpFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data['results']), 1)
 
-    def test_should_return_items_and_all_their_answers(self):
+    def test_should_return_items_with_their_ip_ids_programme_ids_and_answers(self):
         delivery_one, node_one, purchase_order_item, _, _ = self.setup_nodes_with_answers()
         self.setup_flow_with_questions(delivery_one)
 
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
         results = response.data['results'][0]
 
+        self.assertEqual(len(response.data['ipIds']), 2)
+        self.assertEqual(len(response.data['programmeIds']), 2)
         self.assertEqual(len(response.data['results']), 2)
         self.assertDictContainsSubset({'item_description': purchase_order_item.item.description}, results)
         self.assertDictContainsSubset(

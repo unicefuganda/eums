@@ -60,24 +60,18 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
 
-                updateProgrammes(response.results);
-                updateConsignees(response.results);
+                updateProgrammes(response.programmeIds);
+                updateConsignees(response.ipIds);
 
                 LoaderService.hideLoader();
                 $scope.searching = false;
-
-
             });
         }
 
-        function updateConsignees(reportResults) {
-            if (reportResults && $scope.displayIps) {
-                var consigneeIds = reportResults.map(function (result) {
-                    return result.consignee.id;
-                });
-
-                $scope.displayIps = consigneeIds ? $scope.programmesAndConsignees.allIps.filter(function (ip) {
-                    return _.contains(consigneeIds, ip.id);
+        function updateConsignees(ipIds) {
+            if (ipIds && $scope.displayIps) {
+                $scope.displayIps = ipIds ? $scope.programmesAndConsignees.allIps.filter(function (ip) {
+                    return _.contains(ipIds, ip.id);
                 }) : [];
             } else {
                 $scope.displayIps = $scope.programmesAndConsignees.allIps;
@@ -85,12 +79,8 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
             $scope.populateIpsSelect2($scope.displayIps);
         }
 
-        function updateProgrammes(reportResults) {
-            if (reportResults && $scope.displayProgrammes) {
-                var programmeIds = reportResults.map(function (result) {
-                    return result.programme.id;
-                });
-
+        function updateProgrammes(programmeIds) {
+            if (programmeIds && $scope.displayProgrammes) {
                 $scope.displayProgrammes = programmeIds ? $scope.programmesAndConsignees.allProgrammes.filter(function (programme) {
                     return _.contains(programmeIds, programme.id);
                 }) : [];
