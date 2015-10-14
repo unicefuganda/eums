@@ -157,10 +157,11 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                            }]
             }]
 
-        endpoint_url = BACKEND_URL + 'stock-report/'
+        endpoint_url = BACKEND_URL + 'stock-report'
         response = self.client.get(endpoint_url)
 
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data['results']), 3)
+
         self.assert_api_response(response, expected_data)
 
     def test_should_get_stock_value_for_all_purchase_orders_for_a_location(self):
@@ -202,7 +203,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report?location=luweero'
         response = self.client.get(endpoint_url)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
         self.assert_api_response(response, expected_data)
 
     def test_should_get_stock_value_for_all_purchase_orders_for_a_location_and_ip(self):
@@ -236,7 +237,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         endpoint_url = BACKEND_URL + 'stock-report?consignee=%d&location=koboko' % self.ip_node_three.consignee.id
         response = self.client.get(endpoint_url)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(len(response.data['results']), 1)
         self.assert_api_response(response, expected_data)
 
     def test_gets_programme_last_shipment_date_ip_location_values_for_stock_report(self):
@@ -293,7 +294,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         endpoint_url = BACKEND_URL + 'stock-report/'
         response = self.client.get(endpoint_url)
 
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data['results']), 2)
         self.assert_api_response_with_programme_ip_location(response, expected_data)
         self.assert_api_response_with_correct_last_shipment_date(response, expected_data)
 
@@ -355,21 +356,49 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
         self.assert_api_response_with_correct_last_shipment_date(response, expected_data)
 
-    def add_a_node_with_response(self):
+    def test_should_return_paginated_response(self):
+        self.add_a_node_with_response(5)
+
+        endpoint_url = BACKEND_URL + 'stock-report?location=amuda'
+
+        response = self.client.get(endpoint_url)
+        self.assertEqual(len(response.data['results']), 5)
+        self.assertEqual(response.data['previous'], None)
+        self.assertEqual(response.data['next'], None)
+        self.assertEqual(response.data['pageSize'], 10)
+        self.assertEqual(response.data['count'], 5)
+
+    def test_should_return_correct_paginated_response(self):
+        self.add_a_node_with_response(17)
+
+        endpoint_url = BACKEND_URL + 'stock-report?location=amuda'
+
+        response = self.client.get(endpoint_url)
+        self.assertEqual(len(response.data['results']), 10)
+        self.assertEqual(response.data['previous'], None)
+        self.assertEqual(response.data['next'], 'http://testserver/api/stock-report?location=amuda&page=2')
+        self.assertEqual(response.data['pageSize'], 10)
+        self.assertEqual(response.data['count'], 17)
+
+    def add_a_node_with_response(self, number=1):
         delivery = DeliveryFactory(track=True)
         programme = ProgrammeFactory(name='special_program')
         sales_order = SalesOrderFactory(programme=programme)
-        purchase_order = PurchaseOrderFactory(order_number=4748278, sales_order=sales_order)
-        po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
-                                           item=ItemFactory(material_code='Code 23', description='Jerrycans'))
-        self.extra_ip_node = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery, item=po_item,
-                                                 quantity=40, acknowledged=40, balance=40, location='Amudat',
-                                                 tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        run_one = RunFactory(runnable=self.extra_ip_node)
 
         quantity_received_qn = NumericQuestion.objects.get(label='amountReceived')
+        while number > 0:
+            purchase_order = PurchaseOrderFactory(order_number=4748278 + number, sales_order=sales_order)
+            po_item = PurchaseOrderItemFactory(purchase_order=purchase_order,
+                                               item=ItemFactory(material_code='Code 23' + str(number),
+                                                                description='Jerrycans' + str(number)))
+            self.extra_ip_node = DeliveryNodeFactory(programme=delivery.programme, distribution_plan=delivery,
+                                                     item=po_item,
+                                                     quantity=40, acknowledged=40, balance=40, location='Amudat',
+                                                     tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+            run = RunFactory(runnable=self.extra_ip_node)
 
-        NumericAnswerFactory(question=quantity_received_qn, value=40, run=run_one)
+            NumericAnswerFactory(question=quantity_received_qn, value=40, run=run)
+            number -= 1
 
         end_node_one = DeliveryNodeFactory(programme=delivery.programme,
                                            consignee=self.end_user,
@@ -382,18 +411,23 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
 
     def assert_api_response(self, response, expected_data):
         for stock in expected_data:
-            stock_in_response = \
-                filter(lambda stock_: stock_['document_number'] == stock['document_number'], response.data)[0]
-            for key in ['total_value_received', 'total_value_dispensed', 'balance']:
-                self.assertEquals(stock_in_response[key], stock[key])
-            for item in stock['items']:
-                self.assertIn(item, stock_in_response['items'])
+            stocks_in_response = filter(lambda stock_: stock_['document_number'] == stock['document_number'],
+                                        response.data['results'])
+            if len(stocks_in_response) > 0:
+                stock_in_response = \
+                    filter(lambda stock_: stock_['document_number'] == stock['document_number'],
+                           response.data['results'])[0]
+                for key in ['total_value_received', 'total_value_dispensed', 'balance']:
+                    self.assertEquals(stock_in_response[key], stock[key])
+                for item in stock['items']:
+                    self.assertIn(item, stock_in_response['items'])
+
 
     def assert_api_response_with_programme_ip_location(self, response, expected_data):
         for stock in expected_data:
             stock_in_response = \
                 filter(lambda stock_: stock_['document_number'] == stock['document_number']
-                                      and stock_['programme'] == stock['programme'], response.data)[0]
+                                      and stock_['programme'] == stock['programme'], response.data['results'])[0]
 
             for key in ['total_value_received', 'total_value_dispensed', 'balance']:
                 self.assertEquals(stock_in_response[key], stock[key])
@@ -407,7 +441,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         for stock in expected_data:
             stock_in_response = \
                 filter(lambda stock_: stock_['document_number'] == stock['document_number']
-                                      and stock_['programme'] == stock['programme'], response.data)[0]
+                                      and stock_['programme'] == stock['programme'], response.data['results'])[0]
 
             self.assertEqual(stock['last_shipment_date'], stock_in_response['last_shipment_date'])
 

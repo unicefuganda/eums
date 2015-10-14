@@ -1,7 +1,11 @@
+from django.core.paginator import Paginator
 from eums.models import DistributionPlanNode, Runnable
+from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+PAGE_SIZE = 10
 
 
 class StockReport(APIView):
@@ -10,7 +14,21 @@ class StockReport(APIView):
         location = request.GET.get('location')
         stock_report = _build_stock_report(consignee_id, location)
         reduced_stock_report = _reduce_stock_report(stock_report)
-        return Response(reduced_stock_report, status=status.HTTP_200_OK)
+
+        paginated_results = Paginator(reduced_stock_report, PAGE_SIZE)
+
+        page_number = _get_page_number(request)
+        results_current_page = paginated_results.page(page_number)
+
+        data = {
+            'next': _has_page(results_current_page.has_next(), _get_page_number(request) + 1, request),
+            'previous': _has_page(results_current_page.has_previous(), _get_page_number(request) - 1, request),
+            'count': len(reduced_stock_report),
+            'pageSize': PAGE_SIZE,
+            'results': results_current_page.object_list
+        }
+
+        return Response(data, status=status.HTTP_200_OK)
 
 
 def aggregate_nodes_into_stock_report(stock_report, node):
@@ -107,3 +125,15 @@ def _update_report_item(matching_report_item, report_item):
 
     if matching_report_item['last_shipment_date'] < report_item['last_shipment_date']:
         matching_report_item['last_shipment_date'] = report_item['last_shipment_date']
+
+
+def _get_page_number(request):
+    if request.GET.get('page'):
+        return int(request.GET.get('page'))
+    else:
+        return 1
+
+
+def _has_page(has_page, page, request):
+    base_url = replace_query_param(request.build_absolute_uri(), 'page', page)
+    return None if has_page is False else base_url

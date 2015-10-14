@@ -11,7 +11,8 @@
                             <label class="control-label description-label" for="select-ip">Select District</label>
                         </div>
                         <div class="col-lg-8" ng-if="districtsLoaded">
-                            <input id="select-district" class="form-control" type="hidden" search-from-list list="{{ districts }}"
+                            <input id="select-district" class="form-control" type="hidden" search-from-list
+                                   list="{{ districts }}"
                                    ng-model="reportParams.selectedLocation" placeholder="Select District">
                         </div>
                     </div>
@@ -93,7 +94,7 @@
                                             <td class="col-lg-1">District</td>
                                             <td class="col-lg-2">IP</td>
                                             <td>Quantity Delivered (C)</td>
-                                            <td>Date Delivered (D) </td>
+                                            <td>Date Delivered (D)</td>
                                             <td>Quantity Confirmed (E)</td>
                                             <td>Date Confirmed (F)</td>
                                             <td>Quantity Dispatched (G)</td>
@@ -118,6 +119,20 @@
                                 </td>
                             </tr>
                             </tbody>
+                            <tfoot>
+                            <tr>
+                                <td colspan="10" class="centered">
+                                    <pagination total-items="count"
+                                                ng-model="currentPage"
+                                                boundary-links="true"
+                                                ng-change="goToPage(currentPage)"
+                                                max-size="5"
+                                                rotate="false"
+                                                items-per-page="pageSize">
+                                    </pagination>
+                                </td>
+                            </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>

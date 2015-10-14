@@ -3,54 +3,58 @@ describe('StockReportController', function () {
         stubDistricts, toastPromise, mockToastProvider, stubStockTotals, deferredStubIPs, deferredDistricts;
 
     stubStockReport = {
-        data: [
-            {
-                document_number: '1',
-                total_value_received: 20.0,
-                total_value_dispensed: 10.0,
-                balance: 10.0,
-                items: [
-                    {
-                        code: 'Code 1',
-                        description: 'description',
-                        quantity_delivered: 3,
-                        date_delivered: '2014-01-01',
-                        quantity_confirmed: 2,
-                        date_confirmed: '2014-01-02',
-                        quantity_dispatched: 1,
-                        balance: 1
-                    },
-                    {
-                        code: 'Code 2',
-                        description: 'description',
-                        quantity_delivered: 4,
-                        date_delivered: '2014-01-01',
-                        quantity_confirmed: 2,
-                        date_confirmed: '2014-01-02',
-                        quantity_dispatched: 2,
-                        balance: 1
-                    }
-                ]
-            },
-            {
-                'document_number': '2',
-                'total_value_received': 30.0,
-                'total_value_dispensed': 15.0,
-                'balance': 15.0,
-                items: [
-                    {
-                        code: 'Code 3',
-                        description: 'description',
-                        quantity_delivered: 4,
-                        date_delivered: '2014-01-01',
-                        quantity_confirmed: 2,
-                        date_confirmed: '2014-01-02',
-                        quantity_dispatched: 2,
-                        balance: 1
-                    }
-                ]
-            }
-        ]
+        data: {
+            count: 2,
+            pageSize: 10,
+            results: [
+                {
+                    document_number: '1',
+                    total_value_received: 20.0,
+                    total_value_dispensed: 10.0,
+                    balance: 10.0,
+                    items: [
+                        {
+                            code: 'Code 1',
+                            description: 'description',
+                            quantity_delivered: 3,
+                            date_delivered: '2014-01-01',
+                            quantity_confirmed: 2,
+                            date_confirmed: '2014-01-02',
+                            quantity_dispatched: 1,
+                            balance: 1
+                        },
+                        {
+                            code: 'Code 2',
+                            description: 'description',
+                            quantity_delivered: 4,
+                            date_delivered: '2014-01-01',
+                            quantity_confirmed: 2,
+                            date_confirmed: '2014-01-02',
+                            quantity_dispatched: 2,
+                            balance: 1
+                        }
+                    ]
+                },
+                {
+                    'document_number': '2',
+                    'total_value_received': 30.0,
+                    'total_value_dispensed': 15.0,
+                    'balance': 15.0,
+                    items: [
+                        {
+                            code: 'Code 3',
+                            description: 'description',
+                            quantity_delivered: 4,
+                            date_delivered: '2014-01-01',
+                            quantity_confirmed: 2,
+                            date_confirmed: '2014-01-02',
+                            quantity_dispatched: 2,
+                            balance: 1
+                        }
+                    ]
+                }
+            ]
+        }
     };
 
     stubStockTotals = {totalReceived: 40, totalDispensed: 30, totalBalance: 10};
@@ -112,16 +116,16 @@ describe('StockReportController', function () {
         scope.reportParams.selectedIPId = 1;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee:1});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data);
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
+        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should show an error toast if there is no data for that IP', function () {
-        deferredStubReport.resolve({data: []});
+        deferredStubReport.resolve({data: {results: []}});
         scope.reportParams.selectedIPId = 1;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee:1});
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
         expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
         expect(mockToastProvider.create).toHaveBeenCalledWith({
             content: 'There is no data for the specified filters!',
@@ -137,16 +141,16 @@ describe('StockReportController', function () {
         scope.reportParams.selectedLocation = 1;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location:1});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data);
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
+        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should show an error toast if there is no data for that location', function () {
-        deferredStubReport.resolve({data: []});
+        deferredStubReport.resolve({data: {results: []}});
         scope.reportParams.selectedLocation = 1;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location:1});
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
         expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
         expect(mockToastProvider.create).toHaveBeenCalledWith({
             content: 'There is no data for the specified filters!',
@@ -164,18 +168,18 @@ describe('StockReportController', function () {
         scope.reportParams.selectedIPId = 1;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location:2, consignee:1});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data);
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
+        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should show an error toast if there is no data for that location and ip', function () {
-        deferredStubReport.resolve({data: []});
+        deferredStubReport.resolve({data: {results: []}});
         scope.reportParams.selectedLocation = 1;
         scope.$apply();
-        scope.reportParams.selectedIPId=4;
+        scope.reportParams.selectedIPId = 4;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location:1});
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
         expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
         expect(mockToastProvider.create).toHaveBeenCalledWith({
             content: 'There is no data for the specified filters!',
@@ -193,8 +197,32 @@ describe('StockReportController', function () {
         scope.reportParams.selectedLocation = 4;
         scope.$apply();
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location:4, consignee:3});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data);
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 3});
+        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
+    });
+
+    it('should load stock report for page', function () {
+        deferredStubReport.resolve(stubStockReport);
+        scope.goToPage(2);
+        scope.$apply();
+
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({page: 2});
+        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
+        expect(scope.count).toBe(2);
+        expect(scope.pageSize).toBe(10);
+    });
+
+    it('should load stock report for page with selected ip and location', function () {
+        deferredStubReport.resolve(stubStockReport);
+        scope.reportParams.selectedIPId = 5;
+        scope.$apply();
+        scope.reportParams.selectedLocation = 4;
+        scope.$apply();
+        scope.goToPage(3);
+        scope.$apply();
+
+        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
+        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     describe('Toggle document', function () {

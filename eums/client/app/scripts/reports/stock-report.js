@@ -22,9 +22,15 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             });
         }
 
-        function handleReport(stockReport) {
-            if (stockReport.data.length > 0) {
-                $scope.reportData = stockReport.data;
+        $scope.goToPage = function (page) {
+            fetchReport({page: page});
+        };
+
+        function handleReport(response) {
+            $scope.count = response.count;
+            $scope.pageSize = response.pageSize;
+            if (response.results.length > 0) {
+                $scope.reportData = response.results;
                 $scope.totals = StockReportService.computeStockTotals($scope.reportData);
                 $scope.openDocument = undefined;
             }
@@ -34,7 +40,7 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             }
         }
 
-        function fetchReport() {
+        function fetchReport(params) {
             var requestParams = {};
             if ($scope.reportParams.selectedLocation) {
                 Object.merge(requestParams, {location: $scope.reportParams.selectedLocation})
@@ -42,8 +48,11 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             if ($scope.reportParams.selectedIPId) {
                 Object.merge(requestParams, {consignee: $scope.reportParams.selectedIPId});
             }
-            StockReportService.getStockReport(requestParams).then(function (stockReport) {
-                handleReport(stockReport);
+            if (params) {
+                Object.merge(requestParams, params);
+            }
+            StockReportService.getStockReport(requestParams).then(function (response) {
+                handleReport(response.data);
             });
         }
 
@@ -54,12 +63,10 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
         });
 
         $scope.$watch('reportParams.selectedLocation', function (location) {
-                $scope.reportParams.selectedLocation = location;
+            $scope.reportParams.selectedLocation = location;
 
-                fetchReport();
-            }
-        )
-        ;
+            fetchReport();
+        });
 
         $scope.toggleOpenDocument = function (documentId) {
             $scope.openDocument = $scope.openDocument === documentId ? undefined : documentId;
