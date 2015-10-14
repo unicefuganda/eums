@@ -140,7 +140,8 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.breadCrumbs.get(0).getText()).toBe('Kindle Fire HDX');
         expect(ipWarehousePage.breadCrumbs.get(0).element(by.css('a')).getAttribute('href')).toBe(ipWarehousePage.fullUrl('/#/deliveries-by-ip/285'));
         expect(ipWarehousePage.breadCrumbs.get(1).getText()).toBe('BUIKWE DHO');
-        expect(ipWarehousePage.breadCrumbs.get(1).element(by.css('a')).getAttribute('href')).toBe(ipWarehousePage.fullUrl('/#/deliveries-by-ip/285/66/new'));
+        expect(ipWarehousePage.breadCrumbs.get(1).element(by.css('a')).getAttribute('href')).toContain(ipWarehousePage.fullUrl('/#/deliveries-by-ip/285/'));
+        expect(ipWarehousePage.breadCrumbs.get(1).element(by.css('a')).getAttribute('href')).toContain('/new');
         expect(ipWarehousePage.breadCrumbs.get(2).getText()).toBe('ADJUMANI DHO');
         expect(ipWarehousePage.breadCrumbs.get(2).element(by.css('span')).getText()).toBe('ADJUMANI DHO');
     });
