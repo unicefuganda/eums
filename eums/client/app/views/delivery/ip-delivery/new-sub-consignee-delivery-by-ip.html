@@ -198,7 +198,7 @@
             <td>{{ delivery.contactPerson.firstName | capitalize }} {{ delivery.contactPerson.lastName | capitalize }}</td>
             <td>{{ delivery.location }}</td>
             <td class="table-row-input-column">
-                <a href="#/deliveries-by-ip/{{ itemId }}/{{ delivery.id }}/new" class="btn blue-border-button btn-sm"
+                <a href="#/deliveries-by-ip/{{ itemId }}/{{ delivery.id }}/new" class="btn blue-border-button btn-sm viewSubConsignee"
                    ng-hide="delivery.isEndUser">Sub-consignees</a>
                 <span ng-show="delivery.isEndUser">End User</span>
             </td>

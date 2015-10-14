@@ -103,11 +103,22 @@ IpWarehousePage.prototype = Object.create({}, {
         return element.all(by.repeater('delivery in deliveries')).count();
     }},
 
+    fullUrl: { value: function(partialUrl) {
+        return browser.baseUrl + partialUrl;
+    }},
+
+    viewFirstSubconsignee: { value: function () {
+        element.all(by.css('.viewSubConsignee')).get(0).click();
+        waitForPageToLoad();
+    }},
+
     subDeliveryQuantities: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.quantityIn')).getText(); }},
     subDeliveryDates: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.deliveryDate')).getText(); }},
     subDeliveryConsignees: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.consigneeName')).getText(); }},
     subDeliveryContacts: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.contactPerson.firstName')).getText(); }},
-    subDeliveryLocations: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.location')).getText(); }}
+    subDeliveryLocations: { get: function () { return element.all(by.repeater('delivery in deliveries').column('delivery.location')).getText(); }},
+
+    breadCrumbs: { get: function () { return element.all(by.css('.breadcrumb li')); }}
 });
 
 module.exports = new IpWarehousePage;

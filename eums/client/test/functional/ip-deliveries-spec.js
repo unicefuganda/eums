@@ -103,13 +103,46 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.subDeliveryLocations).toContain('Agago');
     });
 
-    it('Search for IP Delivery by To  and From Date', function(){
+    it('Search for IP Delivery by To  and From Date', function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentDelivery.visit();
         ipShipmentDelivery.searchFromDate('10/02/2020');
         ipShipmentDelivery.searchToDate('10/02/2031');
-//        ipShipmentDelivery.verifyPOExists('81026399');
+    });
+
+    it('should have breadcrumbs for navigation', function () {
+        ipWarehousePage.visit();
+        ipWarehousePage.searchForItem('kindle fire');
+        ipWarehousePage.viewFirstItem();
+
+        ipWarehousePage.viewSubconsignees();
+        expect(ipWarehousePage.breadCrumbs.count()).toEqual(2);
+        expect(ipWarehousePage.breadCrumbs.get(0).getText()).toBe('Kindle Fire HDX');
+        expect(ipWarehousePage.breadCrumbs.get(0).element(by.css('a')).getAttribute('href')).toBe(ipWarehousePage.fullUrl('/#/deliveries-by-ip/285'));
+        expect(ipWarehousePage.breadCrumbs.get(1).getText()).toBe('BUIKWE DHO');
+        expect(ipWarehousePage.breadCrumbs.get(1).element(by.css('span')).getText()).toBe('BUIKWE DHO');
+
+        ipWarehousePage.addSubconsignee();
+
+        ipWarehousePage.specifyQuantity('20');
+        ipWarehousePage.specifyShipmentDate('1');
+        ipWarehousePage.specifyConsignee('ADJUMANI DHO');
+        ipWarehousePage.specifyContact('John');
+        ipWarehousePage.specifyLocation('Adjumani');
+
+        ipWarehousePage.saveDelivery();
+        ftUtils.wait(10000);
+
+        ipWarehousePage.searchForItem('Adjumani');
+        ipWarehousePage.viewFirstSubconsignee();
+        expect(ipWarehousePage.breadCrumbs.count()).toEqual(3);
+        expect(ipWarehousePage.breadCrumbs.get(0).getText()).toBe('Kindle Fire HDX');
+        expect(ipWarehousePage.breadCrumbs.get(0).element(by.css('a')).getAttribute('href')).toBe(ipWarehousePage.fullUrl('/#/deliveries-by-ip/285'));
+        expect(ipWarehousePage.breadCrumbs.get(1).getText()).toBe('BUIKWE DHO');
+        expect(ipWarehousePage.breadCrumbs.get(1).element(by.css('a')).getAttribute('href')).toBe(ipWarehousePage.fullUrl('/#/deliveries-by-ip/285/66/new'));
+        expect(ipWarehousePage.breadCrumbs.get(2).getText()).toBe('ADJUMANI DHO');
+        expect(ipWarehousePage.breadCrumbs.get(2).element(by.css('span')).getText()).toBe('ADJUMANI DHO');
     });
 
 });
