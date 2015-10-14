@@ -94,4 +94,8 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
             var remarksModalId = 'remarks-modal-' + index;
             LoaderService.showModal(remarksModalId)
         };
+
+        $scope.goToPage = function (page) {
+            $scope.searchTerm.page = page;
+        };
     });
