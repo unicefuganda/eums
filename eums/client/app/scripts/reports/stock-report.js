@@ -22,7 +22,7 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             });
         }
 
-        function handleReport(stockReport, message) {
+        function handleReport(stockReport) {
             if (stockReport.data.length > 0) {
                 $scope.reportData = stockReport.data;
                 $scope.totals = StockReportService.computeStockTotals($scope.reportData);
@@ -30,46 +30,33 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             }
             else {
                 $scope.reportData = [];
-                createToast('There is no data ' + message, 'danger');
+                createToast('There is no data for the specified filters!', 'danger');
             }
         }
 
+        function fetchReport() {
+            var requestParams = {};
+            if ($scope.reportParams.selectedLocation) {
+                Object.merge(requestParams, {location: $scope.reportParams.selectedLocation})
+            }
+            if ($scope.reportParams.selectedIPId) {
+                Object.merge(requestParams, {consignee: $scope.reportParams.selectedIPId});
+            }
+            StockReportService.getStockReport(requestParams).then(function (stockReport) {
+                handleReport(stockReport);
+            });
+        }
 
         $scope.$watch('reportParams.selectedIPId', function (id) {
-            if (id && $scope.reportParams.selectedLocation) {
-                StockReportService.getStockReportForLocationAndConsignee($scope.reportParams.selectedLocation, id)
-                    .then(function (stockReport) {
-                        handleReport(stockReport, 'for the selected!');
-                    });
-            } else if (id) {
-                StockReportService.getStockReportForConsignee(id).then(function (stockReport) {
-                    handleReport(stockReport, 'for this IP!');
-                });
-            } else {
-                StockReportService.getStockReport().then(function (stockReport) {
-                    handleReport(stockReport);
-                });
-            }
+            $scope.reportParams.selectedIPId = id;
+
+            fetchReport();
         });
 
         $scope.$watch('reportParams.selectedLocation', function (location) {
-                if (location && $scope.reportParams.selectedIPId) {
-                    StockReportService.getStockReportForLocationAndConsignee(location, $scope.reportParams.selectedIPId)
-                        .then(function (stockReport) {
-                            handleReport(stockReport, 'for the selected!');
-                        });
-                } else if (location) {
-                    StockReportService.getStockReportForLocation(location)
-                        .then(function (stockReport) {
-                            handleReport(stockReport, 'for this Location!');
-                        });
-                }
-                else {
-                    StockReportService.getStockReport()
-                        .then(function (stockReport) {
-                            handleReport(stockReport);
-                        });
-                }
+                $scope.reportParams.selectedLocation = location;
+
+                fetchReport();
             }
         )
         ;
@@ -80,17 +67,12 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
     })
     .factory('StockReportService', function ($http, EumsConfig) {
         return {
-            getStockReportForLocationAndConsignee: function (location, consigneeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT + '?location=' + location + '&consignee=' + consigneeId);
-            },
-            getStockReportForConsignee: function (consigneeId) {
-                return $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT + '?consignee=' + consigneeId);
-            },
-            getStockReportForLocation: function (location) {
-                return $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT + '?location=' + location);
-            },
-            getStockReport: function () {
-                return $http.get(EumsConfig.BACKEND_URLS.STOCK_REPORT);
+            getStockReport: function (requestParams) {
+                var url = EumsConfig.BACKEND_URLS.STOCK_REPORT;
+                if (requestParams) {
+                    url += '?' + $.param(requestParams);
+                }
+                return $http.get(url);
             },
             computeStockTotals: function (stockReport) {
                 return stockReport.reduce(function (previousValue, currentValue) {

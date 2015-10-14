@@ -1,4 +1,4 @@
-describe('Stock Report Service', function() {
+describe('Stock Report Service', function () {
     var mockBackend, endpointUrl, stubStockReport, stockReportService, consigneeId;
 
     consigneeId = 1;
@@ -10,7 +10,8 @@ describe('Stock Report Service', function() {
                 total_value_dispensed: 10.0,
                 balance: 10.0,
                 items: [
-                    {code: 'Code 1',
+                    {
+                        code: 'Code 1',
                         description: 'description',
                         quantity_delivered: 3,
                         date_delivered: '2014-01-01',
@@ -19,7 +20,8 @@ describe('Stock Report Service', function() {
                         quantity_dispatched: 1,
                         balance: 1
                     },
-                    {code: 'Code 2',
+                    {
+                        code: 'Code 2',
                         description: 'description',
                         quantity_delivered: 4,
                         date_delivered: '2014-01-01',
@@ -36,7 +38,8 @@ describe('Stock Report Service', function() {
                 'total_value_dispensed': 15.0,
                 'balance': 15.0,
                 items: [
-                    {code: 'Code 3',
+                    {
+                        code: 'Code 3',
                         description: 'description',
                         quantity_delivered: 4,
                         date_delivered: '2014-01-01',
@@ -47,62 +50,63 @@ describe('Stock Report Service', function() {
                     }
                 ]
             }
-        ]};
+        ]
+    };
 
-    beforeEach(function() {
+    beforeEach(function () {
         module('StockReport');
 
-        inject(function(StockReportService, EumsConfig, $httpBackend) {
+        inject(function (StockReportService, EumsConfig, $httpBackend) {
             stockReportService = StockReportService;
             mockBackend = $httpBackend;
             endpointUrl = EumsConfig.BACKEND_URLS.STOCK_REPORT;
         });
     });
 
-    it('should get stock report for a consignee', function(done) {
-        mockBackend.whenGET(endpointUrl + '?consignee='+consigneeId).respond(stubStockReport);
+    it('should get stock report for a consignee', function (done) {
+        mockBackend.whenGET(endpointUrl + '?consignee=' + consigneeId).respond(stubStockReport);
 
-        stockReportService.getStockReportForConsignee(consigneeId).then(function(response) {
+        stockReportService.getStockReport({consignee: consigneeId}).then(function (response) {
             expect(response.data).toEqual(stubStockReport);
         });
         mockBackend.flush();
         done();
     });
 
-    it('should get stock report for a location', function(done) {
+    it('should get stock report for a location', function (done) {
         var location = 'Kampala';
-        mockBackend.whenGET(endpointUrl + '?location='+location).respond(stubStockReport);
+        mockBackend.whenGET(endpointUrl + '?location=' + location).respond(stubStockReport);
 
-        stockReportService.getStockReportForLocation(location).then(function(response) {
+        stockReportService.getStockReport({location: location}).then(function (response) {
             expect(response.data).toEqual(stubStockReport);
         });
         mockBackend.flush();
         done();
     });
 
-    it('should get stock report for a location and a consignee', function(done) {
+    it('should get stock report for a location and a consignee', function (done) {
         var location = 'Kampala';
-        var consigneeId =2;
-        mockBackend.whenGET(endpointUrl + '?location='+location +'&consignee='+consigneeId).respond(stubStockReport);
+        var consigneeId = 2;
+        mockBackend.whenGET(endpointUrl + '?location=' + location + '&consignee=' + consigneeId).respond(stubStockReport);
 
-        stockReportService.getStockReportForLocationAndConsignee(location, consigneeId).then(function(response) {
+        stockReportService.getStockReport({location: location, consignee: consigneeId}).then(function (response) {
             expect(response.data).toEqual(stubStockReport);
         });
         mockBackend.flush();
         done();
     });
 
-    it('should get all stock reports', function(done) {
+    it('should get all stock reports', function (done) {
         mockBackend.whenGET(endpointUrl).respond(stubStockReport);
 
-        stockReportService.getStockReport().then(function(response) {
+        stockReportService.getStockReport().then(function (response) {
             expect(response.data).toEqual(stubStockReport);
         });
         mockBackend.flush();
         done();
     });
 
-    it('should compute totals for a given stock report', function() {
+    it('should compute totals for a given stock report', function () {
         var expectedTotals = {totalReceived: 50, totalDispensed: 25, totalBalance: 25};
 
         var totals = stockReportService.computeStockTotals(stubStockReport.data);
@@ -110,7 +114,7 @@ describe('Stock Report Service', function() {
         expect(totals).toEqual(expectedTotals);
     });
 
-    it('should compute totals for a given stock report with values passed as strings', function() {
+    it('should compute totals for a given stock report with values passed as strings', function () {
         var stockReport = {
             data: [
                 {
@@ -125,7 +129,8 @@ describe('Stock Report Service', function() {
                     'total_value_dispensed': '15.0',
                     'balance': '15.0'
                 }
-            ]};
+            ]
+        };
         var expectedTotals = {totalReceived: 50, totalDispensed: 25, totalBalance: 25};
 
         var totals = stockReportService.computeStockTotals(stockReport.data);
