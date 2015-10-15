@@ -21,6 +21,7 @@ angular.module('Directives', [])
                 var list = JSON.parse(attrs.list);
                 element.select2({
                     width: '100%',
+                    allowClear: true,
                     query: function (query) {
                         var data = {results: []};
                         var matches = list.filter(function (item) {
@@ -47,7 +48,9 @@ angular.module('Directives', [])
                 });
 
                 element.change(function () {
-                    ngModel.$setViewValue(element.select2('data').id);
+                    var data = element.select2('data');
+                    var id = data? data.id: undefined;
+                    ngModel.$setViewValue(id);
                     scope.$apply();
                 });
 
@@ -157,6 +160,7 @@ angular.module('Directives', [])
                 element.select2({
                     minimumInputLength: 1,
                     width: '240px',
+                    allowClear: true,
                     query: function (query) {
                         var data = {results: []};
                         ConsigneeService.search(query.term, [], queryParams).then(function (consignees) {
@@ -290,7 +294,7 @@ angular.module('Directives', [])
                             return ip.text;
                         })
                     });
-                }
+                };
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
