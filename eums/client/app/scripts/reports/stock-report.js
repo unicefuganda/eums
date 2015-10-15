@@ -59,13 +59,11 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
 
         $scope.$watch('reportParams.selectedIPId', function (id) {
             $scope.reportParams.selectedIPId = id;
-
             fetchReport();
         });
 
         $scope.$watch('reportParams.selectedLocation', function (location) {
             $scope.reportParams.selectedLocation = location;
-
             fetchReport();
         });
 
