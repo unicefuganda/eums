@@ -155,7 +155,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             }
         })
         .when('/stock-report', {
-            templateUrl: '/static/app/views/reports/ip-stock-report.html',
+            templateUrl: '/static/app/views/reports/stock-report.html',
             controller: 'StockReportController',
             resolve: {
                 permission: function (UserService) {

@@ -146,6 +146,6 @@ describe('Route Provider', function () {
         var route = '/stock-report';
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('StockReportController');
-        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-stock-report.html');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/stock-report.html');
     });
 });
