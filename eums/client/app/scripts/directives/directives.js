@@ -275,12 +275,10 @@ angular.module('Directives', [])
             link: function (scope, element, attrs, ngModel) {
 
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    console.log(displayedData);
                     scope.programmesAndConsignees.allIps = displayedData.map(function (consignee) {
                         return {id: consignee.id, text: consignee.name}
                     });
                     scope.displayIps = scope.programmesAndConsignees.allIps;
-                    console.log(scope.displayIps);
                     scope.populateIpsSelect2(scope.displayIps);
                 });
 
