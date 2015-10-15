@@ -74,14 +74,15 @@
 
                                 <td>
                                     <a href
-                                       ng-click="toggleOpenDocument(reportItem.document_number)">{{
-                                        reportItem.document_number }}</a>
+                                       ng-click="toggleOpenDocument(reportItem.document_number)">
+                                        {{reportItem.document_number }}
+                                    </a>
                                 </td>
                                 <td>{{ reportItem.programme }}</td>
                                 <td>{{ reportItem.last_shipment_date | date: 'dd-MM-yyyy' }}</td>
-                                <td>{{ reportItem.total_value_received | number }}</td>
-                                <td>{{ reportItem.total_value_dispensed | number }}</td>
-                                <td>{{ reportItem.balance | number }}</td>
+                                <td><span class="pull-right">{{ reportItem.total_value_received | number }}</span></td>
+                                <td><span class="pull-right">{{ reportItem.total_value_dispensed | number }}</span></td>
+                                <td><span class="pull-right">{{ reportItem.balance | number }}</span></td>
                             </tr>
                             <tr ng-show="openDocument === reportItem.document_number">
                                 <td></td>
@@ -107,12 +108,12 @@
                                             <td>{{ item.description }}</td>
                                             <td>{{ item.location }}</td>
                                             <td>{{ item.consignee }}</td>
-                                            <td>{{ item.quantity_delivered }}</td>
+                                            <td><span class="pull-right">{{ item.quantity_delivered }}</span></td>
                                             <td>{{ item.date_delivered | date: 'dd-MM-yyyy'}}</td>
-                                            <td>{{ item.quantity_confirmed }}</td>
+                                            <td><span class="pull-right">{{ item.quantity_confirmed }}</span></td>
                                             <td>{{ item.date_confirmed | date: 'dd-MM-yyyy'}}</td>
-                                            <td>{{ item.quantity_dispatched }}</td>
-                                            <td>{{ item.balance }}</td>
+                                            <td><span class="pull-right">{{ item.quantity_dispatched }}</span></td>
+                                            <td><span class="pull-right">{{ item.balance }}</span></td>
                                         </tr>
                                         </tbody>
                                     </table>
