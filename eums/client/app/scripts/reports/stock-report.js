@@ -36,6 +36,7 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             }
             else {
                 $scope.reportData = [];
+                $scope.totals = response.totals;
                 createToast('There is no data for the specified filters!', 'danger');
             }
         }
