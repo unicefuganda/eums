@@ -14,6 +14,7 @@ class StockReport(APIView):
         location = request.GET.get('location')
         stock_report = _build_stock_report(consignee_id, location)
         reduced_stock_report = _reduce_stock_report(stock_report)
+        totals = _compute_totals(reduced_stock_report)
 
         paginated_results = Paginator(reduced_stock_report, PAGE_SIZE)
 
@@ -25,13 +26,14 @@ class StockReport(APIView):
             'previous': _has_page(results_current_page.has_previous(), _get_page_number(request) - 1, request),
             'count': len(reduced_stock_report),
             'pageSize': PAGE_SIZE,
-            'results': results_current_page.object_list
+            'results': results_current_page.object_list,
+            'totals': totals
         }
 
         return Response(data, status=status.HTTP_200_OK)
 
 
-def aggregate_nodes_into_stock_report(stock_report, node):
+def _aggregate_nodes_into_stock_report(stock_report, node):
     if node.item:
         stock_report.append(_get_report_details_for_node(node))
     return stock_report
@@ -40,15 +42,13 @@ def aggregate_nodes_into_stock_report(stock_report, node):
 def _build_stock_report(consignee_id, location):
     ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
     if consignee_id and location:
-        nodes = ip_nodes.filter(consignee_id=consignee_id, location__icontains=location)
+        ip_nodes = ip_nodes.filter(consignee_id=consignee_id, location__icontains=location)
     elif consignee_id:
-        nodes = ip_nodes.filter(consignee_id=consignee_id)
+        ip_nodes = ip_nodes.filter(consignee_id=consignee_id)
     elif location:
-        nodes = ip_nodes.filter(location__icontains=location)
-    else:
-        nodes = ip_nodes.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
+        ip_nodes = ip_nodes.filter(location__icontains=location)
 
-    return reduce(aggregate_nodes_into_stock_report, nodes, [])
+    return reduce(_aggregate_nodes_into_stock_report, ip_nodes, [])
 
 
 def _get_report_details_for_node(node):
@@ -105,6 +105,17 @@ def _reduce_stock_report(stock_report):
         else:
             reduced_report.append(report_item)
     return reduced_report
+
+
+def _compute_totals(stock_report):
+    total_received = reduce(lambda total, report_item: total + report_item['total_value_received'], stock_report, 0)
+    total_dispensed = reduce(lambda total, report_item: total + report_item['total_value_dispensed'], stock_report, 0)
+
+    return {
+        'total_received': total_received,
+        'total_dispensed': total_dispensed,
+        'balance': total_received - total_dispensed
+    }
 
 
 def _find_item_in_stock_report(reduced_report, report_item):

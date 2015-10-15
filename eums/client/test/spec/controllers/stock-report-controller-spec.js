@@ -1,6 +1,6 @@
 describe('StockReportController', function () {
     var scope, mockStockReportService, mockConsigneeService, mockIpService, stubStockReport, deferredStubReport,
-        stubDistricts, toastPromise, mockToastProvider, stubStockTotals, deferredStubIPs, deferredDistricts;
+        stubDistricts, toastPromise, mockToastProvider, deferredStubIPs, deferredDistricts;
 
     stubStockReport = {
         data: {
@@ -57,7 +57,6 @@ describe('StockReportController', function () {
         }
     };
 
-    stubStockTotals = {totalReceived: 40, totalDispensed: 30, totalBalance: 10};
     stubDistricts = {data: ['Adjumani', 'Luweero']};
 
     beforeEach(function () {
@@ -75,10 +74,6 @@ describe('StockReportController', function () {
             deferredDistricts = $q.defer();
 
             mockStockReportService.getStockReport.and.returnValue(deferredStubReport.promise);
-            mockStockReportService.getStockReportForLocationAndConsignee.and.returnValue(deferredStubReport.promise);
-            mockStockReportService.getStockReportForConsignee.and.returnValue(deferredStubReport.promise);
-            mockStockReportService.getStockReportForLocation.and.returnValue(deferredStubReport.promise);
-            mockStockReportService.computeStockTotals.and.returnValue(stubStockTotals);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
 
@@ -117,7 +112,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should show an error toast if there is no data for that IP', function () {
@@ -126,7 +120,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
-        expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
         expect(mockToastProvider.create).toHaveBeenCalledWith({
             content: 'There is no data for the specified filters!',
             class: 'danger',
@@ -142,7 +135,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should show an error toast if there is no data for that location', function () {
@@ -151,7 +143,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-        expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
         expect(mockToastProvider.create).toHaveBeenCalledWith({
             content: 'There is no data for the specified filters!',
             class: 'danger',
@@ -169,7 +160,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should show an error toast if there is no data for that location and ip', function () {
@@ -180,7 +170,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-        expect(mockStockReportService.computeStockTotals).not.toHaveBeenCalled();
         expect(mockToastProvider.create).toHaveBeenCalledWith({
             content: 'There is no data for the specified filters!',
             class: 'danger',
@@ -198,7 +187,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 3});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     it('should load stock report for page', function () {
@@ -207,7 +195,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({page: 2});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
         expect(scope.count).toBe(2);
         expect(scope.pageSize).toBe(10);
     });
@@ -222,7 +209,6 @@ describe('StockReportController', function () {
         scope.$apply();
 
         expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
-        expect(mockStockReportService.computeStockTotals).toHaveBeenCalledWith(stubStockReport.data['results']);
     });
 
     describe('Toggle document', function () {

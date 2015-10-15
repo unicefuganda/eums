@@ -240,6 +240,21 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(response.data['results']), 1)
         self.assert_api_response(response, expected_data)
 
+    def test_computes_totals_for_all_items_stock_report_before_pagination(self):
+        self.setup_responses()
+        self.add_a_node_with_response()
+
+        endpoint_url = BACKEND_URL + 'stock-report'
+        response = self.client.get(endpoint_url)
+        totals = response.data['totals']
+
+        expected_totals = {
+            'total_received': Decimal('480'),
+            'total_dispensed': Decimal('360'),
+            'balance': Decimal('120')
+        }
+        self.assertDictEqual(totals, expected_totals)
+
     def test_gets_programme_last_shipment_date_ip_location_values_for_stock_report(self):
         self.setup_responses()
 
@@ -421,7 +436,6 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                     self.assertEquals(stock_in_response[key], stock[key])
                 for item in stock['items']:
                     self.assertIn(item, stock_in_response['items'])
-
 
     def assert_api_response_with_programme_ip_location(self, response, expected_data):
         for stock in expected_data:

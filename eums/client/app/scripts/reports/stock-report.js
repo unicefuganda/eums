@@ -31,7 +31,7 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             $scope.pageSize = response.pageSize;
             if (response.results.length > 0) {
                 $scope.reportData = response.results;
-                $scope.totals = StockReportService.computeStockTotals($scope.reportData);
+                $scope.totals = response.totals;
                 $scope.openDocument = undefined;
             }
             else {
@@ -80,16 +80,6 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
                     url += '?' + $.param(requestParams);
                 }
                 return $http.get(url);
-            },
-            computeStockTotals: function (stockReport) {
-                return stockReport.reduce(function (previousValue, currentValue) {
-                    return {
-                        totalReceived: previousValue.totalReceived + Number(currentValue.total_value_received),
-                        totalDispensed: previousValue.totalDispensed + Number(currentValue.total_value_dispensed),
-                        totalBalance: previousValue.totalBalance + Number(currentValue.balance)
-                    };
-
-                }, {totalReceived: 0, totalDispensed: 0, totalBalance: 0});
             }
         };
     });
