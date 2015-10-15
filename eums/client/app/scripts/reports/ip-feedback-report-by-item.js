@@ -6,25 +6,26 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
         $scope.searchTerm = {};
         $scope.programmesAndConsignees = {};
 
-        $scope.$watchCollection('searchTerm', function (newValue, oldValue) {
+        $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
+                $scope.resetPageNo(newSearchTerm, oldSearchTerm);
                 loadIpFeedbackReport($scope.searchTerm);
             } else {
                 loadIpFeedbackReport()
             }
 
-            if (newValue.consigneeId != oldValue.consigneeId) {
-                $scope.displayProgrammes = newValue.consigneeId ? $scope.programmesAndConsignees.allProgrammes.filter(function (programme) {
-                    return _.contains(programme.ips, newValue.consigneeId);
+            if (newSearchTerm.consigneeId != oldSearchTerm.consigneeId) {
+                $scope.displayProgrammes = newSearchTerm.consigneeId ? $scope.programmesAndConsignees.allProgrammes.filter(function (programme) {
+                    return _.contains(programme.ips, newSearchTerm.consigneeId);
                 }) : $scope.programmesAndConsignees.allProgrammes;
                 $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
             }
 
-            if (newValue.programmeId != oldValue.programmeId) {
-                var programme = newValue.programmeId ?
+            if (newSearchTerm.programmeId != oldSearchTerm.programmeId) {
+                var programme = newSearchTerm.programmeId ?
                     $scope.programmesAndConsignees.allProgrammes.filter(function (programme) {
-                        return programme.id === newValue.programmeId;
+                        return programme.id === newSearchTerm.programmeId;
                     })[0] : undefined;
 
                 $scope.displayIps = programme ? $scope.programmesAndConsignees.allIps.filter(function (ip) {
@@ -33,6 +34,14 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 $scope.populateIpsSelect2 && $scope.populateIpsSelect2($scope.displayIps);
             }
         }, true);
+
+        $scope.resetPageNo = function(newSearchTerm, oldSearchTerm){
+            if(newSearchTerm.consigneeId != oldSearchTerm.consigneeId
+                || newSearchTerm.programmeId != oldSearchTerm.programmeId
+                || newSearchTerm.itemDescription != oldSearchTerm.itemDescription
+                || newSearchTerm.poWaybill != oldSearchTerm.poWaybill)
+                $scope.searchTerm.page = 1;
+        }
 
         $scope.goToPage = function (page) {
             $scope.searchTerm.page = page;
