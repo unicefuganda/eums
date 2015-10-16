@@ -93,7 +93,8 @@ describe('IP Deliveries', function () {
         ipWarehousePage.markAsEndUser();
 
         ipWarehousePage.saveDelivery();
-        expect(directDeliveryPage.toastMessage).toContain('Sub-consignee Successfully Created');
+        //expect(directDeliveryPage.toastMessage).toContain('Sub-consignee Successfully Created');
+        expect(directDeliveryPage.toastMessage).toContain('Notifications will be sent to the recipient');
 
         expect(ipWarehousePage.subDeliveryCount).toBe(1);
         expect(ipWarehousePage.subDeliveryQuantities).toContain('150');

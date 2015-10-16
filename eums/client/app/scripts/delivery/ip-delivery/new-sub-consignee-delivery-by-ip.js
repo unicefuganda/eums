@@ -5,7 +5,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('NewSubConsigneeDeliveryByIpController', function ($scope, IPService, DeliveryNodeService, $routeParams,
-                                                                   DeliveryNode, ngToast, LoaderService, $window,
+                                                                   DeliveryNode, ngToast, LoaderService, $window, $timeout,
                                                                    ItemService, ContactService) {
         $scope.newDelivery = new DeliveryNode({track: true});
         $scope.districts = [];
@@ -84,13 +84,21 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 }
             ];
             DeliveryNodeService.create($scope.newDelivery, {changeCaseOnResponse: true}).then(function (createdDelivery) {
-                ContactService.get(createdDelivery.contactPersonId).then(function(contact){
+                ContactService.get(createdDelivery.contactPersonId).then(function (contact) {
                     createdDelivery.contactPerson = contact;
                     $scope.deliveries.add(createdDelivery, 0);
                 });
 
                 resetDeliveryData();
+
+                var showSecondToast = function () {
+                    createToast('Notifications will be sent to the recipient', 'success');
+                }
+
                 createToast('Sub-consignee Successfully Created', 'success');
+                $timeout(function () {
+                    showSecondToast();
+                }, 2000);
             });
         }
 
@@ -165,7 +173,7 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                 DeliveryNodeService.getLineage($scope.parentNode).then(function (parents) {
                     $scope.deliveryLineage = parents;
                     $scope.deliveryLineage.push($scope.parentNode);
-                    $scope.deliveryLineage.sort(function(a, b) {
+                    $scope.deliveryLineage.sort(function (a, b) {
                         return a.id - b.id;
                     });
                 });

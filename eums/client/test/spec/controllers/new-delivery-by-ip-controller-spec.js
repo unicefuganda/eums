@@ -1,6 +1,6 @@
 describe('New IP Delivery Controller', function () {
     var mockIpService, location, scope, q, mockDeliveryService, mockDeliveryNodeService, routeParams, mockDeliveryNode, ipNodes, toast,
-        mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups;
+        mockLoaderService, mockItemService, mockConsigneeItemService, deliveryGroups, timeout;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
     var fetchedItem = {id: 1, description: 'Some name', unit: 1};
@@ -22,11 +22,17 @@ describe('New IP Delivery Controller', function () {
         ];
 
         deliveryGroups = [
-            {orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4, isOpen: function(){}},
-            {orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2, isOpen: function(){}}
+            {
+                orderNumber: '12345678', totalQuantity: 100, numberOfShipments: 4, isOpen: function () {
+            }
+            },
+            {
+                orderNumber: '98765432', totalQuantity: 30, numberOfShipments: 2, isOpen: function () {
+            }
+            }
         ];
 
-        inject(function ($controller, $rootScope, $q, $location, ngToast) {
+        inject(function ($controller, $rootScope, $q, $location, ngToast, $timeout) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['get', 'create']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create']);
@@ -50,6 +56,7 @@ describe('New IP Delivery Controller', function () {
             scope = $rootScope.$new();
             routeParams = {itemId: 2};
             toast = ngToast;
+            timeout = $timeout
 
             spyOn(toast, 'create');
 
@@ -65,7 +72,8 @@ describe('New IP Delivery Controller', function () {
                 $location: location,
                 ItemService: mockItemService,
                 ConsigneeItemService: mockConsigneeItemService,
-                LoaderService: mockLoaderService
+                LoaderService: mockLoaderService,
+                $timeout: timeout
             });
         });
     });
@@ -132,7 +140,7 @@ describe('New IP Delivery Controller', function () {
         expect(scope.selectedDeliveries).toEqual(selectedDeliveries);
     });
 
-    it('it should open delivery group when order number is the selected order number', function() {
+    it('it should open delivery group when order number is the selected order number', function () {
         scope.$apply();
         scope.selectedOrderNumber = '98765432';
         scope.$apply();
@@ -140,7 +148,7 @@ describe('New IP Delivery Controller', function () {
         expect(scope.deliveryGroups[1].isOpen()).toBeTruthy();
     });
 
-    it('it should change selected order number and selected deliveries', function() {
+    it('it should change selected order number and selected deliveries', function () {
         scope.$apply();
         var orderNumber = '98765432';
         scope.updateSelectedOrderNumber(orderNumber);
@@ -148,7 +156,7 @@ describe('New IP Delivery Controller', function () {
         expect(scope.selectedOrderNumber).toEqual(orderNumber);
     });
 
-    it('it should have no selected order number and deliveries, if updated/clicked twice', function() {
+    it('it should have no selected order number and deliveries, if updated/clicked twice', function () {
         scope.$apply();
         var orderNumber = '98765432';
         scope.updateSelectedOrderNumber(orderNumber);
@@ -308,8 +316,14 @@ describe('New IP Delivery Controller', function () {
         setupNewDelivery();
         scope.save();
         scope.$apply();
+        timeout.flush();
+        expect(toast.create.calls.count()).toBe(2);
         expect(toast.create).toHaveBeenCalledWith({
             content: 'Delivery Successfully Created',
+            class: 'success'
+        });
+        expect(toast.create).toHaveBeenCalledWith({
+            content: 'Notifications will be sent to the recipient',
             class: 'success'
         });
     });

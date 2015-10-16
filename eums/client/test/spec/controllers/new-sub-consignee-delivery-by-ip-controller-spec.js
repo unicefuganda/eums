@@ -1,7 +1,7 @@
 describe('New Sub-consignee Delivery By IP Controller', function () {
     var mockIpService, scope, q, mockDeliveryNodeService, routeParams, mockDeliveryNode, childNodes, toast,
         mockLoaderService, parentNode, paginatedChildNodes, deferredSearchResults, searchResults, mockWindow,
-        mockHistory, mockItemService, item, mockContactService, contact, lineageNodes, parentLineage;
+        mockHistory, mockItemService, item, mockContactService, contact, lineageNodes, parentLineage, timeout;
     var districts = ['Kampala', 'Mukono'];
     var orderItemId = 1890;
 
@@ -37,7 +37,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             parentNode
         ];
 
-        inject(function ($controller, $rootScope, $q, $location, ngToast) {
+        inject(function ($controller, $rootScope, $q, $location, ngToast, $timeout) {
             mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
             mockDeliveryNodeService = jasmine.createSpyObj('mockDeliveryNodeService', ['filter', 'create', 'get', 'search', 'getLineage']);
             mockItemService = jasmine.createSpyObj('mockItemService', ['get']);
@@ -62,6 +62,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             scope = $rootScope.$new();
             routeParams = {itemId: 2, parentNodeId: 10};
             toast = ngToast;
+            timeout = $timeout;
 
             spyOn(toast, 'create');
 
@@ -76,7 +77,8 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
                 LoaderService: mockLoaderService,
                 $window: mockWindow,
                 ItemService: mockItemService,
-                ContactService: mockContactService
+                ContactService: mockContactService,
+                $timeout: timeout
             });
         });
     });
@@ -118,7 +120,7 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(scope.deliveries).toEqual(childNodes);
         });
 
-        it('should load the lineage of the parent delivery', function() {
+        it('should load the lineage of the parent delivery', function () {
             scope.$apply();
             expect(mockDeliveryNodeService.getLineage).toHaveBeenCalledWith(parentNode);
             expect(scope.deliveryLineage).toEqual(parentLineage);
@@ -237,8 +239,14 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             scope.createNewDelivery();
 
             scope.$apply();
+            timeout.flush();
+            expect(toast.create.calls.count()).toBe(2);
             expect(toast.create).toHaveBeenCalledWith({
                 content: 'Sub-consignee Successfully Created',
+                class: 'success'
+            });
+            expect(toast.create).toHaveBeenCalledWith({
+                content: 'Notifications will be sent to the recipient',
                 class: 'success'
             });
         });
@@ -408,7 +416,6 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
         scope.$apply();
         expect(mockHistory.back).toHaveBeenCalled();
     });
-
 
 
 });
