@@ -22,7 +22,7 @@
                 <span class="input-group" eums-date-picker>
                     <input type="text"
                            class="form-control white-bg"
-                           datepicker-popup="dd-MM-yyyy"
+                           datepicker-popup="dd-MMM-yyyy"
                            ng-model="fromDate"
                            is-open="datepicker[0]"
                            datepicker-options="dateOptions"
@@ -31,7 +31,7 @@
                            ng-disabled="false"
                            placeholder="From date"
                            required="required"
-                           value="{{ fromDate | date : 'dd-MM-yyyy' }}"/>
+                           value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
                           <button type="button" class="btn btn-default" ng-click="open($event, 0)">
                               <i class="glyphicon glyphicon-calendar"></i>
@@ -42,7 +42,7 @@
             <div class="col-md-6 pad-small">
                 <span class="input-group" eums-date-picker>
                     <input type="text" class="form-control white-bg"
-                           datepicker-popup="dd/MM/yyyy"
+                           datepicker-popup="dd-MMM-yyyy"
                            ng-model="toDate"
                            is-open="datepicker[1]"
                            datepicker-options="dateOptions"
@@ -51,7 +51,7 @@
                            ng-disabled="false"
                            placeholder="To date"
                            required="required"
-                           value="{{ toDate | date : 'yyyy-MM-DD' }}"/>
+                           value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
                           <button type="button"
                                   class="btn btn-default"
@@ -155,7 +155,7 @@
 
                 </td>
                 <td data-header="Date Created">
-                    {{ purchaseOrder.date | date : 'dd/MM/yyyy' }}
+                    {{ purchaseOrder.date | date : 'dd-MMM-yyyy' }}
                 </td>
                 <td data-header="{{ poTypeColumnTitle }}">
                     {{ purchaseOrder.poType }}

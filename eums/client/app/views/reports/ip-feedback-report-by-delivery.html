@@ -36,8 +36,8 @@
                               'eums-bg-color-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
-                    <td><span class="pad-left-10">{{ itemReport.shipmentDate | date: 'dd/MM/yyyy'}}</span></td>
-                    <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd/MM/yyyy'}}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.shipmentDate | date: 'dd-MMM-yyyy'}}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd-MMM-yyyy'}}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.programme }}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.consignee }}</span></td>

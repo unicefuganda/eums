@@ -48,12 +48,12 @@
                                    ng-if="answer.question_label == 'dateOfReceipt'" eums-date-picker>
                                     <input type="text"
                                            class="form-control"
-                                           datepicker-popup="dd/MM/yyyy"
+                                           datepicker-popup="dd-MMM-yyyy"
                                            ng-model="answer.value"
                                            ng-required="true"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
-                                           value="{{ answer.value | date : 'dd/MM/yyyy' }}"
+                                           value="{{ answer.value | date : 'dd-MMM-yyyy' }}"
                                            required="required"/>
                                           <span class="input-group-btn">
 

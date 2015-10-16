@@ -79,7 +79,7 @@
                                     </a>
                                 </td>
                                 <td>{{ reportItem.programme }}</td>
-                                <td>{{ reportItem.last_shipment_date | date: 'dd-MM-yyyy' }}</td>
+                                <td>{{ reportItem.last_shipment_date | date: 'dd-MMM-yyyy' }}</td>
                                 <td><span class="pull-right">{{ reportItem.total_value_received | number }}</span></td>
                                 <td><span class="pull-right">{{ reportItem.total_value_dispensed | number }}</span></td>
                                 <td><span class="pull-right">{{ reportItem.balance | number }}</span></td>
@@ -109,9 +109,9 @@
                                             <td>{{ item.location }}</td>
                                             <td>{{ item.consignee }}</td>
                                             <td><span class="pull-right">{{ item.quantity_delivered }}</span></td>
-                                            <td>{{ item.date_delivered | date: 'dd-MM-yyyy'}}</td>
+                                            <td>{{ item.date_delivered | date: 'dd-MMM-yyyy'}}</td>
                                             <td><span class="pull-right">{{ item.quantity_confirmed }}</span></td>
-                                            <td>{{ item.date_confirmed | date: 'dd-MM-yyyy'}}</td>
+                                            <td>{{ item.date_confirmed | date: 'dd-MMM-yyyy'}}</td>
                                             <td><span class="pull-right">{{ item.quantity_dispatched }}</span></td>
                                             <td><span class="pull-right">{{ item.balance }}</span></td>
                                         </tr>

@@ -20,6 +20,10 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
             loadEndUserFeedbackReport({page: page})
         };
 
+        $scope.convertToDate = function(dateString) {
+            return Date.parse(dateString);
+        };
+
         function startTimer() {
             timer = $timeout(function () {
                 loadEndUserFeedbackReport({query: $scope.searchTerm})

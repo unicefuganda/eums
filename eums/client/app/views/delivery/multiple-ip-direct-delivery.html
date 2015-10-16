@@ -96,13 +96,13 @@
                                 <p class="table-date-width input-group" eums-date-picker>
                                     <input type="text"
                                            class="form-control"
-                                           datepicker-popup="dd/MM/yyyy"
+                                           datepicker-popup="dd-MMM-yyyy"
                                            ng-model="item.deliveryDate"
                                            ng-required="true"
                                            ng-disabled="item.trackSubmitted"
                                            is-open="datepicker[$index]"
                                            datepicker-options="dateOptions" show-button-bar="false"
-                                           value="{{ item.deliveryDate | date : 'dd/MM/yyyy' }}"
+                                           value="{{ item.deliveryDate | date : 'dd-MMM-yyyy' }}"
                                            required="required"/>
                                           <span class="input-group-btn">
 

@@ -74,7 +74,7 @@
                         <span ng-if="itemReport.answers[0].value == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
                     </td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.date_of_receipt | date: 'dd/MM/yyyy'}}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.date_of_receipt | date: 'dd-MMM-yyyy'}}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers[1].value }}</span></td>
                     <td>

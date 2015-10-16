@@ -8,7 +8,7 @@
                 <span class="input-group" eums-date-picker>
                     <input type="text"
                            class="form-control"
-                           datepicker-popup="dd-MM-yyyy"
+                           datepicker-popup='dd-MMM-yyyy'
                            ng-model="fromDate"
                            is-open="datepicker[0]"
                            datepicker-options="dateOptions"
@@ -17,7 +17,7 @@
                            ng-disabled="false"
                            required="required"
                            placeholder="From date"
-                           value="{{ fromDate | date : 'dd-MM-yyyy' }}"/>
+                           value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
                           <button type="button" class="btn btn-default" ng-click="open($event, 0)">
                               <i class="glyphicon glyphicon-calendar"></i>
@@ -28,7 +28,7 @@
             <div class="col-md-6">
                 <span class="input-group" eums-date-picker>
                     <input type="text" class="form-control"
-                           datepicker-popup="dd/MM/yyyy"
+                           datepicker-popup='dd-MMM-yyyy'
                            ng-model="toDate"
                            is-open="datepicker[1]"
                            datepicker-options="dateOptions"
@@ -37,7 +37,7 @@
                            ng-disabled="false"
                            required="required"
                            placeholder="To date"
-                           value="{{ toDate | date : 'yyyy-MM-DD' }}"/>
+                           value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
                         <span class="input-group-btn">
                           <button type="button"
                                   class="btn btn-default"
@@ -91,7 +91,7 @@
                     <span ng-class="delivery.shipmentReceived ?  'glyphicon glyphicon-ok text-success'
                      : 'glyphicon glyphicon-remove text-danger'"></span>
                 </td>
-                <td>{{ delivery.deliveryDate | date : 'dd/MM/yyyy' }}</td>
+                <td>{{ delivery.deliveryDate | date : 'dd-MMM-yyyy' }}</td>
                 <td>{{ delivery.type }}</td>
                 <td>{{ delivery.number }}</td>
                 <td>{{ delivery.numberOfItems }}</td>

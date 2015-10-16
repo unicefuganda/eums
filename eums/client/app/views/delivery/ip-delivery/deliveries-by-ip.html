@@ -71,7 +71,7 @@
             <tr ng-repeat="($index, node) in deliveryNodes">
                 <td class="centered v-align-middle">{{ $index + 1 }}</td>
                 <td class="left-aligned">{{ node.quantityIn }}</td>
-                <td class="left-aligned">{{ node.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                <td class="left-aligned">{{ node.deliveryDate | date: 'dd-MMM-yyyy' }}</td>
                 <td class="left-aligned">{{ node.consigneeName }}</td>
                 <td ng-if="node.contactPerson" class="left-aligned">
                     {{ node.contactPerson.firstName }} {{ node.contactPerson.lastName }}

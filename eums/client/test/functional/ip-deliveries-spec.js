@@ -21,7 +21,7 @@ describe('IP Deliveries', function () {
         directDeliveryPage.selectSingleIP();
 
         directDeliveryPage.setConsignee('Wakiso');
-        directDeliveryPage.setDeliveryDateForSingleIP('10/10/2021');
+        directDeliveryPage.setDeliveryDateForSingleIP('10-Oct-2021');
         directDeliveryPage.setContact('John');
         directDeliveryPage.setDistrict('Wakiso');
 
@@ -35,7 +35,7 @@ describe('IP Deliveries', function () {
         ipShipmentsPage.searchForShipment(PO_NUMBER);
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
-        ipShipmentsPage.specifyDeliveryReceiptDate('12/08/2015');
+        ipShipmentsPage.specifyDeliveryReceiptDate('12-Aug-2015');
         ipShipmentsPage.specifyDeliveryConditionAsGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsYes();
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
@@ -64,7 +64,7 @@ describe('IP Deliveries', function () {
 
         expect(ipWarehousePage.deliveryCount).toBe(1);
         expect(ipWarehousePage.deliveryQuantities).toContain('200');
-        expect(ipWarehousePage.deliveryDates).toContain('01/01/2001');
+        expect(ipWarehousePage.deliveryDates).toContain('01-Jan-2001');
         expect(ipWarehousePage.deliveryConsignees).toContain('BUIKWE DHO');
         expect(ipWarehousePage.deliveryContacts).toContain('John Doe');
         expect(ipWarehousePage.deliveryLocations).toContain('Buikwe');
@@ -97,7 +97,7 @@ describe('IP Deliveries', function () {
 
         expect(ipWarehousePage.subDeliveryCount).toBe(1);
         expect(ipWarehousePage.subDeliveryQuantities).toContain('150');
-        expect(ipWarehousePage.subDeliveryDates).toContain('01/01/2001');
+        expect(ipWarehousePage.subDeliveryDates).toContain('01-Jan-2001');
         expect(ipWarehousePage.subDeliveryConsignees).toContain('AGAGO DHO');
         expect(ipWarehousePage.subDeliveryContacts).toContain('John Doe');
         expect(ipWarehousePage.subDeliveryLocations).toContain('Agago');
@@ -107,8 +107,8 @@ describe('IP Deliveries', function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentDelivery.visit();
-        ipShipmentDelivery.searchFromDate('10/02/2020');
-        ipShipmentDelivery.searchToDate('10/02/2031');
+        ipShipmentDelivery.searchFromDate('10-Feb-2020');
+        ipShipmentDelivery.searchToDate('10-Feb-2031');
     });
 
     it('should have breadcrumbs for navigation', function () {

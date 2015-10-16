@@ -52,7 +52,7 @@
                     <a ng-click="selectSalesOrder(salesOrder)">{{ warehouseDelivery ? salesOrder.waybill : salesOrder.orderNumber }}</a>
                 </td>
                 <td data-header="Date Created">
-                    {{ warehouseDelivery ? salesOrder.deliveryDate : salesOrder.date }}
+                    {{ warehouseDelivery ? salesOrder.deliveryDate : salesOrder.date | date : 'dd-MMM-yyyy' }}
                 </td>
                 <td data-header="{{ descriptionColumnTitle }}"  ng-if="descriptionColumnTitle">
                 {{ warehouseDelivery ? salesOrder.programme : salesOrder.description }}

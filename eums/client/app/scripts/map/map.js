@@ -588,7 +588,7 @@
                         function isWithinDateRange(dateOfReceipt) {
 
                             var dateRange = moment().range(fromDate, toDate);
-                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD/MM/YYYY'));
+                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD-MMM-YYYY'));
                         }
 
                         if (newDates[0] && newDates[1]) {

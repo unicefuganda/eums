@@ -126,7 +126,7 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertStatuses).toContain('IN BAD CONDITION');
         expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).not.toContain('How Business Affects Us');
-        expect(alertsPage.alertOrderDate).toContain('10-10-2021');
+        expect(alertsPage.alertOrderDate).toContain('10-Oct-2021');
         expect(alertsPage.alertOrderValue).toContain('$80.31');
         expect(alertsPage.alertReporter).toContain('John Doe');
         expect(alertsPage.alertIP).toContain('WAKISO DHO');
@@ -136,7 +136,7 @@ describe('Direct Delivery', function () {
         expect(alertsPage.alertStatuses).toContain('DAMAGED');
         expect(alertsPage.alertOrderNumbers).toContain(PURCHASE_ORDER_NUMBER1);
         expect(alertsPage.alertItems).toContain('How Business Affects Us');
-        expect(alertsPage.alertOrderDate).toContain('10-10-2021');
+        expect(alertsPage.alertOrderDate).toContain('10-Oct-2021');
         expect(alertsPage.alertOrderValue).toContain('$80.31');
         expect(alertsPage.alertReporter).toContain('John Doe');
         expect(alertsPage.alertIP).toContain('WAKISO DHO');

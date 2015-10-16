@@ -40,14 +40,14 @@
                             <span class="input-group" eums-date-picker
                                   ng-class="{'has-error': !newDelivery.deliveryDate && errors}">
                                 <input type="text" class="form-control"
-                                       datepicker-popup="dd/MM/yyyy"
+                                       datepicker-popup='dd-MMM-yyyy'
                                        ng-model="newDelivery.deliveryDate"
                                        is-open="datepicker[$index]"
                                        datepicker-options="dateOptions"
                                        show-button-bar="false"
                                        ng-required="true"
                                        required="required"
-                                       value="{{ deliveryDate | date : 'dd/MM/yyyy' }}"/>
+                                       value="{{ deliveryDate | date : 'dd-MMM-yyyy' }}"/>
                                 <span class="input-group-btn">
                                   <button type="button" class="btn btn-default" ng-click="open($event, $index )">
                                       <i class="glyphicon glyphicon-calendar"></i>
@@ -156,7 +156,7 @@
                         <tr ng-show="deliveryGroup.isOpen()" ng-repeat="delivery in selectedDeliveries">
                             <td class="col-lg-1">&nbsp;</td>
                             <td class="col-lg-3">&nbsp;</td>
-                            <td class="col-lg-3 centered">{{ delivery.deliveryDate | date: 'dd/MM/yyyy' }}</td>
+                            <td class="col-lg-3 centered">{{ delivery.deliveryDate | date: 'dd-MMM-yyyy' }}</td>
                             <td class="col-lg-3 centered">{{ delivery.balance }}</td>
                             <td class="col-lg-2" >
                                 <div ng-class="{'has-error': (!delivery.quantityShipped || delivery.quantityShipped > delivery.balance) && errors}">

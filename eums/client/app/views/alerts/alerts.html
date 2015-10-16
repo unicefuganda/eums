@@ -44,13 +44,13 @@
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.createdOn | date: 'dd-MM-yyyy' }}</span>
+                    <span class="alerts-bolder">{{ alert.createdOn | date: 'dd-MMM-yyyy' }}</span>
                 </td>
                 <td>
                     <span class="alerts-bolder">{{ alert.orderNumber }}</span>
                 </td>
                 <td>
-                    <span class="alerts-bolder">{{ alert.dateShipped | date: 'dd-MM-yyyy' }}</span>
+                    <span class="alerts-bolder">{{ alert.dateShipped | date: 'dd-MMM-yyyy' }}</span>
                 </td>
                 <td class="text-left pad-10" ng-hide="isActiveAlertType('delivery')">
                     <span class="alerts-bolder">{{ alert.quantityDelivered }}</span>

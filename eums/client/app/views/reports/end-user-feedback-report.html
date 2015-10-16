@@ -49,7 +49,7 @@
                     class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
                         <span ng-if="itemReport.answers.productReceived == 'No'"
                     class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
-                    <td><span class="padded-multi-line-5">{{ itemReport.answers.dateOfReceipt | date: 'dd/MM/yyyy'}}</span>
+                    <td><span class="padded-multi-line-5">{{ !itemReport.answers.dateOfReceipt ? '': convertToDate(itemReport.answers.dateOfReceipt) | date : 'dd-MMM-yyyy'}}</span>
                     </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>

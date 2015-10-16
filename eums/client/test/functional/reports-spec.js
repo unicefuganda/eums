@@ -29,7 +29,7 @@ describe('Reports', function () {
         expect(reportsPage.itemDeliveredQty).toContain('500');
         expect(reportsPage.itemConfirmedQty).toContain('80');
         expect(reportsPage.itemConfirmedQty).toContain('500');
-        expect(reportsPage.itemDeliveryDate).toContain('11-07-2015');
+        expect(reportsPage.itemDeliveryDate).toContain('11-Jul-2015');
         expect(reportsPage.itemBalances).toContain('80');
         expect(reportsPage.itemBalances).toContain('500');
 
@@ -48,7 +48,7 @@ describe('Reports', function () {
         expect(endUserFeedbackReport.quantitiesShipped).toContain('100');
         expect(endUserFeedbackReport.values).toContain('$7.14');
         expect(endUserFeedbackReport.amountReceived).toContain('50');
-        expect(endUserFeedbackReport.dateOfReceipt).toContain('6/10/2014');
+        expect(endUserFeedbackReport.dateOfReceipt).toContain('10-Jun-2014');
         expect(endUserFeedbackReport.productReceived).toContain('YES');
         expect(endUserFeedbackReport.productReceived).toContain('NO');
         expect(endUserFeedbackReport.qualityOfProduct).toContain('DAMAGED');

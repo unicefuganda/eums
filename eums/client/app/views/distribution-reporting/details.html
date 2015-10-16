@@ -112,13 +112,13 @@
                             <p class="table-date-width input-group" eums-date-picker>
                                 <input type="text"
                                        class="form-control"
-                                       datepicker-popup="dd/MM/yyyy"
+                                       datepicker-popup='dd-MMM-yyyy'
                                        ng-disabled="response.received === receivedNoId"
                                        ng-model="response.dateReceived"
                                        is-open="datepicker[$index]"
                                        datepicker-options="dateOptions"
                                        show-button-bar="false"
-                                       value="{{ response.dateReceived | date : 'dd/MM/yyyy' }}"/>
+                                       value="{{ response.dateReceived | date : 'dd-MMM-yyyy' }}"/>
                               <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="open($event, $index)"
                                         ng-disabled="response.received === receivedNoId"><i

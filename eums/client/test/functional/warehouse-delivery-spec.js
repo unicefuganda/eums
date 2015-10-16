@@ -37,7 +37,7 @@ describe('Warehouse Delivery', function () {
         ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
         ipShipmentsPage.viewDeliveryDetails();
         ipShipmentsPage.specifyDeliveryAsReceived();
-        ipShipmentsPage.specifyDeliveryReceiptDate('10/08/2015');
+        ipShipmentsPage.specifyDeliveryReceiptDate('10-Aug-2015');
         ipShipmentsPage.specifyDeliveryConditionAsGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsNo();
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
@@ -48,7 +48,7 @@ describe('Warehouse Delivery', function () {
         ipShipmentsPage.goBackToShipmentsPage();
         ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
         ipShipmentsPage.viewDeliveryDetails();
-        ipShipmentsPage.specifyDeliveryReceiptDate('10/08/2015');
+        ipShipmentsPage.specifyDeliveryReceiptDate('10-Aug-2015');
         ipShipmentsPage.specifyDeliveryConditionAsNotGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsNo();
         ipShipmentsPage.saveAndProceedToItemsInDelivery();
@@ -64,7 +64,7 @@ describe('Warehouse Delivery', function () {
 
         ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
         ipShipmentsPage.viewDeliveryDetails();
-        ipShipmentsPage.specifyDeliveryReceiptDate('10/08/2015');
+        ipShipmentsPage.specifyDeliveryReceiptDate('10-Aug-2015');
         ipShipmentsPage.specifyDeliveryConditionAsGood();
         ipShipmentsPage.specifyDeliverySatisfactionAsYes();
         ipShipmentsPage.addRemarks('The delivery was good');

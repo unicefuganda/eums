@@ -2,7 +2,7 @@
     <div class="modal-dialog">
         <div class="modal-content wide">
             <h4 class="modal-title eums page-header pad-left-15">
-                Previous Delivery Details for {{ deliveryInView.deliveryDate | date : 'dd MMM yyyy'}}
+                Previous Delivery Details for {{ deliveryInView.deliveryDate | date : 'dd-MMM-yyyy'}}
             </h4>
 
             <div class="modal-body">
@@ -12,7 +12,7 @@
                     <div class="col-md-4">Location</div>
                 </div>
                 <div>
-                    <div class="col-md-4"><span class="label label-success label-round">{{ deliveryInView.deliveryDate }}</span></div>
+                    <div class="col-md-4"><span class="label label-success label-round">{{ deliveryInView.deliveryDate | date : 'dd-MMM-yyyy' }}</span></div>
                     <div class="col-md-4">
                         <span class="label label-success label-round">
                             {{ deliveryInView.contactPersonId.firstName }} {{ deliveryInView.contactPersonId.lastName }}
