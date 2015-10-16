@@ -26,6 +26,17 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
 
             ReleaseOrderService.all(undefined, urlArgs).then(function (releaseOrders) {
                 $scope.releaseOrders = releaseOrders.sort();
+                if(urlArgs) {
+                    if(urlArgs.from) {
+                        $scope.fromDate = moment(Date.parse(urlArgs.from)).format('DD-MMM-YYYY');
+                        initializing = true;
+                    }
+
+                    if(urlArgs.to) {
+                        $scope.toDate = moment(Date.parse(urlArgs.to)).format('DD-MMM-YYYY');
+                        initializing = true;
+                    }
+                }
                 LoaderService.hideLoader();
             });
         };
@@ -72,7 +83,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         function delaySearch() {
             timer = $timeout(function () {
                 $scope.initialize(changedFilters());
-            }, 1000);
+            }, 2000);
         }
 
         function changedFilters() {

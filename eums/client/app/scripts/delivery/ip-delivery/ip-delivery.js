@@ -15,6 +15,17 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             DeliveryService.all(undefined, urlArgs)
                 .then(function (deliveries) {
                     $scope.deliveries = deliveries;
+                    if(urlArgs) {
+                        if(urlArgs.from) {
+                            $scope.fromDate = moment(Date.parse(urlArgs.from)).format('DD-MMM-YYYY');
+                            initializing = true;
+                        }
+
+                        if(urlArgs.to) {
+                            $scope.toDate = moment(Date.parse(urlArgs.to)).format('DD-MMM-YYYY');
+                            initializing = true;
+                        }
+                    }
                     LoaderService.hideLoader();
                 });
         }
@@ -123,7 +134,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function delaySearch() {
             timer = $timeout(function () {
                 loadDeliveries(changedFilters());
-            }, 1000);
+            }, 2000);
         }
 
         function changedFilters() {

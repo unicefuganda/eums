@@ -29,6 +29,18 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
             PurchaseOrderService.forDirectDelivery(undefined, urlArgs).then(function (purchaseOrders) {
                 $scope.purchaseOrders = purchaseOrders.sort();
+                if(urlArgs) {
+                    if(urlArgs.from) {
+                        $scope.fromDate = moment(Date.parse(urlArgs.from)).format('DD-MMM-YYYY');
+                        initializing = true;
+                    }
+
+                    if(urlArgs.to) {
+                        $scope.toDate = moment(Date.parse(urlArgs.to)).format('DD-MMM-YYYY');
+                        initializing = true;
+                    }
+                }
+
                 LoaderService.hideLoader();
             });
         };
@@ -50,7 +62,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         function delaySearch() {
             timer = $timeout(function () {
                 $scope.initialize(changedFilters());
-            }, 1000);
+            }, 2000);
         }
 
         function changedFilters() {
