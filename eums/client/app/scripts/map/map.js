@@ -52,12 +52,6 @@
         return RED;
     }
 
-    function getHeatMapResponsePercentage(consigneeResponses) {
-        var noProductReceived = getNumberOf("yes", consigneeResponses).length;
-        var percentageReceived = (noProductReceived / consigneeResponses.length) * 100;
-        return Math.round(percentageReceived);
-    }
-
     function getHeatMapLayerColourForLocation(responsesWithLocation) {
         return responsesWithLocation.map(function (responseWithLocation) {
             return {
@@ -97,7 +91,14 @@
                 if (window.map.getZoom() < 8) {
                     mapScope.data.responses = [];
                     mapScope.data.district = '';
-                    mapScope.filter = {programme: '', ip: '', year: '', received: true, notDelivered: true, receivedWithIssues: true};
+                    mapScope.filter = {
+                        programme: '',
+                        ip: '',
+                        year: '',
+                        received: true,
+                        notDelivered: true,
+                        receivedWithIssues: true
+                    };
                     mapScope.isFiltered = false;
                     mapScope.data.allResponsesLocationMap = [];
                     DeliveryService.aggregateResponses().then(function (aggregates) {
@@ -135,8 +136,8 @@
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                         layer.setStyle(getHeatMapStyle(allLocations, layerName));
                     });
-                    DeliveryStatsService.getStats().then(function(responses){
-                        scope.data.totalStats =responses.data;
+                    DeliveryStatsService.getStats().then(function (responses) {
+                        scope.data.totalStats = responses.data;
                     });
 
                     showLoadingModal(false);
@@ -243,8 +244,7 @@
         }
     });
 
-    module
-        .directive('map', function (MapService, $window, IPService, DeliveryService) {
+    module.directive('map', function (MapService, $window, IPService, DeliveryService) {
         return {
             scope: false,
             link: function (scope, element, attrs) {
@@ -273,99 +273,100 @@
         }
     })
         .directive('mapFilter', function () {
-        return {
-            restrict: 'E',
-            scope: false,
-            templateUrl: '/static/app/views/partials/filters.html'
-        }
-    })
+            return {
+                restrict: 'E',
+                scope: false,
+                templateUrl: '/static/app/views/partials/filters.html'
+            }
+        })
         .directive('mapSummary', function () {
-        return {
-            restrict: 'A',
-            scope: false,
-            templateUrl: '/static/app/views/partials/marker-summary.html'
-        }
-    })
+            return {
+                restrict: 'A',
+                scope: false,
+                templateUrl: '/static/app/views/partials/marker-summary.html'
+            }
+        })
         .directive('mapFilters', function (DeliveryService, DeliveryStatsService) {
-        function removeEmptyArray(filteredResponses) {
-            return filteredResponses.filter(function (response) {
-                return response.length > 0;
-            });
-        }
-
-        return {
-            restrict: 'A',
-            scope: false,
-            link: function (scope) {
-                scope.$watchCollection('filter', function (newValue) {
-                    var filteredResponses;
-                    scope.dateFilter = {from: '', to: ''};
-                    var responsesToPlot = [];
-                    if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
-                        scope.data.allResponsesLocationMap = scope.reponsesFromDb
-                    }
-
-                    if (newValue.programme) {
-                        scope.isFiltered = true;
-                        scope.programmeFilter = true;
-                        filteredResponses = scope.reponsesFromDb.map(function (responseLocationMap) {
-                            return responseLocationMap.consigneeResponses.filter(function (response) {
-                                return parseInt(response.programme.id) === parseInt(newValue.programme);
-                            });
-                        });
-                        scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
-                    }
-
-                    if (newValue.ip) {
-                        scope.isFiltered = true;
-                        scope.ipFilter = true;
-                        if (scope.programmeFilter) {
-                            responsesToPlot = scope.data.allResponsesLocationMap
-                        }
-                        if (!scope.programmeFilter || !newValue.programme) {
-                            responsesToPlot = scope.reponsesFromDb
-                        }
-
-                        filteredResponses = responsesToPlot.map(function (responseLocationMap) {
-                            return responseLocationMap.consigneeResponses.filter(function (response) {
-                                return parseInt(response.consignee.id) === parseInt(newValue.ip);
-                            });
-                        });
-                        scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
-                    }
-
-                    scope.data.topLevelResponses = scope.data.allResponsesLocationMap;
-                });
-
-
-                scope.$watch('data.allResponsesLocationMap', function () {
-                    if (window.map.render) {
-                        window.map.addHeatMap(scope);
-                    }
-
-                    if (scope.isFiltered || scope.notDeliveryStatus) {
-                        scope.allResponsesMap = scope.data.allResponsesLocationMap
-                    } else {
-                        scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
-                    }
-
-                    if (scope.data.district) {
-                        DeliveryStatsService.getStats({location: scope.data.district}).then(function(responses){
-                            scope.data.totalStats =responses.data;
-                            scope.data.totalStats.location = scope.data.district;
-                        });
-                        //TODO: refactor this, to use same function with district on click
-                        scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
-                        (function showResponsesForDistrict() {
-                            scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
-                            scope.data.district = layerName;
-                        })();
-                    }
+            function removeEmptyArray(filteredResponses) {
+                return filteredResponses.filter(function (response) {
+                    return response.length > 0;
                 });
             }
-        }
 
-    }).directive('deliveryStatus', function (DeliveryService, UserService) {
+            return {
+                restrict: 'A',
+                scope: false,
+                link: function (scope) {
+                    scope.$watchCollection('filter', function (newValue) {
+                        var filteredResponses;
+                        scope.dateFilter = {from: '', to: ''};
+                        var responsesToPlot = [];
+                        if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
+                            scope.data.allResponsesLocationMap = scope.reponsesFromDb
+                        }
+
+                        if (newValue.programme) {
+                            scope.isFiltered = true;
+                            scope.programmeFilter = true;
+                            filteredResponses = scope.reponsesFromDb.map(function (responseLocationMap) {
+                                return responseLocationMap.consigneeResponses.filter(function (response) {
+                                    return parseInt(response.programme.id) === parseInt(newValue.programme);
+                                });
+                            });
+                            scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
+                        }
+
+                        if (newValue.ip) {
+                            scope.isFiltered = true;
+                            scope.ipFilter = true;
+                            if (scope.programmeFilter) {
+                                responsesToPlot = scope.data.allResponsesLocationMap
+                            }
+                            if (!scope.programmeFilter || !newValue.programme) {
+                                responsesToPlot = scope.reponsesFromDb
+                            }
+
+                            filteredResponses = responsesToPlot.map(function (responseLocationMap) {
+                                return responseLocationMap.consigneeResponses.filter(function (response) {
+                                    return parseInt(response.consignee.id) === parseInt(newValue.ip);
+                                });
+                            });
+                            scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredResponses)));
+                        }
+
+                        scope.data.topLevelResponses = scope.data.allResponsesLocationMap;
+                    });
+
+
+                    scope.$watch('data.allResponsesLocationMap', function () {
+                        if (window.map.render) {
+                            window.map.addHeatMap(scope);
+                        }
+
+                        if (scope.isFiltered || scope.notDeliveryStatus) {
+                            scope.allResponsesMap = scope.data.allResponsesLocationMap
+                        } else {
+                            scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                        }
+
+                        if (scope.data.district) {
+                            DeliveryStatsService.getStats({location: scope.data.district}).then(function (responses) {
+                                scope.data.totalStats = responses.data;
+                                scope.data.totalStats.location = scope.data.district;
+                            });
+                            //TODO: refactor this, to use same function with district on click
+                            scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
+                            (function showResponsesForDistrict() {
+                                scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
+                                scope.data.district = layerName;
+                            })();
+                        }
+                    });
+                }
+            }
+
+        })
+        .directive('deliveryStatus', function (DeliveryService, UserService) {
             function filterResponsesForUser(responsesToPlot) {
                 return UserService.getCurrentUser().then(function (user) {
                     if (user.consignee_id) {

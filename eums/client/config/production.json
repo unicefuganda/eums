@@ -45,7 +45,7 @@
         "PERMISSION": "/api/permission",
         "ALERTS": "/api/alert/",
         "DELIVERY_EXPORTS": "/exports/deliveries/",
-        "DELIVERY_STATS": "/api/delivery-stats/"
+        "END_USER_DELIVERY_STATS": "/api/delivery-stats/end-user/"
     },
     "CONTACT_SERVICE_URL": "http://eum.unicefuganda.org/contacts/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",

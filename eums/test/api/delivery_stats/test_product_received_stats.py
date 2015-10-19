@@ -8,7 +8,7 @@ from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryN
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
-ENDPOINT_URL = BACKEND_URL + 'delivery-stats/'
+ENDPOINT_URL = BACKEND_URL + 'delivery-stats/end-user/'
 
 
 class ProductReceivedStatsTest(DeliveryStatsTestCase):

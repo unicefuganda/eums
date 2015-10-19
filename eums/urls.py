@@ -75,7 +75,7 @@ urlpatterns = patterns(
     url(r'^api/responses/$', AllConsigneeResponses.as_view(), name='all_consignee_responses'),
     url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
-    url(r'^api/delivery-stats/$', DeliveryStatsEndpoint.as_view(), name='map_stats'),
+    url(r'^api/delivery-stats/end-user/$', DeliveryStatsEndpoint.as_view(), name='end_user_map_stats'),
     url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),

@@ -4,7 +4,7 @@ from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 
-ENDPOINT_URL = BACKEND_URL + 'delivery-stats/'
+ENDPOINT_URL = BACKEND_URL + 'delivery-stats/end-user/'
 
 
 class DeliveryStatsTestCase(AuthenticatedAPITestCase):
