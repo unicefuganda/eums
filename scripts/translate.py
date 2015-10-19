@@ -1,5 +1,6 @@
-from eums.models import ReleaseOrderItem, PurchaseOrderItem, DistributionPlanNode, NumericAnswer, TextAnswer, \
+from eums.models import ReleaseOrderItem, DistributionPlanNode, NumericAnswer, TextAnswer, \
     MultipleChoiceAnswer
+import json
 
 
 def _extract_clean_fields(obj):
@@ -110,5 +111,9 @@ def serialise_nodes():
     return map(lambda node: serialise_node(node), nodes)
 
 
+def serialise_datetime(datetime):
+    return str(datetime)
+
+
 serialised_nodes = serialise_nodes()
-print serialised_nodes
+print json.dumps(serialised_nodes, default=serialise_datetime)
