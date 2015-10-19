@@ -13,17 +13,6 @@
         });
     }
 
-
-    function getMarkerContent(allDistricts, layerName) {
-        var content = '';
-        allDistricts.forEach(function (district) {
-            if (district.district === layerName) {
-                content = district.messages;
-            }
-        });
-        return content;
-    }
-
     function getHeatMapStyle(allDistricts, location) {
         var style = {
             fillColor: '#FFFFCC',
@@ -74,31 +63,8 @@
             return {
                 district: responseWithLocation.location,
                 color: getHeatMapColor(responseWithLocation.consigneeResponses),
-                messages: getHeatMapResponsePercentage(responseWithLocation.consigneeResponses)
             }
         });
-    }
-
-    function circleMarkerIcon(content) {
-        return L.divIcon({
-            iconSize: new L.Point(25, 25),
-            className: 'messages-aggregate-marker-icon',
-            html: '<div ng-click=showDistrict()>' + content + '%</div>'
-        });
-    }
-
-    function messagesAggregateMarker(layer, aggregateValue) {
-        var marker = new L.Marker(layer.getCenter(), {
-            icon: circleMarkerIcon(aggregateValue)
-        });
-
-        marker.on('click', function (e) {
-            layer.click();
-        });
-
-        if (typeof(aggregateValue) === 'number') {
-            return marker;
-        }
     }
 
     module.factory('GeoJsonService', function ($http, EumsConfig) {
@@ -137,7 +103,7 @@
                     DeliveryService.aggregateResponses().then(function (aggregates) {
                         mapScope.data.totalStats = aggregates;
                     });
-                    addHeatMapLayer(map, mapScope);
+                    addHeatMapLayer(mapScope);
                     window.map.setView(EumsConfig.MAP_OPTIONS.CENTER);
                 }
             });
@@ -155,14 +121,10 @@
             }
         }
 
-        var markersGroup = [];
-
-        function addHeatMapLayer(map, scope) {
-            var allMarkers = [];
+        function addHeatMapLayer(scope) {
             DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                 filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
                     scope.reponsesFromDb = filteredResponses;
-                    markersGroup.clearLayers && markersGroup.clearLayers();
 
                     if (scope.isFiltered || scope.notDeliveryStatus) {
                         scope.allResponsesMap = scope.data.allResponsesLocationMap
@@ -172,12 +134,7 @@
                     var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                         layer.setStyle(getHeatMapStyle(allLocations, layerName));
-                        var marker = messagesAggregateMarker(layer, getMarkerContent(allLocations, layerName))
-
-                        marker && allMarkers.push(marker);
                     });
-                    markersGroup = L.layerGroup(allMarkers);
-                    markersGroup.addTo(map);
                     DeliveryStatsService.getStats().then(function(responses){
                         scope.data.totalStats =responses.data;
                     });
@@ -240,46 +197,14 @@
                 }
             },
             addHeatMap: function (scope) {
-                addHeatMapLayer(map, scope);
+                addHeatMapLayer(scope);
             },
             getCenter: function () {
                 return map.getCenter();
             },
-            addAllMarkers: function () {
-                var markers = [];
-                MapFilterService.getAllMarkerMaps().forEach(function (markerMap) {
-                    markers.push(markerMap.marker);
-                });
-                return L.layerGroup(markers).addTo(map);
-            },
             setView: function () {
                 map.setView(EumsConfig.MAP_OPTIONS.CENTER);
             },
-            removeMarker: function (marker) {
-                map.removeLayer(marker);
-            },
-            clearAllMarkers: function (markers) {
-                var self = this;
-                var clearMarkers = function (markerMap) {
-                    self.removeMarker(markerMap.marker);
-                };
-
-                if (markers) {
-                    markers.forEach(clearMarkers)
-                } else {
-                    MapFilterService.getAllMarkerMaps().forEach(clearMarkers);
-                }
-            },
-
-            addMarkers: function (markersMap) {
-                var markers = [];
-                markersMap.forEach(function (markerMap) {
-                    markers.push(markerMap.marker);
-                });
-
-                L.layerGroup(markers).addTo(map);
-            },
-
             highlightLayer: function (layerName) {
                 LayerMap.selectLayer(layerName.toLowerCase());
             },
@@ -326,21 +251,13 @@
                 MapService.render(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
                     scope.filter = {};
-                    scope.clickedMarker = '';
-                    scope.allMarkers = [];
-                    scope.shownMarkers = [];
                     scope.programme = '';
                     scope.notDeliveredChecked = false;
                     scope.deliveredChecked = null;
-                    scope.allMarkers = [];
 
                     DeliveryService.aggregateResponses().then(function (aggregates) {
                         scope.data.totalStats = aggregates;
                     });
-                    scope.hideMapMarkerDetails = function () {
-                        scope.data.responses = null;
-                    };
-
                 });
 
                 scope.clearFilters = function () {

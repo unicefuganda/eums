@@ -124,18 +124,6 @@ describe('Map Filter Service', function () {
             });
         });
 
-        it('should filter markers by ip', function (done) {
-            mapFilterService.setMapMarker(markerMapOne);
-            mapFilterService.setMapMarker(markerMapTwo);
-            var ip = 1;
-
-            deferredNodes.resolve([distributionPlanNodeOne]);
-            mapFilterService.filterMarkersByIp(ip, mapFilterService.getAllMarkerMaps()).then(function (markers) {
-                expect(markers).toEqual([markerMapOne]);
-                done();
-            });
-            scope.$apply();
-        });
     });
 });
 
