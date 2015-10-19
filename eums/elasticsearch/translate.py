@@ -108,12 +108,25 @@ def serialise_run(run):
 
 def serialise_nodes():
     nodes = DistributionPlanNode.objects.all()
-    return map(lambda node: serialise_node(node), nodes)
+    serialised = []
+    for node in nodes:
+        serialised.append({'index': {'_index': 'eums', '_type': 'delivery_node', '_id': node.id}})
+        serialised.append(serialise_node(node))
+    return serialised
 
 
 def serialise_datetime(datetime):
     return str(datetime)
 
 
+def convert_to_bulk_api_format(node_dicts):
+    json_string = ''
+    for node_dict in node_dicts:
+        json_string += json.dumps(node_dict, default=serialise_datetime)
+        json_string += '\n'
+    return json_string
+
 serialised_nodes = serialise_nodes()
-print json.dumps(serialised_nodes, default=serialise_datetime)
+
+outfile = open('eums/elasticsearch/nodes.es', 'w')
+outfile.write(convert_to_bulk_api_format(serialised_nodes))

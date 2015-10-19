@@ -1,0 +1,18 @@
+//PUT eums/_mapping/delivery_node/
+{
+  "delivery_node": {
+    "properties": {
+      "balance": {
+        "type": "integer"
+      },
+      "item": {
+        "type": "string",
+        "fields": {
+          "quantity": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
