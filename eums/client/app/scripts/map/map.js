@@ -76,7 +76,7 @@
     });
 
     module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService,
-                                           $q, MapFilterService, DeliveryService, UserService, DeliveryStatsService) {
+                                           $q, DeliveryService, UserService, DeliveryStatsService) {
         var map, mapScope;
 
         var zoomControl = L.control.zoom({
@@ -527,5 +527,5 @@
 
         });
 })
-(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'eums.mapFilter', 'map.layers', 'DeliveryStats']));
+(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'map.layers', 'DeliveryStats']));
 
