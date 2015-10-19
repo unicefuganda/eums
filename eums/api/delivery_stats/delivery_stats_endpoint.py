@@ -12,14 +12,14 @@ from eums.api.delivery_stats.was_product_received_stats import get_product_recei
 from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, UserProfile
 
 
-class DeliveryStatsEndpoint(APIView):
+class EndUserDeliveryStatsEndpoint(APIView):
     def __init__(self):
         self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.location = None
         self.ip = None
         self.user_profile = None
-        super(DeliveryStatsEndpoint, self).__init__()
+        super(EndUserDeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
