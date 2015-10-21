@@ -128,7 +128,7 @@ class TestDeliveryNodeSerialisation(TestCase):
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['order_item']['order'])
 
-    def should_serialise_node_sales_order_under_order(self):
+    def test_should_serialise_node_sales_order_under_order(self):
         sales_order = SalesOrderFactory()
         release_order = ReleaseOrderFactory(sales_order=sales_order)
         node = DeliveryNodeFactory(item=(ReleaseOrderItemFactory(release_order=release_order)))
@@ -143,6 +143,23 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['order_item']['order']['sales_order'])
+
+    def test_should_serialise_node_purchase_order_under_release_order(self):
+        purchase_order = PurchaseOrderFactory()
+        release_order = ReleaseOrderFactory(purchase_order=purchase_order)
+        node = DeliveryNodeFactory(item=(ReleaseOrderItemFactory(release_order=release_order)))
+
+        expected = {
+            "po_type": purchase_order.po_type,
+            "order_number": purchase_order.order_number,
+            "date": purchase_order.date,
+            "sales_order_id": purchase_order.sales_order.id,
+            "id": purchase_order.id,
+            "is_single_ip": purchase_order.is_single_ip
+        }
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order']['purchase_order'])
 
     def test_should_serialise_node_purchase_order_item_with_flat_fields(self):
         purchase_order_item = PurchaseOrderItemFactory()
