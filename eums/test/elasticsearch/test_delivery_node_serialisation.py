@@ -3,6 +3,7 @@ from datetime import date
 from django.test import TestCase
 
 from eums.elasticsearch.serialisers import serialise_nodes
+from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 
 
@@ -38,3 +39,22 @@ class TestDeliveryNodeSerialisation(TestCase):
         serialised = serialise_nodes([node])
 
         self.assertDictContainsSubset(expected_node_serialisation, serialised[1])
+
+    def test_should_serialise_node_with_built_out_consignee(self):
+        consignee = ConsigneeFactory()
+        node = DeliveryNodeFactory(consignee=consignee)
+
+        expected_consignee_serialisation = {
+            "created_by_user_id": consignee.created_by_user.id,
+            "name": consignee.name,
+            "imported_from_vision": consignee.imported_from_vision,
+            "location": consignee.location,
+            "remarks": consignee.remarks,
+            "customer_id": consignee.customer_id,
+            "type": consignee.type,
+            "id": consignee.id
+        }
+
+        serialised = serialise_nodes([node])
+
+        self.assertDictContainsSubset(expected_consignee_serialisation, serialised[1]['consignee'])
