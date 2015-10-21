@@ -1,15 +1,19 @@
 from django.test import TestCase
 
 from eums.elasticsearch.serialisers import serialise_nodes
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 
@@ -210,3 +214,19 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['order_item']['item'])
+
+    def test_should_serialise_node_response_flat_fields(self):
+        node = DeliveryNodeFactory()
+        answer = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node))
+
+        expected = {
+            "value_id": answer.value.id,
+            "run_id": answer.run.id,
+            "date_created": answer.date_created,
+            "id": answer.id,
+            "value": answer.value.text,
+            "question_id": answer.question.id
+        }
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset(expected, serialised[1]['responses'][0])
