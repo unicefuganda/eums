@@ -1,6 +1,9 @@
 import json
-from eums.models import ReleaseOrderItem, DistributionPlanNode, NumericAnswer, TextAnswer, \
-    MultipleChoiceAnswer
+
+from django.db.models import Q
+
+from eums.models import ReleaseOrderItem, NumericAnswer, TextAnswer, \
+    MultipleChoiceAnswer, Flow, TextQuestion, Runnable, Run
 
 
 def serialise_nodes(nodes):
@@ -88,7 +91,19 @@ def _serialise_node_responses(node):
     multiple_choice_answers = MultipleChoiceAnswer.objects.filter(run__runnable=node)
     serialised_simple = map(lambda answer: _serialise_simple_answer(answer), list(numeric_answers) + list(text_answers))
     serialised_multiple = map(lambda answer: _serialise_multiple_choice_answer(answer), multiple_choice_answers)
-    return serialised_simple + serialised_multiple
+    return serialised_simple + serialised_multiple + _get_relevant_delivery_responses_for(node)
+
+
+def _get_relevant_delivery_responses_for(node):
+    ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+    qn_date_of_receipt = TextQuestion.objects.get(flow__for_runnable_type=ip_flow, label='dateOfReceipt')
+    delivery = node.distribution_plan
+    date_received_answer = TextAnswer.objects\
+        .filter(run__runnable=delivery, question=qn_date_of_receipt)\
+        .filter(Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed))\
+        .last()
+
+    return [_serialise_simple_answer(date_received_answer)] if date_received_answer else []
 
 
 def _serialise_simple_answer(answer):
@@ -124,7 +139,6 @@ def convert_to_bulk_api_format(node_dicts):
         json_string += json.dumps(node_dict, default=_serialise_datetime)
         json_string += '\n'
     return json_string
-
 
 # serialised_nodes = serialise_nodes(DistributionPlanNode.objects.all())
 #

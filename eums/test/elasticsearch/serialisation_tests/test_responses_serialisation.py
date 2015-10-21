@@ -1,12 +1,11 @@
-from django.test import TestCase
-
 from eums.elasticsearch.serialisers import serialise_nodes
+from eums.test.elasticsearch.serialisation_tests.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 
 
-class TestResponsesSerialisation(TestCase):
+class TestResponsesSerialisation(SerialisationTestCase):
     def test_should_serialise_node_response_flat_fields(self):
         node = DeliveryNodeFactory()
         answer = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node))

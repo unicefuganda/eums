@@ -1,6 +1,5 @@
-from django.test import TestCase
-
 from eums.elasticsearch.serialisers import serialise_nodes
+from eums.test.elasticsearch.serialisation_tests.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
@@ -10,7 +9,7 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 
-class TestDeliveryNodeSerialisation(TestCase):
+class TestOrderDataSerialisation(SerialisationTestCase):
     def test_should_serialise_node_release_order_item_with_flat_fields(self):
         release_order_item = ReleaseOrderItemFactory()
         node = DeliveryNodeFactory(item=release_order_item)

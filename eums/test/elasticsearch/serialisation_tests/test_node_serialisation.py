@@ -1,13 +1,12 @@
-from django.test import TestCase
-
 from eums.elasticsearch.serialisers import serialise_nodes
+from eums.test.elasticsearch.serialisation_tests.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 
 
-class TestDeliveryNodeSerialisation(TestCase):
+class TestDeliveryNodeSerialisation(SerialisationTestCase):
     def test_should_add_elasticsearch_meta_data_for_every_node(self):
         node = DeliveryNodeFactory()
         expected_es_meta_data = {'index': {'_index': 'eums', '_type': 'delivery_node', '_id': node.id}}
