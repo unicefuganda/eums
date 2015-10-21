@@ -9,6 +9,7 @@ from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
+from eums.test.factories.sales_order_factory import SalesOrderFactory
 
 
 class TestDeliveryNodeSerialisation(TestCase):
@@ -126,6 +127,22 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['order_item']['order'])
+
+    def should_serialise_node_sales_order_under_order(self):
+        sales_order = SalesOrderFactory()
+        release_order = ReleaseOrderFactory(sales_order=sales_order)
+        node = DeliveryNodeFactory(item=(ReleaseOrderItemFactory(release_order=release_order)))
+
+        expected = {
+            "programme_id": sales_order.programme.id,
+            "description": sales_order.description,
+            "date": sales_order.date,
+            "order_number": sales_order.order_number,
+            "id": sales_order.id
+        }
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order']['sales_order'])
 
     def test_should_serialise_node_purchase_order_item_with_flat_fields(self):
         purchase_order_item = PurchaseOrderItemFactory()
