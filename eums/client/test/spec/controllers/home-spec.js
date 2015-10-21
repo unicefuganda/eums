@@ -24,6 +24,20 @@ describe('Module: Home', function () {
             scope.$apply();
             expect(location.path()).toEqual('/response-details/' + scope.data.district);
         });
+
+        it('should set end-user view by default', function () {
+            expect(scope.ipView).toBe(false);
+        });
+
+        it('should toggle ip and end-user feedback view', function () {
+            scope.toggleIpView(true);
+            scope.$apply();
+            expect(scope.ipView).toBe(true);
+
+            scope.toggleIpView(false);
+            scope.$apply();
+            expect(scope.ipView).toBe(false);
+        });
     });
 
     describe('Controller:Response', function () {

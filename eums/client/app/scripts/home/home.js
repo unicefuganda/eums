@@ -14,6 +14,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         $scope.data = {topLevelResponses: [], allResponsesLocationMap: [], totalStats: {}, responses: [], district: ''};
         $scope.isFiltered = false;
         $scope.notDeliveryStatus = false;
+        $scope.ipView = false;
 
         $scope.programmesAndConsignees = {};
 
@@ -22,6 +23,10 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         });
         $scope.showDetailedResponses = function () {
             $location.path('/response-details/' + $scope.data.district);
+        };
+
+        $scope.toggleIpView = function (value) {
+            $scope.ipView = value;
         };
 
     })
