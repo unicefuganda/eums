@@ -4,6 +4,7 @@ from eums.elasticsearch.serialisers import serialise_nodes
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -194,3 +195,18 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['order_item']['order'])
+
+    def test_should_serialise_item_under_node_order_item(self):
+        item = ItemFactory()
+        node = DeliveryNodeFactory(item=PurchaseOrderItemFactory(item=item))
+
+        expected = {
+            "description": item.description,
+            "material_code": item.material_code,
+            "unit_id": item.unit.id,
+            "id": item.id,
+            "unit": item.unit.name
+        }
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset(expected, serialised[1]['order_item']['item'])
