@@ -58,3 +58,22 @@ class TestDeliveryNodeSerialisation(TestCase):
         serialised = serialise_nodes([node])
 
         self.assertDictContainsSubset(expected_consignee_serialisation, serialised[1]['consignee'])
+
+    def test_should_serialise_node_with_built_out_implementing_partner(self):
+        ip = ConsigneeFactory()
+        node = DeliveryNodeFactory(consignee=ip)
+
+        expected_consignee_serialisation = {
+            "created_by_user_id": ip.created_by_user.id,
+            "name": ip.name,
+            "imported_from_vision": ip.imported_from_vision,
+            "location": ip.location,
+            "remarks": ip.remarks,
+            "customer_id": ip.customer_id,
+            "type": ip.type,
+            "id": ip.id
+        }
+
+        serialised = serialise_nodes([node])
+
+        self.assertDictContainsSubset(expected_consignee_serialisation, serialised[1]['ip'])
