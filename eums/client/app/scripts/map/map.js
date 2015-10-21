@@ -27,7 +27,6 @@
         return style;
     }
 
-
     function getPercentage(noProductReceived, consigneeResponses) {
         return noProductReceived / consigneeResponses.length * 100;
     }
