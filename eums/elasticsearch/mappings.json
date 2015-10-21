@@ -5,6 +5,11 @@
       "balance": {
         "type": "integer"
       },
+      "responses": {
+          "properties": {
+              "value": {"type": "string"}
+          }
+      },
       "item": {
         "type": "string",
         "fields": {
