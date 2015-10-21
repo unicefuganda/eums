@@ -16,4 +16,6 @@ class FakeDate(date):
     def build(cls, year, month, day):
         return date(year, month, day)
 
+    def __str__(self):
+        return "2014-09-25"
 
