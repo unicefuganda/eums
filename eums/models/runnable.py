@@ -4,10 +4,11 @@ from django.db.models import Q
 from polymorphic import PolymorphicModel
 import requests
 from eums.models import Consignee
+from eums.models.time_stamped_model import TimeStampedModel
 from eums.services.contacts import ContactService
 
 
-class Runnable(PolymorphicModel):
+class Runnable(PolymorphicModel, TimeStampedModel):
     location = models.CharField(max_length=255)
     consignee = models.ForeignKey(Consignee)
     ip = models.ForeignKey(Consignee, null=True, blank=True, related_name='runnables')
