@@ -1,3 +1,4 @@
+from eums.api.delivery_stats.ip_delivery_stats_endpoint import DeliveryState
 from eums.fixtures.ip_questions import *
 from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
@@ -32,6 +33,34 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
         self.assertEqual(len(response.data), 2)
         self.assertIn(expected_stats[0], response.data)
         self.assertIn(expected_stats[1], response.data)
+
+    def test_should_return_yellow_when_number_of_deliveries_is_zero(self):
+        state = DeliveryState.get_state({'numberOfDeliveries': 0})
+        self.assertEqual('yellow', state)
+
+    def test_should_return_grey_when_non_responce_percentage_is_greater_than_X(self):
+        state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 8})
+        self.assertEqual('grey', state)
+
+    def test_should_return_red_if_not_received_is_more_than_received(self):
+        state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 6, 'numberNotReceived': 3,
+                                         'numberReceived': 1})
+        self.assertEqual('red', state)
+
+    def test_should_return_green_if_more_deliveries_are_in_good_condition(self):
+        state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 2, 'numberNotReceived': 1,
+                                         'numberReceived': 6, 'hasIssues': 1, 'noIssues': 5})
+        self.assertEqual('green', state)
+
+    def test_should_return_green_if_has_issues_is_zero(self):
+        state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 2, 'numberNotReceived': 0,
+                                         'numberReceived': 0, 'hasIssues': 0, 'noIssues': 0})
+        self.assertEqual('green', state)
+
+    def test_should_return_orange_if_no_issues_less_or_equal_to_has_issues(self):
+        state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 2, 'numberNotReceived': 0,
+                                         'numberReceived': 4, 'hasIssues': 3, 'noIssues': 1})
+        self.assertEqual('orange', state)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()

@@ -58,8 +58,6 @@ class DeliveryState:
     @staticmethod
     def _get_non_responses(nodes_with_answers, nodes_in_location):
         grace_period_deadline = datetime.datetime.now() - datetime.timedelta(days=GRACE_PERIOD)
-        print '&'*100
-        print grace_period_deadline, datetime.datetime.now(), datetime.timedelta(days=GRACE_PERIOD)
         return nodes_in_location.exclude(id__in=nodes_with_answers).filter(delivery_date__lte=grace_period_deadline)
 
     @staticmethod
