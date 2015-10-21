@@ -44,9 +44,6 @@ class DeliveryState:
         nodes_with_answers = answers.values_list('run__runnable')
         non_responses = self._get_non_responses(nodes_with_answers, nodes_in_location)
         number_received = answers.filter(question__label=Question.LABEL.deliveryReceived, value__text='Yes')
-        print '*'*200
-        print nodes_in_location.values_list('location', 'delivery_date')
-        print non_responses
         number_not_received = answers.filter(question__label=Question.LABEL.deliveryReceived, value__text='No')
         has_no_issues = answers.filter(question__label=Question.LABEL.isDeliveryInGoodOrder, value__text='Yes')
         has_issues = answers.filter(question__label=Question.LABEL.isDeliveryInGoodOrder, value__text='No')
@@ -74,7 +71,7 @@ class DeliveryState:
             return STATE['GREY']
         if data['numberNotReceived'] > data['numberReceived']:
             return STATE['RED']
-        if data['noIssues'] > data['hasIssues']:
+        if data['noIssues'] > data['hasIssues'] or not data['hasIssues']:
             return STATE['GREEN']
         if data['noIssues'] <= data['hasIssues']:
             return STATE['ORANGE']
