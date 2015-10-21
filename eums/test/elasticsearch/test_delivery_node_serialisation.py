@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.test import TestCase
 
 from eums.elasticsearch.serialisers import serialise_nodes
@@ -8,6 +6,7 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
 
@@ -17,7 +16,6 @@ class TestDeliveryNodeSerialisation(TestCase):
         expected_es_meta_data = {'index': {'_index': 'eums', '_type': 'delivery_node', '_id': node.id}}
 
         serialised = serialise_nodes([node])
-
         self.assertDictEqual(expected_es_meta_data, serialised[0])
 
     def test_should_serialise_node_flat_fields(self):
@@ -41,7 +39,6 @@ class TestDeliveryNodeSerialisation(TestCase):
         }
 
         serialised = serialise_nodes([node])
-
         self.assertDictContainsSubset(expected_node_serialisation, serialised[1])
 
     def test_should_serialise_node_with_built_out_consignee(self):
@@ -60,7 +57,6 @@ class TestDeliveryNodeSerialisation(TestCase):
         }
 
         serialised = serialise_nodes([node])
-
         self.assertDictContainsSubset(expected_consignee_serialisation, serialised[1]['consignee'])
 
     def test_should_serialise_node_with_built_out_implementing_partner(self):
@@ -79,7 +75,6 @@ class TestDeliveryNodeSerialisation(TestCase):
         }
 
         serialised = serialise_nodes([node])
-
         self.assertDictContainsSubset(expected_ip_serialisation, serialised[1]['ip'])
 
     def test_should_serialise_node_with_built_out_programme(self):
@@ -94,7 +89,6 @@ class TestDeliveryNodeSerialisation(TestCase):
         }
 
         serialised = serialise_nodes([node])
-
         self.assertDictContainsSubset(expected_programme_serialisation, serialised[1]['programme'])
 
     def test_should_serialise_node_release_order_item_with_flat_fields(self):
@@ -112,8 +106,25 @@ class TestDeliveryNodeSerialisation(TestCase):
         }
 
         serialised = serialise_nodes([node])
-
         self.assertDictContainsSubset(expected, serialised[1]['order_item'])
+
+    def test_should_serialise_node_release_order(self):
+        release_order = ReleaseOrderFactory()
+        node = DeliveryNodeFactory(item=(ReleaseOrderItemFactory(release_order=release_order)))
+
+        expected = {
+            "consignee_id": release_order.consignee.id,
+            "sales_order_id": release_order.sales_order.id,
+            "purchase_order_id": release_order.purchase_order.id,
+            "waybill": release_order.waybill,
+            "order_type": "release_order",
+            "order_number": release_order.order_number,
+            "id": release_order.id,
+            "delivery_date": release_order.delivery_date
+        }
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order'])
 
     def test_should_serialise_node_purchase_order_item_with_flat_fields(self):
         purchase_order_item = PurchaseOrderItemFactory()
@@ -130,5 +141,4 @@ class TestDeliveryNodeSerialisation(TestCase):
         }
 
         serialised = serialise_nodes([node])
-
         self.assertDictContainsSubset(expected, serialised[1]['order_item'])
