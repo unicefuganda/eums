@@ -55,6 +55,6 @@ def seed_ip_questions():
         'NOT_SATISFIED': not_satisfied
     }
 
-    return questions, options
+    return questions, options, ip_flow
 
-seed_ip_questions()
+questions1, options1, ip_flow = seed_ip_questions()

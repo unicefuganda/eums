@@ -66,7 +66,7 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
         DeliveryNode.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
         MultipleChoiceAnswer.objects.all().delete()
-        questions, options = seed_ip_questions()
+        questions, options, _ = seed_ip_questions()
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
 

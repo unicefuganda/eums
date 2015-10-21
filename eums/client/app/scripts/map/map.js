@@ -27,6 +27,20 @@
         return style;
     }
 
+    function getIpHeatMapStyle(data, layerName) {
+        var style = {
+            fillColor: '#FFFFCC',
+            fillOpacity: 1,
+            weight: 1.5
+        };
+        data.forEach(function (locationData) {
+            if (locationData.location.toUpperCase() === layerName.toUpperCase()) {
+                style.fillColor = locationData.state;
+            }
+        });
+        return style;
+    }
+
     function getPercentage(noProductReceived, consigneeResponses) {
         return noProductReceived / consigneeResponses.length * 100;
     }
@@ -122,26 +136,36 @@
         }
 
         function addHeatMapLayer(scope) {
-            DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
-                filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
-                    scope.reponsesFromDb = filteredResponses;
-
-                    if (scope.isFiltered || scope.notDeliveryStatus) {
-                        scope.allResponsesMap = scope.data.allResponsesLocationMap
-                    } else {
-                        scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
-                    }
-                    var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
+            if (scope.ipView) {
+                DeliveryStatsService.getIpStats().then(function (response) {
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
-                        layer.setStyle(getHeatMapStyle(allLocations, layerName));
+                        layer.setStyle(getIpHeatMapStyle(response.data, layerName));
                     });
-                    DeliveryStatsService.getStats().then(function (responses) {
-                        scope.data.totalStats = responses.data;
-                    });
-
                     showLoadingModal(false);
                 });
-            });
+
+            } else {
+                DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
+                    filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
+                        scope.reponsesFromDb = filteredResponses;
+
+                        if (scope.isFiltered || scope.notDeliveryStatus) {
+                            scope.allResponsesMap = scope.data.allResponsesLocationMap
+                        } else {
+                            scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
+                        }
+                        var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
+                        angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
+                            layer.setStyle(getHeatMapStyle(allLocations, layerName));
+                        });
+                        DeliveryStatsService.getStats().then(function (responses) {
+                            scope.data.totalStats = responses.data;
+                        });
+
+                        showLoadingModal(false);
+                    });
+                });
+            }
         }
 
         function addDistrictsLayer(map, scope) {
@@ -174,7 +198,21 @@
         }
 
         return {
-            render: function (elementId, layerName, scope) {
+            renderIpView: function (elementId, layerName, scope) {
+                mapScope = scope;
+                map = initMap(elementId);
+
+                return addDistrictsLayer(map, scope).then(function () {
+                    layerName && this.clickLayer(layerName);
+                    return this;
+                }.bind(this)).then(function () {
+                    showLoadingModal(true);
+                    this.addHeatMap(scope);
+                }.bind(this)).then(function () {
+                    return this;
+                }.bind(this));
+            },
+            renderEndUserView: function (elementId, layerName, scope) {
                 mapScope = scope;
                 map = initMap(elementId);
 
@@ -247,7 +285,7 @@
         return {
             scope: false,
             link: function (scope, element, attrs) {
-                MapService.render(attrs.id, null, scope).then(function (map) {
+                MapService.renderEndUserView(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
                     scope.filter = {};
                     scope.programme = '';
@@ -338,7 +376,7 @@
 
 
                     scope.$watch('data.allResponsesLocationMap', function () {
-                        if (window.map.render) {
+                        if (window.map.renderEndUserView) {
                             window.map.addHeatMap(scope);
                         }
 
