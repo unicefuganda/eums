@@ -4,7 +4,9 @@ from django.test import TestCase
 
 from eums.elasticsearch.serialisers import serialise_nodes
 from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.programme_factory import ProgrammeFactory
 
 
 class TestDeliveryNodeSerialisation(TestCase):
@@ -63,7 +65,7 @@ class TestDeliveryNodeSerialisation(TestCase):
         ip = ConsigneeFactory()
         node = DeliveryNodeFactory(consignee=ip)
 
-        expected_consignee_serialisation = {
+        expected_ip_serialisation = {
             "created_by_user_id": ip.created_by_user.id,
             "name": ip.name,
             "imported_from_vision": ip.imported_from_vision,
@@ -76,4 +78,19 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
 
-        self.assertDictContainsSubset(expected_consignee_serialisation, serialised[1]['ip'])
+        self.assertDictContainsSubset(expected_ip_serialisation, serialised[1]['ip'])
+
+    def test_should_serialise_node_with_built_out_programme(self):
+        programme = ProgrammeFactory()
+        delivery = DeliveryFactory(programme=programme)
+        node = DeliveryNodeFactory(distribution_plan=delivery)
+
+        expected_programme_serialisation = {
+            "wbs_element_ex": programme.wbs_element_ex,
+            "id": programme.id,
+            "name": programme.name
+        }
+
+        serialised = serialise_nodes([node])
+
+        self.assertDictContainsSubset(expected_programme_serialisation, serialised[1]['programme'])
