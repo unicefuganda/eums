@@ -230,3 +230,19 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['responses'][0])
+
+    def test_should_serialise_node_response_question(self):
+        node = DeliveryNodeFactory()
+        question = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node)).question
+
+        expected = {
+            "text": question.text,
+            "label": question.label,
+            "flow_id": question.flow.id,
+            "position": question.position,
+            "type": question.type,
+            "id": question.id
+        }
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset(expected, serialised[1]['responses'][0]['question'])
