@@ -154,7 +154,8 @@ class TestDeliveryNodeSerialisation(TestCase):
             "date": purchase_order.date,
             "sales_order_id": purchase_order.sales_order.id,
             "id": purchase_order.id,
-            "is_single_ip": purchase_order.is_single_ip
+            "is_single_ip": purchase_order.is_single_ip,
+            "order_type": "purchase_order",
         }
 
         serialised = serialise_nodes([node])
