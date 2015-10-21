@@ -6,11 +6,9 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
-from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
@@ -222,7 +220,6 @@ class TestDeliveryNodeSerialisation(TestCase):
         expected = {
             "value_id": answer.value.id,
             "run_id": answer.run.id,
-            "date_created": answer.date_created,
             "id": answer.id,
             "value": answer.value.text,
             "question_id": answer.question.id
@@ -259,3 +256,12 @@ class TestDeliveryNodeSerialisation(TestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected, serialised[1]['responses'][0]['run'])
+
+    def test_responses_serialisation_should_have_an_entry_for_each_response_a_node_has(self):
+        node = DeliveryNodeFactory()
+        answer_one = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node))
+        answer_two = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node))
+
+        serialised = serialise_nodes([node])
+        answer_ids = [response['id'] for response in serialised[1]['responses']]
+        self.assertItemsEqual(answer_ids, [answer_one.id, answer_two.id])
