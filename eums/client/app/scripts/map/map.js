@@ -127,7 +127,7 @@
 
         function addHeatMapLayer(scope) {
             if (scope.ipView) {
-                DeliveryStatsService.getIpStats().then(function (response) {
+                DeliveryStatsService.getIpStats(scope.filter).then(function (response) {
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                         layer.setStyle(getIpHeatMapStyle(response.data, layerName));
                     });

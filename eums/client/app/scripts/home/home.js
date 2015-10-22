@@ -40,6 +40,15 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
             LoaderService.showLoader();
             MapService.addHeatMap($scope);
         };
+
+        var firstLoad = true;
+        $scope.$watchCollection('filter', function () {
+            if (!firstLoad && $scope.ipView) {
+                $scope.redrawMapColors();
+            }
+            firstLoad = false;
+        }, true);
+
     })
     .controller('ResponseController', function ($scope, $q, $routeParams, DeliveryService, PurchaseOrderService,
                                                 DeliveryNodeService, PurchaseOrderItemService) {

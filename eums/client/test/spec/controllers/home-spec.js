@@ -51,6 +51,15 @@ describe('Module: Home', function () {
             scope.$apply();
             expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
         });
+
+        it('should watch filter and reload ip-feedback', function(){
+            scope.toggleIpView(true);
+            scope.filter = {};
+            scope.$apply();
+            scope.filter = {programme: 2};
+            scope.$apply();
+            expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+        });
     });
 
     describe('Controller:Response', function () {
