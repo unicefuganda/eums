@@ -25,6 +25,7 @@ from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
 from eums.models.alert import Alert
+from eums.elasticsearch.sync_info import SyncInfo
 
 __all__ = [
     'Consignee',
@@ -56,5 +57,6 @@ __all__ = [
     'UserProfile',
     'ConsigneeItem',
     'PurchaseOrder',
-    'Alert'
+    'Alert',
+    'SyncInfo'
 ]
