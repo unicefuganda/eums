@@ -83,7 +83,7 @@
     });
 
     module.factory('MapService', function (GeoJsonService, EumsConfig, LayerMap, Layer, IPService,
-                                           $q, DeliveryService, UserService, DeliveryStatsService) {
+                                           $q, DeliveryService, UserService, DeliveryStatsService, LoaderService) {
         var map, mapScope;
 
         var zoomControl = L.control.zoom({
@@ -125,23 +125,13 @@
             return map;
         }
 
-        function showLoadingModal(show) {
-            if (show && !angular.element('#loading').hasClass('in')) {
-                angular.element('#loading').modal();
-            }
-            else if (!show) {
-                angular.element('#loading').modal('hide');
-                angular.element('#loading.modal').removeClass('in');
-            }
-        }
-
         function addHeatMapLayer(scope) {
             if (scope.ipView) {
                 DeliveryStatsService.getIpStats().then(function (response) {
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                         layer.setStyle(getIpHeatMapStyle(response.data, layerName));
                     });
-                    showLoadingModal(false);
+                    LoaderService.hideLoader();
                 });
 
             } else {
@@ -161,8 +151,7 @@
                         DeliveryStatsService.getStats().then(function (responses) {
                             scope.data.totalStats = responses.data;
                         });
-
-                        showLoadingModal(false);
+                        LoaderService.hideLoader();
                     });
                 });
             }
@@ -206,7 +195,7 @@
                     layerName && this.clickLayer(layerName);
                     return this;
                 }.bind(this)).then(function () {
-                    showLoadingModal(true);
+                    LoaderService.showLoader();
                     this.addHeatMap(scope);
                 }.bind(this)).then(function () {
                     return this;
@@ -220,7 +209,7 @@
                     layerName && this.clickLayer(layerName);
                     return this;
                 }.bind(this)).then(function () {
-                    showLoadingModal(true);
+                    LoaderService.showLoader();
                     this.addHeatMap(scope);
                 }.bind(this)).then(function () {
                     return this;
@@ -565,5 +554,5 @@
 
         });
 })
-(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'map.layers', 'DeliveryStats']));
+(angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'map.layers', 'DeliveryStats', 'Loader']));
 

@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrderItem', 'PurchaseOrder'])
-    .controller('HomeController', function ($rootScope, $scope, $location, UserService) {
+angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrderItem', 'PurchaseOrder', 'eums.map',
+    'Loader', 'map.layers'])
+    .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
         $scope.filter = {programme: '', ip: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
 
@@ -16,7 +17,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         $scope.notDeliveryStatus = false;
         $scope.ipView = false;
 
-        $scope.programmesAndConsignees = {};
+        $scope.directiveValues = {};
 
         UserService.getCurrentUser().then(function (user) {
             $scope.user = user;
@@ -29,6 +30,16 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
             $scope.ipView = value;
         };
 
+        $scope.$watch('ipView', function (newIpView, oldIpView) {
+            if (newIpView != oldIpView) {
+                $scope.redrawMapColors();
+            }
+        });
+
+        $scope.redrawMapColors = function () {
+            LoaderService.showLoader();
+            MapService.addHeatMap($scope);
+        };
     })
     .controller('ResponseController', function ($scope, $q, $routeParams, DeliveryService, PurchaseOrderService,
                                                 DeliveryNodeService, PurchaseOrderItemService) {

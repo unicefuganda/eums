@@ -5,16 +5,21 @@ describe('Module: Home', function () {
     beforeEach(module('Home'));
 
     describe('Controller:Home', function () {
-        var mockUserService, deferred;
+        var mockUserService, deferred, mockMapService, mockLoaderService;
 
         beforeEach(inject(function ($controller, $rootScope, $location, $q) {
             location = $location;
             scope = $rootScope.$new();
             mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+            mockMapService = jasmine.createSpyObj('mockMapService', ['addHeatMap']);
+            mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             deferred = $q.defer();
             mockUserService.getCurrentUser.and.returnValue(deferred.promise);
             $controller('HomeController', {
-                $scope: scope, UserService: mockUserService
+                $scope: scope,
+                UserService: mockUserService,
+                MapService: mockMapService,
+                LoaderService: mockLoaderService
             });
         }));
 
@@ -37,6 +42,14 @@ describe('Module: Home', function () {
             scope.toggleIpView(false);
             scope.$apply();
             expect(scope.ipView).toBe(false);
+        });
+
+        it('should watch ipView and reload the map', function () {
+            scope.toggleIpView(false);
+            scope.$apply();
+            scope.toggleIpView(true);
+            scope.$apply();
+            expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
         });
     });
 

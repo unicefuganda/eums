@@ -211,10 +211,10 @@ angular.module('Directives', [])
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
                 ProgrammeService.programmesWithIps().then(function (response) {
-                    scope.programmesAndConsignees.allProgrammes = response.map(function (programe) {
+                    scope.directiveValues.allProgrammes = response.map(function (programe) {
                         return {id: programe.id, text: programe.name, ips: programe.ips}
                     });
-                    scope.displayProgrammes = scope.programmesAndConsignees.allProgrammes;
+                    scope.displayProgrammes = scope.directiveValues.allProgrammes;
                     scope.displayProgrammes;
                 }).then(function () {
                     scope.populateProgrammesSelect2(scope.displayProgrammes);
@@ -279,10 +279,10 @@ angular.module('Directives', [])
             link: function (scope, element, attrs, ngModel) {
 
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
-                    scope.programmesAndConsignees.allIps = displayedData.map(function (consignee) {
+                    scope.directiveValues.allIps = displayedData.map(function (consignee) {
                         return {id: consignee.id, text: consignee.name}
                     });
-                    scope.displayIps = scope.programmesAndConsignees.allIps;
+                    scope.displayIps = scope.directiveValues.allIps;
                     scope.populateIpsSelect2(scope.displayIps);
                 });
 
