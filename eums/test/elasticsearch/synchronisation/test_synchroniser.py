@@ -19,7 +19,7 @@ class SynchroniserTest(TestCase):
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    def test_run_should_serialise_nodes_that_are_marked_for_sync(self, mock_serialiser, mock_generate_nodes, _):
+    def test_run_should_serialise_nodes_that_are_marked_for_sync(self, mock_serialiser, mock_generate_nodes, *_):
         mock_nodes = [1, 2]
         mock_generate_nodes.return_value = mock_nodes
         run()
@@ -27,53 +27,53 @@ class SynchroniserTest(TestCase):
 
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_create_a_sync_info_record_when_sync_starts(self, _, __):
+    def test_should_create_a_sync_info_record_when_sync_starts(self, *_):
         self.assertEqual(SyncInfo.objects.count(), 0)
         run()
         self.assertEqual(SyncInfo.objects.count(), 1)
 
+    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_push_serialised_nodes_to_elasticsearch(self, _, mock_serialiser, mock_post):
+    def test_should_push_serialised_nodes_to_elasticsearch(self, mock_serialiser, mock_post, *_):
         serialised_nodes = '{"some bulk api json": 100}'
         mock_serialiser.return_value = serialised_nodes
         url = '%s/_bulk' % settings.ELASTIC_SEARCH_URL
         run()
         mock_post.assert_called_with(url, data=serialised_nodes)
 
-    @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_set_last_sync_status_to_successful_when_post_to_elasticsearch_returns_200(self, _, __, mock_post):
+    @patch('requests.post')
+    def test_should_set_last_sync_status_to_successful_when_post_to_elasticsearch_returns_200(self, mock_post, *_):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
         run()
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.SUCCESSFUL)
 
-    @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_set_last_sync_status_to_failed_when_post_to_elasticsearch_returns_non_200(self, _, __, mock_post):
+    @patch('requests.post')
+    def test_should_set_last_sync_status_to_failed_when_post_to_elasticsearch_returns_non_200(self, mock_post, *_):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_400_BAD_REQUEST)
         run()
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.FAILED)
 
-    @patch('eums.elasticsearch.synchroniser.logger.error')
-    @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_set_last_sync_status_to_failed_when_post_to_es_raises_and_error(self, _, a, mock_post, mock_logger):
+    @patch('eums.elasticsearch.synchroniser.logger.error')
+    @patch('requests.post')
+    def test_should_set_last_sync_status_to_failed_when_post_to_es_raises_and_error(self, mock_post, mock_logger, *_):
         error_message = 'failed to connect to network'
         mock_post.side_effect = RuntimeError(error_message)
         run()
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.FAILED)
         mock_logger.assert_called_with('Sync Failed: %s' % error_message)
 
-    @patch('eums.elasticsearch.synchroniser.timezone.now')
-    @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_set_sync_end_time_after_posting_to_elasticsearch(self, _, __, mock_post, mock_now):
+    @patch('eums.elasticsearch.synchroniser.timezone.now')
+    @patch('requests.post')
+    def test_should_set_sync_end_time_after_posting_to_elasticsearch(self, mock_post, mock_now, *_):
         fake_end_time = FakeDatetime.now()
         mock_now.return_value = fake_end_time
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
