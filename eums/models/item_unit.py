@@ -1,7 +1,8 @@
 from django.db import models
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class ItemUnit(models.Model):
+class ItemUnit(TimeStampedModel):
     name = models.CharField(max_length=255)
 
     class Meta:

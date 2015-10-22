@@ -1,9 +1,10 @@
 from django.db import models
 
 from eums.models import ItemUnit
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Item(models.Model):
+class Item(TimeStampedModel):
     description = models.CharField(max_length=255)
     material_code = models.CharField(max_length=255)
     unit = models.ForeignKey(ItemUnit, null=True)

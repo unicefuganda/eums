@@ -9,13 +9,6 @@ class RunQueueTest(TestCase):
     def tearDown(self):
         RunQueue.objects.all().delete()
 
-    def test_should_have_all_expected_fields(self):
-        run = RunQueue()
-        fields_in_run_queue = [field.attname for field in run._meta.fields]
-
-        for field in ['runnable_id', 'contact_person_id', 'status', 'run_delay']:
-            self.assertIn(field, fields_in_run_queue)
-
     def test_can_deque_next_run_for_a_particular_contact_person(self):
         contact_person_id = 'id'
         RunQueueFactory(contact_person_id=contact_person_id, status=RunQueue.STATUS.started)

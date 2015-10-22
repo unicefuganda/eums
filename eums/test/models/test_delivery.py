@@ -39,11 +39,6 @@ class DeliveryTest(TestCase):
     def tearDown(self):
         self.clean_up()
 
-    def test_should_have_all_expected_fields(self):
-        delivery = DeliveryFactory()
-        for expected_field in ['programme', 'delivery_date', 'confirmed']:
-            self.assertTrue(hasattr(delivery, expected_field))
-
     def test_should_compute_total_value_delivered_from_order_item_values(self):
         self.assertEqual(self.delivery.total_value, 280)
 

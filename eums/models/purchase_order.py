@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Count, Sum
 
 from eums.models import SalesOrder, DistributionPlanNode as DeliveryNode, PurchaseOrderItem, DistributionPlan
+from eums.models.time_stamped_model import TimeStampedModel
 
 
 class PurchaseOrderManager(models.Manager):
@@ -22,7 +23,7 @@ class PurchaseOrderManager(models.Manager):
         return self.model.objects.filter(id__in=order_ids)
 
 
-class PurchaseOrder(models.Model):
+class PurchaseOrder(TimeStampedModel):
     order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder)
     date = models.DateField(auto_now=False, null=True)

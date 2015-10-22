@@ -6,14 +6,6 @@ from eums.test.factories.programme_factory import ProgrammeFactory
 
 
 class DistributionReportTest(TestCase):
-    def test_should_have_all_expected_fields(self):
-        report = DistributionReport()
-        fields_in_report = report._meta._name_map
-
-        self.assertEqual(len(report._meta.fields), 6)
-        for field in ['consignee', 'programme', 'total_received', 'id', 'total_not_received', 'total_distributed']:
-            self.assertIn(field, fields_in_report)
-
     def test_string_representation_is_consignee_name_and_programme_name(self):
         consignee = ConsigneeFactory()
         programme = ProgrammeFactory()

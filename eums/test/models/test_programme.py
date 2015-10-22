@@ -9,14 +9,6 @@ from eums.test.factories.programme_factory import ProgrammeFactory
 
 
 class ProgrammeTest(TestCase):
-    def test_should_have_all_expected_fields(self):
-        fields_in_item = [field for field in Programme._meta._name_map]
-
-        self.assertEquals(len(Programme._meta.fields), 3)
-
-        for field in ['name', 'wbs_element_ex']:
-            self.assertIn(field, fields_in_item)
-
     def test_no_two_programmes_should_have_the_same_wbs_element(self):
         create_programme = lambda: ProgrammeFactory(wbs_element_ex='4380/A0/04/105')
         create_programme()

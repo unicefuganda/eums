@@ -3,9 +3,10 @@ from django.forms import model_to_dict
 from model_utils import Choices
 from model_utils.fields import StatusField
 from django.contrib.auth.models import User
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Consignee(models.Model):
+class Consignee(TimeStampedModel):
     TYPES = Choices('implementing_partner', 'middle_man', 'end_user')
     name = models.CharField(max_length=255)
     customer_id = models.CharField(max_length=255, null=True, blank=True)

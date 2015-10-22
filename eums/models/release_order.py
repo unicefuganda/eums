@@ -1,6 +1,7 @@
 from django.db import models
 
 from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, ReleaseOrderItem
+from eums.models.time_stamped_model import TimeStampedModel
 
 
 class ReleaseOrderManager(models.Manager):
@@ -19,7 +20,7 @@ class ReleaseOrderManager(models.Manager):
         return orders
 
 
-class ReleaseOrder(models.Model):
+class ReleaseOrder(TimeStampedModel):
     order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder, related_name='release_orders')
     purchase_order = models.ForeignKey(PurchaseOrder, null=True, related_name='release_orders')

@@ -9,14 +9,6 @@ class ConsigneeTest(TestCase):
         DistributionPlan.objects.all().delete()
         Consignee.objects.all().delete()
 
-    def test_should_have_all_expected_fields(self):
-        consignee = Consignee()
-        fields_in_consignee = consignee._meta._name_map
-
-        self.assertEqual(len(consignee._meta.fields), 8)
-        for field in ['name', 'customer_id', 'id', 'type', 'location', 'imported_from_vision', 'remarks', 'created_by_user']:
-            self.assertIn(field, fields_in_consignee)
-
     def test_string_representation_of_consignee_is_consignee_name(self):
         test_consignee = 'Test Consignee'
         consignee = Consignee(name=test_consignee)

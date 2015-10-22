@@ -10,14 +10,6 @@ class ArcTest(TestCase):
     def tearDown(self):
         self.clean_up()
 
-    def test_should_have_all_expected_fields(self):
-        arc = ArcFactory()
-        fields = arc._meta._name_map
-
-        self.assertEqual(len(arc._meta.fields), 4)
-        for field in ['source', 'target', 'quantity']:
-            self.assertIn(field, fields)
-
     def test_should_not_create_arc_with_source_and_destination_as_the_same_node(self):
         node = DeliveryNodeFactory()
         create_arc = lambda: ArcFactory(source=node, target=node)

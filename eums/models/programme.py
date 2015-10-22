@@ -1,7 +1,8 @@
 from django.db import models
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Programme(models.Model):
+class Programme(TimeStampedModel):
     name = models.CharField(max_length=255)
     wbs_element_ex = models.CharField(max_length=255, unique=True)
 

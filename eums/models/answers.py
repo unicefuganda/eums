@@ -5,9 +5,10 @@ from django.utils import timezone
 from eums.models import Run, Option
 from eums.models.question import TextQuestion, NumericQuestion, MultipleChoiceQuestion
 from eums.models import question_hooks
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Answer(models.Model):
+class Answer(TimeStampedModel):
     class Meta:
         abstract = True
 

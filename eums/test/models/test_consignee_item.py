@@ -18,12 +18,6 @@ class ConsigneeItemTest(TestCase):
     def setUp(self):
         PurchaseOrderItem.objects.all().delete()
 
-    def test_should_have_all_expected_fields(self):
-        fields_in_item = [field for field in ConsigneeItem._meta._name_map]
-        self.assertEquals(len(ConsigneeItem._meta.fields), 5)
-        for field in ['consignee', 'item', 'amount_received', 'deliveries']:
-            self.assertIn(field, fields_in_item)
-
     def test_should_get_available_balance_of_item_distributed_by_consignee(self):
         consignee = ConsigneeFactory()
         po_item = PurchaseOrderItemFactory()

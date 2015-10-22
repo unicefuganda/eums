@@ -28,13 +28,6 @@ class DeliveryNodeTest(TestCase):
     def tearDown(self):
         self.clean_up()
 
-    def test_should_have_all_expected_fields(self):
-        node = DeliveryNodeFactory()
-        for expected_field in ['distribution_plan', 'programme', 'item', 'tree_position', 'balance', 'acknowledged',
-                               'total_value',
-                               'parents', 'quantity']:
-            self.assertTrue(hasattr(node, expected_field))
-
     def test_should_create_itself_with_any_type_of_order_item(self):
         purchase_order_item = PurchaseOrderItemFactory()
         release_order_item = ReleaseOrderItemFactory()

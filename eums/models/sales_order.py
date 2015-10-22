@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Count
 
 from eums.models import Programme
+from eums.models.time_stamped_model import TimeStampedModel
 
 
 class SalesOrderManager(models.Manager):
@@ -15,7 +16,7 @@ class SalesOrderManager(models.Manager):
         return self.annotation().filter(release_order_count__gte=1)
 
 
-class SalesOrder(models.Model):
+class SalesOrder(TimeStampedModel):
     programme = models.ForeignKey(Programme)
     order_number = models.IntegerField(unique=True)
     date = models.DateField(auto_now=False)

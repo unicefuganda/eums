@@ -5,9 +5,10 @@ from django.db.models import Q
 from model_utils.fields import StatusField
 from model_utils import Choices
 from eums import settings
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Run(models.Model):
+class Run(TimeStampedModel):
     STATUS = Choices('scheduled', 'completed', 'expired', 'cancelled')
     scheduled_message_task_id = models.CharField(max_length=255)
     runnable = models.ForeignKey('Runnable')

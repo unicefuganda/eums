@@ -7,11 +7,6 @@ from eums.test.factories.question_factory import NumericQuestionFactory
 
 
 class FlowTest(TestCase):
-    def test_should_have_all_expected_fields(self):
-        flow = Flow()
-        for field in ['id', 'rapid_pro_id', 'end_nodes', 'questions']:
-            self.assertTrue(hasattr(flow, field))
-
     def test_should_tell_if_question_answer_combination_ends_the_flow(self):
         answer_1 = MultipleChoiceAnswerFactory()
         answer_2 = MultipleChoiceAnswerFactory()

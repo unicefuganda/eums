@@ -13,13 +13,6 @@ class QuestionTest(TestCase):
         self.multiple_choice_question = MultipleChoiceQuestionFactory(text='Whats your gender?', label='gender')
         self.text_question = TextQuestionFactory(text='Are you happy?', label="happiness")
 
-    def test_should_have_all_expected_fields(self):
-        question = Question()
-        fields_in_item = [field.attname for field in question._meta.fields]
-
-        for field in ['text', 'label', 'uuids', 'position']:
-            self.assertIn(field, fields_in_item)
-
     def test_questions_should_have_type_with_default_values(self):
         text_question = TextQuestionFactory()
         self.assertEqual(text_question.type, 'text')

@@ -3,9 +3,10 @@ import ast
 from django.db import models
 from djorm_pgarray.fields import TextArrayField
 from model_utils import Choices
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Question(models.Model):
+class Question(TimeStampedModel):
     LABEL = Choices('deliveryReceived', 'isDeliveryInGoodOrder', 'itemReceived', 'qualityOfProduct',
                     'satisfiedWithDelivery', 'additionalDeliveryComments', 'dateOfReceipt', 'additionalDeliveryComments')
 

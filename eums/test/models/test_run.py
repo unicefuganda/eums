@@ -21,14 +21,6 @@ class RunTest(TestCase):
         Run.objects.all().delete()
         DistributionPlanNode.objects.all().delete()
 
-    def test_should_have_all_expected_fields(self):
-        run = Run()
-        fields_in_run = [field.attname for field in run._meta.fields]
-        self.assertEqual(len(fields_in_run), 5)
-
-        for field in ['scheduled_message_task_id', 'runnable_id', 'status', 'phone']:
-            self.assertIn(field, fields_in_run)
-
     def test_should_get_current_run_for_consignee_with_run_with_status_scheduled(self):
         run = RunFactory(runnable=self.runnable)
 
