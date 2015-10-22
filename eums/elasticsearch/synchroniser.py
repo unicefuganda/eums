@@ -10,5 +10,8 @@ def run():
 
 
 def generate_nodes_to_sync():
-    last_sync_time = SyncInfo.last_successful_sync().start_time
+    last_sync = SyncInfo.last_successful_sync()
+    if not last_sync:
+        return DeliveryNode.objects.all()
+    last_sync_time = last_sync.start_time
     return DeliveryNode.objects.filter(created__gt=last_sync_time)
