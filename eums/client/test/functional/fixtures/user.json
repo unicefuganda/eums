@@ -112,7 +112,9 @@
             "customer_id": "L438000484",
             "type": "implementing_partner",
             "name": "WAKISO DHO",
-            "imported_from_vision": true
+            "imported_from_vision": true,
+            "modified": "2014-12-03T17:40:36.537",
+            "created": "2014-12-03T17:40:36.534"
         },
         "model": "eums.consignee",
         "pk": 1
