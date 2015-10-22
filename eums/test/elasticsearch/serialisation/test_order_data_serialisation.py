@@ -1,5 +1,5 @@
 from eums.elasticsearch.serialisers import serialise_nodes
-from eums.test.elasticsearch.serialisation_tests.serialisation_test_case import SerialisationTestCase
+from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory

@@ -1,6 +1,6 @@
 from eums.elasticsearch.serialisers import serialise_nodes
 from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, TextQuestion
-from eums.test.elasticsearch.serialisation_tests.serialisation_test_case import SerialisationTestCase
+from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.answer_factory import TextAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
