@@ -9,6 +9,7 @@ from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.synchroniser import generate_nodes_to_sync, run
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.helpers.fake_datetime import FakeDatetime
 
 
 class SynchroniserTest(TestCase):
@@ -53,7 +54,7 @@ class SynchroniserTest(TestCase):
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
     def test_should_set_last_sync_status_to_failed_when_post_to_elasticsearch_returns_non_200(self, _, __, mock_post):
-        mock_post.call_fake = FakeResponse({}, status_code=HTTP_400_BAD_REQUEST)
+        mock_post.return_value = FakeResponse({}, status_code=HTTP_400_BAD_REQUEST)
         run()
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.FAILED)
 
@@ -61,13 +62,23 @@ class SynchroniserTest(TestCase):
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
-    def test_should_set_last_sync_status_to_failed_when_post_to_elasticsearch_raises_and_error(self, _, __, mock_post,
-                                                                                               mock_logger):
+    def test_should_set_last_sync_status_to_failed_when_post_to_es_raises_and_error(self, _, a, mock_post, mock_logger):
         error_message = 'failed to connect to network'
         mock_post.side_effect = RuntimeError(error_message)
         run()
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.FAILED)
         mock_logger.assert_called_with('Sync Failed: %s' % error_message)
+
+    @patch('eums.elasticsearch.synchroniser.timezone.now')
+    @patch('requests.post')
+    @patch('eums.elasticsearch.synchroniser.serialise_nodes')
+    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    def test_should_set_sync_end_time_after_posting_to_elasticsearch(self, _, __, mock_post, mock_now):
+        fake_end_time = FakeDatetime.now()
+        mock_now.return_value = fake_end_time
+        mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
+        run()
+        self.assertEqual(SyncInfo.objects.last().end_time, fake_end_time)
 
     def test_should_include_all_nodes_on_first_sync(self):
         self.assertEqual(SyncInfo.objects.count(), 0)

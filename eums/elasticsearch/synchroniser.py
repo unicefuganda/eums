@@ -7,6 +7,7 @@ from rest_framework.status import HTTP_200_OK
 from eums.elasticsearch.serialisers import serialise_nodes
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.models import DistributionPlanNode as DeliveryNode
+from django.utils import timezone
 
 logger = get_task_logger(__name__)
 
@@ -38,4 +39,5 @@ def _push_to_elasticsearch(serialised_nodes, sync):
     except RuntimeError, error:
         sync.status = SyncInfo.STATUS.FAILED
         logger.error("Sync Failed: %s" % error.message)
+    sync.end_time = timezone.now()
     sync.save()
