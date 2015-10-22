@@ -25,7 +25,7 @@ def generate_nodes_to_sync():
     if not last_sync:
         return DeliveryNode.objects.all()
     last_sync_time = last_sync.start_time
-    return DeliveryNode.objects.filter(created__gt=last_sync_time)
+    return DeliveryNode.objects.filter(created__gte=last_sync_time)
 
 
 def _push_to_elasticsearch(serialised_nodes, sync):
