@@ -4,6 +4,7 @@ import datetime
 import celery
 from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
+from django.conf import settings
 
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -19,9 +20,6 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as Nod
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime, FakeDate
 
-from django.conf import settings
-
-datetime.datetime = FakeDatetime
 mock_celery = MockCelery()
 local_celery.app.task = mock_celery.task
 celery.task.periodic_task = MockPeriodicTask
@@ -33,7 +31,6 @@ from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
 
 
 class FlowSchedulerTest(TestCase):
-
     def setUp(self):
         settings.RAPIDPRO_LIVE = True
         self.contact = {'first_name': 'Test', 'last_name': 'User', 'phone': '+256 772 123456'}
@@ -116,7 +113,6 @@ class FlowSchedulerTest(TestCase):
                                                    item_description=node.item.item.description)
 
     def test_should_save_a_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
-
         schedule_run_for(self.node)
 
         run_set = self.node.run_set.all()
@@ -126,10 +122,15 @@ class FlowSchedulerTest(TestCase):
         self.assertEqual(run_set[0].scheduled_message_task_id, mock_celery.task_id)
 
     def test_should_schedule_flow_to_start_at_specific_time_after_expected_date_of_delivery(self):
-        schedule_run_for(self.node)
+        with patch('eums.services.flow_scheduler.datetime') as mock_datetime:
+            mock_datetime.datetime.now.return_value = FakeDatetime.now()
+            mock_datetime.datetime.combine.side_effect = datetime.datetime.combine
+            mock_datetime.datetime.min.time.side_effect = datetime.datetime.min.time
+            mock_datetime.timedelta.side_effect = datetime.timedelta
 
-        self.assertEqual(mock_celery.invoked_after, 604800.0)
+            schedule_run_for(self.node)
 
+            self.assertEqual(mock_celery.invoked_after, 604800.0)
 
     def test_should_schedule_flow_to_start_after_buffer_when_calculated_send_time_is_in_past(self):
         some_date = FakeDate.today() - datetime.timedelta(days=10)
@@ -209,5 +210,3 @@ class FlowSchedulerTest(TestCase):
 
         MockPeriodicTask.assert_called_with(crontab(minute=0, hour=0))
 
-
-reload(rapid_pro_facade)
