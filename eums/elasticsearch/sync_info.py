@@ -7,7 +7,7 @@ class SyncInfo(models.Model):
     STATUS = Choices('SUCCESSFUL', 'FAILED', 'RUNNING')
     start_time = models.DateTimeField(auto_now_add=True)
     end_time = models.DateTimeField(blank=True, null=True)
-    status = StatusField()
+    status = StatusField(default=STATUS.RUNNING)
 
     @staticmethod
     def last_successful_sync():
