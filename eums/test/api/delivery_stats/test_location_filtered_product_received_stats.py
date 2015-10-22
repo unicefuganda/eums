@@ -1,5 +1,4 @@
-from eums.fixtures.end_user_questions import *
-from eums.models import Run
+from eums.models import Run, MultipleChoiceQuestion
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
@@ -43,6 +42,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
     def setup_responses(self):
         DeliveryNode.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
+        from eums.fixtures.end_user_questions import seed_questions
         questions, options = seed_questions()
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
 

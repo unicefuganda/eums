@@ -1,5 +1,4 @@
 from eums.api.delivery_stats.ip_delivery_stats_endpoint import DeliveryState
-from eums.fixtures.ip_questions import *
 from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
@@ -66,6 +65,7 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
         DeliveryNode.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
         MultipleChoiceAnswer.objects.all().delete()
+        from eums.fixtures.ip_questions import seed_ip_questions
         questions, options, _ = seed_ip_questions()
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)

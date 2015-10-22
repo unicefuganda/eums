@@ -1,5 +1,4 @@
-from eums.fixtures.end_user_questions import *
-from eums.models import Run
+from eums.models import Run, MultipleChoiceQuestion
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
@@ -18,11 +17,10 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
 
     def test_should_get_number_of_successful_deliveries_from_only_the_latest_scheduled_or_completed_runs(self):
         canceled_run = RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.cancelled)
-        MultipleChoiceAnswerFactory(
-            run=canceled_run,
-            question=WAS_PRODUCT_RECEIVED,
-            value=PRODUCT_WAS_RECEIVED
-        )
+        from eums.fixtures.end_user_questions import WAS_PRODUCT_RECEIVED, PRODUCT_WAS_RECEIVED
+        MultipleChoiceAnswerFactory(run=canceled_run,
+                                    question=WAS_PRODUCT_RECEIVED,
+                                    value=PRODUCT_WAS_RECEIVED)
         response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
 
@@ -48,6 +46,7 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
         DeliveryNode.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()
 
+        from eums.fixtures.end_user_questions import seed_questions
         questions, options = seed_questions()
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
