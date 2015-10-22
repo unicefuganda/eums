@@ -42,14 +42,16 @@ class SynchroniserTest(TestCase):
         self.assertEqual(SyncInfo.objects.count(), 1)
 
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.convert_to_bulk_api_format')
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    def test_should_push_serialised_nodes_to_elasticsearch(self, mock_serialiser, mock_post, *_):
-        serialised_nodes = '{"some bulk api json": 100}'
-        mock_serialiser.return_value = serialised_nodes
+    def test_should_push_serialised_nodes_to_elasticsearch(self, mock_serialiser, mock_post, mock_converter, *_):
+        api_data = '{}'
+        mock_serialiser.return_value = {}
+        mock_converter.return_value = api_data
         url = '%s/_bulk' % settings.ELASTIC_SEARCH_URL
         run()
-        mock_post.assert_called_with(url, data=serialised_nodes)
+        mock_post.assert_called_with(url, data=api_data)
 
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')

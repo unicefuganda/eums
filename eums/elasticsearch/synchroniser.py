@@ -4,7 +4,7 @@ from celery.utils.log import get_task_logger
 from django.conf import settings
 import requests
 from rest_framework.status import HTTP_200_OK
-from eums.elasticsearch.serialisers import serialise_nodes
+from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.models import DistributionPlanNode as DeliveryNode
 from django.utils import timezone
@@ -31,7 +31,8 @@ def generate_nodes_to_sync():
 def _push_to_elasticsearch(serialised_nodes, sync):
     url = '%s/_bulk' % settings.ELASTIC_SEARCH_URL
     try:
-        response = requests.post(url, data=serialised_nodes)
+        formatted_data = convert_to_bulk_api_format(serialised_nodes)
+        response = requests.post(url, data=formatted_data)
         if response.status_code == HTTP_200_OK:
             sync.status = SyncInfo.STATUS.SUCCESSFUL
         else:

@@ -139,8 +139,3 @@ def convert_to_bulk_api_format(node_dicts):
         json_string += json.dumps(node_dict, default=_serialise_datetime)
         json_string += '\n'
     return json_string
-
-# serialised_nodes = serialise_nodes(DistributionPlanNode.objects.all())
-#
-# outfile = open('eums/elasticsearch/nodes.es', 'w')
-# outfile.write(_convert_to_bulk_api_format(serialised_nodes))
