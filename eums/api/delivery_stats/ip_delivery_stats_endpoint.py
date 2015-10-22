@@ -22,7 +22,11 @@ class IpDeliveryStatsEndpoint(APIView):
         super(IpDeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
+        programme_id = request.GET.get('programme')
         ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
+        if programme_id:
+            ip_nodes = ip_nodes.filter(programme=programme_id)
+
         data = self._aggregate_nodes_states(ip_nodes)
         return Response(data, status=200)
 

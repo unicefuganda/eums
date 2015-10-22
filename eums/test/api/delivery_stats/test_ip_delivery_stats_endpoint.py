@@ -1,11 +1,13 @@
 from eums.api.delivery_stats.ip_delivery_stats_endpoint import DeliveryState
-from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
+from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer, Programme, DistributionPlanNode
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 
@@ -20,18 +22,25 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
 
     def test_should_return_correct_json_object(self):
         response = self.client.get(ENDPOINT_URL)
-        self.assert_ip_delivery_stats(response)
-
-    def assert_ip_delivery_stats(self, response):
         expected_stats = [
             {'location': 'some location', 'numberOfDeliveries': 2,  'nonResponse': 1,
-             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green' },
+             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'},
             {'location': 'Other location', 'numberOfDeliveries': 1, 'nonResponse': 1,
              'numberReceived': 0, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 0, 'state': 'grey'}]
+        self.assert_ip_delivery_stats(response, expected_stats)
 
-        self.assertEqual(len(response.data), 2)
-        self.assertIn(expected_stats[0], response.data)
-        self.assertIn(expected_stats[1], response.data)
+    def test_should_filter_by_programme(self):
+        response = self.client.get('%s?programme=%s' % (ENDPOINT_URL, self.programme.id))
+
+        expected_stats = [
+            {'location': 'some location', 'numberOfDeliveries': 1,  'nonResponse': 0,
+             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+        self.assert_ip_delivery_stats(response, expected_stats)
+
+    def assert_ip_delivery_stats(self, response, expected_stats):
+        self.assertEqual(len(response.data), len(expected_stats))
+        for stat in expected_stats:
+            self.assertIn(stat, response.data)
 
     def test_should_return_yellow_when_number_of_deliveries_is_zero(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 0})
@@ -70,11 +79,16 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
 
+        self.programme = ProgrammeFactory(name='my-program')
+
+        distribution_plan = DeliveryFactory(programme=self.programme)
+
         ip_node_one = DeliveryNodeFactory(
             quantity=1000,
             location='some location',
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
-            track=True)
+            track=True,
+            distribution_plan=distribution_plan)
 
         ip_node_two = DeliveryNodeFactory(
             quantity=1000,
