@@ -52,11 +52,20 @@ describe('Module: Home', function () {
             expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
         });
 
-        it('should watch filter and reload ip-feedback', function(){
+        it('should watch filter-programme and reload ip-feedback', function () {
             scope.toggleIpView(true);
             scope.filter = {};
             scope.$apply();
             scope.filter = {programme: 2};
+            scope.$apply();
+            expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+        });
+
+        it('should watch filter-ip and reload ip-feedback', function () {
+            scope.toggleIpView(true);
+            scope.filter = {};
+            scope.$apply();
+            scope.filter = {ip: 2};
             scope.$apply();
             expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
         });
