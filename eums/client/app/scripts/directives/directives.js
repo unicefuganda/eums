@@ -298,7 +298,7 @@ angular.module('Directives', [])
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
-                    var id = consignee && parseInt(consignee.id);
+                    var id = consignee ? parseInt(consignee.id) : "";
                     ngModel.$setViewValue(String(id));
                     scope.$apply();
                 });
