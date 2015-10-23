@@ -37,6 +37,30 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
              'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
+    def test_should_filter_by_ip(self):
+        response = self.client.get('%s?ip=%s' % (ENDPOINT_URL, self.ip.id))
+
+        expected_stats = [
+            {'location': 'some location', 'numberOfDeliveries': 1,  'nonResponse': 0,
+             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+        self.assert_ip_delivery_stats(response, expected_stats)
+
+    def test_should_filter_by_both_ip_and_programme(self):
+        response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, self.ip.id, self.programme.id))
+
+        expected_stats = [
+            {'location': 'some location', 'numberOfDeliveries': 1,  'nonResponse': 0,
+             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+        self.assert_ip_delivery_stats(response, expected_stats)
+
+        non_existing_ip_id = 22222222
+        response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, non_existing_ip_id, self.programme.id))
+        self.assertEquals(0, len(response.data))
+
+        non_existing_programme_id = 33333333
+        response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, self.ip.id, non_existing_programme_id))
+        self.assertEquals(0, len(response.data))
+
     def assert_ip_delivery_stats(self, response, expected_stats):
         self.assertEqual(len(response.data), len(expected_stats))
         for stat in expected_stats:
@@ -80,6 +104,7 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
 
         self.programme = ProgrammeFactory(name='my-program')
+        self.ip = ConsigneeFactory()
 
         distribution_plan = DeliveryFactory(programme=self.programme)
 
@@ -88,7 +113,8 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
             location='some location',
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True,
-            distribution_plan=distribution_plan)
+            distribution_plan=distribution_plan,
+            consignee=self.ip)
 
         ip_node_two = DeliveryNodeFactory(
             quantity=1000,

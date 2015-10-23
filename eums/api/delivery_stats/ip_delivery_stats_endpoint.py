@@ -23,9 +23,12 @@ class IpDeliveryStatsEndpoint(APIView):
 
     def get(self, request, *args, **kwargs):
         programme_id = request.GET.get('programme')
+        selected_ip = request.GET.get('ip')
         ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
         if programme_id:
             ip_nodes = ip_nodes.filter(programme=programme_id)
+        if selected_ip:
+            ip_nodes = ip_nodes.filter(ip=selected_ip)
 
         data = self._aggregate_nodes_states(ip_nodes)
         return Response(data, status=200)
