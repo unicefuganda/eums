@@ -22,10 +22,9 @@ def run():
 
 
 def _push_to_elasticsearch(serialised_nodes, sync):
-    url = '%s/_bulk' % settings.ELASTIC_SEARCH_URL
     try:
         formatted_data = convert_to_bulk_api_format(serialised_nodes)
-        response = requests.post(url, data=formatted_data)
+        response = requests.post(settings.ELASTIC_SEARCH.BULK, data=formatted_data)
         if response.status_code == HTTP_200_OK:
             sync.status = SyncInfo.STATUS.SUCCESSFUL
         else:

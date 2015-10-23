@@ -1,12 +1,12 @@
-from celery.utils.log import get_task_logger
 from django.conf import settings
-import requests
+from elasticsearch import Elasticsearch
+from elasticsearch.helpers import scan
 
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.models import DistributionPlanNode as DeliveryNode, Consignee
 
-logger = get_task_logger(__name__)
+ES_SETTINGS = settings.ELASTIC_SEARCH
 
 
 def generate_nodes_to_sync():
@@ -26,17 +26,21 @@ def _find_new_nodes(last_sync):
 
 def _find_nodes_to_update(last_sync):
     if last_sync:
-        changed_consignee_ids = Consignee.objects.filter(modified__gte=last_sync.start_time).values_list('id', flat=True)
+        es = Elasticsearch([ES_SETTINGS.HOST])
+        changed_consignee_ids = Consignee.objects.filter(
+            modified__gte=last_sync.start_time
+        ).values_list('id', flat=True)
+
         query = {
             "fields": [],
             "filter": {
                 "terms": {
-                    "consignee.id": changed_consignee_ids
+                    "consignee.id": list(changed_consignee_ids)
                 }
             }
         }
-        url = '%s/delivery_node/_search' % settings.ELASTIC_SEARCH_URL
-        response = requests.post(url, json=query)
-        node_ids = [hit['_id'] for hit in response.json()['hits']['hits']]
+
+        scan_results = scan(es, query=query, index=ES_SETTINGS.INDEX, doc_type=ES_SETTINGS.NODE_TYPE)
+        node_ids = [hit['_id'] for hit in list(scan_results)]
         return DeliveryNode.objects.filter(pk__in=node_ids)
     return []

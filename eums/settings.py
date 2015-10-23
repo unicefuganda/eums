@@ -1,3 +1,4 @@
+from collections import namedtuple
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -109,7 +110,16 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend', 'rest_framework.filters.SearchFilter')
 }
 
-ELASTIC_SEARCH_URL = 'http://localhost:9200/eums'
+_es_settings = namedtuple('ES_SETTINGS', ['INDEX', 'NODE_TYPE', 'HOST', 'MAPPING', 'NODE_SEARCH', 'BULK'])
+_base_url = 'http://localhost:9200/'
+ELASTIC_SEARCH = _es_settings(
+    'eums',
+    'delivery_node',
+    _base_url,
+    '%s/_mapping' % _base_url,
+    '%s/delivery_node/_search' % _base_url,
+    '%s/_bulk' % _base_url,
+)
 
 # EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
 # MAILGUN_ACCESS_KEY = os.getenv('MAILGUN_ACCESS_KEY', '')

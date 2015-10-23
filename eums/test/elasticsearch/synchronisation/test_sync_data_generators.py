@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
+from elasticsearch import Elasticsearch
 from mock import patch
 from rest_framework.status import HTTP_200_OK
 
@@ -11,6 +12,8 @@ from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models import DistributionPlanNode as DeliveryNode
+
+ES_SETTINGS = settings.ELASTIC_SEARCH
 
 
 class SyncDataGeneratorsTest(TestCase):
@@ -38,8 +41,8 @@ class SyncDataGeneratorsTest(TestCase):
         self.assertIn(node_one, nodes_to_sync)
         self.assertIn(node_two, nodes_to_sync)
 
-    @patch('requests.post')
-    def test_should_add_node_related_to_changed_consignee_to_sync_data(self, mock_post):
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_consignee_to_sync_data(self, mock_scan):
         consignee = ConsigneeFactory(location='Old location')
         node = DeliveryNodeFactory(consignee=consignee)
 
@@ -49,24 +52,23 @@ class SyncDataGeneratorsTest(TestCase):
 
         consignee.location = 'New location'
         consignee.save()
-        es_response = FakeResponse({"hits": {"hits": [{"_id": node.id}]}}, status_code=HTTP_200_OK)
-        mock_post.return_value = es_response
-        url = '%s/delivery_node/_search' % settings.ELASTIC_SEARCH_URL
+        nodes_ids_to_update = [{"_id": node.id}]
+        mock_scan.return_value = nodes_ids_to_update
         expected_query = {'filter': {'terms': {'consignee.id': [consignee.id]}}, 'fields': []}
 
         nodes_to_sync = generate_nodes_to_sync()
 
-        call_args = mock_post.call_args
-
-        self.assertEqual(call_args[0], (url,))
-        self.assertEqual(str(call_args[1]['json']), str(expected_query))
+        call_args = mock_scan.call_args
+        self.assertEqual(call_args[1]['doc_type'], ES_SETTINGS.NODE_TYPE)
+        self.assertEqual(call_args[1]['query'], expected_query)
+        self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
         self.assertIn(node, nodes_to_sync)
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
     def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
-        url = '%s/_mapping/delivery_node/' % settings.ELASTIC_SEARCH_URL
+        url = '%s/delivery_node/' % settings.ELASTIC_SEARCH.MAPPING
         generate_nodes_to_sync()
         mock_post.assert_called_with(url, json=DELIVERY_NODE_MAPPING)
 

@@ -9,7 +9,7 @@ logger = get_task_logger(__name__)
 
 
 def setup_mappings():
-    url = '%s/_mapping/delivery_node/' % settings.ELASTIC_SEARCH_URL
+    url = '%s/delivery_node/' % settings.ELASTIC_SEARCH.MAPPING
     try:
         response = requests.post(url, json=DELIVERY_NODE_MAPPING)
         if response.status_code != HTTP_200_OK:
