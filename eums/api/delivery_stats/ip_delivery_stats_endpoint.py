@@ -8,7 +8,7 @@ from eums.models import Flow, Runnable, DistributionPlanNode, MultipleChoiceAnsw
 GRACE_PERIOD = 7
 
 X_PERCENT = 70
-STATE ={
+STATE = {
     'YELLOW': 'yellow',
     'GREY': 'grey',
     'RED': 'red',
@@ -24,11 +24,17 @@ class IpDeliveryStatsEndpoint(APIView):
     def get(self, request, *args, **kwargs):
         programme_id = request.GET.get('programme')
         selected_ip = request.GET.get('ip')
+        from_date = request.GET.get('from')
+        to_date = request.GET.get('to')
         ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
         if programme_id:
             ip_nodes = ip_nodes.filter(programme=programme_id)
         if selected_ip:
             ip_nodes = ip_nodes.filter(ip=selected_ip)
+        if from_date:
+            ip_nodes = ip_nodes.filter(delivery_date__gte=from_date)
+        if to_date:
+            ip_nodes = ip_nodes.filter(delivery_date__lte=to_date)
 
         data = self._aggregate_nodes_states(ip_nodes)
         return Response(data, status=200)
@@ -56,9 +62,9 @@ class DeliveryState:
         has_issues = answers.filter(question__label=Question.LABEL.isDeliveryInGoodOrder, value__text='No')
 
         data = {'location': self.location, 'numberOfDeliveries': nodes_in_location.count(),
-                  'nonResponse': non_responses.count(), 'numberReceived': number_received.count(),
-                  'numberNotReceived': number_not_received.count(), 'hasIssues': has_issues.count(),
-                  'noIssues': has_no_issues.count(), 'state': ''}
+                'nonResponse': non_responses.count(), 'numberReceived': number_received.count(),
+                'numberNotReceived': number_not_received.count(), 'hasIssues': has_issues.count(),
+                'noIssues': has_no_issues.count(), 'state': ''}
         data['state'] = self.get_state(data)
         return data
 
@@ -71,7 +77,7 @@ class DeliveryState:
     def get_state(data):
         if not data['numberOfDeliveries']:
             return STATE['YELLOW']
-        non_response_percent = 100 * data['nonResponse']/data['numberOfDeliveries']
+        non_response_percent = 100 * data['nonResponse'] / data['numberOfDeliveries']
         if non_response_percent > X_PERCENT:
             return STATE['GREY']
         if data['numberNotReceived'] > data['numberReceived']:

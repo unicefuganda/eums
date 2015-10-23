@@ -1,5 +1,7 @@
+import datetime
+
 from eums.api.delivery_stats.ip_delivery_stats_endpoint import DeliveryState
-from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer, Programme, DistributionPlanNode
+from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
@@ -10,6 +12,7 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
+from eums.test.helpers.fake_datetime import FakeDate
 
 ENDPOINT_URL = BACKEND_URL + 'delivery-stats/ip/'
 
@@ -22,35 +25,47 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
 
     def test_should_return_correct_json_object(self):
         response = self.client.get(ENDPOINT_URL)
-        expected_stats = [
-            {'location': 'some location', 'numberOfDeliveries': 2,  'nonResponse': 1,
-             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'},
-            {'location': 'Other location', 'numberOfDeliveries': 1, 'nonResponse': 1,
-             'numberReceived': 0, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 0, 'state': 'grey'}]
+        expected_stats = [{'location': 'some location', 'numberOfDeliveries': 2, 'nonResponse': 1, 'numberReceived': 1,
+                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'},
+                          {'location': 'Other location', 'numberOfDeliveries': 1, 'nonResponse': 1, 'numberReceived': 0,
+                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 0, 'state': 'grey'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_programme(self):
         response = self.client.get('%s?programme=%s' % (ENDPOINT_URL, self.programme.id))
 
-        expected_stats = [
-            {'location': 'some location', 'numberOfDeliveries': 1,  'nonResponse': 0,
-             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+        expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0,
+                           'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1,
+                           'state': 'green'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_ip(self):
         response = self.client.get('%s?ip=%s' % (ENDPOINT_URL, self.ip.id))
 
-        expected_stats = [
-            {'location': 'some location', 'numberOfDeliveries': 1,  'nonResponse': 0,
-             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+        expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0,
+                           'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1,
+                           'state': 'green'}]
+        self.assert_ip_delivery_stats(response, expected_stats)
+
+    def test_should_filter_by_from_date(self):
+        response = self.client.get('%s?from=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
+
+        expected_stats = [{'numberOfDeliveries': 2, 'location': 'some location', 'numberNotReceived': 0, 'hasIssues': 0,
+                           'nonResponse': 1, 'numberReceived': 1, 'state': 'green', 'noIssues': 1}]
+        self.assert_ip_delivery_stats(response, expected_stats)
+
+    def test_should_filter_by_to_date(self):
+        response = self.client.get('%s?to=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
+
+        expected_stats = [{'numberOfDeliveries': 1, 'location': 'Other location', 'numberNotReceived': 0,
+                           'hasIssues': 0, 'nonResponse': 1, 'numberReceived': 0, 'state': 'grey', 'noIssues': 0}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_both_ip_and_programme(self):
         response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, self.ip.id, self.programme.id))
 
-        expected_stats = [
-            {'location': 'some location', 'numberOfDeliveries': 1,  'nonResponse': 0,
-             'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+        expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0, 'numberReceived': 1,
+                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
         non_existing_ip_id = 22222222
@@ -108,18 +123,20 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
 
         distribution_plan = DeliveryFactory(programme=self.programme)
 
+        self.today = FakeDate.today()
         ip_node_one = DeliveryNodeFactory(
             quantity=1000,
             location='some location',
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True,
             distribution_plan=distribution_plan,
-            consignee=self.ip)
+            consignee=self.ip,
+            delivery_date=self.today + datetime.timedelta(days=3))
 
         ip_node_two = DeliveryNodeFactory(
             quantity=1000,
             location='Other location',
-            delivery_date='2014-08-18',
+            delivery_date=self.today,
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True)
 
@@ -133,7 +150,7 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
 
         non_response_node_one = DeliveryNodeFactory(
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
-            delivery_date='2014-08-18',
+            delivery_date=self.today + datetime.timedelta(days=4),
             location='some location',
             track=True,
             item=po_item)
