@@ -24,7 +24,8 @@ class HookTest(APITestCase):
     def tearDown(self):
         Alert.objects.all().delete()
 
-    def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self):
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
+    def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self, *_):
         uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
         question = MultipleChoiceQuestionFactory(uuids=[uuid], text='Was item received?', label='productReceived',
@@ -50,7 +51,8 @@ class HookTest(APITestCase):
         self.assertEqual(created_answer.value, yes_option)
         self.assertEqual(delivery.answers()[0]['value'], created_answer.value.text)
 
-    def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self):
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
+    def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self, *_):
         uuids = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
 
         question = MultipleChoiceQuestionFactory(
@@ -74,7 +76,8 @@ class HookTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(created_answer.value, no_option)
 
-    def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self):
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
+    def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self, *_):
         uuid = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
 
         TextQuestionFactory(uuids=[uuid], text='What date was it received?', label='dateOfReceipt',
@@ -91,7 +94,8 @@ class HookTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(created_answer.value, 'Some Text')
 
-    def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self):
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
+    def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self, *_):
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         NumericQuestionFactory(uuids=[uuid], text='How much was received?', label='amountReceived',
@@ -108,9 +112,10 @@ class HookTest(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(created_answer.value, 42)
 
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
-    def test_should_dequeue_next_node_when_question_is_final(self, mock_run_queue_dequeue, mock_schedule_next_run):
+    def test_should_dequeue_next_node_when_question_is_final(self, mock_run_queue_dequeue, mock_schedule_next_run, *_):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
@@ -130,10 +135,11 @@ class HookTest(APITestCase):
 
         mock_schedule_next_run.assert_called_with(node)
 
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_mark_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue,
-                                                                mock_schedule_next_run):
+                                                                mock_schedule_next_run, *_):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
@@ -156,10 +162,11 @@ class HookTest(APITestCase):
         run = Run.objects.get(id=run.id)
         self.assertEqual(run.status, Run.STATUS.completed)
 
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_not_mark_run_as_complete_when_question_is_not_final(self, mock_run_queue_dequeue,
-                                                                        mock_schedule_next_run):
+                                                                        mock_schedule_next_run, *_):
         mock_schedule_next_run.return_value = None
 
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
@@ -181,9 +188,10 @@ class HookTest(APITestCase):
         run = Run.objects.get(id=run.id)
         self.assertEqual(run.status, original_status)
 
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
-    def test_should_mark_run_returned_by_dequeue_as_started(self, mock_run_queue_dequeue, mock_schedule_next_run):
+    def test_should_mark_run_returned_by_dequeue_as_started(self, mock_run_queue_dequeue, mock_schedule_next_run, *_):
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         mock_schedule_next_run.return_value = None
@@ -208,12 +216,13 @@ class HookTest(APITestCase):
 
         self.assertEqual(run_returned_by_dequeue.status, RunQueue.STATUS.started)
 
+    @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     @patch('eums.services.response_alert_handler.ResponseAlertHandler.process')
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_call_alert_handler_when_last_question_answered(self, mock_run_queue_dequeue,
                                                                    mock_schedule_next_run,
-                                                                   mock_response_alert_handler_process):
+                                                                   mock_response_alert_handler_process, *_):
         question = NumericQuestionFactory(uuids=['1234'], text='some text', label='someLabel', flow=self.flow)
 
         node = DeliveryNodeFactory()

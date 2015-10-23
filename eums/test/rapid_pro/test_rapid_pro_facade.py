@@ -32,8 +32,9 @@ class RapidProFacadeTestWithRapidProLive(TestCase):
         self.runs_url = settings.RAPIDPRO_URLS['RUNS']
         self.fake_json = [{"run": 1, "phone": contact['phone']}]
 
+    @patch('eums.rapid_pro.rapid_pro_facade.logger.info')
     @patch('requests.post')
-    def test_should_start_a_flow_run_for_a_contact(self, mock_post):
+    def test_should_start_a_flow_run_for_a_contact(self, mock_post, *_):
         mock_post.return_value = FakeResponse(self.fake_json, 201)
         expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN,
                             'Content-Type': 'application/json'}
@@ -53,8 +54,9 @@ class RapidProFacadeTestWithRapidProNotLive(TestCase):
         settings.RAPIDPRO_LIVE = False
         self.flow = FlowFactory()
 
+    @patch('eums.rapid_pro.rapid_pro_facade.logger.info')
     @patch('eums.rapid_pro.fake_endpoints.runs.post')
-    def test_should_post_to_fake_rapid_pro_when_starting_a_run(self, mock_post):
+    def test_should_post_to_fake_rapid_pro_when_starting_a_run(self, mock_post, *_):
         mock_post.return_value = None
         start_delivery_run(contact_person=contact, item_description=item_description, sender=sender,
                            flow=self.flow.rapid_pro_id)
