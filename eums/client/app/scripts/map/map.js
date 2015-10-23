@@ -108,6 +108,8 @@
                         programme: '',
                         ip: '',
                         year: '',
+                        from: '',
+                        to: '',
                         received: true,
                         notDelivered: true,
                         receivedWithIssues: true
@@ -276,7 +278,6 @@
             link: function (scope, element, attrs) {
                 MapService.renderEndUserView(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
-                    scope.filter = {};
                     scope.programme = '';
                     scope.notDeliveredChecked = false;
                     scope.deliveredChecked = null;
@@ -289,8 +290,7 @@
                 scope.clearFilters = function () {
                     $("#select-program").select2("val", "");
                     $("#select-ip").select2("val", "");
-                    scope.filter = {programme: '', ip: '', year: ''};
-                    scope.dateFilter = {from: '', to: ''};
+                    scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
                     scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
                     scope.data.allResponsesLocationMap = scope.reponsesFromDb;
                 };
@@ -325,7 +325,6 @@
                 link: function (scope) {
                     scope.$watchCollection('filter', function (newValue) {
                         var filteredResponses;
-                        scope.dateFilter = {from: '', to: ''};
                         var responsesToPlot = [];
                         if (!newValue.programme && !newValue.ip && (scope.programmeFilter || scope.ipFilter)) {
                             scope.data.allResponsesLocationMap = scope.reponsesFromDb
@@ -365,7 +364,7 @@
 
 
                     scope.$watch('data.allResponsesLocationMap', function () {
-                        if (window.map.renderEndUserView) {
+                        if (window.map.renderEndUserView && !scope.ipView) {
                             window.map.addHeatMap(scope);
                         }
 
@@ -449,7 +448,6 @@
                         var receivedResponses = [];
                         var notReceivedResponses = [];
                         var receivedResponsesWithIssues = [];
-                        scope.dateFilter = {from: '', to: ''};
 
                         DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                             filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
@@ -520,7 +518,7 @@
                 restrict: 'A',
                 scope: false,
                 link: function (scope) {
-                    scope.$watchCollection('[dateFilter.from, dateFilter.to]', function (newDates) {
+                    scope.$watchCollection('[filter.from, filter.to]', function (newDates) {
                         var receivedResponses = [];
                         var fromDate = moment(newDates[0]);
                         var toDate = moment(newDates[1]);
@@ -530,7 +528,6 @@
                             scope.reponsesFromDb : scope.allResponsesMap;
 
                         function isWithinDateRange(dateOfReceipt) {
-
                             var dateRange = moment().range(fromDate, toDate);
                             return dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD-MMM-YYYY'));
                         }

@@ -49,7 +49,7 @@ angular.module('Directives', [])
 
                 element.change(function () {
                     var data = element.select2('data');
-                    var id = data? data.id: undefined;
+                    var id = data ? data.id : undefined;
                     ngModel.$setViewValue(id);
                     scope.$apply();
                 });
@@ -230,7 +230,7 @@ angular.module('Directives', [])
 
                 $(element).change(function () {
                     var programme = $(element).select2('data');
-                    ngModel.$setViewValue(programme && programme.id);
+                    ngModel.$setViewValue(programme && String(programme.id));
                     scope.$apply();
                 });
 
@@ -266,7 +266,7 @@ angular.module('Directives', [])
                 });
 
                 elem.change(function () {
-                    ngModel.$setViewValue($(elem).select2('data').id);
+                    ngModel.$setViewValue(String($(elem).select2('data').id));
                     scope.$apply();
                 });
             }
@@ -298,7 +298,8 @@ angular.module('Directives', [])
 
                 element.change(function () {
                     var consignee = $(element).select2('data');
-                    ngModel.$setViewValue(consignee && consignee.id);
+                    var id = consignee && parseInt(consignee.id);
+                    ngModel.$setViewValue(String(id));
                     scope.$apply();
                 });
 

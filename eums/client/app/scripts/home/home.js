@@ -3,11 +3,10 @@
 angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrderItem', 'PurchaseOrder', 'eums.map',
     'Loader', 'map.layers'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
-        $scope.filter = {programme: '', ip: '', year: ''};
+        $scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
         $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
 
         $scope.datepicker = {from: false, to: false};
-        $scope.dateFilter = {from: '', to: ''};
         $scope.totalStats = {};
         $scope.allResponses = {};
         $scope.allResponsesFromDb = {};
@@ -41,14 +40,11 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
             MapService.addHeatMap($scope);
         };
 
-        var firstLoad = true;
-        $scope.$watchCollection('filter', function () {
-            if (!firstLoad && $scope.ipView) {
+        $scope.$watchCollection('filter', function (newFilter, oldFilter) {
+            if (!Object.equal(newFilter, oldFilter) && $scope.ipView) {
                 $scope.redrawMapColors();
             }
-            firstLoad = false;
         }, true);
-
     })
     .controller('ResponseController', function ($scope, $q, $routeParams, DeliveryService, PurchaseOrderService,
                                                 DeliveryNodeService, PurchaseOrderItemService) {
