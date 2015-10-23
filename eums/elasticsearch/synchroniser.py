@@ -6,7 +6,7 @@ import requests
 from rest_framework.status import HTTP_200_OK
 from django.utils import timezone
 
-from eums.elasticsearch.changes_generators import generate_nodes_to_sync
+from eums.elasticsearch.sync_data_generators import generate_nodes_to_sync
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format
 from eums.elasticsearch.sync_info import SyncInfo
 
