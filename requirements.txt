@@ -28,7 +28,7 @@ pydot==1.0.2
 pyparsing==1.5.7
 pytz==2014.7
 redis==2.10.3
-requests==2.4.1
+requests==2.8.1
 six==1.8.0
 wsgiref==0.1.2
 xlrd==0.9.3

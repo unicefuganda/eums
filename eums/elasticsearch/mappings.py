@@ -1,4 +1,3 @@
-//PUT eums/_mapping/delivery_node/
 {
   "delivery_node": {
     "properties": {
