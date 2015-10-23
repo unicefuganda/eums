@@ -1,14 +1,13 @@
-import json
 from django.conf import settings
-
 from django.test import TestCase
 from django.utils import timezone
 from mock import patch
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 
+from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.elasticsearch.synchroniser import generate_nodes_to_sync, run
+from eums.elasticsearch.synchroniser import run
+from eums.elasticsearch.changes_generators import generate_nodes_to_sync
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
