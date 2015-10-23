@@ -1,9 +1,11 @@
+import json
 from django.conf import settings
 
 from django.test import TestCase
 from django.utils import timezone
 from mock import patch
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.synchroniser import generate_nodes_to_sync, run
@@ -91,7 +93,9 @@ class SynchroniserTest(TestCase):
         run()
         self.assertEqual(SyncInfo.objects.last().end_time, fake_end_time)
 
-    def test_should_include_all_nodes_on_first_sync(self):
+    @patch('requests.post')
+    def test_should_include_all_nodes_on_first_sync(self, mock_post):
+        mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
         self.assertEqual(SyncInfo.objects.count(), 0)
         node_one = DeliveryNodeFactory()
         node_two = DeliveryNodeFactory()
@@ -101,6 +105,14 @@ class SynchroniserTest(TestCase):
         self.assertEqual(nodes_to_sync.count(), 2)
         self.assertIn(node_one, nodes_to_sync)
         self.assertIn(node_two, nodes_to_sync)
+
+    @patch('eums.elasticsearch.synchroniser.logger.error')
+    @patch('requests.post')
+    def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
+        mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
+        url = '%s/_mapping/delivery_node/' % settings.ELASTIC_SEARCH_URL
+        generate_nodes_to_sync()
+        mock_post.assert_called_with(url, json=DELIVERY_NODE_MAPPING)
 
     '''
         TODO This is failing when all tests are run because we loose the time aspect of the 'created' field when
