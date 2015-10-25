@@ -19,7 +19,7 @@
                     <div class="district-stats-subheader">
                         <ul class="list-unstyled">
                             <li class="stats-subheader-bold-grey stats-large-number-font">
-                                {{ data.totalStats.totalValueOfDeliveries | currency}}
+                                {{ data.totalStats.totalValueOfDeliveries | compactCurrency}}
                             </li>
                             <li class="stats-subheader-blue">Total supplies sent</li>
                             <li class="stats-text-grey">{{ data.totalStats.totalNumberOfDeliveries }} deliveries</li>
@@ -95,7 +95,9 @@
                                         {{ data.totalStats.totalValueOfNonResponseToProductReceived | compactNumber }}
                                     </span>
                                 </li>
-                                <li class="stats-text-grey">{{ data.totalStats.numberOfNonResponseToProductReceived }} nonresponses</li>
+                                <li class="stats-text-grey">
+                                    {{ data.totalStats.numberOfNonResponseToProductReceived }} nonresponses
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -107,9 +109,13 @@
 
                     <div class="district-stats-subheader">
                         <ul class="list-unstyled">
-                            <li class="stats-subheader-bold-grey stats-large-number-font">{{ data.totalStats.totalValueOfSuccessfulDeliveries | currency}}</li>
+                            <li class="stats-subheader-bold-grey stats-large-number-font">
+                                {{ data.totalStats.totalValueOfSuccessfulDeliveries | compactCurrency}}
+                            </li>
                             <li class="stats-subheader-blue">Total supplies received</li>
-                            <li class="stats-text-grey">{{ data.totalStats.numberOfSuccessfulProductDeliveries }} deliveries</li>
+                            <li class="stats-text-grey">
+                                {{ data.totalStats.numberOfSuccessfulProductDeliveries }} deliveries
+                            </li>
                         </ul>
                     </div>
 
