@@ -28,6 +28,7 @@
 
                     <div class="district-stats-left-section">
                         <div class="pull-left">
+                            <div>Received</div>
                             <div>
                                 <percent-display
                                         percent="data.totalStats.percentageValueOfSuccessfulDeliveries | number:0"
@@ -35,7 +36,6 @@
                                         colors="white #1CABE2">
                                 </percent-display>
                             </div>
-                            <div>Received</div>
                         </div>
                         <div class="district-stats-amount-responses pull-left">
                             <ul class="list-unstyled">
@@ -53,6 +53,7 @@
                     </div>
                     <div class="district-stats-left-section">
                         <div class="pull-left">
+                            <div>Not received</div>
                             <div>
                                 <percent-display
                                         percent="data.totalStats.percentageValueOfUnsuccessfulDeliveries | number:0"
@@ -60,7 +61,6 @@
                                         colors="white #D9534F">
                                 </percent-display>
                             </div>
-                            <div>Not received</div>
                         </div>
                         <div class="district-stats-amount-responses pull-left">
                             <ul class="list-unstyled">
@@ -78,6 +78,7 @@
                     </div>
                     <div class="district-stats-left-section">
                         <div class="pull-left">
+                            <div>No response</div>
                             <div>
                                 <percent-display
                                         percent="data.totalStats.percentageValueOfNonResponseToProductReceived | number:0"
@@ -85,7 +86,6 @@
                                         colors="white #7d7d7d">
                                 </percent-display>
                             </div>
-                            <div>No response</div>
                         </div>
                         <div class="district-stats-amount-responses pull-left">
                             <ul class="list-unstyled">
@@ -125,6 +125,7 @@
 
                         <div class="district-stats-detailed-section">
                             <div class="district-stats-detailed-section-slice pull-left">
+                                <div>In Good Order</div>
                                 <div class="percentage-graphic">
                                     <percent-display
                                             percent="data.totalStats.percentageValueOfDeliveriesInGoodOrder | number:0"
@@ -132,12 +133,12 @@
                                             colors="white #1CABE2">
                                     </percent-display>
                                 </div>
-                                <div>In Good Order</div>
                                 <div class="stats-med-number-font">
                                     {{ data.totalStats.totalValueOfDeliveriesInGoodOrder | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
+                                <div>In Bad Order</div>
                                 <div class="percentage-graphic">
                                     <percent-display
                                             percent="data.totalStats.percentageValueOfDeliveriesInBadOrder | number:0"
@@ -145,12 +146,12 @@
                                             colors="white #D9534F">
                                     </percent-display>
                                 </div>
-                                <div>In Bad Order</div>
                                 <div class="stats-med-number-font">
                                     {{ data.totalStats.totalValueOfDeliveriesInBadOrder | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
+                                <div>No response</div>
                                 <div class="percentage-graphic">
                                     <percent-display
                                             percent="data.totalStats.percentageValueOfNonResponseToQualityOfProduct | number:0"
@@ -158,7 +159,6 @@
                                             colors="white #7d7d7d">
                                     </percent-display>
                                 </div>
-                                <div>No response</div>
                                 <div class="stats-med-number-font">
                                     {{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | compactCurrency}}
                                 </div>
@@ -168,6 +168,7 @@
                         <div class="district-stats-detailed-section-label">Delivery Satisfaction</div>
                         <div class="district-stats-detailed-section">
                             <div class="district-stats-detailed-section-slice pull-left">
+                                <div>Satisfied</div>
                                 <div class="percentage-graphic">
                                     <percent-display
                                             percent="data.totalStats.percentageValueOfSatisfactoryDeliveries | number:0"
@@ -175,12 +176,12 @@
                                             colors="white #1CABE2">
                                     </percent-display>
                                 </div>
-                                <div>Satisfied</div>
                                 <div class="stats-med-number-font">
                                     {{ data.totalStats.totalValueOfSatisfactoryDeliveries | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
+                                <div>Not satisfied</div>
                                 <div class="percentage-graphic">
                                     <percent-display
                                             percent="data.totalStats.percentageValueOfUnsatisfactoryDeliveries | number:0"
@@ -188,12 +189,12 @@
                                             colors="white #D9534F">
                                     </percent-display>
                                 </div>
-                                <div>Not satisfied</div>
                                 <div class="stats-med-number-font">
                                     {{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | compactCurrency}}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
+                                <div>No response</div>
                                 <div class="percentage-graphic">
                                     <percent-display
                                             percent="data.totalStats.percentageValueOfNonResponseToSatisfactionWithProduct | number:0"
@@ -201,7 +202,6 @@
                                             colors="white #7d7d7d">
                                     </percent-display>
                                 </div>
-                                <div>No response</div>
                                 <div class="stats-med-number-font">
                                     {{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | compactCurrency}}
                                 </div>
