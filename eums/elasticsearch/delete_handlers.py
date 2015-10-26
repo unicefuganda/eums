@@ -25,23 +25,21 @@ def on_delete_run(sender, **kwargs):
 
 @receiver(post_delete, sender=TextAnswer)
 def on_delete_text_answer(sender, **kwargs):
-    answer = kwargs['instance']
-    _mark_relevant_node_for_sync(answer)
+    _mark_relevant_node_for_sync(kwargs)
 
 
 @receiver(post_delete, sender=NumericAnswer)
 def on_delete_numeric_answer(sender, **kwargs):
-    answer = kwargs['instance']
-    _mark_relevant_node_for_sync(answer)
+    _mark_relevant_node_for_sync(kwargs)
 
 
 @receiver(post_delete, sender=MultipleChoiceAnswer)
 def on_delete_multiple_choice_answer(sender, **kwargs):
+    _mark_relevant_node_for_sync(kwargs)
+
+
+def _mark_relevant_node_for_sync(kwargs):
     answer = kwargs['instance']
-    _mark_relevant_node_for_sync(answer)
-
-
-def _mark_relevant_node_for_sync(answer):
     delete_records = _get_or_create_delete_records()
     if not Delivery.objects.filter(pk=answer.run.runnable_id).exists():
         delete_records.nodes_with_deleted_dependencies.append(answer.run.runnable_id)

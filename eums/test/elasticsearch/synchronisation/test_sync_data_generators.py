@@ -3,6 +3,7 @@ from django.test import TestCase
 from django.utils import timezone
 from mock import patch
 from rest_framework.status import HTTP_200_OK
+from eums.elasticsearch.delete_records import DeleteRecords
 
 from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 from eums.elasticsearch.sync_info import SyncInfo
@@ -33,6 +34,7 @@ class SyncDataGeneratorsTest(TestCase):
     @classmethod
     def setUpClass(cls):
         DeliveryNode.objects.all().delete()
+        DeleteRecords.objects.all().delete()
 
     def tearDown(self):
         SyncInfo.objects.all().delete()
@@ -40,6 +42,7 @@ class SyncDataGeneratorsTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         DeliveryNode.objects.all().delete()
+        DeleteRecords.objects.all().delete()
 
     @patch('requests.post')
     def test_should_include_all_nodes_on_first_sync(self, mock_post):

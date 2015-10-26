@@ -16,6 +16,7 @@ class SynchroniserTest(TestCase):
     @classmethod
     def setUpClass(cls):
         DeliveryNode.objects.all().delete()
+        DeleteRecords.objects.all().delete()
 
     def tearDown(self):
         SyncInfo.objects.all().delete()
@@ -23,6 +24,7 @@ class SynchroniserTest(TestCase):
     @classmethod
     def tearDownClass(cls):
         DeliveryNode.objects.all().delete()
+        DeleteRecords.objects.all().delete()
 
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
