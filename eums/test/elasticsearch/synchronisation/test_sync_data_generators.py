@@ -222,6 +222,25 @@ class SyncDataGeneratorsTest(TestCase):
             mock_scan
         )
 
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_option_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        question = MultipleChoiceQuestionFactory()
+        option = OptionFactory(question=question, text='Yes')
+        MultipleChoiceAnswerFactory(
+            value=option,
+            question=question,
+            run=RunFactory(runnable=node)
+        )
+
+        self.check_update_happens(
+            node,
+            option,
+            {'field': 'text', 'value': 'Yes was received'},
+            {'term': {'responses.value_id': [option.id]}},
+            mock_scan
+        )
+
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
     def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
