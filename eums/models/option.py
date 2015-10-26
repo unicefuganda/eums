@@ -1,8 +1,9 @@
 from django.db import models
 from eums.models.question import MultipleChoiceQuestion
+from eums.models.time_stamped_model import TimeStampedModel
 
 
-class Option(models.Model):
+class Option(TimeStampedModel):
     UNCATEGORISED = 'UNCATEGORISED'
 
     text = models.CharField(max_length=255)
