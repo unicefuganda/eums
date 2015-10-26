@@ -27,7 +27,7 @@ def _push_to_elasticsearch(nodes_to_update, nodes_to_delete, sync):
         response = requests.post(settings.ELASTIC_SEARCH.BULK, data=formatted_data)
         if response.status_code == HTTP_200_OK:
             sync.status = SyncInfo.STATUS.SUCCESSFUL
-            _clear_delete_records(nodes_to_delete)
+            _clear_delete_records(nodes_to_update, nodes_to_delete)
         else:
             sync.status = SyncInfo.STATUS.FAILED
     except RuntimeError, error:
@@ -37,9 +37,14 @@ def _push_to_elasticsearch(nodes_to_update, nodes_to_delete, sync):
     sync.save()
 
 
-def _clear_delete_records(deleted_nodes):
+def _clear_delete_records(updated_nodes, deleted_nodes):
     delete_records = DeleteRecords.objects.first()
     if delete_records:
+        for node in updated_nodes:
+            nodes_with_deleted_dependencies = delete_records.nodes_with_deleted_dependencies or []
+            if node in nodes_with_deleted_dependencies:
+                nodes_with_deleted_dependencies.remove(node)
         for node in deleted_nodes:
             delete_records.nodes_to_delete.remove(node)
         delete_records.save()
+

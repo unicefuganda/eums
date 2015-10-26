@@ -245,7 +245,6 @@ class SyncDataGeneratorsTest(TestCase):
     def test_should_add_node_related_to_changed_run_to_sync_data(self, mock_scan):
         node = DeliveryNodeFactory()
         run = RunFactory(runnable=node)
-        TextAnswerFactory(run=run)
 
         self.check_update_happens(
             node,
@@ -280,6 +279,13 @@ class SyncDataGeneratorsTest(TestCase):
 
         self.assertIn(node, nodes_to_sync)
 
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_deleted_run_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        run = RunFactory(runnable=node)
+        self.check_update_happens(node, run, delete=True, mock_scan=mock_scan,
+                                  expected_match_clause={'term': {'id': [node.id]}})
+
     def test_should_delete_node_from_elasticsearch_when_deleted(self):
         node = DeliveryNodeFactory()
         SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
@@ -297,13 +303,17 @@ class SyncDataGeneratorsTest(TestCase):
         list_nodes_to_update()
         mock_post.assert_called_with(url, json=DELIVERY_NODE_MAPPING)
 
-    def check_update_happens(self, node, dependency, update_params, expected_match_clause, mock_scan):
+    def check_update_happens(self, node, dependency, update_params=None, expected_match_clause=None, mock_scan=None,
+                             delete=False):
         SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
         nodes_to_sync = list_nodes_to_update()
         self.assertNotIn(node, nodes_to_sync)
 
-        setattr(dependency, update_params['field'], update_params['value'])
-        dependency.save()
+        if delete:
+            dependency.delete()
+        else:
+            setattr(dependency, update_params['field'], update_params['value'])
+            dependency.save()
 
         nodes_ids_to_update = [{"_id": node.id}]
         mock_scan.return_value = nodes_ids_to_update

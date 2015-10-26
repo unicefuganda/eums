@@ -86,6 +86,7 @@ def _build_match_terms(last_sync):
         match_term("responses.id", text_answer_ids + multiple_choice_answer_ids + numeric_answer_ids),
         match_term("responses.value_id", option_ids),
         match_term("responses.run.id", run_ids),
+        match_term("id", _find_nodes_affected_by_dependency_deletion()),
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
@@ -97,3 +98,8 @@ def _build_match_terms(last_sync):
 
 def _find_changes_for_model(model, last_sync_time):
     return list(model.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True))
+
+
+def _find_nodes_affected_by_dependency_deletion():
+    delete_records = DeleteRecords.objects.first()
+    return delete_records.nodes_with_deleted_dependencies if delete_records else []
