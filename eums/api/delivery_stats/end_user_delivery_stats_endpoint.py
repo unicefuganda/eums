@@ -38,8 +38,8 @@ class EndUserDeliveryStatsEndpoint(APIView):
         super(EndUserDeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
-        consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
-        self.stats_search_data = IpStatsSearchData() if consignee_type == DeliveryNode.IMPLEMENTING_PARTNER \
+        tree_position = request.GET.get('treePosition', DeliveryNode.END_USER)
+        self.stats_search_data = IpStatsSearchData() if tree_position == DeliveryNode.IMPLEMENTING_PARTNER \
             else EndUserStatsSearchData()
         self.location = request.GET.get('location')
         self.ip = request.GET.get('ip')

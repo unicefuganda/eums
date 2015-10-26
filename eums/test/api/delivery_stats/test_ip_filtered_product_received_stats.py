@@ -19,11 +19,11 @@ class ProductReceivedStatsForIPTest(DeliveryStatsTestCase):
         self.setup_responses()
 
     def test_check_that_other_location_data_is_present(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        response = self.client.get('%s?treePosition=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
 
     def test_should_provide_product_received_question_stats_for_an_ip(self):
-        response = self.client.get('%s?consigneeType=END_USER&ip=%s' % (ENDPOINT_URL, self.selected_ip.id))
+        response = self.client.get('%s?treePosition=END_USER&ip=%s' % (ENDPOINT_URL, self.selected_ip.id))
         self.assert_delivery_stats_are_filtered_for_selected_ip(response)
 
     def test_should_provide_only_relevant_stats_for_logged_in_ip(self):

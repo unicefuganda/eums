@@ -18,11 +18,11 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
         self.setup_responses()
 
     def test_check_that_other_location_data_is_present(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        response = self.client.get('%s?treePosition=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
 
     def test_should_product_received_question_stats_for_a_location(self):
-        response = self.client.get('%s?consigneeType=END_USER&location=%s' % (ENDPOINT_URL, self.selected_location.upper()))
+        response = self.client.get('%s?treePosition=END_USER&location=%s' % (ENDPOINT_URL, self.selected_location.upper()))
 
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 3)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 1000)

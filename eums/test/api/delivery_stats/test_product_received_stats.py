@@ -21,11 +21,11 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
         MultipleChoiceAnswerFactory(run=canceled_run,
                                     question=WAS_PRODUCT_RECEIVED,
                                     value=PRODUCT_WAS_RECEIVED)
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        response = self.client.get('%s?treePosition=END_USER' % ENDPOINT_URL)
         self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 2)
 
     def test_should_product_received_question_stats(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        response = self.client.get('%s?treePosition=END_USER' % ENDPOINT_URL)
 
         self.assertEqual(response.data.get('totalNumberOfDeliveries'), 6)
         self.assertEqual(response.data.get('totalValueOfDeliveries'), 2100)

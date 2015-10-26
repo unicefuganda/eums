@@ -46,7 +46,8 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
         };
     }).factory('Layer', function (DeliveryService, DeliveryStatsService) {
         function changeGlobalStats(layerName, scope) {
-            var filter = layerName? {location: layerName} : {};
+            var treePosition = scope.ipView? 'IMPLEMENTING_PARTNER': 'END_USER';
+            var filter = layerName? {location: layerName, treePosition: treePosition} : {treePosition: treePosition};
             scope.$apply(function () {
                 DeliveryStatsService.getStats(filter).then(function(responses){
                     scope.data.totalStats =responses.data;

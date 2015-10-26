@@ -25,7 +25,7 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
         self.setup_responses()
 
     def test_should_product_received_question_stats(self):
-        response = self.client.get('%s?consigneeType=IMPLEMENTING_PARTNER' % ENDPOINT_URL)
+        response = self.client.get('%s?treePosition=IMPLEMENTING_PARTNER' % ENDPOINT_URL)
 
         expected_response_data = {'percentageValueOfNonResponseToProductReceived': 50.2,
                                   'percentageOfDeliveriesInBadOrder': 0.0,

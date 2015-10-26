@@ -17,7 +17,7 @@ class QualityOfProductStatsTest(DeliveryStatsTestCase):
         cls.setup_responses()
 
     def test_should_get_quality_of_product_stats(self):
-        response = self.client.get('%s?consigneeType=END_USER' % ENDPOINT_URL)
+        response = self.client.get('%s?treePosition=END_USER' % ENDPOINT_URL)
 
         self.assertEqual(response.data.get('numberOfSatisfactoryDeliveries'), 2)
         self.assertEqual(response.data.get('numberOfUnsatisfactoryDeliveries'), 3)
