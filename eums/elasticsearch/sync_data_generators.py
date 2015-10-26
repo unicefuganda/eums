@@ -6,7 +6,7 @@ from elasticsearch.helpers import scan
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item, SalesOrder, \
-    PurchaseOrder, ReleaseOrder, Question, TextAnswer
+    PurchaseOrder, ReleaseOrder, Question, TextAnswer, MultipleChoiceAnswer, NumericAnswer
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -55,6 +55,8 @@ def _build_match_terms(last_sync):
     release_order_ids = _find_changes_for_model(ReleaseOrder, last_sync_time)
     question_ids = _find_changes_for_model(Question, last_sync_time)
     text_answer_ids = _find_changes_for_model(TextAnswer, last_sync_time)
+    multiple_choice_answer_ids = _find_changes_for_model(MultipleChoiceAnswer, last_sync_time)
+    numeric_answer_ids = _find_changes_for_model(NumericAnswer, last_sync_time)
 
     match_term = namedtuple('MatchTerm', ['key', 'value'])
     match_terms = [
@@ -66,7 +68,7 @@ def _build_match_terms(last_sync):
         match_term("order_item.order.sales_order.id", sales_order_ids),
         match_term("order_item.order.id", purchase_order_ids + release_order_ids),
         match_term("responses.question.id", question_ids),
-        match_term("responses.id", text_answer_ids),
+        match_term("responses.id", text_answer_ids + multiple_choice_answer_ids + numeric_answer_ids),
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)

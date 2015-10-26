@@ -8,15 +8,17 @@ from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.sync_data_generators import generate_nodes_to_sync
 from eums.rapid_pro.fake_response import FakeResponse
-from eums.test.factories.answer_factory import TextAnswerFactory
+from eums.test.factories.answer_factory import TextAnswerFactory, MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models import DistributionPlanNode as DeliveryNode
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.question_factory import TextQuestionFactory
+from eums.test.factories.question_factory import TextQuestionFactory, MultipleChoiceQuestionFactory, \
+    NumericQuestionFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
@@ -173,14 +175,49 @@ class SyncDataGeneratorsTest(TestCase):
         )
 
     @patch('eums.elasticsearch.sync_data_generators.scan')
-    def test_should_add_node_related_to_changed_answer_to_sync_data(self, mock_scan):
+    def test_should_add_node_related_to_changed_text_answer_to_sync_data(self, mock_scan):
         node = DeliveryNodeFactory()
-        answer = TextAnswerFactory(value='original', question=(TextQuestionFactory()), run=(RunFactory(runnable=node)))
+        answer = TextAnswerFactory(value='original', question=TextQuestionFactory(), run=RunFactory(runnable=node))
 
         self.check_update_happens(
             node,
             answer,
             {'field': 'value', 'value': 'changed'},
+            {'term': {'responses.id': [answer.id]}},
+            mock_scan
+        )
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_numeric_answer_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        answer = NumericAnswerFactory(
+            value=50,
+            question=NumericQuestionFactory(),
+            run=RunFactory(runnable=node)
+        )
+
+        self.check_update_happens(
+            node,
+            answer,
+            {'field': 'value', 'value': 100},
+            {'term': {'responses.id': [answer.id]}},
+            mock_scan
+        )
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_multiple_choice_answer_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        question = MultipleChoiceQuestionFactory()
+        answer = MultipleChoiceAnswerFactory(
+            value=OptionFactory(question=question),
+            question=question,
+            run=RunFactory(runnable=node)
+        )
+
+        self.check_update_happens(
+            node,
+            answer,
+            {'field': 'value', 'value': OptionFactory(question=question)},
             {'term': {'responses.id': [answer.id]}},
             mock_scan
         )
