@@ -18,7 +18,7 @@ describe('Warehouse Delivery', function () {
         warehouseDeliveryPage.visit();
 
         warehouseDeliveryPage.searchForThisWaybill(WAYBILL_NUMBER);
-        expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-warning');
+        expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-danger');
         warehouseDeliveryPage.selectWaybillByNumber(WAYBILL_NUMBER);
 
         warehouseDeliveryPage.selectContact('John');
