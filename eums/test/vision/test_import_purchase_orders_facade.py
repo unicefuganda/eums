@@ -244,7 +244,16 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.facade.save_records(self.imported_purchase_order_data)
 
-        self.assert_purchase_orders_were_created()
+        purchase_orders = PurchaseOrder.objects.all()
+        self.purchase_order_one = PurchaseOrder.objects.get(order_number=54101099)
+        self.purchase_order_two = PurchaseOrder.objects.get(order_number=54101128)
+
+        self.assertEqual(len(purchase_orders), 2)
+        self.assertEqual(self.purchase_order_one.sales_order, self.sales_order_one)
+        self.assertEqual(self.purchase_order_one.date, datetime.date(2015, 1, 15))
+        self.assertEqual(self.purchase_order_two.sales_order, self.sales_order_two)
+        self.assertEqual(self.purchase_order_two.date, datetime.date(2015, 1, 15))
+
         self.assert_purchase_order_items_were_created()
 
     def test_should_not_save_a_purchase_order_with_no_matching_sales_order(self):
@@ -322,14 +331,6 @@ class TestPurchaseOrdersVisionFacade(TestCase):
 
         self.facade.load_records.assert_called()
         self.facade.save_records.assert_called_with(self.imported_purchase_order_data)
-
-    def assert_purchase_orders_were_created(self):
-        self.purchase_order_one = PurchaseOrder(order_number=54101099, sales_order=self.sales_order_one,
-                                                date=datetime.date(2015, 1, 15))
-        self.purchase_order_two = PurchaseOrder(order_number=54101128, sales_order=self.sales_order_two,
-                                                date=datetime.date(2015, 1, 15))
-        self.assert_purchase_orders_are_equal(self.purchase_order_one, PurchaseOrder.objects.all()[0])
-        self.assert_purchase_orders_are_equal(self.purchase_order_two, PurchaseOrder.objects.all()[1])
 
     def assert_purchase_order_items_were_created(self):
         order_item_one = PurchaseOrderItem(purchase_order=self.purchase_order_one, item_number=20,
