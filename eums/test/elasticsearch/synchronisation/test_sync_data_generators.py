@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
-from elasticsearch import Elasticsearch
 from mock import patch
 from rest_framework.status import HTTP_200_OK
 
@@ -16,6 +15,7 @@ from eums.models import DistributionPlanNode as DeliveryNode
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
 
+# noinspection PyTypeChecker
 class SyncDataGeneratorsTest(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -46,54 +46,27 @@ class SyncDataGeneratorsTest(TestCase):
         consignee = ConsigneeFactory(location='Old location')
         node = DeliveryNodeFactory(consignee=consignee)
 
-        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
-        nodes_to_sync = generate_nodes_to_sync()
-        self.assertNotIn(node, nodes_to_sync)
-
-        consignee.location = 'New location'
-        consignee.save()
-        nodes_ids_to_update = [{"_id": node.id}]
-        mock_scan.return_value = nodes_ids_to_update
-        expected_match_clause = {'term': {'consignee.id': [consignee.id]}}
-
-        nodes_to_sync = generate_nodes_to_sync()
-
-        call_args = mock_scan.call_args
-        query = call_args[1]['query']
-        self.assertEqual(call_args[1]['doc_type'], ES_SETTINGS.NODE_TYPE)
-        self.assertDictContainsSubset({'fields': []}, query)
-        self.assertIn(expected_match_clause, call_args[1]['query']['filter']['bool']['should'])
-
-        self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
-        self.assertIn(node, nodes_to_sync)
+        self.check_update_happens(
+            node,
+            consignee,
+            {'field': 'location', 'value': 'New location'},
+            {'term': {'consignee.id': [consignee.id]}},
+            mock_scan
+        )
 
     @patch('eums.elasticsearch.sync_data_generators.scan')
     def test_should_add_node_related_to_changed_ip_to_sync_data(self, mock_scan):
         consignee = ConsigneeFactory(location='Old location')
         parent_node = DeliveryNodeFactory(consignee=consignee)
         child_node = DeliveryNodeFactory(parents=[(parent_node, 5)])
-        self.assertEqual(child_node.ip, consignee)
 
-        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
-        nodes_to_sync = generate_nodes_to_sync()
-        self.assertNotIn(child_node, nodes_to_sync)
-
-        consignee.location = 'New location'
-        consignee.save()
-        nodes_ids_to_update = [{"_id": child_node.id}]
-        mock_scan.return_value = nodes_ids_to_update
-        expected_match_clause = {'term': {'ip.id': [consignee.id]}}
-
-        nodes_to_sync = generate_nodes_to_sync()
-
-        call_args = mock_scan.call_args
-        query = call_args[1]['query']
-        self.assertEqual(call_args[1]['doc_type'], ES_SETTINGS.NODE_TYPE)
-        self.assertDictContainsSubset({'fields': []}, query)
-        self.assertIn(expected_match_clause, call_args[1]['query']['filter']['bool']['should'])
-
-        self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
-        self.assertIn(child_node, nodes_to_sync)
+        self.check_update_happens(
+            child_node,
+            consignee,
+            {'field': 'location', 'value': 'New location'},
+            {'term': {'ip.id': [consignee.id]}},
+            mock_scan
+        )
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
@@ -122,3 +95,25 @@ class SyncDataGeneratorsTest(TestCase):
         self.assertIn(post_sync_node_one, nodes_to_sync)
         self.assertIn(post_sync_node_two, nodes_to_sync)
         self.assertNotIn(pre_sync_node, nodes_to_sync)
+
+    def check_update_happens(self, node, dependency, update_params, expected_match_clause, mock_scan):
+        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
+        nodes_to_sync = generate_nodes_to_sync()
+        self.assertNotIn(node, nodes_to_sync)
+
+        setattr(dependency, update_params['field'], update_params['value'])
+        dependency.save()
+
+        nodes_ids_to_update = [{"_id": node.id}]
+        mock_scan.return_value = nodes_ids_to_update
+
+        nodes_to_sync = generate_nodes_to_sync()
+
+        call_args = mock_scan.call_args
+        query = call_args[1]['query']
+        self.assertEqual(call_args[1]['doc_type'], ES_SETTINGS.NODE_TYPE)
+        self.assertDictContainsSubset({'fields': []}, query)
+        self.assertIn(expected_match_clause, call_args[1]['query']['filter']['bool']['should'])
+
+        self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
+        self.assertIn(node, nodes_to_sync)
