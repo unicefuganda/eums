@@ -11,6 +11,7 @@ from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models import DistributionPlanNode as DeliveryNode
+from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
@@ -93,6 +94,19 @@ class SyncDataGeneratorsTest(TestCase):
             order_item,
             {'field': 'quantity', 'value': 60},
             {'term': {'order_item.id': [order_item.id]}},
+            mock_scan
+        )
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_item_to_sync_data(self, mock_scan):
+        item = ItemFactory(description="Plumpynut")
+        node = DeliveryNodeFactory(item=(PurchaseOrderItemFactory(item=item)))
+
+        self.check_update_happens(
+            node,
+            item,
+            {'field': 'description', 'value': "Books"},
+            {'term': {'order_item.item.id': [item.id]}},
             mock_scan
         )
 

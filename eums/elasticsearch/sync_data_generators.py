@@ -5,7 +5,7 @@ from elasticsearch.helpers import scan
 
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem
+from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -45,9 +45,10 @@ def _find_nodes_to_update(last_sync):
 
 def _build_match_terms(last_sync):
     last_sync_time = last_sync.start_time
-    changed_consignee_ids = Consignee.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
-    changed_programme_ids = Programme.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
-    changed_order_item_ids = OrderItem.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
+    changed_consignee_ids = _find_changes_for_model(Consignee, last_sync_time)
+    changed_programme_ids = _find_changes_for_model(Programme, last_sync_time)
+    changed_order_item_ids = _find_changes_for_model(OrderItem, last_sync_time)
+    change_item_ids = _find_changes_for_model(Item, last_sync_time)
 
     match_term = namedtuple('MatchTerm', ['key', 'value'])
     match_terms = [
@@ -55,8 +56,13 @@ def _build_match_terms(last_sync):
         match_term("ip.id", list(changed_consignee_ids)),
         match_term("programme.id", list(changed_programme_ids)),
         match_term("order_item.id", list(changed_order_item_ids)),
+        match_term("order_item.item.id", list(change_item_ids)),
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
     formatted_match_terms = map(lambda term: {'term': {term.key: term.value}}, non_empty_match_terms)
     return formatted_match_terms
+
+
+def _find_changes_for_model(model, last_sync_time):
+    return model.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
