@@ -8,6 +8,7 @@ from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.sync_data_generators import generate_nodes_to_sync
 from eums.rapid_pro.fake_response import FakeResponse
+from eums.test.factories.answer_factory import TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models import DistributionPlanNode as DeliveryNode
@@ -15,8 +16,10 @@ from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.question_factory import TextQuestionFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
+from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.sales_order_factory import SalesOrderFactory
 from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
@@ -154,6 +157,21 @@ class SyncDataGeneratorsTest(TestCase):
             {'term': {'order_item.order.id': [release_order.id]}},
             mock_scan
         )
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_question_to_sync_data(self, mock_scan):
+        question = TextQuestionFactory(text='original')
+        node = DeliveryNodeFactory()
+        TextAnswerFactory(question=question, run=(RunFactory(runnable=node)))
+
+        self.check_update_happens(
+            node,
+            question,
+            {'field': 'text', 'value': 'changed'},
+            {'term': {'responses.question.id': [question.id]}},
+            mock_scan
+        )
+
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
