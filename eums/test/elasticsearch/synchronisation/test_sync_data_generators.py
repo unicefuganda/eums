@@ -255,6 +255,31 @@ class SyncDataGeneratorsTest(TestCase):
             mock_scan
         )
 
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_not_include_match_clauses_with_empty_id_lists(self, mock_scan):
+        node = DeliveryNodeFactory(location='Kampala')
+        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
+        generate_nodes_to_sync()
+
+        node.location = 'Changed location'
+        node.save()
+        nodes_to_sync = generate_nodes_to_sync()
+
+        self.assertFalse(mock_scan.called)
+        self.assertIn(node, nodes_to_sync)
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_changed_node_to_sync_data(self, *_):
+        node = DeliveryNodeFactory(location='Kampala')
+        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
+        generate_nodes_to_sync()
+
+        node.location = 'Changed location'
+        node.save()
+        nodes_to_sync = generate_nodes_to_sync()
+
+        self.assertIn(node, nodes_to_sync)
+
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
     def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
@@ -262,26 +287,6 @@ class SyncDataGeneratorsTest(TestCase):
         url = '%s/delivery_node/' % settings.ELASTIC_SEARCH.MAPPING
         generate_nodes_to_sync()
         mock_post.assert_called_with(url, json=DELIVERY_NODE_MAPPING)
-
-    '''
-        TODO This is failing when all tests are run because we loose the time aspect of the 'created' field when
-          querying nodes from the db. This happens only when running tests
-    '''
-
-    def xtest_should_include_new_nodes_in_sync_queryset(self):
-        pre_sync_node = DeliveryNodeFactory()
-
-        last_sync_time = timezone.datetime.now()
-        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL, start_time=last_sync_time)
-        post_sync_node_one = DeliveryNodeFactory()
-        post_sync_node_two = DeliveryNodeFactory()
-
-        nodes_to_sync = generate_nodes_to_sync()
-
-        self.assertEqual(len(nodes_to_sync), 2)
-        self.assertIn(post_sync_node_one, nodes_to_sync)
-        self.assertIn(post_sync_node_two, nodes_to_sync)
-        self.assertNotIn(pre_sync_node, nodes_to_sync)
 
     def check_update_happens(self, node, dependency, update_params, expected_match_clause, mock_scan):
         SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
@@ -304,3 +309,23 @@ class SyncDataGeneratorsTest(TestCase):
 
         self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
         self.assertIn(node, nodes_to_sync)
+
+    '''
+        TODO This is failing when all tests are run because we loose the time aspect of the 'created' field when
+          querying nodes from the db. This happens only when running tests
+    '''
+
+    def xtest_should_include_new_nodes_in_sync_queryset(self):
+        pre_sync_node = DeliveryNodeFactory()
+
+        last_sync_time = timezone.datetime.now()
+        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL, start_time=last_sync_time)
+        post_sync_node_one = DeliveryNodeFactory()
+        post_sync_node_two = DeliveryNodeFactory()
+
+        nodes_to_sync = generate_nodes_to_sync()
+
+        self.assertEqual(len(nodes_to_sync), 2)
+        self.assertIn(post_sync_node_one, nodes_to_sync)
+        self.assertIn(post_sync_node_two, nodes_to_sync)
+        self.assertNotIn(pre_sync_node, nodes_to_sync)

@@ -28,19 +28,26 @@ def _find_new_nodes(last_sync):
 
 def _find_nodes_to_update(last_sync):
     if last_sync:
+        changed_nodes = DeliveryNode.objects.filter(modified__gte=last_sync.start_time)
+
         es = Elasticsearch([ES_SETTINGS.HOST])
+        match_terms = _build_match_terms(last_sync)
+        if not match_terms:
+            return changed_nodes
+
         query = {
             "fields": [],
             "filter": {
                 "bool": {
-                    "should": _build_match_terms(last_sync)
+                    "should": match_terms
                 }
             }
         }
 
         scan_results = scan(es, query=query, index=ES_SETTINGS.INDEX, doc_type=ES_SETTINGS.NODE_TYPE)
         node_ids = [hit['_id'] for hit in list(scan_results)]
-        return DeliveryNode.objects.filter(pk__in=node_ids)
+        changed_node_ids = list(changed_nodes.values_list('id', flat=True))
+        return DeliveryNode.objects.filter(pk__in=node_ids + changed_node_ids)
     return []
 
 
@@ -76,6 +83,8 @@ def _build_match_terms(last_sync):
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
+    if not non_empty_match_terms:
+        return None
     formatted_match_terms = map(lambda term: {'term': {term.key: term.value}}, non_empty_match_terms)
     return formatted_match_terms
 
