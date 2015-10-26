@@ -286,6 +286,27 @@ class SyncDataGeneratorsTest(TestCase):
         self.check_update_happens(node, run, delete=True, mock_scan=mock_scan,
                                   expected_match_clause={'term': {'id': [node.id]}})
 
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_deleted_text_answer_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        answer = TextAnswerFactory(run=RunFactory(runnable=node), question=TextQuestionFactory())
+        self.check_update_happens(node, answer, delete=True, mock_scan=mock_scan,
+                                  expected_match_clause={'term': {'id': [node.id]}})
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_deleted_numeric_answer_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        answer = NumericAnswerFactory(run=RunFactory(runnable=node), question=NumericQuestionFactory())
+        self.check_update_happens(node, answer, delete=True, mock_scan=mock_scan,
+                                  expected_match_clause={'term': {'id': [node.id]}})
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_deleted_multiple_choice_answer_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        answer = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node), question=MultipleChoiceQuestionFactory())
+        self.check_update_happens(node, answer, delete=True, mock_scan=mock_scan,
+                                  expected_match_clause={'term': {'id': [node.id]}})
+
     def test_should_delete_node_from_elasticsearch_when_deleted(self):
         node = DeliveryNodeFactory()
         SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
