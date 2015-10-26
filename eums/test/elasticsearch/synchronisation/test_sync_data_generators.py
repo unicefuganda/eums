@@ -14,6 +14,8 @@ from eums.models import DistributionPlanNode as DeliveryNode
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
+from eums.test.factories.sales_order_factory import SalesOrderFactory
+from eums.test.factories.sales_order_item_factory import SalesOrderItemFactory
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -107,6 +109,20 @@ class SyncDataGeneratorsTest(TestCase):
             item,
             {'field': 'description', 'value': "Books"},
             {'term': {'order_item.item.id': [item.id]}},
+            mock_scan
+        )
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_sales_order_to_sync_data(self, mock_scan):
+        sales_order = SalesOrderFactory(description="first order")
+        sales_order_item = SalesOrderItemFactory(sales_order=sales_order)
+        node = DeliveryNodeFactory(item=(PurchaseOrderItemFactory(sales_order_item=sales_order_item)))
+
+        self.check_update_happens(
+            node,
+            sales_order,
+            {'field': 'description', 'value': "Changed Order"},
+            {'term': {'order_item.order.sales_order.id': [sales_order.id]}},
             mock_scan
         )
 

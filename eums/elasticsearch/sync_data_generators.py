@@ -5,7 +5,7 @@ from elasticsearch.helpers import scan
 
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item
+from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item, SalesOrder
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -49,6 +49,7 @@ def _build_match_terms(last_sync):
     changed_programme_ids = _find_changes_for_model(Programme, last_sync_time)
     changed_order_item_ids = _find_changes_for_model(OrderItem, last_sync_time)
     change_item_ids = _find_changes_for_model(Item, last_sync_time)
+    change_sales_order_ids = _find_changes_for_model(SalesOrder, last_sync_time)
 
     match_term = namedtuple('MatchTerm', ['key', 'value'])
     match_terms = [
@@ -57,6 +58,7 @@ def _build_match_terms(last_sync):
         match_term("programme.id", list(changed_programme_ids)),
         match_term("order_item.id", list(changed_order_item_ids)),
         match_term("order_item.item.id", list(change_item_ids)),
+        match_term("order_item.order.sales_order.id", list(change_sales_order_ids)),
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
