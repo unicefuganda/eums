@@ -17,9 +17,9 @@ from eums.test.helpers.fake_datetime import FakeDate
 ENDPOINT_URL = BACKEND_URL + 'delivery-stats/ip/'
 
 
-class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
+class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
     def setUp(self):
-        super(IpDeliveryStatsEndPointTest, self).setUp()
+        super(IpDeliveryMapStatsEndPointTest, self).setUp()
         self.other_ip = ConsigneeFactory()
         self.setup_responses()
 
