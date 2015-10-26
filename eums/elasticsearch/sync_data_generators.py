@@ -1,10 +1,11 @@
+from collections import namedtuple
 from django.conf import settings
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
 
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.models import DistributionPlanNode as DeliveryNode, Consignee
+from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -27,17 +28,11 @@ def _find_new_nodes(last_sync):
 def _find_nodes_to_update(last_sync):
     if last_sync:
         es = Elasticsearch([ES_SETTINGS.HOST])
-        last_sync_time = last_sync.start_time
-        changed_consignee_ids = Consignee.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
-
         query = {
             "fields": [],
             "filter": {
                 "bool": {
-                    "should": [
-                        {"term": {"consignee.id": list(changed_consignee_ids)}},
-                        {"term": {"ip.id": list(changed_consignee_ids)}}
-                    ]
+                    "should": _build_match_terms(last_sync)
                 }
             }
         }
@@ -46,3 +41,20 @@ def _find_nodes_to_update(last_sync):
         node_ids = [hit['_id'] for hit in list(scan_results)]
         return DeliveryNode.objects.filter(pk__in=node_ids)
     return []
+
+
+def _build_match_terms(last_sync):
+    last_sync_time = last_sync.start_time
+    changed_consignee_ids = Consignee.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
+    changed_programme_ids = Programme.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
+
+    match_term = namedtuple('MatchTerm', ['key', 'value'])
+    match_terms = [
+        match_term("consignee.id", list(changed_consignee_ids)),
+        match_term("ip.id", list(changed_consignee_ids)),
+        match_term("programme.id", list(changed_programme_ids)),
+    ]
+
+    non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
+    formatted_match_terms = map(lambda term: {'term': {term.key: term.value}}, non_empty_match_terms)
+    return formatted_match_terms

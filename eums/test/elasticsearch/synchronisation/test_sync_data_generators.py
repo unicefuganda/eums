@@ -11,6 +11,7 @@ from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models import DistributionPlanNode as DeliveryNode
+from eums.test.factories.programme_factory import ProgrammeFactory
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -68,6 +69,19 @@ class SyncDataGeneratorsTest(TestCase):
             mock_scan
         )
 
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_programme_to_sync_data(self, mock_scan):
+        programme = ProgrammeFactory(name='Save mothers and children')
+        node = DeliveryNodeFactory(programme=programme)
+
+        self.check_update_happens(
+            node,
+            programme,
+            {'field': 'name', 'value': 'new name'},
+            {'term': {'programme.id': [programme.id]}},
+            mock_scan
+        )
+    
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
     def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
