@@ -5,7 +5,8 @@ from eums.models import MultipleChoiceQuestion, Option, MultipleChoiceAnswer, Ru
 
 
 def get_product_received_base_query_sets(stats_search_data):
-    was_product_received = MultipleChoiceQuestion.objects.get(label=stats_search_data.received_label, flow=stats_search_data.flow)
+    was_product_received = MultipleChoiceQuestion.objects.get(label=stats_search_data.received_label,
+                                                              flow=stats_search_data.flow)
     product_was_received = Option.objects.get(text='Yes', question=was_product_received)
     product_was_not_received = Option.objects.get(text='No', question=was_product_received)
 
@@ -25,8 +26,9 @@ def get_product_received_base_query_sets(stats_search_data):
 
 
 def get_quality_of_product_base_query_sets(stats_search_data):
-    quality_of_product_qn = MultipleChoiceQuestion.objects.get(label=stats_search_data.quality_label, flow=stats_search_data.flow)
-    was_good = Option.objects.get(text='Good', question=quality_of_product_qn)
+    quality_of_product_qn = MultipleChoiceQuestion.objects.get(label=stats_search_data.quality_label,
+                                                               flow=stats_search_data.flow)
+    was_good = Option.objects.get(text=stats_search_data.quality_yes_text, question=quality_of_product_qn)
 
     good_quality_delivery_answers = MultipleChoiceAnswer.objects.filter(
         question=quality_of_product_qn, value=was_good).filter(
@@ -44,7 +46,8 @@ def get_quality_of_product_base_query_sets(stats_search_data):
 
 
 def get_satisfied_with_product_base_query_sets(stats_search_data):
-    satisfied_with_product_qn = MultipleChoiceQuestion.objects.get(label=stats_search_data.satisfied_label, flow=stats_search_data.flow)
+    satisfied_with_product_qn = MultipleChoiceQuestion.objects.get(label=stats_search_data.satisfied_label,
+                                                                   flow=stats_search_data.flow)
     satisfied = Option.objects.get(text='Yes', question=satisfied_with_product_qn)
     unsatisfied = Option.objects.get(text='No', question=satisfied_with_product_qn)
 

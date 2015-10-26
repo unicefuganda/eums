@@ -6,22 +6,32 @@ from rest_framework.views import APIView
 from eums.api.delivery_stats.stats_structure import DeliveryStats, BaseQuerySets
 from eums.api.delivery_stats.stats_queries import get_product_received_base_query_sets, \
     get_quality_of_product_base_query_sets, get_satisfied_with_product_base_query_sets
-from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, UserProfile
+from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, UserProfile, Question
 
 
 class EndUserStatsSearchData:
-
     def __init__(self):
         self.flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
         self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
-        self.received_label = 'productReceived'
-        self.quality_label = 'qualityOfProduct'
-        self.satisfied_label = 'satisfiedWithProduct'
+        self.received_label = Question.LABEL.productReceived
+        self.quality_label = Question.LABEL.qualityOfProduct
+        self.satisfied_label = Question.LABEL.satisfiedWithProduct
+        self.quality_yes_text = "Good"
+
+
+class IpStatsSearchData:
+    def __init__(self):
+        self.flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.IMPLEMENTING_PARTNER, track=True)
+        self.received_label = Question.LABEL.deliveryReceived
+        self.quality_label = Question.LABEL.isDeliveryInGoodOrder
+        self.satisfied_label = Question.LABEL.satisfiedWithDelivery
+        self.quality_yes_text = "Yes"
 
 
 class EndUserDeliveryStatsEndpoint(APIView):
     def __init__(self):
-        self.stats_search_data = EndUserStatsSearchData()
+        self.stats_search_data = None
         self.location = None
         self.ip = None
         self.user_profile = None
@@ -29,6 +39,8 @@ class EndUserDeliveryStatsEndpoint(APIView):
 
     def get(self, request, *args, **kwargs):
         consignee_type = request.GET.get('consigneeType', DeliveryNode.END_USER)
+        self.stats_search_data = IpStatsSearchData() if consignee_type == DeliveryNode.IMPLEMENTING_PARTNER \
+            else EndUserStatsSearchData()
         self.location = request.GET.get('location')
         self.ip = request.GET.get('ip')
         self.user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
@@ -39,8 +51,7 @@ class EndUserDeliveryStatsEndpoint(APIView):
         quality_of_product_stats = self._get_quality_of_product_stats()
         satisfied_with_product_stats = self._get_satisfied_with_product_stats()
 
-        if consignee_type == DeliveryNode.END_USER:
-            return Response({
+        return Response({
                 'totalNumberOfDeliveries': self.total_deliveries(),
                 'totalValueOfDeliveries': self.total_delivery_value(),
 
@@ -125,7 +136,8 @@ class EndUserDeliveryStatsEndpoint(APIView):
     def _apply_filters(self, base_query_sets):
         filtered_positive_answers = base_query_sets.positive_answers
         if self.location:
-            filtered_positive_answers = base_query_sets.positive_answers.filter(run__runnable__location__iexact=self.location)
+            filtered_positive_answers = base_query_sets.positive_answers.filter(
+                run__runnable__location__iexact=self.location)
         if self.ip:
             filtered_positive_answers = filtered_positive_answers.filter(run__runnable__ip=self.ip)
 
@@ -137,7 +149,8 @@ class EndUserDeliveryStatsEndpoint(APIView):
 
     def _get_question_stats(self, raw_stats):
         positive_count = raw_stats.positive_answers.count()
-        non_response_count = self.stats_search_data.nodes.exclude(run__id__in=raw_stats.runs_with_answers).distinct().count()
+        non_response_count = self.stats_search_data.nodes.exclude(
+            run__id__in=raw_stats.runs_with_answers).distinct().count()
         negative_count = self.total_deliveries() - positive_count - non_response_count
 
         percent_negative, percent_non_response, percent_positive = self._get_count_percentages(
