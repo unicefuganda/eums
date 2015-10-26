@@ -6,7 +6,7 @@ import requests
 from rest_framework.status import HTTP_200_OK
 from django.utils import timezone
 
-from eums.elasticsearch.sync_data_generators import generate_nodes_to_sync
+from eums.elasticsearch.sync_data_generators import list_nodes_to_update
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format
 from eums.elasticsearch.sync_info import SyncInfo
 
@@ -16,8 +16,8 @@ logger = get_task_logger(__name__)
 @periodic_task(run_every=crontab(minute=0, hour=0))
 def run():
     sync = SyncInfo.objects.create()
-    nodes_to_sync = generate_nodes_to_sync()
-    serialised_nodes = serialise_nodes(nodes_to_sync)
+    nodes_to_update = list_nodes_to_update()
+    serialised_nodes = serialise_nodes(nodes_to_update)
     _push_to_elasticsearch(serialised_nodes, sync)
 
 

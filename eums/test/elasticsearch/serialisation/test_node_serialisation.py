@@ -1,19 +1,16 @@
-from eums.elasticsearch.serialisers import serialise_nodes
+import json
+from django.conf import settings
+from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format, _serialise_datetime
 from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 
+ES_SETTINGS = settings.ELASTIC_SEARCH
+
 
 class TestDeliveryNodeSerialisation(SerialisationTestCase):
-    def test_should_add_elasticsearch_meta_data_for_every_node(self):
-        node = DeliveryNodeFactory()
-        expected_es_meta_data = {'index': {'_index': 'eums', '_type': 'delivery_node', '_id': node.id}}
-
-        serialised = serialise_nodes([node])
-        self.assertDictEqual(expected_es_meta_data, serialised[0])
-
     def test_should_serialise_node_flat_fields(self):
         node = DeliveryNodeFactory()
         expected_node_serialisation = {
@@ -35,7 +32,7 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected_node_serialisation, serialised[1])
+        self.assertDictContainsSubset(expected_node_serialisation, serialised[0])
 
     def test_should_serialise_node_with_built_out_consignee(self):
         consignee = ConsigneeFactory()
@@ -53,7 +50,7 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected_consignee_serialisation, serialised[1]['consignee'])
+        self.assertDictContainsSubset(expected_consignee_serialisation, serialised[0]["consignee"])
 
     def test_should_serialise_node_with_built_out_implementing_partner(self):
         ip = ConsigneeFactory()
@@ -71,7 +68,7 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected_ip_serialisation, serialised[1]['ip'])
+        self.assertDictContainsSubset(expected_ip_serialisation, serialised[0]["ip"])
 
     def test_should_serialise_node_with_built_out_programme(self):
         programme = ProgrammeFactory()
@@ -85,4 +82,16 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected_programme_serialisation, serialised[1]['programme'])
+        self.assertDictContainsSubset(expected_programme_serialisation, serialised[0]["programme"])
+
+    def test_should_convert_nodes_to_bulk_api_format(self):
+        node = DeliveryNodeFactory()
+        expected_meta_data = '{"index": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % (
+            ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE, node.id
+        )
+        serialised = serialise_nodes([node])
+        expected_node_string = json.dumps(serialised[0], default=_serialise_datetime) + '\n'
+
+        api_format = convert_to_bulk_api_format(serialised)
+
+        self.assertEqual(api_format, expected_meta_data + expected_node_string)

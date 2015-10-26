@@ -19,7 +19,7 @@ class TestResponsesSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['responses'][0])
+        self.assertDictContainsSubset(expected, serialised[0]['responses'][0])
 
     def test_should_serialise_node_response_question(self):
         node = DeliveryNodeFactory()
@@ -35,7 +35,7 @@ class TestResponsesSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['responses'][0]['question'])
+        self.assertDictContainsSubset(expected, serialised[0]['responses'][0]['question'])
 
     def test_should_serialise_node_response_run(self):
         node = DeliveryNodeFactory()
@@ -48,7 +48,7 @@ class TestResponsesSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['responses'][0]['run'])
+        self.assertDictContainsSubset(expected, serialised[0]['responses'][0]['run'])
 
     def test_responses_serialisation_should_have_an_entry_for_each_response_a_node_has(self):
         node = DeliveryNodeFactory()
@@ -56,5 +56,5 @@ class TestResponsesSerialisation(SerialisationTestCase):
         answer_two = MultipleChoiceAnswerFactory(run=RunFactory(runnable=node))
 
         serialised = serialise_nodes([node])
-        answer_ids = [response['id'] for response in serialised[1]['responses']]
+        answer_ids = [response['id'] for response in serialised[0]['responses']]
         self.assertItemsEqual(answer_ids, [answer_one.id, answer_two.id])

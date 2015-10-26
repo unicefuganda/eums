@@ -23,7 +23,7 @@ class SynchroniserTest(TestCase):
         DeliveryNode.objects.all().delete()
 
     @patch('requests.post')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     def test_run_should_serialise_nodes_that_are_marked_for_sync(self, mock_serialiser, mock_generate_nodes, *_):
         mock_nodes = [1, 2]
@@ -32,13 +32,13 @@ class SynchroniserTest(TestCase):
         mock_serialiser.assert_called_with(mock_nodes)
 
     @patch('requests.post')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     def test_should_create_a_sync_info_record_when_sync_starts(self, *_):
         self.assertEqual(SyncInfo.objects.count(), 0)
         run()
         self.assertEqual(SyncInfo.objects.count(), 1)
 
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     @patch('eums.elasticsearch.synchroniser.convert_to_bulk_api_format')
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
@@ -50,7 +50,7 @@ class SynchroniserTest(TestCase):
         mock_post.assert_called_with(settings.ELASTIC_SEARCH.BULK, data=api_data)
 
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     @patch('requests.post')
     def test_should_set_last_sync_status_to_successful_when_post_to_elasticsearch_returns_200(self, mock_post, *_):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
@@ -58,7 +58,7 @@ class SynchroniserTest(TestCase):
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.SUCCESSFUL)
 
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     @patch('requests.post')
     def test_should_set_last_sync_status_to_failed_when_post_to_elasticsearch_returns_non_200(self, mock_post, *_):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_400_BAD_REQUEST)
@@ -66,7 +66,7 @@ class SynchroniserTest(TestCase):
         self.assertEqual(SyncInfo.objects.last().status, SyncInfo.STATUS.FAILED)
 
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
     def test_should_set_last_sync_status_to_failed_when_post_to_es_raises_and_error(self, mock_post, mock_logger, *_):
@@ -77,7 +77,7 @@ class SynchroniserTest(TestCase):
         mock_logger.assert_called_with('Sync Failed: %s' % error_message)
 
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    @patch('eums.elasticsearch.synchroniser.generate_nodes_to_sync')
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
     @patch('eums.elasticsearch.synchroniser.timezone.now')
     @patch('requests.post')
     def test_should_set_sync_end_time_after_posting_to_elasticsearch(self, mock_post, mock_now, *_):

@@ -23,6 +23,6 @@ class TestDeliveryDatesSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['responses'][0])
+        self.assertDictContainsSubset(expected, serialised[0]['responses'][0])
 
 

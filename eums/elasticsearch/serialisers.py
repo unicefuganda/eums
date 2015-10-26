@@ -1,17 +1,16 @@
 import json
+from django.conf import settings
 
 from django.db.models import Q
 
 from eums.models import ReleaseOrderItem, NumericAnswer, TextAnswer, \
     MultipleChoiceAnswer, Flow, TextQuestion, Runnable, Run
 
+ES_SETTINGS = settings.ELASTIC_SEARCH
+
 
 def serialise_nodes(nodes):
-    serialised = []
-    for node in nodes:
-        serialised.append({'index': {'_index': 'eums', '_type': 'delivery_node', '_id': node.id}})
-        serialised.append(_serialise_node(node))
-    return serialised
+    return map(lambda node: _serialise_node(node), nodes)
 
 
 def _extract_clean_fields(obj):
@@ -98,9 +97,9 @@ def _get_relevant_delivery_responses_for(node):
     ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
     qn_date_of_receipt = TextQuestion.objects.get(flow__for_runnable_type=ip_flow, label='dateOfReceipt')
     delivery = node.distribution_plan
-    date_received_answer = TextAnswer.objects\
-        .filter(run__runnable=delivery, question=qn_date_of_receipt)\
-        .filter(Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed))\
+    date_received_answer = TextAnswer.objects \
+        .filter(run__runnable=delivery, question=qn_date_of_receipt) \
+        .filter(Q(run__status=Run.STATUS.scheduled) | Q(run__status=Run.STATUS.completed)) \
         .last()
 
     return [_serialise_simple_answer(date_received_answer)] if date_received_answer else []
@@ -133,9 +132,12 @@ def _serialise_datetime(datetime):
     return str(datetime)
 
 
-def convert_to_bulk_api_format(node_dicts):
+def convert_to_bulk_api_format(nodes):
     json_string = ''
-    for node_dict in node_dicts:
-        json_string += json.dumps(node_dict, default=_serialise_datetime)
+    for node in nodes:
+        json_string += '{"index": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % (
+            ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE, node['id']
+        )
+        json_string += json.dumps(node, default=_serialise_datetime)
         json_string += '\n'
     return json_string

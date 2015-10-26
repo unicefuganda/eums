@@ -11,7 +11,7 @@ from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Program
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
 
-def generate_nodes_to_sync():
+def list_nodes_to_update():
     last_sync = SyncInfo.last_successful_sync()
     nodes_to_update = _find_nodes_to_update(last_sync)
     new_nodes = _find_new_nodes(last_sync)
@@ -83,10 +83,10 @@ def _build_match_terms(last_sync):
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
-    if not non_empty_match_terms:
-        return None
-    formatted_match_terms = map(lambda term: {'term': {term.key: term.value}}, non_empty_match_terms)
-    return formatted_match_terms
+    if non_empty_match_terms:
+        formatted_match_terms = map(lambda term: {'term': {term.key: term.value}}, non_empty_match_terms)
+        return formatted_match_terms
+    return None
 
 
 def _find_changes_for_model(model, last_sync_time):

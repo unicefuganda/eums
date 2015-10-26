@@ -25,7 +25,7 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item'])
 
     def test_should_serialise_node_release_order(self):
         release_order = ReleaseOrderFactory()
@@ -43,7 +43,7 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item']['order'])
 
     def test_should_serialise_node_sales_order_under_order(self):
         sales_order = SalesOrderFactory()
@@ -59,7 +59,7 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order']['sales_order'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item']['order']['sales_order'])
 
     def test_should_serialise_node_purchase_order_under_release_order(self):
         purchase_order = PurchaseOrderFactory()
@@ -76,7 +76,7 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order']['purchase_order'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item']['order']['purchase_order'])
 
     def test_should_serialise_node_purchase_order_item_with_flat_fields(self):
         purchase_order_item = PurchaseOrderItemFactory()
@@ -93,7 +93,7 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item'])
 
     def test_should_serialise_node_purchase_order(self):
         purchase_order = PurchaseOrderFactory()
@@ -110,7 +110,7 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item']['order'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item']['order'])
 
     def test_should_serialise_item_under_node_order_item(self):
         item = ItemFactory()
@@ -125,4 +125,4 @@ class TestOrderDataSerialisation(SerialisationTestCase):
         }
 
         serialised = serialise_nodes([node])
-        self.assertDictContainsSubset(expected, serialised[1]['order_item']['item'])
+        self.assertDictContainsSubset(expected, serialised[0]['order_item']['item'])
