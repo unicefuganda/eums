@@ -2,20 +2,26 @@ from decimal import Decimal
 
 from django.db.models import Sum
 from rest_framework.response import Response
-
 from rest_framework.views import APIView
-from eums.api.delivery_stats.quality_of_product_stats import get_quality_of_product_base_query_sets
-from eums.api.delivery_stats.satisfied_with_product_stats import get_satisfied_with_product_base_query_sets
-
 from eums.api.delivery_stats.stats_structure import DeliveryStats, BaseQuerySets
-from eums.api.delivery_stats.was_product_received_stats import get_product_received_base_query_sets
+from eums.api.delivery_stats.stats_queries import get_product_received_base_query_sets, \
+    get_quality_of_product_base_query_sets, get_satisfied_with_product_base_query_sets
 from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, UserProfile
+
+
+class EndUserStatsSearchData:
+
+    def __init__(self):
+        self.flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
+        self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
+        self.received_label = 'productReceived'
+        self.quality_label = 'qualityOfProduct'
+        self.satisfied_label = 'satisfiedWithProduct'
 
 
 class EndUserDeliveryStatsEndpoint(APIView):
     def __init__(self):
-        self.end_user_flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
-        self.end_user_nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
+        self.stats_search_data = EndUserStatsSearchData()
         self.location = None
         self.ip = None
         self.user_profile = None
@@ -89,30 +95,30 @@ class EndUserDeliveryStatsEndpoint(APIView):
 
     def _apply_filters_to_nodes(self):
         if self.location:
-            self.end_user_nodes = self.end_user_nodes.filter(location__iexact=self.location)
+            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(location__iexact=self.location)
         if self.user_profile:
             self.ip = self.user_profile.consignee
         if self.ip:
-            self.end_user_nodes = self.end_user_nodes.filter(ip=self.ip)
+            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(ip=self.ip)
 
     def total_deliveries(self):
-        return self.end_user_nodes.count()
+        return self.stats_search_data.nodes.count()
 
     def total_delivery_value(self):
-        return self._get_nodes_total_value(self.end_user_nodes)
+        return self._get_nodes_total_value(self.stats_search_data.nodes)
 
     def _get_product_received_stats(self):
-        base_query_sets = get_product_received_base_query_sets()
+        base_query_sets = get_product_received_base_query_sets(self.stats_search_data)
         filtered_query_sets = self._apply_filters(base_query_sets)
         return self._get_question_stats(filtered_query_sets)
 
     def _get_quality_of_product_stats(self):
-        base_query_sets = get_quality_of_product_base_query_sets()
+        base_query_sets = get_quality_of_product_base_query_sets(self.stats_search_data)
         filtered_query_sets = self._apply_filters(base_query_sets)
         return self._get_question_stats(filtered_query_sets)
 
     def _get_satisfied_with_product_stats(self):
-        base_query_sets = get_satisfied_with_product_base_query_sets()
+        base_query_sets = get_satisfied_with_product_base_query_sets(self.stats_search_data)
         filtered_query_sets = self._apply_filters(base_query_sets)
         return self._get_question_stats(filtered_query_sets)
 
@@ -131,7 +137,7 @@ class EndUserDeliveryStatsEndpoint(APIView):
 
     def _get_question_stats(self, raw_stats):
         positive_count = raw_stats.positive_answers.count()
-        non_response_count = self.end_user_nodes.exclude(run__id__in=raw_stats.runs_with_answers).distinct().count()
+        non_response_count = self.stats_search_data.nodes.exclude(run__id__in=raw_stats.runs_with_answers).distinct().count()
         negative_count = self.total_deliveries() - positive_count - non_response_count
 
         percent_negative, percent_non_response, percent_positive = self._get_count_percentages(
@@ -169,7 +175,7 @@ class EndUserDeliveryStatsEndpoint(APIView):
 
     def _get_value(self, answers):
         successful_delivery_runs = answers.values_list('run_id')
-        nodes = self.end_user_nodes.filter(run__id__in=successful_delivery_runs)
+        nodes = self.stats_search_data.nodes.filter(run__id__in=successful_delivery_runs)
         return self._get_nodes_total_value(nodes)
 
     @staticmethod
