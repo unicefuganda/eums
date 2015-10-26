@@ -5,7 +5,8 @@ from elasticsearch.helpers import scan
 
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item, SalesOrder
+from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item, SalesOrder, \
+    PurchaseOrder
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -45,20 +46,22 @@ def _find_nodes_to_update(last_sync):
 
 def _build_match_terms(last_sync):
     last_sync_time = last_sync.start_time
-    changed_consignee_ids = _find_changes_for_model(Consignee, last_sync_time)
-    changed_programme_ids = _find_changes_for_model(Programme, last_sync_time)
-    changed_order_item_ids = _find_changes_for_model(OrderItem, last_sync_time)
-    change_item_ids = _find_changes_for_model(Item, last_sync_time)
-    change_sales_order_ids = _find_changes_for_model(SalesOrder, last_sync_time)
+    consignee_ids = _find_changes_for_model(Consignee, last_sync_time)
+    programme_ids = _find_changes_for_model(Programme, last_sync_time)
+    order_item_ids = _find_changes_for_model(OrderItem, last_sync_time)
+    item_ids = _find_changes_for_model(Item, last_sync_time)
+    sales_order_ids = _find_changes_for_model(SalesOrder, last_sync_time)
+    purchase_order_ids = _find_changes_for_model(PurchaseOrder, last_sync_time)
 
     match_term = namedtuple('MatchTerm', ['key', 'value'])
     match_terms = [
-        match_term("consignee.id", list(changed_consignee_ids)),
-        match_term("ip.id", list(changed_consignee_ids)),
-        match_term("programme.id", list(changed_programme_ids)),
-        match_term("order_item.id", list(changed_order_item_ids)),
-        match_term("order_item.item.id", list(change_item_ids)),
-        match_term("order_item.order.sales_order.id", list(change_sales_order_ids)),
+        match_term("consignee.id", list(consignee_ids)),
+        match_term("ip.id", list(consignee_ids)),
+        match_term("programme.id", list(programme_ids)),
+        match_term("order_item.id", list(order_item_ids)),
+        match_term("order_item.item.id", list(item_ids)),
+        match_term("order_item.order.sales_order.id", list(sales_order_ids)),
+        match_term("order_item.order.id", list(purchase_order_ids)),
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
