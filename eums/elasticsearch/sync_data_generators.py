@@ -27,9 +27,8 @@ def _find_new_nodes(last_sync):
 def _find_nodes_to_update(last_sync):
     if last_sync:
         es = Elasticsearch([ES_SETTINGS.HOST])
-        changed_consignee_ids = Consignee.objects.filter(
-            modified__gte=last_sync.start_time
-        ).values_list('id', flat=True)
+        last_sync_time = last_sync.start_time
+        changed_consignee_ids = Consignee.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
 
         query = {
             "fields": [],
