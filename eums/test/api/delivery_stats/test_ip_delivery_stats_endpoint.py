@@ -1,7 +1,6 @@
 import datetime
 from decimal import Decimal
 
-from eums.api.delivery_stats.ip_delivery_stats_endpoint import DeliveryState
 from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
@@ -61,6 +60,21 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
                                   'numberOfDeliveriesInGoodOrder': 1}
 
         self.assertEqual(response.data, expected_response_data)
+
+    def test_should_filter_stats_by_programme(self):
+        response = self.client.get(
+            '%s?treePosition=IMPLEMENTING_PARTNER&programme=%s' % (ENDPOINT_URL, self.programme.id))
+        self.assertEqual(response.data['totalNumberOfDeliveries'], 1)
+
+    def test_should_filter_stats_from_given_date(self):
+        response = self.client.get(
+            '%s?treePosition=IMPLEMENTING_PARTNER&from=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=3)))
+        self.assertEqual(response.data['totalNumberOfDeliveries'], 2)
+
+    def test_should_filter_stats_before_given_date(self):
+        response = self.client.get(
+            '%s?treePosition=IMPLEMENTING_PARTNER&to=%s' % (ENDPOINT_URL, self.today))
+        self.assertEqual(response.data['totalNumberOfDeliveries'], 1)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()

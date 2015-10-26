@@ -35,6 +35,9 @@ class EndUserDeliveryStatsEndpoint(APIView):
         self.location = None
         self.ip = None
         self.user_profile = None
+        self.programme = None
+        self.from_date = None
+        self.to_date = None
         super(EndUserDeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
@@ -43,6 +46,9 @@ class EndUserDeliveryStatsEndpoint(APIView):
             else EndUserStatsSearchData()
         self.location = request.GET.get('location')
         self.ip = request.GET.get('ip')
+        self.programme = request.GET.get('programme')
+        self.from_date = request.GET.get('from')
+        self.to_date = request.GET.get('to')
         self.user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
 
         self._apply_filters_to_nodes()
@@ -52,61 +58,68 @@ class EndUserDeliveryStatsEndpoint(APIView):
         satisfied_with_product_stats = self._get_satisfied_with_product_stats()
 
         return Response({
-                'totalNumberOfDeliveries': self.total_deliveries(),
-                'totalValueOfDeliveries': self.total_delivery_value(),
+            'totalNumberOfDeliveries': self.total_deliveries(),
+            'totalValueOfDeliveries': self.total_delivery_value(),
 
-                'numberOfSuccessfulProductDeliveries': product_received_stats.count_positive,
-                'numberOfUnsuccessfulProductDeliveries': product_received_stats.count_negative,
-                'numberOfNonResponseToProductReceived': product_received_stats.count_non_response,
+            'numberOfSuccessfulProductDeliveries': product_received_stats.count_positive,
+            'numberOfUnsuccessfulProductDeliveries': product_received_stats.count_negative,
+            'numberOfNonResponseToProductReceived': product_received_stats.count_non_response,
 
-                'percentageOfSuccessfulDeliveries': product_received_stats.percent_positive,
-                'percentageOfUnsuccessfulDeliveries': product_received_stats.percent_negative,
-                'percentageOfNonResponseToProductReceived': product_received_stats.percent_non_response,
+            'percentageOfSuccessfulDeliveries': product_received_stats.percent_positive,
+            'percentageOfUnsuccessfulDeliveries': product_received_stats.percent_negative,
+            'percentageOfNonResponseToProductReceived': product_received_stats.percent_non_response,
 
-                'totalValueOfSuccessfulDeliveries': product_received_stats.value_positive,
-                'totalValueOfUnsuccessfulProductDeliveries': product_received_stats.value_negative,
-                'totalValueOfNonResponseToProductReceived': product_received_stats.value_non_response,
+            'totalValueOfSuccessfulDeliveries': product_received_stats.value_positive,
+            'totalValueOfUnsuccessfulProductDeliveries': product_received_stats.value_negative,
+            'totalValueOfNonResponseToProductReceived': product_received_stats.value_non_response,
 
-                'percentageValueOfSuccessfulDeliveries': product_received_stats.percent_value_positive,
-                'percentageValueOfUnsuccessfulDeliveries': product_received_stats.percent_value_negative,
-                'percentageValueOfNonResponseToProductReceived': product_received_stats.percent_value_non_response,
+            'percentageValueOfSuccessfulDeliveries': product_received_stats.percent_value_positive,
+            'percentageValueOfUnsuccessfulDeliveries': product_received_stats.percent_value_negative,
+            'percentageValueOfNonResponseToProductReceived': product_received_stats.percent_value_non_response,
 
-                'numberOfDeliveriesInGoodOrder': quality_of_product_stats.count_positive,
-                'numberOfDeliveriesInBadOrder': quality_of_product_stats.count_negative,
-                'numberOfNonResponseToQualityOfProduct': quality_of_product_stats.count_non_response,
+            'numberOfDeliveriesInGoodOrder': quality_of_product_stats.count_positive,
+            'numberOfDeliveriesInBadOrder': quality_of_product_stats.count_negative,
+            'numberOfNonResponseToQualityOfProduct': quality_of_product_stats.count_non_response,
 
-                'percentageOfDeliveriesInGoodOrder': quality_of_product_stats.percent_positive,
-                'percentageOfDeliveriesInBadOrder': quality_of_product_stats.percent_negative,
-                'percentageOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_non_response,
+            'percentageOfDeliveriesInGoodOrder': quality_of_product_stats.percent_positive,
+            'percentageOfDeliveriesInBadOrder': quality_of_product_stats.percent_negative,
+            'percentageOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_non_response,
 
-                'totalValueOfDeliveriesInGoodOrder': quality_of_product_stats.value_positive,
-                'totalValueOfDeliveriesInBadOrder': quality_of_product_stats.value_negative,
-                'totalValueOfNonResponseToQualityOfProduct': quality_of_product_stats.value_non_response,
+            'totalValueOfDeliveriesInGoodOrder': quality_of_product_stats.value_positive,
+            'totalValueOfDeliveriesInBadOrder': quality_of_product_stats.value_negative,
+            'totalValueOfNonResponseToQualityOfProduct': quality_of_product_stats.value_non_response,
 
-                'percentageValueOfDeliveriesInGoodOrder': quality_of_product_stats.percent_value_positive,
-                'percentageValueOfDeliveriesInBadOrder': quality_of_product_stats.percent_value_negative,
-                'percentageValueOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_value_non_response,
+            'percentageValueOfDeliveriesInGoodOrder': quality_of_product_stats.percent_value_positive,
+            'percentageValueOfDeliveriesInBadOrder': quality_of_product_stats.percent_value_negative,
+            'percentageValueOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_value_non_response,
 
-                'numberOfSatisfactoryDeliveries': satisfied_with_product_stats.count_positive,
-                'numberOfUnsatisfactoryDeliveries': satisfied_with_product_stats.count_negative,
-                'numberOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.count_non_response,
+            'numberOfSatisfactoryDeliveries': satisfied_with_product_stats.count_positive,
+            'numberOfUnsatisfactoryDeliveries': satisfied_with_product_stats.count_negative,
+            'numberOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.count_non_response,
 
-                'percentageOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_positive,
-                'percentageOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_negative,
-                'percentageOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_non_response,
+            'percentageOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_positive,
+            'percentageOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_negative,
+            'percentageOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_non_response,
 
-                'totalValueOfSatisfactoryDeliveries': satisfied_with_product_stats.value_positive,
-                'totalValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.value_negative,
-                'totalValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.value_non_response,
+            'totalValueOfSatisfactoryDeliveries': satisfied_with_product_stats.value_positive,
+            'totalValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.value_negative,
+            'totalValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.value_non_response,
 
-                'percentageValueOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_value_positive,
-                'percentageValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_value_negative,
-                'percentageValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_non_response,
-            })
+            'percentageValueOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_value_positive,
+            'percentageValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_value_negative,
+            'percentageValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_non_response,
+        })
 
     def _apply_filters_to_nodes(self):
         if self.location:
             self.stats_search_data.nodes = self.stats_search_data.nodes.filter(location__iexact=self.location)
+        if self.programme:
+            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(programme=self.programme)
+        if self.from_date:
+            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(delivery_date__gte=self.from_date)
+        if self.to_date:
+            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(delivery_date__lte=self.to_date)
+
         if self.user_profile:
             self.ip = self.user_profile.consignee
         if self.ip:
