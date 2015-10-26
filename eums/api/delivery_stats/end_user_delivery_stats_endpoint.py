@@ -120,32 +120,15 @@ class EndUserDeliveryStatsEndpoint(APIView):
 
     def _get_product_received_stats(self):
         base_query_sets = get_product_received_base_query_sets(self.stats_search_data)
-        filtered_query_sets = self._apply_filters(base_query_sets)
-        return self._get_question_stats(filtered_query_sets)
+        return self._get_question_stats(base_query_sets)
 
     def _get_quality_of_product_stats(self):
         base_query_sets = get_quality_of_product_base_query_sets(self.stats_search_data)
-        filtered_query_sets = self._apply_filters(base_query_sets)
-        return self._get_question_stats(filtered_query_sets)
+        return self._get_question_stats(base_query_sets)
 
     def _get_satisfied_with_product_stats(self):
         base_query_sets = get_satisfied_with_product_base_query_sets(self.stats_search_data)
-        filtered_query_sets = self._apply_filters(base_query_sets)
-        return self._get_question_stats(filtered_query_sets)
-
-    def _apply_filters(self, base_query_sets):
-        filtered_positive_answers = base_query_sets.positive_answers
-        if self.location:
-            filtered_positive_answers = base_query_sets.positive_answers.filter(
-                run__runnable__location__iexact=self.location)
-        if self.ip:
-            filtered_positive_answers = filtered_positive_answers.filter(run__runnable__ip=self.ip)
-
-        return BaseQuerySets(
-            filtered_positive_answers,
-            base_query_sets.negative_answers,
-            base_query_sets.runs_with_answers
-        )
+        return self._get_question_stats(base_query_sets)
 
     def _get_question_stats(self, raw_stats):
         positive_count = raw_stats.positive_answers.count()
