@@ -6,7 +6,7 @@ from elasticsearch.helpers import scan
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.models import DistributionPlanNode as DeliveryNode, Consignee, Programme, OrderItem, Item, SalesOrder, \
-    PurchaseOrder
+    PurchaseOrder, ReleaseOrder
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -52,16 +52,17 @@ def _build_match_terms(last_sync):
     item_ids = _find_changes_for_model(Item, last_sync_time)
     sales_order_ids = _find_changes_for_model(SalesOrder, last_sync_time)
     purchase_order_ids = _find_changes_for_model(PurchaseOrder, last_sync_time)
+    release_order_ids = _find_changes_for_model(ReleaseOrder, last_sync_time)
 
     match_term = namedtuple('MatchTerm', ['key', 'value'])
     match_terms = [
-        match_term("consignee.id", list(consignee_ids)),
-        match_term("ip.id", list(consignee_ids)),
-        match_term("programme.id", list(programme_ids)),
-        match_term("order_item.id", list(order_item_ids)),
-        match_term("order_item.item.id", list(item_ids)),
-        match_term("order_item.order.sales_order.id", list(sales_order_ids)),
-        match_term("order_item.order.id", list(purchase_order_ids)),
+        match_term("consignee.id", consignee_ids),
+        match_term("ip.id", consignee_ids),
+        match_term("programme.id", programme_ids),
+        match_term("order_item.id", order_item_ids),
+        match_term("order_item.item.id", item_ids),
+        match_term("order_item.order.sales_order.id", sales_order_ids),
+        match_term("order_item.order.id", purchase_order_ids + release_order_ids),
     ]
 
     non_empty_match_terms = filter(lambda term: len(term.value), match_terms)
@@ -70,4 +71,4 @@ def _build_match_terms(last_sync):
 
 
 def _find_changes_for_model(model, last_sync_time):
-    return model.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True)
+    return list(model.objects.filter(modified__gte=last_sync_time).values_list('id', flat=True))
