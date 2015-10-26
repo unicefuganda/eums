@@ -11,7 +11,7 @@ from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import TextAnswerFactory, MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-from eums.models import DistributionPlanNode as DeliveryNode
+from eums.models import DistributionPlanNode as DeliveryNode, Run
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
@@ -238,6 +238,20 @@ class SyncDataGeneratorsTest(TestCase):
             option,
             {'field': 'text', 'value': 'Yes was received'},
             {'term': {'responses.value_id': [option.id]}},
+            mock_scan
+        )
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_run_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        run = RunFactory(runnable=node)
+        TextAnswerFactory(run=run)
+
+        self.check_update_happens(
+            node,
+            run,
+            {'field': 'status', 'value': Run.STATUS.expired},
+            {'term': {'responses.run.id': [run.id]}},
             mock_scan
         )
 
