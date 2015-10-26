@@ -236,9 +236,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 consignee: 4,
                 location: 'Adjumani',
                 contactPerson: '5444d433ec8e8257ae48dc73',
-                remark: '',
-                track: true,
-                isEndUser: false
+                track: true
             };
 
             beforeEach(function () {
@@ -496,9 +494,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                 quantityIn: 0,
                 destinationLocation: '',
                 contactPerson: '',
-                remark: '',
-                track: false,
-                isEndUser: false
+                track: false
             };
 
             scope.addDeliveryNode();
@@ -545,9 +541,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                     quantityIn: 5,
                     location: 'Kampala',
                     contactPerson: {id: '559281d40c42914aad3d6006'},
-                    remark: '',
-                    track: false,
-                    isEndUser: false
+                    track: false
                 },
                     {
                         consignee: {id: 1},
@@ -556,9 +550,7 @@ describe('MultipleIpDirectDeliveryController', function () {
                         quantityIn: 4,
                         destinationLocation: 'Wakiso',
                         contactPerson: {id: '559281d40c42914aad3d6006'},
-                        remark: '',
-                        track: false,
-                        isEndUser: false
+                        track: false
                     }];
                 scope.saveDeliveryNodes();
                 scope.$apply();
@@ -582,7 +574,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                     item: 1,
                     quantityIn: 10,
                     deliveryDate: '02/03/2014',
-                    remark: 'Remark',
                     track: false
                 };
 
@@ -600,26 +591,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                     deferredUserPromise.resolve(stubUser);
                 });
 
-                it('should save node with end user tree position', function () {
-                    uiPlanNode.isEndUser = true;
-                    scope.saveDeliveryNodes();
-                    scope.$apply();
-
-                    expect(mockNodeService.create).toHaveBeenCalledWith({
-                        consignee: 1,
-                        location: 'Kampala',
-                        contact_person_id: '0489284',
-                        tree_position: 'END_USER',
-                        parent: null,
-                        item: uiPlanNode.item,
-                        quantity: uiPlanNode.quantityIn,
-                        delivery_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
-                        track: false,
-                        distribution_plan: 1
-                    });
-                });
-
                 it('a node should be saved with no parent id as implementing partner', function () {
                     scope.saveDeliveryNodes();
                     scope.$apply();
@@ -633,27 +604,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                         item: uiPlanNode.item,
                         quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
-                        track: false,
-                        distribution_plan: 1
-                    });
-                });
-
-                it('should save node with middle man user tree position', function () {
-                    uiPlanNode.isEndUser = false;
-                    scope.saveDeliveryNodes();
-                    scope.$apply();
-
-                    expect(mockNodeService.create).toHaveBeenCalledWith({
-                        consignee: 1,
-                        location: 'Kampala',
-                        contact_person_id: '0489284',
-                        tree_position: 'IMPLEMENTING_PARTNER',
-                        parent: null,
-                        item: uiPlanNode.item,
-                        quantity: uiPlanNode.quantityIn,
-                        delivery_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1
                     });
@@ -672,7 +622,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                         item: uiPlanNode.item,
                         quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1
                     });
@@ -795,7 +744,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                         location: 'Kampala',
                         contact_person_id: '0489284',
                         delivery_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
                         track: false
                     });
 
@@ -808,7 +756,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                         item: uiPlanNode.item,
                         quantity: uiPlanNode.quantityIn,
                         delivery_date: distributionDateFormattedForSave,
-                        remark: uiPlanNode.remark,
                         track: false,
                         distribution_plan: 1,
                         id: nodeId,
@@ -832,7 +779,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                     item: 1,
                     quantityIn: 10,
                     deliveryDate: '2014-02-03',
-                    remark: 'Remark',
                     parent: 42,
                     track: false,
                     distribution_plan: 1
@@ -858,7 +804,6 @@ describe('MultipleIpDirectDeliveryController', function () {
                     item: 1,
                     quantity: 10,
                     delivery_date: '2014-2-3',
-                    remark: 'Remark',
                     track: false,
                     distribution_plan: 1
                 });

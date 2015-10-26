@@ -42,12 +42,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
             event.stopPropagation();
         });
 
-        $scope.addRemark = function (itemIndex, lineItem) {
-            $scope.$parent.itemIndex = itemIndex;
-            $scope.$parent.lineItem = lineItem;
-            $('#add-remark-modal').modal();
-        };
-
         IPService.loadAllDistricts().then(function (response) {
             $scope.districts = response.data.map(function (district) {
                 return {id: district, name: district};
@@ -137,9 +131,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 quantityIn: 0,
                 destinationLocation: '',
                 contactPerson: '',
-                remark: '',
-                track: false,
-                isEndUser: false
+                track: false
             };
 
             $scope.distributionPlanNodes.push(distributionPlanNode);
@@ -179,12 +171,11 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 consignee: uiPlanNode.consignee.id,
                 location: uiPlanNode.location,
                 contact_person_id: uiPlanNode.contactPerson.id,
-                tree_position: uiPlanNode.isEndUser ? 'END_USER' : 'IMPLEMENTING_PARTNER',
+                tree_position: 'IMPLEMENTING_PARTNER',
                 parent: null,
                 item: uiPlanNode.item,
                 quantity: uiPlanNode.quantityIn,
                 delivery_date: formatDateForSave(plannedDate),
-                remark: uiPlanNode.remark,
                 track: uiPlanNode.track,
                 distribution_plan: uiPlanNode.distributionPlan
             };
@@ -195,7 +186,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 location: uiPlanNode.location,
                 contact_person_id: uiPlanNode.contactPerson.id,
                 delivery_date: formatDateForSave(plannedDate),
-                remark: uiPlanNode.remark,
                 track: uiPlanNode.track
             };
 
@@ -220,9 +210,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                     DeliveryNodeService.create(node).then(function (retNode) {
                         uiPlanNode.id = retNode.id;
                         uiPlanNode.trackSubmitted = node.track;
-                        uiPlanNode.canReceiveSubConsignees = function () {
-                            return this.id && !this.isEndUser;
-                        }.bind(uiPlanNode);
                         deferred.resolve(uiPlanNode);
                     });
                 }).catch(function () {

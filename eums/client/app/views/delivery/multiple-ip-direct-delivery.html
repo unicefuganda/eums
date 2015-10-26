@@ -80,8 +80,6 @@
                         <th class="table-select-header-width">Consignee</th>
                         <th class="table-contact-select-header-width">Contact Person</th>
                         <th class="table-select-header-width">District</th>
-                        <th class="table-header-width" ng-show="distributionPlanReport">Remarks</th>
-                        <th class="table-header-width">End User</th>
                         <th class="table-header-width">Track</th>
                         </thead>
 
@@ -143,22 +141,6 @@
                                        ng-model="item.location"
                                        ng-disabled="item.trackSubmitted"
                                        value="{{ item.location }}">
-                            </td>
-                            <td ng-show="distributionPlanReport">
-                                <div class="text-center">
-                                    <button class="btn btn-default glyphicon glyphicon-list-alt" title="Remark"
-                                            ng-disabled="item.trackSubmitted"
-                                            ng-click="addRemark($index, item)">
-                                    </button>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="text-center">
-                                    <input type="checkbox" class="end-user-checkbox"
-                                           value="{{ item.isEndUser }}"
-                                           ng-model="item.isEndUser"
-                                           ng-disabled="item.trackSubmitted">
-                                </div>
                             </td>
                             <td id="input-track">
                                 <div class="text-center">
