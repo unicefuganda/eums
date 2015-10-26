@@ -226,7 +226,7 @@ angular.module('Directives', [])
                         allowClear: true,
                         data: displayProgrammes
                     });
-                }
+                };
 
                 $(element).change(function () {
                     var programme = $(element).select2('data');

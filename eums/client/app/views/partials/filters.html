@@ -1,7 +1,7 @@
 <form role='form' id='filters-form'>
     <div class="form-group">
-        <button id="ip-view" class="btn btn-default" ng-class="{'btn-primary': ipView, 'blue-border-button': !ipView}" ng-click="toggleIpView(true)" >IP</button>
-        <button id="end-user-view" class="btn btn-default" ng-class="{'btn-primary': !ipView, 'blue-border-button': ipView}" ng-click="toggleIpView(false)" >End User</button>
+        <button id="ip-view" class="btn btn-default ip-enduser-view-toggle" ng-class="{'btn-primary': ipView, 'blue-border-button': !ipView}" ng-click="toggleIpView(true)" >IP</button>
+        <button id="end-user-view" class="btn btn-default ip-enduser-view-toggle" ng-class="{'btn-primary': !ipView, 'blue-border-button': ipView}" ng-click="toggleIpView(false)" >End User</button>
     </div>
     <div class="form-group">
         <label for="select-program" class="blue-unicef">Filter by Outcome</label>
