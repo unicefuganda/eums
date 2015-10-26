@@ -33,8 +33,11 @@ def _find_nodes_to_update(last_sync):
         query = {
             "fields": [],
             "filter": {
-                "terms": {
-                    "consignee.id": list(changed_consignee_ids)
+                "bool": {
+                    "should": [
+                        {"term": {"consignee.id": list(changed_consignee_ids)}},
+                        {"term": {"ip.id": list(changed_consignee_ids)}}
+                    ]
                 }
             }
         }

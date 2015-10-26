@@ -54,15 +54,46 @@ class SyncDataGeneratorsTest(TestCase):
         consignee.save()
         nodes_ids_to_update = [{"_id": node.id}]
         mock_scan.return_value = nodes_ids_to_update
-        expected_query = {'filter': {'terms': {'consignee.id': [consignee.id]}}, 'fields': []}
+        expected_match_clause = {'term': {'consignee.id': [consignee.id]}}
 
         nodes_to_sync = generate_nodes_to_sync()
 
         call_args = mock_scan.call_args
+        query = call_args[1]['query']
         self.assertEqual(call_args[1]['doc_type'], ES_SETTINGS.NODE_TYPE)
-        self.assertEqual(call_args[1]['query'], expected_query)
+        self.assertDictContainsSubset({'fields': []}, query)
+        self.assertIn(expected_match_clause, call_args[1]['query']['filter']['bool']['should'])
+
         self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
         self.assertIn(node, nodes_to_sync)
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_ip_to_sync_data(self, mock_scan):
+        consignee = ConsigneeFactory(location='Old location')
+        parent_node = DeliveryNodeFactory(consignee=consignee)
+        child_node = DeliveryNodeFactory(parents=[(parent_node, 5)])
+        self.assertEqual(child_node.ip, consignee)
+
+        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
+        nodes_to_sync = generate_nodes_to_sync()
+        self.assertNotIn(child_node, nodes_to_sync)
+
+        consignee.location = 'New location'
+        consignee.save()
+        nodes_ids_to_update = [{"_id": child_node.id}]
+        mock_scan.return_value = nodes_ids_to_update
+        expected_match_clause = {'term': {'ip.id': [consignee.id]}}
+
+        nodes_to_sync = generate_nodes_to_sync()
+
+        call_args = mock_scan.call_args
+        query = call_args[1]['query']
+        self.assertEqual(call_args[1]['doc_type'], ES_SETTINGS.NODE_TYPE)
+        self.assertDictContainsSubset({'fields': []}, query)
+        self.assertIn(expected_match_clause, call_args[1]['query']['filter']['bool']['should'])
+
+        self.assertEqual(call_args[1]['index'], ES_SETTINGS.INDEX)
+        self.assertIn(child_node, nodes_to_sync)
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
