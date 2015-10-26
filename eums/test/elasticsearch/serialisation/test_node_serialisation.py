@@ -84,7 +84,7 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected_programme_serialisation, serialised[0]["programme"])
 
-    def test_should_convert_nodes_to_bulk_api_format(self):
+    def test_should_convert_updated_nodes_to_bulk_api_format(self):
         node = DeliveryNodeFactory()
         expected_meta_data = '{"index": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % (
             ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE, node.id
@@ -92,6 +92,16 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         serialised = serialise_nodes([node])
         expected_node_string = json.dumps(serialised[0], default=_serialise_datetime) + '\n'
 
-        api_format = convert_to_bulk_api_format(serialised)
+        api_format = convert_to_bulk_api_format(serialised, [])
 
         self.assertEqual(api_format, expected_meta_data + expected_node_string)
+
+    def test_should_add_delete_node_instructions_to_bulk_api_data(self):
+        node = DeliveryNodeFactory()
+        expected_meta_data = '{"delete": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % (
+            ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE, node.id
+        )
+
+        api_format = convert_to_bulk_api_format([], [node.id])
+
+        self.assertEqual(api_format, expected_meta_data)

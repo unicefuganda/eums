@@ -8,6 +8,7 @@ from eums.services.flow_scheduler import schedule_run_for
 
 logger = get_task_logger(__name__)
 
+
 @receiver(post_save, sender=DistributionPlanNode)
 def on_post_save_node(sender, **kwargs):
     node = kwargs['instance']

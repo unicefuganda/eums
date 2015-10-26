@@ -132,12 +132,16 @@ def _serialise_datetime(datetime):
     return str(datetime)
 
 
-def convert_to_bulk_api_format(nodes):
+def convert_to_bulk_api_format(nodes_to_update, nodes_to_delete):
     json_string = ''
-    for node in nodes:
-        json_string += '{"index": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % (
-            ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE, node['id']
-        )
+    for node in nodes_to_update:
+        json_string += '{"index": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % _get_action_params(node['id'])
         json_string += json.dumps(node, default=_serialise_datetime)
         json_string += '\n'
+    for node_id in nodes_to_delete:
+        json_string += '{"delete": {"_index": \"%s\", "_type": \"%s\", "_id": %d}}\n' % _get_action_params(node_id)
     return json_string
+
+
+def _get_action_params(node_id):
+    return ES_SETTINGS.INDEX, ES_SETTINGS.NODE_TYPE, node_id

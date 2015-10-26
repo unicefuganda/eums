@@ -6,7 +6,7 @@ from rest_framework.status import HTTP_200_OK
 
 from eums.elasticsearch.mappings import DELIVERY_NODE_MAPPING
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.elasticsearch.sync_data_generators import list_nodes_to_update
+from eums.elasticsearch.sync_data_generators import list_nodes_to_update, list_nodes_to_delete
 from eums.rapid_pro.fake_response import FakeResponse
 from eums.test.factories.answer_factory import TextAnswerFactory, MultipleChoiceAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -279,6 +279,15 @@ class SyncDataGeneratorsTest(TestCase):
         nodes_to_sync = list_nodes_to_update()
 
         self.assertIn(node, nodes_to_sync)
+
+    def test_should_delete_node_from_elasticsearch_when_deleted(self):
+        node = DeliveryNodeFactory()
+        SyncInfo.objects.create(status=SyncInfo.STATUS.SUCCESSFUL)
+
+        node.delete()
+        nodes_to_delete = list_nodes_to_delete()
+
+        self.assertIn(node.id, nodes_to_delete)
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')

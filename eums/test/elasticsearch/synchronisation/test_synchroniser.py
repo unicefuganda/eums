@@ -2,10 +2,12 @@ from django.conf import settings
 from django.test import TestCase
 from mock import patch
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from eums.elasticsearch.delete_records import DeleteRecords
 
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.synchroniser import run
 from eums.rapid_pro.fake_response import FakeResponse
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.helpers.fake_datetime import FakeDatetime
 from eums.models import DistributionPlanNode as DeliveryNode
 
@@ -42,12 +44,34 @@ class SynchroniserTest(TestCase):
     @patch('eums.elasticsearch.synchroniser.convert_to_bulk_api_format')
     @patch('requests.post')
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
-    def test_should_push_serialised_nodes_to_elasticsearch(self, mock_serialiser, mock_post, mock_converter, *_):
+    def test_should_push_updated_nodes_to_elasticsearch(self, mock_serialiser, mock_post, mock_converter, *_):
         api_data = '{}'
         mock_serialiser.return_value = {}
         mock_converter.return_value = api_data
         run()
         mock_post.assert_called_with(settings.ELASTIC_SEARCH.BULK, data=api_data)
+
+    @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')
+    @patch('eums.elasticsearch.synchroniser.convert_to_bulk_api_format')
+    @patch('requests.post')
+    @patch('eums.elasticsearch.synchroniser.serialise_nodes')
+    def test_should_push_deleted_nodes_to_elasticsearch(self, mock_serialise_nodes,
+                                                        mock_post, mock_converter, *_):
+        node = DeliveryNodeFactory()
+        run()
+        node.delete()
+
+        api_data = '{}'
+        stub_nodes_to_update = {'id': 10}
+        mock_serialise_nodes.return_value = stub_nodes_to_update
+        mock_converter.return_value = api_data
+        mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
+
+        run()
+
+        mock_converter.assert_called_with(stub_nodes_to_update, [node.id])
+        mock_post.assert_called_with(settings.ELASTIC_SEARCH.BULK, data=api_data)
+        self.assertListEqual(DeleteRecords.objects.first().nodes_to_delete, [])
 
     @patch('eums.elasticsearch.synchroniser.serialise_nodes')
     @patch('eums.elasticsearch.synchroniser.list_nodes_to_update')

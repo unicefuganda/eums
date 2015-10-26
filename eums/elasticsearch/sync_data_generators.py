@@ -2,6 +2,7 @@ from collections import namedtuple
 from django.conf import settings
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import scan
+from eums.elasticsearch.delete_records import DeleteRecords
 
 from eums.elasticsearch.mappings import setup_mappings
 from eums.elasticsearch.sync_info import SyncInfo
@@ -16,6 +17,11 @@ def list_nodes_to_update():
     nodes_to_update = _find_nodes_to_update(last_sync)
     new_nodes = _find_new_nodes(last_sync)
     return list(nodes_to_update) + list(new_nodes)
+
+
+def list_nodes_to_delete():
+    delete_records = DeleteRecords.objects.first()
+    return delete_records.nodes_to_delete if delete_records else []
 
 
 def _find_new_nodes(last_sync):
