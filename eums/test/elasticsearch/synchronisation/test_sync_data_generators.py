@@ -172,6 +172,18 @@ class SyncDataGeneratorsTest(TestCase):
             mock_scan
         )
 
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_answer_to_sync_data(self, mock_scan):
+        node = DeliveryNodeFactory()
+        answer = TextAnswerFactory(value='original', question=(TextQuestionFactory()), run=(RunFactory(runnable=node)))
+
+        self.check_update_happens(
+            node,
+            answer,
+            {'field': 'value', 'value': 'changed'},
+            {'term': {'responses.id': [answer.id]}},
+            mock_scan
+        )
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
