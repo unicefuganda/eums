@@ -12,6 +12,7 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models import DistributionPlanNode as DeliveryNode
 from eums.test.factories.programme_factory import ProgrammeFactory
+from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
 
@@ -81,7 +82,20 @@ class SyncDataGeneratorsTest(TestCase):
             {'term': {'programme.id': [programme.id]}},
             mock_scan
         )
-    
+
+    @patch('eums.elasticsearch.sync_data_generators.scan')
+    def test_should_add_node_related_to_changed_order_item_to_sync_data(self, mock_scan):
+        order_item = PurchaseOrderItemFactory(quantity=50)
+        node = DeliveryNodeFactory(item=order_item)
+
+        self.check_update_happens(
+            node,
+            order_item,
+            {'field': 'quantity', 'value': 60},
+            {'term': {'order_item.id': [order_item.id]}},
+            mock_scan
+        )
+
     @patch('eums.elasticsearch.synchroniser.logger.error')
     @patch('requests.post')
     def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
