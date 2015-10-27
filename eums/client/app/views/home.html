@@ -1,7 +1,8 @@
 <div class="content full-page">
-    <a default-view class="view-thumbnail"><img type="image/svg+xml"  src="/static/app/media/map_zoom_out.svg"/></a>
+    <a default-view class="view-thumbnail"><img type="image/svg+xml" src="/static/app/media/map_zoom_out.svg"/></a>
+
     <div id="map" class="full-page" map>
-        <div  class='filter-panel ng-cloak' id="filter-panel">
+        <div class='filter-panel ng-cloak' id="filter-panel">
             <map-filter map-filters></map-filter>
         </div>
 
@@ -11,7 +12,8 @@
 
             <div id="district-stats">
 
-                <div class="district-stats-header" ng-show="data.totalStats.location">{{ data.totalStats.location }}</div>
+                <div class="district-stats-header"
+                     ng-show="data.totalStats.location">{{ data.totalStats.location }}</div>
                 <div class="district-stats-header" ng-show="!data.totalStats.location">All Districts</div>
 
                 <div id="district-stats-left-side">
@@ -19,7 +21,7 @@
                     <div class="district-stats-subheader">
                         <ul class="list-unstyled">
                             <li class="stats-subheader-bold-grey stats-large-number-font">
-                                {{ data.totalStats.totalValueOfDeliveries | compactCurrency}}
+                                {{ data.totalStats.totalValueOfDeliveries | compactCurrency }}
                             </li>
                             <li class="stats-subheader-blue">Total supplies sent</li>
                             <li class="stats-text-grey">{{ data.totalStats.totalNumberOfDeliveries }} deliveries</li>
@@ -110,7 +112,7 @@
                     <div class="district-stats-subheader">
                         <ul class="list-unstyled">
                             <li class="stats-subheader-bold-grey stats-large-number-font">
-                                {{ data.totalStats.totalValueOfSuccessfulDeliveries | compactCurrency}}
+                                {{ data.totalStats.totalValueOfSuccessfulDeliveries | compactCurrency }}
                             </li>
                             <li class="stats-subheader-blue">Total supplies received</li>
                             <li class="stats-text-grey">
@@ -134,7 +136,7 @@
                                     </percent-display>
                                 </div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfDeliveriesInGoodOrder | compactCurrency}}
+                                    {{ data.totalStats.totalValueOfDeliveriesInGoodOrder | compactCurrency }}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -147,7 +149,7 @@
                                     </percent-display>
                                 </div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfDeliveriesInBadOrder | compactCurrency}}
+                                    {{ data.totalStats.totalValueOfDeliveriesInBadOrder | compactCurrency }}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -160,7 +162,7 @@
                                     </percent-display>
                                 </div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | compactCurrency}}
+                                    {{ data.totalStats.totalValueOfNonResponseToQualityOfProduct | compactCurrency }}
                                 </div>
                             </div>
                         </div>
@@ -177,7 +179,7 @@
                                     </percent-display>
                                 </div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfSatisfactoryDeliveries | compactCurrency}}
+                                    {{ data.totalStats.totalValueOfSatisfactoryDeliveries | compactCurrency }}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -190,7 +192,7 @@
                                     </percent-display>
                                 </div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | compactCurrency}}
+                                    {{ data.totalStats.totalValueOfUnsatisfactoryDeliveries | compactCurrency }}
                                 </div>
                             </div>
                             <div class="district-stats-detailed-section-slice pull-left">
@@ -203,13 +205,25 @@
                                     </percent-display>
                                 </div>
                                 <div class="stats-med-number-font">
-                                    {{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | compactCurrency}}
+                                    {{ data.totalStats.totalValueOfNonResponseToSatisfactionWithProduct | compactCurrency }}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div>
+            <svg height="10" width="10" xmlns="http://www.w3.org/2000/svg" version="1.1">
+                <defs>
+                    <pattern id="map-hatch-pattern" patternUnits="userSpaceOnUse" x="0" y="0" width="10" height="10">
+                        <g id="leaflet-map-received-with-issues">
+                            <path d="M0,0 l10,10"/>
+                            <path d="M10,0 l-10,10"/>
+                        </g>
+                    </pattern>
+                </defs>
+            </svg>
         </div>
     </div>
 </div>

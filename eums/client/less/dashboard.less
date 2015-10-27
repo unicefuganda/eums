@@ -305,6 +305,32 @@ div[class*="-aggregate-marker-icon"] div {
   background-color: #fff;
 }
 
+.leaflet-clickable[fill=map-no-response-expected]{
+  fill: white;
+}
+
+.leaflet-clickable[fill=map-non-response]{
+  fill: #E0E0E0;
+}
+
+.leaflet-clickable[fill=map-not-received]{
+  fill: #D9534F;
+}
+
+.leaflet-clickable[fill=map-received]{
+  fill: @brand-primary;
+}
+
+#leaflet-map-received-with-issues{
+  fill: none;
+  stroke: @brand-primary;
+  stroke-width:1
+}
+
+.leaflet-clickable[fill=map-received-with-issues]{
+  fill: url(#map-hatch-pattern);
+}
+
 .inherit-font{
   font-size: inherit;
 }

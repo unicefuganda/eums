@@ -29,7 +29,7 @@
 
     function getIpHeatMapStyle(data, layerName) {
         var style = {
-            fillColor: '#FFFFCC',
+            fillColor: 'white',
             fillOpacity: 1,
             weight: 1.5
         };
