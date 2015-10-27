@@ -1,6 +1,7 @@
 var FunctionalTestUtils = (function () {
     return {
         fillSelect2Chosen: function (id, input) {
+            this.scrollToTop();
             element(by.id(id)).click();
             element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
             element(by.css('.select2-results li')).click();
@@ -16,6 +17,9 @@ var FunctionalTestUtils = (function () {
         },
         clearSelect2Chosen: function (id) {
             element(by.id(id)).element(by.css('.select2-search-choice-close')).click();
+        },
+        scrollToTop: function() {
+            browser.executeScript('window.scrollTo(0,0);');
         }
     }
 })();

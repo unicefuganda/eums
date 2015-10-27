@@ -147,9 +147,9 @@
                 <tr>
                     <td colspan="12" class="centered">
                         <pagination total-items="count"
-                                    ng-model="currentPage"
+                                    ng-model="searchTerm.page"
                                     boundary-links="true"
-                                    ng-change="goToPage(currentPage)"
+                                    ng-change="goToPage(searchTerm.page)"
                                     max-size="5"
                                     rotate="false"
                                     items-per-page="pageSize">

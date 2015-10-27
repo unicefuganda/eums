@@ -15,6 +15,19 @@ IpFeedbackReportByItemPage.prototype = Object.create({}, {
             browser.get(this.url);
         }
     },
+
+    paginateTo: {
+        value: function (pageNumber) {
+            element(by.cssContainingText('ul.pagination li a', pageNumber)).click();
+        }
+    },
+
+    pageNumber: {
+        get: function() {
+            return element(by.css('ul.pagination li.active')).getText();
+        }
+    },
+
     filterByProgramme: {
         value: function (searchText) {
             functionalTestUtils.fillSelect2Chosen('filter-programme-container', searchText);
