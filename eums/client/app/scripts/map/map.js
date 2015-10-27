@@ -133,7 +133,8 @@
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                         layer.setStyle(getIpHeatMapStyle(response.data, layerName));
                     });
-                    DeliveryStatsService.getStats({treePosition:'IMPLEMENTING_PARTNER'}).then(function (responses) {
+                    var allFilter = angular.extend({treePosition:'IMPLEMENTING_PARTNER'}, scope.filter);
+                    DeliveryStatsService.getStats(allFilter).then(function (responses) {
                         scope.data.totalStats = responses.data;
                     });
                     LoaderService.hideLoader();
@@ -153,7 +154,8 @@
                         angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
                             layer.setStyle(getHeatMapStyle(allLocations, layerName));
                         });
-                        DeliveryStatsService.getStats({treePosition: 'END_USER'}).then(function (responses) {
+                        var allFilter = angular.extend({treePosition: 'END_USER'}, scope.filter);
+                        DeliveryStatsService.getStats(allFilter).then(function (responses) {
                             scope.data.totalStats = responses.data;
                         });
                         LoaderService.hideLoader();
