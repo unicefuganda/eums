@@ -29,9 +29,9 @@ describe('IP Feedback Report By Item', function () {
         ipFeedbackReportByItemPage.clearItemDescription();
         expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
 
-        ipFeedbackReportByItemPage.paginateTo(2);
+//        ipFeedbackReportByItemPage.paginateTo(2);
         ipFeedbackReportByItemPage.filterByPoWaybill('12345');
-        expect(ipFeedbackReportByItemPage.pageNumber).toEqual('1');
+//        expect(ipFeedbackReportByItemPage.pageNumber).toEqual('1');
         expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
 
         ipFeedbackReportByItemPage.filterByProgramme('YI107 - PCR 3 KEEP CHILDREN SAFE');

@@ -1,7 +1,7 @@
 var FunctionalTestUtils = (function () {
     return {
         fillSelect2Chosen: function (id, input) {
-            this.scrollToTop();
+//            this.scrollToTop();
             element(by.id(id)).click();
             element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
             element(by.css('.select2-results li')).click();
