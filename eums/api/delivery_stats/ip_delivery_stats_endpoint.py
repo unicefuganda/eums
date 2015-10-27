@@ -1,19 +1,21 @@
 import datetime
+from eums import settings
 from rest_framework.response import Response
 
 from rest_framework.views import APIView
 
 from eums.models import Flow, Runnable, DistributionPlanNode, MultipleChoiceAnswer, Question
 
-GRACE_PERIOD = 7
+GRACE_PERIOD = settings.NON_RESPONSE_GRACE_PERIOD
 
-X_PERCENT = 70
-STATE = {
-    'YELLOW': 'yellow',
-    'GREY': 'grey',
-    'RED': 'red',
-    'GREEN': 'green',
-    'ORANGE': 'orange'
+X_PERCENT = settings.NON_RESPONSE_PERCENTAGE_THRESHOLD
+
+STATE_CSS_MAPPING = {
+    'NO_RESPONSE_EXPECTED': 'map-no-response-expected',
+    'NON_RESPONSE': 'map-non-response',
+    'NOT_RECEIVED': 'map-not-received',
+    'RECEIVED': 'map-received',
+    'RECEIVED_WITH_ISSUES': 'map-received-with-issues'
 }
 
 
@@ -76,14 +78,14 @@ class DeliveryState:
     @staticmethod
     def get_state(data):
         if not data['numberOfDeliveries']:
-            return STATE['YELLOW']
+            return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
         non_response_percent = 100 * data['nonResponse'] / data['numberOfDeliveries']
         if non_response_percent > X_PERCENT:
-            return STATE['GREY']
+            return STATE_CSS_MAPPING['NON_RESPONSE']
         if data['numberNotReceived'] > data['numberReceived']:
-            return STATE['RED']
+            return STATE_CSS_MAPPING['NOT_RECEIVED']
         if data['noIssues'] > data['hasIssues'] or not data['hasIssues']:
-            return STATE['GREEN']
+            return STATE_CSS_MAPPING['RECEIVED']
         if data['noIssues'] <= data['hasIssues']:
-            return STATE['ORANGE']
-        return STATE['YELLOW']
+            return STATE_CSS_MAPPING['RECEIVED_WITH_ISSUES']
+        return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']

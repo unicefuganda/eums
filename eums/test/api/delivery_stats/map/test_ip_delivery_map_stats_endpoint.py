@@ -26,9 +26,9 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
     def test_should_return_correct_json_object(self):
         response = self.client.get(ENDPOINT_URL)
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 2, 'nonResponse': 1, 'numberReceived': 1,
-                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'},
+                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'map-received'},
                           {'location': 'Other location', 'numberOfDeliveries': 1, 'nonResponse': 1, 'numberReceived': 0,
-                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 0, 'state': 'grey'}]
+                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 0, 'state': 'map-non-response'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_programme(self):
@@ -36,7 +36,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
 
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0,
                            'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1,
-                           'state': 'green'}]
+                           'state': 'map-received'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_ip(self):
@@ -44,28 +44,28 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
 
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0,
                            'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1,
-                           'state': 'green'}]
+                           'state': 'map-received'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_from_date(self):
         response = self.client.get('%s?from=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [{'numberOfDeliveries': 2, 'location': 'some location', 'numberNotReceived': 0, 'hasIssues': 0,
-                           'nonResponse': 1, 'numberReceived': 1, 'state': 'green', 'noIssues': 1}]
+                           'nonResponse': 1, 'numberReceived': 1, 'state': 'map-received', 'noIssues': 1}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_to_date(self):
         response = self.client.get('%s?to=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [{'numberOfDeliveries': 1, 'location': 'Other location', 'numberNotReceived': 0,
-                           'hasIssues': 0, 'nonResponse': 1, 'numberReceived': 0, 'state': 'grey', 'noIssues': 0}]
+                           'hasIssues': 0, 'nonResponse': 1, 'numberReceived': 0, 'state': 'map-non-response', 'noIssues': 0}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_both_ip_and_programme(self):
         response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, self.ip.id, self.programme.id))
 
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0, 'numberReceived': 1,
-                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'green'}]
+                           'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'map-received'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
         non_existing_ip_id = 22222222
@@ -83,31 +83,31 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
 
     def test_should_return_yellow_when_number_of_deliveries_is_zero(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 0})
-        self.assertEqual('yellow', state)
+        self.assertEqual('map-no-response-expected', state)
 
     def test_should_return_grey_when_non_responce_percentage_is_greater_than_X(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 8})
-        self.assertEqual('grey', state)
+        self.assertEqual('map-non-response', state)
 
     def test_should_return_red_if_not_received_is_more_than_received(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 6, 'numberNotReceived': 3,
                                          'numberReceived': 1})
-        self.assertEqual('red', state)
+        self.assertEqual('map-not-received', state)
 
     def test_should_return_green_if_more_deliveries_are_in_good_condition(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 2, 'numberNotReceived': 1,
                                          'numberReceived': 6, 'hasIssues': 1, 'noIssues': 5})
-        self.assertEqual('green', state)
+        self.assertEqual('map-received', state)
 
     def test_should_return_green_if_has_issues_is_zero(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 2, 'numberNotReceived': 0,
                                          'numberReceived': 0, 'hasIssues': 0, 'noIssues': 0})
-        self.assertEqual('green', state)
+        self.assertEqual('map-received', state)
 
     def test_should_return_orange_if_no_issues_less_or_equal_to_has_issues(self):
         state = DeliveryState.get_state({'numberOfDeliveries': 10, 'nonResponse': 2, 'numberNotReceived': 0,
                                          'numberReceived': 4, 'hasIssues': 3, 'noIssues': 1})
-        self.assertEqual('orange', state)
+        self.assertEqual('map-received-with-issues', state)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()
