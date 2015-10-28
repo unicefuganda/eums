@@ -36,7 +36,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
         function startTimer() {
             timer = $timeout(function () {
                 loadIpFeedbackReportByDelivery({query: $scope.searchTerm})
-            }, 1000);
+            }, 2000);
         }
 
         $scope.showRemarks = function (index) {

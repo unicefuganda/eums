@@ -61,7 +61,7 @@ describe('IpFeedbackReportByItemController', function () {
             scope.searchTerm = {query: searchTerm};
             scope.$apply();
 
-            //timeout.flush();
+            timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
         });
@@ -74,7 +74,7 @@ describe('IpFeedbackReportByItemController', function () {
             scope.searchTerm = {programme_id: programme_id};
             scope.$apply();
 
-            //timeout.flush();
+            timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({programme_id: programme_id});
         });
@@ -87,7 +87,9 @@ describe('IpFeedbackReportByItemController', function () {
             scope.$apply();
 
             scope.goToPage(2);
+
             scope.$digest();
+            timeout.flush();
 
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({page: 2});
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);

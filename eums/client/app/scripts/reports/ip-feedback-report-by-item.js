@@ -3,14 +3,17 @@
 angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loader', 'Consignee', 'Programme'])
     .controller('IpFeedbackReportByItemController', function ($scope, $q, $location, $timeout, ReportService,
                                                               LoaderService) {
+        var timer;
         $scope.searchTerm = {};
         $scope.directiveValues = {};
 
         $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
-                $scope.resetPageNo(newSearchTerm, oldSearchTerm);
-                loadIpFeedbackReport($scope.searchTerm);
+                if (timer) {
+                    $timeout.cancel(timer);
+                }
+                startSearchTimer(newSearchTerm, oldSearchTerm);
             } else {
                 loadIpFeedbackReport()
             }
@@ -46,6 +49,13 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
         $scope.goToPage = function (page) {
             $scope.searchTerm.page = page;
         };
+
+        function startSearchTimer(newSearchTerm, oldSearchTerm) {
+            timer = $timeout(function () {
+                $scope.resetPageNo(newSearchTerm, oldSearchTerm);
+                loadIpFeedbackReport($scope.searchTerm);
+            }, 1000);
+        }
 
         function hasFields(searchTerm) {
             return Object.keys(searchTerm).length > 0;
