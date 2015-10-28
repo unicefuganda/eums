@@ -4,7 +4,7 @@ var ftUtils = require('./functional-test-utils.js');
 var loginPage = require('./pages/login-page.js');
 var ipFeedbackReportByItemPage = require('./pages/ip-feedback-report-by-item-page.js');
 
-describe('IP Feedback Report By Item', function () {
+fdescribe('IP Feedback Report By Item', function () {
 
     it('should filter by programme, ip, item description, Purchase Order Number or waybill', function () {
         loginPage.visit();
@@ -29,9 +29,9 @@ describe('IP Feedback Report By Item', function () {
         ipFeedbackReportByItemPage.clearItemDescription();
         expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
 
-//        ipFeedbackReportByItemPage.paginateTo(2);
+        ipFeedbackReportByItemPage.paginateTo(2);
         ipFeedbackReportByItemPage.filterByPoWaybill('12345');
-//        expect(ipFeedbackReportByItemPage.pageNumber).toEqual('1');
+        expect(ipFeedbackReportByItemPage.pageNumber).toEqual('1');
         expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
 
         ipFeedbackReportByItemPage.filterByProgramme('YI107 - PCR 3 KEEP CHILDREN SAFE');
