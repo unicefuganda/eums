@@ -7,17 +7,40 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
         $scope.searchTerm = {};
         $scope.directiveValues = {};
 
+        var initializing = true;
+
         $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
-            if (hasFields($scope.searchTerm)) {
-                $scope.searching = true;
+            if (initializing){
+                loadIpFeedbackReport();
+                initializing = false;
+            } else {
                 if (timer) {
                     $timeout.cancel(timer);
                 }
-                startSearchTimer(newSearchTerm, oldSearchTerm);
-            } else {
-                loadIpFeedbackReport()
-            }
 
+                startSearchTimer(newSearchTerm, oldSearchTerm);
+            }
+        }, true);
+
+        $scope.resetPageNo = function(newSearchTerm, oldSearchTerm){
+            if(newSearchTerm.consigneeId != oldSearchTerm.consigneeId
+                || newSearchTerm.programmeId != oldSearchTerm.programmeId
+                || newSearchTerm.itemDescription != oldSearchTerm.itemDescription
+                || newSearchTerm.poWaybill != oldSearchTerm.poWaybill)
+                $scope.searchTerm.page = 1;
+        };
+
+        $scope.goToPage = function (page) {
+            $scope.searchTerm.page = page;
+        };
+
+        function startSearchTimer(newSearchTerm, oldSearchTerm) {
+            timer = $timeout(function () {
+                startSearch(newSearchTerm, oldSearchTerm);
+            }, 2000);
+        }
+
+        function applyFilters(newSearchTerm, oldSearchTerm) {
             if (newSearchTerm.consigneeId != oldSearchTerm.consigneeId) {
                 $scope.displayProgrammes = newSearchTerm.consigneeId ? $scope.directiveValues.allProgrammes.filter(function (programme) {
                     return _.contains(programme.ips, newSearchTerm.consigneeId);
@@ -36,33 +59,24 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 }) : $scope.directiveValues.allIps;
                 $scope.populateIpsSelect2 && $scope.populateIpsSelect2($scope.displayIps);
             }
-        }, true);
-
-        $scope.resetPageNo = function(newSearchTerm, oldSearchTerm){
-            if(newSearchTerm.consigneeId != oldSearchTerm.consigneeId
-                || newSearchTerm.programmeId != oldSearchTerm.programmeId
-                || newSearchTerm.itemDescription != oldSearchTerm.itemDescription
-                || newSearchTerm.poWaybill != oldSearchTerm.poWaybill)
-                $scope.searchTerm.page = 1;
         }
 
-        $scope.goToPage = function (page) {
-            $scope.searchTerm.page = page;
-        };
-
-        function startSearchTimer(newSearchTerm, oldSearchTerm) {
-            timer = $timeout(function () {
+        function startSearch(newSearchTerm, oldSearchTerm) {
+            if (hasFields($scope.searchTerm)) {
+                $scope.searching = true;
                 $scope.resetPageNo(newSearchTerm, oldSearchTerm);
-                loadIpFeedbackReport($scope.searchTerm);
-            }, 1000);
+                loadIpFeedbackReport($scope.searchTerm, newSearchTerm, oldSearchTerm);
+            } else {
+                loadIpFeedbackReport();
+            }
         }
 
         function hasFields(searchTerm) {
             return Object.keys(searchTerm).length > 0;
         }
 
-        function loadIpFeedbackReport(filterParams) {
-            $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
+        function loadIpFeedbackReport(filterParams, newSearchTerm, oldSearchTerm) {
+            LoaderService.showLoader();
             ReportService.ipFeedbackReport(filterParams).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
@@ -71,8 +85,12 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 updateProgrammes(response.programmeIds);
                 updateConsignees(response.ipIds);
 
-                LoaderService.hideLoader();
+                if(newSearchTerm && oldSearchTerm) {
+                    applyFilters(newSearchTerm, oldSearchTerm);
+                }
+
                 $scope.searching = false;
+                LoaderService.hideLoader();
             });
         }
 
