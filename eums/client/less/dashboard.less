@@ -137,6 +137,19 @@
   padding: 12px;
 }
 
+#map-legend-content {
+  padding-left: 20px;
+}
+
+.svg-map-legend-item{
+  margin-bottom: -2px;
+  margin-left: 5px;
+}
+
+.map-legend-item-child{
+  margin-left: 20px;
+}
+
 .filters-section {
   height: 100%;
   overflow: auto;
@@ -157,6 +170,20 @@
   box-shadow: 4px 4px 7px #888888;
   opacity: 0.9;
   margin: 25px;
+}
+
+.map-legend-panel {
+  bottom: 0;
+  z-index: 1000;
+  position: absolute;
+  width: 200px;
+  background: white;
+  border: 1px solid @brand-primary;
+  border-radius: 7px;
+  box-shadow: 4px 4px 7px #888888;
+  opacity: 0.9;
+  margin: 25px;
+  overflow: hidden;
 }
 
 .filter-panel .close-panel {
@@ -329,6 +356,10 @@ div[class*="-aggregate-marker-icon"] div {
 
 .leaflet-clickable[fill=map-received-with-issues]{
   fill: url(#map-hatch-pattern);
+}
+
+.leaflet-clickable.show-svg-border{
+  stroke: @brand-primary;
 }
 
 .inherit-font{

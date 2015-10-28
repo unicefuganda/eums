@@ -5,6 +5,68 @@
         <div class='filter-panel ng-cloak' id="filter-panel">
             <map-filter map-filters></map-filter>
         </div>
+        <div class="map-legend-panel ng-cloak" ng-show="ipView">
+            <form role='form'>
+                <div class="map-summary-header centered">
+                    <span class="sub-header title">Delivery Status</span>
+                    <span ng-click="deliveryStatusCollapsed=!deliveryStatusCollapsed" class="marker-summary-arrow"
+                            ng-class="{ 'expanded': !deliveryStatusCollapsed, 'collapsed': deliveryStatusCollapsed }"></span>
+                </div>
+
+                <div delivery-status ng-hide="deliveryStatusCollapsed" id='map-legend-content'>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checked ng-model="deliveryStatus.mapNotReceived"/> Mostly unreceived
+                        </label>
+                        <span>
+                            <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
+                                 version="1.1">
+                                <rect height="15" width="15" class="leaflet-clickable" fill="map-not-received"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checked ng-change="updateReceivedDeliveryStatus()" ng-model="tmp.mapReceivedAll"/> Mostly
+                            received
+                        </label>
+                    </div>
+                    <div class="checkbox map-legend-item-child">
+                        <label>
+                            <input type="checkbox" checked ng-change="updateAllReceived()" ng-model="deliveryStatus.mapReceived"/> Without issues
+                        </label>
+                        <span>
+                            <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
+                                 version="1.1">
+                                <rect height="15" width="15" class="leaflet-clickable" fill="map-received"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="checkbox map-legend-item-child">
+                        <label>
+                            <input type="checkbox" checked  ng-change="updateAllReceived()" ng-model="deliveryStatus.mapReceivedWithIssues"/> With issues
+                        </label>
+                        <span>
+                            <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
+                                 version="1.1">
+                                <rect height="15" width="15" class="leaflet-clickable show-svg-border" fill="map-received-with-issues"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" checked ng-model="deliveryStatus.mapNonResponse"/> Mostly unknown
+                        </label>
+                        <span>
+                            <svg height="15" width="15" class="svg-map-legend-item" xmlns="http://www.w3.org/2000/svg"
+                                 version="1.1">
+                                <rect height="15" width="15" class="leaflet-clickable show-svg-border" fill="map-non-response"/>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
 
         <div id="summary-panel" class="ng-cloak panel panel-default well well-sm">
 

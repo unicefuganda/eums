@@ -34,6 +34,19 @@ describe('Module: Home', function () {
             expect(scope.ipView).toBe(false);
         });
 
+        it('should not collapse delivery status panel by default', function () {
+            expect(scope.deliveryStatusCollapsed).toBe(false);
+        });
+
+        it('should check all delivery statuses by default', function () {
+            var all_true_statuses = {
+                received: true, notDelivered: true, receivedWithIssues: true,
+                mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
+                mapNotReceived: true
+            };
+            expect(scope.deliveryStatus).toEqual(all_true_statuses);
+        });
+
         it('should toggle ip and end-user feedback view', function () {
             scope.toggleIpView(true);
             scope.$apply();
@@ -68,6 +81,57 @@ describe('Module: Home', function () {
             scope.filter = {ip: 2};
             scope.$apply();
             expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+        });
+
+        it('should watch deliveryStatus and reload map on ip-view', function () {
+            scope.toggleIpView(true);
+            scope.deliveryStatus = {};
+            scope.$apply();
+            scope.deliveryStatus = {mapNotReceived: true};
+            scope.$apply();
+            expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+        });
+
+        it('should set deliveryStatus received with and without issues to true if all received is true', function () {
+            scope.deliveryStatus = {mapReceived: false, mapReceivedWithIssues: false};
+            scope.tmp.mapReceivedAll = false;
+            scope.$apply();
+            scope.tmp.mapReceivedAll = true;
+            scope.updateReceivedDeliveryStatus();
+            scope.$apply();
+            expect(scope.deliveryStatus.mapReceived).toBe(true);
+            expect(scope.deliveryStatus.mapReceivedWithIssues).toBe(true);
+        });
+
+        it('should set deliveryStatus all received to true if both received with and without issues are true', function () {
+            scope.tmp.mapReceivedAll = false;
+            scope.$apply();
+            scope.deliveryStatus = {mapReceived: true, mapReceivedWithIssues: true};
+            scope.updateAllReceived();
+            scope.$apply();
+            expect(scope.tmp.mapReceivedAll).toBe(true);
+        });
+
+
+        it('should set deliveryStatus all received to false if either received with and/or without issues are false', function () {
+            scope.tmp.mapReceivedAll = true;
+            scope.$apply();
+            scope.deliveryStatus = {mapReceived: false, mapReceivedWithIssues: true};
+            scope.updateAllReceived();
+            scope.$apply();
+            expect(scope.tmp.mapReceivedAll).toBe(false);
+
+            scope.tmp.mapReceivedAll = true;
+            scope.deliveryStatus = {mapReceived: true, mapReceivedWithIssues: false};
+            scope.updateAllReceived();
+            scope.$apply();
+            expect(scope.tmp.mapReceivedAll).toBe(false);
+
+            scope.tmp.mapReceivedAll = true;
+            scope.deliveryStatus = {mapReceived: false, mapReceivedWithIssues: false};
+            scope.updateAllReceived();
+            scope.$apply();
+            expect(scope.tmp.mapReceivedAll).toBe(false);
         });
     });
 

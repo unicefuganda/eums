@@ -127,11 +127,29 @@
             return map;
         }
 
+        function filterByColor(data, deliveryStatus){
+            var filteredStatuses = filterDeliveryStatus(deliveryStatus);
+            var result = [];
+            filteredStatuses.forEach(function(status){
+                result.push(data.filter(function(deliveries){
+                    return deliveries.state.camelize(false) === status;
+                }));
+            });
+            return _.flatten(result);
+        }
+
+        function filterDeliveryStatus(deliveryStatus){
+            return Object.keys(deliveryStatus).filter(function (key) {
+                return deliveryStatus[key]
+            });
+        }
+
         function addHeatMapLayer(scope) {
             if (scope.ipView) {
                 DeliveryStatsService.getIpStats(scope.filter).then(function (response) {
+                    var filteredByColorStatsData = filterByColor(response.data, scope.deliveryStatus);
                     angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
-                        layer.setStyle(getIpHeatMapStyle(response.data, layerName));
+                        layer.setStyle(getIpHeatMapStyle(filteredByColorStatsData, layerName));
                     });
                     var allFilter = angular.extend({treePosition:'IMPLEMENTING_PARTNER'}, scope.filter);
                     DeliveryStatsService.getStats(allFilter).then(function (responses) {

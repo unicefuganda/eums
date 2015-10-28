@@ -4,7 +4,11 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
     'Loader', 'map.layers'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
         $scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
-        $scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
+        $scope.deliveryStatus = {
+            received: true, notDelivered: true, receivedWithIssues: true,
+            mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
+            mapNotReceived: true
+        };
 
         $scope.datepicker = {from: false, to: false};
         $scope.totalStats = {};
@@ -15,6 +19,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         $scope.isFiltered = false;
         $scope.notDeliveryStatus = false;
         $scope.ipView = false;
+        $scope.deliveryStatusCollapsed = false;
 
         $scope.directiveValues = {};
 
@@ -42,6 +47,25 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
 
         $scope.$watchCollection('filter', function (newFilter, oldFilter) {
             if (!Object.equal(newFilter, oldFilter) && $scope.ipView) {
+                $scope.redrawMapColors();
+            }
+        }, true);
+
+        $scope.tmp = {mapReceivedAll: true};
+
+        $scope.updateAllReceived = function() {
+            $scope.tmp.mapReceivedAll = ($scope.deliveryStatus.mapReceived && $scope.deliveryStatus.mapReceivedWithIssues);
+        };
+
+        $scope.updateReceivedDeliveryStatus = function() {
+            if ($scope.tmp.mapReceivedAll) {
+                $scope.deliveryStatus.mapReceived = true;
+                $scope.deliveryStatus.mapReceivedWithIssues = true;
+            }
+        };
+
+        $scope.$watchCollection('deliveryStatus', function (newDeliveryStatus, oldDeliveryStatus) {
+            if (!Object.equal(newDeliveryStatus, oldDeliveryStatus) && $scope.ipView) {
                 $scope.redrawMapColors();
             }
         }, true);
