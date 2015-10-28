@@ -17,8 +17,8 @@ describe('Reports', function () {
         expect(reportsPage.totalBalance).toContain('$87.14');
 
         expect(reportsPage.stockDocumentNumbers).toContain('12345');
-        expect(reportsPage.stockReceivedValues).toContain('87.143');
-        expect(reportsPage.stockBalances).toContain('87.143');
+        expect(reportsPage.stockReceivedValues).toContain('$87.14');
+        expect(reportsPage.stockBalances).toContain('$87.14');
 
         reportsPage.selectFirstPO();
         expect(reportsPage.itemCodes).toContain('S0060240');
