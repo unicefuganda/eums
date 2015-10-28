@@ -28,10 +28,28 @@ def ip_feedback_by_delivery_endpoint(request):
         'previous': _has_page(results_current_page.has_previous(), _get_page_number(request) - 1, request),
         'count': len(results),
         'pageSize': PAGE_SIZE,
-        'results': results_current_page.object_list
+        'results': results_current_page.object_list,
+        'ipIds': _get_ip_ids(results),
+        'programmeIds': _get_programme_ids(results),
     }
 
     return Response(data=data, status=status.HTTP_200_OK)
+
+
+def _get_ip_ids(results):
+    ip_ids = []
+    for result in results:
+        if not ip_ids.__contains__(result['consignee']['id']):
+            ip_ids.append(result['consignee']['id'])
+    return ip_ids
+
+
+def _get_programme_ids(results):
+    programme_ids = []
+    for result in results:
+        if not programme_ids.__contains__(result['programme']['id']):
+            programme_ids.append(result['programme']['id'])
+    return programme_ids
 
 
 def _build_delivery_answers(deliveries):
@@ -42,8 +60,8 @@ def _build_delivery_answers(deliveries):
                                  'shipmentDate': delivery.delivery_date,
                                  Question.LABEL.dateOfReceipt: _value(Question.LABEL.dateOfReceipt, answers),
                                  'orderNumber': delivery.number(),
-                                 'programme': delivery.programme.name,
-                                 'consignee': delivery.consignee.name,
+                                 'programme': {'id': delivery.programme.id, 'name': delivery.programme.name},
+                                 'consignee': {'id': delivery.consignee.id, 'name': delivery.consignee.name},
                                  Question.LABEL.isDeliveryInGoodOrder:
                                      _value(Question.LABEL.isDeliveryInGoodOrder, answers),
                                  Question.LABEL.satisfiedWithDelivery:

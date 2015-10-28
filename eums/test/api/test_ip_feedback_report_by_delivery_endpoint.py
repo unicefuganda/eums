@@ -1,5 +1,5 @@
 from datetime import date
-from eums.models import Question, DistributionPlan, Runnable
+from eums.models import Question, DistributionPlan, Runnable, Programme, Consignee
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
@@ -41,16 +41,38 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         number_of_deliveries = 1
         self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
 
+        programme = Programme.objects.get(name=programme_name)
+        consignee = Consignee.objects.get(name=wakiso)
+
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
 
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['results'], expected_response)
+
+    def test_should_return_ip_ids_and_programme_ids_with_delivery_answers(self):
+        self._create_questions()
+        programme_one = 'YP104 MANAGEMENT RESULTS'
+        programme_two = 'Save the Mothers'
+        wakiso = 'WAKISO DHO'
+        napak = 'NAPAK DHO'
+        order_number_one = 34230305
+        order_number_two = 34230310
+        comment = 'Not Satisfied!!'
+        number_of_deliveries = 1
+        self.create_node_and_answers(number_of_deliveries, order_number_one, programme_one, wakiso, comment, True, True)
+        self.create_node_and_answers(number_of_deliveries, order_number_two, programme_two, napak, comment, True, True)
+
+        response = self.client.get(ENDPOINT_URL)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data['ipIds']), 2)
+        self.assertEqual(len(response.data['programmeIds']), 2)
+        self.assertEqual(len(response.data['results']), 2)
 
     def test_should_return_delivery_empty_value_if_no_answers(self):
         self._create_questions()
@@ -68,11 +90,14 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         MultipleChoiceAnswerFactory(run=run, question=self.delivery_received_qtn, value=self.yes_one)
         MultipleChoiceAnswerFactory(run=run, question=self.satisfied_with_delivery, value=self.no_three)
 
+        programme = Programme.objects.get(name=programme_name)
+        consignee = Consignee.objects.get(name=wakiso)
+
         yes = 'Yes'
         no = 'No'
         empty = ''
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': empty,
-                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: empty, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': empty, 'value': 100}]
 
@@ -82,20 +107,25 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_return_delivery_answers_for_tracked_deliveries_and_nodes(self):
         self._create_questions()
-        programme_name = 'YP104 MANAGEMENT RESULTS'
+        programme_one = 'YP104 MANAGEMENT RESULTS'
+        programme_two = 'Save the Mothers'
         wakiso = 'WAKISO DHO'
+        napak = 'NAPAK DHO'
         order_number = 34230305
         comment = 'Not Satisfied!!'
         number_of_deliveries = 1
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso, comment, True, True)
 
         DeliveryNodeFactory()
-        self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, False)
+        self.create_node_and_answers(number_of_deliveries, 57848383, programme_two, napak, comment, True, False)
+
+        programme = Programme.objects.get(name=programme_one)
+        consignee = Consignee.objects.get(name=wakiso)
 
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
@@ -107,20 +137,25 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_not_return_delivery_answers_for_end_users(self):
         self._create_questions()
-        programme_name = 'YP104 MANAGEMENT RESULTS'
+        programme_one = 'YP104 MANAGEMENT RESULTS'
+        programme_two = 'Save the Mothers'
         wakiso = 'WAKISO DHO'
+        napak = 'NAPAK DHO'
         order_number = 34230305
         comment = 'Not Satisfied!!'
         number_of_deliveries = 1
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso, comment, True, True)
 
-        self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, True,
+        self.create_node_and_answers(number_of_deliveries, 57848383, programme_two, napak, comment, True, True,
                                      tree_position=Runnable.END_USER)
+
+        programme = Programme.objects.get(name=programme_one)
+        consignee = Consignee.objects.get(name=wakiso)
 
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
@@ -132,20 +167,25 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_not_return_delivery_answers_for_middle_man(self):
         self._create_questions()
-        programme_name = 'YP104 MANAGEMENT RESULTS'
+        programme_one = 'YP104 MANAGEMENT RESULTS'
+        programme_two = 'Save the Mothers'
         wakiso = 'WAKISO DHO'
+        napak = 'NAPAK DHO'
         order_number = 34230305
         comment = 'Not Satisfied!!'
         number_of_deliveries = 1
-        self.create_node_and_answers(number_of_deliveries, order_number, programme_name, wakiso, comment, True, True)
+        self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso, comment, True, True)
 
-        self.create_node_and_answers(number_of_deliveries, 57848383, programme_name, wakiso, comment, True, True,
+        self.create_node_and_answers(number_of_deliveries, 57848383, programme_two, napak, comment, True, True,
                                      tree_position=Runnable.MIDDLE_MAN)
+
+        programme = Programme.objects.get(name=programme_one)
+        consignee = Consignee.objects.get(name=wakiso)
 
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': programme_name, 'consignee': wakiso,
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100}]
         response = self.client.get(ENDPOINT_URL)
@@ -197,7 +237,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
-        self.assertEqual(results[0]['programme'], management_results)
+        self.assertEqual(results[0]['programme']['name'], management_results)
 
     def test_should_filter_answers_by_implementing_partner(self):
         self._create_questions()
@@ -215,8 +255,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
         results = response.data['results']
         self.assertEqual(len(results), 2)
-        self.assertEqual(results[0]['consignee'], wakiso)
-        self.assertEqual(results[1]['consignee'], wakiso)
+        self.assertEqual(results[0]['consignee']['name'], wakiso)
+        self.assertEqual(results[1]['consignee']['name'], wakiso)
 
     def test_should_filter_answers_by_purchase_order(self):
         self._create_questions()
