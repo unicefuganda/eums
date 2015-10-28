@@ -1,88 +1,86 @@
-<div class="container-fluid">
+<div class="container-fluid" id="stock-report">
     <div class="content">
         <h4 class="page-header">Stock Report</h4>
         <ng-toast></ng-toast>
 
         <div>
             <div class="form-horizontal">
-                <div class="form-group col-lg-4">
-                    <div class="pad-bottom-5" style="overflow: hidden;">
+                <div class="form-group col-lg-5 margin-top-15">
+                    <div class="pad-bottom-5 margin-bottom-5" style="overflow: hidden;">
                         <div class="col-lg-3 pad-left-5">
                             <label class="control-label description-label" for="select-ip">Select District</label>
                         </div>
-                        <div class="col-lg-8" ng-if="districtsLoaded">
+                        <div class="col-lg-9" ng-if="districtsLoaded">
                             <input id="select-district" class="form-control" type="hidden" search-from-list
                                    list="{{ districts }}"
                                    ng-model="reportParams.selectedLocation" placeholder="Select District">
                         </div>
                     </div>
-                    <div>
+                    <div class="pad-top-5">
                         <div class="col-lg-3 pad-left-5">
                             <label class="control-label description-label" for="select-ip">Select IP</label>
                         </div>
-                        <div class="col-lg-8">
+                        <div class="col-lg-9">
                             <input id="select-ip" class="form-control" type="hidden" search-consignees
                                    ng-model="reportParams.selectedIPId" placeholder="Select IP">
                         </div>
                     </div>
                 </div>
-                <div class="form-group col-lg-4 float-right text-color-dark-grey ">
-                    <div class="font-size-x-large bold">
+
+                <div class="form-group col-lg-4 pull-right text-color-dark-grey ">
+                    <div class="font-size-x-large bold pad-bottom-5">
                         TOTAL
                     </div>
-                    <div class="bold text-uppercase">
-                        <div class="col-lg-7">
+                    <div class="col-lg-9 bold text-uppercase total-value-box">
+                        <div class="col-lg-12 pad-bottom-5 pad-top-10">
                             Value Received:
-                            <span id="total_received" class="float-right eums-font-size-large">
+                            <span id="total_received" class="pull-right eums-font-size-large">
                                 {{ totals.total_received | currency }}
                             </span>
                         </div>
-                        <div class="col-lg-7">
+                        <div class="col-lg-12 pad-bottom-5">
                             Value Dispensed:
-                            <span id="total_dispensed" class="float-right eums-font-size-large">
+                            <span id="total_dispensed" class="pull-right eums-font-size-large">
                                 {{ totals.total_dispensed | currency }}
                             </span>
                         </div>
-                        <div class="col-lg-9 eums-solid-bottom-border-2px"></div>
-                        <div class="col-lg-7">
+                        <div class="col-lg-12 eums-solid-bottom-border-2px"></div>
+                        <div class="col-lg-12 pad-top-5 pad-bottom-5">
                             Balance:
-                            <span id="total_balance" class="float-right eums-font-size-large eums-text-color-no">
+                            <span id="total_balance" class="pull-right eums-font-size-large eums-text-color-no">
                                 {{ totals.balance | currency }}
                             </span>
                         </div>
                     </div>
                 </div>
 
-
-                <br/><br/><br/>
-
                 <div>
                     <div class="panel-body" ng-show="reportData">
                         <table class="table table-bordered table-striped table-hover table-condensed text-left">
                             <thead>
                             <tr>
-                                <td class="col-lg-1">PO Number</td>
-                                <td class="col-lg-3">Outcome</td>
-                                <td class="col-lg-3">Last Shipment Date</td>
-                                <td class="col-lg-2">Value Received ($)</td>
-                                <td class="col-lg-2">Value Dispensed ($)</td>
-                                <td class="col-lg-1">Balance ($)</td>
+                                <th class="col-lg-1 centered">PO Number</th>
+                                <th class="col-lg-3 centered">Outcome</th>
+                                <th class="col-lg-3 centered">Last Shipment Date</th>
+                                <th class="col-lg-2 centered">Value Received</th>
+                                <th class="col-lg-2 centered">Value Dispensed</th>
+                                <th class="col-lg-1 centered">Balance</th>
                             </tr>
                             </thead>
                             <tbody ng-repeat="reportItem in reportData">
                             <tr>
 
-                                <td>
+                                <td class="centered">
                                     <a href
                                        ng-click="toggleOpenDocument(reportItem.document_number)">
                                         {{reportItem.document_number }}
                                     </a>
                                 </td>
                                 <td>{{ reportItem.programme }}</td>
-                                <td>{{ reportItem.last_shipment_date | date: 'dd-MMM-yyyy' }}</td>
-                                <td><span class="pull-right">{{ reportItem.total_value_received | number }}</span></td>
-                                <td><span class="pull-right">{{ reportItem.total_value_dispensed | number }}</span></td>
-                                <td><span class="pull-right">{{ reportItem.balance | number }}</span></td>
+                                <td class="centered">{{ reportItem.last_shipment_date | date: 'dd-MMM-yyyy' }}</td>
+                                <td><span class="pull-right">{{ reportItem.total_value_received | currency }}</span></td>
+                                <td><span class="pull-right">{{ reportItem.total_value_dispensed | currency }}</span></td>
+                                <td><span class="pull-right">{{ reportItem.balance | currency }}</span></td>
                             </tr>
                             <tr ng-show="openDocument === reportItem.document_number">
                                 <td></td>
