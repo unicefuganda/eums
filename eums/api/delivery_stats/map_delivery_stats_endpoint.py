@@ -24,7 +24,7 @@ STATE_CSS_MAPPING = {
 class MapDeliveryStatsEndpoint(APIView):
 
     def get(self, request, *args, **kwargs):
-        tree_position = request.GET.get('treePosition', DeliveryNode.IMPLEMENTING_PARTNER)
+        tree_position = request.GET.get('treePosition', DeliveryNode.END_USER)
         stats_search_data = StatsSearchDataFactory.create(tree_position)
         stats_search_data.filter_nodes(request)
         data = self._aggregate_nodes_states(stats_search_data)

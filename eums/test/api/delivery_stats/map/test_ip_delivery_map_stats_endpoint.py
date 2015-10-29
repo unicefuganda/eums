@@ -24,7 +24,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         self.setup_responses()
 
     def test_should_return_correct_json_object(self):
-        response = self.client.get(ENDPOINT_URL)
+        response = self.client.get(ENDPOINT_URL+'?treePosition=IMPLEMENTING_PARTNER')
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 2, 'nonResponse': 1, 'numberReceived': 1,
                            'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'map-received'},
                           {'location': 'Other location', 'numberOfDeliveries': 1, 'nonResponse': 1, 'numberReceived': 0,
@@ -32,7 +32,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_programme(self):
-        response = self.client.get('%s?programme=%s' % (ENDPOINT_URL, self.programme.id))
+        response = self.client.get('%s?programme=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, self.programme.id))
 
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0,
                            'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1,
@@ -40,7 +40,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_ip(self):
-        response = self.client.get('%s?ip=%s' % (ENDPOINT_URL, self.ip.id))
+        response = self.client.get('%s?ip=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, self.ip.id))
 
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0,
                            'numberReceived': 1, 'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1,
@@ -48,32 +48,32 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_from_date(self):
-        response = self.client.get('%s?from=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
+        response = self.client.get('%s?from=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [{'numberOfDeliveries': 2, 'location': 'some location', 'numberNotReceived': 0, 'hasIssues': 0,
                            'nonResponse': 1, 'numberReceived': 1, 'state': 'map-received', 'noIssues': 1}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_to_date(self):
-        response = self.client.get('%s?to=%s' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
+        response = self.client.get('%s?to=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [{'numberOfDeliveries': 1, 'location': 'Other location', 'numberNotReceived': 0,
                            'hasIssues': 0, 'nonResponse': 1, 'numberReceived': 0, 'state': 'map-non-response', 'noIssues': 0}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_both_ip_and_programme(self):
-        response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, self.ip.id, self.programme.id))
+        response = self.client.get('%s?ip=%s&programme=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, self.ip.id, self.programme.id))
 
         expected_stats = [{'location': 'some location', 'numberOfDeliveries': 1, 'nonResponse': 0, 'numberReceived': 1,
                            'numberNotReceived': 0, 'hasIssues': 0, 'noIssues': 1, 'state': 'map-received'}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
         non_existing_ip_id = 22222222
-        response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, non_existing_ip_id, self.programme.id))
+        response = self.client.get('%s?ip=%s&programme=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, non_existing_ip_id, self.programme.id))
         self.assertEquals(0, len(response.data))
 
         non_existing_programme_id = 33333333
-        response = self.client.get('%s?ip=%s&programme=%s' % (ENDPOINT_URL, self.ip.id, non_existing_programme_id))
+        response = self.client.get('%s?ip=%s&programme=%s&treePosition=IMPLEMENTING_PARTNER' % (ENDPOINT_URL, self.ip.id, non_existing_programme_id))
         self.assertEquals(0, len(response.data))
 
     def assert_ip_delivery_stats(self, response, expected_stats):
