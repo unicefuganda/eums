@@ -65,12 +65,25 @@ describe('IpFeedbackReportController', function () {
             scope.$apply();
 
             var searchTerm = 'something';
-            scope.searchTerm = searchTerm;
+            scope.searchTerm = {query: searchTerm};
             scope.$apply();
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
             expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({query: searchTerm});
+        });
+
+        it('should call endpoint when searchTerm programme_id changes', function () {
+            deferredResult.resolve({results: []});
+            scope.$apply();
+
+            var programme_id = 2;
+            scope.searchTerm = {programme_id: programme_id};
+            scope.$apply();
+
+            timeout.flush();
+            expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({programme_id: programme_id});
         });
 
     });
