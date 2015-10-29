@@ -66,6 +66,7 @@ describe('StockReportController', function () {
             'getStockReportForLocation', 'getStockReportForConsignee', 'getStockReport', 'computeStockTotals']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
 
         inject(function ($controller, $rootScope, $q) {
             deferredStubIPs = $q.defer();
@@ -78,137 +79,173 @@ describe('StockReportController', function () {
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
 
             scope = $rootScope.$new();
-            scope.selectedIpId = undefined;
 
-            $controller('StockReportController',
-                {
-                    $scope: scope,
-                    StockReportService: mockStockReportService,
-                    ConsigneeService: mockConsigneeService,
-                    ngToast: mockToastProvider,
-                    IPService: mockIpService
-                });
+            $controller('StockReportController', {
+                $scope: scope,
+                StockReportService: mockStockReportService,
+                ConsigneeService: mockConsigneeService,
+                ngToast: mockToastProvider,
+                IPService: mockIpService,
+                LoaderService: mockLoaderService
+            });
         });
     });
 
-    it('should load stock report at initial load', function () {
-        scope.reportParams.selectedIPId = null;
-        scope.$apply();
+    describe('on initial load', function () {
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalled();
-    });
-
-    it('should load districts at initial load', function () {
-        deferredDistricts.resolve(stubDistricts);
-        scope.$apply();
-
-        expect(mockIpService.loadAllDistricts).toHaveBeenCalled();
-        expect(scope.districts).toEqual([{id: 'Adjumani', name: 'Adjumani'}, {id: 'Luweero', name: 'Luweero'}])
-    });
-
-    it('should load stock report for selected IP', function () {
-        deferredStubReport.resolve(stubStockReport);
-        scope.reportParams.selectedIPId = 1;
-        scope.$apply();
-
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
-    });
-
-    it('should show an error toast if there is no data for that IP', function () {
-        deferredStubReport.resolve({data: {results: []}});
-        scope.reportParams.selectedIPId = 1;
-        scope.$apply();
-
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
-        expect(mockToastProvider.create).toHaveBeenCalledWith({
-            content: 'There is no data for the specified filters!',
-            class: 'danger',
-            maxNumber: 1,
-            dismissOnTimeout: true
+        it('should load stock report', function () {
+            scope.reportParams = {};
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({});
         });
 
+        it('should load districts', function () {
+            deferredDistricts.resolve(stubDistricts);
+            scope.$apply();
+            expect(mockIpService.loadAllDistricts).toHaveBeenCalled();
+            expect(scope.districts).toEqual([{id: 'Adjumani', name: 'Adjumani'}, {id: 'Luweero', name: 'Luweero'}])
+        });
     });
 
-    it('should load stock report for selected location', function () {
-        deferredStubReport.resolve(stubStockReport);
-        scope.reportParams.selectedLocation = 1;
-        scope.$apply();
+    describe('after initial load', function() {
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-    });
-
-    it('should show an error toast if there is no data for that location', function () {
-        deferredStubReport.resolve({data: {results: []}});
-        scope.reportParams.selectedLocation = 1;
-        scope.$apply();
-
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-        expect(mockToastProvider.create).toHaveBeenCalledWith({
-            content: 'There is no data for the specified filters!',
-            class: 'danger',
-            maxNumber: 1,
-            dismissOnTimeout: true
+        beforeEach(function () {
+            // Initial Load
+            scope.reportParams = {}
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
         });
 
-    });
+        it('should load stock report for selected IP', function () {
+            deferredStubReport.resolve(stubStockReport);
+            scope.reportParams.selectedIPId = 1;
+            scope.$apply();
 
-    it('should load stock report for selected location and IP', function () {
-        deferredStubReport.resolve(stubStockReport);
-        scope.reportParams.selectedLocation = 2;
-        scope.$apply();
-        scope.reportParams.selectedIPId = 1;
-        scope.$apply();
-
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
-    });
-
-    it('should show an error toast if there is no data for that location and ip', function () {
-        deferredStubReport.resolve({data: {results: []}});
-        scope.reportParams.selectedLocation = 1;
-        scope.$apply();
-        scope.reportParams.selectedIPId = 4;
-        scope.$apply();
-
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-        expect(mockToastProvider.create).toHaveBeenCalledWith({
-            content: 'There is no data for the specified filters!',
-            class: 'danger',
-            maxNumber: 1,
-            dismissOnTimeout: true
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
         });
 
-    });
+        it('should show an error toast if there is no data for that IP', function () {
+            deferredStubReport.resolve({data: {results: []}});
+            scope.reportParams.selectedIPId = 1;
+            scope.$apply();
 
-    it('should load stock report for selected IP and location', function () {
-        deferredStubReport.resolve(stubStockReport);
-        scope.reportParams.selectedIPId = 3;
-        scope.$apply();
-        scope.reportParams.selectedLocation = 4;
-        scope.$apply();
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
+            expect(mockToastProvider.create).toHaveBeenCalledWith({
+                content: 'There is no data for the specified filters!',
+                class: 'danger',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        });
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 3});
-    });
+        it('should load stock report for selected location', function () {
+            deferredStubReport.resolve(stubStockReport);
+            scope.reportParams.selectedLocation = 1;
+            scope.$apply();
 
-    it('should load stock report for page', function () {
-        deferredStubReport.resolve(stubStockReport);
-        scope.goToPage(2);
-        scope.$apply();
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
+        });
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({page: 2});
-        expect(scope.count).toBe(2);
-        expect(scope.pageSize).toBe(10);
-    });
+        it('should show an error toast if there is no data for that location', function () {
+            deferredStubReport.resolve({data: {results: []}});
+            scope.reportParams.selectedLocation = 1;
+            scope.$apply();
 
-    it('should load stock report for page with selected ip and location', function () {
-        deferredStubReport.resolve(stubStockReport);
-        scope.reportParams.selectedIPId = 5;
-        scope.$apply();
-        scope.reportParams.selectedLocation = 4;
-        scope.$apply();
-        scope.goToPage(3);
-        scope.$apply();
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
+            expect(mockToastProvider.create).toHaveBeenCalledWith({
+                content: 'There is no data for the specified filters!',
+                class: 'danger',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        });
 
-        expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
+        it('should load stock report for selected location and IP', function () {
+            deferredStubReport.resolve(stubStockReport);
+            scope.reportParams.selectedLocation = 2;
+            scope.$apply();
+            scope.reportParams.selectedIPId = 1;
+            scope.$apply();
+
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
+        });
+
+        it('should load stock report when clearing location filter', function() {
+            scope.reportParams.selectedLocation = 'Adjumani';
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+
+            scope.reportParams.selectedLocation = undefined;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(3);
+        });
+
+        it('should load stock report when clearing IP filter', function() {
+            scope.reportParams.selectedIPId = 5;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+
+            scope.reportParams.selectedIPId = undefined;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(3);
+        });
+
+        it('should not load stock report when selecting same location', function() {
+            scope.reportParams.selectedLocation = 'Adjumani';
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+        });
+
+        it('should not load stock report when selecting same IP', function() {
+            scope.reportParams.selectedIPId = 5;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+        });
+
+        it('should show an error toast if there is no data for that location and ip', function () {
+            deferredStubReport.resolve({data: {results: []}});
+            scope.reportParams.selectedLocation = 1;
+            scope.$apply();
+            scope.reportParams.selectedIPId = 4;
+            scope.$apply();
+
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
+            expect(mockToastProvider.create).toHaveBeenCalledWith({
+                content: 'There is no data for the specified filters!',
+                class: 'danger',
+                maxNumber: 1,
+                dismissOnTimeout: true
+            });
+        });
+
+        it('should load stock report for page', function () {
+            deferredStubReport.resolve(stubStockReport);
+            scope.goToPage(2);
+            scope.$apply();
+
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({page: 2});
+            expect(scope.count).toBe(2);
+            expect(scope.pageSize).toBe(10);
+        });
+
+        it('should load stock report for page with selected ip and location', function () {
+            deferredStubReport.resolve(stubStockReport);
+            scope.reportParams.selectedIPId = 5;
+            scope.$apply();
+            scope.reportParams.selectedLocation = 4;
+            scope.$apply();
+            scope.goToPage(3);
+            scope.$apply();
+
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
+        });
     });
 
     describe('Toggle document', function () {

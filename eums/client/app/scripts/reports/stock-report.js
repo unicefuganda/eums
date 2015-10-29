@@ -1,17 +1,25 @@
 'use strict';
 
-angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives'])
-    .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService) {
+angular.module('StockReport', [
+    'eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives', 'Loader'])
+    .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService, LoaderService) {
         $scope.reportParams = {};
         $scope.reportData = [];
         $scope.totals = {};
 
-        IPService.loadAllDistricts().then(function (response) {
-            $scope.districts = response.data.map(function (district) {
-                return {id: district, name: district};
+        function init() {
+            loadDistricts();
+            fetchReport();
+        }
+
+        function loadDistricts() {
+            IPService.loadAllDistricts().then(function (response) {
+                $scope.districts = response.data.map(function (district) {
+                    return {id: district, name: district};
+                });
+                $scope.districtsLoaded = true;
             });
-            $scope.districtsLoaded = true;
-        });
+        }
 
         function createToast(message, klass) {
             ngToast.create({
@@ -42,6 +50,7 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
         }
 
         function fetchReport(params) {
+            LoaderService.showLoader();
             var requestParams = {};
             if ($scope.reportParams.selectedLocation) {
                 Object.merge(requestParams, {location: $scope.reportParams.selectedLocation})
@@ -54,22 +63,27 @@ angular.module('StockReport', ['eums.config', 'ngTable', 'siTable', 'ngToast', '
             }
             StockReportService.getStockReport(requestParams).then(function (response) {
                 handleReport(response.data);
+                LoaderService.hideLoader();
             });
         }
 
-        $scope.$watch('reportParams.selectedIPId', function (id) {
-            $scope.reportParams.selectedIPId = id;
-            fetchReport();
+        $scope.$watch('reportParams.selectedIPId', function (newIPId, oldIPId) {
+            if (newIPId != oldIPId) {
+                fetchReport();
+            }
         });
 
-        $scope.$watch('reportParams.selectedLocation', function (location) {
-            $scope.reportParams.selectedLocation = location;
-            fetchReport();
+        $scope.$watch('reportParams.selectedLocation', function (newLocation, oldLocation) {
+            if (newLocation != oldLocation) {
+                fetchReport();
+            }
         });
 
         $scope.toggleOpenDocument = function (documentId) {
             $scope.openDocument = $scope.openDocument === documentId ? undefined : documentId;
         };
+
+        init();
     })
     .factory('StockReportService', function ($http, EumsConfig) {
         return {

@@ -3,15 +3,20 @@
 var reportsPage = require('./pages/reports-page.js');
 var endUserFeedbackReport = require('./pages/end-user-feedback-report-page.js');
 var loginPage = require('./pages/login-page.js');
+var ftUtils = require('./functional-test-utils.js');
 
 describe('Reports', function () {
 
     it('should show the IP stock report', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
+
         reportsPage.visit();
+        ftUtils.waitForPageToLoad();
 
         reportsPage.selectConsignee('kaabong');
+        ftUtils.waitForPageToLoad();
+
         expect(reportsPage.totalReceived).toContain('$87.14');
         expect(reportsPage.totalDispensed).toContain('$0.00');
         expect(reportsPage.totalBalance).toContain('$87.14');
