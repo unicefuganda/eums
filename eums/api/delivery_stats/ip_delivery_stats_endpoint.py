@@ -19,9 +19,9 @@ STATE_CSS_MAPPING = {
 }
 
 
-class IpDeliveryStatsEndpoint(APIView):
+class MapDeliveryStatsEndpoint(APIView):
     def __init__(self):
-        super(IpDeliveryStatsEndpoint, self).__init__()
+        super(MapDeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         programme_id = request.GET.get('programme')

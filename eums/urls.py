@@ -12,7 +12,7 @@ from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
 from eums.api.delivery_stats.end_user_delivery_stats_endpoint import DeliveryStatsDetailsEndpoint
-from eums.api.delivery_stats.ip_delivery_stats_endpoint import IpDeliveryStatsEndpoint
+from eums.api.delivery_stats.ip_delivery_stats_endpoint import MapDeliveryStatsEndpoint
 from eums.views.export_deliveries import ExportDeliveriesCSV
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
@@ -77,7 +77,7 @@ urlpatterns = patterns(
     url(r'^api/node-responses/(?P<node_id>\d+)/$', NodeResponses.as_view(), name='node_responses'),
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
     url(r'^api/delivery-stats/details/$', DeliveryStatsDetailsEndpoint.as_view(), name='delivery_stats_details'),
-    url(r'^api/delivery-stats/ip/$', IpDeliveryStatsEndpoint.as_view(), name='ip_map_stats'),
+    url(r'^api/delivery-stats/map/$', MapDeliveryStatsEndpoint.as_view(), name='delivery_stats_map'),
     url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),

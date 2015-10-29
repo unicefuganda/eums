@@ -14,7 +14,7 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDate
 
-ENDPOINT_URL = BACKEND_URL + 'delivery-stats/ip/'
+ENDPOINT_URL = BACKEND_URL + 'delivery-stats/map/'
 
 
 class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):

@@ -21,7 +21,7 @@ angular.module('DeliveryStats', ['eums.config'])
                 return $http.get(EumsConfig.BACKEND_URLS.DELIVERY_STATS_DETAILS, {params: filter, cache: true});
             },
             getIpStats: function (filter) {
-                return $http.get(EumsConfig.BACKEND_URLS.IP_DELIVERY_STATS, {params: reformatDate(filter)});
+                return $http.get(EumsConfig.BACKEND_URLS.MAP_DELIVERY_STATS, {params: reformatDate(filter)});
             }
         }
     });

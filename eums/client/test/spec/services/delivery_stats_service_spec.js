@@ -8,7 +8,7 @@ describe('DeliveryStatsService', function () {
             mockBackend = $httpBackend;
             deliveryStatsService = DeliveryStatsService;
             deliveryStatsEndpoint = EumsConfig.BACKEND_URLS.DELIVERY_STATS_DETAILS;
-            ipDeliveryStatsEndpoint = EumsConfig.BACKEND_URLS.IP_DELIVERY_STATS;
+            ipDeliveryStatsEndpoint = EumsConfig.BACKEND_URLS.MAP_DELIVERY_STATS;
         })
     });
 
