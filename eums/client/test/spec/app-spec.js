@@ -148,4 +148,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].controller).toBe('StockReportController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/stock-report.html');
     });
+
+    it('should have supply efficiency report route pointing to the right controller', function () {
+        var route = '/supply-efficiency-report';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('SupplyEfficiencyReportController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/supply-efficiency-report.html');
+    });
 });
