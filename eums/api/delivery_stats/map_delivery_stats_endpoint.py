@@ -1,10 +1,11 @@
 import datetime
 
 from rest_framework.response import Response
+
 from rest_framework.views import APIView
 
 from eums import settings
-from eums.api.delivery_stats.stats_search_data import EndUserStatsSearchData, IpStatsSearchData, StatsSearchDataFactory
+from eums.api.delivery_stats.stats_search_data import StatsSearchDataFactory
 from eums.models import DistributionPlanNode as DeliveryNode, MultipleChoiceAnswer
 
 GRACE_PERIOD = settings.NON_RESPONSE_GRACE_PERIOD

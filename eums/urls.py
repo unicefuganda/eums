@@ -11,8 +11,8 @@ from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswe
 from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
-from eums.api.delivery_stats.end_user_delivery_stats_endpoint import DeliveryStatsDetailsEndpoint
-from eums.api.delivery_stats.ip_delivery_stats_endpoint import MapDeliveryStatsEndpoint
+from eums.api.delivery_stats.delivery_stats_details_endpoint import DeliveryStatsDetailsEndpoint
+from eums.api.delivery_stats.map_delivery_stats_endpoint import MapDeliveryStatsEndpoint
 from eums.views.export_deliveries import ExportDeliveriesCSV
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
