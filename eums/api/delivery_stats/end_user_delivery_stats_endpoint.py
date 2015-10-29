@@ -3,61 +3,36 @@ from decimal import Decimal
 from django.db.models import Sum
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from eums.api.delivery_stats.stats_structure import DeliveryStats, BaseQuerySets
+
+from eums.api.delivery_stats.stats_search_data import StatsSearchDataFactory
+from eums.api.delivery_stats.stats_structure import DeliveryStats
 from eums.api.delivery_stats.stats_queries import get_product_received_base_query_sets, \
     get_quality_of_product_base_query_sets, get_satisfied_with_product_base_query_sets
-from eums.models import DistributionPlanNode as DeliveryNode, Flow, Runnable, UserProfile, Question
-
-
-class EndUserStatsSearchData:
-    def __init__(self):
-        self.flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
-        self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
-        self.received_label = Question.LABEL.productReceived
-        self.quality_label = Question.LABEL.qualityOfProduct
-        self.satisfied_label = Question.LABEL.satisfiedWithProduct
-        self.quality_yes_text = "Good"
-
-
-class IpStatsSearchData:
-    def __init__(self):
-        self.flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
-        self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.IMPLEMENTING_PARTNER, track=True)
-        self.received_label = Question.LABEL.deliveryReceived
-        self.quality_label = Question.LABEL.isDeliveryInGoodOrder
-        self.satisfied_label = Question.LABEL.satisfiedWithDelivery
-        self.quality_yes_text = "Yes"
+from eums.models import DistributionPlanNode as DeliveryNode
 
 
 class DeliveryStatsDetailsEndpoint(APIView):
-    def __init__(self):
-        self.stats_search_data = None
-        self.location = None
-        self.ip = None
-        self.user_profile = None
-        self.programme = None
-        self.from_date = None
-        self.to_date = None
-        super(DeliveryStatsDetailsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         tree_position = request.GET.get('treePosition', DeliveryNode.END_USER)
-        self.stats_search_data = IpStatsSearchData() if tree_position == DeliveryNode.IMPLEMENTING_PARTNER \
-            else EndUserStatsSearchData()
-        self.location = request.GET.get('location')
-        self.ip = request.GET.get('ip')
-        self.programme = request.GET.get('programme')
-        self.from_date = request.GET.get('from')
-        self.to_date = request.GET.get('to')
-        self.user_profile = UserProfile.objects.filter(user_id=self.request.user.id).first()
+        stats_search_data = StatsSearchDataFactory.create(tree_position)
+        stats_search_data.filter_nodes(request)
+        stats_details = DeliveryStatsDetails(stats_search_data)
+        stats_details_data = stats_details.data()
+        return Response(stats_details_data, status=200)
 
-        self._apply_filters_to_nodes()
 
+class DeliveryStatsDetails:
+
+    def __init__(self, stats_search_data):
+        self.stats_search_data = stats_search_data
+
+    def data(self):
         product_received_stats = self._get_product_received_stats()
         quality_of_product_stats = self._get_quality_of_product_stats()
         satisfied_with_product_stats = self._get_satisfied_with_product_stats()
 
-        return Response({
+        return {
             'totalNumberOfDeliveries': self.total_deliveries(),
             'totalValueOfDeliveries': self.total_delivery_value(),
 
@@ -108,22 +83,7 @@ class DeliveryStatsDetailsEndpoint(APIView):
             'percentageValueOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_value_positive,
             'percentageValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_value_negative,
             'percentageValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_non_response,
-        })
-
-    def _apply_filters_to_nodes(self):
-        if self.location:
-            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(location__iexact=self.location)
-        if self.programme:
-            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(programme=self.programme)
-        if self.from_date:
-            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(delivery_date__gte=self.from_date)
-        if self.to_date:
-            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(delivery_date__lte=self.to_date)
-
-        if self.user_profile:
-            self.ip = self.user_profile.consignee
-        if self.ip:
-            self.stats_search_data.nodes = self.stats_search_data.nodes.filter(ip=self.ip)
+        }
 
     def total_deliveries(self):
         return self.stats_search_data.nodes.count()

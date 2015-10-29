@@ -1,10 +1,11 @@
 import datetime
-from eums import settings
-from rest_framework.response import Response
 
+from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from eums.models import Flow, Runnable, DistributionPlanNode, MultipleChoiceAnswer, Question
+from eums import settings
+from eums.api.delivery_stats.stats_search_data import EndUserStatsSearchData, IpStatsSearchData
+from eums.models import DistributionPlanNode as DeliveryNode, MultipleChoiceAnswer
 
 GRACE_PERIOD = settings.NON_RESPONSE_GRACE_PERIOD
 
@@ -20,48 +21,54 @@ STATE_CSS_MAPPING = {
 
 
 class MapDeliveryStatsEndpoint(APIView):
-    def __init__(self):
-        super(MapDeliveryStatsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
+        tree_position = request.GET.get('treePosition', DeliveryNode.IMPLEMENTING_PARTNER)
+        stats_search_data = IpStatsSearchData() if tree_position == DeliveryNode.IMPLEMENTING_PARTNER \
+            else EndUserStatsSearchData()
+        print tree_position, stats_search_data.__class__.__name__
+        print stats_search_data.nodes.count()
+        self.apply_filters_to(stats_search_data.nodes, request)
+        print stats_search_data.nodes.count()
+        data = self._aggregate_nodes_states(stats_search_data)
+        return Response(data, status=200)
+
+    @staticmethod
+    def apply_filters_to(nodes, request):
         programme_id = request.GET.get('programme')
         selected_ip = request.GET.get('ip')
         from_date = request.GET.get('from')
         to_date = request.GET.get('to')
-        ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
         if programme_id:
-            ip_nodes = ip_nodes.filter(programme=programme_id)
+            nodes = nodes.filter(programme=programme_id)
         if selected_ip:
-            ip_nodes = ip_nodes.filter(ip=selected_ip)
+            nodes = nodes.filter(ip=selected_ip)
         if from_date:
-            ip_nodes = ip_nodes.filter(delivery_date__gte=from_date)
+            nodes = nodes.filter(delivery_date__gte=from_date)
         if to_date:
-            ip_nodes = ip_nodes.filter(delivery_date__lte=to_date)
-
-        data = self._aggregate_nodes_states(ip_nodes)
-        return Response(data, status=200)
+            nodes = nodes.filter(delivery_date__lte=to_date)
 
     @staticmethod
-    def _aggregate_nodes_states(nodes):
-        all_locations_with_nodes = nodes.values_list('location', flat=True).distinct()
-        return [DeliveryState(location, nodes).state() for location in all_locations_with_nodes]
+    def _aggregate_nodes_states(stats_search_data):
+        all_locations_with_nodes = stats_search_data.nodes.values_list('location', flat=True).distinct()
+        return [DeliveryState(location, stats_search_data).state() for location in all_locations_with_nodes]
 
 
 class DeliveryState:
-    def __init__(self, location_name, nodes):
+    def __init__(self, location_name, search_data):
         self.location = location_name
-        self.nodes = nodes
-        self.IP_FLOW = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        self.nodes = search_data.nodes
+        self.search_data = search_data
 
     def state(self):
         nodes_in_location = self.nodes.filter(location=self.location)
-        answers = MultipleChoiceAnswer.objects.filter(question__flow=self.IP_FLOW, run__runnable__in=nodes_in_location)
+        answers = MultipleChoiceAnswer.objects.filter(question__flow=self.search_data.flow, run__runnable__in=nodes_in_location)
         nodes_with_answers = answers.values_list('run__runnable')
         non_responses = self._get_non_responses(nodes_with_answers, nodes_in_location)
-        number_received = answers.filter(question__label=Question.LABEL.deliveryReceived, value__text='Yes')
-        number_not_received = answers.filter(question__label=Question.LABEL.deliveryReceived, value__text='No')
-        has_no_issues = answers.filter(question__label=Question.LABEL.isDeliveryInGoodOrder, value__text='Yes')
-        has_issues = answers.filter(question__label=Question.LABEL.isDeliveryInGoodOrder, value__text='No')
+        number_received = answers.filter(question__label=self.search_data.received_label, value__text='Yes')
+        number_not_received = answers.filter(question__label=self.search_data.received_label, value__text='No')
+        has_no_issues = answers.filter(question__label=self.search_data.quality_label, value__text=self.search_data.quality_yes_text)
+        has_issues = answers.filter(question__label=self.search_data.quality_label).exclude(value__text=self.search_data.quality_yes_text)
 
         data = {'location': self.location, 'numberOfDeliveries': nodes_in_location.count(),
                 'nonResponse': non_responses.count(), 'numberReceived': number_received.count(),
