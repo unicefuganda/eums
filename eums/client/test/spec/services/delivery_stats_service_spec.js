@@ -7,7 +7,7 @@ describe('DeliveryStatsService', function () {
         inject(function ($httpBackend, DeliveryStatsService, EumsConfig) {
             mockBackend = $httpBackend;
             deliveryStatsService = DeliveryStatsService;
-            deliveryStatsEndpoint = EumsConfig.BACKEND_URLS.END_USER_DELIVERY_STATS;
+            deliveryStatsEndpoint = EumsConfig.BACKEND_URLS.DELIVERY_STATS_DETAILS;
             ipDeliveryStatsEndpoint = EumsConfig.BACKEND_URLS.IP_DELIVERY_STATS;
         })
     });

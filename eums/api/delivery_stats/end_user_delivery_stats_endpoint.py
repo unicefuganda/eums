@@ -29,7 +29,7 @@ class IpStatsSearchData:
         self.quality_yes_text = "Yes"
 
 
-class EndUserDeliveryStatsEndpoint(APIView):
+class DeliveryStatsDetailsEndpoint(APIView):
     def __init__(self):
         self.stats_search_data = None
         self.location = None
@@ -38,7 +38,7 @@ class EndUserDeliveryStatsEndpoint(APIView):
         self.programme = None
         self.from_date = None
         self.to_date = None
-        super(EndUserDeliveryStatsEndpoint, self).__init__()
+        super(DeliveryStatsDetailsEndpoint, self).__init__()
 
     def get(self, request, *args, **kwargs):
         tree_position = request.GET.get('treePosition', DeliveryNode.END_USER)

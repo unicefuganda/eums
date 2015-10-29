@@ -45,7 +45,7 @@
         "PERMISSION": "/api/permission",
         "ALERTS": "/api/alert/",
         "DELIVERY_EXPORTS": "/exports/deliveries/",
-        "END_USER_DELIVERY_STATS": "/api/delivery-stats/end-user/",
+        "DELIVERY_STATS_DETAILS": "/api/delivery-stats/details/",
         "IP_DELIVERY_STATS": "/api/delivery-stats/ip/"
     },
     "CONTACT_SERVICE_URL": "http://eum.unicefuganda.org/contacts/",
