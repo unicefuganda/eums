@@ -1,1 +1,85 @@
-<h1>Supply Efficiency Report</h1>
+<div class="container-fluid" id="stock-report">
+    <div class="content">
+        <h4 class="page-header">Supply Efficiency Report</h4>
+        <ng-toast></ng-toast>
+        <div class="col-lg-2">
+            <strong class="blue-unicef">FILTER REPORT BY:</strong>
+
+            <h3></h3>
+
+            <div class="form-group">
+                <div class="blue-unicef">Item</div>
+                <input class="form-control" search-items type="text" placeholder="Select an item"/>
+            </div>
+
+            <div class="form-group">
+                <div class="blue-unicef">Outcome</div>
+                <input class="form-control" search-programmes type="text" placeholder="Select an outcome"/>
+            </div>
+
+            <div class="form-group">
+                <div class="blue-unicef">IP</div>
+                <input class="form-control" search-consignees only-ips type="text" placeholder="Select an IP"/>
+            </div>
+
+            <div class="form-group">
+                <div class="blue-unicef">PO/Waybill</div>
+                <input class="form-control" search-pos-and-waybills type="text" placeholder="Select a PO/Waybill"/>
+            </div>
+
+            <div class="form-group">
+                <div class="blue-unicef">District</div>
+                <input class="form-control" search-from-list="{{ districts }}" type="text"
+                       placeholder="Select a district"/>
+            </div>
+
+            <div class="input-group col-md-12">
+                <div class="blue-unicef">From</div>
+                <input type="text" class="form-control" datepicker-popup='dd-MMM-yyyy'
+                       ng-model="filter.from" is-open="datepicker.from"
+                       datepicker-options="dateOptions" show-button-bar="false"
+                       value="{{ filter.from | date : 'dd-MMM-yyyy' }}" eums-date-picker
+                       placeholder="Start"/>
+
+                <span class="input-group-btn pad-top-20">
+                    <button type="button" class="btn btn-default" ng-click="open($event, 'from')">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </span>
+            </div>
+
+            <h3></h3>
+
+            <div class="input-group col-md-12">
+                <div class="blue-unicef">To</div>
+                <input type="text" class="form-control" datepicker-popup='dd-MMM-yyyy'
+                       ng-model="filter.to" is-open="datepicker.to"
+                       datepicker-options="dateOptions" show-button-bar="false"
+                       value="{{ filter.to | date : 'dd-MMM-yyyy' }}" eums-date-picker
+                       placeholder="Start"/>
+
+                <span class="input-group-btn pad-top-20">
+                    <button type="button" class="btn btn-default" ng-click="open($event, 'to')">
+                        <i class="glyphicon glyphicon-calendar"></i>
+                    </button>
+                </span>
+            </div>
+
+        </div>
+        <div class="col-lg-10">
+            <strong class="blue-unicef">VIEW BY:</strong>
+            <ul class="nav nav-pills" ng-controller="NavigationTabsController">
+                <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report/by-delivery')}">
+                    <a href="#/supply-efficiency-report/by-delivery"
+                       class="btn btn-default blue-border-button btn-sm"
+                       role="button">
+                        Delivery</a>
+                </li>
+                <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report/by-item')}"
+                    class="pad-left-10">
+                    <a href="#/supply-efficiency-report/by-item" class="btn btn-default btn-sm">Item</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
