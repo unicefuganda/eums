@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from eums import settings
-from eums.api.delivery_stats.stats_search_data import EndUserStatsSearchData, IpStatsSearchData
+from eums.api.delivery_stats.stats_search_data import EndUserStatsSearchData, IpStatsSearchData, StatsSearchDataFactory
 from eums.models import DistributionPlanNode as DeliveryNode, MultipleChoiceAnswer
 
 GRACE_PERIOD = settings.NON_RESPONSE_GRACE_PERIOD
@@ -24,29 +24,10 @@ class MapDeliveryStatsEndpoint(APIView):
 
     def get(self, request, *args, **kwargs):
         tree_position = request.GET.get('treePosition', DeliveryNode.IMPLEMENTING_PARTNER)
-        stats_search_data = IpStatsSearchData() if tree_position == DeliveryNode.IMPLEMENTING_PARTNER \
-            else EndUserStatsSearchData()
-        print tree_position, stats_search_data.__class__.__name__
-        print stats_search_data.nodes.count()
-        self.apply_filters_to(stats_search_data.nodes, request)
-        print stats_search_data.nodes.count()
+        stats_search_data = StatsSearchDataFactory.create(tree_position)
+        stats_search_data.filter_nodes(request)
         data = self._aggregate_nodes_states(stats_search_data)
         return Response(data, status=200)
-
-    @staticmethod
-    def apply_filters_to(nodes, request):
-        programme_id = request.GET.get('programme')
-        selected_ip = request.GET.get('ip')
-        from_date = request.GET.get('from')
-        to_date = request.GET.get('to')
-        if programme_id:
-            nodes = nodes.filter(programme=programme_id)
-        if selected_ip:
-            nodes = nodes.filter(ip=selected_ip)
-        if from_date:
-            nodes = nodes.filter(delivery_date__gte=from_date)
-        if to_date:
-            nodes = nodes.filter(delivery_date__lte=to_date)
 
     @staticmethod
     def _aggregate_nodes_states(stats_search_data):
