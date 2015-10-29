@@ -220,12 +220,13 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(response.data['count'], number_of_deliveries)
         self.assertEqual(response.data['pageSize'], 10)
 
-    def test_should_filter_answers_by_programme_name(self):
+    def test_should_filter_answers_by_programme(self):
         self._create_questions()
         number_of_deliveries = 1
         management_results = 'YP104 MANAGEMENT RESULTS'
         self.create_node_and_answers(number_of_deliveries, 34230305, management_results, 'WAKISO DHO',
                                      'Satisfied!!', False, True)
+        programme = Programme.objects.get(name=management_results)
 
         self.create_node_and_answers(number_of_deliveries, 34230343, management_results, 'WAKISO DHO',
                                      'Satisfied!!', False, False)
@@ -233,7 +234,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.create_node_and_answers(number_of_deliveries, 34230356, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
                                      'Not Satisfied!!', True, True)
 
-        response = self.client.get(ENDPOINT_URL + '?query=YP104%20MANA', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?programme_id=%s' % programme.id, content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
@@ -241,22 +242,20 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
 
     def test_should_filter_answers_by_implementing_partner(self):
         self._create_questions()
-        number_of_deliveries = 2
+        number_of_deliveries = 1
         management_results = 'YP104 MANAGEMENT RESULTS'
         wakiso = 'WAKISO DHO'
         self.create_node_and_answers(number_of_deliveries, 34230305, management_results, wakiso,
-                                     'Satisfied!!', True, True)
-        self.create_node_and_answers(number_of_deliveries, 34230343, management_results, wakiso,
-                                     'Satisfied!!', True, False)
+                                     'Satisfied!!', False, True)
+        consignee = Consignee.objects.get(name=wakiso)
         number_of_deliveries = 1
         self.create_node_and_answers(number_of_deliveries, 34230356, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
-                                     'Not Satisfied!!', False, True)
-        response = self.client.get(ENDPOINT_URL + '?query=wakiso', content_type='application/json')
+                                     'Not Satisfied!!', True, True)
 
+        response = self.client.get(ENDPOINT_URL + '?consignee_id=%s' % consignee.id, content_type='application/json')
         results = response.data['results']
-        self.assertEqual(len(results), 2)
+        self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['consignee']['name'], wakiso)
-        self.assertEqual(results[1]['consignee']['name'], wakiso)
 
     def test_should_filter_answers_by_purchase_order(self):
         self._create_questions()
@@ -270,7 +269,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.create_node_and_answers(number_of_deliveries, 34230356, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
                                      'Not Satisfied!!', False, True)
 
-        response = self.client.get(ENDPOINT_URL + '?query=34230305', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?po_waybill=34230305', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
@@ -288,7 +287,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.create_node_and_answers(number_of_deliveries, order_number, 'THE MANAGEMENT RESULTS', 'KOBOKO DHO',
                                      'Not Satisfied!!', False, True)
 
-        response = self.client.get(ENDPOINT_URL + '?query=34230356', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?po_waybill=34230356', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
