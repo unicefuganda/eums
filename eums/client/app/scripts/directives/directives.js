@@ -204,6 +204,7 @@ angular.module('Directives', [])
             }
         };
     })
+    //TODO Remove this directive. Make use of the one in the Programme module
     .directive('searchProgrammes', function (ProgrammeService) {
         return {
             restrict: 'A',
