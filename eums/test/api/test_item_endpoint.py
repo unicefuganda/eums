@@ -1,10 +1,9 @@
 from django.contrib.auth.models import User
-from mock import patch
+
 from eums.models import Item, Consignee
 from eums.test.api.api_test_helpers import create_item_unit, create_item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
-from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.item_factory import ItemFactory
 
 ENDPOINT_URL = BACKEND_URL + 'item/'
@@ -25,6 +24,20 @@ class ItemEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertDictContainsSubset(item_details, response.data)
+
+    def test_should_search_item_by_description(self):
+        item = ItemFactory(description='LX350')
+        ItemFactory(description='AA')
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'LX3'))
+        self.assertEqual(len(response.data), 1)
+        self.assertIn(item.id, [item['id'] for item in response.data])
+        
+    def test_should_search_item_by_material_code(self):
+        item = ItemFactory(material_code='LX350')
+        ItemFactory(material_code='AA')
+        response = self.client.get('%s?search=%s' % (ENDPOINT_URL, 'LX3'))
+        self.assertEqual(len(response.data), 1)
+        self.assertIn(item.id, [item['id'] for item in response.data])
 
     def test_should_get_all_items_sorted_by_description_for_non_ip_user(self):
         unit = create_item_unit(self)
