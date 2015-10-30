@@ -13,20 +13,6 @@
         });
     }
 
-    function getHeatMapStyle(allDistricts, location) {
-        var style = {
-            fillColor: '#FFFFCC',
-            fillOpacity: 1,
-            weight: 1.5
-        };
-        allDistricts.forEach(function (district) {
-            if (district.district === location) {
-                style.fillColor = district.color;
-            }
-        });
-        return style;
-    }
-
     function getIpHeatMapStyle(data, layerName) {
         var style = {
             fillColor: 'white',
@@ -53,25 +39,6 @@
     function getPercentageReceivedWithIssues(consigneeResponses) {
         var noProductReceivedWithIssues = getNumberOfIssues("yes", consigneeResponses).length;
         return getPercentage(noProductReceivedWithIssues, consigneeResponses);
-    }
-
-    function getHeatMapColor(consigneeResponses) {
-        var RED = '#DE2F2F', GREEN = '#66BD63', ORANGE = '#FDAE61';
-        var percentageReceived = getPercentageReceived(consigneeResponses);
-        var percentageReceivedWithIssues = getPercentageReceivedWithIssues(consigneeResponses);
-
-        if (percentageReceived >= SEVENTY_FIVE_PERCENT && percentageReceivedWithIssues < FIFTY_PERCENT) return GREEN;
-        if ((percentageReceived < SEVENTY_FIVE_PERCENT && percentageReceived >= FIFTY_PERCENT) || percentageReceivedWithIssues >= FIFTY_PERCENT) return ORANGE;
-        return RED;
-    }
-
-    function getHeatMapLayerColourForLocation(responsesWithLocation) {
-        return responsesWithLocation.map(function (responseWithLocation) {
-            return {
-                district: responseWithLocation.location,
-                color: getHeatMapColor(responseWithLocation.consigneeResponses),
-            }
-        });
     }
 
     module.factory('GeoJsonService', function ($http, EumsConfig) {
@@ -145,41 +112,18 @@
         }
 
         function addHeatMapLayer(scope) {
-            if (scope.ipView) {
-                DeliveryStatsService.getIpStats(scope.filter).then(function (response) {
-                    var filteredByColorStatsData = filterByColor(response.data, scope.deliveryStatus);
-                    angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
-                        layer.setStyle(getIpHeatMapStyle(filteredByColorStatsData, layerName));
-                    });
-                    var allFilter = angular.extend({treePosition:'IMPLEMENTING_PARTNER'}, scope.filter);
-                    DeliveryStatsService.getStats(allFilter).then(function (responses) {
-                        scope.data.totalStats = responses.data;
-                    });
-                    LoaderService.hideLoader();
+            var treePosition = scope.ipView?'IMPLEMENTING_PARTNER':'END_USER';
+            var allFilter = angular.extend({treePosition: treePosition}, scope.filter);
+            DeliveryStatsService.getIpStats(allFilter).then(function (response) {
+                var filteredByColorStatsData = filterByColor(response.data, scope.deliveryStatus);
+                angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
+                    layer.setStyle(getIpHeatMapStyle(filteredByColorStatsData, layerName));
                 });
-
-            } else {
-                DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
-                    filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
-                        scope.reponsesFromDb = filteredResponses;
-
-                        if (scope.isFiltered || scope.notDeliveryStatus) {
-                            scope.allResponsesMap = scope.data.allResponsesLocationMap
-                        } else {
-                            scope.allResponsesMap = scope.data.allResponsesLocationMap.length ? scope.data.allResponsesLocationMap : scope.reponsesFromDb;
-                        }
-                        var allLocations = getHeatMapLayerColourForLocation(scope.allResponsesMap);
-                        angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
-                            layer.setStyle(getHeatMapStyle(allLocations, layerName));
-                        });
-                        var allFilter = angular.extend({treePosition: 'END_USER'}, scope.filter);
-                        DeliveryStatsService.getStats(allFilter).then(function (responses) {
-                            scope.data.totalStats = responses.data;
-                        });
-                        LoaderService.hideLoader();
-                    });
+                DeliveryStatsService.getStats(allFilter).then(function (responses) {
+                    scope.data.totalStats = responses.data;
                 });
-            }
+                LoaderService.hideLoader();
+            });
         }
 
         function addDistrictsLayer(map, scope) {
@@ -192,22 +136,6 @@
                         LayerMap.addLayer(districtLayer, districtName.toLowerCase())
                     }
                 }).addTo(map);
-            });
-        }
-
-        function filterResponsesForUser(responsesToPlot) {
-            return UserService.getCurrentUser().then(function (user) {
-                if (user.consignee_id) {
-                    var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
-                        return responsesWithLocation.consigneeResponses.filter(function (response) {
-                            return parseInt(response.consignee.id) === parseInt(user.consignee_id);
-                        });
-                    });
-                    return DeliveryService.groupResponsesByLocation(_.flatten(filteredIPResponses));
-                }
-                else {
-                    return responsesToPlot;
-                }
             });
         }
 

@@ -46,7 +46,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         };
 
         $scope.$watchCollection('filter', function (newFilter, oldFilter) {
-            if (!Object.equal(newFilter, oldFilter) && $scope.ipView) {
+            if (!Object.equal(newFilter, oldFilter)) {
                 $scope.redrawMapColors();
             }
         }, true);

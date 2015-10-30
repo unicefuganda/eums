@@ -66,7 +66,6 @@ describe('Module: Home', function () {
         });
 
         it('should watch filter-programme and reload ip-feedback', function () {
-            scope.toggleIpView(true);
             scope.filter = {};
             scope.$apply();
             scope.filter = {programme: 2};
@@ -75,7 +74,6 @@ describe('Module: Home', function () {
         });
 
         it('should watch filter-ip and reload ip-feedback', function () {
-            scope.toggleIpView(true);
             scope.filter = {};
             scope.$apply();
             scope.filter = {ip: 2};
