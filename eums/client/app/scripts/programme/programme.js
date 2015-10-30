@@ -28,6 +28,7 @@ angular.module('Programme', ['eums.config', 'eums.service-factory'])
                 element.select2({
                     minimumInputLength: 1,
                     allowClear: true,
+                    placeholder: "Select an outcome",
                     query: function (query) {
                         var data = {results: []};
                         ProgrammeService.search(query.term, []).then(function (programmes) {
@@ -48,13 +49,12 @@ angular.module('Programme', ['eums.config', 'eums.service-factory'])
                 element.change(function () {
                     var programme = $(element).select2('data');
                     ngModel.$setViewValue(programme && programme.id);
-                    scope.$apply();
                 });
 
                 scope.$on('clear-programme', function () {
                     var programmeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     programmeSelect2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-programme', function (_, programme) {

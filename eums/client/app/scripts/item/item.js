@@ -35,6 +35,7 @@ angular.module('Item', ['eums.config', 'eums.service-factory'])
                 element.select2({
                     minimumInputLength: 1,
                     allowClear: true,
+                    placeholder: "Select an item",
                     query: function (query) {
                         var data = {results: []};
                         ItemService.search(query.term, []).then(function (items) {
@@ -55,13 +56,12 @@ angular.module('Item', ['eums.config', 'eums.service-factory'])
                 element.change(function () {
                     var item = $(element).select2('data');
                     ngModel.$setViewValue(item && item.id);
-                    scope.$apply();
                 });
 
                 scope.$on('clear-item', function () {
                     var itemSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     itemSelect2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-item', function (_, item) {

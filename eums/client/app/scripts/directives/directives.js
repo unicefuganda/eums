@@ -31,6 +31,7 @@ angular.module('Directives', ['eums.ip'])
                 element.select2({
                     width: '100%',
                     allowClear: true,
+                    placeholder: attrs.placeholder || '',
                     query: function (query) {
                         var data = {results: []};
                         var matches = list.filter(function (item) {
@@ -60,13 +61,12 @@ angular.module('Directives', ['eums.ip'])
                     var data = element.select2('data');
                     var id = data ? data.id : undefined;
                     ngModel.$setViewValue(id);
-                    scope.$apply();
                 });
 
                 scope.$on('clear-list', function () {
                     var select2Input = $(element).siblings('div').find('a span.select2-chosen');
                     select2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-location', function (_, location) {
@@ -170,6 +170,7 @@ angular.module('Directives', ['eums.ip'])
                     minimumInputLength: 1,
                     width: '240px',
                     allowClear: true,
+                    placeholder: attrs.placeholder || '',
                     query: function (query) {
                         var data = {results: []};
                         ConsigneeService.search(query.term, [], queryParams).then(function (consignees) {
@@ -190,13 +191,12 @@ angular.module('Directives', ['eums.ip'])
                 element.change(function () {
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
-                    scope.$apply();
                 });
 
                 scope.$on('clear-consignee', function () {
                     var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     consigneeSelect2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-consignee-for-single-ip', function (_, consignee) {
