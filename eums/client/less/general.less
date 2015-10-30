@@ -52,9 +52,19 @@ a, #distribution-plan-nav {
   cursor: pointer;
 }
 
-.total-value-box {
+#stock-report .total-value-box {
   display: inline-block;
   background-color: #EAEFF3;
+}
+
+#stock-report .empty-data-response {
+  text-align:center;
+  font-size:16px;
+  font-weight:bold;
+}
+
+#stock-report .header-section {
+  overflow: hidden;
 }
 
 html, body {
@@ -961,4 +971,28 @@ h4.page-header {
 
 .ip-enduser-view-toggle {
   min-width: 7em;
+}
+
+li.btn {
+  padding: 0;
+  margin-left: 10px !important;
+  border-radius: 5px;
+  width: 15.7%
+}
+
+.border-right {
+  border-right: solid 1px #ccc;
+}
+
+.pad-bottom-20 {
+  padding-bottom: 20px;
+}
+
+tr.table-sub-header {
+  font-size: 0.9em;
+  font-weight: bold;
+}
+
+.contextual-column {
+  background-color: #898989;
 }

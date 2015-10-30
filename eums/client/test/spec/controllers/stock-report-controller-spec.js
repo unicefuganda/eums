@@ -125,40 +125,12 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
         });
 
-        it('should show an error toast if there is no data for that IP', function () {
-            deferredStubReport.resolve({data: {results: []}});
-            scope.reportParams.selectedIPId = 1;
-            scope.$apply();
-
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
-            expect(mockToastProvider.create).toHaveBeenCalledWith({
-                content: 'There is no data for the specified filters!',
-                class: 'danger',
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
-        });
-
         it('should load stock report for selected location', function () {
             deferredStubReport.resolve(stubStockReport);
             scope.reportParams.selectedLocation = 1;
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-        });
-
-        it('should show an error toast if there is no data for that location', function () {
-            deferredStubReport.resolve({data: {results: []}});
-            scope.reportParams.selectedLocation = 1;
-            scope.$apply();
-
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-            expect(mockToastProvider.create).toHaveBeenCalledWith({
-                content: 'There is no data for the specified filters!',
-                class: 'danger',
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
         });
 
         it('should load stock report for selected location and IP', function () {
@@ -209,20 +181,10 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
         });
 
-        it('should show an error toast if there is no data for that location and ip', function () {
+        it('should set scope results to empty when no results', function () {
             deferredStubReport.resolve({data: {results: []}});
-            scope.reportParams.selectedLocation = 1;
             scope.$apply();
-            scope.reportParams.selectedIPId = 4;
-            scope.$apply();
-
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
-            expect(mockToastProvider.create).toHaveBeenCalledWith({
-                content: 'There is no data for the specified filters!',
-                class: 'danger',
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
+            expect(scope.reportData).toEqual([]);
         });
 
         it('should load stock report for page', function () {
@@ -245,6 +207,21 @@ describe('StockReportController', function () {
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
+        });
+
+        it('should not have empty data response when data is undefined', function() {
+            scope.reportData = undefined;
+            expect(scope.hasEmptyDataResponse()).toBeFalsy();
+        });
+
+        it('should have empty data response when actual response is empty', function() {
+            scope.reportData = [];
+            expect(scope.hasEmptyDataResponse()).toBeTruthy();
+        });
+
+        it('should not have empty data response when actual response has data', function () {
+            scope.reportData = ['some data'];
+            expect(scope.hasEmptyDataResponse()).toBeFalsy();
         });
     });
 

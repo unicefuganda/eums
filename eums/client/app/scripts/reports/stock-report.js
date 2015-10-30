@@ -4,7 +4,6 @@ angular.module('StockReport', [
     'eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives', 'Loader'])
     .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService, LoaderService) {
         $scope.reportParams = {};
-        $scope.reportData = [];
         $scope.totals = {};
 
         function init() {
@@ -21,33 +20,9 @@ angular.module('StockReport', [
             });
         }
 
-        function createToast(message, klass) {
-            ngToast.create({
-                content: message,
-                class: klass,
-                maxNumber: 1,
-                dismissOnTimeout: true
-            });
-        }
-
         $scope.goToPage = function (page) {
             fetchReport({page: page});
         };
-
-        function handleReport(response) {
-            $scope.count = response.count;
-            $scope.pageSize = response.pageSize;
-            if (response.results.length > 0) {
-                $scope.reportData = response.results;
-                $scope.totals = response.totals;
-                $scope.openDocument = undefined;
-            }
-            else {
-                $scope.reportData = [];
-                $scope.totals = response.totals;
-                createToast('There is no data for the specified filters!', 'danger');
-            }
-        }
 
         function fetchReport(params) {
             LoaderService.showLoader();
@@ -62,10 +37,20 @@ angular.module('StockReport', [
                 Object.merge(requestParams, params);
             }
             StockReportService.getStockReport(requestParams).then(function (response) {
-                handleReport(response.data);
+
+                $scope.count = response.data.count;
+                $scope.pageSize = response.data.pageSize;
+                $scope.reportData = response.data.results;
+                $scope.totals = response.data.totals;
+                $scope.openDocument = undefined;
+
                 LoaderService.hideLoader();
             });
         }
+
+        $scope.hasEmptyDataResponse = function () {
+            return ($scope.reportData != undefined && $scope.reportData.length === 0);
+        };
 
         $scope.$watch('reportParams.selectedIPId', function (newIPId, oldIPId) {
             if (newIPId != oldIPId) {

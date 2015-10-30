@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Directives', [])
+angular.module('Directives', ['eums.ip'])
     .directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',
@@ -12,16 +12,26 @@ angular.module('Directives', [])
             templateUrl: '/static/app/views/delivery/partials/view-sales-orders.html'
         };
     }])
-    .directive('searchFromList', function ($timeout) {
+    .directive('searchFromList', function (IPService, $timeout) {
         return {
             restrict: 'A',
             scope: false,
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                var list = JSON.parse(attrs.list);
+                var list;
+                if (attrs.list == '$districts') {
+                    IPService.loadAllDistricts().then(function(response) {
+                        list = response.data.map(function(district) {
+                            return {id: district, name: district};
+                        });
+                    });
+                }
+                else list = JSON.parse(attrs.list);
+
                 element.select2({
                     width: '100%',
                     allowClear: true,
+                    placeholder: attrs.placeholder || '',
                     query: function (query) {
                         var data = {results: []};
                         var matches = list.filter(function (item) {
@@ -51,13 +61,13 @@ angular.module('Directives', [])
                     var data = element.select2('data');
                     var id = data ? data.id : undefined;
                     ngModel.$setViewValue(id);
-                    scope.$apply();
+                    scope.$apply()
                 });
 
                 scope.$on('clear-list', function () {
                     var select2Input = $(element).siblings('div').find('a span.select2-chosen');
                     select2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-location', function (_, location) {
@@ -161,6 +171,7 @@ angular.module('Directives', [])
                     minimumInputLength: 1,
                     width: '240px',
                     allowClear: true,
+                    placeholder: attrs.placeholder || '',
                     query: function (query) {
                         var data = {results: []};
                         ConsigneeService.search(query.term, [], queryParams).then(function (consignees) {
@@ -181,13 +192,12 @@ angular.module('Directives', [])
                 element.change(function () {
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
-                    scope.$apply();
                 });
 
                 scope.$on('clear-consignee', function () {
                     var consigneeSelect2Input = $(element).siblings('div').find('a span.select2-chosen');
                     consigneeSelect2Input.text('');
-                    $(element).val(undefined);
+                    $(element).val(undefined).trigger('change');
                 });
 
                 scope.$on('set-consignee-for-single-ip', function (_, consignee) {
@@ -204,6 +214,7 @@ angular.module('Directives', [])
             }
         };
     })
+    //TODO Remove this directive. Make use of the one in the Programme module
     .directive('searchProgrammes', function (ProgrammeService) {
         return {
             restrict: 'A',
@@ -215,7 +226,6 @@ angular.module('Directives', [])
                         return {id: programe.id, text: programe.name, ips: programe.ips}
                     });
                     scope.displayProgrammes = scope.directiveValues.allProgrammes;
-                    scope.displayProgrammes;
                 }).then(function () {
                     scope.populateProgrammesSelect2(scope.displayProgrammes);
                 });

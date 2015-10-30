@@ -14,6 +14,7 @@ class ItemSerialiser(serializers.ModelSerializer):
 class ItemViewSet(ModelViewSet):
     queryset = Item.objects.all().order_by('description')
     serializer_class = ItemSerialiser
+    search_fields = ('description', 'material_code')
 
 itemRouter = DefaultRouter()
 itemRouter.register(r'item', ItemViewSet)

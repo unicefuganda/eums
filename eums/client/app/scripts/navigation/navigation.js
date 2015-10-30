@@ -15,6 +15,11 @@ angular.module('NavigationTabs', ['Alerts'])
             return false;
         };
 
+        $scope.pathContains = function(subPath) {
+            var absPath = $location.absUrl();
+            return absPath.indexOf(subPath) !== -1;
+        };
+
         AlertsService.get('count').then(function (alertsCount) {
             $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
         });
