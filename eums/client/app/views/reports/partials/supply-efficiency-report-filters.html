@@ -3,17 +3,17 @@
 </div>
 <div class="form-group pad-top-20">
     <div class="blue-unicef">Item</div>
-    <input class="form-control" search-items type="text" placeholder="Select an item"/>
+    <input class="form-control" search-items type="text" placeholder="Select an item" ng-model="item"/>
 </div>
 
 <div class="form-group">
     <div class="blue-unicef">Outcome</div>
-    <input class="form-control" search-programmes type="text" placeholder="Select an outcome"/>
+    <input class="form-control" search-programmes type="text" placeholder="Select an outcome" ng-model="programme"/>
 </div>
 
 <div class="form-group">
     <div class="blue-unicef">IP</div>
-    <input class="form-control" search-consignees only-ips type="text" placeholder="Select an IP"/>
+    <input class="form-control" search-consignees only-ips type="text" placeholder="Select an IP" ng-model="consignee"/>
 </div>
 
 <div class="form-group">
@@ -23,7 +23,7 @@
 
 <div class="form-group">
     <div class="blue-unicef">District</div>
-    <input class="form-control" search-from-list="{{ districts }}" type="text"
+    <input class="form-control" search-from-list list="{{ districts }}" type="hidden" ng-model="location"
            placeholder="Select a district"/>
 </div>
 

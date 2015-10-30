@@ -215,7 +215,6 @@ angular.module('Directives', [])
                         return {id: programe.id, text: programe.name, ips: programe.ips}
                     });
                     scope.displayProgrammes = scope.directiveValues.allProgrammes;
-                    scope.displayProgrammes;
                 }).then(function () {
                     scope.populateProgrammesSelect2(scope.displayProgrammes);
                 });
