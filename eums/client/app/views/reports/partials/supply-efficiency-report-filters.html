@@ -18,12 +18,12 @@
 
 <div class="form-group">
     <div class="blue-unicef">PO/Waybill</div>
-    <input class="form-control" search-pos-and-waybills type="text" placeholder="Select a PO/Waybill"/>
+    <input class="form-control" search-pos-and-waybills type="text" placeholder="Enter a PO/Waybill number"/>
 </div>
 
 <div class="form-group">
     <div class="blue-unicef">District</div>
-    <input class="form-control" search-from-list list="{{ districts }}" type="hidden" ng-model="location"
+    <input class="form-control" search-from-list list="$districts" type="hidden" ng-model="location"
            placeholder="Select a district"/>
 </div>
 

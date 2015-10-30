@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('Directives', [])
+angular.module('Directives', ['eums.ip'])
     .directive('ordersTable', [function () {
         return {
             controller: 'DistributionPlanController',
@@ -12,13 +12,22 @@ angular.module('Directives', [])
             templateUrl: '/static/app/views/delivery/partials/view-sales-orders.html'
         };
     }])
-    .directive('searchFromList', function ($timeout) {
+    .directive('searchFromList', function (IPService, $timeout) {
         return {
             restrict: 'A',
             scope: false,
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-                var list = JSON.parse(attrs.list);
+                var list;
+                if (attrs.list == '$districts') {
+                    IPService.loadAllDistricts().then(function(response) {
+                        list = response.data.map(function(district) {
+                            return {id: district, name: district};
+                        });
+                    });
+                }
+                else list = JSON.parse(attrs.list);
+
                 element.select2({
                     width: '100%',
                     allowClear: true,
