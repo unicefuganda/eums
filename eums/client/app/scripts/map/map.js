@@ -1,17 +1,4 @@
 (function (module) {
-    var SEVENTY_FIVE_PERCENT = 75, FIFTY_PERCENT = 50;
-
-    function getNumberOf(receivedCriteria, data) {
-        return data.filter(function (answer) {
-            return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase();
-        });
-    }
-
-    function getNumberOfIssues(receivedCriteria, data) {
-        return data.filter(function (answer) {
-            return answer.productReceived && answer.productReceived.toLowerCase() === receivedCriteria.toLowerCase() && answer.satisfiedWithProduct && answer.satisfiedWithProduct.toLowerCase() === 'no';
-        });
-    }
 
     function getHeatMapStyle(data, layerName) {
         var style = {
@@ -25,20 +12,6 @@
             }
         });
         return style;
-    }
-
-    function getPercentage(noProductReceived, consigneeResponses) {
-        return noProductReceived / consigneeResponses.length * 100;
-    }
-
-    function getPercentageReceived(consigneeResponses) {
-        var noProductReceived = getNumberOf("yes", consigneeResponses).length;
-        return getPercentage(noProductReceived, consigneeResponses);
-    }
-
-    function getPercentageReceivedWithIssues(consigneeResponses) {
-        var noProductReceivedWithIssues = getNumberOfIssues("yes", consigneeResponses).length;
-        return getPercentage(noProductReceivedWithIssues, consigneeResponses);
     }
 
     module.factory('GeoJsonService', function ($http, EumsConfig) {
@@ -331,10 +304,6 @@
                             });
                             //TODO: refactor this, to use same function with district on click
                             scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
-                            (function showResponsesForDistrict() {
-                                scope.data.responses = DeliveryService.getLatestItemDeliveries(scope.allResponsesMap, scope.data.district, 3);
-                                scope.data.district = layerName;
-                            })();
                         }
                     });
                 }
@@ -358,83 +327,19 @@
                 });
             }
 
-            function getReceivedResponses(responsesToPlot) {
-                return responsesToPlot.map(function (responseLocationMap) {
-                    var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
-                    var percentageReceivedWithIssues = getPercentageReceivedWithIssues(responseLocationMap.consigneeResponses);
-                    if (percentageReceived >= SEVENTY_FIVE_PERCENT && percentageReceivedWithIssues < FIFTY_PERCENT)
-                        return responseLocationMap.consigneeResponses;
-                    return [];
-                });
-            }
-
-            function getNotReceivedResponses(responsesToPlot) {
-                return responsesToPlot.map(function (responseLocationMap) {
-                    var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
-                    return percentageReceived < FIFTY_PERCENT ? responseLocationMap.consigneeResponses : [];
-                });
-            }
-
-            function getReceivedResponsesWithIssues(responsesToPlot) {
-                return responsesToPlot.map(function (responseLocationMap) {
-                    var percentageReceived = getPercentageReceived(responseLocationMap.consigneeResponses);
-                    var percentageReceivedWithIssues = getPercentageReceivedWithIssues(responseLocationMap.consigneeResponses);
-                    if ((percentageReceived < SEVENTY_FIVE_PERCENT && percentageReceived >= FIFTY_PERCENT) || percentageReceivedWithIssues >= FIFTY_PERCENT)
-                        return responseLocationMap.consigneeResponses;
-                    return [];
-                });
-            }
-
             return {
                 restrict: 'A',
                 scope: false,
                 link: function (scope) {
                     scope.$watchCollection('deliveryStatus', function (newValue) {
-                        var responsesToPlot = scope.data.topLevelResponses.length ?
-                            scope.data.topLevelResponses : scope.notDeliveryStatus ?
-                            scope.reponsesFromDb : !scope.notDeliveryStatus ?
-                            scope.reponsesFromDb : scope.allResponsesMap;
-
-                        var receivedResponses = [];
-                        var notReceivedResponses = [];
-                        var receivedResponsesWithIssues = [];
-
                         DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                             filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
                                 scope.reponsesFromDb = filteredResponses;
-
-                                if (newValue.received && newValue.notDelivered && newValue.receivedWithIssues) {
                                     if (scope.isFiltered) {
                                         scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
                                     } else {
                                         scope.data.allResponsesLocationMap = scope.reponsesFromDb;
                                     }
-                                    return;
-                                }
-
-                                if (!newValue.received && !newValue.notDelivered && !newValue.receivedWithIssues) {
-                                    scope.notDeliveryStatus = true;
-                                    scope.data.allResponsesLocationMap = [];
-                                    return;
-                                }
-
-                                scope.isFiltered = true;
-
-                                if (newValue.received) {
-                                    receivedResponses = getReceivedResponses(responsesToPlot)
-                                }
-
-                                if (newValue.notDelivered) {
-                                    notReceivedResponses = getNotReceivedResponses(responsesToPlot);
-                                }
-
-                                if (newValue.receivedWithIssues) {
-                                    receivedResponsesWithIssues = getReceivedResponsesWithIssues(responsesToPlot);
-                                }
-
-                                var received = receivedResponses.concat(receivedResponsesWithIssues);
-                                var deliveryStatusResponses = notReceivedResponses.concat(received);
-                                scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(deliveryStatusResponses));
                             });
                         });
                     });
