@@ -113,21 +113,7 @@
         }
 
         return {
-            renderIpView: function (elementId, layerName, scope) {
-                mapScope = scope;
-                map = initMap(elementId);
-
-                return addDistrictsLayer(map, scope).then(function () {
-                    layerName && this.clickLayer(layerName);
-                    return this;
-                }.bind(this)).then(function () {
-                    LoaderService.showLoader();
-                    this.addHeatMap(scope);
-                }.bind(this)).then(function () {
-                    return this;
-                }.bind(this));
-            },
-            renderEndUserView: function (elementId, layerName, scope) {
+            render: function (elementId, layerName, scope) {
                 mapScope = scope;
                 map = initMap(elementId);
 
@@ -200,15 +186,11 @@
         return {
             scope: false,
             link: function (scope, element, attrs) {
-                MapService.renderEndUserView(attrs.id, null, scope).then(function (map) {
+                MapService.render(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
                     scope.programme = '';
                     scope.notDeliveredChecked = false;
                     scope.deliveredChecked = null;
-
-                    DeliveryService.aggregateResponses().then(function (aggregates) {
-                        scope.data.totalStats = aggregates;
-                    });
                 });
 
                 scope.clearFilters = function () {
@@ -287,10 +269,6 @@
 
 
                     scope.$watch('data.allResponsesLocationMap', function () {
-                        if (window.map.renderEndUserView && !scope.ipView) {
-                            window.map.addHeatMap(scope);
-                        }
-
                         if (scope.isFiltered || scope.notDeliveryStatus) {
                             scope.allResponsesMap = scope.data.allResponsesLocationMap
                         } else {
@@ -335,11 +313,11 @@
                         DeliveryService.groupAllResponsesByLocation().then(function (responsesWithLocation) {
                             filterResponsesForUser(responsesWithLocation).then(function (filteredResponses) {
                                 scope.reponsesFromDb = filteredResponses;
-                                    if (scope.isFiltered) {
-                                        scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
-                                    } else {
-                                        scope.data.allResponsesLocationMap = scope.reponsesFromDb;
-                                    }
+                                if (scope.isFiltered) {
+                                    scope.data.allResponsesLocationMap = scope.data.topLevelResponses && scope.data.topLevelResponses.length ? scope.data.topLevelResponses : scope.reponsesFromDb;
+                                } else {
+                                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
+                                }
                             });
                         });
                     });
