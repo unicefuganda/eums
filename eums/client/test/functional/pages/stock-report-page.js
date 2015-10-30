@@ -1,6 +1,6 @@
-var ReportsPage = function () {};
+var StockReportPage = function () {};
 
-ReportsPage.prototype = Object.create({}, {
+StockReportPage.prototype = Object.create({}, {
     url: { get: function () { return '/#/stock-report' }},
     visit: {
         value: function () { browser.get(this.url);
@@ -31,4 +31,4 @@ ReportsPage.prototype = Object.create({}, {
     itemBalances: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.balance')).getText(); }}
 });
 
-module.exports = new ReportsPage;
+module.exports = new StockReportPage;
