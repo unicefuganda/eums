@@ -66,40 +66,79 @@
 
         </div>
         <div class="col-lg-10">
-            <div class="col-md-1 pad-top-10">
-                <strong class="blue-unicef">VIEW BY:</strong>
+            <div class="row">
+                <div class="col-md-1 pad-top-10">
+                    <strong class="blue-unicef">VIEW BY:</strong>
+                </div>
+                <div class="col-md-11">
+                    <ul class="nav nav-pills" ng-controller="NavigationTabsController">
+                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=delivery')}"
+                            class="btn btn-default blue-border-button btn-sm">
+                            <a href="#/supply-efficiency-report?by=delivery" role="button">Delivery</a>
+                        </li>
+                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=item')}"
+                            class="btn btn-default blue-border-button btn-sm">
+                            <a href="#/supply-efficiency-report?by=item">Item</a>
+                        </li>
+
+                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=outcome')}"
+                            class="btn btn-default blue-border-button btn-sm">
+                            <a href="#/supply-efficiency-report?by=outcome">Outcome</a>
+                        </li>
+
+                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=document')}"
+                            class="btn btn-default blue-border-button btn-sm">
+                            <a href="#/supply-efficiency-report?by=document">PO/Waybill</a>
+                        </li>
+
+                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=ip')}"
+                            class="btn btn-default blue-border-button btn-sm">
+                            <a href="#/supply-efficiency-report?by=ip">IP</a>
+                        </li>
+
+                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=location')}"
+                            class="btn btn-default blue-border-button btn-sm">
+                            <a href="#/supply-efficiency-report?by=location">District</a>
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-md-11">
-                <ul class="nav nav-pills" ng-controller="NavigationTabsController">
-                    <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=delivery')}"
-                        class="btn btn-default blue-border-button btn-sm">
-                        <a href="#/supply-efficiency-report?by=delivery" role="button">Delivery</a>
-                    </li>
-                    <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=item')}"
-                        class="btn btn-default blue-border-button btn-sm">
-                        <a href="#/supply-efficiency-report?by=item">Item</a>
-                    </li>
-
-                    <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=outcome')}"
-                        class="btn btn-default blue-border-button btn-sm">
-                        <a href="#/supply-efficiency-report?by=outcome">Outcome</a>
-                    </li>
-
-                    <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=document')}"
-                        class="btn btn-default blue-border-button btn-sm">
-                        <a href="#/supply-efficiency-report?by=document">PO/Waybill</a>
-                    </li>
-
-                    <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=ip')}"
-                        class="btn btn-default blue-border-button btn-sm">
-                        <a href="#/supply-efficiency-report?by=ip">IP</a>
-                    </li>
-
-                    <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=location')}"
-                        class="btn btn-default blue-border-button btn-sm">
-                        <a href="#/supply-efficiency-report?by=location">District</a>
-                    </li>
-                </ul>
+            <div class="row">
+                <div class="col-md-12 pad-top-20">
+                    <table class="table table-bordered table-hover table-striped table-condensed">
+                        <thead>
+                        <tr>
+                            <th colspan="2">Delivery</th>
+                            <th>UNICEF</th>
+                            <th colspan="3">IP RECEIPT</th>
+                            <th colspan="2">IP DISTRIBUTION</th>
+                            <th colspan="3">END USER RECEIPT</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="table-sub-header">
+                            <td>Date</td>
+                            <td>IP</td>
+                            <td>Value($)</td>
+                            <td>Value($)</td>
+                            <td>Loss(%)</td>
+                            <td>Delay(days)</td>
+                            <td>Value($)</td>
+                            <td>Balance(%)</td>
+                            <td>Value($)</td>
+                            <td>Loss(%)</td>
+                            <td>Delay(days)</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
