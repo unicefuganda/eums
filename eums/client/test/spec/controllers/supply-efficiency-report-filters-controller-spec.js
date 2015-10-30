@@ -7,6 +7,7 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         inject(function ($rootScope, $controller) {
             scope = $rootScope.$new();
             spyOn(scope, '$broadcast');
+            spyOn(scope, '$emit');
             $controller('SupplyEfficiencyReportFiltersController', {
                 $scope: scope
             });
@@ -26,4 +27,22 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         expect(scope.filters).toEqual({});
     });
 
+    it('should emit an event when filter data changes', function () {
+        scope.filters = {
+            orderNumber: 810,
+            startDate: '2015-10-10',
+            endDate: '2015-10-30',
+            programme: 3,
+            consignee: 1,
+            item: 4,
+            location: 5
+        };
+
+        scope.$apply();
+
+        scope.filters.orderNumber = 850;
+
+        expect(scope.$emit).toHaveBeenCalledWith('filters-changed', scope.filters);
+
+    });
 });

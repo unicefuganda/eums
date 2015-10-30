@@ -61,6 +61,7 @@ angular.module('Directives', ['eums.ip'])
                     var data = element.select2('data');
                     var id = data ? data.id : undefined;
                     ngModel.$setViewValue(id);
+                    scope.$apply()
                 });
 
                 scope.$on('clear-list', function () {

@@ -10,5 +10,9 @@ angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programm
             $scope.$broadcast('clear-item');
             $scope.$broadcast('clear-consignee');
             $scope.filters = {};
-        }
+        };
+
+        $scope.$watch('filters', function (newFilters) {
+            $scope.$emit('filters-changed', newFilters);
+        }, true);
     });
