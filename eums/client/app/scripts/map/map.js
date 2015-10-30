@@ -13,7 +13,7 @@
         });
     }
 
-    function getIpHeatMapStyle(data, layerName) {
+    function getHeatMapStyle(data, layerName) {
         var style = {
             fillColor: 'white',
             fillOpacity: 1,
@@ -114,12 +114,12 @@
         function addHeatMapLayer(scope) {
             var treePosition = scope.ipView?'IMPLEMENTING_PARTNER':'END_USER';
             var allFilter = angular.extend({treePosition: treePosition}, scope.filter);
-            DeliveryStatsService.getIpStats(allFilter).then(function (response) {
+            DeliveryStatsService.getMapStats(allFilter).then(function (response) {
                 var filteredByColorStatsData = filterByColor(response.data, scope.deliveryStatus);
                 angular.forEach(LayerMap.getLayers(), function (layer, layerName) {
-                    layer.setStyle(getIpHeatMapStyle(filteredByColorStatsData, layerName));
+                    layer.setStyle(getHeatMapStyle(filteredByColorStatsData, layerName));
                 });
-                DeliveryStatsService.getStats(allFilter).then(function (responses) {
+                DeliveryStatsService.getStatsDetails(allFilter).then(function (responses) {
                     scope.data.totalStats = responses.data;
                 });
                 LoaderService.hideLoader();
@@ -326,7 +326,7 @@
                         }
 
                         if (scope.data.district) {
-                            DeliveryStatsService.getStats({location: scope.data.district}).then(function (responses) {
+                            DeliveryStatsService.getStatsDetails({location: scope.data.district}).then(function (responses) {
                                 scope.data.totalStats = responses.data;
                                 scope.data.totalStats.location = scope.data.district;
                             });

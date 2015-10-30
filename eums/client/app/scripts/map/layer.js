@@ -50,7 +50,7 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
             var filter = layerName? {location: layerName, treePosition: treePosition} : {treePosition: treePosition};
             var allFilter = angular.extend(filter, scope.filter);
             scope.$apply(function () {
-                DeliveryStatsService.getStats(allFilter).then(function(responses){
+                DeliveryStatsService.getStatsDetails(allFilter).then(function(responses){
                     scope.data.totalStats =responses.data;
                     scope.data.totalStats.location = layerName;
                 });

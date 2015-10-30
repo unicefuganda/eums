@@ -14,7 +14,7 @@ describe('DeliveryStatsService', function () {
 
     it('should call delivery stats endpoint', function () {
         mockBackend.whenGET(deliveryStatsEndpoint).respond(fakeResponse);
-        deliveryStatsService.getStats().then(function (response) {
+        deliveryStatsService.getStatsDetails().then(function (response) {
             expect(response.data).toEqual(fakeResponse)
         });
         mockBackend.flush();
@@ -22,7 +22,7 @@ describe('DeliveryStatsService', function () {
 
     it('should call ip delivery stats endpoint', function () {
         mockBackend.whenGET(ipDeliveryStatsEndpoint).respond(fakeResponse);
-        deliveryStatsService.getIpStats().then(function (response) {
+        deliveryStatsService.getMapStats().then(function (response) {
             expect(response.data).toEqual(fakeResponse);
         });
         mockBackend.flush();

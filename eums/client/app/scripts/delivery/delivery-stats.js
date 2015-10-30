@@ -17,10 +17,10 @@ angular.module('DeliveryStats', ['eums.config'])
         }
 
         return {
-            getStats: function (filter) {
+            getStatsDetails: function (filter) {
                 return $http.get(EumsConfig.BACKEND_URLS.DELIVERY_STATS_DETAILS, {params: filter, cache: true});
             },
-            getIpStats: function (filter) {
+            getMapStats: function (filter) {
                 return $http.get(EumsConfig.BACKEND_URLS.MAP_DELIVERY_STATS, {params: reformatDate(filter)});
             }
         }
