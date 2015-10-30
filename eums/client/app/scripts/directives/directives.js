@@ -192,6 +192,7 @@ angular.module('Directives', ['eums.ip'])
                 element.change(function () {
                     var consignee = $(element).select2('data');
                     ngModel.$setViewValue(consignee && consignee.id);
+                    scope.$apply();
                 });
 
                 scope.$on('clear-consignee', function () {
