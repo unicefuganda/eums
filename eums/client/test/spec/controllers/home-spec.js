@@ -40,7 +40,6 @@ describe('Module: Home', function () {
 
         it('should check all delivery statuses by default', function () {
             var all_true_statuses = {
-                received: true, notDelivered: true, receivedWithIssues: true,
                 mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
                 mapNotReceived: true
             };
@@ -82,7 +81,6 @@ describe('Module: Home', function () {
         });
 
         it('should watch deliveryStatus and reload map on ip-view', function () {
-            scope.toggleIpView(true);
             scope.deliveryStatus = {};
             scope.$apply();
             scope.deliveryStatus = {mapNotReceived: true};

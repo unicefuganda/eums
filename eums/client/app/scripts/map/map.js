@@ -242,7 +242,6 @@
                     $("#select-program").select2("val", "");
                     $("#select-ip").select2("val", "");
                     scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
-                    scope.deliveryStatus = {received: true, notDelivered: true, receivedWithIssues: true};
                     scope.data.allResponsesLocationMap = scope.reponsesFromDb;
                 };
 

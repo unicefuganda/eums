@@ -4,9 +4,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
     'Loader', 'map.layers'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
         $scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
-        $scope.deliveryStatus = {
-            received: true, notDelivered: true, receivedWithIssues: true,
-            mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
+        $scope.deliveryStatus = { mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
             mapNotReceived: true
         };
 
@@ -65,7 +63,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         };
 
         $scope.$watchCollection('deliveryStatus', function (newDeliveryStatus, oldDeliveryStatus) {
-            if (!Object.equal(newDeliveryStatus, oldDeliveryStatus) && $scope.ipView) {
+            if (!Object.equal(newDeliveryStatus, oldDeliveryStatus)) {
                 $scope.redrawMapColors();
             }
         }, true);
