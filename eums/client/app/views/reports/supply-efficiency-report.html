@@ -72,31 +72,31 @@
                 </div>
                 <div class="col-md-11">
                     <ul class="nav nav-pills" ng-controller="NavigationTabsController">
-                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=delivery')}"
+                        <li role="presentation" ng-class="{active : pathContains('/supply-efficiency-report?by=delivery')}"
                             class="btn btn-default blue-border-button btn-sm">
                             <a href="#/supply-efficiency-report?by=delivery" role="button">Delivery</a>
                         </li>
-                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=item')}"
+                        <li role="presentation" ng-class="{active : pathContains('/supply-efficiency-report?by=item')}"
                             class="btn btn-default blue-border-button btn-sm">
                             <a href="#/supply-efficiency-report?by=item">Item</a>
                         </li>
 
-                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=outcome')}"
+                        <li role="presentation" ng-class="{active : pathContains('/supply-efficiency-report?by=outcome')}"
                             class="btn btn-default blue-border-button btn-sm">
                             <a href="#/supply-efficiency-report?by=outcome">Outcome</a>
                         </li>
 
-                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=document')}"
+                        <li role="presentation" ng-class="{active : pathContains('/supply-efficiency-report?by=document')}"
                             class="btn btn-default blue-border-button btn-sm">
                             <a href="#/supply-efficiency-report?by=document">PO/Waybill</a>
                         </li>
 
-                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=ip')}"
+                        <li role="presentation" ng-class="{active : pathContains('/supply-efficiency-report?by=ip')}"
                             class="btn btn-default blue-border-button btn-sm">
                             <a href="#/supply-efficiency-report?by=ip">IP</a>
                         </li>
 
-                        <li role="presentation" ng-class="{active : isActive('/supply-efficiency-report?by=location')}"
+                        <li role="presentation" ng-class="{active : pathContains('/supply-efficiency-report?by=location')}"
                             class="btn btn-default blue-border-button btn-sm">
                             <a href="#/supply-efficiency-report?by=location">District</a>
                         </li>
