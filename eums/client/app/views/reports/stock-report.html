@@ -7,23 +7,32 @@
             <div class="form-horizontal">
                 <div class="header-section">
                     <div class="form-group col-lg-5 margin-top-15">
-                        <div class="pad-bottom-5 margin-bottom-5" style="overflow: hidden;">
-                            <div class="col-lg-3 pad-left-5">
-                                <label class="control-label description-label" for="select-ip">Select District</label>
+                        <div class="pad-bottom-5" style="overflow: hidden;">
+                            <div class="col-lg-3 filter-label">
+                                <label class="control-label description-label" for="select-district">District:</label>
                             </div>
                             <div class="col-lg-9" ng-if="districtsLoaded">
                                 <input id="select-district" class="form-control" type="hidden" search-from-list
                                        list="{{ districts }}"
-                                       ng-model="reportParams.selectedLocation" placeholder="Select District">
+                                       ng-model="reportParams.selectedLocation" placeholder="All Districts">
                             </div>
                         </div>
-                        <div class="pad-top-5">
-                            <div class="col-lg-3 pad-left-5">
-                                <label class="control-label description-label" for="select-ip">Select IP</label>
+                        <div class="pad-top-5 pad-bottom-5" style="overflow: hidden;">
+                            <div class="col-lg-3 filter-label">
+                                <label class="control-label description-label" for="select-ip">IP:</label>
                             </div>
                             <div class="col-lg-9">
                                 <input id="select-ip" class="form-control" type="hidden" search-consignees
-                                       ng-model="reportParams.selectedIPId" placeholder="Select IP">
+                                       ng-model="reportParams.selectedIPId" placeholder="All Implementing Partners">
+                            </div>
+                        </div>
+                        <div class="pad-top-5">
+                            <div class="col-lg-3 filter-label">
+                                <label class="control-label description-label" for="filter-programme-container">Outcome:</label>
+                            </div>
+                            <div class="col-lg-9" id="filter-programme-container">
+                                <input class="form-control" search-programmes-better type="text"
+                                       ng-model="reportParams.selectedOutcomeId" placeholder="All Outcomes"/>
                             </div>
                         </div>
                     </div>

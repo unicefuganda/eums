@@ -33,6 +33,9 @@ angular.module('StockReport', [
             if ($scope.reportParams.selectedIPId) {
                 Object.merge(requestParams, {consignee: $scope.reportParams.selectedIPId});
             }
+            if ($scope.reportParams.selectedOutcomeId) {
+                Object.merge(requestParams, {outcome: $scope.reportParams.selectedOutcomeId});
+            }
             if (params) {
                 Object.merge(requestParams, params);
             }
@@ -53,15 +56,18 @@ angular.module('StockReport', [
         };
 
         $scope.$watch('reportParams.selectedIPId', function (newIPId, oldIPId) {
-            if (newIPId != oldIPId) {
+            if (newIPId != oldIPId)
                 fetchReport();
-            }
         });
 
         $scope.$watch('reportParams.selectedLocation', function (newLocation, oldLocation) {
-            if (newLocation != oldLocation) {
+            if (newLocation != oldLocation)
                 fetchReport();
-            }
+        });
+
+        $scope.$watch('reportParams.selectedOutcomeId', function (newOutcomeId, oldOutcomeId) {
+            if (newOutcomeId != oldOutcomeId)
+                fetchReport();
         });
 
         $scope.toggleOpenDocument = function (documentId) {

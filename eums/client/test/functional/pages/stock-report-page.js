@@ -1,3 +1,5 @@
+var functionalTestUtils = require('./../functional-test-utils.js');
+
 var StockReportPage = function () {};
 
 StockReportPage.prototype = Object.create({}, {
@@ -11,6 +13,14 @@ StockReportPage.prototype = Object.create({}, {
         element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
         element(by.css('.select2-results li')).click();
     }},
+
+    selectOutcome: {
+        value: function (searchText) {
+            functionalTestUtils.fillSelect2Chosen('filter-programme-container', searchText);
+        }
+    },
+
+    noDataMessage: { get: function () { return element(by.css('.empty-data-response')); }},
 
     totalReceived: { get: function () { return element(by.id('total_received')).getText(); }},
     totalDispensed: { get: function () { return element(by.id('total_dispensed')).getText(); }},

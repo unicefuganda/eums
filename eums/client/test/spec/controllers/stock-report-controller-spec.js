@@ -143,6 +143,22 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
         });
 
+        it('should load stock report for selected outcome', function () {
+            scope.reportParams.selectedOutcomeId = 7;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({outcome: 7});
+        });
+
+        it('should load stock report when clearing outcome filter', function() {
+            scope.reportParams.selectedOutcomeId = 7;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
+
+            scope.reportParams.selectedOutcomeId = undefined;
+            scope.$apply();
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(3);
+        });
+
         it('should load stock report when clearing location filter', function() {
             scope.reportParams.selectedLocation = 'Adjumani';
             scope.$apply();
