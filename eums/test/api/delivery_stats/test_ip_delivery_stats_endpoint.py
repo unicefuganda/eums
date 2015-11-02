@@ -26,38 +26,33 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
     def test_should_product_received_question_stats(self):
         response = self.client.get('%s?treePosition=IMPLEMENTING_PARTNER' % ENDPOINT_URL)
 
-        expected_response_data = {'percentageValueOfNonResponseToProductReceived': 50.2,
+        expected_response_data = {'percentageValueOfNonResponseToProductReceived': 0.0,
                                   'percentageOfDeliveriesInBadOrder': 0.0,
                                   'percentageOfNonResponseToQualityOfProduct': 66.7,
-                                  'totalValueOfDeliveriesInBadOrder': 0,
-                                  'percentageValueOfSatisfactoryDeliveries': 0.0,
-                                  'totalValueOfNonResponseToProductReceived': Decimal('10100.00'),
+                                  'totalValueOfDeliveriesInBadOrder': 0, 'percentageValueOfSatisfactoryDeliveries': 0.0,
+                                  'totalValueOfNonResponseToProductReceived': 0,
                                   'percentageValueOfUnsuccessfulDeliveries': 0.0,
-                                  'percentageValueOfSuccessfulDeliveries': 49.8,
-                                  'totalValueOfNonResponseToQualityOfProduct': Decimal('10100.00'),
+                                  'percentageValueOfSuccessfulDeliveries': 0.0,
+                                  'totalValueOfNonResponseToQualityOfProduct': 0,
                                   'percentageValueOfUnsatisfactoryDeliveries': 0.0,
                                   'numberOfNonResponseToSatisfactionWithProduct': 3,
                                   'percentageOfUnsuccessfulDeliveries': 0.0,
-                                  'totalValueOfNonResponseToSatisfactionWithProduct': Decimal('20100.00'),
-                                  'percentageValueOfDeliveriesInGoodOrder': 49.8,
-                                  'totalValueOfDeliveriesInGoodOrder': Decimal('10000.00'),
+                                  'totalValueOfNonResponseToSatisfactionWithProduct': 0,
+                                  'percentageValueOfDeliveriesInGoodOrder': 0.0, 'totalValueOfDeliveriesInGoodOrder': 0,
                                   'totalValueOfSatisfactoryDeliveries': 0, 'numberOfNonResponseToProductReceived': 2,
-                                  'percentageValueOfNonResponseToSatisfactionWithProduct': 100.0,
-                                  'numberOfNonResponseToQualityOfProduct': 2,
-                                  'totalValueOfSuccessfulDeliveries': Decimal('10000.00'), 'totalNumberOfDeliveries': 3,
-                                  'numberOfDeliveriesInBadOrder': 0,
-                                  'percentageValueOfNonResponseToQualityOfProduct': 50.2,
+                                  'percentageValueOfNonResponseToSatisfactionWithProduct': 0.0,
+                                  'numberOfNonResponseToQualityOfProduct': 2, 'totalValueOfSuccessfulDeliveries': 0,
+                                  'totalNumberOfDeliveries': 3, 'numberOfDeliveriesInBadOrder': 0,
+                                  'percentageValueOfNonResponseToQualityOfProduct': 0.0,
                                   'numberOfUnsuccessfulProductDeliveries': 0,
                                   'totalValueOfUnsuccessfulProductDeliveries': 0,
-                                  'percentageOfNonResponseToProductReceived': 66.7,
-                                  'totalValueOfDeliveries': Decimal('20100.00'),
+                                  'percentageOfNonResponseToProductReceived': 66.7, 'totalValueOfDeliveries': 0,
                                   'percentageOfSuccessfulDeliveries': 33.3, 'numberOfSatisfactoryDeliveries': 0,
                                   'totalValueOfUnsatisfactoryDeliveries': 0, 'percentageOfDeliveriesInGoodOrder': 33.3,
                                   'percentageOfUnsatisfactoryDeliveries': 0.0, 'numberOfSuccessfulProductDeliveries': 1,
                                   'percentageValueOfDeliveriesInBadOrder': 0.0, 'numberOfUnsatisfactoryDeliveries': 0,
                                   'percentageOfNonResponseToSatisfactionWithProduct': 100.0,
-                                  'percentageOfSatisfactoryDeliveries': 0.0,
-                                  'numberOfDeliveriesInGoodOrder': 1}
+                                  'percentageOfSatisfactoryDeliveries': 0.0, 'numberOfDeliveriesInGoodOrder': 1}
 
         self.assertEqual(response.data, expected_response_data)
 
@@ -83,43 +78,34 @@ class IpDeliveryStatsEndPointTest(DeliveryStatsTestCase):
         from eums.fixtures.ip_questions import seed_ip_questions
         questions, options, _ = seed_ip_questions()
 
-        po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
-
         self.programme = ProgrammeFactory(name='my-program')
         self.ip = ConsigneeFactory()
 
-        distribution_plan = DeliveryFactory(programme=self.programme)
-
         self.today = FakeDate.today()
-        ip_node_one = DeliveryNodeFactory(
-            quantity=1000,
+        ip_delivery_one = DeliveryFactory(
             location='some location',
-            tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True,
-            distribution_plan=distribution_plan,
+            programme=self.programme,
             consignee=self.ip,
+            ip=self.ip,
             delivery_date=self.today + datetime.timedelta(days=3))
 
-        ip_node_two = DeliveryNodeFactory(
-            quantity=1000,
+        DeliveryFactory(
             location='Other location',
             delivery_date=self.today,
-            tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True)
 
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled),
+            run=RunFactory(runnable=ip_delivery_one, status=Run.STATUS.scheduled),
             question=questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'])
 
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled),
+            run=RunFactory(runnable=ip_delivery_one, status=Run.STATUS.scheduled),
             question=questions['IS_DELIVERY_IN_GOOD_ORDER'], value=options['IN_GOOD_CONDITION'])
 
-        non_response_node_one = DeliveryNodeFactory(
-            tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
+        non_response_delivery_one = DeliveryFactory(
             delivery_date=self.today + datetime.timedelta(days=4),
             location='some location',
-            track=True,
-            item=po_item)
+            track=True)
 
-        RunFactory(runnable=non_response_node_one, status=Run.STATUS.scheduled)
+        RunFactory(runnable=non_response_delivery_one, status=Run.STATUS.scheduled)

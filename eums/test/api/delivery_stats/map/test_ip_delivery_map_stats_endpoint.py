@@ -116,43 +116,34 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         from eums.fixtures.ip_questions import seed_ip_questions
         questions, options, _ = seed_ip_questions()
 
-        po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
-
         self.programme = ProgrammeFactory(name='my-program')
         self.ip = ConsigneeFactory()
 
-        distribution_plan = DeliveryFactory(programme=self.programme)
-
         self.today = FakeDate.today()
-        ip_node_one = DeliveryNodeFactory(
-            quantity=1000,
+        ip_delivery_one = DeliveryFactory(
             location='some location',
-            tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True,
-            distribution_plan=distribution_plan,
+            programme=self.programme,
             consignee=self.ip,
+            ip=self.ip,
             delivery_date=self.today + datetime.timedelta(days=3))
 
-        ip_node_two = DeliveryNodeFactory(
-            quantity=1000,
+        DeliveryFactory(
             location='Other location',
             delivery_date=self.today,
-            tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             track=True)
 
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled),
+            run=RunFactory(runnable=ip_delivery_one, status=Run.STATUS.scheduled),
             question=questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'])
 
         MultipleChoiceAnswerFactory(
-            run=RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled),
+            run=RunFactory(runnable=ip_delivery_one, status=Run.STATUS.scheduled),
             question=questions['IS_DELIVERY_IN_GOOD_ORDER'], value=options['IN_GOOD_CONDITION'])
 
-        non_response_node_one = DeliveryNodeFactory(
-            tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
+        non_response_delivery_one = DeliveryFactory(
             delivery_date=self.today + datetime.timedelta(days=4),
             location='some location',
-            track=True,
-            item=po_item)
+            track=True)
 
-        RunFactory(runnable=non_response_node_one, status=Run.STATUS.scheduled)
+        RunFactory(runnable=non_response_delivery_one, status=Run.STATUS.scheduled)

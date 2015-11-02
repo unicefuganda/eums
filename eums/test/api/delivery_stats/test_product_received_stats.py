@@ -51,6 +51,7 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
         end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=10,
+                                                distribution_plan=None,
                                                 item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
@@ -58,6 +59,7 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
             value=options['PRODUCT_WAS_RECEIVED']
         )
         self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=20,
+                                                     distribution_plan=None,
                                                      item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
@@ -65,6 +67,7 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
             value=options['PRODUCT_WAS_RECEIVED']
         )
         end_user_node_three = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=30,
+                                                  distribution_plan=None,
                                                   item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled),
@@ -72,6 +75,7 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=40,
+                                                 distribution_plan=None,
                                                  item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
@@ -79,6 +83,7 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=50,
+                                                 distribution_plan=None,
                                                  item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),
@@ -86,5 +91,6 @@ class ProductReceivedStatsTest(DeliveryStatsTestCase):
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
         non_response_node = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=60,
+                                                distribution_plan=None,
                                                 item=po_item)
         RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)

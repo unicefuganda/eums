@@ -1,4 +1,5 @@
-from eums.models import UserProfile, Flow, Runnable, Question, DistributionPlanNode as DeliveryNode
+from eums.models import UserProfile, Flow, Runnable, Question, DistributionPlanNode as DeliveryNode, \
+    DistributionPlan as Delivery
 
 
 class StatsSearchData:
@@ -45,7 +46,7 @@ class IpStatsSearchData(StatsSearchData):
     def __init__(self):
         StatsSearchData.__init__(self)
         self.flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
-        self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.IMPLEMENTING_PARTNER, track=True)
+        self.nodes = Delivery.objects.filter(track=True)
         self.received_label = Question.LABEL.deliveryReceived
         self.quality_label = Question.LABEL.isDeliveryInGoodOrder
         self.satisfied_label = Question.LABEL.satisfiedWithDelivery
@@ -53,7 +54,6 @@ class IpStatsSearchData(StatsSearchData):
 
 
 class StatsSearchDataFactory:
-
     def __init__(self):
         pass
 

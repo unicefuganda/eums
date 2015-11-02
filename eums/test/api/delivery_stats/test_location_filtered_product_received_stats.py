@@ -2,6 +2,7 @@ from eums.models import Run, MultipleChoiceQuestion
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -48,6 +49,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_one = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=10,
             item=po_item,
             location=self.selected_location
@@ -60,6 +62,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_two = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True,
             quantity=30,
             item=po_item,
@@ -73,6 +76,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
 
         non_response_node_one = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=60,
             item=po_item,
             location=self.selected_location
@@ -81,6 +85,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_three = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=10,
             item=po_item,
             location=self.other_location
@@ -93,6 +98,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_four = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=30,
             item=po_item,
             location=self.other_location
@@ -105,6 +111,7 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
 
         non_response_node_two = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True,
             quantity=60,
             item=po_item,

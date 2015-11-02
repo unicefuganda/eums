@@ -49,6 +49,7 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_one = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=10,
             item=po_item,
             location=self.selected_location
@@ -61,6 +62,7 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_two = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True,
             quantity=30,
             item=po_item,
@@ -74,6 +76,7 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
 
         non_response_node_one = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=60,
             item=po_item,
             location=self.selected_location
@@ -82,6 +85,7 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_three = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=10,
             item=po_item,
             location=self.other_location
@@ -94,6 +98,7 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
 
         end_user_node_four = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True, quantity=30,
             item=po_item,
             location=self.other_location
@@ -106,6 +111,7 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
 
         non_response_node_two = DeliveryNodeFactory(
             tree_position=DeliveryNode.END_USER,
+            distribution_plan=None,
             track=True,
             quantity=60,
             item=po_item,

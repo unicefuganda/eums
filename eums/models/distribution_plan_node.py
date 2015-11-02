@@ -14,7 +14,6 @@ class DistributionPlanNode(Runnable):
     tree_position = models.CharField(max_length=255, choices=positions)
     balance = models.IntegerField(null=True, blank=True, default=0)
     acknowledged = models.IntegerField(null=True, blank=True, default=0)
-    total_value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
     parents = None
     quantity = None
     objects = DeliveryNodeManager()
@@ -42,6 +41,11 @@ class DistributionPlanNode(Runnable):
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())
+        self._update_distribution_plan_total_value()
+
+    def _update_distribution_plan_total_value(self):
+        if self.is_root() and self.distribution_plan:
+            self.distribution_plan.update_total_value()
 
     def get_programme(self):
         if self.distribution_plan:

@@ -3,6 +3,7 @@ from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsT
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -59,6 +60,7 @@ class ProductReceivedStatsForIPTest(DeliveryStatsTestCase):
             quantity=1000,
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             consignee=self.selected_ip,
+            distribution_plan=DeliveryFactory(track=True),
             track=True
         )
         end_user_node_one = DeliveryNodeFactory(
@@ -96,6 +98,7 @@ class ProductReceivedStatsForIPTest(DeliveryStatsTestCase):
             quantity=1000,
             tree_position=DeliveryNode.IMPLEMENTING_PARTNER,
             consignee=self.other_ip,
+            distribution_plan=DeliveryFactory(track=True),
             track=True
         )
         end_user_node_three = DeliveryNodeFactory(

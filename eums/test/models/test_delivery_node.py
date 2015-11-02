@@ -408,6 +408,15 @@ class DeliveryNodeTest(TestCase):
 
         self.assertEqual(node.total_value, 900)
 
+    def test_should_update_parent_total_value_if_root_node_when_saved(self):
+        po_item = PurchaseOrderItemFactory(quantity=100, value=1000.0)
+        parent = DeliveryFactory()
+        DeliveryNodeFactory(quantity=80, item=po_item, distribution_plan=parent)
+        self.assertEqual(parent.total_value, 800)
+
+        DeliveryNodeFactory(quantity=90, item=po_item, distribution_plan=parent)
+        self.assertEqual(parent.total_value, 1700)
+
     def test_should_save_acknowledged_quantity(self):
         node = DeliveryNodeFactory(quantity=100, acknowledged=100)
         child = DeliveryNodeFactory(parents=[(node, 50)])
@@ -468,7 +477,8 @@ class DeliveryNodeTest(TestCase):
         self.assertEqual(alert.item_description, description)
 
     def test_should_get_node_tracked_status_from_its_parents_if_they_are_provided(self):
-        parent_one = DeliveryNodeFactory(track=True)
+        distribution_plan = DeliveryFactory(track=True)
+        parent_one = DeliveryNodeFactory(track=True, distribution_plan=distribution_plan)
         parent_two = DeliveryNodeFactory(track=False)
 
         node_with_tuple_parents = DeliveryNodeFactory(parents=[(parent_one, 5), (parent_two, 4)], track=False)

@@ -19,10 +19,13 @@ class DistributionPlan(Runnable):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
 
-    @property
-    def total_value(self):
+    def update_total_value(self):
+        self.total_value = self._get_total_value()
+        self.save()
+
+    def _get_total_value(self):
         delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(delivery=self)
-        return reduce(lambda total, node: total + node.item.unit_value() * node.quantity_in(), delivery_root_nodes, 0)
+        return reduce(lambda total, node: total + node.total_value, delivery_root_nodes, 0)
 
     def __unicode__(self):
         return "%s, %s" % (self.programme.name, str(self.delivery_date))

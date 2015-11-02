@@ -28,7 +28,7 @@ class WareHouseDeliveryExportTest(TestCase):
     def test_should_get_export_list_for_warehouse(self, mock_build_contact):
         contact = {'firstName': 'John', 'lastName': 'Ssenteza', 'phone': '+256 782 123456'}
         mock_build_contact.return_value = contact
-        delivery = DeliveryFactory(track=True)
+        delivery = DeliveryFactory()
         consignee_name = 'the consignee'
         consignee = ConsigneeFactory(name=consignee_name)
         waybill = 5404939
@@ -75,7 +75,7 @@ class DirectDeliveryExportTest(TestCase):
     def test_should_get_export_list_for_direct_delivery(self, mock_build_contact):
         contact = {'firstName': 'John', 'lastName': 'Ssenteza', 'phone': '+256 782 123456'}
         mock_build_contact.return_value = contact
-        delivery = DeliveryFactory(track=True)
+        delivery = DeliveryFactory()
         consignee_name = 'the consignee'
         consignee = ConsigneeFactory(name=consignee_name)
         order_number = 5404939
