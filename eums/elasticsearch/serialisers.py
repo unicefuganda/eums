@@ -78,10 +78,19 @@ def _serialise_node(node):
     node_json['consignee'] = _serialise_consignee(node.consignee)
     node_json['programme'] = _serialise_programme(node.programme)
     node_json['order_item'] = _serialise_order_item(node.item)
-    node_json['responses'] = _serialise_node_responses(node)
+    responses = _serialise_node_responses(node)
+    node_json['responses'] = responses
+    node_json['value_lost'] = _compute_node_loss(node, responses)
     if node.ip:
         node_json['ip'] = _serialise_consignee(node.ip)
     return node_json
+
+
+def _compute_node_loss(node, responses):
+    amount_received_responses = filter(lambda response: response['question']['label'] == 'amountReceived', responses)
+    amount_received = amount_received_responses[0]['value'] if amount_received_responses else None
+    value_received = node.item.unit_value() * amount_received if amount_received else None
+    return round(node.total_value - value_received, 2) if value_received else None
 
 
 def _serialise_node_responses(node):

@@ -97,7 +97,6 @@ class DistributionPlanNode(Runnable):
             parent = parents.first()
             self.distribution_plan = parent.distribution_plan
 
-
     @classmethod
     def get_delivery_for(cls, release_order_item):
         first_node = cls.objects.filter(item=release_order_item, arcs_in__source__isnull=True).first()
