@@ -1,14 +1,15 @@
 import json
 from django.conf import settings
+from django.utils import timezone
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format, _serialise_datetime
 from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
-from eums.test.factories.answer_factory import NumericAnswerFactory
+from eums.test.factories.answer_factory import NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.question_factory import NumericQuestionFactory
+from eums.test.factories.question_factory import NumericQuestionFactory, TextQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 
 ES_SETTINGS = settings.ELASTIC_SEARCH
@@ -97,6 +98,17 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset({'value_lost': 14.36}, serialised[0])
+
+    def test_should_serialise_node_with_delivery_delay(self):
+        expected_delivery_date = timezone.datetime(2015, 1, 1).date()
+        date_of_receipt = timezone.datetime(2015, 1, 10).date()
+        node = DeliveryNodeFactory(delivery_date=expected_delivery_date)
+        date_received_question = TextQuestionFactory(label='dateOfReceipt')
+        run = RunFactory(runnable=node)
+        TextAnswerFactory(question=date_received_question, run=run, value=date_of_receipt)
+
+        serialised = serialise_nodes([node])
+        self.assertDictContainsSubset({'delivery_delay': 9}, serialised[0])
 
     def test_should_convert_updated_nodes_to_bulk_api_format(self):
         node = DeliveryNodeFactory()

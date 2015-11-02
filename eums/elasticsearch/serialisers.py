@@ -1,4 +1,6 @@
 import json
+import datetime
+from dateutil.parser import parse
 from django.conf import settings
 
 from django.db.models import Q
@@ -78,9 +80,12 @@ def _serialise_node(node):
     node_json['consignee'] = _serialise_consignee(node.consignee)
     node_json['programme'] = _serialise_programme(node.programme)
     node_json['order_item'] = _serialise_order_item(node.item)
+
     responses = _serialise_node_responses(node)
     node_json['responses'] = responses
     node_json['value_lost'] = _compute_node_loss(node, responses)
+    node_json['delivery_delay'] = _compute_delivery_delay(node, responses)
+
     if node.ip:
         node_json['ip'] = _serialise_consignee(node.ip)
     return node_json
@@ -91,6 +96,14 @@ def _compute_node_loss(node, responses):
     amount_received = amount_received_responses[0]['value'] if amount_received_responses else None
     value_received = node.item.unit_value() * amount_received if amount_received else None
     return round(node.total_value - value_received, 2) if value_received else None
+
+
+def _compute_delivery_delay(node, responses):
+    date_received_responses = filter(lambda response: response['question']['label'] == 'dateOfReceipt', responses)
+    date_received_string = date_received_responses[0]['value'] if date_received_responses else None
+    date_format = '%Y-%m-%d %H:%M:%S'
+    date_received = parse(date_received_string).date() if date_received_string else None
+    return (date_received - node.delivery_date).days if date_received else None
 
 
 def _serialise_node_responses(node):
