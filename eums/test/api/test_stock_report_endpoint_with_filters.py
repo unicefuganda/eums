@@ -7,7 +7,7 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 
 
-class StockReportEndpointTest(AuthenticatedAPITestCase):
+class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
 
     def test_should_filter_based_on_outcome(self):
         outcome_one = ProgrammeFactory(name='Outcome One')
