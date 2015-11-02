@@ -12,7 +12,7 @@ class ReleaseOrderItem(OrderItem):
     value = models.DecimalField(max_digits=12, decimal_places=2)
 
     def unit_value(self):
-        return self.value / Decimal(self.quantity)
+        return Decimal(self.value) / Decimal(self.quantity)
 
     def number(self):
         return self.release_order.waybill
