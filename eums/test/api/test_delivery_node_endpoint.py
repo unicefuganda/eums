@@ -206,13 +206,13 @@ class DeliveryNodeEndpointTest(AuthenticatedAPITestCase):
         self.assertItemsEqual([300, 200], node_order_numbers)
 
     def test_should_filter_out_distributable_nodes(self):
-        distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee)
+        distributable_parent = DeliveryNodeFactory(quantity=100, consignee=self.consignee, tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         delivery = DeliveryFactory(confirmed=True)
         distributable_confirmed_parent = DeliveryNodeFactory(quantity=50, consignee=self.consignee, distribution_plan=delivery,
-                                                             acknowledged=50)
+                                                             acknowledged=50, tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(parents=[(distributable_parent, 50)])
         DeliveryNodeFactory(parents=[(distributable_confirmed_parent, 30)])
-        closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee)
+        closed_parent = DeliveryNodeFactory(quantity=80, consignee=self.consignee, tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(parents=[(closed_parent, 80)])
 
         self.logout()

@@ -38,6 +38,7 @@ class DistributionPlanNode(Runnable):
 
         self.total_value = self._get_total_value()
         self.assign_ip()
+        self._set_delivery()
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
         self._update_parent_balances(self._parents())
@@ -89,6 +90,13 @@ class DistributionPlanNode(Runnable):
 
     def has_children(self):
         return bool(self.children().count())
+
+    def _set_delivery(self):
+        parents = self._parents()
+        if parents and parents.count() == 1:
+            parent = parents.first()
+            self.distribution_plan = parent.distribution_plan
+
 
     @classmethod
     def get_delivery_for(cls, release_order_item):

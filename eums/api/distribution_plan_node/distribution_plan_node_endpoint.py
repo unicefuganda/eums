@@ -52,7 +52,8 @@ class DistributionPlanNodeViewSet(ModelViewSet):
     def _consignee_nodes(self, user_profile):
         queryset = DeliveryNode.objects.filter(ip=user_profile.consignee)
         if self.request.GET.get('is_distributable'):
-            return queryset.filter(balance__gt=0, distribution_plan__confirmed=True)
+            return queryset.filter(balance__gt=0, distribution_plan__confirmed=True,
+                                   tree_position=DeliveryNode.IMPLEMENTING_PARTNER)
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -66,6 +67,7 @@ class DistributionPlanNodeViewSet(ModelViewSet):
         node = self.get_object()
         lineage = node.lineage()
         return Response(self.get_serializer(lineage, many=True).data)
+
 
 distributionPlanNodeRouter = DefaultRouter()
 distributionPlanNodeRouter.register(r'distribution-plan-node', DistributionPlanNodeViewSet)

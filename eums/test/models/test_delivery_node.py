@@ -564,3 +564,27 @@ class DeliveryNodeTest(TestCase):
 
         self.assertItemsEqual(great_grand_child_one.lineage(), [child, grand_child_one])
         self.assertItemsEqual(great_grand_child_two.lineage(), [child, grand_child_two])
+
+    def test_node_should_get_its_parents_distribution_plan_when_for_single_parent(self):
+        purchaser_order_item = PurchaseOrderItemFactory()
+        delivery_one = DeliveryFactory()
+        delivery_two = DeliveryFactory()
+
+        root_one = DeliveryNodeFactory(distribution_plan=delivery_one, item=purchaser_order_item, quantity=50)
+        root_two = DeliveryNodeFactory(distribution_plan=delivery_two, item=purchaser_order_item, quantity=60)
+
+        child_one = DeliveryNodeFactory(parents=[(root_one, 10)], distribution_plan=None)
+        child_two = DeliveryNodeFactory(parents=[(root_two, 20)], distribution_plan=None)
+        child_three = DeliveryNodeFactory(parents=[(root_one, 10), (root_two, 10)], distribution_plan=None)
+
+        self.assertEqual(child_one.distribution_plan, delivery_one)
+        self.assertEqual(child_two.distribution_plan, delivery_two)
+        self.assertIsNone(child_three.distribution_plan)
+
+        grand_child_one = DeliveryNodeFactory(parents=[(child_one, 5)], distribution_plan=None)
+        grand_child_two = DeliveryNodeFactory(parents=[(child_two, 20)], distribution_plan=None)
+        grand_child_three = DeliveryNodeFactory(parents=[(child_three, 15)], distribution_plan=None)
+
+        self.assertEqual(grand_child_one.distribution_plan, delivery_one)
+        self.assertEqual(grand_child_two.distribution_plan, delivery_two)
+        self.assertIsNone(grand_child_three.distribution_plan)
