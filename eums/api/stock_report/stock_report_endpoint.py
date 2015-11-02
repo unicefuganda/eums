@@ -42,13 +42,12 @@ def _aggregate_nodes_into_stock_report(stock_report, node):
 
 def _build_stock_report(consignee_id, location, outcome_id):
     ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
-    if consignee_id and location:
-        ip_nodes = ip_nodes.filter(consignee_id=consignee_id, location__icontains=location)
-    elif consignee_id:
+
+    if consignee_id:
         ip_nodes = ip_nodes.filter(consignee_id=consignee_id)
-    elif location:
+    if location:
         ip_nodes = ip_nodes.filter(location__icontains=location)
-    elif outcome_id:
+    if outcome_id:
         ip_nodes = ip_nodes.filter(programme_id=outcome_id)
 
     return reduce(_aggregate_nodes_into_stock_report, ip_nodes, [])
