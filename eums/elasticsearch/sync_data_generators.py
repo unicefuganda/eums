@@ -102,4 +102,4 @@ def _find_changes_for_model(model, last_sync_time):
 
 def _find_nodes_affected_by_dependency_deletion():
     delete_records = DeleteRecords.objects.first()
-    return delete_records.nodes_with_deleted_dependencies if delete_records else []
+    return delete_records.nodes_with_deleted_dependencies or [] if delete_records else []
