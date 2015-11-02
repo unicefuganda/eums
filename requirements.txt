@@ -36,3 +36,4 @@ xlutils==1.7.1
 xlwt==0.7.5
 flower
 elasticsearch==1.7.0
+python-dateutil==2.4.2
