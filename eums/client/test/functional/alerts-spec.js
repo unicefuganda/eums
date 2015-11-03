@@ -11,13 +11,14 @@ describe('Alerts', function () {
         alertsPage.visit();
     });
 
-    it('should show retrigger button when unreceived alert', function () {
+    it('should show retrigger button when unreceived and unresolved alert exists', function () {
         expect(alertsPage.retriggerBtns.count()).toEqual(1);
     });
 
-    it('should retrigger delivery', function() {
+    it('should retrigger delivery', function () {
         alertsPage.retrigger();
 
+        expect(alertsPage.retriggerBtns.get(0).getText()).toBe('Retriggered');
         expect(alertsPage.retriggerBtns.get(0).getAttribute('disabled')).toBeTruthy();
     });
 
@@ -34,5 +35,6 @@ describe('Alerts', function () {
 
         alertsPage.viewResolutionDetails();
         expect(alertsPage.alertResolutionRemarks).toContain('This is now resolved');
+        expect(alertsPage.retriggerBtns.count()).toEqual(0);
     });
 });

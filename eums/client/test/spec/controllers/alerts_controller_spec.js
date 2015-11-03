@@ -242,13 +242,13 @@ describe('AlertsController', function () {
             expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to retrigger alert', class: 'danger'});
         });
 
-        it('should_show_retrigger_column_when_unreceived_alerts_greater_than_0', function () {
+        it('should show retrigger column when retrigger button exists', function () {
             scope.$apply();
 
             expect(scope.isRetriggerColumnAvailable(scope.alerts)).toBe(true);
         });
 
-        it('should_show_retrigger_btn_when_only_unreceived_alert_and_not_resolved', function () {
+        it('should show retrigger button when only unreceived and unresolved alert exists', function () {
             scope.$apply();
 
             expect(scope.isRetriggerBtnAvailable(scope.alerts[0])).toBe(true);
