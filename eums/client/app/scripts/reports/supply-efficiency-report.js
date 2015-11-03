@@ -17,7 +17,8 @@ angular.module('SupplyEfficiencyReport', [
                 $scope.report = report;
             });
         }
-    }).factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {
+    })
+    .factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {
         var BUCKETS = {DELIVERY: 'distribution_plan_id'};
         var url = EumsConfig.ELASTIC_SEARCH_URL + '_search?search_type=count';
         return {
