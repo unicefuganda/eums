@@ -24,7 +24,7 @@ def reset_deliveries_total_value_to_zero(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0039_auto_20151102_1556'),
+        ('eums', '0040_auto_20151102_1556'),
     ]
 
     operations = [

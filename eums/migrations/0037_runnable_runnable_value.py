@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0035_deleterecords_nodes_with_deleted_dependencies'),
+        ('eums', '0036_runnable_is_retriggered'),
     ]
 
     operations = [

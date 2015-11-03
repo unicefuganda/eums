@@ -26,7 +26,7 @@ def transfer_runnable_value_to_total_value(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0036_runnable_runnable_value'),
+        ('eums', '0037_runnable_runnable_value'),
     ]
 
     operations = [

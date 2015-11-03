@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('eums', '0038_remove_distributionplannode_total_value'),
+        ('eums', '0039_remove_distributionplannode_total_value'),
     ]
 
     operations = [
