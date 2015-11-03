@@ -12,21 +12,35 @@ angular.module('SupplyEfficiencyReport', [
         SupplyEfficiencyReportService.generate(views.DELIVERY, $scope.filters).then(function (report) {
             $scope.report = report;
         });
+
     }).factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {
-        var VIEWS = {DELIVERY: 1};
+        var BUCKETS = {DELIVERY: 'distribution_plan_id'};
         var url = EumsConfig.ELASTIC_SEARCH_URL + '_search?search_type=count';
         return {
-            generate: function (view, filters) {
-                if (view == VIEWS.DELIVERY && !Object.size(filters)) {
-                    var query = Queries.makeQuery();
-
-                    return $http.post(url, query).then(function (response) {
-                        return parseReport(response.data);
-                    });
-                }
+            generate: function (bucket, filters) {
+                var query = Queries.makeQuery(bucket, generateFilters(filters, bucket));
+                return $http.post(url, query).then(function (response) {
+                    return parseReport(response.data);
+                });
             },
-            VIEWS: VIEWS
+            VIEWS: BUCKETS
         };
+
+        function generateFilters(filters, bucket) {
+            var filterMappings = {consignee: 'ip.id'};
+            var esFilters = [];
+            Object.each(filters, function (key, value) {
+                var filter = {term: {}};
+                filter.term[filterMappings[key]] = value;
+                esFilters.push(filter);
+            });
+
+            if(bucket == BUCKETS.DELIVERY) {
+                esFilters.push({"exists": {"field": "distribution_plan_id"}});
+            }
+
+            return esFilters;
+        }
 
         function parseReport(response_data) {
             var buckets = response_data.aggregations.deliveries.buckets;

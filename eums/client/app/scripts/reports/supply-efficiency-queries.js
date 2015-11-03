@@ -4,14 +4,12 @@ angular.module('SupplyEfficiencyQueries', [])
     .factory('Queries', function () {
         return {
             makeQuery: function (groupBy, generalFilters) {
-                var defaultGeneralFilters = [{"exists": {"field": "distribution_plan_id"}}];
-
                 return {
                     "query": {
                         "filtered": {
                             "filter": {
                                 "bool": {
-                                    "must": generalFilters || defaultGeneralFilters
+                                    "must": generalFilters
                                 }
                             }
                         }
@@ -19,7 +17,7 @@ angular.module('SupplyEfficiencyQueries', [])
                     "aggs": {
                         "deliveries": {
                             "terms": {
-                                "field": groupBy || "distribution_plan_id",
+                                "field": groupBy,
                                 "size": 0
                             },
                             "aggs": {

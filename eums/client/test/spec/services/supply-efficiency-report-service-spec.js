@@ -1,5 +1,5 @@
 describe('Supply Efficiency Service', function () {
-    var mockBackend, service, config, queries;
+    var mockBackend, service, config, queries, esEndpoint;
     var fakeResponse = {
         aggregations: {
             deliveries: {
@@ -165,7 +165,6 @@ describe('Supply Efficiency Service', function () {
         }
     };
 
-
     beforeEach(function () {
         module('SupplyEfficiencyReport');
         inject(function (SupplyEfficiencyReportService, $httpBackend, EumsConfig, Queries) {
@@ -173,6 +172,7 @@ describe('Supply Efficiency Service', function () {
             mockBackend = $httpBackend;
             config = EumsConfig;
             queries = Queries;
+            esEndpoint = config.ELASTIC_SEARCH_URL + '_search?search_type=count';
         });
     });
 
@@ -224,13 +224,26 @@ describe('Supply Efficiency Service', function () {
             }
         ];
 
-        var url = config.ELASTIC_SEARCH_URL + '_search?search_type=count';
-        mockBackend.whenPOST(url, queries.makeQuery()).respond(fakeResponse);
+        var expectedQuery = queries.makeQuery("distribution_plan_id", [{exists: {field: 'distribution_plan_id'}}]);
+        mockBackend.whenPOST(esEndpoint, expectedQuery).respond(fakeResponse);
 
         service.generate(service.VIEWS.DELIVERY, {}).then(function (actualReport) {
             assertReportsAreEqual(actualReport, expectedReport);
             done();
         });
+        mockBackend.flush();
+    });
+
+    it('should filter report by ip when filters contain ip', function () {
+        var consigneeId = 10;
+        var fakeQuery = {};
+        var expectedGeneralFilters = [{term: {'ip.id': consigneeId}}, {exists: {field: 'distribution_plan_id'}}];
+        spyOn(queries, 'makeQuery').and.returnValue(fakeQuery);
+        mockBackend.whenPOST(esEndpoint, queries.makeQuery()).respond(fakeResponse);
+
+        service.generate(service.VIEWS.DELIVERY, {consignee: consigneeId});
+
+        expect(queries.makeQuery).toHaveBeenCalledWith('distribution_plan_id', expectedGeneralFilters);
         mockBackend.flush();
     });
 
@@ -245,9 +258,12 @@ describe('Supply Efficiency Service', function () {
         });
     }
 
-    it('should use correct base query', function () {
-        var query = queries.makeQuery();
-        expect(query.aggs.deliveries.terms).toEqual({"field": "distribution_plan_id", "size": 0});
+    it('should construct correct query based on parameters', function () {
+        var groupBy = "distribution_plan_id";
+        var generalFilters = [{"term": {"location": "Buliisa"}}];
+        var query = queries.makeQuery(groupBy, generalFilters);
+
+        expect(query.aggs.deliveries.terms).toEqual({"field": groupBy, "size": 0});
 
         expect(query.aggs.deliveries.aggs.delivery_stages.aggs).toEqual({
             "total_value_delivered": {"sum": {"field": "total_value"}},
@@ -264,10 +280,9 @@ describe('Supply Efficiency Service', function () {
             "size": 1,
             "_source": ["ip.name", "delivery_date", "location", "order_item.item.description",
                 "order_item.item.material_code", "programme.name", "order_item.order.order_number",
-                "order_item.order.order_type"
-            ]
+                "order_item.order.order_type"]
         });
 
-        expect(query.query.filtered.filter.bool.must).toEqual([{"exists": {"field": "distribution_plan_id"}}]);
-    })
+        expect(query.query.filtered.filter.bool.must).toEqual(generalFilters);
+    });
 });
