@@ -10,7 +10,8 @@
         </div>
         <div class="col-lg-10">
             <div class="row">
-                <ng-include src="'/static/app/views/reports/partials/supply-efficiency-report-header.html'"></ng-include>
+                <ng-include
+                        src="'/static/app/views/reports/partials/supply-efficiency-report-header.html'"></ng-include>
             </div>
             <div class="row">
                 <div class="col-md-12 pad-top-20">
@@ -48,6 +49,9 @@
                         </tbody>
                     </table>
                     FILTERS: {{filters}}
+                    <div>
+                        REPORT: {{report}}
+                    </div>
                 </div>
             </div>
         </div>

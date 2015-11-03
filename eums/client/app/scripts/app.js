@@ -19,7 +19,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
     'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp',
     'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'EndUserFeedbackReport', 'ngPercentDisplay',
-    'eums.currencyFilters', 'SupplyEfficiencyReport', 'SupplyEfficiencyReportFilters'])
+    'eums.currencyFilters', 'SupplyEfficiencyReport', 'SupplyEfficiencyReportFilters', 'SupplyEfficiencyQueries'])
 
 .config(function ($routeProvider, $httpProvider) {
     $httpProvider.interceptors.push(interceptor);

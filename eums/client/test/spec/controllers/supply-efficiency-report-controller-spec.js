@@ -1,14 +1,20 @@
 describe('Supply Efficiency Report Controller Spec', function () {
 
-    var scope, childScope;
+    var scope, childScope, mockReportService, mockReport;
+
     beforeEach(function () {
         module('SupplyEfficiencyReport');
+        mockReportService = jasmine.createSpyObj('mockSupplyEfficiencyReportService', ['generate']);
 
-        inject(function ($rootScope, $controller) {
+        inject(function ($rootScope, $controller, $q) {
+            mockReportService.generate.and.returnValue($q.when(mockReport));
+            mockReportService.VIEWS = {DELIVERY: 1};
+
             scope = $rootScope.$new();
             childScope = scope.$new();
             $controller('SupplyEfficiencyReportController', {
-                $scope: scope
+                $scope: scope,
+                SupplyEfficiencyReportService: mockReportService
             });
         });
     });
