@@ -36,6 +36,9 @@ angular.module('StockReport', [
             if ($scope.reportParams.selectedOutcomeId) {
                 Object.merge(requestParams, {outcome: $scope.reportParams.selectedOutcomeId});
             }
+            if ($scope.reportParams.selectedFromDate) {
+                Object.merge(requestParams, {fromDate: formatDate($scope.reportParams.selectedFromDate)});
+            }
             if (params) {
                 Object.merge(requestParams, params);
             }
@@ -70,9 +73,18 @@ angular.module('StockReport', [
                 fetchReport();
         });
 
+        $scope.$watch('reportParams.selectedFromDate', function (fromDate) {
+            if (fromDate)
+                fetchReport();
+        });
+
         $scope.toggleOpenDocument = function (documentId) {
             $scope.openDocument = $scope.openDocument === documentId ? undefined : documentId;
         };
+
+        function formatDate(date) {
+            return moment(date).format('YYYY-MM-DD')
+        }
 
         init();
     })

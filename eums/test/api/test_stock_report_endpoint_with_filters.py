@@ -1,3 +1,4 @@
+import datetime
 from eums.models import Runnable, Consignee
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
@@ -60,3 +61,24 @@ class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
         self.assertEqual(results[0]['programme'], 'Outcome Two')
         self.assertEqual(len(results[0]['items']), 1)
         self.assertEqual(results[0]['items'][0]['consignee'], 'Consignee One')
+
+    def test_should_filter_based_on_from_date(self):
+        DeliveryNodeFactory(delivery_date=datetime.date(2015, 10, 1), tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(delivery_date=datetime.date(2015, 11, 1), tree_position=Runnable.IMPLEMENTING_PARTNER)
+
+        endpoint_url = BACKEND_URL + 'stock-report?fromDate=2015-10-15'
+        response = self.client.get(endpoint_url)
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]['last_shipment_date'], '2015-11-01')
+
+    def test_should_return_no_results_when_from_date_greater_than_all_dates_on_nodes(self):
+        DeliveryNodeFactory(delivery_date=datetime.date(2015, 10, 1), tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(delivery_date=datetime.date(2015, 11, 1), tree_position=Runnable.IMPLEMENTING_PARTNER)
+
+        endpoint_url = BACKEND_URL + 'stock-report?fromDate=2015-11-15'
+        response = self.client.get(endpoint_url)
+
+        results = response.data['results']
+        self.assertEqual(len(results), 0)

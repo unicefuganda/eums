@@ -143,6 +143,13 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
         });
 
+        it('should load stock report for selected from date', function() {
+            scope.reportParams.selectedFromDate = '01-Nov-2015';
+            scope.$apply();
+
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({fromDate: '2015-11-01'});
+        });
+
         it('should load stock report for selected outcome', function () {
             scope.reportParams.selectedOutcomeId = 7;
             scope.$apply();

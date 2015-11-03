@@ -5,39 +5,89 @@
 
         <div>
             <div class="form-horizontal">
-                <div class="header-section">
+                <div>
                     <div class="form-group col-lg-5 margin-top-15">
                         <div class="pad-bottom-5" style="overflow: hidden;">
-                            <div class="col-lg-3 filter-label">
+                            <div class="col-lg-4 filter-label">
                                 <label class="control-label description-label" for="select-district">District:</label>
                             </div>
-                            <div class="col-lg-9" ng-if="districtsLoaded">
+                            <div class="col-lg-8" ng-if="districtsLoaded">
                                 <input id="select-district" class="form-control" type="hidden" search-from-list
                                        list="{{ districts }}"
                                        ng-model="reportParams.selectedLocation" placeholder="All Districts">
                             </div>
                         </div>
                         <div class="pad-top-5 pad-bottom-5" style="overflow: hidden;">
-                            <div class="col-lg-3 filter-label">
+                            <div class="col-lg-4 filter-label">
                                 <label class="control-label description-label" for="select-ip">IP:</label>
                             </div>
-                            <div class="col-lg-9">
+                            <div class="col-lg-8">
                                 <input id="select-ip" class="form-control" type="hidden" search-consignees
                                        ng-model="reportParams.selectedIPId" placeholder="All Implementing Partners">
                             </div>
                         </div>
-                        <div class="pad-top-5">
-                            <div class="col-lg-3 filter-label">
+                        <div class="pad-top-5 pad-bottom-5" style="overflow: hidden;">
+                            <div class="col-lg-4 filter-label">
                                 <label class="control-label description-label" for="filter-programme-container">Outcome:</label>
                             </div>
-                            <div class="col-lg-9" id="filter-programme-container">
+                            <div class="col-lg-8" id="filter-programme-container">
                                 <input class="form-control" search-programmes-better type="text"
                                        ng-model="reportParams.selectedOutcomeId" placeholder="All Outcomes"/>
                             </div>
                         </div>
+                        <div class="pad-top-5">
+                            <div class="col-lg-4 filter-label">
+                                <label class="control-label description-label">Last Shipment Date:</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="col-md-6" style="padding-left: 0px; padding-right: 5px;">
+                                    <span class="input-group" eums-date-picker>
+                                        <input type="text"
+                                               class="form-control white-bg"
+                                               datepicker-popup="dd-MMM-yyyy"
+                                               ng-model="reportParams.selectedFromDate"
+                                               is-open="datepicker[0]"
+                                               datepicker-options="dateOptions"
+                                               show-button-bar="false"
+                                               ng-required="true"
+                                               ng-disabled="false"
+                                               placeholder="From"
+                                               required="required"
+                                               value="{{ fromDate | date : 'dd-MMM-yyyy' }}"/>
+                                            <span class="input-group-btn">
+                                              <button type="button" class="btn btn-default" ng-click="open($event, 0)">
+                                                  <i class="glyphicon glyphicon-calendar"></i>
+                                              </button>
+                                            </span>
+                                    </span>
+                                </div>
+                                <div class="col-md-6" style="padding-left: 5px; padding-right: 0px;">
+                                    <span class="input-group" eums-date-picker>
+                                        <input type="text" class="form-control white-bg"
+                                               datepicker-popup="dd-MMM-yyyy"
+                                               ng-model="toDate"
+                                               is-open="datepicker[1]"
+                                               datepicker-options="dateOptions"
+                                               show-button-bar="false"
+                                               ng-required="true"
+                                               ng-disabled="false"
+                                               placeholder="To"
+                                               required="required"
+                                               value="{{ toDate | date : 'dd-MMM-yyyy' }}"/>
+                                            <span class="input-group-btn">
+                                              <button type="button"
+                                                      class="btn btn-default"
+                                                      ng-click="open($event, 1)">
+                                                  <i class="glyphicon glyphicon-calendar"></i>
+                                              </button>
+                                            </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="form-group col-lg-4 pull-right text-color-dark-grey ">
+                    <div class="form-group col-lg-4 pull-right text-color-dark-grey" style="margin-top: 35px;">
                         <div class="font-size-x-large bold pad-bottom-5">
                             TOTAL
                         </div>

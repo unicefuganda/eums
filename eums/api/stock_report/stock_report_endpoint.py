@@ -13,7 +13,8 @@ class StockReport(APIView):
         consignee_id = request.GET.get('consignee')
         location = request.GET.get('location')
         outcome_id = request.GET.get('outcome')
-        stock_report = _build_stock_report(consignee_id, location, outcome_id)
+        from_date = request.GET.get('fromDate')
+        stock_report = _build_stock_report(consignee_id, location, outcome_id, from_date)
         reduced_stock_report = _reduce_stock_report(stock_report)
         totals = _compute_totals(reduced_stock_report)
 
@@ -40,7 +41,7 @@ def _aggregate_nodes_into_stock_report(stock_report, node):
     return stock_report
 
 
-def _build_stock_report(consignee_id, location, outcome_id):
+def _build_stock_report(consignee_id, location, outcome_id, from_date):
     ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
 
     if consignee_id:
@@ -49,6 +50,8 @@ def _build_stock_report(consignee_id, location, outcome_id):
         ip_nodes = ip_nodes.filter(location__icontains=location)
     if outcome_id:
         ip_nodes = ip_nodes.filter(programme_id=outcome_id)
+    if from_date:
+        ip_nodes = ip_nodes.filter(delivery_date__gte=from_date)
 
     return reduce(_aggregate_nodes_into_stock_report, ip_nodes, [])
 
