@@ -41,7 +41,7 @@ class DistributionPlanNode(Runnable):
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
 
-        self._update_parent_balances(self._parents())
+        self._update_parent_balances(self.get_parents())
         self._update_distribution_plan_total_value()
 
     def _update_distribution_plan_total_value(self):
