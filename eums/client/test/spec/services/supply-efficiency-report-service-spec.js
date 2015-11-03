@@ -244,4 +244,30 @@ describe('Supply Efficiency Service', function () {
             expect(bucket.delivery_stages.end_user).toEqual(expectedReport[index].delivery_stages.end_user);
         });
     }
+
+    it('should use correct base query', function () {
+        var query = queries.baseQuery;
+        expect(query.aggs.deliveries.terms).toEqual({"field": "distribution_plan_id", "size": 0});
+
+        expect(query.aggs.deliveries.aggs.delivery_stages.aggs).toEqual({
+            "total_value_delivered": {"sum": {"field": "total_value"}},
+            "total_loss": {"sum": {"field": "value_lost"}},
+            "average_delay": {"avg": {"field": "delivery_delay"}}
+        });
+
+        var stage_filters = query.aggs.deliveries.aggs.delivery_stages.filters.filters;
+        expect(stage_filters.ip.bool.must).toEqual([{"term": {"tree_position": "IMPLEMENTING_PARTNER"}}]);
+        expect(stage_filters.distributed_by_ip.bool.must).toEqual([{"term": {"is_directly_under_ip": true}}]);
+        expect(stage_filters.end_users.bool.must).toEqual([{"term": {"tree_position": "END_USER"}}]);
+
+        expect(query.aggs.deliveries.aggs.identifier.top_hits).toEqual({
+            "size": 1,
+            "_source": ["ip.name", "delivery_date", "location", "order_item.item.description",
+                "order_item.item.material_code", "programme.name", "order_item.order.order_number",
+                "order_item.order.order_type"
+            ]
+        });
+
+        expect(query.filter.bool.must).toEqual([{"exists": {"field": "distribution_plan_id"}}]);
+    })
 });
