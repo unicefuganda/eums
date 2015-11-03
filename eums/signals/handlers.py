@@ -12,7 +12,7 @@ logger = get_task_logger(__name__)
 @receiver(post_save, sender=DistributionPlanNode)
 def on_post_save_node(sender, **kwargs):
     node = kwargs['instance']
-    _resovle_alert_if_possible(node)
+    _resolve_alert_if_possible(node)
     if node.track and not node.is_root():
         schedule_run_for(node)
 
@@ -20,12 +20,17 @@ def on_post_save_node(sender, **kwargs):
 @receiver(post_save, sender=DistributionPlan)
 def on_post_save_delivery(sender, **kwargs):
     delivery = kwargs['instance']
-    _resovle_alert_if_possible(delivery)
+    if kwargs.get('update_fields') and 'total_value' not in kwargs.get('update_fields'):
+        _handle_signal(delivery)
+
+
+def _handle_signal(delivery):
+    _resolve_alert_if_possible(delivery)
     if delivery.track:
         schedule_run_for(delivery)
 
 
-def _resovle_alert_if_possible(delivery):
+def _resolve_alert_if_possible(delivery):
     if delivery.is_retriggered and delivery.confirmed:
         try:
             Alert.objects.get(runnable__id=delivery.id).resolve_retriggered_delivery()
