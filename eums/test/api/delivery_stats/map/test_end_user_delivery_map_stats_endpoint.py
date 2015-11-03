@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 
 from eums.models import MultipleChoiceQuestion, Run
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
@@ -25,16 +26,16 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
     def test_should_return_correct_json_object(self):
         response = self.client.get(ENDPOINT_URL + '?treePosition=END_USER')
         expected_stats = [
-            {'numberOfDeliveries': 2, 'location': u'Kampala', 'numberNotReceived': 1, 'hasIssues': 0, 'nonResponse': 0,
-             'numberReceived': 1, 'state': 'map-received', 'noIssues': 0}]
+            {'deliveries': Decimal('500.00'), 'location': u'Kampala', 'notReceived': Decimal('300.00'), 'hasIssues': 0,
+             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-not-received', 'noIssues': 0}]
         self.assert_delivery_stats(response, expected_stats)
 
     def test_should_filter_by_programme(self):
         response = self.client.get('%s?programme=%s&treePosition=END_USER' % (ENDPOINT_URL, self.programme.id))
 
         expected_stats = [
-            {"numberOfDeliveries": 2, "location": "Kampala", "numberNotReceived": 1, "hasIssues": 0, "nonResponse": 0,
-             "numberReceived": 1, "state": "map-received", "noIssues": 0}]
+            {'deliveries': Decimal('500.00'), 'location': u'Kampala', 'notReceived': Decimal('300.00'), 'hasIssues': 0,
+             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-not-received', 'noIssues': 0}]
 
         self.assert_delivery_stats(response, expected_stats)
 
@@ -42,8 +43,8 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         response = self.client.get('%s?ip=%s&treePosition=END_USER' % (ENDPOINT_URL, self.ip.id))
 
         expected_stats = [
-            {"numberOfDeliveries": 1, "location": "Kampala", "numberNotReceived": 1, "hasIssues": 0, "nonResponse": 0,
-             "numberReceived": 0, "state": "map-not-received", "noIssues": 0}]
+            {'deliveries': Decimal('300.00'), 'location': u'Kampala', 'notReceived': Decimal('300.00'), 'hasIssues': 0,
+             'nonResponse': 0, 'received': 0, 'state': 'map-not-received', 'noIssues': 0}]
 
         self.assert_delivery_stats(response, expected_stats)
 
@@ -52,8 +53,8 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             '%s?from=%s&treePosition=END_USER' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [
-            {"numberOfDeliveries": 1, "location": "Kampala", "numberNotReceived": 1, "hasIssues": 0, "nonResponse": 0,
-             "numberReceived": 0, "state": "map-not-received", "noIssues": 0}]
+            {'deliveries': Decimal('300.00'), 'location': u'Kampala', 'notReceived': Decimal('300.00'), 'hasIssues': 0,
+             'nonResponse': 0, 'received': 0, 'state': 'map-not-received', 'noIssues': 0}]
 
         self.assert_delivery_stats(response, expected_stats)
 
@@ -62,8 +63,8 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             '%s?to=%s&treePosition=END_USER' % (ENDPOINT_URL, self.today + datetime.timedelta(days=2)))
 
         expected_stats = [
-            {"numberOfDeliveries": 1, "location": "Kampala", "numberNotReceived": 0, "hasIssues": 0, "nonResponse": 0,
-             "numberReceived": 1, "state": "map-received", "noIssues": 0}]
+            {'deliveries': Decimal('200.00'), 'location': u'Kampala', 'notReceived': 0, 'hasIssues': 0,
+             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-received', 'noIssues': 0}]
 
         self.assert_delivery_stats(response, expected_stats)
 
@@ -72,16 +73,18 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             '%s?ip=%s&programme=%s&treePosition=END_USER' % (ENDPOINT_URL, self.ip.id, self.programme.id))
 
         expected_stats = [
-            {"numberOfDeliveries": 1, "location": "Kampala", "numberNotReceived": 1, "hasIssues": 0, "nonResponse": 0,
-             "numberReceived": 0, "state": "map-not-received", "noIssues": 0}]
+            {'deliveries': Decimal('300.00'), 'location': u'Kampala', 'notReceived': Decimal('300.00'), 'hasIssues': 0,
+             'nonResponse': 0, 'received': 0, 'state': 'map-not-received', 'noIssues': 0}]
         self.assert_delivery_stats(response, expected_stats)
 
         non_existing_ip_id = 22222222
-        response = self.client.get('%s?ip=%s&programme=%s&treePosition=END_USER' % (ENDPOINT_URL, non_existing_ip_id, self.programme.id))
+        response = self.client.get(
+            '%s?ip=%s&programme=%s&treePosition=END_USER' % (ENDPOINT_URL, non_existing_ip_id, self.programme.id))
         self.assertEquals(0, len(response.data))
 
         non_existing_programme_id = 33333333
-        response = self.client.get('%s?ip=%s&programme=%s&treePosition=END_USER' % (ENDPOINT_URL, self.ip.id, non_existing_programme_id))
+        response = self.client.get(
+            '%s?ip=%s&programme=%s&treePosition=END_USER' % (ENDPOINT_URL, self.ip.id, non_existing_programme_id))
         self.assertEquals(0, len(response.data))
 
     def assert_delivery_stats(self, response, expected_stats):
@@ -97,7 +100,7 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         questions, options = seed_questions()
 
         po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
-        end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=10,
+        end_user_node_one = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=10,
                                                 item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled),
@@ -110,14 +113,14 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         distribution_plan = DeliveryFactory(programme=self.programme, track=True)
         self.today = FakeDate.today()
 
-        self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=20,
+        self.end_user_node_two = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=20,
                                                      item=po_item, distribution_plan=distribution_plan)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=self.end_user_node_two, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
             value=options['PRODUCT_WAS_RECEIVED']
         )
-        end_user_node_three = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=30,
+        end_user_node_three = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=30,
                                                   item=po_item,
                                                   distribution_plan=distribution_plan,
                                                   ip=self.ip,
@@ -128,14 +131,14 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             question=questions['WAS_PRODUCT_RECEIVED'],
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
-        end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=40,
+        end_user_node_four = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=40,
                                                  item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled),
             question=questions['WAS_PRODUCT_RECEIVED'],
             value=options['PRODUCT_WAS_NOT_RECEIVED']
         )
-        end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, track=True, quantity=50,
+        end_user_node_five = DeliveryNodeFactory(tree_position=DeliveryNode.END_USER, quantity=50,
                                                  item=po_item)
         MultipleChoiceAnswerFactory(
             run=RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled),

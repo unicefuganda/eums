@@ -1,4 +1,5 @@
 import datetime
+from django.db.models import Sum
 
 from rest_framework.response import Response
 
@@ -22,7 +23,6 @@ STATE_CSS_MAPPING = {
 
 
 class MapDeliveryStatsEndpoint(APIView):
-
     def get(self, request, *args, **kwargs):
         tree_position = request.GET.get('treePosition', DeliveryNode.END_USER)
         stats_search_data = StatsSearchDataFactory.create(tree_position)
@@ -42,20 +42,39 @@ class DeliveryState:
         self.nodes = search_data.nodes
         self.search_data = search_data
 
+    @staticmethod
+    def _get_nodes_total_value(queryset):
+        return queryset.aggregate(total_value=Sum('total_value'))['total_value'] or 0
+
+
     def state(self):
         nodes_in_location = self.nodes.filter(location=self.location)
-        answers = MultipleChoiceAnswer.objects.filter(question__flow=self.search_data.flow, run__runnable__in=nodes_in_location)
+        answers = MultipleChoiceAnswer.objects.filter(question__flow=self.search_data.flow,
+                                                      run__runnable__in=nodes_in_location)
         nodes_with_answers = answers.values_list('run__runnable')
-        non_responses = self._get_non_responses(nodes_with_answers, nodes_in_location)
-        number_received = answers.filter(question__label=self.search_data.received_label, value__text='Yes')
-        number_not_received = answers.filter(question__label=self.search_data.received_label, value__text='No')
-        has_no_issues = answers.filter(question__label=self.search_data.quality_label, value__text=self.search_data.quality_yes_text)
-        has_issues = answers.filter(question__label=self.search_data.quality_label).exclude(value__text=self.search_data.quality_yes_text)
 
-        data = {'location': self.location, 'numberOfDeliveries': nodes_in_location.count(),
-                'nonResponse': non_responses.count(), 'numberReceived': number_received.count(),
-                'numberNotReceived': number_not_received.count(), 'hasIssues': has_issues.count(),
-                'noIssues': has_no_issues.count(), 'state': ''}
+        non_responses_nodes = self._get_non_responses(nodes_with_answers, nodes_in_location)
+        non_responses = self._get_nodes_total_value(non_responses_nodes)
+
+        nodes_received_ids = answers.filter(question__label=self.search_data.received_label, value__text='Yes').values_list('run__runnable').distinct()
+        value_received = self._get_nodes_total_value(nodes_in_location.filter(id__in=nodes_received_ids))
+
+        nodes_not_received_ids = answers.filter(question__label=self.search_data.received_label, value__text='No').values_list('run__runnable').distinct()
+        value_not_received = self._get_nodes_total_value(nodes_in_location.filter(id__in=nodes_not_received_ids))
+
+        has_no_issues_ids = answers.filter(question__label=self.search_data.quality_label,
+                                       value__text=self.search_data.quality_yes_text).values_list('run__runnable').distinct()
+        has_no_issues = self._get_nodes_total_value(nodes_in_location.filter(id__in=has_no_issues_ids))
+
+        has_issues_ids = answers.filter(question__label=self.search_data.quality_label).exclude(
+            value__text=self.search_data.quality_yes_text).values_list('run__runnable').distinct()
+        has_issues = self._get_nodes_total_value(nodes_in_location.filter(id__in=has_issues_ids))
+
+        deliveries = self._get_nodes_total_value(nodes_in_location)
+
+        data = {'location': self.location, 'deliveries': deliveries, 'nonResponse': non_responses,
+                'received': value_received, 'notReceived': value_not_received, 'hasIssues': has_issues,
+                'noIssues': has_no_issues, 'state': ''}
         data['state'] = self.get_state(data)
         return data
 
@@ -66,12 +85,12 @@ class DeliveryState:
 
     @staticmethod
     def get_state(data):
-        if not data['numberOfDeliveries']:
+        if not data['deliveries']:
             return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
-        non_response_percent = 100 * data['nonResponse'] / data['numberOfDeliveries']
+        non_response_percent = 100 * data['nonResponse'] / data['deliveries']
         if non_response_percent > X_PERCENT:
             return STATE_CSS_MAPPING['NON_RESPONSE']
-        if data['numberNotReceived'] > data['numberReceived']:
+        if data['notReceived'] > data['received']:
             return STATE_CSS_MAPPING['NOT_RECEIVED']
         if data['noIssues'] > data['hasIssues'] or not data['hasIssues']:
             return STATE_CSS_MAPPING['RECEIVED']
