@@ -5,14 +5,18 @@ angular.module('SupplyEfficiencyReport', [
     .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService) {
         var views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
+        generate_report();
+
         $scope.$on('filters-changed', function (_, newFilters) {
             $scope.filters = newFilters;
+            generate_report();
         });
 
-        SupplyEfficiencyReportService.generate(views.DELIVERY, $scope.filters).then(function (report) {
-            $scope.report = report;
-        });
-
+        function generate_report() {
+            SupplyEfficiencyReportService.generate(views.DELIVERY, $scope.filters).then(function (report) {
+                $scope.report = report;
+            });
+        }
     }).factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {
         var BUCKETS = {DELIVERY: 'distribution_plan_id'};
         var url = EumsConfig.ELASTIC_SEARCH_URL + '_search?search_type=count';

@@ -228,9 +228,17 @@ describe('Supply Efficiency Service', function () {
         mockBackend.whenPOST(esEndpoint, expectedQuery).respond(fakeResponse);
 
         service.generate(service.VIEWS.DELIVERY, {}).then(function (actualReport) {
-            assertReportsAreEqual(actualReport, expectedReport);
+            actualReport.forEach(function (bucket) {
+                var index = actualReport.indexOf(bucket);
+                expect(bucket.identifier).toEqual(expectedReport[index].identifier);
+                expect(bucket.delivery_stages.unicef).toEqual(expectedReport[index].delivery_stages.unicef);
+                expect(bucket.delivery_stages.ip_receipt).toEqual(expectedReport[index].delivery_stages.ip_receipt);
+                expect(bucket.delivery_stages.ip_distribution).toEqual(expectedReport[index].delivery_stages.ip_distribution);
+                expect(bucket.delivery_stages.end_user).toEqual(expectedReport[index].delivery_stages.end_user);
+            });
             done();
         });
+
         mockBackend.flush();
     });
 
@@ -246,17 +254,6 @@ describe('Supply Efficiency Service', function () {
         expect(queries.makeQuery).toHaveBeenCalledWith('distribution_plan_id', expectedGeneralFilters);
         mockBackend.flush();
     });
-
-    function assertReportsAreEqual(actualReport, expectedReport) {
-        actualReport.forEach(function (bucket) {
-            var index = actualReport.indexOf(bucket);
-            expect(bucket.identifier).toEqual(expectedReport[index].identifier);
-            expect(bucket.delivery_stages.unicef).toEqual(expectedReport[index].delivery_stages.unicef);
-            expect(bucket.delivery_stages.ip_receipt).toEqual(expectedReport[index].delivery_stages.ip_receipt);
-            expect(bucket.delivery_stages.ip_distribution).toEqual(expectedReport[index].delivery_stages.ip_distribution);
-            expect(bucket.delivery_stages.end_user).toEqual(expectedReport[index].delivery_stages.end_user);
-        });
-    }
 
     it('should construct correct query based on parameters', function () {
         var groupBy = "distribution_plan_id";

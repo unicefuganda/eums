@@ -1,6 +1,7 @@
 describe('Supply Efficiency Report Controller Spec', function () {
 
     var scope, childScope, mockReportService, mockReport;
+    var mockViews = {DELIVERY: 1};
 
     beforeEach(function () {
         module('SupplyEfficiencyReport');
@@ -8,7 +9,7 @@ describe('Supply Efficiency Report Controller Spec', function () {
 
         inject(function ($rootScope, $controller, $q) {
             mockReportService.generate.and.returnValue($q.when(mockReport));
-            mockReportService.VIEWS = {DELIVERY: 1};
+            mockReportService.VIEWS = mockViews;
 
             scope = $rootScope.$new();
             childScope = scope.$new();
@@ -24,5 +25,11 @@ describe('Supply Efficiency Report Controller Spec', function () {
         childScope.$emit('filters-changed', newFilters);
         scope.$apply();
         expect(scope.filters).toEqual(newFilters);
+    });
+
+    it('should generate new report when filters change', function () {
+        childScope.$emit('filters-changed', {consignee: 3});
+        scope.$apply();
+        expect(mockReportService.generate).toHaveBeenCalledWith(mockViews.DELIVERY, {consignee: 3})
     });
 });
