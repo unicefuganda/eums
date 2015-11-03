@@ -99,6 +99,17 @@ describe('Module: Home', function () {
             expect(scope.deliveryStatus.mapReceivedWithIssues).toBe(true);
         });
 
+        it('should set deliveryStatus received with and without issues to false if all received is false', function () {
+            scope.deliveryStatus = {mapReceived: true, mapReceivedWithIssues: true};
+            scope.tmp.mapReceivedAll = true;
+            scope.$apply();
+            scope.tmp.mapReceivedAll = false;
+            scope.updateReceivedDeliveryStatus();
+            scope.$apply();
+            expect(scope.deliveryStatus.mapReceived).toBe(false);
+            expect(scope.deliveryStatus.mapReceivedWithIssues).toBe(false);
+        });
+
         it('should set deliveryStatus all received to true if both received with and without issues are true', function () {
             scope.tmp.mapReceivedAll = false;
             scope.$apply();

@@ -4,7 +4,8 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
     'Loader', 'map.layers'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
         $scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
-        $scope.deliveryStatus = { mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
+        $scope.deliveryStatus = {
+            mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
             mapNotReceived: true
         };
 
@@ -51,15 +52,13 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
 
         $scope.tmp = {mapReceivedAll: true};
 
-        $scope.updateAllReceived = function() {
+        $scope.updateAllReceived = function () {
             $scope.tmp.mapReceivedAll = ($scope.deliveryStatus.mapReceived && $scope.deliveryStatus.mapReceivedWithIssues);
         };
 
-        $scope.updateReceivedDeliveryStatus = function() {
-            if ($scope.tmp.mapReceivedAll) {
-                $scope.deliveryStatus.mapReceived = true;
-                $scope.deliveryStatus.mapReceivedWithIssues = true;
-            }
+        $scope.updateReceivedDeliveryStatus = function () {
+            $scope.deliveryStatus.mapReceived = $scope.tmp.mapReceivedAll;
+            $scope.deliveryStatus.mapReceivedWithIssues = $scope.tmp.mapReceivedAll;
         };
 
         $scope.$watchCollection('deliveryStatus', function (newDeliveryStatus, oldDeliveryStatus) {
