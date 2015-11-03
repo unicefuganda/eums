@@ -1,4 +1,5 @@
 from datetime import datetime
+from rest_framework import status
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.permissions import DjangoModelPermissions
@@ -17,7 +18,7 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
         model = DistributionPlan
         fields = ('id', 'programme', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
                   'track', 'contact_person_id', 'remark', 'total_value', 'is_received', 'type', 'number',
-                  'number_of_items', 'confirmed', 'shipment_received')
+                  'number_of_items', 'confirmed', 'shipment_received', 'is_retriggered')
 
 
 class DistributionPlanViewSet(ModelViewSet):

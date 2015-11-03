@@ -1,60 +1,96 @@
 describe('AlertsController', function () {
 
     var scope;
-    var mockAlertsService, mockLoaderService, mockToast, q;
+    var mockAlertsService, mockLoaderService, mockToast, q, mockDeliveryService;
     var type = 'delivery';
     var deferredAlerts,
         expectedAlerts = [
             {
-                "order_type": "Waybill",
-                "order_number": 123456,
+                "orderType": "Waybill",
+                "orderNumber": 123456,
                 "issue": "not_received",
-                "is_resolved": false,
+                "isResolved": false,
                 "remarks": null,
-                "consignee_name": "Some Consignee Name",
-                "contact_name": "Some Contact Name",
-                "created_on": "2015-08-28",
-                "issue_display_name": "Not Received",
-                "item_description": "Some Description"
+                "consigneeName": "Some Consignee Name",
+                "contactName": "Some Contact Name",
+                "createdOn": "2015-08-28",
+                "issueDisplayName": "Not Received",
+                "itemDescription": "Some Description",
+                "runnableId": 10,
+                "isRetriggered": false
             },
             {
-                "order_type": "Purchase Order",
-                "order_number": 654321,
+                "orderType": "Purchase Order",
+                "orderNumber": 654321,
                 "issue": "bad_condition",
-                "is_resolved": false,
+                "isResolved": false,
                 "remarks": null,
-                "consignee_name": "Wakiso DHO",
-                "contact_name": "John Doe",
-                "created_on": "2015-08-28",
-                "issue_display_name": "In Bad Condition",
-                "item_description": null
+                "consigneeName": "Wakiso DHO",
+                "contactName": "John Doe",
+                "createdOn": "2015-08-28",
+                "issueDisplayName": "In Bad Condition",
+                "itemDescription": null,
+                "runnableId": 11,
+                "isRetriggered": false
             },
+            {
+                "orderType": "Waybill",
+                "orderNumber": 567890,
+                "issue": "not_received",
+                "isResolved": true,
+                "remarks": null,
+                "consigneeName": "Some Consignee Name",
+                "contactName": "Some Contact Name",
+                "createdOn": "2015-08-28",
+                "issueDisplayName": "Not Received",
+                "itemDescription": "Some Description",
+                "runnableId": 10,
+                "isRetriggered": false
+            }
         ],
         alertsResponses = {
             "count": 4, "previous": null, "results": [
                 {
-                    "order_type": "Waybill",
-                    "order_number": 123456,
+                    "orderType": "Waybill",
+                    "orderNumber": 123456,
                     "issue": "not_received",
-                    "is_resolved": false,
+                    "isResolved": false,
                     "remarks": null,
-                    "consignee_name": "Some Consignee Name",
-                    "contact_name": "Some Contact Name",
-                    "created_on": "2015-08-28",
-                    "issue_display_name": "Not Received",
-                    "item_description": "Some Description"
+                    "consigneeName": "Some Consignee Name",
+                    "contactName": "Some Contact Name",
+                    "createdOn": "2015-08-28",
+                    "issueDisplayName": "Not Received",
+                    "itemDescription": "Some Description",
+                    "runnableId": 10,
+                    "isRetriggered": false
                 },
                 {
-                    "order_type": "Purchase Order",
-                    "order_number": 654321,
+                    "orderType": "Purchase Order",
+                    "orderNumber": 654321,
                     "issue": "bad_condition",
-                    "is_resolved": false,
+                    "isResolved": false,
                     "remarks": null,
-                    "consignee_name": "Wakiso DHO",
-                    "contact_name": "John Doe",
-                    "created_on": "2015-08-28",
-                    "issue_display_name": "In Bad Condition",
-                    "item_description": null
+                    "consigneeName": "Wakiso DHO",
+                    "contactName": "John Doe",
+                    "createdOn": "2015-08-28",
+                    "issueDisplayName": "In Bad Condition",
+                    "itemDescription": null,
+                    "runnableId": 11,
+                    "isRetriggered": false
+                },
+                {
+                    "orderType": "Waybill",
+                    "orderNumber": 567890,
+                    "issue": "not_received",
+                    "isResolved": true,
+                    "remarks": null,
+                    "consigneeName": "Some Consignee Name",
+                    "contactName": "Some Contact Name",
+                    "createdOn": "2015-08-28",
+                    "issueDisplayName": "Not Received",
+                    "itemDescription": "Some Description",
+                    "runnableId": 10,
+                    "isRetriggered": false
                 }
             ], "pageSize": 2, "next": "http://localhost:8000/api/alert/?page=2&paginate=true"
         };
@@ -65,6 +101,7 @@ describe('AlertsController', function () {
 
         mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['update']);
 
         inject(function ($controller, $rootScope, $q, ngToast) {
 
@@ -84,6 +121,7 @@ describe('AlertsController', function () {
                 $scope: scope,
                 AlertsService: mockAlertsService,
                 LoaderService: mockLoaderService,
+                DeliveryService: mockDeliveryService,
                 ngToast: mockToast
             });
         });
@@ -184,6 +222,38 @@ describe('AlertsController', function () {
 
             expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolved-alert-modal-1');
         });
-    });
 
+        it('should retrigger a manual flow when retrigger button is clicked and create successful toast', function () {
+            mockDeliveryService.update.and.returnValue(q.when({'runnable_id': 10, 'is_retriggered': true}));
+            scope.retriggerDelivery(10);
+            scope.$apply();
+
+            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 10, is_retriggered: true}, 'PATCH');
+            expect(mockToast.create).toHaveBeenCalledWith({content: 'The delivery has been retriggered', class: 'success'});
+
+        });
+
+        it('should create fail toast upon failure to update the retrigger state', function () {
+            mockDeliveryService.update.and.returnValue(q.reject());
+            scope.retriggerDelivery(11);
+            scope.$apply();
+
+            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 11, is_retriggered: true}, 'PATCH');
+            expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to retrigger alert', class: 'danger'});
+        });
+
+        it('should_show_retrigger_column_when_unreceived_alerts_greater_than_0', function () {
+            scope.$apply();
+
+            expect(scope.isRetriggerColumnAvailable(scope.alerts)).toBe(true);
+        });
+
+        it('should_show_retrigger_btn_when_only_unreceived_alert_and_not_resolved', function () {
+            scope.$apply();
+
+            expect(scope.isRetriggerBtnAvailable(scope.alerts[0])).toBe(true);
+            expect(scope.isRetriggerBtnAvailable(scope.alerts[1])).toBe(false);
+            expect(scope.isRetriggerBtnAvailable(scope.alerts[2])).toBe(false);
+        });
+    });
 });

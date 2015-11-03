@@ -11,6 +11,16 @@ describe('Alerts', function () {
         alertsPage.visit();
     });
 
+    it('should show retrigger button when unreceived alert', function () {
+        expect(alertsPage.retriggerBtns.count()).toEqual(1);
+    });
+
+    it('should retrigger delivery', function() {
+        alertsPage.retrigger();
+
+        expect(alertsPage.retriggerBtns.get(0).getAttribute('disabled')).toBeTruthy();
+    });
+
     it('should show alert for waybill that was not received', function () {
         expect(alertsPage.firstAlert).toContain('123456');
         expect(alertsPage.firstAlert).toContain('NOT RECEIVED');

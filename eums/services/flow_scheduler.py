@@ -12,7 +12,7 @@ from eums.services.delivery_run_message import DeliveryRunMessage
 
 
 def schedule_run_for(runnable):
-    if runnable.completed_run() is None:
+    if _should_schedule(runnable):
         _cancel_current_run(runnable)
         run_delay = _calculate_delay(runnable)
 
@@ -22,6 +22,10 @@ def schedule_run_for(runnable):
             task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
             Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
                                status=Run.STATUS.scheduled, phone=runnable.contact.phone)
+
+
+def _should_schedule(runnable):
+    return runnable.completed_run() is None or runnable.is_retriggered
 
 
 @app.task

@@ -35,11 +35,12 @@
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
                 <th></th>
+                <th ng-show="isRetriggerColumnAvailable()"></th>
             </tr>
             </thead>
 
             <tbody>
-            <tr ng-repeat="($index, alert) in alerts | orderBy:isResolved">
+            <tr ng-repeat="($index, alert) in alerts | orderBy:['-isResolved', '-isRetriggered']">
                 <td>
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
@@ -156,6 +157,15 @@
                             </div>
                         </div>
                     </div>
+                </td>
+                <td ng-show="isRetriggerColumnAvailable()">
+                    <button class="btn btn-primary btn-sm retrigger-btn"
+                            type="button"
+                            ng-if="isRetriggerBtnAvailable(alert)"
+                            ng-disabled="alert.isRetriggered"
+                            ng-click="retriggerDelivery(alert.runnableId)"
+                            ng-bind="alert.isRetriggered ? 'Retriggered' : 'Retrigger'">
+                    </button>
                 </td>
             </tr>
             </tbody>

@@ -20,6 +20,12 @@ AlertsPage.prototype = Object.create({}, {
     alertIP: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.consigneeName')).getText(); }},
     alertLocation: { get: function () { return element.all(by.repeater('($index, alert) in alerts').column('alert.location')).getText(); }},
 
+    retriggerBtns: { get: function() { return element.all(by.css('.retrigger-btn')); }},
+
+    retrigger: { value: function () {
+        element.all(by.css('.retrigger-btn')).get(0).click();
+    }},
+
     resolveAlert: { value: function (remark) {
         element.all(by.css('.resolve-alert-button')).get(0).click();
         waitForModalToLoad();

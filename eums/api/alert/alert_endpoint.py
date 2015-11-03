@@ -27,7 +27,9 @@ class AlertSerializer(serializers.ModelSerializer):
             'total_value',
             'quantity_delivered',
             'location',
-            'date_shipped'
+            'date_shipped',
+            'runnable_id',
+            'is_retriggered'
         )
 
 

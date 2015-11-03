@@ -17,7 +17,7 @@ class RunQueue(models.Model):
         app_label = 'eums'
 
     @classmethod
-    def enqueue(cls, runnable, run_delay):
+    def enqueue(cls, runnable, run_delay=0):
         cls.objects.create(runnable=runnable, status=RunQueue.STATUS.not_started,
                            contact_person_id=runnable.contact_person_id,
                            run_delay=run_delay)

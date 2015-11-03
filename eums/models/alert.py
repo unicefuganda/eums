@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField
@@ -39,6 +40,18 @@ class Alert(models.Model):
 
     def date_shipped(self):
         return self.runnable.delivery_date
+
+    def runnable_id(self):
+        return self.runnable.id
+
+    def is_retriggered(self):
+        return self.runnable.is_retriggered
+
+    def resolve_retriggered_delivery(self):
+        if not self.is_resolved:
+            self.remarks = "delivery confirmed on %s" % datetime.date.today().strftime('%d-%b-%Y')
+            self.is_resolved = True
+            self.save()
 
     class Meta:
         ordering = ['is_resolved']

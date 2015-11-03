@@ -9,7 +9,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
             uri: EumsConfig.BACKEND_URLS.ALERTS
         });
     })
-    .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast) {
+    .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast, DeliveryService) {
 
         $scope.remarks = '';
         $scope.type = 'delivery';
@@ -74,8 +74,34 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
                 })
         };
 
-        $scope.isActiveAlertType = function(type) {
+        $scope.isActiveAlertType = function (type) {
             return $scope.type == type;
-        }
+        };
 
+        $scope.isRetriggerBtnAvailable = function (alert) {
+            return alert.issue == 'not_received' && !alert.isResolved
+        };
+
+        $scope.isRetriggerColumnAvailable = function () {
+            for (var i in $scope.alerts) {
+                if ($scope.isRetriggerBtnAvailable($scope.alerts[i])) {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+        $scope.retriggerDelivery = function (runnable_id) {
+            DeliveryService.update({id: runnable_id, is_retriggered: true}, 'PATCH')
+                .then(function () {
+                    createToast('The delivery has been retriggered', 'success');
+                    AlertsService.get('count').then(function (alertsCount) {
+                        $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
+                    });
+                    loadInitialAlerts();
+                })
+                .catch(function () {
+                    createToast('Failed to retrigger alert', 'danger');
+                })
+        };
     });

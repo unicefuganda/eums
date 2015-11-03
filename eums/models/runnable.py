@@ -16,6 +16,7 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     track = models.BooleanField(default=False)
     delivery_date = models.DateField(null=False)
     remark = models.TextField(blank=True, null=True)
+    is_retriggered = models.BooleanField(default=False)
 
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     WEB = 'WEB'
