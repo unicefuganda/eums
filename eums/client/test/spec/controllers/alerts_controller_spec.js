@@ -153,8 +153,8 @@ describe('AlertsController', function () {
         expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
 
-    it('should check whether alert type is the active type', function() {
-       scope.$apply();
+    it('should check whether alert type is the active type', function () {
+        scope.$apply();
         expect(scope.isActiveAlertType('delivery')).toBeTruthy();
         expect(scope.isActiveAlertType('item')).toBeFalsy();
 
@@ -229,8 +229,10 @@ describe('AlertsController', function () {
             scope.$apply();
 
             expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 10, is_retriggered: true}, 'PATCH');
-            expect(mockToast.create).toHaveBeenCalledWith({content: 'The delivery has been retriggered', class: 'success'});
-
+            expect(mockToast.create).toHaveBeenCalledWith({
+                content: 'The delivery has been retriggered',
+                class: 'success'
+            });
         });
 
         it('should create fail toast upon failure to update the retrigger state', function () {
