@@ -268,6 +268,6 @@ describe('Supply Efficiency Service', function () {
             ]
         });
 
-        expect(query.filter.bool.must).toEqual([{"exists": {"field": "distribution_plan_id"}}]);
+        expect(query.query.filtered.filter.bool.must).toEqual([{"exists": {"field": "distribution_plan_id"}}]);
     })
 });

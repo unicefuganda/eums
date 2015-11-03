@@ -4,11 +4,15 @@ angular.module('SupplyEfficiencyQueries', [])
     .factory('Queries', function () {
         return {
             baseQuery: {
-                "filter": {
-                    "bool": {
-                        "must": [
-                            {"exists": {"field": "distribution_plan_id"}}
-                        ]
+                "query": {
+                    "filtered": {
+                        "filter": {
+                            "bool": {
+                                "must": [
+                                    {"exists": {"field": "distribution_plan_id"}}
+                                ]
+                            }
+                        }
                     }
                 },
                 "aggs": {
