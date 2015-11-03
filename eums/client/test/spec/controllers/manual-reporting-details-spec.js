@@ -46,7 +46,7 @@ describe('ManualReportingDetailsController', function () {
             waybill: 12,
             salesOrder: stubSalesOrder,
             purchaseOrder: stubPurchaseOrder,
-            releaseorderitemSet: [1],
+            items: [1],
             programme: programmeName
         };
 
@@ -94,7 +94,14 @@ describe('ManualReportingDetailsController', function () {
         stubReleaseOrderItem = {
             id: 1,
             release_order: stubReleaseOrder.id,
-            item: 10,
+            item: {
+                id: 1,
+                description: 'Test Item',
+                materialCode: '12345AS',
+                unit: {
+                    name: 'EA'
+                }
+            },
             item_number: 10,
             quantity: '700.00',
             value: '3436.82',
@@ -318,12 +325,12 @@ describe('ManualReportingDetailsController', function () {
 
             it('should set documentItems on the scope', function () {
                 var expectedDocumentItem = {
-                    description: stubSalesOrderItem.item.description,
-                    materialCode: stubSalesOrderItem.item.materialCode,
+                    description: stubReleaseOrderItem.item.description,
+                    materialCode: stubReleaseOrderItem.item.materialCode,
                     quantity: stubReleaseOrderItem.quantity,
-                    unit: stubSalesOrderItem.item.unit.name,
+                    unit: stubReleaseOrderItem.item.unit.name,
                     salesOrderItem: stubSalesOrderItem,
-                    distributionplannodes: stubSalesOrderItem.distributionplannodeSet
+                    distributionplannodes: stubReleaseOrderItem.distributionplannodeSet
                 };
 
                 deferredReleaseOrderPromise.resolve(stubReleaseOrder);

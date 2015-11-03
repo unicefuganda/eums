@@ -121,17 +121,18 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                     $scope.salesOrder = salesOrder;
                 });
 
+
                 var releaseOrderItemSetPromises = [];
-                response.releaseorderitemSet.forEach(function (releaseOrderItem) {
+                response.items.forEach(function (releaseOrderItem) {
                     releaseOrderItemSetPromises.push(
-                        ReleaseOrderItemService.get(releaseOrderItem).then(function (result) {
+                        ReleaseOrderItemService.get(releaseOrderItem, ['item', 'purchase_order_item']).then(function (result) {
                             var formattedDocumentItem = {
-                                description: result.purchaseOrderItem.salesOrderItem.item.description,
-                                materialCode: result.purchaseOrderItem.salesOrderItem.item.materialCode,
-                                quantity: result.quantity ? result.quantity : result.purchaseOrderItem.salesOrderItem.quantity,
-                                unit: result.purchaseOrderItem.salesOrderItem.item.unit.name,
+                                description: result.item.description,
+                                materialCode: result.item.materialCode,
+                                quantity: result.quantity ? result.quantity : result.purchaseOrderItem.quantity,
+                                unit: result.item.unit.name,
                                 salesOrderItem: result.purchaseOrderItem.salesOrderItem,
-                                distributionplannodes: result.purchaseOrderItem.salesOrderItem.distributionplannodeSet
+                                distributionplannodes: result.purchaseOrderItem.distributionplannodeSet
                             };
                             $scope.documentItems.push(formattedDocumentItem);
                         }));

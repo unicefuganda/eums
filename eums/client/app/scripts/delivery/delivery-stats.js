@@ -19,7 +19,6 @@ angular.module('DeliveryStats', ['eums.config'])
         return {
             getStatsDetails: function (filter, cache) {
                 cache = cache || false;
-                console.log('cache', cache);
                 return $http.get(EumsConfig.BACKEND_URLS.DELIVERY_STATS_DETAILS, {params: filter, cache: cache});
             },
             getMapStats: function (filter) {
