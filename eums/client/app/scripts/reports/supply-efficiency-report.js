@@ -8,6 +8,7 @@ angular.module('SupplyEfficiencyReport', [
         $scope.$on('filters-changed', function (_, newFilters) {
             $scope.filters = newFilters;
         });
+
         SupplyEfficiencyReportService.generate(views.DELIVERY, $scope.filters).then(function (report) {
             $scope.report = report;
         });

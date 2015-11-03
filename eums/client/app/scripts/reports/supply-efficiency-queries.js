@@ -4,6 +4,13 @@ angular.module('SupplyEfficiencyQueries', [])
     .factory('Queries', function () {
         return {
             baseQuery: {
+                "filter": {
+                    "bool": {
+                        "must": [
+                            {"exists": {"field": "distribution_plan_id"}}
+                        ]
+                    }
+                },
                 "aggs": {
                     "deliveries": {
                         "terms": {
@@ -17,7 +24,6 @@ angular.module('SupplyEfficiencyQueries', [])
                                         "ip": {
                                             "bool": {
                                                 "must": [
-                                                    {"exists": {"field": "distribution_plan_id"}},
                                                     {"term": {"tree_position": "IMPLEMENTING_PARTNER"}}
                                                 ]
                                             }
@@ -25,7 +31,6 @@ angular.module('SupplyEfficiencyQueries', [])
                                         "distributed_by_ip": {
                                             "bool": {
                                                 "must": [
-                                                    {"exists": {"field": "distribution_plan_id"}},
                                                     {"term": {"is_directly_under_ip": true}}
                                                 ]
                                             }
@@ -33,7 +38,6 @@ angular.module('SupplyEfficiencyQueries', [])
                                         "end_users": {
                                             "bool": {
                                                 "must": [
-                                                    {"exists": {"field": "distribution_plan_id"}},
                                                     {"term": {"tree_position": "END_USER"}}
                                                 ]
                                             }

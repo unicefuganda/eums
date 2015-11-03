@@ -18,7 +18,7 @@
                     <table class="table table-bordered table-hover table-striped table-condensed">
                         <thead>
                         <tr>
-                            <th colspan="2" class="contextual-column">Delivery</th>
+                            <th colspan="3" class="contextual-column">Delivery</th>
                             <th>UNICEF</th>
                             <th colspan="3">IP RECEIPT</th>
                             <th colspan="2">IP DISTRIBUTION</th>
@@ -29,29 +29,39 @@
                         <tr class="table-sub-header">
                             <td>Date</td>
                             <td>IP</td>
-                            <td>Value($)</td>
-                            <td>Value($)</td>
-                            <td>Loss(%)</td>
-                            <td>Delay(days)</td>
-                            <td>Value($)</td>
-                            <td>Balance(%)</td>
-                            <td>Value($)</td>
-                            <td>Loss(%)</td>
-                            <td>Delay(days)</td>
+                            <td>District</td>
+                            <td>Value</td>
+                            <td>Value</td>
+                            <td>Loss</td>
+                            <td>Avg. Delay</td>
+                            <td>Value</td>
+                            <td>Balance</td>
+                            <td>Value</td>
+                            <td>Loss</td>
+                            <td>Avg. Delay</td>
                         </tr>
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                        <tr ng-repeat="bucket in report">
+                            <td>{{ bucket.identifier.delivery_date | date: 'dd-MMM-yyyy' }}</td>
+                            <td>{{ bucket.identifier.ip.name }}</td>
+                            <td>{{ bucket.identifier.location }}</td>
+                            <td>{{ bucket.delivery_stages.unicef.total_value | currency }}</td>
+                            <td>{{ bucket.delivery_stages.ip_receipt.total_value_received | currency }}</td>
+                            <td>{{ bucket.delivery_stages.ip_receipt.total_loss | currency }}</td>
+                            <td>
+                                {{ bucket.delivery_stages.ip_receipt.average_delay }}
+                                <span ng-if="bucket.delivery_stages.ip_receipt.average_delay">days</span>
+                            </td>
+                            <td>{{ bucket.delivery_stages.ip_distribution.total_value_distributed | currency}}</td>
+                            <td>{{ bucket.delivery_stages.ip_distribution.balance | currency }}</td>
+                            <td>{{ bucket.delivery_stages.end_user.total_value_received | currency }}</td>
+                            <td>{{ bucket.delivery_stages.end_user.total_loss | currency }}</td>
+                            <td>
+                                {{ bucket.delivery_stages.end_user.average_delay }}
+                                <span ng-if="bucket.delivery_stages.end_user.average_delay">days</span>
+                            </td>
                         </tr>
                         </tbody>
                     </table>
-                    FILTERS: {{filters}}
-                    <div>
-                        REPORT: {{report}}
-                    </div>
                 </div>
             </div>
         </div>
