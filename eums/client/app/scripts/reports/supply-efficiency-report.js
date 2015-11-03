@@ -31,7 +31,13 @@ angular.module('SupplyEfficiencyReport', [
         };
 
         function generateFilters(filters, bucket) {
-            var filterMappings = {consignee: 'ip.id'};
+            var filterMappings = {
+                item: 'order_item.item.id',
+                consignee: 'ip.id',
+                programme: 'programme.id',
+                location: 'location',
+                orderNumber: 'order_item.order.order_number'
+            };
             var esFilters = [];
             Object.each(filters, function (key, value) {
                 var filter = {term: {}};

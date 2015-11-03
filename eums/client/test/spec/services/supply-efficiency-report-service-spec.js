@@ -242,16 +242,23 @@ describe('Supply Efficiency Service', function () {
         mockBackend.flush();
     });
 
-    it('should filter report by ip when filters contain ip', function () {
-        var consigneeId = 10;
-        var fakeQuery = {};
-        var expectedGeneralFilters = [{term: {'ip.id': consigneeId}}, {exists: {field: 'distribution_plan_id'}}];
-        spyOn(queries, 'makeQuery').and.returnValue(fakeQuery);
+    it('should filter report by filters specified when generating query', function () {
+        var filters = {consignee: 1, item: 2, programme: 3, orderNumber: 4, location: 5};
+        spyOn(queries, 'makeQuery');
         mockBackend.whenPOST(esEndpoint, queries.makeQuery()).respond(fakeResponse);
 
-        service.generate(service.VIEWS.DELIVERY, {consignee: consigneeId});
+        service.generate(service.VIEWS.DELIVERY, filters);
 
-        expect(queries.makeQuery).toHaveBeenCalledWith('distribution_plan_id', expectedGeneralFilters);
+        var callArgs = queries.makeQuery.calls.mostRecent().args;
+        var generalFilters = callArgs[1];
+
+        expect(callArgs).toContain('distribution_plan_id');
+
+        expect(generalFilters).toContain({term: {'ip.id': 1}});
+        expect(generalFilters).toContain({term: {'order_item.item.id': 2}});
+        expect(generalFilters).toContain({term: {'programme.id': 3}});
+        expect(generalFilters).toContain({term: {'order_item.order.order_number': 4}});
+        expect(generalFilters).toContain({term: {'location': 5}});
         mockBackend.flush();
     });
 
