@@ -1,8 +1,7 @@
 import json
-import datetime
+
 from dateutil.parser import parse
 from django.conf import settings
-
 from django.db.models import Q
 
 from eums.models import ReleaseOrderItem, NumericAnswer, TextAnswer, \
@@ -85,6 +84,7 @@ def _serialise_node(node):
     node_json['responses'] = responses
     node_json['value_lost'] = _compute_node_loss(node, responses)
     node_json['delivery_delay'] = _compute_delivery_delay(node, responses)
+    node_json['is_directly_under_ip'] = _determine_extra_positioning_info(node)
 
     if node.ip:
         node_json['ip'] = _serialise_consignee(node.ip)
@@ -101,9 +101,13 @@ def _compute_node_loss(node, responses):
 def _compute_delivery_delay(node, responses):
     date_received_responses = filter(lambda response: response['question']['label'] == 'dateOfReceipt', responses)
     date_received_string = date_received_responses[0]['value'] if date_received_responses else None
-    date_format = '%Y-%m-%d %H:%M:%S'
     date_received = parse(date_received_string).date() if date_received_string else None
     return (date_received - node.delivery_date).days if date_received else None
+
+
+def _determine_extra_positioning_info(node):
+    parents = node.get_parents()
+    return False if not parents else parents.first().tree_position == Runnable.IMPLEMENTING_PARTNER
 
 
 def _serialise_node_responses(node):

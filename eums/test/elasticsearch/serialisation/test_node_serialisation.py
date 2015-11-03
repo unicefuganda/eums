@@ -2,6 +2,7 @@ import json
 from django.conf import settings
 from django.utils import timezone
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format, _serialise_datetime
+from eums.models import Runnable
 from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.answer_factory import NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -109,6 +110,17 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset({'delivery_delay': 9}, serialised[0])
+
+    def test_should_serialise_node_with_extra_tree_position_info_tag(self):
+        ip_node = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, quantity=100)
+        node_under_ip = DeliveryNodeFactory(parents=[(ip_node, 20)], tree_position=Runnable.MIDDLE_MAN)
+        deeper_node = DeliveryNodeFactory(parents=[(node_under_ip, 20)], tree_position=Runnable.END_USER)
+
+        serialised_node_under_ip = serialise_nodes([node_under_ip])[0]
+        self.assertDictContainsSubset({'is_directly_under_ip': True}, serialised_node_under_ip)
+
+        serialised_deeper_node = serialise_nodes([deeper_node])[0]
+        self.assertDictContainsSubset({'is_directly_under_ip': False}, serialised_deeper_node)
 
     def test_should_convert_updated_nodes_to_bulk_api_format(self):
         node = DeliveryNodeFactory()

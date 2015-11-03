@@ -40,6 +40,7 @@ class DistributionPlanNode(Runnable):
         self._set_delivery()
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
+
         self._update_parent_balances(self._parents())
         self._update_distribution_plan_total_value()
 
@@ -51,15 +52,15 @@ class DistributionPlanNode(Runnable):
         if self.distribution_plan:
             return self.distribution_plan.programme
         else:
-            first_parent = self._parents().first()
+            first_parent = self.get_parents().first()
             return first_parent.get_programme() if first_parent else None
 
     def assign_ip(self):
-        parent = self._parents().first()
+        parent = self.get_parents().first()
         self.ip = parent.ip if parent else self.consignee
 
     def delete(self, using=None):
-        parents = list(self._parents())
+        parents = list(self.get_parents())
         super(DistributionPlanNode, self).delete(using=using)
         self._update_parent_balances(parents)
 
@@ -79,10 +80,10 @@ class DistributionPlanNode(Runnable):
 
         if root_node:
             return {'id': root_node.id, 'consignee': root_node.consignee, 'location': root_node.location}
-        return self._parents().first().get_ip()
+        return self.get_parents().first().get_ip()
 
     def sender_name(self):
-        return "UNICEF" if self.is_root() else self._parents().first().consignee.name
+        return "UNICEF" if self.is_root() else self.get_parents().first().consignee.name
 
     def get_description(self):
         return self.item.item.description
@@ -96,7 +97,7 @@ class DistributionPlanNode(Runnable):
         return bool(self.children().count())
 
     def _set_delivery(self):
-        parents = self._parents()
+        parents = self.get_parents()
         if parents and parents.count() == 1:
             parent = parents.first()
             self.distribution_plan = parent.distribution_plan
@@ -138,7 +139,7 @@ class DistributionPlanNode(Runnable):
         arc.quantity = self.quantity
         arc.save()
 
-    def _parents(self):
+    def get_parents(self):
         source_ids = self.arcs_in.all().values_list('source_id')
         return DistributionPlanNode.objects.filter(pk__in=source_ids)
 
