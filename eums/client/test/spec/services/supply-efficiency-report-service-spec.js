@@ -1,5 +1,170 @@
 describe('Supply Efficiency Service', function () {
     var mockBackend, service, config, queries;
+    var fakeResponse = {
+        aggregations: {
+            deliveries: {
+                "buckets": [
+                    {
+                        "key": 16,
+                        "doc_count": 10,
+                        "identifier": {
+                            "hits": {
+                                "total": 10,
+                                "max_score": 1,
+                                "hits": [
+                                    {
+                                        "_index": "eums",
+                                        "_type": "delivery_node",
+                                        "_id": "23",
+                                        "_score": 1,
+                                        "_source": {
+                                            "programme": {
+                                                "name": ""
+                                            },
+                                            "order_item": {
+                                                "order": {
+                                                    "order_number": 81026395,
+                                                    "order_type": "purchase_order"
+                                                },
+                                                "item": {
+                                                    "description": "Children's Rights & Busi Principles Info",
+                                                    "material_code": "SL004638"
+                                                }
+                                            },
+                                            "location": "M",
+                                            "delivery_date": "2015-10-11",
+                                            "ip": {
+                                                "name": "WAKISO DHO"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "delivery_stages": {
+                            "buckets": {
+                                "ip": {
+                                    "doc_count": 5,
+                                    "total_value_delivered": {
+                                        "value": 954.0999984741211
+                                    },
+                                    "total_loss": {
+                                        "value": 100.009999999776482582
+                                    },
+                                    "average_delay": {
+                                        "value": 8
+                                    }
+                                },
+                                "distributed_by_ip": {
+                                    "doc_count": 2,
+                                    "total_value_delivered": {
+                                        "value": 42.34999942779541
+                                    },
+                                    "total_loss": {
+                                        "value": 0
+                                    },
+                                    "average_delay": {
+                                        "value": 0
+                                    }
+                                },
+                                "end_users": {
+                                    "doc_count": 1,
+                                    "total_value_delivered": {
+                                        "value": 5.349999904632568
+                                    },
+                                    "total_loss": {
+                                        "value": 0
+                                    },
+                                    "average_delay": {
+                                        "value": -2
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "key": 1,
+                        "doc_count": 6,
+                        "identifier": {
+                            "hits": {
+                                "total": 6,
+                                "max_score": 1,
+                                "hits": [
+                                    {
+                                        "_index": "eums",
+                                        "_type": "delivery_node",
+                                        "_id": "4",
+                                        "_score": 1,
+                                        "_source": {
+                                            "programme": {
+                                                "name": ""
+                                            },
+                                            "order_item": {
+                                                "order": {
+                                                    "order_number": 54119455,
+                                                    "order_type": "release_order"
+                                                },
+                                                "item": {
+                                                    "description": "Laptop bag",
+                                                    "material_code": "SL002248"
+                                                }
+                                            },
+                                            "location": "Buliisa",
+                                            "delivery_date": "2015-01-12",
+                                            "ip": {
+                                                "name": "WAKISO DHO"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        "delivery_stages": {
+                            "buckets": {
+                                "ip": {
+                                    "doc_count": 3,
+                                    "total_value_delivered": {
+                                        "value": 3320.110008239746
+                                    },
+                                    "total_loss": {
+                                        "value": 0
+                                    },
+                                    "average_delay": {
+                                        "value": 274
+                                    }
+                                },
+                                "distributed_by_ip": {
+                                    "doc_count": 2,
+                                    "total_value_delivered": {
+                                        "value": 3216.1000061035156
+                                    },
+                                    "total_loss": {
+                                        "value": 0
+                                    },
+                                    "average_delay": {
+                                        "value": 2
+                                    }
+                                },
+                                "end_users": {
+                                    "doc_count": 0,
+                                    "total_value_delivered": {
+                                        "value": 0
+                                    },
+                                    "total_loss": {
+                                        "value": 0
+                                    },
+                                    "average_delay": {
+                                        "value": null
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    };
+
 
     beforeEach(function () {
         module('SupplyEfficiencyReport');
@@ -12,15 +177,71 @@ describe('Supply Efficiency Service', function () {
     });
 
     it('should fetch unfiltered report by delivery when view is delivery', function (done) {
-        var fakeReport = {'buckets': []};
-        var fakeEsResponse = {aggregations: {deliveries: fakeReport}};
-        var url = config.ELASTIC_SEARCH_URL + '_search?search_type=count';
-        mockBackend.whenPOST(url, queries.baseQuery).respond(fakeEsResponse);
+        var expectedReport = [
+            {
+                identifier: fakeResponse.aggregations.deliveries.buckets[0].identifier.hits.hits.first()._source,
+                delivery_stages: {
+                    unicef: {
+                        total_value: '954'
+                    },
+                    ip_receipt: {
+                        total_value_received: '854',
+                        total_loss: '100',
+                        average_delay: 8
+                    },
+                    ip_distribution: {
+                        total_value_distributed: '42',
+                        balance: '812'
+                    },
+                    end_user: {
+                        total_value_received: '5',
+                        total_loss: '0',
+                        average_delay: -2
+                    }
+                }
+            },
+            {
+                identifier: fakeResponse.aggregations.deliveries.buckets[1].identifier.hits.hits.first()._source,
+                delivery_stages: {
+                    unicef: {
+                        total_value: '3320'
+                    },
+                    ip_receipt: {
+                        total_value_received: '3320',
+                        total_loss: '0',
+                        average_delay: 274
+                    },
+                    ip_distribution: {
+                        total_value_distributed: '3216',
+                        balance: '104'
+                    },
+                    end_user: {
+                        total_value_received: '0',
+                        total_loss: '0',
+                        average_delay: null
+                    }
+                }
+            }
+        ];
 
-        service.generate(service.VIEWS.DELIVERY, {}).then(function (report) {
-            expect(report).toEqual(fakeReport);
+        var url = config.ELASTIC_SEARCH_URL + '_search?search_type=count';
+        mockBackend.whenPOST(url, queries.baseQuery).respond(fakeResponse);
+
+        service.generate(service.VIEWS.DELIVERY, {}).then(function (actualReport) {
+            assertReportsAreEqual(actualReport, expectedReport);
             done();
         });
         mockBackend.flush();
     });
+
+    function assertReportsAreEqual(actualReport, expectedReport) {
+        actualReport.forEach(function (bucket) {
+            var index = actualReport.indexOf(bucket);
+            expect(bucket.identifier).toEqual(expectedReport[index].identifier);
+            expect(bucket.delivery_stages.unicef).toEqual(expectedReport[index].delivery_stages.unicef);
+            expect(bucket.delivery_stages.ip_receipt).toEqual(expectedReport[index].delivery_stages.ip_receipt);
+            expect(bucket.delivery_stages.ip_distribution).toEqual(expectedReport[index].delivery_stages.ip_distribution);
+            expect(bucket.delivery_stages.end_user).toEqual(expectedReport[index].delivery_stages.end_user);
+        });
+    }
 });
