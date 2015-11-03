@@ -225,7 +225,7 @@ describe('Supply Efficiency Service', function () {
         ];
 
         var url = config.ELASTIC_SEARCH_URL + '_search?search_type=count';
-        mockBackend.whenPOST(url, queries.baseQuery).respond(fakeResponse);
+        mockBackend.whenPOST(url, queries.makeQuery()).respond(fakeResponse);
 
         service.generate(service.VIEWS.DELIVERY, {}).then(function (actualReport) {
             assertReportsAreEqual(actualReport, expectedReport);
@@ -246,7 +246,7 @@ describe('Supply Efficiency Service', function () {
     }
 
     it('should use correct base query', function () {
-        var query = queries.baseQuery;
+        var query = queries.makeQuery();
         expect(query.aggs.deliveries.terms).toEqual({"field": "distribution_plan_id", "size": 0});
 
         expect(query.aggs.deliveries.aggs.delivery_stages.aggs).toEqual({

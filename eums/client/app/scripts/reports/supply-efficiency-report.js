@@ -18,7 +18,9 @@ angular.module('SupplyEfficiencyReport', [
         return {
             generate: function (view, filters) {
                 if (view == VIEWS.DELIVERY && !Object.size(filters)) {
-                    return $http.post(url, Queries.baseQuery).then(function (response) {
+                    var query = Queries.makeQuery();
+
+                    return $http.post(url, query).then(function (response) {
                         return parseReport(response.data);
                     });
                 }
