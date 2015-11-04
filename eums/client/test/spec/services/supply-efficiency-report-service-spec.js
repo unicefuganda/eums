@@ -176,6 +176,16 @@ describe('Supply Efficiency Service', function () {
         });
     });
 
+    it('should have the right view to es filter mappings', function() {
+        var views = service.VIEWS;
+        expect(views.DELIVERY).toEqual('distribution_plan_id');
+        expect(views.ITEM).toEqual('order_item.item.id');
+        expect(views.LOCATION).toEqual('location');
+        expect(views.OUTCOME).toEqual('programme.id');
+        expect(views.IP).toEqual('ip.id');
+        expect(views.DOCUMENT).toEqual('order_item.order.order_number');
+    });
+
     it('should fetch unfiltered report by delivery when view is delivery', function (done) {
         var expectedReport = [
             {
@@ -187,7 +197,7 @@ describe('Supply Efficiency Service', function () {
                     ip_receipt: {
                         total_value_received: '854',
                         total_loss: '100',
-                        average_delay: 8
+                        average_delay: '8'
                     },
                     ip_distribution: {
                         total_value_distributed: '42',
@@ -196,7 +206,7 @@ describe('Supply Efficiency Service', function () {
                     end_user: {
                         total_value_received: '5',
                         total_loss: '0',
-                        average_delay: -2
+                        average_delay: '-2'
                     }
                 }
             },
@@ -209,7 +219,7 @@ describe('Supply Efficiency Service', function () {
                     ip_receipt: {
                         total_value_received: '3320',
                         total_loss: '0',
-                        average_delay: 274
+                        average_delay: '274'
                     },
                     ip_distribution: {
                         total_value_distributed: '3216',

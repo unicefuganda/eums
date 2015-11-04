@@ -2,9 +2,21 @@
 
 angular.module('SupplyEfficiencyReport', [
     'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'SupplyEfficiencyQueries'])
-    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService) {
-        var views = SupplyEfficiencyReportService.VIEWS;
+    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService, $location) {
+        $scope.views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
+
+        var urlToViewMapping = {
+            delivery: 'DELIVERY',
+            item: 'ITEM',
+            outcome: 'OUTCOME',
+            document: 'DOCUMENT',
+            ip: 'IP',
+            location: 'LOCATION'
+        };
+        var viewInUrl = $location.search().by;
+        $scope.view = $scope.views[urlToViewMapping[viewInUrl]];
+
         generateReport();
 
         $scope.$on('filters-changed', function (_, newFilters) {
@@ -13,13 +25,20 @@ angular.module('SupplyEfficiencyReport', [
         });
 
         function generateReport() {
-            SupplyEfficiencyReportService.generate(views.DELIVERY, $scope.filters).then(function (report) {
+            SupplyEfficiencyReportService.generate($scope.view, $scope.filters).then(function (report) {
                 $scope.report = report;
             });
         }
     })
     .factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {
-        var BUCKETS = {DELIVERY: 'distribution_plan_id'};
+        var BUCKETS = {
+            DELIVERY: 'distribution_plan_id',
+            ITEM: 'order_item.item.id',
+            OUTCOME: 'programme.id',
+            LOCATION: 'location',
+            IP: 'ip.id',
+            DOCUMENT: 'order_item.order.order_number'
+        };
         var url = EumsConfig.ELASTIC_SEARCH_URL + '_search?search_type=count';
         return {
             generate: function (bucket, filters) {
@@ -65,24 +84,28 @@ angular.module('SupplyEfficiencyReport', [
                     identifier: bucket.identifier.hits.hits.first()._source,
                     delivery_stages: {
                         unicef: {
-                            total_value: parseFloat(value_delivered_to_ip).toFixed()
+                            total_value: roundAggregate(value_delivered_to_ip)
                         },
                         ip_receipt: {
-                            total_value_received: parseFloat(value_received_by_ip).toFixed(),
-                            total_loss: parseFloat(stages.ip.total_loss.value).toFixed(),
-                            average_delay: stages.ip.average_delay.value
+                            total_value_received: roundAggregate(value_received_by_ip),
+                            total_loss: roundAggregate(stages.ip.total_loss.value),
+                            average_delay: roundAggregate(stages.ip.average_delay.value)
                         },
                         ip_distribution: {
-                            total_value_distributed: parseFloat(value_distributed_by_ip).toFixed(),
-                            balance: parseFloat(value_received_by_ip - value_distributed_by_ip).toFixed()
+                            total_value_distributed: roundAggregate(value_distributed_by_ip),
+                            balance: roundAggregate(value_received_by_ip - value_distributed_by_ip)
                         },
                         end_user: {
-                            total_value_received: parseFloat(stages.end_users.total_value_delivered.value).toFixed(),
-                            total_loss: parseFloat(stages.end_users.total_loss.value).toFixed(),
-                            average_delay: stages.end_users.average_delay.value
+                            total_value_received: roundAggregate(stages.end_users.total_value_delivered.value),
+                            total_loss: roundAggregate(stages.end_users.total_loss.value),
+                            average_delay: roundAggregate(stages.end_users.average_delay.value)
                         }
                     }
                 }
             });
+
+            function roundAggregate(aggregate) {
+                return typeof aggregate == 'number' ? parseFloat(aggregate).toFixed() : null
+            }
         }
     });

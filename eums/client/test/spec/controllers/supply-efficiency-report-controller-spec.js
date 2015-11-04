@@ -1,21 +1,25 @@
 describe('Supply Efficiency Report Controller Spec', function () {
 
-    var scope, childScope, mockReportService, mockReport;
-    var mockViews = {DELIVERY: 1};
+    var scope, childScope, mockReportService, mockReport, mockLocation;
+    var mockViews = {DELIVERY: 1, ITEM: 2, OUTCOME: 3, DOCUMENT: 4, IP: 5, LOCATION: 6};
 
     beforeEach(function () {
         module('SupplyEfficiencyReport');
         mockReportService = jasmine.createSpyObj('mockSupplyEfficiencyReportService', ['generate']);
+        mockLocation = jasmine.createSpyObj('$location', ['search']);
 
         inject(function ($rootScope, $controller, $q) {
             mockReportService.generate.and.returnValue($q.when(mockReport));
             mockReportService.VIEWS = mockViews;
+            mockLocation.search.and.returnValue({by: 'delivery'});
 
             scope = $rootScope.$new();
             childScope = scope.$new();
+
             $controller('SupplyEfficiencyReportController', {
                 $scope: scope,
-                SupplyEfficiencyReportService: mockReportService
+                SupplyEfficiencyReportService: mockReportService,
+                $location: mockLocation
             });
         });
     });
@@ -32,4 +36,30 @@ describe('Supply Efficiency Report Controller Spec', function () {
         scope.$apply();
         expect(mockReportService.generate).toHaveBeenCalledWith(mockViews.DELIVERY, {consignee: 3})
     });
+
+    it('should put views on scope', function () {
+        scope.$apply();
+        expect(scope.views).toEqual(mockViews);
+    });
+
+    it('should pick current view from url on load', inject(function ($controller) {
+        testViewInUrlIsSetOnController($controller, 'item', mockViews.ITEM);
+        testViewInUrlIsSetOnController($controller, 'delivery', mockViews.DELIVERY);
+        testViewInUrlIsSetOnController($controller, 'document', mockViews.DOCUMENT);
+        testViewInUrlIsSetOnController($controller, 'outcome', mockViews.OUTCOME);
+        testViewInUrlIsSetOnController($controller, 'ip', mockViews.IP);
+        testViewInUrlIsSetOnController($controller, 'location', mockViews.LOCATION);
+    }));
+
+    function testViewInUrlIsSetOnController($controller, viewInUrl, expectedControllerView) {
+        mockLocation.search.and.returnValue({by: viewInUrl});
+        $controller('SupplyEfficiencyReportController', {
+            $scope: scope,
+            SupplyEfficiencyReportService: mockReportService,
+            $location: mockLocation
+        });
+
+        scope.$apply();
+        expect(scope.view).toEqual(expectedControllerView)
+    }
 });

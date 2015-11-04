@@ -18,7 +18,13 @@
                     <table class="table table-bordered table-hover table-striped table-condensed">
                         <thead>
                         <tr>
-                            <th colspan="3" class="contextual-column">Delivery</th>
+                            <th ng-if="view == views.DELIVERY" colspan="3" class="contextual-column">Delivery</th>
+                            <th ng-if="view == views.ITEM" colspan="2" class="contextual-column">Item</th>
+                            <th ng-if="view == views.OUTCOME" class="contextual-column">Outcome</th>
+                            <th ng-if="view == views.DOCUMENT" colspan="2" class="contextual-column">PO / Waybill</th>
+                            <th ng-if="view == views.IP" class="contextual-column">Implementing Partner</th>
+                            <th ng-if="view == views.LOCATION" class="contextual-column">District</th>
+
                             <th>UNICEF</th>
                             <th colspan="3">IP RECEIPT</th>
                             <th colspan="2">IP DISTRIBUTION</th>
@@ -27,9 +33,22 @@
                         </thead>
                         <tbody>
                         <tr class="table-sub-header">
-                            <td>Date</td>
-                            <td>IP</td>
-                            <td>District</td>
+                            <td ng-if="view == views.DELIVERY">Date</td>
+                            <td ng-if="view == views.DELIVERY">IP</td>
+                            <td ng-if="view == views.DELIVERY">District</td>
+
+                            <td ng-if="view == views.ITEM">Description</td>
+                            <td ng-if="view == views.ITEM">Material Code</td>
+
+                            <td ng-if="view == views.OUTCOME">Outcome Name</td>
+
+                            <td ng-if="view == views.DOCUMENT">Doc. Number</td>
+                            <td ng-if="view == views.DOCUMENT">Type</td>
+
+                            <td ng-if="view == views.IP">Name</td>
+
+                            <td ng-if="view == views.LOCATION">District Name</td>
+
                             <td>Value</td>
                             <td>Value</td>
                             <td>Loss</td>
@@ -41,9 +60,24 @@
                             <td>Avg. Delay</td>
                         </tr>
                         <tr ng-repeat="bucket in report">
-                            <td>{{ bucket.identifier.delivery_date | date: 'dd-MMM-yyyy' }}</td>
-                            <td>{{ bucket.identifier.ip.name }}</td>
-                            <td>{{ bucket.identifier.location }}</td>
+                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery_date | date: 'dd-MMM-yyyy' }}</td>
+                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.ip.name }}</td>
+                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.location }}</td>
+
+                            <td ng-if="view == views.ITEM">{{ bucket.identifier.order_item.item.description }}</td>
+                            <td ng-if="view == views.ITEM">{{ bucket.identifier.order_item.item.material_code }}</td>
+
+                            <td ng-if="view == views.OUTCOME">{{ bucket.identifier.programme.name }}</td>
+
+                            <td ng-if="view == views.DOCUMENT">{{ bucket.identifier.order_item.order.order_number }}</td>
+                            <td ng-if="view == views.DOCUMENT">
+                                {{ bucket.identifier.order_item.order.order_type == 'purchase_order' ? 'PO' : 'WB' }}
+                            </td>
+
+                            <td ng-if="view == views.IP">{{ bucket.identifier.ip.name }}</td>
+
+                            <td ng-if="view == views.LOCATION">{{ bucket.identifier.location }}</td>
+
                             <td>{{ bucket.delivery_stages.unicef.total_value | currency }}</td>
                             <td>{{ bucket.delivery_stages.ip_receipt.total_value_received | currency }}</td>
                             <td>{{ bucket.delivery_stages.ip_receipt.total_loss | currency }}</td>
