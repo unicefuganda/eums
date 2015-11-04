@@ -31,6 +31,8 @@ def _serialise_programme(programme):
 
 def _serialise_release_order(release_order):
     ro_json = _extract_clean_fields(release_order)
+    ro_json['release_order_number'] = release_order.order_number
+    ro_json['order_number'] = release_order.waybill
     ro_json['sales_order'] = serialise_sales_order(release_order.sales_order)
     ro_json['purchase_order'] = serialise_sales_order(release_order.purchase_order)
     ro_json['order_type'] = 'release_order'

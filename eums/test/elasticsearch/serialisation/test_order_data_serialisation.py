@@ -35,9 +35,9 @@ class TestOrderDataSerialisation(SerialisationTestCase):
             "consignee_id": release_order.consignee.id,
             "sales_order_id": release_order.sales_order.id,
             "purchase_order_id": release_order.purchase_order.id,
-            "waybill": release_order.waybill,
+            "order_number": release_order.waybill,
             "order_type": "release_order",
-            "order_number": release_order.order_number,
+            "release_order_number": release_order.order_number,
             "id": release_order.id,
             "delivery_date": release_order.delivery_date
         }
