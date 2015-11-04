@@ -90,6 +90,9 @@ def _serialise_node(node):
 
     if node.ip:
         node_json['ip'] = _serialise_consignee(node.ip)
+    if node.distribution_plan:
+        node_json['delivery'] = _extract_clean_fields(node.distribution_plan)
+
     return node_json
 
 

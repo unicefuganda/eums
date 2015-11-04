@@ -2,7 +2,7 @@ import json
 from django.conf import settings
 from django.utils import timezone
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format, _serialise_datetime
-from eums.models import Runnable
+from eums.models import Runnable, DistributionPlanNode
 from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.answer_factory import NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -89,6 +89,24 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
 
         serialised = serialise_nodes([node])
         self.assertDictContainsSubset(expected_programme_serialisation, serialised[0]["programme"])
+
+    def test_should_serialise_node_with_built_out_delivery(self):
+        delivery = DeliveryFactory()
+        node_with_delivery = DeliveryNodeFactory(distribution_plan=delivery)
+        node_parents = [(DeliveryNodeFactory(), 2), (DeliveryNodeFactory(), 2)]
+        node_without_delivery = DeliveryNodeFactory(parents=node_parents, distribution_plan=None)
+
+        expected_delivery_serialisation = {
+            "id": delivery.id,
+            "location": delivery.location,
+            "delivery_date": delivery.delivery_date,
+        }
+
+        serialised = serialise_nodes([node_with_delivery])
+        self.assertDictContainsSubset(expected_delivery_serialisation, serialised[0]["delivery"])
+
+        serialised_node_without_delivery = serialise_nodes([node_without_delivery])
+        self.assertNotIn('delivery', serialised_node_without_delivery[0].keys())
 
     def test_should_serialise_node_with_value_lost(self):
         po_item = PurchaseOrderItemFactory(quantity=108, value=33)
