@@ -44,7 +44,7 @@ describe('AlertsController', function () {
                 "createdOn": "2015-08-28",
                 "issueDisplayName": "Not Received",
                 "itemDescription": "Some Description",
-                "runnableId": 10,
+                "runnableId": 12,
                 "isRetriggered": false
             }
         ],
@@ -89,7 +89,7 @@ describe('AlertsController', function () {
                     "createdOn": "2015-08-28",
                     "issueDisplayName": "Not Received",
                     "itemDescription": "Some Description",
-                    "runnableId": 10,
+                    "runnableId": 12,
                     "isRetriggered": false
                 }
             ], "pageSize": 2, "next": "http://localhost:8000/api/alert/?page=2&paginate=true"
@@ -223,7 +223,7 @@ describe('AlertsController', function () {
             expect(mockLoaderService.showModal).toHaveBeenCalledWith('resolved-alert-modal-1');
         });
 
-        it('should retrigger a manual flow when retrigger button is clicked and create successful toast', function () {
+        it('should retrigger a manual flow when retrigger button is clicked and then create successful toast', function () {
             mockDeliveryService.update.and.returnValue(q.when({'runnable_id': 10, 'is_retriggered': true}));
             scope.retriggerDelivery(10);
             scope.$apply();

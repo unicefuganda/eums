@@ -11,25 +11,18 @@ describe('Alerts', function () {
         alertsPage.visit();
     });
 
-    it('should show retrigger button when unreceived and unresolved alert exists', function () {
+    it('should show, resolve and retrigger alerts', function () {
         expect(alertsPage.retriggerBtns.count()).toEqual(1);
-    });
 
-    it('should retrigger delivery', function () {
         alertsPage.retrigger();
-
         expect(alertsPage.retriggerBtns.get(0).getText()).toBe('Retriggered');
         expect(alertsPage.retriggerBtns.get(0).getAttribute('disabled')).toBeTruthy();
-    });
 
-    it('should show alert for waybill that was not received', function () {
         expect(alertsPage.firstAlert).toContain('123456');
         expect(alertsPage.firstAlert).toContain('NOT RECEIVED');
         expect(alertsPage.firstAlert).toContain('Some Consignee Name');
         expect(alertsPage.firstAlert).toContain('Some Contact Name');
-    });
 
-    it('should resolve alerts', function () {
         alertsPage.resolveAlert('This is now resolved');
         expect(alertsPage.firstAlert).toContain('View Resolution');
 
