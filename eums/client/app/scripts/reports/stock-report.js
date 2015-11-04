@@ -39,6 +39,9 @@ angular.module('StockReport', [
             if ($scope.reportParams.selectedFromDate) {
                 Object.merge(requestParams, {fromDate: formatDate($scope.reportParams.selectedFromDate)});
             }
+            if ($scope.reportParams.selectedToDate) {
+                Object.merge(requestParams, {toDate: formatDate($scope.reportParams.selectedToDate)});
+            }
             if (params) {
                 Object.merge(requestParams, params);
             }
@@ -73,8 +76,13 @@ angular.module('StockReport', [
                 fetchReport();
         });
 
-        $scope.$watch('reportParams.selectedFromDate', function (fromDate) {
-            if (fromDate)
+        $scope.$watch('reportParams.selectedFromDate', function (newFromDate, oldFromDate) {
+            if (newFromDate != oldFromDate)
+                fetchReport();
+        });
+
+        $scope.$watch('reportParams.selectedToDate', function (newToDate, oldToDate) {
+            if (newToDate != oldToDate)
                 fetchReport();
         });
 

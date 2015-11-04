@@ -108,7 +108,7 @@ describe('StockReportController', function () {
         });
     });
 
-    describe('after initial load', function() {
+    describe('after initial load', function () {
 
         beforeEach(function () {
             // Initial Load
@@ -143,11 +143,18 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
         });
 
-        it('should load stock report for selected from date', function() {
+        it('should load stock report for selected from date', function () {
             scope.reportParams.selectedFromDate = '01-Nov-2015';
             scope.$apply();
 
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({fromDate: '2015-11-01'});
+        });
+
+        it('should load stock report for selected to date', function () {
+            scope.reportParams.selectedToDate = '01-Nov-2015';
+            scope.$apply();
+
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({toDate: '2015-11-01'});
         });
 
         it('should load stock report for selected outcome', function () {
@@ -156,7 +163,7 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({outcome: 7});
         });
 
-        it('should load stock report when clearing outcome filter', function() {
+        it('should load stock report when clearing outcome filter', function () {
             scope.reportParams.selectedOutcomeId = 7;
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
@@ -166,7 +173,7 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(3);
         });
 
-        it('should load stock report when clearing location filter', function() {
+        it('should load stock report when clearing location filter', function () {
             scope.reportParams.selectedLocation = 'Adjumani';
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
@@ -176,7 +183,7 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(3);
         });
 
-        it('should load stock report when clearing IP filter', function() {
+        it('should load stock report when clearing IP filter', function () {
             scope.reportParams.selectedIPId = 5;
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
@@ -186,7 +193,7 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(3);
         });
 
-        it('should not load stock report when selecting same location', function() {
+        it('should not load stock report when selecting same location', function () {
             scope.reportParams.selectedLocation = 'Adjumani';
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
@@ -195,7 +202,7 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
         });
 
-        it('should not load stock report when selecting same IP', function() {
+        it('should not load stock report when selecting same IP', function () {
             scope.reportParams.selectedIPId = 5;
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(2);
@@ -232,12 +239,12 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
         });
 
-        it('should not have empty data response when data is undefined', function() {
+        it('should not have empty data response when data is undefined', function () {
             scope.reportData = undefined;
             expect(scope.hasEmptyDataResponse()).toBeFalsy();
         });
 
-        it('should have empty data response when actual response is empty', function() {
+        it('should have empty data response when actual response is empty', function () {
             scope.reportData = [];
             expect(scope.hasEmptyDataResponse()).toBeTruthy();
         });
