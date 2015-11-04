@@ -39,10 +39,25 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         };
 
         scope.$apply();
-
         scope.filters.orderNumber = 850;
+        scope.$apply();
 
         expect(scope.$emit).toHaveBeenCalledWith('filters-changed', scope.filters);
+
+    });
+
+    it('should remove filters with falsy from filters before broadcasting', function () {
+        scope.filters = {
+            item: 10,
+            location: 5
+        };
+        var expectedFilters = {item: 10};
+
+        scope.$apply();
+        scope.filters.location = undefined;
+        scope.$apply();
+
+        expect(scope.$emit).toHaveBeenCalledWith('filters-changed', expectedFilters);
 
     });
 });

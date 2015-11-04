@@ -13,6 +13,10 @@ angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programm
         };
 
         $scope.$watch('filters', function (newFilters) {
-            $scope.$emit('filters-changed', newFilters);
+            var cleanFilters = {};
+            Object.each(newFilters, function (name, val) {
+                if (val) cleanFilters[name] = val;
+            });
+            $scope.$emit('filters-changed', cleanFilters);
         }, true);
     });

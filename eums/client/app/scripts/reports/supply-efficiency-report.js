@@ -5,14 +5,14 @@ angular.module('SupplyEfficiencyReport', [
     .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService) {
         var views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
-        generate_report();
+        generateReport();
 
         $scope.$on('filters-changed', function (_, newFilters) {
             $scope.filters = newFilters;
-            generate_report();
+            generateReport();
         });
 
-        function generate_report() {
+        function generateReport() {
             SupplyEfficiencyReportService.generate(views.DELIVERY, $scope.filters).then(function (report) {
                 $scope.report = report;
             });
@@ -46,7 +46,7 @@ angular.module('SupplyEfficiencyReport', [
                 esFilters.push(filter);
             });
 
-            if(bucket == BUCKETS.DELIVERY) {
+            if (bucket == BUCKETS.DELIVERY) {
                 esFilters.push({"exists": {"field": "distribution_plan_id"}});
             }
 
