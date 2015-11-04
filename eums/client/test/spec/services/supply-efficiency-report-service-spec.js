@@ -176,7 +176,7 @@ describe('Supply Efficiency Service', function () {
         });
     });
 
-    it('should have the right view to es filter mappings', function() {
+    it('should have the right view to es filter mappings', function () {
         var views = service.VIEWS;
         expect(views.DELIVERY).toEqual('distribution_plan_id');
         expect(views.ITEM).toEqual('order_item.item.id');
@@ -253,7 +253,10 @@ describe('Supply Efficiency Service', function () {
     });
 
     it('should filter report by filters specified when generating query', function () {
-        var filters = {consignee: 1, item: 2, programme: 3, orderNumber: 4, location: 5};
+        var filters = {
+            consignee: 1, item: 2, programme: 3, orderNumber: 4, location: 5,
+            startDate: new Date(2015, 0, 10), endDate: new Date(2015, 3, 8)
+        };
         spyOn(queries, 'makeQuery');
         mockBackend.whenPOST(esEndpoint, queries.makeQuery()).respond(fakeResponse);
 
@@ -269,6 +272,15 @@ describe('Supply Efficiency Service', function () {
         expect(generalFilters).toContain({term: {'programme.id': 3}});
         expect(generalFilters).toContain({term: {'order_item.order.order_number': 4}});
         expect(generalFilters).toContain({term: {'location': 5}});
+        expect(generalFilters).toContain({
+            range: {
+                'delivery_date': {
+                    "gte": "2015-01-10",
+                    "lte": "2015-04-08",
+                    "format": "yyyy-MM-dd"
+                }
+            }
+        });
         mockBackend.flush();
     });
 

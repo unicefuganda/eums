@@ -51,6 +51,35 @@ angular.module('SupplyEfficiencyReport', [
         };
 
         function generateFilters(filters, bucket) {
+            var esFilters = [];
+            appendDateRangeFilters(filters, esFilters);
+            appendFieldFilters(filters, esFilters);
+
+            if (bucket == BUCKETS.DELIVERY) {
+                esFilters.push({"exists": {"field": "distribution_plan_id"}});
+            }
+
+            return esFilters;
+        }
+
+        function appendDateRangeFilters(filters, esFilters) {
+            var dateFilters = {};
+            var startDate = filters.startDate;
+            var endDate = filters.endDate;
+            var dateFormat = 'YYYY-MM-DD';
+            var esDateFormat = 'yyyy-MM-dd';
+
+            if (startDate)
+                dateFilters.gte = moment(startDate).format(dateFormat);
+            if (endDate)
+                dateFilters.lte = moment(endDate).format(dateFormat);
+            if (Object.size(dateFilters))
+                esFilters.push({range: {delivery_date: Object.merge(dateFilters, {format: esDateFormat})}});
+
+            return esFilters
+        }
+
+        function appendFieldFilters(filters, esFilters) {
             var filterMappings = {
                 item: 'order_item.item.id',
                 consignee: 'ip.id',
@@ -58,18 +87,15 @@ angular.module('SupplyEfficiencyReport', [
                 location: 'location',
                 orderNumber: 'order_item.order.order_number'
             };
-            var esFilters = [];
+
             Object.each(filters, function (key, value) {
                 var filter = {term: {}};
-                filter.term[filterMappings[key]] = value;
-                esFilters.push(filter);
+                var filterMappingKey = filterMappings[key];
+                if (filterMappingKey) {
+                    filter.term[filterMappingKey] = value;
+                    esFilters.push(filter);
+                }
             });
-
-            if (bucket == BUCKETS.DELIVERY) {
-                esFilters.push({"exists": {"field": "distribution_plan_id"}});
-            }
-
-            return esFilters;
         }
 
         function parseReport(response_data) {
