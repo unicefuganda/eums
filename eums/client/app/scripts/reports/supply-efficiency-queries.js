@@ -56,7 +56,7 @@ angular.module('SupplyEfficiencyQueries', [])
                                 "identifier": {
                                     "top_hits": {
                                         "size": 1,
-                                        "_source": ["ip.name", "delivery_date", "location", "order_item.item.description", "order_item.item.material_code", "programme.name", "order_item.order.order_number", "order_item.order.order_type"]
+                                        "_source": ["ip.name", "delivery_date", "location", "order_item.item.description", "order_item.item.material_code", "programme.name", "order_item.order.order_number", "order_item.order.order_type", "delivery.location", "delivery.delivery_date"]
                                     }
                                 }
                             }
