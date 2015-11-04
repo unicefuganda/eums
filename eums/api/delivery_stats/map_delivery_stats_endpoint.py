@@ -46,7 +46,6 @@ class DeliveryState:
     def _get_nodes_total_value(queryset):
         return queryset.aggregate(total_value=Sum('total_value'))['total_value'] or 0
 
-
     def state(self):
         nodes_in_location = self.nodes.filter(location=self.location)
         answers = MultipleChoiceAnswer.objects.filter(question__flow=self.search_data.flow,
@@ -56,14 +55,17 @@ class DeliveryState:
         non_responses_nodes = self._get_non_responses(nodes_with_answers, nodes_in_location)
         non_responses = self._get_nodes_total_value(non_responses_nodes)
 
-        nodes_received_ids = answers.filter(question__label=self.search_data.received_label, value__text='Yes').values_list('run__runnable').distinct()
+        nodes_received_ids = answers.filter(question__label=self.search_data.received_label,
+                                            value__text='Yes').values_list('run__runnable').distinct()
         value_received = self._get_nodes_total_value(nodes_in_location.filter(id__in=nodes_received_ids))
 
-        nodes_not_received_ids = answers.filter(question__label=self.search_data.received_label, value__text='No').values_list('run__runnable').distinct()
+        nodes_not_received_ids = answers.filter(question__label=self.search_data.received_label,
+                                                value__text='No').values_list('run__runnable').distinct()
         value_not_received = self._get_nodes_total_value(nodes_in_location.filter(id__in=nodes_not_received_ids))
 
         has_no_issues_ids = answers.filter(question__label=self.search_data.quality_label,
-                                       value__text=self.search_data.quality_yes_text).values_list('run__runnable').distinct()
+                                           value__text=self.search_data.quality_yes_text).values_list(
+            'run__runnable').distinct()
         has_no_issues = self._get_nodes_total_value(nodes_in_location.filter(id__in=has_no_issues_ids))
 
         has_issues_ids = answers.filter(question__label=self.search_data.quality_label).exclude(
@@ -85,8 +87,10 @@ class DeliveryState:
 
     @staticmethod
     def get_state(data):
-        if not data['deliveries']:
+        is_awaiting_response = not data['nonResponse'] and not data['notReceived'] and not data['received']
+        if not data['deliveries'] or is_awaiting_response:
             return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
+
         non_response_percent = 100 * data['nonResponse'] / data['deliveries']
         if non_response_percent > X_PERCENT:
             return STATE_CSS_MAPPING['NON_RESPONSE']

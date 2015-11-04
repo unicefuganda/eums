@@ -1,7 +1,11 @@
+import datetime
 from django.db.models import Q
+from eums import settings
 
 from eums.api.delivery_stats.stats_structure import BaseQuerySets
 from eums.models import MultipleChoiceQuestion, Option, MultipleChoiceAnswer, Run
+
+GRACE_PERIOD = settings.NON_RESPONSE_GRACE_PERIOD
 
 
 def get_product_received_base_query_sets(stats_search_data):
@@ -22,7 +26,14 @@ def get_product_received_base_query_sets(stats_search_data):
     runs_with_answers = MultipleChoiceAnswer.objects.filter(
         question=was_product_received, run__runnable__in=stats_search_data.nodes).values_list('run_id')
 
-    return BaseQuerySets(successful_delivery_answers, unsuccessful_delivery_answers, runs_with_answers)
+    non_response_nodes = _get_non_responses_nodes(runs_with_answers, stats_search_data.nodes)
+
+    return BaseQuerySets(successful_delivery_answers, unsuccessful_delivery_answers, non_response_nodes)
+
+
+def _get_non_responses_nodes(runs_with_answers, nodes):
+    grace_period_deadline = datetime.datetime.now() - datetime.timedelta(days=GRACE_PERIOD)
+    return nodes.exclude(run__id__in=runs_with_answers).filter(delivery_date__lte=grace_period_deadline).distinct()
 
 
 def get_quality_of_product_base_query_sets(stats_search_data):
@@ -41,7 +52,9 @@ def get_quality_of_product_base_query_sets(stats_search_data):
     runs_with_answers = MultipleChoiceAnswer.objects.filter(
         question=quality_of_product_qn, run__runnable__in=stats_search_data.nodes).values_list('run_id')
 
-    return BaseQuerySets(good_quality_delivery_answers, bad_order_delivery_answers, runs_with_answers)
+    non_response_nodes = _get_non_responses_nodes(runs_with_answers, stats_search_data.nodes)
+
+    return BaseQuerySets(good_quality_delivery_answers, bad_order_delivery_answers, non_response_nodes)
 
 
 def get_satisfied_with_product_base_query_sets(stats_search_data):
@@ -61,4 +74,6 @@ def get_satisfied_with_product_base_query_sets(stats_search_data):
     runs_with_answers = MultipleChoiceAnswer.objects.filter(
         question=satisfied_with_product_qn, run__runnable__in=stats_search_data.nodes).values_list('run_id')
 
-    return BaseQuerySets(satisfied_with_product_answers, unsatisfied_with_product_answers, runs_with_answers)
+    non_response_nodes = _get_non_responses_nodes(runs_with_answers, stats_search_data.nodes)
+
+    return BaseQuerySets(satisfied_with_product_answers, unsatisfied_with_product_answers, non_response_nodes)

@@ -96,11 +96,13 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             self.assertIn(stat, response.data)
 
     def test_should_return_yellow_when_number_of_deliveries_is_zero(self):
-        state = DeliveryState.get_state({'deliveries': 0})
+        state = DeliveryState.get_state({'deliveries': 0, 'nonResponse': 0, 'notReceived': 0,
+                                         'received': 0, 'hasIssues': 0, 'noIssues': 0})
         self.assertEqual('map-no-response-expected', state)
 
     def test_should_return_grey_when_non_responce_percentage_is_greater_than_X(self):
-        state = DeliveryState.get_state({'deliveries': 10, 'nonResponse': 8})
+        state = DeliveryState.get_state({'deliveries': 10, 'nonResponse': 8, 'notReceived': 0,
+                                         'received': 0, 'hasIssues': 0, 'noIssues': 0})
         self.assertEqual('map-non-response', state)
 
     def test_should_return_red_if_not_received_is_more_than_received(self):
@@ -122,6 +124,11 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
         state = DeliveryState.get_state({'deliveries': 10, 'nonResponse': 2, 'notReceived': 0,
                                          'received': 4, 'hasIssues': 3, 'noIssues': 1})
         self.assertEqual('map-received-with-issues', state)
+
+    def test_should_return_white_if_no_responces_expected_and_no_responces_exist(self):
+        state = DeliveryState.get_state({'deliveries': 10, 'nonResponse': 0, 'notReceived': 0,
+                                         'received': 0, 'hasIssues': 0, 'noIssues': 0})
+        self.assertEqual('map-no-response-expected', state)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()

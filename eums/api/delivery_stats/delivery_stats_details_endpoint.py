@@ -12,7 +12,6 @@ from eums.models import DistributionPlanNode as DeliveryNode
 
 
 class DeliveryStatsDetailsEndpoint(APIView):
-
     def get(self, request, *args, **kwargs):
         tree_position = request.GET.get('treePosition', DeliveryNode.END_USER)
         stats_search_data = StatsSearchDataFactory.create(tree_position)
@@ -23,7 +22,6 @@ class DeliveryStatsDetailsEndpoint(APIView):
 
 
 class DeliveryStatsDetails:
-
     def __init__(self, stats_search_data):
         self.stats_search_data = stats_search_data
 
@@ -105,9 +103,8 @@ class DeliveryStatsDetails:
 
     def _get_question_stats(self, raw_stats):
         positive_count = raw_stats.positive_answers.count()
-        non_response_count = self.stats_search_data.nodes.exclude(
-            run__id__in=raw_stats.runs_with_answers).distinct().count()
-        negative_count = self.total_deliveries() - positive_count - non_response_count
+        non_response_count = raw_stats.non_response_nodes.count()
+        negative_count = raw_stats.negative_answers.count()
 
         percent_negative, percent_non_response, percent_positive = self._get_count_percentages(
             negative_count, non_response_count, positive_count)
@@ -131,9 +128,9 @@ class DeliveryStatsDetails:
         return percent_value_negative, percent_value_non_response, percent_value_positive
 
     def _get_values(self, raw_stats):
-        value_positive = self._get_value(raw_stats.positive_answers) or 0
-        value_negative = self._get_value(raw_stats.negative_answers) or 0
-        value_non_response = self.total_delivery_value() - value_positive - value_negative
+        value_positive = self._get_value(raw_stats.positive_answers)
+        value_negative = self._get_value(raw_stats.negative_answers)
+        value_non_response = self._get_nodes_total_value(raw_stats.non_response_nodes)
         return value_negative, value_non_response, value_positive
 
     def _get_count_percentages(self, negative_count, non_response_count, positive_count):
