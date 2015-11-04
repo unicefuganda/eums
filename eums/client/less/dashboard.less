@@ -15,21 +15,21 @@
 }
 
 .view-thumbnail {
-    position: absolute;
-    width: 34px;
-    height: 35px;
-    z-index: 900;
-    left: 320px;
-    top: 115px;
-    background-color: white;
-    box-shadow: 0 1px 5px #888888;
-    border: 1px solid @brand-primary;
-    border-radius: 2px;
-    padding: 5px;
+  position: absolute;
+  width: 34px;
+  height: 35px;
+  z-index: 900;
+  left: 320px;
+  top: 115px;
+  background-color: white;
+  box-shadow: 0 1px 5px #888888;
+  border: 1px solid @brand-primary;
+  border-radius: 2px;
+  padding: 5px;
 
-    img {
-      width: 25px;
-    }
+  img {
+    width: 25px;
+  }
 }
 
 #summary-panel {
@@ -141,12 +141,12 @@
   padding-left: 20px;
 }
 
-.svg-map-legend-item{
+.svg-map-legend-item {
   margin-bottom: -2px;
   margin-left: 5px;
 }
 
-.map-legend-item-child{
+.map-legend-item-child {
   margin-left: 20px;
 }
 
@@ -160,8 +160,15 @@
   padding-top: 14px;
 }
 
+.z-index-500{
+  z-index: 500;
+}
+
+.z-index-600{
+  z-index: 600;
+}
+
 .filter-panel {
-  z-index: 1000;
   position: absolute;
   width: 274px;
   background: white;
@@ -174,7 +181,7 @@
 
 .map-legend-panel {
   bottom: 0;
-  z-index: 1000;
+  z-index: 500;
   position: absolute;
   width: 200px;
   background: white;
@@ -332,37 +339,37 @@ div[class*="-aggregate-marker-icon"] div {
   background-color: #fff;
 }
 
-.leaflet-clickable[fill=map-no-response-expected]{
+.leaflet-clickable[fill=map-no-response-expected] {
   fill: white;
 }
 
-.leaflet-clickable[fill=map-non-response]{
+.leaflet-clickable[fill=map-non-response] {
   fill: #E0E0E0;
 }
 
-.leaflet-clickable[fill=map-not-received]{
+.leaflet-clickable[fill=map-not-received] {
   fill: #D9534F;
 }
 
-.leaflet-clickable[fill=map-received]{
+.leaflet-clickable[fill=map-received] {
   fill: @brand-primary;
 }
 
-#leaflet-map-received-with-issues{
+#leaflet-map-received-with-issues {
   fill: none;
   stroke: @brand-primary;
-  stroke-width:1
+  stroke-width: 1
 }
 
-.leaflet-clickable[fill=map-received-with-issues]{
+.leaflet-clickable[fill=map-received-with-issues] {
   fill: url('/#map-hatch-pattern');
 }
 
-.leaflet-clickable.show-svg-border{
+.leaflet-clickable.show-svg-border {
   stroke: @brand-primary;
 }
 
-.inherit-font{
+.inherit-font {
   font-size: inherit;
 }
 
@@ -430,8 +437,13 @@ div[class*="-aggregate-marker-icon"] div {
   font-size: 1.2em;
 }
 
-.stats-subheader-blue { color: @brand-primary; }
-.stats-text-grey { color: #7E7E7E; }
+.stats-subheader-blue {
+  color: @brand-primary;
+}
+
+.stats-text-grey {
+  color: #7E7E7E;
+}
 
 .district-stats-left-section {
   text-align: center;

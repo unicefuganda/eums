@@ -11,6 +11,8 @@ angular.module('DatePicker', []).directive('eumsDatePicker', function () {
                 return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
             };
 
+            scope.isDatePickerOpen = false;
+
             scope.open = function ($event, type) {
                 $event.preventDefault();
                 $event.stopPropagation();
@@ -19,7 +21,14 @@ angular.module('DatePicker', []).directive('eumsDatePicker', function () {
                 });
                 scope.datepicker = scope.datepicker || {};
                 scope.datepicker[type] = true;
+                scope.isDatePickerOpen = true;
             };
+
+            scope.$watchCollection('datepicker', function (value) {
+                if(!value.from && !value.to){
+                    scope.isDatePickerOpen = false;
+                }
+            }, true);
 
             scope.dateOptions = {
                 formatYear: 'yy',

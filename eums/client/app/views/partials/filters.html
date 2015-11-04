@@ -1,42 +1,50 @@
-<form role='form' id='filters-form'>
-    <div class="form-group">
-        <button id="ip-view" class="btn btn-default ip-enduser-view-toggle" ng-class="{'btn-primary': ipView, 'blue-border-button': !ipView}" ng-click="toggleIpView(true)" >IP</button>
-        <button id="end-user-view" class="btn btn-default ip-enduser-view-toggle" ng-class="{'btn-primary': !ipView, 'blue-border-button': ipView}" ng-click="toggleIpView(false)" >End User</button>
-    </div>
-    <div class="form-group">
-        <label for="select-program" class="blue-unicef">Filter by Outcome</label>
-        <input search-programmes name="" type="text" id="select-program" ng-model="filter.programme"
-               placeholder="Select an Outcome"/>
-    </div>
-    <div class="form-group" ng-show="!user.consignee_id">
-        <label for="select-ip" class="blue-unicef">Filter by Implementing Partner</label>
-        <input select-i-p name="" type="text" id="select-ip" ng-model="filter.ip"
-               placeholder="Select an Implementing Partner"/>
-    </div>
-    <p>
-        <label class="blue-unicef">Filter by Date Range</label>
-    </p>
+<div class='filter-panel ng-cloak' id="filter-panel"
+     ng-class="{'z-index-600': isDatePickerOpen, 'z-index-500':!isDatePickerOpen}">
+    <form role='form' id='filters-form'>
+        <div class="form-group">
+            <button id="ip-view" class="btn btn-default ip-enduser-view-toggle"
+                    ng-class="{'btn-primary': ipView, 'blue-border-button': !ipView}" ng-click="toggleIpView(true)">IP
+            </button>
+            <button id="end-user-view" class="btn btn-default ip-enduser-view-toggle"
+                    ng-class="{'btn-primary': !ipView, 'blue-border-button': ipView}" ng-click="toggleIpView(false)">End
+                User
+            </button>
+        </div>
+        <div class="form-group">
+            <label for="select-program" class="blue-unicef">Filter by Outcome</label>
+            <input search-programmes name="" type="text" id="select-program" ng-model="filter.programme"
+                   placeholder="Select an Outcome"/>
+        </div>
+        <div class="form-group" ng-show="!user.consignee_id">
+            <label for="select-ip" class="blue-unicef">Filter by Implementing Partner</label>
+            <input select-i-p name="" type="text" id="select-ip" ng-model="filter.ip"
+                   placeholder="Select an Implementing Partner"/>
+        </div>
+        <p>
+            <label class="blue-unicef">Filter by Date Range</label>
+        </p>
 
-    <div date-range-filter>
-        <p class="input-group col-md-7">
-            <input type="text" class="form-control inherit-font" datepicker-popup='dd-MMM-yyyy'
-                   ng-model="filter.from" is-open="datepicker.from"
-                   datepicker-options="dateOptions" show-button-bar="false"
-                   value="{{ filter.to | date : 'dd-MMM-yyyy' }}" eums-date-picker
-                    placeholder="Start"/>
+        <div date-range-filter>
+            <p class="input-group col-md-7">
+                <input type="text" class="form-control inherit-font" datepicker-popup='dd-MMM-yyyy'
+                       ng-model="filter.from" is-open="datepicker.from"
+                       datepicker-options="dateOptions" show-button-bar="false"
+                       value="{{ filter.to | date : 'dd-MMM-yyyy' }}" eums-date-picker
+                       placeholder="Start"/>
 
             <span class="input-group-btn">
                 <button type="button" class="btn btn-default" ng-click="open($event, 'from')">
                     <i class="glyphicon glyphicon-calendar"></i>
                 </button>
           </span>
-        </p>
+            </p>
 
-        <p class="input-group col-md-7">
-            <input type="text" min="{{ filter.from }}" class="form-control inherit-font" datepicker-popup='dd-MMM-yyyy'
-                   ng-model="filter.to" is-open="datepicker.to"
-                   datepicker-options="dateOptions" show-button-bar="false" eums-date-picker
-                    placeholder="End"/>
+            <p class="input-group col-md-7">
+                <input type="text" min="{{ filter.from }}" class="form-control inherit-font"
+                       datepicker-popup='dd-MMM-yyyy'
+                       ng-model="filter.to" is-open="datepicker.to"
+                       datepicker-options="dateOptions" show-button-bar="false" eums-date-picker
+                       placeholder="End"/>
 
           <span class="input-group-btn">
             <button type="button" class="btn btn-default" ng-click="open($event, 'to')">
@@ -44,14 +52,13 @@
             </button>
           </span>
 
-        </p>
-    </div>
+            </p>
+        </div>
 
-    <div class="form-group">
-        <button id="filter-clear" class="btn btn-sm btn-primary" ng-click="clearFilters()"><span
-                class="glyphicon glyphicon-remove-sign"></span> Clear all Filters
-        </button>
-    </div>
-</form>
-
-
+        <div class="form-group">
+            <button id="filter-clear" class="btn btn-sm btn-primary" ng-click="clearFilters()"><span
+                    class="glyphicon glyphicon-remove-sign"></span> Clear all Filters
+            </button>
+        </div>
+    </form>
+</div>
