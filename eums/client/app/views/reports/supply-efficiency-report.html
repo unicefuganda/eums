@@ -60,9 +60,9 @@
                             <td>Avg. Delay</td>
                         </tr>
                         <tr ng-repeat="bucket in report">
-                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery_date | date: 'dd-MMM-yyyy' }}</td>
+                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery.delivery_date | date: 'dd-MMM-yyyy' }}</td>
                             <td ng-if="view == views.DELIVERY">{{ bucket.identifier.ip.name }}</td>
-                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.location }}</td>
+                            <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery.location }}</td>
 
                             <td ng-if="view == views.ITEM">{{ bucket.identifier.order_item.item.description }}</td>
                             <td ng-if="view == views.ITEM">{{ bucket.identifier.order_item.item.material_code }}</td>
