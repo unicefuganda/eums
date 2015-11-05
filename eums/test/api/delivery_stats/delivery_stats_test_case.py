@@ -15,3 +15,8 @@ class DeliveryStatsTestCase(AuthenticatedAPITestCase):
         Flow.objects.all().delete()
         DeliveryNode.objects.all().delete()
         Question.objects.all().delete()
+
+    def assert_ip_delivery_stats(self, response, expected_stats):
+        self.assertEqual(len(response.data), len(expected_stats))
+        for stat in expected_stats:
+            self.assertIn(stat, response.data)

@@ -90,11 +90,6 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             ENDPOINT_URL, self.ip.id, non_existing_programme_id))
         self.assertEquals(0, len(response.data))
 
-    def assert_ip_delivery_stats(self, response, expected_stats):
-        self.assertEqual(len(response.data), len(expected_stats))
-        for stat in expected_stats:
-            self.assertIn(stat, response.data)
-
     def test_should_return_yellow_when_number_of_deliveries_is_zero(self):
         state = DeliveryState.get_state({'deliveries': 0, 'nonResponse': 0, 'notReceived': 0,
                                          'received': 0, 'hasIssues': 0, 'noIssues': 0})

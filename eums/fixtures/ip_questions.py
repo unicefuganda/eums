@@ -29,8 +29,8 @@ def seed_ip_questions():
         text="Are you satisfied with the delivery?",
         label="satisfiedWithDelivery",
         flow=ip_flow, position=4)
-    satisfied = Option.objects.get_or_create(text="Yes", question=ip_question_4)
-    not_satisfied = Option.objects.get_or_create(text="No", question=ip_question_4)
+    satisfied, _ = Option.objects.get_or_create(text="Yes", question=ip_question_4)
+    not_satisfied, _ = Option.objects.get_or_create(text="No", question=ip_question_4)
 
     ip_question_5, _ = TextQuestion.objects.get_or_create(
         uuids=['2fccd250-00a1-4740-b30e-3593b8f147a1'],

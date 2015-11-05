@@ -6,7 +6,7 @@ class StatsSearchData:
     def __init__(self):
         self.nodes = None
 
-    def filter_nodes(self, request):
+    def filter_nodes(self, request, **kwargs):
         location = request.GET.get('location')
         if location:
             self.nodes = self.nodes.filter(location__iexact=location)
@@ -31,6 +31,10 @@ class StatsSearchData:
 
         if ip:
             self.nodes = self.nodes.filter(ip=ip)
+
+        sort_by= kwargs.get('sort_by')
+        if sort_by:
+            self.nodes = self.nodes.order_by(sort_by)
 
 
 class EndUserStatsSearchData(StatsSearchData):
