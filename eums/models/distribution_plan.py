@@ -19,7 +19,8 @@ class DistributionPlan(Runnable):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
 
-    def update_total_value(self):
+    def update_total_value_and_ip(self, ip):
+        self.ip = ip
         self.total_value = self._get_total_value()
         self.save(update_fields=['total_value'])
 

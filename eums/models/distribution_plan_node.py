@@ -42,11 +42,11 @@ class DistributionPlanNode(Runnable):
         super(DistributionPlanNode, self).save(*args, **kwargs)
 
         self._update_parent_balances(self.get_parents())
-        self._update_distribution_plan_total_value()
+        self._update_distribution_plan()
 
-    def _update_distribution_plan_total_value(self):
+    def _update_distribution_plan(self):
         if self.is_root() and self.distribution_plan:
-            self.distribution_plan.update_total_value()
+            self.distribution_plan.update_total_value_and_ip(self.ip)
 
     def get_programme(self):
         if self.distribution_plan:

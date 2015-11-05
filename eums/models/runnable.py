@@ -17,7 +17,7 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     delivery_date = models.DateField(null=False)
     remark = models.TextField(blank=True, null=True)
     is_retriggered = models.BooleanField(default=False)
-    total_value = models.DecimalField(max_digits=12, decimal_places=2, null=True)
+    total_value = models.DecimalField(max_digits=12, decimal_places=2, null=False, default=0)
 
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     WEB = 'WEB'
