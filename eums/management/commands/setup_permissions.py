@@ -45,6 +45,7 @@ GROUP_PERMISSIONS = {
         'can_view_delivery_reports',
         'can_view_dashboard',
         'can_view_consignees',
+        'can_view_reports',
         'add_consignee',
         'change_consignee',
         'delete_consignee',
@@ -54,6 +55,7 @@ GROUP_PERMISSIONS = {
     'Implementing Partner_viewer': [
         'can_view_dashboard',
         'can_view_consignees',
+        'can_view_reports',
         'can_view_distribution_plans'
     ]
 }
