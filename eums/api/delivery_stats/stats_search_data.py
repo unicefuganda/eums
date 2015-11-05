@@ -77,15 +77,15 @@ class EndUserStatsSearchData(StatsSearchData):
                                                               question__label=self.amount_received_label)
 
         received = self._get_yes_or_no(received_answer)
-        quality = self._get_answer(good_condition_answer, 'text')
-        amount_received = self._get_answer(amount_received_answer, 'value')
+        quality = self._get_answer_value(good_condition_answer)
+        amount_received = self._get_answer_value(amount_received_answer)
         result = {'name': item.description, 'amountSent': node.quantity_in(), 'productReceived': received}
         if received:
             result.update({'amountReceived': amount_received, 'qualityOfProduct': quality})
         return result
 
     @staticmethod
-    def _get_answer(answers, _type):
+    def _get_answer_value(answers):
         if not answers:
             return ""
         answer = answers.latest('created')
