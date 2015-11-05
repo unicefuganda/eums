@@ -34,6 +34,13 @@
 <li ng-class="{ active: isActive('/ip-items,/item-deliveries')}">
     <a href="#/ip-items">Delivery Reporting</a>
 </li>
+<li id="reports-nav" class="dropdown"
+    ng-class="{ active: isActive('/reports,/stock-report')}">
+    <a href="#" class="dropdown-toggle">Reports <span class="caret"></span></a>
+    <ul class="dropdown-menu" role="menu">
+        <li id="ip-stock-nav" ><a href="#/stock-report">Stock Report</a></li>
+    </ul>
+</li>
 <li ng-class="{ active: isActive('/consignees')}">
     <a href="#/consignees">Consignees</a>
 </li>
