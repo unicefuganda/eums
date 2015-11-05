@@ -1,5 +1,5 @@
 from eums.models import UserProfile, Flow, Runnable, Question, DistributionPlanNode as DeliveryNode, \
-    DistributionPlan as Delivery
+    DistributionPlan as Delivery, MultipleChoiceAnswer
 
 
 class StatsSearchData:
@@ -32,9 +32,16 @@ class StatsSearchData:
         if ip:
             self.nodes = self.nodes.filter(ip=ip)
 
-        sort_by= kwargs.get('sort_by')
+        sort_by = kwargs.get('sort_by')
         if sort_by:
             self.nodes = self.nodes.order_by(sort_by)
+
+    @staticmethod
+    def _get_yes_or_no(received_answer):
+        if not received_answer:
+            return False
+        _received_answer = received_answer.latest('created')
+        return _received_answer.value.text == "Yes"
 
 
 class EndUserStatsSearchData(StatsSearchData):
@@ -57,6 +64,27 @@ class IpStatsSearchData(StatsSearchData):
         self.quality_label = Question.LABEL.isDeliveryInGoodOrder
         self.satisfied_label = Question.LABEL.satisfiedWithDelivery
         self.quality_yes_text = "Yes"
+
+    def latest_deliveries(self, nodes_with_answers):
+        return [self._delivery_data(node) for node in nodes_with_answers]
+
+    def _delivery_data(self, node):
+        received_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                              run__runnable=node,
+                                                              question__label=self.received_label)
+        good_condition_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                                    run__runnable=node,
+                                                                    question__label=self.quality_label)
+        satisfied_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                               run__runnable=node,
+                                                               question__label=self.satisfied_label)
+
+        delivery_date = node.delivery_date.strftime("%d-%b-%Y")
+        received = self._get_yes_or_no(received_answer)
+        quality = self._get_yes_or_no(good_condition_answer)
+        satisfied = self._get_yes_or_no(satisfied_answer)
+        return {'deliveryName': '%s on %s' % (node.location, delivery_date), 'received': received,
+                'inGoodCondition': quality, 'satisfied': satisfied}
 
 
 class StatsSearchDataFactory:
