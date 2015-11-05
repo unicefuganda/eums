@@ -472,6 +472,15 @@ class DeliveryTest(TestCase):
         self.assertEqual(len(node_answers[1]['answers']), 5)
         self.assertIn(expected_text_answer, node_answers[1]['answers'])
 
+    def test_should_have_run_when_run_exists(self):
+        delivery = DeliveryFactory()
+        RunFactory(runnable=delivery)
+        self.assertTrue(delivery.has_existing_run())
+
+    def test_should_not_have_run_when_no_run_exists(self):
+        delivery = DeliveryFactory()
+        self.assertFalse(delivery.has_existing_run())
+
     def test_delivery_does_not_have_item_description(self):
         delivery = DeliveryFactory()
         

@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Q
 
 from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, TextAnswer, \
-    MultipleChoiceQuestion, NumericAnswer, NumericQuestion
+    MultipleChoiceQuestion, NumericAnswer, NumericQuestion, Run
 from eums.models import Runnable, DistributionPlanNode
 from eums.models.answers import Answer
 from eums.models.programme import Programme
@@ -18,6 +18,9 @@ class DistributionPlan(Runnable):
     def save(self, *args, **kwargs):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
+
+    def has_existing_run(self):
+        return Run.objects.filter(runnable=self).exists()
 
     def update_total_value_and_ip(self, ip):
         self.ip = ip

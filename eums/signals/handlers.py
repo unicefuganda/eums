@@ -20,15 +20,9 @@ def on_post_save_node(sender, **kwargs):
 @receiver(post_save, sender=DistributionPlan)
 def on_post_save_delivery(sender, **kwargs):
     delivery = kwargs['instance']
-    if kwargs.get('update_fields') and 'total_value' not in kwargs.get('update_fields'):
-        _handle_signal(delivery)
-
-
-def _handle_signal(delivery):
     _resolve_alert_if_possible(delivery)
-    if delivery.track:
+    if delivery.track and (not delivery.has_existing_run() or delivery.is_retriggered):
         schedule_run_for(delivery)
-
 
 def _resolve_alert_if_possible(delivery):
     if delivery.is_retriggered and delivery.confirmed:
