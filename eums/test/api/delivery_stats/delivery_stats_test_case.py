@@ -1,4 +1,6 @@
-from eums.models import Question, Programme, Consignee, Flow
+from eums.models import Question, Programme, Consignee, Flow, Item, DistributionPlan, MultipleChoiceAnswer, \
+    NumericAnswer, TextAnswer, MultipleChoiceQuestion
+from eums.models.answers import Answer
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
@@ -15,6 +17,11 @@ class DeliveryStatsTestCase(AuthenticatedAPITestCase):
         Flow.objects.all().delete()
         DeliveryNode.objects.all().delete()
         Question.objects.all().delete()
+        Item.objects.all().delete()
+        MultipleChoiceAnswer.objects.all().delete()
+        NumericAnswer.objects.all().delete()
+        TextAnswer.objects.all().delete()
+        DistributionPlan.objects.all().delete()
 
     def assert_ip_delivery_stats(self, response, expected_stats):
         self.assertEqual(len(response.data), len(expected_stats))

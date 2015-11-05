@@ -8,7 +8,7 @@ from eums.models.time_stamped_model import TimeStampedModel
 
 class Question(TimeStampedModel):
     LABEL = Choices('deliveryReceived', 'isDeliveryInGoodOrder', 'itemReceived', 'qualityOfProduct',
-                    'satisfiedWithDelivery', 'additionalDeliveryComments', 'dateOfReceipt',
+                    'satisfiedWithDelivery', 'additionalDeliveryComments', 'dateOfReceipt', 'amountReceived',
                     'additionalDeliveryComments', 'productReceived', 'satisfiedWithProduct')
 
     text = models.TextField()

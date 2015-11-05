@@ -1,5 +1,5 @@
 from eums.models import UserProfile, Flow, Runnable, Question, DistributionPlanNode as DeliveryNode, \
-    DistributionPlan as Delivery, MultipleChoiceAnswer
+    DistributionPlan as Delivery, MultipleChoiceAnswer, Item, NumericAnswer
 
 
 class StatsSearchData:
@@ -53,6 +53,43 @@ class EndUserStatsSearchData(StatsSearchData):
         self.quality_label = Question.LABEL.qualityOfProduct
         self.satisfied_label = Question.LABEL.satisfiedWithProduct
         self.quality_yes_text = "Good"
+        self.amount_received_label = Question.LABEL.amountReceived
+
+    def latest_deliveries(self, limit):
+        limit = limit or 3
+        answers = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                      run__runnable__in=self.nodes)
+        nodes_with_answers_ids = answers.values_list('run__runnable')
+        latest_items_ids = self.nodes.filter(id__in=nodes_with_answers_ids).values_list('item__item', flat=True).distinct()[:limit]
+        return [self._delivery_data(item_id) for item_id in latest_items_ids]
+
+    def _delivery_data(self, item_id):
+        item = Item.objects.get(id=item_id)
+        node = self.nodes.filter(item__item=item).latest('created')
+        received_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                              run__runnable=node,
+                                                              question__label=self.received_label)
+        good_condition_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                                    run__runnable=node,
+                                                                    question__label=self.quality_label)
+        amount_received_answer = NumericAnswer.objects.filter(question__flow=self.flow,
+                                                              run__runnable=node,
+                                                              question__label=self.amount_received_label)
+
+        received = self._get_yes_or_no(received_answer)
+        quality = self._get_answer(good_condition_answer, 'text')
+        amount_received = self._get_answer(amount_received_answer, 'value')
+        result = {'name': item.description, 'amountSent': node.quantity_in(), 'productReceived': received}
+        if received:
+            result.update({'amountReceived': amount_received, 'qualityOfProduct': quality})
+        return result
+
+    @staticmethod
+    def _get_answer(answers, _type):
+        if not answers:
+            return ""
+        answer = answers.latest('created')
+        return answer.format()
 
 
 class IpStatsSearchData(StatsSearchData):
@@ -65,7 +102,12 @@ class IpStatsSearchData(StatsSearchData):
         self.satisfied_label = Question.LABEL.satisfiedWithDelivery
         self.quality_yes_text = "Yes"
 
-    def latest_deliveries(self, nodes_with_answers):
+    def latest_deliveries(self, limit):
+        limit = limit or 3
+        answers = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
+                                                      run__runnable__in=self.nodes)
+        nodes_with_answers_ids = answers.values_list('run__runnable')
+        nodes_with_answers = self.nodes.filter(id__in=nodes_with_answers_ids)[:limit]
         return [self._delivery_data(node) for node in nodes_with_answers]
 
     def _delivery_data(self, node):
