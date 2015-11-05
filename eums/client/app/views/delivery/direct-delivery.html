@@ -42,7 +42,6 @@
             <div class="col-md-6 pad-small">
                 <span class="input-group" eums-date-picker>
                     <input type="text" class="form-control white-bg"
-                           datepicker-popup="dd-MMM-yyyy"
                            ng-model="toDate"
                            is-open="datepicker[1]"
                            datepicker-options="dateOptions"
@@ -171,7 +170,10 @@
             <tfoot>
             <tr>
                 <td class="pagination-row" colspan="5">
-                    <si-table-pagination limit="15" indices="3"/>
+                    <pagination total-items="count" ng-model="currentPage" boundary-links="true"
+                                    ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                    items-per-page="pageSize">
+                    </pagination>
                 </td>
             </tr>
             </tfoot>

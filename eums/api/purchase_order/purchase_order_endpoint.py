@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 
 from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPlanSerialiser
+from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import PurchaseOrder
 
 
@@ -22,6 +23,7 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
 class PurchaseOrderViewSet(ModelViewSet):
     queryset = PurchaseOrder.objects.all().order_by('order_number')
     serializer_class = PurchaseOrderSerialiser
+    pagination_class = StandardResultsSetPagination
 
     def list(self, request, *args, **kwargs):
         consignee_id = request.GET.get('consignee', None)
@@ -33,13 +35,25 @@ class PurchaseOrderViewSet(ModelViewSet):
 
     @list_route()
     def for_direct_delivery(self, request, *args, **kwargs):
-        query = request.GET.get('query')
-        from_date = request.GET.get('from')
-        to_date = request.GET.get('to')
-        purchase_orders = PurchaseOrder.objects.for_direct_delivery(search_term=query,
-                                                                    from_date=from_date,
-                                                                    to_date=to_date)
-        return Response(self.get_serializer(purchase_orders, many=True).data)
+        if request.GET.get('paginate', None) != 'true':
+            self.paginator.page_size = 0
+
+        queryset = self.filter_queryset(self.__get_direct_delivery())
+
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def __get_direct_delivery(self):
+        query = self.request.GET.get('query')
+        from_date = self.request.GET.get('from')
+        to_date = self.request.GET.get('to')
+        return PurchaseOrder.objects.for_direct_delivery(search_term=query, from_date=from_date, to_date=to_date)
 
     @detail_route()
     def deliveries(self, request, pk=None):

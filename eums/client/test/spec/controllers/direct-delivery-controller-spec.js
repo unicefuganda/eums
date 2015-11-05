@@ -134,14 +134,14 @@ describe('DirectDeliveryController', function () {
         });
 
         it('should hide loader after retrieving purchase orders', function () {
-            deferredPurchaseOrder.resolve(['po one', 'po two']);
+            deferredPurchaseOrder.resolve({results: ['po one', 'po two'], count: 2, pageSize: 10});
             scope.initialize();
             scope.$apply();
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
         });
     });
 
-    describe('when purchase order is selected', function () {
+    describe('when purchase order selected', function () {
         it('should show modal', function () {
             scope.selectPurchaseOrder(purchaseOrderOne);
             expect(mockLoaderService.showModal).toHaveBeenCalledWith('select-modal-1');
@@ -176,31 +176,29 @@ describe('DirectDeliveryController', function () {
         })
     });
 
-    describe('on filter by date range', function () {
+    describe('when filtered by date range', function () {
         it('should not filter empty when query, fromDate and toDate are empty', function () {
             scope.$apply();
 
             expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(0);
         });
 
-        it('should still filter fromDate when toDate is empty', function () {
+        it('should filter fromDate when toDate is empty', function () {
             scope.$apply();
             scope.fromDate = '2014-07-07';
             scope.$apply();
             timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {from: '2014-07-07'});
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2014-07-07' }));
         });
 
-        it('should still filter toDate when fromDate is empty', function () {
+        it('should filter toDate when fromDate is empty', function () {
             scope.$apply();
             scope.toDate = '2014-07-07';
             scope.$apply();
             timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {to: '2014-07-07'});
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ to: '2014-07-07' }));
         });
 
         it('should filter deliveries when date range is given', function () {
@@ -210,11 +208,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
             timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {
-                from: '2014-05-07',
-                to: '2014-07-07'
-            });
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2014-05-07', to: '2014-07-07' }));
         });
 
         it('should format dates before filtering deliveries ', function () {
@@ -224,11 +218,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
             timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {
-                from: '2015-08-30',
-                to: '2015-09-10'
-            });
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2015-08-30', to: '2015-09-10' }));
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
@@ -238,11 +228,7 @@ describe('DirectDeliveryController', function () {
             scope.$apply();
             timeout.flush();
 
-            expect(mockPurchaseOrderService.forDirectDelivery.calls.count()).toEqual(1);
-            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, {
-                from: '2014-05-07',
-                query: 'wakiso programme'
-            })
+            expect(mockPurchaseOrderService.forDirectDelivery).toHaveBeenCalledWith(undefined, jasmine.objectContaining({ from: '2014-05-07', query: 'wakiso programme' }))
         });
     });
 

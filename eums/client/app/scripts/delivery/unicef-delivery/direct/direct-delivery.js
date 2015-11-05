@@ -8,6 +8,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
         var rootPath = '/direct-delivery/new/';
 
+
         $scope.sortBy = $sorter;
         $scope.searchFields = ['orderNumber', 'date'];
         $scope.errorMessage = '';
@@ -22,48 +23,37 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.poTypeColumnTitle = 'PO Type';
         $scope.outcomeColumnTitle = 'Outcome';
 
-        $scope.initialize = function (urlArgs) {
+        function loadDeliveries(options) {
             LoaderService.showLoader();
+            options = angular.extend({'paginate': 'true'}, options);
+
+            PurchaseOrderService.forDirectDelivery(undefined, options).then(function (response) {
+                $scope.purchaseOrders = response.results.sort();
+                $scope.count = response.count;
+                $scope.pageSize = response.pageSize;
+                LoaderService.hideLoader();
+            }).catch(function () {
+                ngToast.create({content: 'Failed to load deliveries', class: 'danger'});
+            });
+        }
+
+        $scope.initialize = function (urlArgs) {
             this.sortBy('orderNumber');
             this.sort.descending = false;
 
-            PurchaseOrderService.forDirectDelivery(undefined, urlArgs).then(function (purchaseOrders) {
-                $scope.purchaseOrders = purchaseOrders.sort();
-                if(urlArgs) {
-                    if(urlArgs.from) {
-                        $scope.fromDate = moment(Date.parse(urlArgs.from)).format('DD-MMM-YYYY');
-                        initializing = true;
-                    }
-
-                    if(urlArgs.to) {
-                        $scope.toDate = moment(Date.parse(urlArgs.to)).format('DD-MMM-YYYY');
-                        initializing = true;
-                    }
-                }
-
-                LoaderService.hideLoader();
-            });
+            loadDeliveries(urlArgs);
         };
 
-        var timer, initializing = true;
+        $scope.goToPage = function (page) {
+            loadDeliveries(angular.extend({'page': page}, changedFilters()));
+        };
 
-        $scope.$watch('[fromDate,toDate,query]', function () {
-            if (initializing) {
-                initializing = false;
-            }
-            else {
-                if (timer) {
-                    $timeout.cancel(timer);
-                }
-                delaySearch();
-            }
-        }, true);
-
-        function delaySearch() {
-            timer = $timeout(function () {
-                $scope.initialize(changedFilters());
+        $scope.$watch('[fromDate,toDate,query]', function (newValue, oldValue) {
+            if (angular.equals(newValue, oldValue)) return;
+            $timeout(function () {
+                $scope.initialize(changedFilters())
             }, 2000);
-        }
+        }, true);
 
         function changedFilters() {
             var urlArgs = {};

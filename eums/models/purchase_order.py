@@ -22,7 +22,6 @@ class PurchaseOrderManager(models.Manager):
         order_ids = PurchaseOrderItem.objects.filter(id__in=order_item_ids).values_list('purchase_order')
         return self.model.objects.filter(id__in=order_ids)
 
-
 class PurchaseOrder(TimeStampedModel):
     order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder)
