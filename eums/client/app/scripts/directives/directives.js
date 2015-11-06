@@ -185,10 +185,6 @@ angular.module('Directives', ['eums.ip'])
                             modelValue && ConsigneeService.get(modelValue).then(function (consignee) {
                                 callback(formatConsignee(consignee));
                             });
-
-                            if (!modelValue) {
-                                $(element).val(undefined).trigger('change');
-                            }
                         });
                     }
                 });
