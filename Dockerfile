@@ -108,8 +108,7 @@ ENV LC_ALL C
 ## install Elasticsearch
 ##############################################################################
 # Install Java
-RUN sudo apt-get install -y software-properties-common
-RUN sudo apt-get update && sudo apt-get -y install openjdk-7-jdk --fix-missing
+RUN sudo apt-get update && sudo apt-get -y install default-jre
 
 # Add elasticsearch repository to apt-get repositories
 RUN mkdir -p /opt/downloads && cd /opt/downloads && curl -SsfLO "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.3.deb"
