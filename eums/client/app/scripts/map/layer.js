@@ -47,11 +47,9 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
     }).factory('Layer', function (DeliveryService, DeliveryStatsService) {
         function changeGlobalStats(layerName, scope) {
             var allFilter = setFilter(layerName, scope);
-            scope.$apply(function () {
-                DeliveryStatsService.getStatsDetails(allFilter, true).then(function (responses) {
-                    scope.data.totalStats = responses.data;
-                    scope.data.totalStats.location = layerName;
-                });
+            DeliveryStatsService.getStatsDetails(allFilter, true).then(function (responses) {
+                scope.data.totalStats = responses.data;
+                scope.data.totalStats.location = layerName;
             });
         }
 
@@ -59,16 +57,13 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
             var treePosition = scope.data.ipView ? 'IMPLEMENTING_PARTNER' : 'END_USER';
             var filter = layerName ? {location: layerName, treePosition: treePosition} : {treePosition: treePosition};
             return angular.extend(filter, scope.filter);
-
         }
 
         function showResponsesForDistrict(layerName, scope) {
             var allFilter = setFilter(layerName, scope);
-            scope.$apply(function () {
-                DeliveryStatsService.getLatestDeliveries(allFilter).then(function (responses) {
-                    scope.data.latestDeliveries = responses.data;
-                    scope.data.district = layerName;
-                });
+            DeliveryStatsService.getLatestDeliveries(allFilter).then(function (responses) {
+                scope.data.latestDeliveries = responses.data;
+                scope.data.district = layerName;
             });
         }
 

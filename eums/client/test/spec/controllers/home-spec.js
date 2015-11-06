@@ -11,7 +11,7 @@ describe('Module: Home', function () {
             location = $location;
             scope = $rootScope.$new();
             mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
-            mockMapService = jasmine.createSpyObj('mockMapService', ['addHeatMap']);
+            mockMapService = jasmine.createSpyObj('mockMapService', ['addHeatMap', 'clickLayer']);
             mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
             deferred = $q.defer();
             mockUserService.getCurrentUser.and.returnValue(deferred.promise);
@@ -86,6 +86,24 @@ describe('Module: Home', function () {
             scope.deliveryStatus = {mapNotReceived: true};
             scope.$apply();
             expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+        });
+
+        it('should re-click district layer if district is clicked on change of IP view', function () {
+            scope.data.district = 'Gulu';
+            scope.toggleIpView(false);
+            scope.$apply();
+
+            expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+            expect(mockMapService.clickLayer).toHaveBeenCalledWith('Gulu');
+        });
+
+        it('should not re-click district layer if no district is clicked on change of IP view', function () {
+            scope.data.district = "";
+            scope.toggleIpView(false);
+            scope.$apply();
+
+            expect(mockMapService.addHeatMap).toHaveBeenCalledWith(scope);
+            expect(mockMapService.clickLayer).not.toHaveBeenCalled();
         });
 
         it('should set deliveryStatus received with and without issues to true if all received is true', function () {

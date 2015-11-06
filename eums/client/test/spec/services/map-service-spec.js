@@ -113,6 +113,7 @@ describe('eums.layers', function () {
                 var optionsMock = jasmine.createSpyObj('optionsMock', ['districtLayerStyle', 'selectedLayerStyle']),
                     districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
                 districtLayer.click();
+                scope.$apply();
 
                 expect(mockDeliveryStatsService.getStatsDetails).toHaveBeenCalled();
                 expect(mockDeliveryStatsService.getLatestDeliveries).toHaveBeenCalledWith({
@@ -131,7 +132,6 @@ describe('eums.layers', function () {
                 jasmine.createSpyObj('optionsMock', ['onClickHandler']);
                 scope.data = {totalStats: {}, district: '', ipView: false};
                 deferredAggregates.resolve({data: {key: 'some values'}});
-                scope.$apply();
                 var optionsMock = {
                     selectedLayerStyle: {fillColor: 'red', weight: 2.0},
                     districtLayerStyle: {fillColor: 'Blue', weight: 3.0}
@@ -139,6 +139,7 @@ describe('eums.layers', function () {
                 var districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
 
                 districtLayer.highlight();
+                scope.$apply();
 
                 expect(districtLayer.isHighlighted()).toBeTruthy();
                 expect(mockMapLayer.setStyle).toHaveBeenCalledWith({fillColor: 'Blue', weight: 3.5});

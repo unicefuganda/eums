@@ -23,17 +23,18 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
 
         $scope.toggleIpView = function (value) {
             $scope.data.ipView = value;
-            $scope.redrawMapColors();
+            redrawMapColors();
         };
 
-        $scope.redrawMapColors = function () {
+        var redrawMapColors = function () {
             LoaderService.showLoader();
             MapService.addHeatMap($scope);
+            $scope.data.district && MapService.clickLayer($scope.data.district);
         };
 
         $scope.$watchCollection('filter', function (newFilter, oldFilter) {
             if (!Object.equal(newFilter, oldFilter)) {
-                $scope.redrawMapColors();
+                redrawMapColors();
             }
         }, true);
 
@@ -50,7 +51,7 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
 
         $scope.$watchCollection('deliveryStatus', function (newDeliveryStatus, oldDeliveryStatus) {
             if (!Object.equal(newDeliveryStatus, oldDeliveryStatus)) {
-                $scope.redrawMapColors();
+                redrawMapColors();
             }
         }, true);
     })

@@ -151,9 +151,9 @@
             getLayerBounds: function (layerName) {
                 return LayerMap.getLayerBoundsBy(layerName);
             },
-            clickLayer: function (layerName, scope) {
+            clickLayer: function (layerName) {
                 if (layerName) {
-                    LayerMap.clickLayer(layerName.toLowerCase(), scope);
+                    LayerMap.clickLayer(layerName.toLowerCase());
                     this.highlightLayer(layerName);
                 }
             },
