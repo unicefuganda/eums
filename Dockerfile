@@ -105,6 +105,34 @@ RUN apt-get install -y mongodb-org=2.6.5 mongodb-org-server=2.6.5 mongodb-org-sh
 ENV LC_ALL C
 
 ##############################################################################
+## install Elasticsearch
+##############################################################################
+# Install Java
+RUN sudo apt-get install -y software-properties-common
+RUN sudo apt-get update && sudo apt-get -y install openjdk-7-jdk --fix-missing
+
+# Add elasticsearch repository to apt-get repositories
+RUN mkdir -p /opt/downloads && cd /opt/downloads && curl -SsfLO "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.3.deb"
+
+# Install Elasticsearch
+RUN dpkg -i /opt/downloads/elasticsearch-1.7.3.deb
+
+# Enable Cross-site Origin Requests to Elasticsearch
+RUN sudo echo 'http.cors.enabled : true' >> /etc/elasticsearch/elasticsearch.yml
+
+# Set MAX_MAP_COUNT configuration off. When on, an error is returned because docker is a readonly OS
+RUN sed -i '/sysctl -q -w vm.max_map_count/ s/^#*/true\n#/' /etc/init.d/elasticsearch
+
+# Set elasticsearch to run with root user
+RUN sed -i '/^ES_USER=el/ s/^#*/true\nES_USER=root\n#/' /etc/init.d/elasticsearch
+RUN sed -i '/^ES_GROUP=el/ s/^#*/true\nES_GROUP=root\n#/' /etc/init.d/elasticsearch
+
+# Enable Elasticsearch service to start on boot
+RUN sudo update-rc.d elasticsearch defaults 95 10
+
+RUN service elasticsearch start
+
+##############################################################################
 # Install UWSGI
 ##############################################################################
 RUN apt-get install -y python-dev

@@ -2,18 +2,21 @@ DELIVERY_NODE_MAPPING = {
     "delivery_node": {
         "properties": {
             "balance": {
-                "type": "integer"
+                "type": "long"
             },
             "responses": {
                 "properties": {
-                    "value": {"type": "string"}
+                    "value": {
+                        "type": "string",
+                        "index": "not_analyzed"
+                    }
                 }
             },
             "item": {
                 "type": "string",
                 "fields": {
                     "quantity": {
-                        "type": "integer"
+                        "type": "long"
                     }
                 }
             },
@@ -26,13 +29,13 @@ DELIVERY_NODE_MAPPING = {
                 "index": "not_analyzed"
             },
             "total_value": {
-                "type": "float"
+                "type": "double"
             },
             "value_lost": {
-                "type": "float"
+                "type": "double"
             },
             "delivery_delay": {
-                "type": "integer"
+                "type": "long"
             }
         }
     }

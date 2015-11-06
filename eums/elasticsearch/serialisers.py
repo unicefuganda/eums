@@ -98,7 +98,7 @@ def _serialise_node(node):
 
 def _compute_node_loss(node, responses):
     amount_received_responses = filter(lambda response: response['question']['label'] == 'amountReceived', responses)
-    amount_received = amount_received_responses[0]['value'] if amount_received_responses else None
+    amount_received = int(amount_received_responses[0]['value']) if amount_received_responses else None
     value_received = node.item.unit_value() * amount_received if amount_received else None
     return round(node.total_value - value_received, 2) if value_received else None
 
@@ -138,6 +138,7 @@ def _get_relevant_delivery_responses_for(node):
 
 def _serialise_simple_answer(answer):
     answer_json = _extract_clean_fields(answer)
+    answer_json['value'] = str(answer_json['value'])
     answer_json['question'] = _serialise_question(answer.question)
     answer_json['run'] = _serialise_run(answer.run)
     return answer_json
