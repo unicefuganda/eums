@@ -1,6 +1,6 @@
 describe('StockReportController', function () {
     var scope, mockStockReportService, mockConsigneeService, mockIpService, stubStockReport, deferredStubReport,
-        stubDistricts, toastPromise, mockToastProvider, deferredStubIPs, deferredDistricts;
+        stubDistricts, toastPromise, mockToastProvider, deferredStubIPs, deferredDistricts, mockUserService;
 
     stubStockReport = {
         data: {
@@ -67,6 +67,8 @@ describe('StockReportController', function () {
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
+        mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+
 
         inject(function ($controller, $rootScope, $q) {
             deferredStubIPs = $q.defer();
@@ -77,6 +79,13 @@ describe('StockReportController', function () {
             mockStockReportService.getStockReport.and.returnValue(deferredStubReport.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
+            mockUserService.getCurrentUser.and.returnValue($q.when({
+                "username": "admin",
+                "first_name": "",
+                "last_name": "",
+                "email": "admin@tw.org",
+                "consignee_id": null
+            }));
 
             scope = $rootScope.$new();
 
@@ -86,7 +95,8 @@ describe('StockReportController', function () {
                 ConsigneeService: mockConsigneeService,
                 ngToast: mockToastProvider,
                 IPService: mockIpService,
-                LoaderService: mockLoaderService
+                LoaderService: mockLoaderService,
+                UserService: mockUserService
             });
         });
     });
