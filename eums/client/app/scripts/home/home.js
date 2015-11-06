@@ -3,20 +3,12 @@
 angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrderItem', 'PurchaseOrder', 'eums.map',
     'Loader', 'map.layers'])
     .controller('HomeController', function ($rootScope, $scope, $location, UserService, MapService, LoaderService) {
-        $scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
-        $scope.deliveryStatus = {
-            mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
-            mapNotReceived: true
-        };
+        $scope.filter = {programme: '', ip: '', from: '', to: ''};
+        $scope.deliveryStatus = {mapReceivedWithIssues: true, mapNonResponse: true, mapReceived: true,
+                                    mapNotReceived: true};
 
         $scope.datepicker = {from: false, to: false};
-        $scope.totalStats = {};
-        $scope.allResponses = {};
-        $scope.allResponsesFromDb = {};
-        $scope.allResponsesMap = [];
-        $scope.data = {topLevelResponses: [], allResponsesLocationMap: [], totalStats: {}, responses: false, district: '', ipView: false};
-        $scope.isFiltered = false;
-        $scope.notDeliveryStatus = false;
+        $scope.data = {totalStats: {}, district: '', ipView: false};
         $scope.deliveryStatusCollapsed = false;
 
         $scope.directiveValues = {};
@@ -24,19 +16,15 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         UserService.getCurrentUser().then(function (user) {
             $scope.user = user;
         });
+
         $scope.showDetailedResponses = function () {
             $location.path('/response-details/' + $scope.data.district);
         };
 
         $scope.toggleIpView = function (value) {
             $scope.data.ipView = value;
+            $scope.redrawMapColors();
         };
-
-        $scope.$watch('data.ipView', function (newIpView, oldIpView) {
-            if (newIpView != oldIpView) {
-                $scope.redrawMapColors();
-            }
-        });
 
         $scope.redrawMapColors = function () {
             LoaderService.showLoader();

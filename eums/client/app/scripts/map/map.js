@@ -42,24 +42,13 @@
 
             map.on('zoomend', function () {
                 if (window.map.getZoom() < 8) {
-                    mapScope.data.responses = [];
                     mapScope.data.district = '';
                     mapScope.filter = {
                         programme: '',
                         ip: '',
-                        year: '',
                         from: '',
-                        to: '',
-                        received: true,
-                        notDelivered: true,
-                        receivedWithIssues: true
+                        to: ''
                     };
-                    mapScope.isFiltered = false;
-                    mapScope.data.allResponsesLocationMap = [];
-                    DeliveryService.aggregateResponses().then(function (aggregates) {
-                        mapScope.data.totalStats = aggregates;
-                    });
-                    addHeatMapLayer(mapScope);
                     window.map.setView(EumsConfig.MAP_OPTIONS.CENTER);
                 }
             });
@@ -85,7 +74,7 @@
         }
 
         function addHeatMapLayer(scope) {
-            var treePosition = scope.ipView?'IMPLEMENTING_PARTNER':'END_USER';
+            var treePosition = scope.data.ipView?'IMPLEMENTING_PARTNER':'END_USER';
             var allFilter = angular.extend({treePosition: treePosition}, scope.filter);
             DeliveryStatsService.getMapStats(allFilter).then(function (response) {
                 var filteredByColorStatsData = filterByColor(response.data, scope.deliveryStatus);
@@ -182,28 +171,25 @@
         }
     });
 
-    module.directive('map', function (MapService, $window, IPService, DeliveryService) {
+    module.directive('map', function (MapService, $window) {
         return {
             scope: false,
             link: function (scope, element, attrs) {
                 MapService.render(attrs.id, null, scope).then(function (map) {
                     $window.map = map;
                     scope.programme = '';
-                    scope.notDeliveredChecked = false;
-                    scope.deliveredChecked = null;
                 });
 
                 scope.clearFilters = function () {
                     $("#select-program").select2("val", "");
                     $("#select-ip").select2("val", "");
-                    scope.filter = {programme: '', ip: '', from: '', to: '', year: ''};
-                    scope.data.allResponsesLocationMap = scope.reponsesFromDb;
+                    scope.filter = {programme: '', ip: '', from: '', to: ''};
                 };
 
             }
         }
     })
-        .directive('mapFilter', function () {
+    .directive('mapFilter', function () {
             return {
                 restrict: 'E',
                 scope: false,
@@ -217,65 +203,6 @@
                 templateUrl: '/static/app/views/partials/marker-summary.html'
             }
         })
-        .directive('dateRangeFilter', function (DeliveryService, UserService) {
-            function removeEmptyArray(filteredResponses) {
-                return filteredResponses.filter(function (response) {
-                    return response.length > 0;
-                });
-            }
-
-            function filterResponsesForUser(responsesToPlot) {
-                return UserService.getCurrentUser().then(function (user) {
-                    if (user.consignee_id) {
-                        var filteredIPResponses = responsesToPlot.map(function (responsesWithLocation) {
-                            return responsesWithLocation.consigneeResponses.filter(function (response) {
-                                return parseInt(response.consignee.id) === parseInt(user.consignee_id);
-                            });
-                        });
-                        return DeliveryService.groupResponsesByLocation(_.flatten(removeEmptyArray(filteredIPResponses)));
-                    }
-                    else {
-                        return responsesToPlot;
-                    }
-                });
-            }
-
-            return {
-                restrict: 'A',
-                scope: false,
-                link: function (scope) {
-                    scope.$watchCollection('[filter.from, filter.to]', function (newDates) {
-                        var receivedResponses = [];
-                        var fromDate = moment(newDates[0]);
-                        var toDate = moment(newDates[1]);
-                        var responsesToPlot = scope.data.topLevelResponses.length ?
-                            scope.data.topLevelResponses : scope.notDeliveryStatus ?
-                            scope.reponsesFromDb : !scope.notDeliveryStatus ?
-                            scope.reponsesFromDb : scope.allResponsesMap;
-
-                        function isWithinDateRange(dateOfReceipt) {
-                            var dateRange = moment().range(fromDate, toDate);
-                            return dateOfReceipt && dateRange.contains(moment(dateOfReceipt, 'DD-MMM-YYYY'));
-                        }
-
-                        if (newDates[0] && newDates[1]) {
-                            scope.isFiltered = true;
-                            receivedResponses = responsesToPlot.map(function (responseLocationMap) {
-                                return responseLocationMap.consigneeResponses.filter(function (response) {
-                                    return isWithinDateRange(response.dateOfReceipt);
-                                });
-                            });
-                        }
-                        var cleanedResponses = removeEmptyArray(receivedResponses);
-                        scope.data.allResponsesLocationMap = DeliveryService.groupResponsesByLocation(_.flatten(cleanedResponses));
-                        filterResponsesForUser(scope.data.allResponsesLocationMap).then(function (filteredResponses) {
-                            scope.data.allResponsesLocationMap = filteredResponses;
-                        });
-                    });
-                }
-            }
-
-        });
 })
 (angular.module('eums.map', ['eums.config', 'eums.ip', 'Programme', 'Delivery', 'DatePicker', 'map.layers', 'DeliveryStats', 'Loader']));
 
