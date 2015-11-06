@@ -1,6 +1,7 @@
 describe('StockReportController', function () {
     var scope, mockStockReportService, mockConsigneeService, mockIpService, stubStockReport, deferredStubReport,
-        stubDistricts, toastPromise, mockToastProvider, deferredStubIPs, deferredDistricts, mockUserService;
+        stubDistricts, toastPromise, mockToastProvider, deferredStubIPs, deferredDistricts, mockUserService, deferredUser;
+    var adminUser, ipUser;
 
     stubStockReport = {
         data: {
@@ -59,6 +60,11 @@ describe('StockReportController', function () {
 
     stubDistricts = {data: ['Adjumani', 'Luweero']};
 
+    adminUser = {"username": "admin", "first_name": "", "last_name": "", "email": "admin@tw.org", "consignee_id": null};
+
+    ipUser = {"username": "wakiso", "first_name": "", "last_name": "", "email": "ip@ip.com", "consignee_id": 1};
+
+
     beforeEach(function () {
         module('StockReport');
 
@@ -75,17 +81,12 @@ describe('StockReportController', function () {
             deferredStubReport = $q.defer();
             toastPromise = $q.defer();
             deferredDistricts = $q.defer();
+            deferredUser = $q.defer();
 
             mockStockReportService.getStockReport.and.returnValue(deferredStubReport.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
-            mockUserService.getCurrentUser.and.returnValue($q.when({
-                "username": "admin",
-                "first_name": "",
-                "last_name": "",
-                "email": "admin@tw.org",
-                "consignee_id": null
-            }));
+            mockUserService.getCurrentUser.and.returnValue(deferredUser.promise);
 
             scope = $rootScope.$new();
 
@@ -102,6 +103,10 @@ describe('StockReportController', function () {
     });
 
     describe('on initial load', function () {
+
+        beforeEach(function () {
+            deferredUser.resolve(adminUser);
+        });
 
         it('should load stock report', function () {
             scope.reportParams = {};
@@ -122,6 +127,7 @@ describe('StockReportController', function () {
 
         beforeEach(function () {
             // Initial Load
+            deferredUser.resolve(adminUser);
             scope.reportParams = {}
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
@@ -283,4 +289,22 @@ describe('StockReportController', function () {
             expect(scope.openDocument).toBe(undefined);
         });
     })
+
+    describe('IP can only see their specific stock reports', function () {
+        beforeEach(function () {
+            deferredUser.resolve(ipUser);
+        });
+
+        it('should get current user, then load stock reports for this user', function () {
+            scope.$apply();
+
+            expect(mockUserService.getCurrentUser.calls.count()).toEqual(1);
+            expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
+        });
+
+        it('should disable IP filter', function () {
+            expect(scope.ipReadonly).toBeFalsy();
+        });
+    });
 });
