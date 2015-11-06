@@ -46,7 +46,8 @@
         "ALERTS": "/api/alert/",
         "DELIVERY_EXPORTS": "/exports/deliveries/",
         "DELIVERY_STATS_DETAILS": "/api/delivery-stats/details/",
-        "MAP_DELIVERY_STATS": "/api/delivery-stats/map/"
+        "MAP_DELIVERY_STATS": "/api/delivery-stats/map/",
+        "LATEST_DELIVERIES": "/api/latest-deliveries/"
     },
     "CONTACT_SERVICE_URL": "http://localhost/contacts/",
     "ELASTIC_SEARCH_URL": "http://localhost:9200/eums/delivery_node/",

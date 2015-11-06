@@ -23,6 +23,9 @@ angular.module('DeliveryStats', ['eums.config'])
             },
             getMapStats: function (filter) {
                 return $http.get(EumsConfig.BACKEND_URLS.MAP_DELIVERY_STATS, {params: reformatDate(filter)});
+            },
+            getLatestDeliveries: function (filter) {
+                return $http.get(EumsConfig.BACKEND_URLS.LATEST_DELIVERIES, {params: reformatDate(filter)});
             }
         }
     });

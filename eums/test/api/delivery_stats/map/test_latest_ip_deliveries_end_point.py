@@ -24,9 +24,8 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
     def test_should_return_correct_json_object(self):
         response = self.client.get(ENDPOINT_URL + '?treePosition=IMPLEMENTING_PARTNER&location=someLocation&limit=3')
         expected_stats = [
-            {'deliveryName': 'someLocation on 28-Sep-2014', 'received': True, 'inGoodCondition': True,
-             'satisfied': True}, {'deliveryName': 'someLocation on 25-Sep-2014', 'received': False, 'inGoodCondition': False,
-             'satisfied': False}]
+            {'name': 'someLocation on 28-Sep-2014', 'received': True, 'inGoodCondition': True, 'satisfied': True},
+            {'name': 'someLocation on 25-Sep-2014', 'received': False, 'inGoodCondition': False, 'satisfied': False}]
         self.assert_ip_delivery_stats(response, expected_stats)
 
     def setup_responses(self):

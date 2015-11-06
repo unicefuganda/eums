@@ -14,10 +14,9 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         $scope.allResponses = {};
         $scope.allResponsesFromDb = {};
         $scope.allResponsesMap = [];
-        $scope.data = {topLevelResponses: [], allResponsesLocationMap: [], totalStats: {}, responses: [], district: ''};
+        $scope.data = {topLevelResponses: [], allResponsesLocationMap: [], totalStats: {}, responses: false, district: '', ipView: false};
         $scope.isFiltered = false;
         $scope.notDeliveryStatus = false;
-        $scope.ipView = false;
         $scope.deliveryStatusCollapsed = false;
 
         $scope.directiveValues = {};
@@ -30,10 +29,10 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         };
 
         $scope.toggleIpView = function (value) {
-            $scope.ipView = value;
+            $scope.data.ipView = value;
         };
 
-        $scope.$watch('ipView', function (newIpView, oldIpView) {
+        $scope.$watch('data.ipView', function (newIpView, oldIpView) {
             if (newIpView != oldIpView) {
                 $scope.redrawMapColors();
             }

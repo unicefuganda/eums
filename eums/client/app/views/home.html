@@ -2,7 +2,7 @@
     <a default-view class="view-thumbnail"><img type="image/svg+xml" src="/static/app/media/map_zoom_out.svg"/></a>
 
     <div id="map" class="full-page" map>
-        <map-filter map-filters></map-filter>
+        <map-filter></map-filter>
         <div class="map-legend-panel ng-cloak">
             <form role='form'>
                 <div class="map-summary-header centered">
@@ -11,7 +11,7 @@
                             ng-class="{ 'expanded': !deliveryStatusCollapsed, 'collapsed': deliveryStatusCollapsed }"></span>
                 </div>
 
-                <div delivery-status ng-hide="deliveryStatusCollapsed" id='map-legend-content'>
+                <div  ng-hide="deliveryStatusCollapsed" id='map-legend-content'>
                     <div class="checkbox">
                         <label>
                             <input type="checkbox" checked ng-model="deliveryStatus.mapNotReceived"/> Mostly not received

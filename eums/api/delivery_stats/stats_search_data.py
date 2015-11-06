@@ -77,10 +77,10 @@ class EndUserStatsSearchData(StatsSearchData):
                                                               question__label=self.amount_received_label)
 
         received = self._get_yes_or_no(received_answer)
-        quality = self._get_answer_value(good_condition_answer)
-        amount_received = self._get_answer_value(amount_received_answer)
         result = {'name': item.description, 'amountSent': node.quantity_in(), 'productReceived': received}
         if received:
+            amount_received = self._get_answer_value(amount_received_answer)
+            quality = self._get_answer_value(good_condition_answer)
             result.update({'amountReceived': amount_received, 'qualityOfProduct': quality})
         return result
 
@@ -125,7 +125,7 @@ class IpStatsSearchData(StatsSearchData):
         received = self._get_yes_or_no(received_answer)
         quality = self._get_yes_or_no(good_condition_answer)
         satisfied = self._get_yes_or_no(satisfied_answer)
-        return {'deliveryName': '%s on %s' % (node.location, delivery_date), 'received': received,
+        return {'name': '%s on %s' % (node.location, delivery_date), 'received': received,
                 'inGoodCondition': quality, 'satisfied': satisfied}
 
 

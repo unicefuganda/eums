@@ -1,14 +1,15 @@
 <div ng-show="data.district" id='marker-summary' class="table-responsive map-summary">
-    <div class="map-summary-header centered">
-        <span class="sub-header title">Latest Deliveries to {{ data.district }}</span>
+    <div class="map-summary-header centered clearfix">
+        <span class="sub-header title latest-deliveries-title">Latest Deliveries to {{ data.district }}</span>
         <span ng-click="isCollapsed=!isCollapsed"
               class="marker-summary-arrow"
               ng-class="{ 'expanded': !isCollapsed, 'collapsed': isCollapsed }"></span>
     </div>
     <div ng-hide="isCollapsed">
-        <div ng-show="data.responses">
+
+        <div ng-show="!data.ipView && data.latestDeliveries">
             <ul class="list-group">
-                <li href="#" class="list-group-item border-none" ng-repeat="response in data.responses">
+                <li href="#" class="list-group-item border-none" ng-repeat="response in data.latestDeliveries">
                     <h6 class="list-group-item-heading response-item-font-weight">{{ response.name }}</h6>
 
                     <p class="list-group-item-text">
@@ -24,7 +25,27 @@
                 </li>
             </ul>
         </div>
-        <div ng-hide="data.responses" class="centered pad-10">
+        <div ng-show="data.ipView && data.latestDeliveries">
+            <ul class="list-group">
+                <li href="#" class="list-group-item border-none" ng-repeat="response in data.latestDeliveries">
+                    <h6 class="list-group-item-heading response-item-font-weight">{{ response.name }}</h6>
+
+                    <p class="list-group-item-text">
+                        <span ng-show="!response.received" class="label label-danger text-uppercase">Not Received</span>
+                        <span ng-show="response.received"
+                              class="label text-uppercase margin-right-5"
+                              ng-class="{'good': response.inGoodCondition, 'bad_condition':!response.inGoodCondition}">
+                            {{ response.inGoodCondition? 'Good':'Bad Condition' }} </span>
+
+                        <span ng-show="response.received"
+                              class="label text-uppercase"
+                              ng-class="{'good': response.satisfied, 'bad_condition':!response.satisfied}">
+                            {{ response.satisfied? 'Satisfied':'Not Satisfied' }} </span>
+                    </p>
+                </li>
+            </ul>
+        </div>
+        <div ng-hide="data.latestDeliveries" class="centered pad-10">
             No deliveries made to this district.
         </div>
         <div class="centered margin-bottom-none pad-10 border-none">

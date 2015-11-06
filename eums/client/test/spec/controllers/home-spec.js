@@ -31,7 +31,7 @@ describe('Module: Home', function () {
         });
 
         it('should set end-user view by default', function () {
-            expect(scope.ipView).toBe(false);
+            expect(scope.data.ipView).toBe(false);
         });
 
         it('should not collapse delivery status panel by default', function () {
@@ -49,14 +49,14 @@ describe('Module: Home', function () {
         it('should toggle ip and end-user feedback view', function () {
             scope.toggleIpView(true);
             scope.$apply();
-            expect(scope.ipView).toBe(true);
+            expect(scope.data.ipView).toBe(true);
 
             scope.toggleIpView(false);
             scope.$apply();
-            expect(scope.ipView).toBe(false);
+            expect(scope.data.ipView).toBe(false);
         });
 
-        it('should watch ipView and reload the map', function () {
+        it('should watch data.ipView and reload the map', function () {
             scope.toggleIpView(false);
             scope.$apply();
             scope.toggleIpView(true);

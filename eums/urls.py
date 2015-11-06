@@ -79,7 +79,7 @@ urlpatterns = patterns(
     url(r'^api/end-user-responses/$', AllEndUserResponses.as_view(), name='all_end_user_responses'),
     url(r'^api/delivery-stats/details/$', DeliveryStatsDetailsEndpoint.as_view(), name='delivery_stats_details'),
     url(r'^api/delivery-stats/map/$', MapDeliveryStatsEndpoint.as_view(), name='delivery_stats_map'),
-    url(r'^api/latest_deliveries/$', LatestDeliveriesEndpoint.as_view(), name='latest_deliveries'),
+    url(r'^api/latest-deliveries/$', LatestDeliveriesEndpoint.as_view(), name='latest_deliveries'),
     url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
