@@ -22,8 +22,9 @@
                                 <label class="control-label description-label" for="select-ip">IP:</label>
                             </div>
                             <div class="col-lg-8">
-                                <input id="select-ip" class="form-control" type="hidden" search-consignees
-                                       ng-model="reportParams.selectedIPId" placeholder="All Implementing Partners">
+                                <input id="select-ip" class="form-control" type="hidden" search-consignees value="0"
+                                       ng-readonly="ipReadonly" ng-model="reportParams.selectedIPId"
+                                       placeholder="All Implementing Partners">
                             </div>
                         </div>
                         <div class="pad-top-5 pad-bottom-5" style="overflow: hidden;">

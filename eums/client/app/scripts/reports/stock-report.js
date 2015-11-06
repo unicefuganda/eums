@@ -1,14 +1,22 @@
 'use strict';
 
 angular.module('StockReport', [
-    'eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives', 'Loader'])
-    .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService, LoaderService) {
+        'eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User'])
+    .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService, LoaderService, UserService) {
         $scope.reportParams = {};
         $scope.totals = {};
+        $scope.ipReadonly = false;
 
         function init() {
             loadDistricts();
-            fetchReport();
+
+            UserService.getCurrentUser().then(function (user) {
+                if (user && user.consignee_id) {
+                    $scope.ipReadonly = true;
+                    $scope.reportParams.selectedIPId = user.consignee_id;
+                }
+                fetchReport();
+            });
         }
 
         function loadDistricts() {
