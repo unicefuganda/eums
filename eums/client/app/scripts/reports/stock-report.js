@@ -14,6 +14,8 @@ angular.module('StockReport', [
                 if (user && user.consignee_id) {
                     $scope.ipReadonly = true;
                     $scope.reportParams.selectedIPId = user.consignee_id;
+                } else {
+                    $scope.$broadcast('clear-consignee');
                 }
                 fetchReport();
             });
