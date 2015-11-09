@@ -112,7 +112,7 @@ def _query_args(request):
 
 
 def _filter_fields(params):
-    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id', 'location': 'location'}
+    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id', 'location': 'location__iexact'}
     search_params = {}
     for key, value in params.iteritems():
         query_field = query_fields.get(key)

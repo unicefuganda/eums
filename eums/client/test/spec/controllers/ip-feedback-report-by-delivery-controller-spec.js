@@ -1,5 +1,6 @@
 describe('IpFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout,
+        route = {}, initController;
 
     beforeEach(function () {
         module('IpFeedbackReportByDelivery');
@@ -15,12 +16,17 @@ describe('IpFeedbackReportController', function () {
 
             mockReportService.ipFeedbackReportByDelivery.and.returnValue(deferredResult.promise);
 
-            $controller('IpFeedbackReportByDeliveryController', {
-                $scope: scope,
-                $location: location,
-                ReportService: mockReportService,
-                LoaderService: mockLoader
-            });
+            initController = function(routeParams) {
+                $controller('IpFeedbackReportByDeliveryController', {
+                    $scope: scope,
+                    $location: location,
+                    $routeParams: routeParams,
+                    ReportService: mockReportService,
+                    LoaderService: mockLoader
+                });
+            };
+
+            initController(route);
         });
     });
 
@@ -43,6 +49,22 @@ describe('IpFeedbackReportController', function () {
 
             expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalled();
             expect(scope.report).toEqual(response.results)
+        });
+
+        it('should filter reports service by district if requested', function () {
+            initController({district: 'Fort Portal'});
+            var response = {results: [{id: 4}, {id: 24}]};
+            deferredResult.resolve(response);
+            scope.$apply();
+
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({location: 'Fort Portal'});
+            expect(scope.report).toEqual(response.results)
+        });
+
+        it('should set district', function () {
+            expect(scope.district).toEqual('All Districts');
+            initController({district: 'Fort Portal'});
+            expect(scope.district).toEqual('Fort Portal');
         });
     });
 

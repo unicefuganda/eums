@@ -11,11 +11,13 @@
                 </div>
             </div>
             <div class="row margin-right-20">
+                <div class="margin-left-30 text-muted pull-left">Feedback Report from Deliveries to <span class="blue-unicef bold">{{ district }}</span></div>
                 <div class="col-xs-2 margin-bottom-20 pad-small pull-right">
                     <div class="inner-addon right-addon">
                         <i class="glyphicon "
                            ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                        <input type="text" id="filter-po-waybill" class="form-control" name="filter" ng-model="searchTerm.poWaybill"
+                        <input type="text" id="filter-po-waybill" class="form-control" name="filter"
+                               ng-model="searchTerm.poWaybill"
                                placeholder="PO or Waybill"/>
                     </div>
                 </div>
@@ -56,8 +58,8 @@
                               'eums-bg-color-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
-                    <td><span class="pad-left-10">{{ itemReport.shipmentDate | date: 'dd-MMM-yyyy'}}</span></td>
-                    <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd-MMM-yyyy'}}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.shipmentDate | date: 'dd-MMM-yyyy' }}</span></td>
+                    <td><span class="pad-left-10">{{ itemReport.dateOfReceipt | date: 'dd-MMM-yyyy' }}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.programme.name }}</span></td>
                     <td><span class="pad-left-10">{{ itemReport.consignee.name }}</span></td>

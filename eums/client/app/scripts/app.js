@@ -120,6 +120,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
+        .when('/ip-feedback-report-by-delivery/:district', {
+            templateUrl: '/static/app/views/reports/ip-feedback-report-by-delivery.html',
+            controller: 'IpFeedbackReportByDeliveryController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_reports');
+                }
+            }
+        })
         .when('/ip-responses', {
             templateUrl: '/static/app/views/reports/ip-responses.html',
             controller: 'IPResponsesController',

@@ -1,13 +1,15 @@
 'use strict';
 
 angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'Consignee', 'Programme'])
-    .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, ReportService, LoaderService) {
+    .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService) {
         var timer;
 
         $scope.searchTerm = {};
         $scope.directiveValues = {};
 
         var initializing = true;
+
+        $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
         $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
             if (initializing){
@@ -75,9 +77,18 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             loadIpFeedbackReportByDelivery({page: page})
         };
 
+        function appendLoctionFilter(filterParams){
+            var location = $routeParams.district;
+            if (location){
+                return angular.extend({'location': location}, filterParams);
+            }
+            return filterParams;
+        }
+
         function loadIpFeedbackReportByDelivery(filterParams, newSearchTerm, oldSearchTerm) {
            LoaderService.showLoader();
-            ReportService.ipFeedbackReportByDelivery(filterParams).then(function (response) {
+            var allFilter = appendLoctionFilter(filterParams);
+            ReportService.ipFeedbackReportByDelivery(allFilter).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;

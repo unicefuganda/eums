@@ -16,7 +16,8 @@ angular.module('ReportService', ['eums.config'])
                 item_description: params.itemDescription,
                 po_waybill: params.poWaybill,
                 query: params.query,
-                page: params.page
+                page: params.page,
+                location: params.location
             };
 
             var search = {};
