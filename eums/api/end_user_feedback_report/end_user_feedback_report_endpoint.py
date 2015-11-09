@@ -1,13 +1,12 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
-from eums.models import UserProfile, DistributionPlan, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Runnable, Consignee, Option
+from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
+    ReleaseOrderItem, Runnable, Option
 
 PAGE_SIZE = 10
 
@@ -73,8 +72,10 @@ def build_answers_for_nodes(nodes, response):
                 'order_number': node.item.number(),
                 'quantity_shipped': node.quantity_in(),
                 'value': node.total_value,
-                'answers': answer_list
+                'answers': answer_list,
+                'location': node.location
             })
+
 
 def end_user_tracked_nodes(request):
     if request.GET.get('query'):
@@ -89,6 +90,10 @@ def end_user_tracked_nodes(request):
                                                     Q(programme__name__icontains=params))
     else:
         nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.END_USER)
+
+    location = request.GET.get('location')
+    if location:
+        nodes = nodes.filter(location__iexact=location)
     return nodes
 
 

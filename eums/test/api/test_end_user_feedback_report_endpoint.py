@@ -108,6 +108,15 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results), 1)
         self.assertDictContainsSubset({'item_description': release_order_item.item.description}, results[0])
 
+    def test_should_filter_answers_by_location(self):
+        node_one, _, release_order_item, node_two = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?location=Fort portal', content_type='application/json')
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'location': 'Fort portal'}, results[0])
+
     def test_should_filter_answers_by_programme_name(self):
         node_one, _, _, node_two = self.setup_nodes_with_answers()
         param = urllib.quote_plus(node_one.programme.name)
@@ -154,7 +163,8 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         release_order_item = ReleaseOrderItemFactory(item=ItemFactory(description='Baba bla bla'),
                                                      release_order=ReleaseOrderFactory(waybill=5540322))
         node_one = DeliveryNodeFactory(consignee=consignee_one,
-                                       item=purchase_order_item, quantity=1000, programme=programme_one)
+                                       item=purchase_order_item, quantity=1000, programme=programme_one,
+                                       location='Fort portal')
         node_two = DeliveryNodeFactory(consignee=consignee_two, item=release_order_item,
                                        quantity=500, programme=programme_two)
         flow = FlowFactory(for_runnable_type=Runnable.END_USER)
