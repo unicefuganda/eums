@@ -144,6 +144,10 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
             }
         };
 
+        $scope.discard = function(itemId) {
+            $location.path('/deliveries-by-ip/' + itemId);
+        };
+
         $scope.updateSelectedOrderNumber = function (orderNumber) {
             if ($scope.selectedOrderNumber != orderNumber) {
                 $scope.selectedOrderNumber = orderNumber;
