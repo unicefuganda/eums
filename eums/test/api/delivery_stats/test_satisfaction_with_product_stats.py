@@ -22,15 +22,19 @@ class QualityOfProductStatsTest(DeliveryStatsTestCase):
         self.assertEqual(response.data.get('numberOfSatisfactoryDeliveries'), 2)
         self.assertEqual(response.data.get('numberOfUnsatisfactoryDeliveries'), 3)
         self.assertEqual(response.data.get('numberOfNonResponseToSatisfactionWithProduct'), 1)
+        self.assertEqual(response.data.get('numberOfAwaitingResponseToSatisfactionWithProduct'), 0)
         self.assertEqual(response.data.get('percentageOfSatisfactoryDeliveries'), 33.3)
         self.assertEqual(response.data.get('percentageOfUnsatisfactoryDeliveries'), 50)
         self.assertEqual(response.data.get('percentageOfNonResponseToSatisfactionWithProduct'), 16.7)
+        self.assertEqual(response.data.get('percentageOfAwaitingResponseToSatisfactionWithProduct'), 0.0)
         self.assertEqual(response.data.get('totalValueOfSatisfactoryDeliveries'), 300)
         self.assertEqual(response.data.get('totalValueOfUnsatisfactoryDeliveries'), 1200)
         self.assertEqual(response.data.get('totalValueOfNonResponseToSatisfactionWithProduct'), 600)
+        self.assertEqual(response.data.get('totalValueOfAwaitingResponseToSatisfactionWithProduct'), 0)
         self.assertEqual(response.data.get('percentageValueOfSatisfactoryDeliveries'), 14.3)
         self.assertEqual(response.data.get('percentageValueOfUnsatisfactoryDeliveries'), 57.1)
         self.assertEqual(response.data.get('percentageValueOfNonResponseToSatisfactionWithProduct'), 28.6)
+        self.assertEqual(response.data.get('percentageValueOfAwaitingResponseToSatisfactionWithProduct'), 0.0)
 
     @classmethod
     def setup_responses(cls):

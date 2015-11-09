@@ -2,7 +2,6 @@ from eums.models import Run, MultipleChoiceQuestion
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
-from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
@@ -30,15 +29,19 @@ class ProductReceivedStatsForLocationTest(DeliveryStatsTestCase):
         self.assertEqual(response.data.get('numberOfSuccessfulProductDeliveries'), 1)
         self.assertEqual(response.data.get('numberOfUnsuccessfulProductDeliveries'), 1)
         self.assertEqual(response.data.get('numberOfNonResponseToProductReceived'), 1)
+        self.assertEqual(response.data.get('numberOfAwaitingResponseToProductReceived'), 0)
         self.assertEqual(response.data.get('percentageOfSuccessfulDeliveries'), 33.3)
         self.assertEqual(response.data.get('percentageOfUnsuccessfulDeliveries'), 33.3)
         self.assertEqual(response.data.get('percentageOfNonResponseToProductReceived'), 33.3)
+        self.assertEqual(response.data.get('percentageOfAwaitingResponseToProductReceived'), 0)
         self.assertEqual(response.data.get('totalValueOfSuccessfulDeliveries'), 100)
         self.assertEqual(response.data.get('totalValueOfUnsuccessfulProductDeliveries'), 300)
         self.assertEqual(response.data.get('totalValueOfNonResponseToProductReceived'), 600)
+        self.assertEqual(response.data.get('totalValueOfAwaitingResponseToProductReceived'), 0)
         self.assertEqual(response.data.get('percentageValueOfSuccessfulDeliveries'), 10.0)
         self.assertEqual(response.data.get('percentageValueOfUnsuccessfulDeliveries'), 30.0)
         self.assertEqual(response.data.get('percentageValueOfNonResponseToProductReceived'), 60.0)
+        self.assertEqual(response.data.get('percentageValueOfAwaitingResponseToProductReceived'), 0)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()

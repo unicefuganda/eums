@@ -27,18 +27,22 @@ class SatisfactionWithProductForLocationTest(DeliveryStatsTestCase):
         self.assertEqual(response.data.get('numberOfSatisfactoryDeliveries'), 1)
         self.assertEqual(response.data.get('numberOfUnsatisfactoryDeliveries'), 1)
         self.assertEqual(response.data.get('numberOfNonResponseToSatisfactionWithProduct'), 1)
+        self.assertEqual(response.data.get('numberOfAwaitingResponseToSatisfactionWithProduct'), 0)
 
         self.assertEqual(response.data.get('percentageOfSatisfactoryDeliveries'), 33.3)
         self.assertEqual(response.data.get('percentageOfUnsatisfactoryDeliveries'), 33.3)
         self.assertEqual(response.data.get('percentageOfNonResponseToSatisfactionWithProduct'), 33.3)
+        self.assertEqual(response.data.get('percentageOfAwaitingResponseToSatisfactionWithProduct'), 0)
 
         self.assertEqual(response.data.get('totalValueOfSatisfactoryDeliveries'), 100)
         self.assertEqual(response.data.get('totalValueOfUnsatisfactoryDeliveries'), 300)
         self.assertEqual(response.data.get('totalValueOfNonResponseToSatisfactionWithProduct'), 600)
+        self.assertEqual(response.data.get('totalValueOfAwaitingResponseToSatisfactionWithProduct'), 0)
 
         self.assertEqual(response.data.get('percentageValueOfSatisfactoryDeliveries'), 10.0)
         self.assertEqual(response.data.get('percentageValueOfUnsatisfactoryDeliveries'), 30.0)
         self.assertEqual(response.data.get('percentageValueOfNonResponseToSatisfactionWithProduct'), 60.0)
+        self.assertEqual(response.data.get('percentageValueOfAwaitingResponseToSatisfactionWithProduct'), 0.0)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()

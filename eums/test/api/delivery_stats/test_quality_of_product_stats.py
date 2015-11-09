@@ -22,15 +22,19 @@ class QualityOfProductStatsTest(DeliveryStatsTestCase):
         self.assertEqual(response.data.get('numberOfDeliveriesInGoodOrder'), 2)
         self.assertEqual(response.data.get('numberOfDeliveriesInBadOrder'), 4)
         self.assertEqual(response.data.get('numberOfNonResponseToQualityOfProduct'), 1)
+        self.assertEqual(response.data.get('numberOfAwaitingResponseToQualityOfProduct'), 0)
         self.assertEqual(response.data.get('percentageOfDeliveriesInGoodOrder'), 28.6)
         self.assertEqual(response.data.get('percentageOfDeliveriesInBadOrder'), 57.1)
         self.assertEqual(response.data.get('percentageOfNonResponseToQualityOfProduct'), 14.3)
+        self.assertEqual(response.data.get('percentageOfAwaitingResponseToQualityOfProduct'), 0.0)
         self.assertEqual(response.data.get('totalValueOfDeliveriesInGoodOrder'), 300)
         self.assertEqual(response.data.get('totalValueOfDeliveriesInBadOrder'), 1200)
         self.assertEqual(response.data.get('totalValueOfNonResponseToQualityOfProduct'), 600)
+        self.assertEqual(response.data.get('totalValueOfAwaitingResponseToQualityOfProduct'), 0)
         self.assertEqual(response.data.get('percentageValueOfDeliveriesInGoodOrder'), 14.3)
         self.assertEqual(response.data.get('percentageValueOfDeliveriesInBadOrder'), 57.1)
         self.assertEqual(response.data.get('percentageValueOfNonResponseToQualityOfProduct'), 28.6)
+        self.assertEqual(response.data.get('percentageValueOfAwaitingResponseToQualityOfProduct'), 0.0)
 
     @classmethod
     def setup_responses(cls):

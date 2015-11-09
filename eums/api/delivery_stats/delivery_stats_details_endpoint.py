@@ -37,50 +37,62 @@ class DeliveryStatsDetails:
             'numberOfSuccessfulProductDeliveries': product_received_stats.count_positive,
             'numberOfUnsuccessfulProductDeliveries': product_received_stats.count_negative,
             'numberOfNonResponseToProductReceived': product_received_stats.count_non_response,
+            'numberOfAwaitingResponseToProductReceived': product_received_stats.count_awaiting_response,
 
             'percentageOfSuccessfulDeliveries': product_received_stats.percent_positive,
             'percentageOfUnsuccessfulDeliveries': product_received_stats.percent_negative,
             'percentageOfNonResponseToProductReceived': product_received_stats.percent_non_response,
+            'percentageOfAwaitingResponseToProductReceived': product_received_stats.percent_awaiting_response,
 
             'totalValueOfSuccessfulDeliveries': product_received_stats.value_positive,
             'totalValueOfUnsuccessfulProductDeliveries': product_received_stats.value_negative,
             'totalValueOfNonResponseToProductReceived': product_received_stats.value_non_response,
+            'totalValueOfAwaitingResponseToProductReceived': product_received_stats.value_awaiting_response,
 
             'percentageValueOfSuccessfulDeliveries': product_received_stats.percent_value_positive,
             'percentageValueOfUnsuccessfulDeliveries': product_received_stats.percent_value_negative,
             'percentageValueOfNonResponseToProductReceived': product_received_stats.percent_value_non_response,
+            'percentageValueOfAwaitingResponseToProductReceived': product_received_stats.percent_value_awaiting_response,
 
             'numberOfDeliveriesInGoodOrder': quality_of_product_stats.count_positive,
             'numberOfDeliveriesInBadOrder': quality_of_product_stats.count_negative,
             'numberOfNonResponseToQualityOfProduct': quality_of_product_stats.count_non_response,
+            'numberOfAwaitingResponseToQualityOfProduct': quality_of_product_stats.count_awaiting_response,
 
             'percentageOfDeliveriesInGoodOrder': quality_of_product_stats.percent_positive,
             'percentageOfDeliveriesInBadOrder': quality_of_product_stats.percent_negative,
             'percentageOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_non_response,
+            'percentageOfAwaitingResponseToQualityOfProduct': quality_of_product_stats.percent_awaiting_response,
 
             'totalValueOfDeliveriesInGoodOrder': quality_of_product_stats.value_positive,
             'totalValueOfDeliveriesInBadOrder': quality_of_product_stats.value_negative,
             'totalValueOfNonResponseToQualityOfProduct': quality_of_product_stats.value_non_response,
+            'totalValueOfAwaitingResponseToQualityOfProduct': quality_of_product_stats.value_awaiting_response,
 
             'percentageValueOfDeliveriesInGoodOrder': quality_of_product_stats.percent_value_positive,
             'percentageValueOfDeliveriesInBadOrder': quality_of_product_stats.percent_value_negative,
             'percentageValueOfNonResponseToQualityOfProduct': quality_of_product_stats.percent_value_non_response,
+            'percentageValueOfAwaitingResponseToQualityOfProduct': quality_of_product_stats.percent_value_awaiting_response,
 
             'numberOfSatisfactoryDeliveries': satisfied_with_product_stats.count_positive,
             'numberOfUnsatisfactoryDeliveries': satisfied_with_product_stats.count_negative,
             'numberOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.count_non_response,
+            'numberOfAwaitingResponseToSatisfactionWithProduct': satisfied_with_product_stats.count_awaiting_response,
 
             'percentageOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_positive,
             'percentageOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_negative,
             'percentageOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_non_response,
+            'percentageOfAwaitingResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_awaiting_response,
 
             'totalValueOfSatisfactoryDeliveries': satisfied_with_product_stats.value_positive,
             'totalValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.value_negative,
             'totalValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.value_non_response,
+            'totalValueOfAwaitingResponseToSatisfactionWithProduct': satisfied_with_product_stats.value_awaiting_response,
 
             'percentageValueOfSatisfactoryDeliveries': satisfied_with_product_stats.percent_value_positive,
             'percentageValueOfUnsatisfactoryDeliveries': satisfied_with_product_stats.percent_value_negative,
             'percentageValueOfNonResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_non_response,
+            'percentageValueOfAwaitingResponseToSatisfactionWithProduct': satisfied_with_product_stats.percent_value_awaiting_response,
         }
 
     def total_deliveries(self):
@@ -105,39 +117,43 @@ class DeliveryStatsDetails:
         positive_count = raw_stats.positive_answers.count()
         non_response_count = raw_stats.non_response_nodes.count()
         negative_count = raw_stats.negative_answers.count()
+        awaiting_response_count = self.total_deliveries() - positive_count - non_response_count - negative_count
 
-        percent_negative, percent_non_response, percent_positive = self._get_count_percentages(
-            negative_count, non_response_count, positive_count)
+        percent_negative, percent_non_response, percent_positive, percent_awaiting_response = self._get_count_percentages(
+            negative_count, non_response_count, positive_count, awaiting_response_count)
 
-        value_negative, value_non_response, value_positive = self._get_values(raw_stats)
+        value_negative, value_non_response, value_positive, value_awaiting_response = self._get_values(raw_stats)
 
-        percent_value_negative, percent_value_non_response, percent_value_positive = self._get_value_percentages(
-            value_negative, value_non_response, value_positive)
+        percent_value_negative, percent_value_non_response, percent_value_positive, percent_value_awaiting_response = self._get_value_percentages(
+            value_negative, value_non_response, value_positive, value_awaiting_response)
 
         return DeliveryStats(
-            positive_count, negative_count, non_response_count,
-            percent_positive, percent_negative, percent_non_response,
-            value_positive, value_negative, value_non_response,
-            percent_value_positive, percent_value_negative, percent_value_non_response
+            positive_count, negative_count, non_response_count, awaiting_response_count,
+            percent_positive, percent_negative, percent_non_response, percent_awaiting_response,
+            value_positive, value_negative, value_non_response, value_awaiting_response,
+            percent_value_positive, percent_value_negative, percent_value_non_response, percent_value_awaiting_response
         )
 
-    def _get_value_percentages(self, value_negative, value_non_response, value_positive):
+    def _get_value_percentages(self, value_negative, value_non_response, value_positive, value_awaiting_response):
         percent_value_positive = self._percentage_of_total_value_delivered(value_positive)
         percent_value_negative = self._percentage_of_total_value_delivered(value_negative)
         percent_value_non_response = self._percentage_of_total_value_delivered(value_non_response)
-        return percent_value_negative, percent_value_non_response, percent_value_positive
+        percent_value_awaiting_response = self._percentage_of_total_value_delivered(value_awaiting_response)
+        return percent_value_negative, percent_value_non_response, percent_value_positive, percent_value_awaiting_response
 
     def _get_values(self, raw_stats):
         value_positive = self._get_value(raw_stats.positive_answers)
         value_negative = self._get_value(raw_stats.negative_answers)
         value_non_response = self._get_nodes_total_value(raw_stats.non_response_nodes)
-        return value_negative, value_non_response, value_positive
+        value_awaiting_response = self.total_delivery_value() - value_negative - value_non_response - value_positive
+        return value_negative, value_non_response, value_positive, value_awaiting_response
 
-    def _get_count_percentages(self, negative_count, non_response_count, positive_count):
+    def _get_count_percentages(self, negative_count, non_response_count, positive_count, awaiting_response_count):
         percent_positive = self._percentage_of_total_deliveries(positive_count)
         percent_negative = self._percentage_of_total_deliveries(negative_count)
         percent_non_response = self._percentage_of_total_deliveries(non_response_count)
-        return percent_negative, percent_non_response, percent_positive
+        percent_awaiting_response = self._percentage_of_total_deliveries(awaiting_response_count)
+        return percent_negative, percent_non_response, percent_positive, percent_awaiting_response
 
     def _get_value(self, answers):
         successful_delivery_runs = answers.values_list('run_id')
