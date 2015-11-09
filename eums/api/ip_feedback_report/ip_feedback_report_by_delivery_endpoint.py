@@ -68,7 +68,8 @@ def _build_delivery_answers(deliveries):
                                      _value(Question.LABEL.satisfiedWithDelivery, answers),
                                  Question.LABEL.additionalDeliveryComments:
                                      _value(Question.LABEL.additionalDeliveryComments, answers),
-                                 'value': int(delivery.total_value)
+                                 'value': int(delivery.total_value),
+                                 'location': delivery.location
                                  })
     return delivery_answers
 
@@ -111,10 +112,10 @@ def _query_args(request):
 
 
 def _filter_fields(params):
-    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id'}
+    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id', 'location': 'location'}
     search_params = {}
     for key, value in params.iteritems():
         query_field = query_fields.get(key)
-        if query_field:
+        if query_field and value:
             search_params.update({query_field: value})
     return search_params
