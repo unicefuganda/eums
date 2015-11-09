@@ -108,6 +108,8 @@ ENV LC_ALL C
 ## install Elasticsearch
 ##############################################################################
 # Install Java
+RUN sudo rm -fr /var/lib/apt/lists
+RUN sudo apt-get update
 RUN sudo apt-get install -y software-properties-common
 RUN sudo apt-add-repository ppa:webupd8team/java
 RUN sudo apt-get update
@@ -179,7 +181,7 @@ RUN mkdir /var/log/celery && touch /var/log/celery/workers.log
 VOLUME /var/lib/postgresql
 VOLUME /data
 
-EXPOSE 22 80 8005
+EXPOSE 22 80 8005 9200
 
 ##############################################################################
 ## Entrypoint and command parameters
