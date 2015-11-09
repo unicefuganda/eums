@@ -23,6 +23,7 @@ python manage.py syncdb --noinput
 python manage.py migrate
 python manage.py setup_permissions
 python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py
+python manage.py shell_plus < eums/elasticsearch/run_sync.py
 
 su - postgres -c "/etc/init.d/postgresql stop"
 
