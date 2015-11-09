@@ -5,14 +5,14 @@ angular.module('StockReport', [
     .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService, LoaderService, UserService) {
         $scope.reportParams = {};
         $scope.totals = {};
-        $scope.ipReadonly = false;
+        $scope.isIpUser = false;
 
         function init() {
             loadDistricts();
 
             UserService.getCurrentUser().then(function (user) {
                 if (user && user.consignee_id) {
-                    $scope.ipReadonly = true;
+                    $scope.isIpUser = true;
                     $scope.reportParams.selectedIPId = user.consignee_id;
                 } else {
                     $scope.$broadcast('clear-consignee');

@@ -15,9 +15,9 @@ describe('IP Feedback Report By Item', function () {
         ftUtils.waitForPageToLoad();
 
         ipFeedbackReportByItemPage.filterByProgramme('sample programme');
-        expect(ipFeedbackReportByItemPage.outComes.count()).toEqual(5);
+        expect(ipFeedbackReportByItemPage.outComes.count()).toEqual(6);
         ipFeedbackReportByItemPage.clearProgramme();
-        expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
+        expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(6);
 
         ipFeedbackReportByItemPage.filterByConsignee('KAABONG');
         expect(ipFeedbackReportByItemPage.outComes.count()).toEqual(5);
@@ -25,9 +25,9 @@ describe('IP Feedback Report By Item', function () {
         expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
 
         ipFeedbackReportByItemPage.filterByItemDescription('Therapeutic spread,sachet 92g/CAR-150');
-        expect(ipFeedbackReportByItemPage.outComes.count()).toEqual(2);
+        expect(ipFeedbackReportByItemPage.outComes.count()).toEqual(3);
         ipFeedbackReportByItemPage.clearItemDescription();
-        expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(5);
+        expect(ipFeedbackReportByItemPage.outComes.count()).toBeGreaterThan(3);
 
         ipFeedbackReportByItemPage.paginateTo(2);
         ipFeedbackReportByItemPage.filterByPoWaybill('12345');

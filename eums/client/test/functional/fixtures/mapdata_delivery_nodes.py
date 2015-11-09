@@ -56,3 +56,15 @@ node_47 = DistributionPlanNode.objects.create(distribution_plan=delivery_45, qua
 node_48 = DistributionPlanNode.objects.create(distribution_plan=delivery_44, quantity=200, tree_position="IMPLEMENTING_PARTNER", item=po_item_6, location="Amuru", consignee=consignee_6, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="hh")
 node_49 = DistributionPlanNode.objects.create(distribution_plan=delivery_45, quantity=210, tree_position="IMPLEMENTING_PARTNER", item=po_item_6, location="Amuru", consignee=consignee_33, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="hh")
 node_50 = DistributionPlanNode.objects.create(distribution_plan=delivery_45, quantity=220, tree_position="IMPLEMENTING_PARTNER", item=po_item_6, location="Amuru", consignee=consignee_33, contact_person_id="54213ccc797221e84ac993fe", track=True, delivery_date=FakeDate.build(2015, 07, 11), remark="hh")
+
+node_51 = DistributionPlanNode.objects.create(
+    distribution_plan=delivery_46,
+    quantity=30,
+    tree_position="IMPLEMENTING_PARTNER",
+    item=po_item_4,
+    location="Wakiso",
+    consignee=consignee_1,
+    contact_person_id="54213ccc797221e84ac993fe",
+    track=True,
+    delivery_date=FakeDate.build(2015, 07, 11),
+    remark="Mother and Child")

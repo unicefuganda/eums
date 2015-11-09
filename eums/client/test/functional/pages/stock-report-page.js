@@ -22,6 +22,8 @@ StockReportPage.prototype = Object.create({}, {
 
     noDataMessage: { get: function () { return element(by.css('.empty-data-response')); }},
 
+    clickUnicefShipmentsLink: { value: function () { element(by.css('.empty-data-response .unicef-shipments-link')).click(); }},
+
     totalReceived: { get: function () { return element(by.id('total_received')).getText(); }},
     totalDispensed: { get: function () { return element(by.id('total_dispensed')).getText(); }},
     totalBalance: { get: function () { return element(by.id('total_balance')).getText(); }},

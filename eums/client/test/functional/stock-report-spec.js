@@ -1,6 +1,7 @@
 'use strict';
 
 var stockReportPage = require('./pages/stock-report-page.js');
+var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
@@ -11,11 +12,14 @@ describe('Stock Report', function () {
         loginPage.loginAs('admin', 'admin');
 
         stockReportPage.visit();
+
         ftUtils.waitForPageToLoad();
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeFalsy();
 
         stockReportPage.selectOutcome('unattached programme');
+
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeTruthy();
+
         expect(stockReportPage.totalReceived).toContain('$0.00');
         expect(stockReportPage.totalDispensed).toContain('$0.00');
         expect(stockReportPage.totalBalance).toContain('$0.00');
@@ -47,5 +51,24 @@ describe('Stock Report', function () {
         expect(stockReportPage.itemDeliveryDate).toContain('11-Jul-2015');
         expect(stockReportPage.itemBalances).toContain('80');
         expect(stockReportPage.itemBalances).toContain('500');
+    });
+
+    it('should only show stock for specific logged in IP', function () {
+        loginPage.visit();
+        loginPage.loginAs('wakiso', 'wakiso');
+
+        stockReportPage.visit();
+
+        ftUtils.waitForPageToLoad();
+        expect(stockReportPage.noDataMessage.isDisplayed()).toBeFalsy();
+
+        stockReportPage.selectOutcome('unattached programme');
+
+        expect(stockReportPage.noDataMessage.isDisplayed()).toBeTruthy();
+
+        stockReportPage.clickUnicefShipmentsLink();
+        ftUtils.waitForPageToLoad();
+
+        ipShipmentsPage.searchForShipment('12345');
     });
 });

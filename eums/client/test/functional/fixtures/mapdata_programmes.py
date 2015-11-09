@@ -17,4 +17,5 @@ programme_16 = Programme.objects.create(wbs_element_ex="A13", name="* 040623/YP6
 programme_17 = Programme.objects.create(wbs_element_ex="4380/A0/04/105/005", name="")
 programme_18 = Programme.objects.create(wbs_element_ex="4380/A0/04/108/003", name="PCR: 123 - Test Outcome 1")
 
+sample_programme_2 = Programme.objects.create(wbs_element_ex="A100", name="sample programme 2")
 programme_unattached = Programme.objects.create(wbs_element_ex="A99", name="unattached programme")

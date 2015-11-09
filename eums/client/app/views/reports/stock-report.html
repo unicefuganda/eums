@@ -5,7 +5,7 @@
 
         <div>
             <div class="form-horizontal">
-                <div>
+                <div style="display: inline-block;">
                     <div class="form-group col-lg-5 margin-top-15">
                         <div class="pad-bottom-5" style="overflow: hidden;">
                             <div class="col-lg-4 filter-label">
@@ -25,7 +25,7 @@
                                 <input id="select-ip" class="form-control" type="hidden" search-consignees
                                        value="{{ reportParams.selectedIPId }}"
                                        ng-model="reportParams.selectedIPId"
-                                       ng-readonly="ipReadonly"
+                                       ng-readonly="isIpUser"
                                        placeholder="All Implementing Partners">
                             </div>
                         </div>
@@ -121,7 +121,11 @@
                 </div>
 
                 <div ng-show="hasEmptyDataResponse()" class="empty-data-response">
-                    There is no data for the specified filters.
+                    <div ng-show="!isIpUser">There is no data for the specified filters.</div>
+                    <div ng-show="isIpUser">
+                        No deliveries have been reported, confirm UNICEF shipments on the
+                        <a class="unicef-shipments-link" ng-href="#/ip-deliveries">Report deliveries</a>
+                        page</div>
                 </div>
 
                 <div>

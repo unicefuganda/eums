@@ -133,6 +133,11 @@ describe('StockReportController', function () {
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
         });
 
+        it('should set ip user to false when unicef user', function () {
+            scope.$apply()
+            expect(scope.isIpUser).toBeFalsy();
+        });
+
         it('should load stock report for selected IP', function () {
             deferredStubReport.resolve(stubStockReport);
             scope.reportParams.selectedIPId = 1;
@@ -288,14 +293,12 @@ describe('StockReportController', function () {
 
             expect(scope.openDocument).toBe(undefined);
         });
-    })
+    });
 
     describe('IP can only see their specific stock reports', function () {
-        beforeEach(function () {
-            deferredUser.resolve(ipUser);
-        });
 
         it('should get current user, then load stock reports for this user', function () {
+            deferredUser.resolve(ipUser);
             scope.$apply();
 
             expect(mockUserService.getCurrentUser.calls.count()).toEqual(1);
@@ -304,7 +307,9 @@ describe('StockReportController', function () {
         });
 
         it('should disable IP filter', function () {
-            expect(scope.ipReadonly).toBeFalsy();
+            deferredUser.resolve(ipUser);
+            scope.$apply();
+            expect(scope.isIpUser).toBeTruthy();
         });
     });
 });

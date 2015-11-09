@@ -16,6 +16,10 @@ IpShipmentsPage.prototype = Object.create({}, {
         waitForPageToLoad();
     }},
 
+    viewDeliveryDetailsButton: { get: function () {
+        return element.all(by.css('.viewDeliveriesDetailsBtn'));
+    }},
+
     viewDeliveryDetails: { value: function () {
        element.all(by.css('.viewDeliveryDetailsBtn')).get(0).click();
     }},
