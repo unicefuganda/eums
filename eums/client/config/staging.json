@@ -50,7 +50,7 @@
         "LATEST_DELIVERIES": "/api/latest-deliveries/"
     },
     "CONTACT_SERVICE_URL": "http://localhost/contacts/",
-    "ELASTIC_SEARCH_URL": "http://localhost:9200/eums/delivery_node/",
+    "ELASTIC_SEARCH_URL": "http://localhost/elasticsearch/eums/delivery_node/",
     "DISTRICTGEOJSONURL": "static/app/data/districts.json",
     "DISTRICTJSONURL": "static/app/data/district_name.json",
     "districtLayerStyle": {
