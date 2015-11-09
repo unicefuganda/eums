@@ -42,6 +42,8 @@ IpWarehousePage.prototype = Object.create({}, {
     itemName: { get: function () { return element(by.id('itemNameLabel')).getText(); }},
     itemAvailableQty: { get: function () { return element(by.id('qty-available-label')).getText(); }},
 
+    notificationWarning: { get: function () { return element(by.css('.notification-warning'))}},
+
     specifyShipmentDate: { value: function (date) {
         element(by.css('#input-delivery-date input')).clear().sendKeys(date);
     }},

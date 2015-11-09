@@ -88,17 +88,8 @@ angular.module('NewSubConsigneeDeliveryByIp', ['eums.config', 'ngToast'])
                     createdDelivery.contactPerson = contact;
                     $scope.deliveries.add(createdDelivery, 0);
                 });
-
                 resetDeliveryData();
-
-                var showSecondToast = function () {
-                    createToast('Notifications will be sent to the recipient', 'success');
-                }
-
-                createToast('Sub-consignee Successfully Created', 'success');
-                $timeout(function () {
-                    showSecondToast();
-                }, 2000);
+                createToast('Delivery Successfully Created', 'success');
             });
         }
 

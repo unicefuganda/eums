@@ -154,14 +154,7 @@ angular.module('NewDeliveryByIp', ['eums.config', 'ngToast'])
 
         function createNewDeliveryNode() {
             DeliveryNodeService.create($scope.newDelivery).then(function () {
-                var showSecondToast = function () {
-                    createToast('Notifications will be sent to the recipient', 'success');
-                }
-
                 createToast('Delivery Successfully Created', 'success');
-                $timeout(function () {
-                    showSecondToast();
-                }, 2000);
                 $location.path('/deliveries-by-ip/' + $routeParams.itemId);
             }).catch(function () {
                 createToast('Failed to save delivery', 'danger');

@@ -317,13 +317,9 @@ describe('New IP Delivery Controller', function () {
         scope.save();
         scope.$apply();
         timeout.flush();
-        expect(toast.create.calls.count()).toBe(2);
+        expect(toast.create.calls.count()).toBe(1);
         expect(toast.create).toHaveBeenCalledWith({
             content: 'Delivery Successfully Created',
-            class: 'success'
-        });
-        expect(toast.create).toHaveBeenCalledWith({
-            content: 'Notifications will be sent to the recipient',
             class: 'success'
         });
     });

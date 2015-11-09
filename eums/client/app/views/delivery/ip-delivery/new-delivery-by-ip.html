@@ -1,5 +1,5 @@
 <ng-toast></ng-toast>
-<div class="container-fluid">
+<div class="container-fluid" id="new-delivery-by-ip-page">
     <div class="eums page-header row">
         <div class="pull-left pad-top-10">Report a New Distribution</div>
         <div class="pull-right">
@@ -178,7 +178,7 @@
 
             </div>
 
-            <div class="row pull-right">
+            <div class="row pull-right margin-bottom-20">
                 <a id="discard-delivery-report" href="#/deliveries-by-ip/{{ item.id }}"
                    ng-show="quantityAvailable">
                     <span class="glyphicon glyphicon-remove"></span>
@@ -189,6 +189,11 @@
                     <i class="glyphicon glyphicon-floppy-save"> </i>
                     Save Delivery Report
                 </button>
+            </div>
+
+            <div class="rounded-border notification-warning">
+                <span class="glyphicon glyphicon-warning-sign text-warning pad-right-5"></span>
+                Notifications will be sent to the recipient upon saving.
             </div>
         </div>
     </div>

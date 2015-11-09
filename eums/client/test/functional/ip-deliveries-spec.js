@@ -54,6 +54,8 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.itemName).toBe('Item Name: Kindle Fire HDX');
         expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 500');
 
+        expect(ipWarehousePage.notificationWarning.isDisplayed()).toBeTruthy();
+
         ipWarehousePage.specifyShipmentDate('1');
         ipWarehousePage.specifyConsignee('Buikwe DHO');
         ipWarehousePage.specifyContact('John');
@@ -81,9 +83,12 @@ describe('IP Deliveries', function () {
         ipWarehousePage.discardDelivery();
 
         ipWarehousePage.viewSubconsignees();
+
         expect(ipWarehousePage.itemAvailableQty).toBe('Quantity Available: 200');
 
         ipWarehousePage.addSubconsignee();
+
+        expect(ipWarehousePage.notificationWarning.isDisplayed()).toBeTruthy();
 
         ipWarehousePage.specifyQuantity('150');
         ipWarehousePage.specifyShipmentDate('1');
@@ -93,8 +98,7 @@ describe('IP Deliveries', function () {
         ipWarehousePage.markAsEndUser();
 
         ipWarehousePage.saveDelivery();
-        //expect(directDeliveryPage.toastMessage).toContain('Sub-consignee Successfully Created');
-        expect(directDeliveryPage.toastMessage).toContain('Notifications will be sent to the recipient');
+        expect(directDeliveryPage.toastMessage).toContain('Delivery Successfully Created');
 
         expect(ipWarehousePage.subDeliveryCount).toBe(1);
         expect(ipWarehousePage.subDeliveryQuantities).toContain('150');
@@ -104,7 +108,7 @@ describe('IP Deliveries', function () {
         expect(ipWarehousePage.subDeliveryLocations).toContain('Agago');
     });
 
-    it('Search for IP Delivery by To  and From Date', function () {
+    it('Search for IP Delivery by To and From Date', function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentDelivery.visit();

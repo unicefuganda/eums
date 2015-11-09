@@ -231,7 +231,6 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
             expect(mockDeliveryNodeService.create).toHaveBeenCalledWith(newDelivery, {changeCaseOnResponse: true});
         });
 
-
         it('should show success toast upon save', function () {
             scope.$apply();
             setupNewDelivery();
@@ -240,17 +239,12 @@ describe('New Sub-consignee Delivery By IP Controller', function () {
 
             scope.$apply();
             timeout.flush();
-            expect(toast.create.calls.count()).toBe(2);
+            expect(toast.create.calls.count()).toBe(1);
             expect(toast.create).toHaveBeenCalledWith({
-                content: 'Sub-consignee Successfully Created',
-                class: 'success'
-            });
-            expect(toast.create).toHaveBeenCalledWith({
-                content: 'Notifications will be sent to the recipient',
+                content: 'Delivery Successfully Created',
                 class: 'success'
             });
         });
-
 
         it('should add created delivery to the top of the deliveries list upon successful save', function () {
             var createdNode = {id: 2, contactPersonId: 10};
