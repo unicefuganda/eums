@@ -163,6 +163,31 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="district-stats-left-section" ng-show="data.totalStats.numberOfAwaitingResponseToProductReceived">
+                        <div class="pull-left">Awaiting response</div>
+                        <div class="pull-left">
+                            <div>
+                                <percent-display
+                                        percent="data.totalStats.percentageValueOfAwaitingResponseToProductReceived | number:0"
+                                        side="60"
+                                        colors="white #7d7d7d">
+                                </percent-display>
+                            </div>
+                        </div>
+                        <div class="district-stats-amount-responses pull-left">
+                            <ul class="list-unstyled">
+                                <li class="stats-large-number-font">
+                                    <span class="stats-currency-symbol">$</span>
+                                    <span class="stats-currency-value">
+                                        {{ data.totalStats.totalValueOfAwaitingResponseToProductReceived | compactNumber }}
+                                    </span>
+                                </li>
+                                <li class="stats-text-grey">
+                                    {{ data.totalStats.numberOfAwaitingResponseToProductReceived }} awaiting responses
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="district-stats-arrow"></div>
