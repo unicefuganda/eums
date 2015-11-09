@@ -23,11 +23,18 @@ describe('Module: Home', function () {
             });
         }));
 
-        it('should redirect to detailed responses page', function () {
-            scope.data = {disctrict: 'Gulu'};
-            scope.showDetailedResponses(scope.allResponses);
+        it('should redirect to end user responses page', function () {
+            scope.data = {district: 'Gulu'};
+            scope.showDetailedResponses();
             scope.$apply();
             expect(location.path()).toEqual('/response-details/' + scope.data.district);
+        });
+
+        it('should redirect to ip responses page', function () {
+            scope.data = {ipView: true, district: 'Gulu'};
+            scope.showDetailedResponses();
+            scope.$apply();
+            expect(location.path()).toEqual('/ip-feedback-report-by-delivery/' + scope.data.district);
         });
 
         it('should set end-user view by default', function () {
