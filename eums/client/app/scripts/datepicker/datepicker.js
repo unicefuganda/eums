@@ -24,8 +24,9 @@ angular.module('DatePicker', []).directive('eumsDatePicker', function () {
                 scope.isDatePickerOpen = true;
             };
 
-            scope.$watchCollection('datepicker', function (value) {
-                if(!value.from && !value.to){
+            scope.$watchCollection('datepicker', function (newValue, oldValue) {
+                var date_has_changed = !Object.equal(newValue, oldValue);
+                if(date_has_changed && (!newValue.from && !newValue.to)){
                     scope.isDatePickerOpen = false;
                 }
             }, true);
