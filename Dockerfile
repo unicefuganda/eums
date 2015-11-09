@@ -108,7 +108,14 @@ ENV LC_ALL C
 ## install Elasticsearch
 ##############################################################################
 # Install Java
-RUN sudo apt-get update && sudo apt-get -y install default-jre
+RUN sudo apt-get install -y software-properties-common
+RUN sudo apt-add-repository ppa:webupd8team/java
+RUN sudo apt-get update
+
+RUN echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+RUN echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+
+RUN sudo apt-get install -y oracle-java8-installer
 
 # Add elasticsearch repository to apt-get repositories
 RUN mkdir -p /opt/downloads && cd /opt/downloads && curl -SsfLO "https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.7.3.deb"
