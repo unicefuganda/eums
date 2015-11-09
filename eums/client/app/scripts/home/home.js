@@ -18,10 +18,10 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         });
 
         $scope.showDetailedResponses = function () {
-            var end_user_url = '/response-details/' + $scope.data.district;
-            var ip_url = '/ip-feedback-report-by-delivery/' + $scope.data.district;
+            var end_user_url = '/end-user-feedback-report/';
+            var ip_url = '/ip-feedback-report-by-delivery/';
             var url = $scope.data.ipView? ip_url : end_user_url;
-            $location.path(url);
+            $location.path(url + $scope.data.district);
         };
 
         $scope.toggleIpView = function (value) {

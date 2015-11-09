@@ -32,27 +32,9 @@ angular.module('ReportService', ['eums.config'])
 
         function buildEndUserReportUrlParams(params) {
             var reportEndpoint = EumsConfig.BACKEND_URLS.END_USER_FEEDBACK_REPORT;
-            var query = params ? '?query=' + encodeURI(params.query) : undefined;
-            var page = params ? '?page=' + params.page : undefined;
-            return buildReportUrlParams(reportEndpoint, query, page, params);
-        }
+            var query = params ? '?' + jQuery.param(buildSearchParams(params)) : '';
 
-        function buildReportUrlParams(reportEndpoint, query, page, params) {
-            var url;
-            if (params) {
-                if (params.query && params.page) {
-                    url = reportEndpoint + query + '&' + page
-                } else if (params.query) {
-                    url = reportEndpoint + query
-                } else if (params.page) {
-                    url = reportEndpoint + page
-                } else {
-                    url = reportEndpoint;
-                }
-            } else {
-                url = reportEndpoint
-            }
-            return url;
+            return reportEndpoint + query;
         }
 
         return {

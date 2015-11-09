@@ -77,7 +77,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             loadIpFeedbackReportByDelivery({page: page})
         };
 
-        function appendLoctionFilter(filterParams){
+        function appendLocationFilter(filterParams){
             var location = $routeParams.district;
             if (location){
                 return angular.extend({'location': location}, filterParams);
@@ -87,7 +87,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
         function loadIpFeedbackReportByDelivery(filterParams, newSearchTerm, oldSearchTerm) {
            LoaderService.showLoader();
-            var allFilter = appendLoctionFilter(filterParams);
+            var allFilter = appendLocationFilter(filterParams);
             ReportService.ipFeedbackReportByDelivery(allFilter).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;

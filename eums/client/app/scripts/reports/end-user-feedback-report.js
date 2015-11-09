@@ -1,8 +1,11 @@
 'use strict';
 
 angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
-    .controller('EndUserFeedbackReportController', function ($scope, $q, $location, $timeout, ReportService, LoaderService) {
+    .controller('EndUserFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
+                                                             ReportService, LoaderService) {
         var timer;
+
+        $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
         $scope.$watch('searchTerm', function () {
             if ($scope.searchTerm && $scope.searchTerm.trim()) {
@@ -20,7 +23,7 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
             loadEndUserFeedbackReport({page: page})
         };
 
-        $scope.convertToDate = function(dateString) {
+        $scope.convertToDate = function (dateString) {
             return Date.parse(dateString);
         };
 
@@ -30,9 +33,18 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
             }, 1000);
         }
 
+        function appendLocationFilter(filterParams) {
+            var location = $routeParams.district;
+            if (location) {
+                return angular.extend({'location': location}, filterParams);
+            }
+            return filterParams;
+        }
+
         function loadEndUserFeedbackReport(filterParams) {
             $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
-            ReportService.endUserFeedbackReport(filterParams).then(function (response) {
+            var allFilter = appendLocationFilter(filterParams);
+            ReportService.endUserFeedbackReport(allFilter).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;

@@ -1,5 +1,5 @@
 describe('EndUserFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController;
 
     beforeEach(function () {
         module('EndUserFeedbackReport');
@@ -15,12 +15,17 @@ describe('EndUserFeedbackReportController', function () {
 
             mockReportService.endUserFeedbackReport.and.returnValue(deferredResult.promise);
 
-            $controller('EndUserFeedbackReportController', {
-                $scope: scope,
-                $location: location,
-                ReportService: mockReportService,
-                LoaderService: mockLoader
-            });
+            initController = function (route) {
+                $controller('EndUserFeedbackReportController', {
+                    $scope: scope,
+                    $location: location,
+                    ReportService: mockReportService,
+                    LoaderService: mockLoader,
+                    $routeParams: route
+                });
+            };
+            initController({});
+
         });
     });
 
@@ -43,6 +48,23 @@ describe('EndUserFeedbackReportController', function () {
 
             expect(mockReportService.endUserFeedbackReport).toHaveBeenCalled();
             expect(scope.report).toEqual(response.results)
+        });
+
+        it('should call reports service filter by location if required', function () {
+            initController({district: 'Gulu'});
+
+            var response = {results: [{id: 3}, {id: 33}]};
+            deferredResult.resolve(response);
+            scope.$apply();
+
+            expect(mockReportService.endUserFeedbackReport).toHaveBeenCalledWith({'location': 'Gulu'});
+            expect(scope.report).toEqual(response.results);
+        });
+
+        it('should set district', function () {
+            expect(scope.district).toEqual('All Districts');
+            initController({district: 'Fort Portal'});
+            expect(scope.district).toEqual('Fort Portal');
         });
     });
 

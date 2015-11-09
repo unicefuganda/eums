@@ -6,12 +6,17 @@
 
 <div class="container-fluid">
     <div class="content">
-        <div class="col-xs-4 pull-right margin-bottom-20 margin-top-20 pad-small">
-            <div class="inner-addon right-addon">
-                <i class="glyphicon "
-                   ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
-                       placeholder="Search by Item, Outcome, Purchase Order or Waybill"/>
+        <div class="row margin-right-20 margin-bottom-10 margin-top-20">
+            <div class="margin-left-20 text-muted pull-left">Feedback Report from Deliveries to <span
+                    class="blue-unicef bold">{{ district }}</span></div>
+            <div class="col-xs-4 pull-right pad-small">
+
+                <div class="inner-addon right-addon">
+                    <i class="glyphicon "
+                       ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                    <input type="text" id="filter" class="form-control" name="filter" ng-model="searchTerm"
+                           placeholder="Search by Item, Outcome, Purchase Order or Waybill"/>
+                </div>
             </div>
         </div>
 
@@ -46,10 +51,11 @@
 
                     <td>
                         <span ng-if="itemReport.answers.productReceived == 'Yes'"
-                    class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
                         <span ng-if="itemReport.answers.productReceived == 'No'"
-                    class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
-                    <td><span class="padded-multi-line-5">{{ !itemReport.answers.dateOfReceipt ? '': convertToDate(itemReport.answers.dateOfReceipt) | date : 'dd-MMM-yyyy'}}</span>
+                              class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
+                    <td><span
+                            class="padded-multi-line-5">{{ !itemReport.answers.dateOfReceipt ? '': convertToDate(itemReport.answers.dateOfReceipt) | date : 'dd-MMM-yyyy'}}</span>
                     </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
@@ -81,7 +87,7 @@
                         </div>
                     </td>
                     <td>
-                        <div class="align-center"ng-show="itemReport.answers.feedbackAboutDissatisfaction">
+                        <div class="align-center" ng-show="itemReport.answers.feedbackAboutDissatisfaction">
                             <a class="button" ng-click="showRemarks($index)">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">

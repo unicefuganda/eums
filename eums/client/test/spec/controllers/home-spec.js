@@ -27,7 +27,7 @@ describe('Module: Home', function () {
             scope.data = {district: 'Gulu'};
             scope.showDetailedResponses();
             scope.$apply();
-            expect(location.path()).toEqual('/response-details/' + scope.data.district);
+            expect(location.path()).toEqual('/end-user-feedback-report/' + scope.data.district);
         });
 
         it('should redirect to ip responses page', function () {
