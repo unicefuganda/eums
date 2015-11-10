@@ -58,8 +58,9 @@ describe('Stock Report', function () {
         loginPage.loginAs('wakiso', 'wakiso');
 
         stockReportPage.visit();
-
         ftUtils.waitForPageToLoad();
+
+        expect(stockReportPage.ipFilterSelection).toContain('WAKISO DHO');
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeFalsy();
 
         stockReportPage.selectOutcome('unattached programme');

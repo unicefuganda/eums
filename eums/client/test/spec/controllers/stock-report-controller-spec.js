@@ -62,7 +62,7 @@ describe('StockReportController', function () {
 
     adminUser = {"username": "admin", "first_name": "", "last_name": "", "email": "admin@tw.org", "consignee_id": null};
 
-    ipUser = {"username": "wakiso", "first_name": "", "last_name": "", "email": "ip@ip.com", "consignee_id": 1};
+    ipUser = {"username": "wakiso", "first_name": "", "last_name": "", "email": "ip@ip.com", "consignee_id": 5};
 
 
     beforeEach(function () {
@@ -72,6 +72,7 @@ describe('StockReportController', function () {
             'getStockReportForLocation', 'getStockReportForConsignee', 'getStockReport', 'computeStockTotals']);
         mockToastProvider = jasmine.createSpyObj('mockToastProvider', ['create']);
         mockIpService = jasmine.createSpyObj('mockIpService', ['loadAllDistricts']);
+        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
 
@@ -80,11 +81,13 @@ describe('StockReportController', function () {
             deferredStubReport = $q.defer();
             toastPromise = $q.defer();
             deferredDistricts = $q.defer();
+            deferredConsignee = $q.defer();
             deferredUser = $q.defer();
 
             mockStockReportService.getStockReport.and.returnValue(deferredStubReport.promise);
             mockToastProvider.create.and.returnValue(toastPromise.promise);
             mockIpService.loadAllDistricts.and.returnValue(deferredDistricts.promise);
+            mockConsigneeService.get.and.returnValue(deferredConsignee.promise);
             mockUserService.getCurrentUser.and.returnValue(deferredUser.promise);
 
             scope = $rootScope.$new();
@@ -322,13 +325,30 @@ describe('StockReportController', function () {
 
             expect(mockUserService.getCurrentUser.calls.count()).toEqual(1);
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 5});
         });
 
         it('should disable IP filter', function () {
             deferredUser.resolve(ipUser);
             scope.$apply();
             expect(scope.isIpUser).toBeTruthy();
+        });
+
+        it('should call consignee service', function () {
+            deferredUser.resolve(ipUser);
+            scope.$apply();
+            expect(mockConsigneeService.get).toHaveBeenCalledWith(5);
+        });
+
+        it('should broadcast consignee on service call return', function() {
+            spyOn(scope, '$broadcast');
+
+            deferredUser.resolve(ipUser);
+            var someConsignee = {name: 'Some Name'};
+            deferredConsignee.resolve(someConsignee);
+
+            scope.$apply()
+            expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', someConsignee)
         });
     });
 });

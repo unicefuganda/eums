@@ -20,6 +20,7 @@ StockReportPage.prototype = Object.create({}, {
         }
     },
 
+    ipFilterSelection: { get: function () { return element(by.id('s2id_select-ip')).getText(); }},
     noDataMessage: { get: function () { return element(by.css('.empty-data-response')); }},
 
     clickUnicefShipmentsLink: { value: function () { element(by.css('.empty-data-response .unicef-shipments-link')).click(); }},

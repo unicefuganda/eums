@@ -2,7 +2,7 @@
 
 angular.module('StockReport', [
         'eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User'])
-    .controller('StockReportController', function (StockReportService, $scope, ngToast, IPService, LoaderService, UserService) {
+    .controller('StockReportController', function (StockReportService, $scope, ngToast, ConsigneeService, IPService, LoaderService, UserService) {
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
@@ -13,8 +13,9 @@ angular.module('StockReport', [
                 if (user && user.consignee_id) {
                     $scope.isIpUser = true;
                     $scope.reportParams.selectedIPId = user.consignee_id;
-                } else {
-                    $scope.$broadcast('clear-consignee');
+                    ConsigneeService.get(user.consignee_id).then(function (ip) {
+                        $scope.$broadcast('set-consignee', ip);
+                    });
                 }
                 fetchReport();
             });
