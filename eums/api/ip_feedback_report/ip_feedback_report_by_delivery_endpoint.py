@@ -13,10 +13,11 @@ PAGE_SIZE = 10
 @api_view(['GET'])
 def ip_feedback_by_delivery_endpoint(request):
     logged_in_user = request.user
-    if UserProfile.objects.filter(user=logged_in_user).exists():
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-    deliveries = _get_filtered_deliveries(request)
+    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
+    ip = None
+    if user_profile:
+        ip = user_profile.consignee
+    deliveries = _get_filtered_deliveries(request, ip)
     results = _build_delivery_answers(deliveries)
     paginated_results = Paginator(results, PAGE_SIZE)
 
@@ -90,7 +91,7 @@ def _has_page(has_page, page, request):
     return None if has_page is False else base_url
 
 
-def _get_filtered_deliveries(request):
+def _get_filtered_deliveries(request, ip=None):
     po_way_bill = request.GET.get('po_waybill')
     nodes = DistributionPlanNode.objects.filter(**_query_args(request))
 
@@ -100,7 +101,10 @@ def _get_filtered_deliveries(request):
         nodes = nodes.filter(Q(item=purchase_order_item) |
                             Q(item=release_order_item))
     delivery_ids = nodes.values_list('distribution_plan', flat=True)
-    return DistributionPlan.objects.filter(id__in=delivery_ids)
+    deliveries = DistributionPlan.objects.filter(id__in=delivery_ids)
+    if ip:
+        deliveries = deliveries.filter(ip=ip)
+    return deliveries
 
 
 def _query_args(request):
