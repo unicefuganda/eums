@@ -14,12 +14,13 @@ PAGE_SIZE = 10
 @api_view(['GET', ])
 def end_user_feedback_report(request):
     logged_in_user = request.user
-
-    if UserProfile.objects.filter(user=logged_in_user).exists():
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
+    ip = None
+    if user_profile:
+        ip = user_profile.consignee
 
     response = []
-    nodes = end_user_tracked_nodes(request)
+    nodes = end_user_tracked_nodes(request, ip)
     if nodes:
         build_answers_for_nodes(nodes, response)
 
@@ -77,7 +78,7 @@ def build_answers_for_nodes(nodes, response):
             })
 
 
-def end_user_tracked_nodes(request):
+def end_user_tracked_nodes(request, ip=None):
     if request.GET.get('query'):
         params = request.GET.get('query')
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
@@ -94,6 +95,8 @@ def end_user_tracked_nodes(request):
     location = request.GET.get('location')
     if location:
         nodes = nodes.filter(location__iexact=location)
+    if ip:
+        nodes = nodes.filter(ip=ip)
     return nodes
 
 

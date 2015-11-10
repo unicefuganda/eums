@@ -46,14 +46,16 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         SalesOrder.objects.all().delete()
         Item.objects.all().delete()
 
-    def test_returns_401_unless_admin(self):
+    def test_ips_see_only_his_deliveries(self):
         consignee = ConsigneeFactory()
         self.logout()
         self.log_consignee_in(consignee)
 
         response = self.client.get(ENDPOINT_URL)
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(len(response.data['results']), 0)
 
     def test_returns_200_when_admin(self):
         self.setup_nodes_with_answers()

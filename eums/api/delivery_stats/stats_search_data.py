@@ -122,7 +122,7 @@ class IpStatsSearchData(StatsSearchData):
         received = self._get_yes_or_no(received_answer)
         quality = self._get_yes_or_no(good_condition_answer)
         satisfied = self._get_yes_or_no(satisfied_answer)
-        return {'name': '%s on %s' % (node.ip.name, delivery_date), 'received': received,
+        return {'name': '%s on %s' % (getattr(node.ip,'name', node.location), delivery_date), 'received': received,
                 'inGoodCondition': quality, 'satisfied': satisfied}
 
 
