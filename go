@@ -53,6 +53,10 @@ function main {
     "rs" )
       runserver;;
 
+    "prepush" )
+       testbackend
+       testjsunit;;
+
     "performance" )
       performance $2;;
 
