@@ -111,21 +111,18 @@ class IpStatsSearchData(StatsSearchData):
         return [self._delivery_data(node) for node in nodes_with_answers]
 
     def _delivery_data(self, node):
-        received_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
-                                                              run__runnable=node,
+        received_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow, run__runnable=node,
                                                               question__label=self.received_label)
-        good_condition_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
-                                                                    run__runnable=node,
+        good_condition_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow, run__runnable=node,
                                                                     question__label=self.quality_label)
-        satisfied_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow,
-                                                               run__runnable=node,
+        satisfied_answer = MultipleChoiceAnswer.objects.filter(question__flow=self.flow, run__runnable=node,
                                                                question__label=self.satisfied_label)
 
         delivery_date = node.delivery_date.strftime("%d-%b-%Y")
         received = self._get_yes_or_no(received_answer)
         quality = self._get_yes_or_no(good_condition_answer)
         satisfied = self._get_yes_or_no(satisfied_answer)
-        return {'name': '%s on %s' % (node.location, delivery_date), 'received': received,
+        return {'name': '%s on %s' % (node.ip.name, delivery_date), 'received': received,
                 'inGoodCondition': quality, 'satisfied': satisfied}
 
 

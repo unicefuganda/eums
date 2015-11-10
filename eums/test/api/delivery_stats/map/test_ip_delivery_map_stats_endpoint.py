@@ -146,7 +146,7 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
             delivery_date=self.today + datetime.timedelta(days=3))
 
         DeliveryNodeFactory(tree_position=DeliveryNode.IMPLEMENTING_PARTNER, quantity=10,
-                            item=po_item, distribution_plan=ip_delivery_one)
+                            item=po_item, distribution_plan=ip_delivery_one, consignee=self.ip)
 
         other_delivery = DeliveryFactory(
             location='Other location',

@@ -25,7 +25,7 @@ class DistributionPlan(Runnable):
     def update_total_value_and_ip(self, ip):
         self.ip = ip
         self.total_value = self._get_total_value()
-        self.save(update_fields=['total_value'])
+        self.save()
 
     def _get_total_value(self):
         delivery_root_nodes = DistributionPlanNode.objects.root_nodes_for(delivery=self)
