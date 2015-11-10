@@ -365,6 +365,12 @@ module.exports = function (grunt) {
         'protractor:chrome'
     ]);
 
+    grunt.registerTask('functional-nomigrations', 'Run functional tests using chrome without migrations', [
+        'apimocker',
+        'run:djangoServer',
+        'protractor:chrome'
+    ]);
+
     grunt.registerTask('functional-headless', 'Run functional tests in headless mode using selenium', [
         'apimocker',
         'protractor:headless'

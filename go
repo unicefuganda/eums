@@ -38,6 +38,8 @@ function main {
     "ft" )
       if [ "$2" = "--headless" ]; then
         testfunctional --headless
+      elif [ "$2" = "--nomigrations" ]; then
+         testfunctional --nomigrations
       else
         testfunctional
       fi;;
@@ -144,6 +146,8 @@ function testfunctional {
     grunt prep-test-env
     python ../../manage.py runserver 9000 --settings=eums.test_settings &> /dev/null &
     grunt functional-headless
+  elif [ "$1" = "--nomigrations" ]; then
+    grunt functional-nomigrations
   elif [ "$1" = "--multi" ]; then
     grunt functional --multi
   else
