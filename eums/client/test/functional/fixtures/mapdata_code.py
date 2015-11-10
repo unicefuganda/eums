@@ -85,6 +85,8 @@ MultipleChoiceAnswer.objects.create(run=run_23, question=EU_SATISFACTION, value=
 DistributionReport.objects.create(total_distributed=80, total_not_received=67, consignee=consignee_32,
                                   total_received=100, programme=programme_3)
 
+ip_questions, options, _ = seed_ip_questions()
+
 # WEB RUNS
 web_flow = Flow.objects.get(for_runnable_type='WEB')
 was_item_received = MultipleChoiceQuestion.objects.get(flow=web_flow, label='itemReceived')
@@ -134,13 +136,13 @@ MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_que
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_79)
 
 # delivery answers
-TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_80)
+TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='12/02/2015', run=run_80)
 
-MultipleChoiceAnswerFactory(question=ip_questions.ip_question_1, value=ip_questions.ip_yes, run=run_81)
-TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_81)
+MultipleChoiceAnswerFactory(question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'], run=run_81)
+TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='12/02/2015', run=run_81)
 
-MultipleChoiceAnswerFactory(question=ip_questions.ip_question_1, value=ip_questions.ip_yes, run=run_82)
-TextAnswerFactory(question=ip_questions.ip_question_2, value='12/02/2015', run=run_82)
+MultipleChoiceAnswerFactory(question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'], run=run_82)
+TextAnswerFactory(question=ip_questions['DATE_OF_RECEIPT'], value='12/02/2015', run=run_82)
 
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_83)
 NumericAnswerFactory(question=web_questions.web_question_2, value=80, run=run_83)
@@ -169,7 +171,6 @@ TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', r
 # data for home page
 import datetime
 
-ip_questions, options, _ = seed_ip_questions()
 
 today = FakeDate.today()
 delivery_pader = DeliveryFactory(location='PADER', track=True, programme=programme_4, consignee=wakiso,
@@ -180,29 +181,32 @@ delivery_Amuru = DeliveryFactory(location='Amuru', delivery_date=today, track=Tr
 run_delivery_pader = RunFactory(runnable=delivery_pader, status=Run.STATUS.scheduled)
 run_delivery_amuru = RunFactory(runnable=delivery_Amuru, status=Run.STATUS.scheduled)
 
-MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['WAS_DELIVERY_RECEIVED'],
-                            value=options['DELIVERY_WAS_RECEIVED'])
-TextAnswerFactory(run=run_delivery_pader, question=ip_questions['DATE_OF_RECEIPT'], value=options['2014-09-29'])
-MultipleChoiceAnswerFactory(run_delivery_pader, question=ip_questions['IS_DELIVERY_IN_GOOD_ORDER'],
-                            value=options['IN_GOOD_CONDITION'])
-MultipleChoiceAnswerFactory(run_delivery_pader, question=ip_questions['SATISFIED_WITH_DELIVERY'],
-                            value=options['SATISFIED'])
-TextAnswerFactory(run=run_delivery_pader, question=ip_questions['ADDITIONAL_DELIVERY_COMMENTS'], value=options['none'])
+MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['WAS_DELIVERY_RECEIVED'], value=options['DELIVERY_WAS_RECEIVED'])
+TextAnswerFactory(run=run_delivery_pader, question=ip_questions['DATE_OF_RECEIPT'], value='2014-09-29')
+MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['IS_DELIVERY_IN_GOOD_ORDER'], value=options['IN_GOOD_CONDITION'])
+MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['SATISFIED_WITH_DELIVERY'], value=options['SATISFIED'])
+TextAnswerFactory(run=run_delivery_pader, question=ip_questions['ADDITIONAL_DELIVERY_COMMENTS'], value='none')
 
-non_response_delivery_one = DeliveryFactory(delivery_date=today + datetime.timedelta(days=4), location='PADER',
-                                            track=True)
+MultipleChoiceAnswerFactory(run=run_delivery_amuru, question=ip_questions['WAS_DELIVERY_RECEIVED'],
+                            value=options['DELIVERY_WAS_NOT_RECEIVED'])
 
+non_response_delivery_one = DeliveryFactory(delivery_date=today + datetime.timedelta(days=4), location='PADER', track=True)
 RunFactory(runnable=non_response_delivery_one, status=Run.STATUS.scheduled)
 
 
 # end user nodes for home page
 end_user_questions, options = seed_questions()
 
-po_item = PurchaseOrderItemFactory(quantity=100, value=1000)
+po_item_one = PurchaseOrderItemFactory(quantity=100, value=1000)
+po_item_two = PurchaseOrderItemFactory(quantity=50, value=1000)
+
 ip_node_one = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=10,
-                                  distribution_plan=delivery_pader, item=po_item)
+distribution_plan=delivery_pader, item=po_item_one)
 ip_node_two = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=20,
-                                  distribution_plan=delivery_pader, item=po_item)
+                                  distribution_plan=delivery_pader, item=po_item_one)
+
+ip_node_three = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=10,
+                                    distribution_plan=delivery_Amuru, item=po_item_two)
 
 run_ip_node_one = RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled)
 run_ip_node_two = RunFactory(runnable=ip_node_two, status=Run.STATUS.scheduled)
@@ -219,7 +223,7 @@ MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_que
 MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_ip_node_two)
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_ip_node_two)
 
-end_user_node_one = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True, item=po_item,
+end_user_node_one = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True, item=po_item_one,
                                         parents=((ip_node_one, 5),))
 run_end_user_node_one = RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled)
 
@@ -234,25 +238,8 @@ NumericAnswerFactory(run=run_end_user_node_one, question=end_user_questions['EU_
 
 
 
-end_user_node_two = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
-                                        parents=((ip_node_two, 5), (ip_node_one, 1)),
-                                        distribution_plan=delivery_Amuru, item=po_item, consignee=consignee_10,
-                                        programm=programme_4)
-run_end_user_node_two = RunFactory(runnable=end_user_node_two, status=Run.STATUS.scheduled)
-
-MultipleChoiceAnswerFactory(run=run_end_user_node_two, question=end_user_questions['WAS_PRODUCT_RECEIVED'],
-                            value=options['PRODUCT_WAS_RECEIVED'])
-MultipleChoiceAnswerFactory(run=run_end_user_node_two, question=end_user_questions['QUALITY_OF_PRODUCT'],
-                            value=options['IN_GOOD_CONDITION'])
-MultipleChoiceAnswerFactory(run=run_end_user_node_two, question=end_user_questions['SATISFACTION_WITH_PRODUCT'],
-                            value=options['SATISFIED'])
-NumericAnswerFactory(run=run_end_user_node_two, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=6)
-
-
-
-
 end_user_node_three = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
-                                          distribution_plan=None, item=po_item, parents=((ip_node_two, 2),))
+                                          distribution_plan=None, item=po_item_one, parents=((ip_node_two, 2),))
 run_end_user_node_three = RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled)
 
 MultipleChoiceAnswerFactory(run=run_end_user_node_three, question=end_user_questions['WAS_PRODUCT_RECEIVED'],
@@ -263,14 +250,9 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_three, question=end_user_quest
                             value=options['SATISFIED'])
 NumericAnswerFactory(run=run_end_user_node_three, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=2)
 
-
-
-
 end_user_node_four = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
                                          distribution_plan=None, parents=((ip_node_two, 1), (ip_node_one, 3)),
-                                         item=po_item)
-end_user_node_four = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
-                                          distribution_plan=None, item=po_item, parents=((ip_node_two, 2),))
+                                         item=po_item_one)
 run_end_user_node_four = RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled)
 
 MultipleChoiceAnswerFactory(run=run_end_user_node_four, question=end_user_questions['WAS_PRODUCT_RECEIVED'],
@@ -281,10 +263,13 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_four, question=end_user_questi
                             value=options['NOT_SATISFIED'])
 NumericAnswerFactory(run=run_end_user_node_four, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=4)
 
-
-
+end_user_node_five = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
+                                         distribution_plan=None, item=po_item_one, parents=((ip_node_two, 2),))
+run_end_user_node_five = RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled)
+MultipleChoiceAnswerFactory(run=run_end_user_node_five, question=end_user_questions['WAS_PRODUCT_RECEIVED'],
+                            value=options['PRODUCT_WAS_NOT_RECEIVED'])
 
 non_response_node = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
                                         distribution_plan=None, parents=((ip_node_two, 2),),
-                                        item=po_item)
+                                        item=po_item_one)
 RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
