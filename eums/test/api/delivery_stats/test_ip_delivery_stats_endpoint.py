@@ -1,5 +1,4 @@
 import datetime
-from decimal import Decimal
 
 from eums.models import MultipleChoiceQuestion, Run, MultipleChoiceAnswer
 from eums.test.api.delivery_stats.delivery_stats_test_case import DeliveryStatsTestCase
@@ -8,9 +7,7 @@ from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.models.distribution_plan_node import DistributionPlanNode as DeliveryNode
 from eums.test.factories.delivery_factory import DeliveryFactory
-from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
-from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDate
 
