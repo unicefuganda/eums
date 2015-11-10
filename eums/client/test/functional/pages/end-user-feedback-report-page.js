@@ -9,6 +9,9 @@ EndUserFeedbackReportPage.prototype = Object.create({}, {
     search: { value: function (searchTerm) {
         element(by.model('searchTerm')).sendKeys(searchTerm);
     }},
+    districtHeader: { get: function () {
+        return element(by.id('feedback-district-header'));
+    }},
     resultsCount: {get: function () { return element.all(by.repeater('($index, itemReport) in report')).count()}},
     itemDescriptions: { get: function () { return element.all(by.repeater('($index, itemReport) in report').column('itemReport.item_description')).getText(); }},
     programmes: { get: function () { return element.all(by.repeater('($index, itemReport) in report').column('itemReport.programme')).getText(); }},

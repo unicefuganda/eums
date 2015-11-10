@@ -26,13 +26,28 @@ homePage.prototype = Object.create({}, {
         return element(by.binding('totalStats.location')).getText();
     }},
     numberSent: { get: function () {
-        return element(by.binding('totalStats.totalValueSent')).getText();
+        return element(by.binding('data.totalStats.totalNumberOfDeliveries')).getText();
     }},
     numberDelivered: { get: function () {
-        return element(by.binding('totalStats.totalValueReceived')).getText();
+        return element(by.binding('data.totalStats.numberOfSuccessfulProductDeliveries')).getText();
     }},
     numberNotDelivered: { get: function () {
-        return element(by.binding('totalStats.percentageNotReceived')).getText();
+        return element(by.binding('data.totalStats.numberOfUnsuccessfulProductDeliveries')).getText();
+    }},
+    numberNonResponse: { get: function () {
+        return element(by.binding('data.totalStats.numberOfNonResponseToProductReceived')).getText();
+    }},
+    valueSent: { get: function () {
+        return element(by.binding(' data.totalStats.totalValueOfDeliveries | compactCurrency ')).getText();
+    }},
+    valueDelivered: { get: function () {
+        return element(by.binding(' data.totalStats.totalValueOfSuccessfulDeliveries | compactNumber ')).getText();
+    }},
+    valueNotDelivered: { get: function () {
+        return element(by.binding(' data.totalStats.totalValueOfUnsuccessfulProductDeliveries | compactNumber ')).getText();
+    }},
+    valueNonResponse: { get: function () {
+        return element(by.binding(' data.totalStats.totalValueOfNonResponseToProductReceived | compactNumber ')).getText();
     }},
     numberOfResponses: { get: function () {
         return element.all(by.repeater('response in responses'));
