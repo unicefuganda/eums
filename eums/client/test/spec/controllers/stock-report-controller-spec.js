@@ -77,7 +77,6 @@ describe('StockReportController', function () {
 
 
         inject(function ($controller, $rootScope, $q) {
-            deferredStubIPs = $q.defer();
             deferredStubReport = $q.defer();
             toastPromise = $q.defer();
             deferredDistricts = $q.defer();
@@ -120,6 +119,26 @@ describe('StockReportController', function () {
             scope.$apply();
             expect(mockIpService.loadAllDistricts).toHaveBeenCalled();
             expect(scope.districts).toEqual([{id: 'Adjumani', name: 'Adjumani'}, {id: 'Luweero', name: 'Luweero'}])
+        });
+
+        it('should show and hide loader on stock report load success', function () {
+            deferredStubReport.resolve(stubStockReport);
+            scope.$apply();
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+        });
+
+        it('should show and hide loader on stock report load failure', function () {
+            deferredStubReport.reject();
+            scope.$apply();
+            expect(mockLoaderService.showLoader).toHaveBeenCalled();
+            expect(mockLoaderService.hideLoader).toHaveBeenCalled();
+        });
+
+        it('should show error toast when stock report load failure', function () {
+            deferredStubReport.reject();
+            scope.$apply();
+            expect(mockToastProvider.create).toHaveBeenCalled();
         });
     });
 

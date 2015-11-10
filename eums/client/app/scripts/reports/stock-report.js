@@ -9,7 +9,6 @@ angular.module('StockReport', [
 
         function init() {
             loadDistricts();
-
             UserService.getCurrentUser().then(function (user) {
                 if (user && user.consignee_id) {
                     $scope.isIpUser = true;
@@ -56,16 +55,18 @@ angular.module('StockReport', [
                 Object.merge(requestParams, params);
             }
             StockReportService.getStockReport(requestParams).then(function (response) {
-
                 $scope.count = response.data.count;
                 $scope.pageSize = response.data.pageSize;
                 $scope.reportData = response.data.results;
                 $scope.totals = response.data.totals;
                 $scope.openDocument = undefined;
-
+            }, function () {
+                var errorMessage = 'An error occurred. Please refresh and try again.'
+                ngToast.create({content: errorMessage, class: 'danger'});
+            }).finally(function () {
                 LoaderService.hideLoader();
             });
-        }
+        };
 
         $scope.hasEmptyDataResponse = function () {
             return ($scope.reportData != undefined && $scope.reportData.length === 0);
