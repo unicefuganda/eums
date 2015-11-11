@@ -145,7 +145,7 @@ describe('Home Page', function () {
 
     });
 
-    xdescribe('IP User', function () {
+    describe('IP User', function () {
         beforeEach(function () {
             loginPage.visit();
             loginPage.loginAs('wakiso', 'wakiso');
@@ -153,9 +153,15 @@ describe('Home Page', function () {
 
         it('should get global stats on map only for IP', function () {
             expect(homePage.mapLocation).toEqual('');
-            expect(homePage.numberSent).toEqual('$1,200.00');
-            expect(homePage.numberDelivered).toEqual('$1,200.00');
-            expect(homePage.numberNotDelivered).toEqual('0%');
+            expect(homePage.numberSent).toEqual('4 deliveries');
+            expect(homePage.numberDelivered).toEqual('0 responses');
+            expect(homePage.numberNotDelivered).toEqual('0 responses');
+            expect(homePage.numberNonResponse).toEqual('4 non-responses');
+            expect(homePage.valueSent).toEqual('$161');
+            expect(homePage.valueDelivered).toEqual('0');
+            expect(homePage.valueNotDelivered).toEqual('0');
+            expect(homePage.valueNonResponse).toEqual('161');
         });
+
     });
 });
