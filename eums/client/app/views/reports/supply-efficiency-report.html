@@ -15,7 +15,7 @@
             </div>
             <div class="row">
                 <div class="col-md-12 pad-top-20">
-                    <table class="table table-bordered table-hover table-striped table-condensed">
+                    <table si-table class="table table-bordered table-hover table-striped table-condensed">
                         <thead>
                         <tr>
                             <th ng-if="view == views.DELIVERY" colspan="3" class="contextual-column">Delivery</th>
@@ -80,7 +80,7 @@
 
                             <td>{{ bucket.delivery_stages.unicef.total_value | currency }}</td>
                             <td>{{ bucket.delivery_stages.ip_receipt.total_value_received | currency }}</td>
-                            <td>{{ bucket.delivery_stages.ip_receipt.total_loss | currency }}</td>
+                            <td ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.total_loss > 0}">{{ bucket.delivery_stages.ip_receipt.total_loss | currency }}</td>
                             <td>
                                 {{ bucket.delivery_stages.ip_receipt.average_delay }}
                                 <span ng-if="bucket.delivery_stages.ip_receipt.average_delay">days</span>
@@ -88,13 +88,20 @@
                             <td>{{ bucket.delivery_stages.ip_distribution.total_value_distributed | currency}}</td>
                             <td>{{ bucket.delivery_stages.ip_distribution.balance | currency }}</td>
                             <td>{{ bucket.delivery_stages.end_user.total_value_received | currency }}</td>
-                            <td>{{ bucket.delivery_stages.end_user.total_loss | currency }}</td>
+                            <td ng-class="{'text-danger': bucket.delivery_stages.end_user.total_loss > 0}">{{ bucket.delivery_stages.end_user.total_loss | currency }}</td>
                             <td>
                                 {{ bucket.delivery_stages.end_user.average_delay }}
                                 <span ng-if="bucket.delivery_stages.end_user.average_delay">days</span>
                             </td>
                         </tr>
                         </tbody>
+                        <tfoot>
+                        <tr>
+                            <td class="pagination-row centered" colspan="12">
+                                <si-table-pagination limit="15" indices="5"/>
+                            </td>
+                        </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

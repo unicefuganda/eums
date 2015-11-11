@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('SupplyEfficiencyReport', [
-    'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'SupplyEfficiencyQueries'])
+    'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SupplyEfficiencyQueries'])
     .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService, $location) {
         $scope.views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
