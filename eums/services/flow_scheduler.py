@@ -42,6 +42,9 @@ def _schedule_run(runnable_id):
 
 
 def _calculate_delay(runnable):
+    if runnable.is_retriggered:
+        return 0
+
     expected_delivery_date = datetime.datetime.combine(runnable.delivery_date,
                                                        datetime.datetime.min.time())
     when_to_send_message = expected_delivery_date + datetime.timedelta(days=settings.DELIVERY_STATUS_CHECK_DELAY)
