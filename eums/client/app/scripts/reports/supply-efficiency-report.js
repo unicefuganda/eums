@@ -25,8 +25,10 @@ angular.module('SupplyEfficiencyReport', [
         });
 
         function generateReport() {
+            LoaderService.showLoader();
             SupplyEfficiencyReportService.generate($scope.view, $scope.filters).then(function (report) {
                 $scope.report = report;
+                LoaderService.hideLoader();
             });
         }
     })

@@ -1,12 +1,13 @@
 describe('Supply Efficiency Report Controller Spec', function () {
 
-    var scope, childScope, mockReportService, mockReport, mockLocation;
+    var scope, childScope, mockReportService, mockReport, mockLocation, mockLoaderService;
     var mockViews = {DELIVERY: 1, ITEM: 2, OUTCOME: 3, DOCUMENT: 4, IP: 5, LOCATION: 6};
 
     beforeEach(function () {
         module('SupplyEfficiencyReport');
         mockReportService = jasmine.createSpyObj('mockSupplyEfficiencyReportService', ['generate']);
         mockLocation = jasmine.createSpyObj('$location', ['search']);
+        mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
 
         inject(function ($rootScope, $controller, $q) {
             mockReportService.generate.and.returnValue($q.when(mockReport));
@@ -19,9 +20,16 @@ describe('Supply Efficiency Report Controller Spec', function () {
             $controller('SupplyEfficiencyReportController', {
                 $scope: scope,
                 SupplyEfficiencyReportService: mockReportService,
-                $location: mockLocation
+                $location: mockLocation,
+                LoaderService: mockLoaderService
             });
         });
+    });
+
+    it('should show loader on load', function () {
+        scope.$apply();
+        expect(mockLoaderService.showLoader).toHaveBeenCalled();
+        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
 
     it('should receive filters from filters controller', function () {
@@ -35,6 +43,8 @@ describe('Supply Efficiency Report Controller Spec', function () {
         childScope.$emit('filters-changed', {consignee: 3});
         scope.$apply();
         expect(mockReportService.generate).toHaveBeenCalledWith(mockViews.DELIVERY, {consignee: 3})
+        expect(mockLoaderService.showLoader).toHaveBeenCalled();
+        expect(mockLoaderService.hideLoader).toHaveBeenCalled();
     });
 
     it('should put views on scope', function () {
@@ -56,7 +66,8 @@ describe('Supply Efficiency Report Controller Spec', function () {
         $controller('SupplyEfficiencyReportController', {
             $scope: scope,
             SupplyEfficiencyReportService: mockReportService,
-            $location: mockLocation
+            $location: mockLocation,
+            LoaderService: mockLoaderService
         });
 
         scope.$apply();
