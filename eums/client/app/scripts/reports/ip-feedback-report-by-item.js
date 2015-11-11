@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loader', 'Consignee', 'Programme'])
+angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loader'])
     .controller('IpFeedbackReportByItemController', function ($scope, $q, $location, $timeout, ReportService,
                                                               LoaderService) {
         var timer;
@@ -40,27 +40,6 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
             }, 2000);
         }
 
-        function applyFilters(newSearchTerm, oldSearchTerm) {
-            if (newSearchTerm.consigneeId != oldSearchTerm.consigneeId) {
-                $scope.displayProgrammes = newSearchTerm.consigneeId ? $scope.directiveValues.allProgrammes.filter(function (programme) {
-                    return _.contains(programme.ips, newSearchTerm.consigneeId);
-                }) : $scope.directiveValues.allProgrammes;
-                $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
-            }
-
-            if (newSearchTerm.programmeId != oldSearchTerm.programmeId) {
-                var programme = newSearchTerm.programmeId ?
-                    $scope.directiveValues.allProgrammes.filter(function (programme) {
-                        return programme.id === newSearchTerm.programmeId;
-                    })[0] : undefined;
-
-                $scope.displayIps = programme ? $scope.directiveValues.allIps.filter(function (ip) {
-                    return _.contains(programme.ips, ip.id);
-                }) : $scope.directiveValues.allIps;
-                $scope.populateIpsSelect2 && $scope.populateIpsSelect2($scope.displayIps);
-            }
-        }
-
         function startSearch(newSearchTerm, oldSearchTerm) {
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
@@ -85,10 +64,6 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                 updateProgrammes(response.programmeIds);
                 updateConsignees(response.ipIds);
 
-                if(newSearchTerm && oldSearchTerm) {
-                    applyFilters(newSearchTerm, oldSearchTerm);
-                }
-
                 $scope.searching = false;
                 LoaderService.hideLoader();
             });
@@ -106,14 +81,9 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
         }
 
         function updateProgrammes(programmeIds) {
-            if (programmeIds && $scope.displayProgrammes) {
-                $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
-                    return _.contains(programmeIds, programme.id);
-                }) : [];
-            } else {
-                $scope.displayProgrammes = $scope.directiveValues.allProgrammes;
-            }
-
+            $scope.displayProgrammes = $scope.directiveValues.allProgrammes.filter(function (programme) {
+                return _.contains(programmeIds, programme.id);
+            });
             $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
         }
 

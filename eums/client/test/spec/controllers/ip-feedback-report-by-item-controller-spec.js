@@ -1,38 +1,34 @@
 describe('IpFeedbackReportByItemController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout, mockConsigneeService, mockProgrammeService;
+    var scope, location, mockReportService, deferredReportResult, mockLoader, timeout;
 
     beforeEach(function () {
         module('IpFeedbackReportByItem');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
-        mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['filter']);
-        mockProgrammeService = jasmine.createSpyObj('mockProgrammeService', ['all']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
-            deferredResult = $q.defer();
+            deferredReportResult = $q.defer();
             scope = $rootScope.$new();
             location = $location;
             timeout = $timeout;
 
-            mockReportService.ipFeedbackReport.and.returnValue(deferredResult.promise);
-            mockConsigneeService.filter.and.returnValue(deferredResult.promise);
-            mockProgrammeService.all.and.returnValue(deferredResult.promise);
+            mockReportService.ipFeedbackReport.and.returnValue(deferredReportResult.promise);
 
             $controller('IpFeedbackReportByItemController', {
                 $scope: scope,
                 $location: location,
                 ReportService: mockReportService,
-                LoaderService: mockLoader,
-                ConsigneeService: mockConsigneeService,
-                ProgrammeService: mockProgrammeService
+                LoaderService: mockLoader
             });
-        });
+;        });
+
+        scope.directiveValues.allProgrammes = [];
     });
 
     describe('on load', function () {
         it('should show the loader and hide it after the loading data', function () {
-            deferredResult.resolve([]);
+            deferredReportResult.resolve([]);
             scope.$apply();
 
             expect(mockLoader.showLoader).toHaveBeenCalled();
@@ -44,17 +40,35 @@ describe('IpFeedbackReportByItemController', function () {
 
         it('should call reports service', function () {
             var response = {results: [{id: 3}, {id: 33}]};
-            deferredResult.resolve(response);
+            deferredReportResult.resolve(response);
             scope.$apply();
 
             expect(mockReportService.ipFeedbackReport).toHaveBeenCalled();
             expect(scope.report).toEqual(response.results)
         });
+
+        it('should load all programmes when result has all programmes', function () {
+            deferredReportResult.resolve({programmeIds: [5, 6]});
+            scope.directiveValues.allProgrammes = [{id: 5}, {id: 6}];
+
+            scope.$apply();
+
+            expect(scope.displayProgrammes).toEqual([{id: 5}, {id: 6}]);
+        });
+
+        it('should just load programmes that match programme ids in result', function() {
+            deferredReportResult.resolve({programmeIds: [3, 4]});
+            scope.directiveValues.allProgrammes = [{id: 2}, {id: 3}, {id: 4}, {id: 5}];
+
+            scope.$apply();
+
+            expect(scope.displayProgrammes).toEqual([{id: 3}, {id: 4}]);
+        });
     });
 
     describe('on filtering', function () {
         it('should call endpoint with query params after ', function () {
-            deferredResult.resolve({results: []});
+            deferredReportResult.resolve({results: []});
             scope.$apply();
 
             var searchTerm = 'something';
@@ -67,7 +81,7 @@ describe('IpFeedbackReportByItemController', function () {
         });
 
         it('should call endpoint when searchTerm programme_id changes', function () {
-            deferredResult.resolve({results: []});
+            deferredReportResult.resolve({results: []});
             scope.$apply();
 
             var programme_id = 2;
@@ -83,7 +97,7 @@ describe('IpFeedbackReportByItemController', function () {
 
     describe('on paginate', function () {
         it('should call the service with page number', function () {
-            deferredResult.resolve({});
+            deferredReportResult.resolve({});
             scope.$apply();
 
             scope.goToPage(2);

@@ -4,7 +4,7 @@ var ftUtils = require('./functional-test-utils.js');
 var loginPage = require('./pages/login-page.js');
 var ipFeedbackReportByItemPage = require('./pages/ip-feedback-report-by-item-page.js');
 
-describe('IP Feedback Report By Item', function () {
+fdescribe('IP Feedback Report By Item', function () {
 
     it('should filter by programme, ip, item description, Purchase Order Number or waybill', function () {
         loginPage.visit();
