@@ -18,14 +18,14 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('9 deliveries');
+                expect(homePage.numberSent).toEqual('8 deliveries');
                 expect(homePage.numberDelivered).toEqual('3 responses');
                 expect(homePage.numberNotDelivered).toEqual('1 response');
-                expect(homePage.numberNonResponse).toEqual('5 non-responses');
-                expect(homePage.valueSent).toEqual('$311');
+                expect(homePage.numberNonResponse).toEqual('4 non-responses');
+                expect(homePage.valueSent).toEqual('$212');
                 expect(homePage.valueDelivered).toEqual('110');
                 expect(homePage.valueNotDelivered).toEqual('20');
-                expect(homePage.valueNonResponse).toEqual('181');
+                expect(homePage.valueNonResponse).toEqual('82');
             });
 
             it('should click on kamapala district', function () {
@@ -83,26 +83,26 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('10 deliveries');
-                expect(homePage.numberDelivered).toEqual('5 responses');
+                expect(homePage.numberSent).toEqual('9 deliveries');
+                expect(homePage.numberDelivered).toEqual('4 responses');
                 expect(homePage.numberNotDelivered).toEqual('1 response');
                 expect(homePage.numberNonResponse).toEqual('3 non-responses');
-                expect(homePage.valueSent).toEqual('$2.8k');
-                expect(homePage.valueDelivered).toEqual('1.7k');
+                expect(homePage.valueSent).toEqual('$1.7k');
+                expect(homePage.valueDelivered).toEqual('593');
                 expect(homePage.valueNotDelivered).toEqual('200');
                 expect(homePage.valueNonResponse).toEqual('92');
             });
 
-            it('should click on kamapala district', function () {
+            it('should click on wakiso district', function () {
                 homePage.clickMapLayer('wakiso');
                 expect(homePage.mapLocation).toEqual('WAKISO');
                 expect(homePage.getMapZoomLevel()).toBe(10);
-                expect(homePage.numberSent).toEqual('3 deliveries');
-                expect(homePage.numberDelivered).toEqual('2 responses');
+                expect(homePage.numberSent).toEqual('2 deliveries');
+                expect(homePage.numberDelivered).toEqual('1 response');
                 expect(homePage.numberNotDelivered).toEqual('0 responses');
                 expect(homePage.numberNonResponse).toEqual('0 non-responses');
-                expect(homePage.valueSent).toEqual('$2.0k');
-                expect(homePage.valueDelivered).toEqual('1.2k');
+                expect(homePage.valueSent).toEqual('$887');
+                expect(homePage.valueDelivered).toEqual('80');
                 expect(homePage.valueNotDelivered).toEqual('0');
                 expect(homePage.valueNonResponse).toEqual('0');
             });
@@ -117,15 +117,14 @@ describe('Home Page', function () {
             it('should highlight a layer', function () {
                 homePage.highLightMapLayer('wakiso');
                 expect(homePage.getHighlightedLayerName()).toEqual('wakiso');
-                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'map-received', fillOpacity: 1, weight: 1.5});
+                expect(homePage.getHighlightedStyle('wakiso')).toEqual({fillColor: 'map-received-with-issues', fillOpacity: 1, weight: 1.5});
             });
 
             it('responses panel should have a link to more details', function () {
                 homePage.clickMapLayer('wakiso');
-                expect(homePage.latestDeliveriesCount).toEqual(4);
+                expect(homePage.latestDeliveriesCount).toEqual(2);
                 homePage.latestDeliveryResponses.then(function (responses) {
-                    expect(responses[2].getText()).toEqual('WAKISO DHO on 10-Oct-2021\nBAD CONDITION SATISFIED');
-                    expect(responses[3].getText()).toEqual('WAKISO DHO on 10-Oct-2021\nGOOD SATISFIED');
+                    expect(responses[1].getText()).toEqual('WAKISO DHO on 10-Oct-2021\nBAD CONDITION SATISFIED');
                 });
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
@@ -153,14 +152,14 @@ describe('Home Page', function () {
 
         it('should get global stats on map only for IP', function () {
             expect(homePage.mapLocation).toEqual('');
-            expect(homePage.numberSent).toEqual('4 deliveries');
+            expect(homePage.numberSent).toEqual('3 deliveries');
             expect(homePage.numberDelivered).toEqual('0 responses');
             expect(homePage.numberNotDelivered).toEqual('0 responses');
-            expect(homePage.numberNonResponse).toEqual('4 non-responses');
-            expect(homePage.valueSent).toEqual('$161');
+            expect(homePage.numberNonResponse).toEqual('3 non-responses');
+            expect(homePage.valueSent).toEqual('$62');
             expect(homePage.valueDelivered).toEqual('0');
             expect(homePage.valueNotDelivered).toEqual('0');
-            expect(homePage.valueNonResponse).toEqual('161');
+            expect(homePage.valueNonResponse).toEqual('62');
         });
 
     });

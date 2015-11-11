@@ -1,7 +1,12 @@
 angular.module('map.layers', ['Delivery', 'DeliveryStats'])
-    .factory('LayerMap', function () {
+    .factory('LayerMap', function (DeliveryService, DeliveryStatsService) {
         var layerList = {};
         var highlightedLayerName = '';
+        var setFilter = function (layerName, scope) {
+            var treePosition = scope.data.ipView ? 'IMPLEMENTING_PARTNER' : 'END_USER';
+            var filter = layerName ? {location: layerName, treePosition: treePosition} : {treePosition: treePosition};
+            return angular.extend(filter, scope.filter);
+        };
 
         return {
             addLayer: function (layer, layerName) {
@@ -42,33 +47,46 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
             clickLayer: function (layerName) {
                 highlightedLayerName = layerName;
                 layerList[layerName].click();
+            },
+            clickedLayer: function () {
+                return _.find(layerList, function (layer) {
+                    return layer.isClicked();
+                });
+            },
+            layerClicked: function () {
+                var layer = _.find(layerList, function (layer) {
+                    return layer.isClicked();
+                });
+                return layer != undefined;
+            },
+            unClickLayers: function () {
+                angular.forEach(layerList, function (layer) {
+                    layer.unclick();
+                });
+            },
+            changeGlobalStats: function (layerName, scope) {
+                var allFilter = setFilter(layerName, scope);
+                DeliveryStatsService.getStatsDetails(allFilter, true).then(function (responses) {
+                    scope.data.totalStats = responses.data;
+                    scope.data.totalStats.location = layerName;
+                });
+            },
+            showResponsesForDistrict: function (layerName, scope) {
+                var allFilter = setFilter(layerName, scope);
+                DeliveryStatsService.getLatestDeliveries(allFilter).then(function (responses) {
+                    scope.data.latestDeliveries = responses.data;
+                    scope.data.district = layerName;
+                });
+            },
+            hideResponsesForDistrict: function (scope) {
+                scope.data.latestDeliveries = undefined;
+                scope.data.district = undefined;
             }
+
         };
-    }).factory('Layer', function (DeliveryService, DeliveryStatsService) {
-        function changeGlobalStats(layerName, scope) {
-            var allFilter = setFilter(layerName, scope);
-            DeliveryStatsService.getStatsDetails(allFilter, true).then(function (responses) {
-                scope.data.totalStats = responses.data;
-                scope.data.totalStats.location = layerName;
-            });
-        }
-
-        function setFilter(layerName, scope){
-            var treePosition = scope.data.ipView ? 'IMPLEMENTING_PARTNER' : 'END_USER';
-            var filter = layerName ? {location: layerName, treePosition: treePosition} : {treePosition: treePosition};
-            return angular.extend(filter, scope.filter);
-        }
-
-        function showResponsesForDistrict(layerName, scope) {
-            var allFilter = setFilter(layerName, scope);
-            DeliveryStatsService.getLatestDeliveries(allFilter).then(function (responses) {
-                scope.data.latestDeliveries = responses.data;
-                scope.data.district = layerName;
-            });
-        }
-
+    }).factory('Layer', function (LayerMap) {
         function Layer(map, layer, layerOptions, scope, layerName) {
-            var selected = false, layerStyle;
+            var selected = false, layerStyle, clicked = false;
 
             function init(self) {
                 layer
@@ -78,10 +96,14 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
             }
 
             this.click = function () {
-                changeGlobalStats(layerName, scope);
-                showResponsesForDistrict(layerName, scope);
+                LayerMap.changeGlobalStats(layerName, scope);
+                LayerMap.showResponsesForDistrict(layerName, scope);
                 map.fitBounds(layer.getBounds());
-                //window.map.addCustomZoomControl();
+                var clickedLayer = LayerMap.clickedLayer();
+                if (clickedLayer) {
+                    clickedLayer.unclick();
+                }
+                clicked = true;
             };
             this.setStyle = function (style) {
                 layerStyle = style;
@@ -104,19 +126,26 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
                 layerOptions.districtLayerStyle.fillColor = layerStyle ? layerStyle.fillColor : layerOptions.districtLayerStyle.fillColor;
                 layer.setStyle(layerOptions.districtLayerStyle);
                 selected = true;
-
-                changeGlobalStats(layerName, scope);
+                if (!LayerMap.layerClicked()) {
+                    LayerMap.changeGlobalStats(layerName, scope);
+                }
             };
 
             this.unhighlight = function () {
                 layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
                 selected = false;
-
-                changeGlobalStats(undefined, scope);
+                if (!LayerMap.layerClicked()) {
+                    LayerMap.changeGlobalStats(undefined, scope);
+                }
             };
-
+            this.unclick = function () {
+                clicked = false;
+            };
             this.isHighlighted = function () {
                 return selected;
+            };
+            this.isClicked = function () {
+                return clicked;
             };
 
             init(this);

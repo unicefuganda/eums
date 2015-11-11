@@ -157,8 +157,11 @@
                     this.highlightLayer(layerName);
                 }
             },
-            setDefaultView: function () {
+            setDefaultView: function (scope) {
                 map.setView(EumsConfig.MAP_OPTIONS.CENTER, EumsConfig.MAP_OPTIONS.ZOOM_LEVEL);
+                LayerMap.unClickLayers();
+                LayerMap.changeGlobalStats(undefined, scope);
+                LayerMap.hideResponsesForDistrict(scope);
             }
         };
     });
@@ -166,7 +169,7 @@
     module.directive('defaultView', function (MapService) {
         return function (scope, element) {
             element.click(function () {
-                MapService.setDefaultView();
+                MapService.setDefaultView(scope);
             });
         }
     });
