@@ -6,6 +6,7 @@ import requests
 from rest_framework.status import HTTP_200_OK
 from django.utils import timezone
 from eums.elasticsearch.delete_records import DeleteRecords
+from eums.elasticsearch.mappings import mappings_exist, setup_mappings
 
 from eums.elasticsearch.sync_data_generators import list_nodes_to_update, list_nodes_to_delete
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format
@@ -23,6 +24,9 @@ def run():
 
 def _push_to_elasticsearch(nodes_to_update, nodes_to_delete, sync):
     try:
+        if not mappings_exist():
+            setup_mappings()
+
         formatted_data = convert_to_bulk_api_format(nodes_to_update, nodes_to_delete)
         response = requests.post(settings.ELASTIC_SEARCH.BULK, data=formatted_data)
         if response.status_code == HTTP_200_OK:
