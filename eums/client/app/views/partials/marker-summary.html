@@ -1,6 +1,6 @@
 <div ng-show="data.district" id='marker-summary' class="table-responsive map-summary">
     <div class="map-summary-header centered clearfix">
-        <span class="sub-header title latest-deliveries-title">Latest Deliveries to {{ data.district }}</span>
+        <span class="sub-header title latest-deliveries-title">Latest responses from {{ data.district }}</span>
         <span ng-click="isCollapsed=!isCollapsed"
               class="marker-summary-arrow"
               ng-class="{ 'expanded': !isCollapsed, 'collapsed': isCollapsed }"></span>
@@ -46,7 +46,7 @@
             </ul>
         </div>
         <div ng-hide="data.latestDeliveries" class="centered pad-10">
-            No deliveries made to this district.
+            No responses from this district.
         </div>
         <div class="centered margin-bottom-none pad-10 border-none">
             <button ng-click="showDetailedResponses()" id="response-page-btn" type="button"

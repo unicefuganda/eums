@@ -87,16 +87,16 @@ class DeliveryState:
 
     @staticmethod
     def get_state(data):
-        is_awaiting_response = not data['nonResponse'] and not data['notReceived'] and not data['received']
-        if not data['deliveries'] or is_awaiting_response:
+        if not data['deliveries']:
             return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
 
         non_response_percent = 100 * data['nonResponse'] / data['deliveries']
-        if non_response_percent > X_PERCENT:
+        is_awaiting_response = non_response_percent < X_PERCENT and not data['notReceived'] and not data['received']
+        if non_response_percent > X_PERCENT or is_awaiting_response:
             return STATE_CSS_MAPPING['NON_RESPONSE']
         if data['notReceived'] > data['received']:
             return STATE_CSS_MAPPING['NOT_RECEIVED']
-        if data['noIssues'] > data['hasIssues'] or not data['hasIssues']:
+        if data['noIssues'] > data['hasIssues']:
             return STATE_CSS_MAPPING['RECEIVED']
         if data['noIssues'] <= data['hasIssues']:
             return STATE_CSS_MAPPING['RECEIVED_WITH_ISSUES']

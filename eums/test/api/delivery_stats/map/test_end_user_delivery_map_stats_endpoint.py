@@ -64,7 +64,7 @@ class EndUserDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
 
         expected_stats = [
             {'deliveries': Decimal('200.00'), 'location': u'Kampala', 'notReceived': 0, 'hasIssues': 0,
-             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-received', 'noIssues': 0}]
+             'nonResponse': 0, 'received': Decimal('200.00'), 'state': 'map-received-with-issues', 'noIssues': 0}]
 
         self.assert_delivery_stats(response, expected_stats)
 
