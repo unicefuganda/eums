@@ -5,10 +5,28 @@ describe('eums.layers', function () {
     });
 
     describe('LayerMap', function () {
-        var layerMap;
+        var layerMap, mockDeliveryService, mockDeliveryStatsService, deferredAggregates, scope, layerFactory;
         beforeEach(function () {
-            inject(function (LayerMap) {
+
+            mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate', 'orderResponsesByDate', 'aggregateStats']);
+            mockDeliveryStatsService = jasmine.createSpyObj('mockDeliveryStatsService', ['getStatsDetails', 'getLatestDeliveries']);
+
+            module(function ($provide) {
+                $provide.value('DeliveryService', mockDeliveryService);
+                $provide.value('DeliveryStatsService', mockDeliveryStatsService);
+            });
+
+            inject(function (LayerMap, $q, $rootScope, Layer) {
+                scope = $rootScope.$new();
                 layerMap = LayerMap;
+                layerFactory = Layer;
+                deferredAggregates = $q.defer();
+                mockDeliveryService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
+                mockDeliveryService.orderAllResponsesByDate.and.returnValue(deferredAggregates.promise);
+                mockDeliveryService.aggregateStats.and.returnValue({});
+                mockDeliveryService.orderResponsesByDate.and.returnValue([{}, {}]);
+                mockDeliveryStatsService.getStatsDetails.and.returnValue(deferredAggregates.promise);
+                mockDeliveryStatsService.getLatestDeliveries.and.returnValue(deferredAggregates.promise);
             });
         });
 
@@ -64,24 +82,84 @@ describe('eums.layers', function () {
             expect(layer.getLayerCenter).toHaveBeenCalled();
         });
 
+        it('should change global stats', function () {
+            scope.data = {ipView: false, totalStats: {}};
+            layerMap.changeGlobalStats('Gulu', scope);
+            deferredAggregates.resolve({data: {key: 'some data'}});
+            scope.$apply();
+            expect(mockDeliveryStatsService.getStatsDetails).toHaveBeenCalledWith({location: 'Gulu', treePosition: 'END_USER'}, true);
+            expect(scope.data.totalStats).toEqual({key: 'some data', location: 'Gulu'});
+        });
+
+        it('should district responses', function () {
+            scope.data = {ipView: true};
+            layerMap.showResponsesForDistrict('Gulu', scope);
+            deferredAggregates.resolve({data: 'some data'});
+            scope.$apply();
+            expect(mockDeliveryStatsService.getLatestDeliveries).toHaveBeenCalledWith({
+                location: 'Gulu',
+                treePosition: 'IMPLEMENTING_PARTNER'
+            });
+            expect(scope.data.latestDeliveries).toEqual('some data');
+            expect(scope.data.district).toEqual('Gulu');
+        });
+
+        it('should hide district responses', function () {
+            scope.data = {ipView: true};
+            layerMap.hideResponsesForDistrict(scope);
+            scope.$apply();
+            expect(scope.data.latestDeliveries).not.toBeDefined();
+            expect(scope.data.district).not.toBeDefined();
+        });
+
+        function setupLayers() {
+            var mockMap = jasmine.createSpyObj('mockMap', ['fitBounds', 'removeLayer']);
+            var mockLeafletLayer = jasmine.createSpyObj('mockMapLayer', ['on', 'setStyle', 'getBounds']);
+            mockLeafletLayer.on.and.returnValue(mockLeafletLayer);
+            var optionsMock = jasmine.createSpyObj('optionsMock', ['districtLayerStyle', 'selectedLayerStyle']);
+            var gulu = layerFactory.build(mockMap, mockLeafletLayer, optionsMock, scope, 'Gulu');
+            var wakiso = layerFactory.build(mockMap, mockLeafletLayer, optionsMock, scope, 'wakiso');
+            layerMap.addLayer(gulu, 'Gulu');
+            layerMap.addLayer(wakiso, 'wakiso');
+            return gulu;
+        }
+
+        it('should unclick layers', function () {
+            scope.data = {ipView: true};
+            var gulu = setupLayers();
+            gulu.click();
+            expect(gulu.isClicked()).toBeTruthy();
+            layerMap.unClickLayers();
+            expect(gulu.isClicked()).toBeFalsy();
+        });
+
+        it('should return layer clicked', function () {
+            scope.data = {ipView: true};
+            var gulu = setupLayers();
+            gulu.click();
+            expect(layerMap.isLayerClicked()).toBeTruthy();
+        });
+
+        it('should return clicked layer', function () {
+            scope.data = {ipView: true};
+            var gulu = setupLayers();
+            gulu.click();
+            expect(layerMap.clickedLayer()).toBe(gulu);
+        });
     });
 
     describe('Layer', function () {
-        var layer, mockDeliveryService, scope, deferredAggregates;
-        var mockMap, mockMapLayer, mockDeliveryStatsService, mockLayerMap;
+        var layer, scope, deferredAggregates;
+        var mockMap, mockMapLayer, mockLayerMap;
 
         beforeEach(function () {
 
             mockMap = jasmine.createSpyObj('mockMap', ['fitBounds', 'removeLayer']);
             mockMapLayer = jasmine.createSpyObj('mockMapLayer', ['on', 'setStyle', 'getBounds']);
-            mockLayerMap = jasmine.createSpyObj('mockLayerMap', ['layerClicked']);
+            mockLayerMap = jasmine.createSpyObj('mockLayerMap', ['isLayerClicked', 'changeGlobalStats', 'showResponsesForDistrict', 'clickedLayer']);
             mockMapLayer.on.and.returnValue(mockMapLayer);
-            mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['aggregateResponsesForDistrict', 'orderAllResponsesByDate', 'orderResponsesByDate', 'aggregateStats']);
-            mockDeliveryStatsService = jasmine.createSpyObj('mockDeliveryStatsService', ['getStatsDetails', 'getLatestDeliveries']);
 
             module(function ($provide) {
-                $provide.value('DeliveryService', mockDeliveryService);
-                $provide.value('DeliveryStatsService', mockDeliveryStatsService);
                 $provide.value('LayerMap', mockLayerMap);
             });
 
@@ -89,12 +167,6 @@ describe('eums.layers', function () {
                 scope = $rootScope.$new();
                 layer = Layer;
                 deferredAggregates = $q.defer();
-                mockDeliveryService.aggregateResponsesForDistrict.and.returnValue(deferredAggregates.promise);
-                mockDeliveryService.orderAllResponsesByDate.and.returnValue(deferredAggregates.promise);
-                mockDeliveryService.aggregateStats.and.returnValue({});
-                mockDeliveryService.orderResponsesByDate.and.returnValue([{}, {}]);
-                mockDeliveryStatsService.getStatsDetails.and.returnValue(deferredAggregates.promise);
-                mockDeliveryStatsService.getLatestDeliveries.and.returnValue(deferredAggregates.promise);
             });
         });
 
@@ -110,22 +182,17 @@ describe('eums.layers', function () {
         describe('METHOD: click', function () {
             it('should call the on click handler of a layer', function () {
                 scope.data = {totalStats: {}, district: '', ipView: false};
-                deferredAggregates.resolve({data: 'some deliveries'});
 
                 var optionsMock = jasmine.createSpyObj('optionsMock', ['districtLayerStyle', 'selectedLayerStyle']),
                     districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
                 districtLayer.click();
                 scope.$apply();
 
-                expect(mockDeliveryStatsService.getStatsDetails).toHaveBeenCalled();
-                expect(mockDeliveryStatsService.getLatestDeliveries).toHaveBeenCalledWith({
-                    treePosition: 'END_USER',
-                    location: 'Gulu'
-                });
+                expect(mockLayerMap.changeGlobalStats).toHaveBeenCalled();
+                expect(mockLayerMap.showResponsesForDistrict).toHaveBeenCalled();
+
                 expect(mockMap.fitBounds).toHaveBeenCalled();
                 expect(mockMapLayer.getBounds).toHaveBeenCalled();
-                expect(scope.data.latestDeliveries).toEqual('some deliveries');
-                expect(scope.data.district).toEqual('Gulu');
                 expect(districtLayer.isClicked()).toBe(true);
             });
         });
@@ -134,7 +201,6 @@ describe('eums.layers', function () {
             it('should highlight layer', inject(function () {
                 jasmine.createSpyObj('optionsMock', ['onClickHandler']);
                 scope.data = {totalStats: {}, district: '', ipView: false};
-                deferredAggregates.resolve({data: {key: 'some values'}});
                 var optionsMock = {
                     selectedLayerStyle: {fillColor: 'red', weight: 2.0},
                     districtLayerStyle: {fillColor: 'Blue', weight: 3.0}
@@ -143,52 +209,47 @@ describe('eums.layers', function () {
 
                 districtLayer.highlight();
                 scope.$apply();
+
 
                 expect(districtLayer.isHighlighted()).toBeTruthy();
                 expect(mockMapLayer.setStyle).toHaveBeenCalledWith({fillColor: 'Blue', weight: 3.5});
-                expect(mockDeliveryStatsService.getStatsDetails).toHaveBeenCalledWith({
-                    treePosition: 'END_USER',
-                    location: 'Gulu'
-                }, true);
-                expect(scope.data.totalStats).toEqual({key: 'some values', location: 'Gulu'});
+                expect(mockLayerMap.changeGlobalStats).toHaveBeenCalled();
             }));
 
-            it('should not update global stats on highlight when a clicked layer exists', function(){
+            it('should not update global stats on highlight when a clicked layer exists', function () {
                 jasmine.createSpyObj('optionsMock', ['onClickHandler']);
                 scope.data = {totalStats: {}, district: '', ipView: false};
-                deferredAggregates.resolve({data: {key: 'some values'}});
                 var optionsMock = {
                     selectedLayerStyle: {fillColor: 'red', weight: 2.0},
                     districtLayerStyle: {fillColor: 'Blue', weight: 3.0}
                 };
-                mockLayerMap.layerClicked.and.returnValue(true);
+                mockLayerMap.isLayerClicked.and.returnValue(true);
+
                 var districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
 
                 districtLayer.highlight();
                 scope.$apply();
 
                 expect(districtLayer.isHighlighted()).toBeTruthy();
-                expect(mockLayerMap.layerClicked).toHaveBeenCalled();
-                expect(mockDeliveryStatsService.getStatsDetails).not.toHaveBeenCalled();
+                expect(mockLayerMap.changeGlobalStats).not.toHaveBeenCalled();
             });
 
             it('should not update global stats on un-highlight when a clicked layer exists', function () {
                 jasmine.createSpyObj('optionsMock', ['onClickHandler']);
                 scope.data = {totalStats: {}, district: '', ipView: false};
-                deferredAggregates.resolve({data: {key: 'some values'}});
                 var optionsMock = {
                     selectedLayerStyle: {fillColor: 'red', weight: 2.0},
                     districtLayerStyle: {fillColor: 'Blue', weight: 3.0}
                 };
-                mockLayerMap.layerClicked.and.returnValue(true);
+                mockLayerMap.isLayerClicked.and.returnValue(true);
                 var districtLayer = layer.build(mockMap, mockMapLayer, optionsMock, scope, 'Gulu');
 
                 districtLayer.unhighlight();
                 scope.$apply();
 
                 expect(districtLayer.isHighlighted()).toBeFalsy();
-                expect(mockLayerMap.layerClicked).toHaveBeenCalled();
-                expect(mockDeliveryStatsService.getStatsDetails).not.toHaveBeenCalled();
+                expect(mockLayerMap.isLayerClicked).toHaveBeenCalled();
+                expect(mockLayerMap.changeGlobalStats).not.toHaveBeenCalled();
             });
 
 

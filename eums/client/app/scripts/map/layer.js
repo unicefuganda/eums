@@ -53,7 +53,7 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
                     return layer.isClicked();
                 });
             },
-            layerClicked: function () {
+            isLayerClicked: function () {
                 var layer = _.find(layerList, function (layer) {
                     return layer.isClicked();
                 });
@@ -126,7 +126,7 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
                 layerOptions.districtLayerStyle.fillColor = layerStyle ? layerStyle.fillColor : layerOptions.districtLayerStyle.fillColor;
                 layer.setStyle(layerOptions.districtLayerStyle);
                 selected = true;
-                if (!LayerMap.layerClicked()) {
+                if (!LayerMap.isLayerClicked()) {
                     LayerMap.changeGlobalStats(layerName, scope);
                 }
             };
@@ -134,7 +134,7 @@ angular.module('map.layers', ['Delivery', 'DeliveryStats'])
             this.unhighlight = function () {
                 layer.setStyle(layerStyle || layerOptions.selectedLayerStyle);
                 selected = false;
-                if (!LayerMap.layerClicked()) {
+                if (!LayerMap.isLayerClicked()) {
                     LayerMap.changeGlobalStats(undefined, scope);
                 }
             };
