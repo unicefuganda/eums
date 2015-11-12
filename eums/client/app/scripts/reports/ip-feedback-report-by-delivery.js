@@ -100,4 +100,6 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             var remarksModalId = 'remarks-modal-' + index;
             LoaderService.showModal(remarksModalId)
         };
-    });
+    }
+)
+;

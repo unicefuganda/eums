@@ -120,7 +120,7 @@ describe('IpFeedbackReportByItemController', function () {
     });
 
     describe('on loss of connection', function () {
-        iit('should show an error message', function () {
+        it('should show an error message', function () {
             deferredReportResult.reject();
             scope.$apply();
 

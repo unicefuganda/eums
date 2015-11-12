@@ -53,8 +53,9 @@ angular.module('ReportService', ['eums.config'])
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
+                    }, function () {
+                        result.reject();
                     });
-
                 return result.promise
             },
 
@@ -64,6 +65,8 @@ angular.module('ReportService', ['eums.config'])
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
+                    }, function () {
+                        result.reject();
                     });
 
                 return result.promise
@@ -75,6 +78,8 @@ angular.module('ReportService', ['eums.config'])
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
+                    }, function () {
+                        result.reject();
                     });
 
                 return result.promise
