@@ -5,6 +5,7 @@ angular.module('SupplyEfficiencyReport', [
     .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService, $location) {
         $scope.views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
+        $scope.totals = {};
 
         var urlToViewMapping = {
             delivery: 'DELIVERY',
@@ -28,8 +29,25 @@ angular.module('SupplyEfficiencyReport', [
             LoaderService.showLoader();
             SupplyEfficiencyReportService.generate($scope.view, $scope.filters).then(function (report) {
                 $scope.report = report;
+                setTotals();
                 LoaderService.hideLoader();
             });
+        }
+
+        function setTotals() {
+            if($scope.report && $scope.report.length > 0) {
+                $scope.totals.UNICEFShipped = $scope.report.reduce(function (total, current) {
+                    return current.delivery_stages.unicef.total_value + total;
+                }, 0);
+
+                $scope.totals.IPReceived = $scope.report.reduce(function (total, current) {
+                    return current.delivery_stages.ip_receipt.total_value_received + total;
+                }, 0);
+
+                $scope.totals.endUserReceived = $scope.report.reduce(function (total, current) {
+                    return current.delivery_stages.end_user.total_value_received + total;
+                }, 0);
+            }
         }
     })
     .factory('SupplyEfficiencyReportService', function ($http, Queries, EumsConfig) {

@@ -1,7 +1,58 @@
 describe('Supply Efficiency Report Controller Spec', function () {
 
-    var scope, childScope, mockReportService, mockReport, mockLocation, mockLoaderService;
+    var scope, childScope, mockReportService, mockLocation, mockLoaderService;
     var mockViews = {DELIVERY: 1, ITEM: 2, OUTCOME: 3, DOCUMENT: 4, IP: 5, LOCATION: 6};
+    var mockReport =
+        [
+            {
+                "delivery_stages": {
+                    "unicef": {
+                        "total_value":  200
+                    },
+                    "ip_receipt": {
+                        "total_value_received":  150
+                    },
+                    "ip_distribution": {
+                        "total_value_distributed":  150
+                    },
+                    "end_user": {
+                        "total_value_received":  100
+                    }
+                }
+            }
+            ,{
+            "delivery_stages": {
+                "unicef": {
+                    "total_value": 300
+                },
+                "ip_receipt": {
+                    "total_value_received": 200
+                },
+                "ip_distribution": {
+                    "total_value_distributed":  180
+                },
+                "end_user": {
+                    "total_value_received": 120
+                }
+            }
+        },
+            {
+                "delivery_stages": {
+                    "unicef": {
+                        "total_value": 400
+                    },
+                    "ip_receipt": {
+                        "total_value_received": 250
+                    },
+                    "ip_distribution": {
+                        "total_value_distributed":  150
+                    },
+                    "end_user": {
+                        "total_value_received":  80
+                    }
+                }
+            }
+        ];
 
     beforeEach(function () {
         module('SupplyEfficiencyReport');
@@ -50,6 +101,12 @@ describe('Supply Efficiency Report Controller Spec', function () {
     it('should put views on scope', function () {
         scope.$apply();
         expect(scope.views).toEqual(mockViews);
+    });
+
+    it('should put calculated totals on scope', function () {
+        scope.$apply();
+        var totals = {UNICEFShipped: 900, IPReceived: 600, endUserReceived: 300};
+        expect(scope.totals).toEqual(totals);
     });
 
     it('should pick current view from url on load', inject(function ($controller) {
