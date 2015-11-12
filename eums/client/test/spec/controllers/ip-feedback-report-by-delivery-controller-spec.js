@@ -57,7 +57,7 @@ describe('IpFeedbackReportController', function () {
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({location: 'Fort Portal'});
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({location: 'Fort Portal'}, 1);
             expect(scope.report).toEqual(response.results)
         });
 
@@ -76,7 +76,7 @@ describe('IpFeedbackReportController', function () {
             scope.goToPage(2);
             scope.$digest();
 
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({page: 2});
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({}, 2);
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
         });
     });
@@ -92,7 +92,7 @@ describe('IpFeedbackReportController', function () {
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({query: searchTerm});
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({query: searchTerm}, 1);
         });
 
         it('should call endpoint when searchTerm programme_id changes', function () {
@@ -105,7 +105,7 @@ describe('IpFeedbackReportController', function () {
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({programme_id: programme_id});
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({programme_id: programme_id}, 1);
         });
 
     });

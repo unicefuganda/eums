@@ -83,7 +83,7 @@ describe('Report Service', function () {
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
 
-        reportService.ipFeedbackReport({page: '2'}).then(function(response){
+        reportService.ipFeedbackReport({}, 2).then(function(response){
             expect(response).toEqual(fakeReport);
         });
         mockBackend.flush();

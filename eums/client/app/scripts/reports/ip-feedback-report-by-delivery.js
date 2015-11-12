@@ -6,13 +6,14 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
         $scope.searchTerm = {};
         $scope.directiveValues = {};
+        $scope.pagination = {page: 1};
 
         var initializing = true;
 
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
         $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
-            if (initializing){
+            if (initializing) {
                 loadIpFeedbackReportByDelivery();
                 initializing = false;
             } else {
@@ -52,9 +53,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
         }
 
         function startSearch(newSearchTerm, oldSearchTerm) {
+            $scope.pagination.page = 1;
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
-                $scope.resetPageNo(newSearchTerm, oldSearchTerm);
                 loadIpFeedbackReportByDelivery($scope.searchTerm, newSearchTerm, oldSearchTerm);
             } else {
                 loadIpFeedbackReportByDelivery();
@@ -65,30 +66,23 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             return Object.keys(searchTerm).length > 0;
         }
 
-
-        $scope.resetPageNo = function(newSearchTerm, oldSearchTerm){
-            if(newSearchTerm.consigneeId != oldSearchTerm.consigneeId
-                || newSearchTerm.programmeId != oldSearchTerm.programmeId
-                || newSearchTerm.poWaybill != oldSearchTerm.poWaybill)
-                $scope.searchTerm.page = 1;
-        };
-
         $scope.goToPage = function (page) {
-            loadIpFeedbackReportByDelivery({page: page})
+            $scope.pagination.page = page;
+            loadIpFeedbackReportByDelivery($scope.searchTerm)
         };
 
-        function appendLocationFilter(filterParams){
+        function appendLocationFilter(filterParams) {
             var location = $routeParams.district;
-            if (location){
+            if (location) {
                 return angular.extend({'location': location}, filterParams);
             }
             return filterParams;
         }
 
         function loadIpFeedbackReportByDelivery(filterParams, newSearchTerm, oldSearchTerm) {
-           LoaderService.showLoader();
+            LoaderService.showLoader();
             var allFilter = appendLocationFilter(filterParams);
-            ReportService.ipFeedbackReportByDelivery(allFilter).then(function (response) {
+            ReportService.ipFeedbackReportByDelivery(allFilter, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
@@ -96,7 +90,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 updateProgrammes(response.programmeIds);
                 updateConsignees(response.ipIds);
 
-                if(newSearchTerm && oldSearchTerm) {
+                if (newSearchTerm && oldSearchTerm) {
                     applyFilters(newSearchTerm, oldSearchTerm);
                 }
                 LoaderService.hideLoader();

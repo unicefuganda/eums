@@ -6,11 +6,12 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
         var timer;
         $scope.searchTerm = {};
         $scope.directiveValues = {};
+        $scope.pagination = {page: 1};
 
         var initializing = true;
 
-        $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
-            if (initializing){
+        $scope.$watchCollection('searchTerm', function () {
+            if (initializing) {
                 loadIpFeedbackReport();
                 initializing = false;
             } else {
@@ -18,33 +19,26 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
                     $timeout.cancel(timer);
                 }
 
-                startSearchTimer(newSearchTerm, oldSearchTerm);
+                startSearchTimer();
             }
         }, true);
 
-        $scope.resetPageNo = function(newSearchTerm, oldSearchTerm){
-            if(newSearchTerm.consigneeId != oldSearchTerm.consigneeId
-                || newSearchTerm.programmeId != oldSearchTerm.programmeId
-                || newSearchTerm.itemDescription != oldSearchTerm.itemDescription
-                || newSearchTerm.poWaybill != oldSearchTerm.poWaybill)
-                $scope.searchTerm.page = 1;
-        };
-
         $scope.goToPage = function (page) {
-            $scope.searchTerm.page = page;
+            $scope.pagination.page = page;
+            loadIpFeedbackReport($scope.searchTerm)
         };
 
-        function startSearchTimer(newSearchTerm, oldSearchTerm) {
+        function startSearchTimer() {
             timer = $timeout(function () {
-                startSearch(newSearchTerm, oldSearchTerm);
+                startSearch();
             }, 2000);
         }
 
-        function startSearch(newSearchTerm, oldSearchTerm) {
+        function startSearch() {
+            $scope.pagination.page = 1;
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
-                $scope.resetPageNo(newSearchTerm, oldSearchTerm);
-                loadIpFeedbackReport($scope.searchTerm, newSearchTerm, oldSearchTerm);
+                loadIpFeedbackReport($scope.searchTerm);
             } else {
                 loadIpFeedbackReport();
             }
@@ -54,13 +48,12 @@ angular.module('IpFeedbackReportByItem', ['eums.config', 'ReportService', 'Loade
             return Object.keys(searchTerm).length > 0;
         }
 
-        function loadIpFeedbackReport(filterParams, newSearchTerm, oldSearchTerm) {
+        function loadIpFeedbackReport(filterParams) {
             LoaderService.showLoader();
-            ReportService.ipFeedbackReport(filterParams).then(function (response) {
+            ReportService.ipFeedbackReport(filterParams, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
-
                 updateProgrammes(response.programmeIds);
                 updateConsignees(response.ipIds);
 

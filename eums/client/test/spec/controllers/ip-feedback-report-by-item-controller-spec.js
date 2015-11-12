@@ -77,7 +77,7 @@ describe('IpFeedbackReportByItemController', function () {
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({query: searchTerm}, 1);
         });
 
         it('should call endpoint when searchTerm programme_id changes', function () {
@@ -90,7 +90,7 @@ describe('IpFeedbackReportByItemController', function () {
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({programme_id: programme_id});
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({programme_id: programme_id}, 1);
         });
 
     });
@@ -105,7 +105,7 @@ describe('IpFeedbackReportByItemController', function () {
             scope.$digest();
             timeout.flush();
 
-            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({page: 2});
+            expect(mockReportService.ipFeedbackReport).toHaveBeenCalledWith({}, 2);
             expect(mockReportService.ipFeedbackReport.calls.count()).toEqual(2);
         });
     });
