@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'ngToast', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User'])
-    .controller('StockReportController', function (StockReportService, $scope, ngToast, ConsigneeService, IPService, LoaderService, UserService) {
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage'])
+    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, IPService, LoaderService, UserService,
+                                                   ErrorMessageService) {
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
@@ -62,8 +63,7 @@ angular.module('StockReport', [
                 $scope.totals = response.data.totals;
                 $scope.openDocument = undefined;
             }, function () {
-                var errorMessage = 'An error occurred. Please refresh and try again.'
-                ngToast.create({content: errorMessage, class: 'danger'});
+                ErrorMessageService.showError('An error occurred. Please refresh and try again.');
             }).finally(function () {
                 LoaderService.hideLoader();
             });

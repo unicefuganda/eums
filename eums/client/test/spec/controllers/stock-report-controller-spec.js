@@ -1,6 +1,7 @@
 describe('StockReportController', function () {
-    var scope, mockStockReportService, mockConsigneeService, mockIpService, stubStockReport, deferredStubReport,
-        stubDistricts, toastPromise, mockToastProvider, deferredStubIPs, deferredDistricts, mockUserService, deferredUser;
+    var scope, mockStockReportService, mockConsigneeService, mockIpService, mockLoaderService, mockEumsErrorMessageService,
+        stubStockReport, deferredStubReport, stubDistricts, toastPromise, mockToastProvider, deferredDistricts, mockUserService,
+        deferredUser, deferredConsignee;
     var adminUser, ipUser;
 
     stubStockReport = {
@@ -75,6 +76,7 @@ describe('StockReportController', function () {
         mockConsigneeService = jasmine.createSpyObj('mockConsigneeService', ['get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader']);
         mockUserService = jasmine.createSpyObj('mockUserService', ['getCurrentUser']);
+        mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
 
 
         inject(function ($controller, $rootScope, $q) {
@@ -99,7 +101,8 @@ describe('StockReportController', function () {
                 ngToast: mockToastProvider,
                 IPService: mockIpService,
                 LoaderService: mockLoaderService,
-                UserService: mockUserService
+                UserService: mockUserService,
+                ErrorMessageService: mockEumsErrorMessageService
             });
         });
     });
@@ -136,12 +139,7 @@ describe('StockReportController', function () {
             scope.$apply();
             expect(mockLoaderService.showLoader).toHaveBeenCalled();
             expect(mockLoaderService.hideLoader).toHaveBeenCalled();
-        });
-
-        it('should show error toast when stock report load failure', function () {
-            deferredStubReport.reject();
-            scope.$apply();
-            expect(mockToastProvider.create).toHaveBeenCalled();
+            expect(mockEumsErrorMessageService.showError).toHaveBeenCalled();
         });
     });
 
@@ -340,7 +338,7 @@ describe('StockReportController', function () {
             expect(mockConsigneeService.get).toHaveBeenCalledWith(5);
         });
 
-        it('should broadcast consignee on service call return', function() {
+        it('should broadcast consignee on service call return', function () {
             spyOn(scope, '$broadcast');
 
             deferredUser.resolve(ipUser);

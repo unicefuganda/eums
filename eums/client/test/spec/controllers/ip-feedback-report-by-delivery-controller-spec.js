@@ -1,12 +1,13 @@
 describe('IpFeedbackReportController', function () {
     var scope, location, mockReportService, deferredResult, mockLoader, timeout,
-        route = {}, initController;
+        route = {}, initController, mockEumsErrorMessageService;
 
     beforeEach(function () {
         module('IpFeedbackReportByDelivery');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReportByDelivery']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
+        mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -22,7 +23,8 @@ describe('IpFeedbackReportController', function () {
                     $location: location,
                     $routeParams: routeParams,
                     ReportService: mockReportService,
-                    LoaderService: mockLoader
+                    LoaderService: mockLoader,
+                    ErrorMessageService: mockEumsErrorMessageService
                 });
             };
 
@@ -116,6 +118,14 @@ describe('IpFeedbackReportController', function () {
 
             expect(mockLoader.showModal).toHaveBeenCalledWith('remarks-modal-3');
         })
-    })
+    });
 
+    describe('on loss of connection', function(){
+       it('should show an error message', function(){
+           deferredResult.reject();
+           scope.$apply();
+
+           expect(mockEumsErrorMessageService.showError).toHaveBeenCalled();
+       });
+    });
 });

@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader'])
-    .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService) {
+angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage'])
+    .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
+                                                                  ErrorMessageService) {
         var timer;
 
         $scope.searchTerm = {};
@@ -68,7 +69,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
                 updateProgrammes(response.programmeIds);
                 updateConsignees(response.ipIds);
-
+            }, function () {
+                ErrorMessageService.showError();
+            }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
             });

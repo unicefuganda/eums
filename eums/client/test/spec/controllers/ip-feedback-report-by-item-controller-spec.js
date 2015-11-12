@@ -1,11 +1,12 @@
 describe('IpFeedbackReportByItemController', function () {
-    var scope, location, mockReportService, deferredReportResult, mockLoader, timeout;
+    var scope, location, mockReportService, deferredReportResult, mockLoader, timeout, mockEumsErrorMessageService;
 
     beforeEach(function () {
         module('IpFeedbackReportByItem');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['ipFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader', 'showModal']);
+        mockEumsErrorMessageService = jasmine.createSpyObj('mockEumsErrorMessageService', ['showError']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredReportResult = $q.defer();
@@ -19,9 +20,10 @@ describe('IpFeedbackReportByItemController', function () {
                 $scope: scope,
                 $location: location,
                 ReportService: mockReportService,
-                LoaderService: mockLoader
+                LoaderService: mockLoader,
+                ErrorMessageService: mockEumsErrorMessageService
             });
-;        });
+        });
 
         scope.directiveValues.allProgrammes = [];
     });
@@ -56,7 +58,7 @@ describe('IpFeedbackReportByItemController', function () {
             expect(scope.displayProgrammes).toEqual([{id: 5}, {id: 6}]);
         });
 
-        it('should just load programmes that match programme ids in result', function() {
+        it('should just load programmes that match programme ids in result', function () {
             deferredReportResult.resolve({programmeIds: [3, 4]});
             scope.directiveValues.allProgrammes = [{id: 2}, {id: 3}, {id: 4}, {id: 5}];
 
@@ -115,6 +117,14 @@ describe('IpFeedbackReportByItemController', function () {
             scope.showRemarks(4);
             expect(mockLoader.showModal).toHaveBeenCalledWith('remarks-modal-4');
         })
-    })
+    });
 
+    describe('on loss of connection', function () {
+        iit('should show an error message', function () {
+            deferredReportResult.reject();
+            scope.$apply();
+
+            expect(mockEumsErrorMessageService.showError).toHaveBeenCalled();
+        });
+    });
 });
