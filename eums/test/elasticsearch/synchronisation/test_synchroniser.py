@@ -132,10 +132,12 @@ class SynchroniserTest(TestCase):
 
     @patch('eums.elasticsearch.mappings.logger.error')
     @patch('eums.elasticsearch.synchroniser.logger.error')
+    @patch('requests.put')
     @patch('requests.post')
     @patch('requests.get')
-    def test_should_post_node_mapping_to_elasticsearch_when_mapping_does_not_exist(self, mock_get, mock_post, *_):
+    def test_should_post_node_mapping_to_elasticsearch_when_mapping_does_not_exist(self, mock_get, mock_post, mock_put, *_):
         mock_get.return_value = FakeResponse({}, status_code=HTTP_400_BAD_REQUEST)
+        mock_put.return_value = FakeResponse({}, status_code=HTTP_200_OK)
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
         url = '%s/delivery_node/' % settings.ELASTIC_SEARCH.MAPPING
         run()

@@ -8,9 +8,17 @@ from eums.elasticsearch.mappings.node_mapping import DELIVERY_NODE_MAPPING
 logger = get_task_logger(__name__)
 
 
+def _create_index():
+    url = settings.ELASTIC_SEARCH.HOST + settings.ELASTIC_SEARCH.INDEX
+    response = requests.put(url)
+    if response.status_code != HTTP_200_OK:
+        logger.error("Index Creation Failed")
+
+
 def setup_mappings():
     url = '%s/delivery_node/' % settings.ELASTIC_SEARCH.MAPPING
     try:
+        _create_index()
         response = requests.post(url, json=DELIVERY_NODE_MAPPING)
         if response.status_code != HTTP_200_OK:
             logger.error("Mapping Set-up Failed")
@@ -29,3 +37,4 @@ def mappings_exist():
         logger.error("Mapping does not exist: %s" % error.message)
         return False
     return True
+

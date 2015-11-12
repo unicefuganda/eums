@@ -45,8 +45,10 @@ class SyncDataGeneratorsTest(TestCase):
         DeleteRecords.objects.all().delete()
 
     @patch('requests.post')
-    def test_should_include_all_nodes_on_first_sync(self, mock_post):
+    @patch('requests.put')
+    def test_should_include_all_nodes_on_first_sync(self, mock_put, mock_post):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
+        mock_put.return_value = FakeResponse({}, status_code=HTTP_200_OK)
         self.assertEqual(SyncInfo.objects.count(), 0)
         node_one = DeliveryNodeFactory()
         node_two = DeliveryNodeFactory()
@@ -320,9 +322,11 @@ class SyncDataGeneratorsTest(TestCase):
         self.assertIn(node.id, nodes_to_delete)
 
     @patch('eums.elasticsearch.synchroniser.logger.error')
+    @patch('requests.put')
     @patch('requests.post')
-    def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, *_):
+    def test_should_post_node_mapping_to_elasticsearch_when_no_sync_info_exists(self, mock_post, mock_put, *_):
         mock_post.return_value = FakeResponse({}, status_code=HTTP_200_OK)
+        mock_put.return_value = FakeResponse({}, status_code=HTTP_200_OK)
         url = '%s/delivery_node/' % settings.ELASTIC_SEARCH.MAPPING
         list_nodes_to_update()
         mock_post.assert_called_with(url, json=DELIVERY_NODE_MAPPING)
