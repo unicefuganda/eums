@@ -33,21 +33,21 @@
                         </thead>
                         <tbody>
                         <tr class="table-sub-header">
-                            <td ng-if="view == views.DELIVERY">Date</td>
-                            <td ng-if="view == views.DELIVERY">IP</td>
-                            <td ng-if="view == views.DELIVERY">District</td>
+                            <td sort-by="identifier.delivery.delivery_date" sort-init="desc" ng-if="view == views.DELIVERY">Date</td>
+                            <td sort-by="identifier.ip.name" ng-if="view == views.DELIVERY">IP</td>
+                            <td sort-by="identifier.delivery.location" ng-if="view == views.DELIVERY">District</td>
 
-                            <td ng-if="view == views.ITEM">Description</td>
-                            <td ng-if="view == views.ITEM">Material Code</td>
+                            <td sort-by="identifier.order_item.item.description" sort-init="asc" ng-if="view == views.ITEM">Description</td>
+                            <td sort-by="identifier.order_item.item.material_code" ng-if="view == views.ITEM">Material Code</td>
 
-                            <td ng-if="view == views.OUTCOME">Outcome Name</td>
+                            <td sort-by="identifier.programme.name" sort-init="asc" ng-if="view == views.OUTCOME">Outcome Name</td>
 
-                            <td ng-if="view == views.DOCUMENT">Doc. Number</td>
-                            <td ng-if="view == views.DOCUMENT">Type</td>
+                            <td sort-by="identifier.order_item.order.order_number" sort-init="asc" ng-if="view == views.DOCUMENT">Doc. Number</td>
+                            <td sort-by="identifier.order_item.order.order_type" ng-if="view == views.DOCUMENT">Type</td>
 
-                            <td ng-if="view == views.IP">Name</td>
+                            <td sort-by="identifier.ip.name" sort-init="asc" ng-if="view == views.IP">Name</td>
 
-                            <td ng-if="view == views.LOCATION">District Name</td>
+                            <td sort-by="identifier.location" sort-init="asc" ng-if="view == views.LOCATION">District Name</td>
 
                             <td>Value</td>
                             <td>Value</td>
