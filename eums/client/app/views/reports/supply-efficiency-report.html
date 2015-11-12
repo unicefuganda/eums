@@ -80,16 +80,16 @@
 
                             <td>{{ bucket.delivery_stages.unicef.total_value | currency }}</td>
                             <td>{{ bucket.delivery_stages.ip_receipt.total_value_received | currency }}</td>
-                            <td ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.total_loss > 0}">{{ bucket.delivery_stages.ip_receipt.total_loss | currency }}</td>
-                            <td>
+                            <td ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.total_loss > 0, 'text-success': bucket.delivery_stages.ip_receipt.total_loss < 0}">{{ bucket.delivery_stages.ip_receipt.total_loss | currency }}</td>
+                            <td ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.average_delay > 0, 'text-success': bucket.delivery_stages.ip_receipt.average_delay < 0}">
                                 {{ bucket.delivery_stages.ip_receipt.average_delay }}
                                 <span ng-if="bucket.delivery_stages.ip_receipt.average_delay">days</span>
                             </td>
                             <td>{{ bucket.delivery_stages.ip_distribution.total_value_distributed | currency}}</td>
                             <td>{{ bucket.delivery_stages.ip_distribution.balance | currency }}</td>
                             <td>{{ bucket.delivery_stages.end_user.total_value_received | currency }}</td>
-                            <td ng-class="{'text-danger': bucket.delivery_stages.end_user.total_loss > 0}">{{ bucket.delivery_stages.end_user.total_loss | currency }}</td>
-                            <td>
+                            <td ng-class="{'text-danger': bucket.delivery_stages.end_user.total_loss > 0, 'text-success': bucket.delivery_stages.end_user.total_loss < 0}">{{ bucket.delivery_stages.end_user.total_loss | currency }}</td>
+                            <td ng-class="{'text-danger': bucket.delivery_stages.end_user.average_delay > 0 , 'text-success': bucket.delivery_stages.end_user.average_delay < 0}">
                                 {{ bucket.delivery_stages.end_user.average_delay }}
                                 <span ng-if="bucket.delivery_stages.end_user.average_delay">days</span>
                             </td>
