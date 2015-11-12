@@ -15,7 +15,7 @@ var interceptor = ['ngToast', '$q', function (ngToast, $q) {
 angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery', 'DirectDelivery', 'WarehouseDelivery',
     'NavigationTabs', 'eums.service-factory', 'gs.to-snake-case', 'gs.to-camel-case', 'ngTable', 'siTable',
     'ui.bootstrap', 'eums.map', 'eums.ip', 'ManualReporting', 'ManualReportingDetails', 'DatePicker', 'StockReport',
-    'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData', 'IpFeedbackReportByItem',
+    'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData',
     'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
     'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp',
     'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'EndUserFeedbackReport', 'ngPercentDisplay',
@@ -90,15 +90,6 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_distribution_plans');
-                }
-            }
-        })
-        .when('/ip-feedback-report-by-item', {
-            templateUrl: '/static/app/views/reports/ip-feedback-report-by-item.html',
-            controller: 'IpFeedbackReportByItemController',
-            resolve: {
-                permission: function (UserService) {
-                    return UserService.checkUserPermission('auth.can_view_reports');
                 }
             }
         })

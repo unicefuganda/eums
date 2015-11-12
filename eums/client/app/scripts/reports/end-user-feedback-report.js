@@ -4,6 +4,7 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
     .controller('EndUserFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
                                                              ReportService, LoaderService) {
         var timer;
+        $scope.directiveValues = {};
 
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
