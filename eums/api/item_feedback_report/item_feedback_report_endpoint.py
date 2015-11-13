@@ -1,12 +1,12 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-from rest_framework.decorators import api_view
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 
 from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Runnable, Option
+    ReleaseOrderItem, Option
 
 PAGE_SIZE = 10
 
@@ -20,7 +20,7 @@ def item_feedback_report(request):
         ip = user_profile.consignee
 
     response = []
-    nodes = end_user_tracked_nodes(request, ip)
+    nodes = item_tracked_nodes(request, ip)
     if nodes:
         build_answers_for_nodes(nodes, response)
 
@@ -64,7 +64,8 @@ def build_answers_for_nodes(nodes, response):
         for run, answers in node_responses.iteritems():
             answer_list = {}
             for answer in answers:
-                answer_list.update({answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
+                answer_list.update(
+                    {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
             response.append({
                 'item_description': node.item.item.description,
                 'programme': node.programme.name,
@@ -78,23 +79,25 @@ def build_answers_for_nodes(nodes, response):
             })
 
 
-def end_user_tracked_nodes(request, ip=None):
+def item_tracked_nodes(request, ip=None):
+    nodes = DistributionPlanNode.objects.filter(**_query_args(request))
+
+    po_way_bill = request.GET.get('po_way_bill')
+    if po_way_bill:
+        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
+        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_way_bill)
+        nodes = nodes.filter(Q(item=purchase_order_item) |
+                             Q(item=release_order_item))
+
     if request.GET.get('query'):
         params = request.GET.get('query')
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
-        nodes = DistributionPlanNode.objects.filter(Q(tree_position=Runnable.END_USER),
-                                                    Q(item__item__description__icontains=params) |
+        nodes = DistributionPlanNode.objects.filter(Q(item__item__description__icontains=params) |
                                                     Q(consignee__name__icontains=params) |
                                                     Q(item=purchase_order_item) |
                                                     Q(item=release_order_item) |
                                                     Q(programme__name__icontains=params))
-    else:
-        nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.END_USER)
-
-    location = request.GET.get('location')
-    if location:
-        nodes = nodes.filter(location__iexact=location)
     if ip:
         nodes = nodes.filter(ip=ip)
     return nodes
@@ -102,3 +105,23 @@ def end_user_tracked_nodes(request, ip=None):
 
 def _filter_answers_by_id(answers, node_id):
     return filter(lambda answer: answer['id'] == node_id, answers)[0]['answers']
+
+
+def _query_args(request):
+    kwargs = {'track': True}
+    params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
+    kwargs.update(_filter_fields(params))
+    return kwargs
+
+
+def _filter_fields(params):
+    query_fields = {'programme_id': 'programme_id', 'ip_id': 'ip_id',
+                    'location': 'location__iexact', 'tree_position': 'tree_position',
+                    'item_description': 'item__item__description__icontains'}
+
+    search_params = {}
+    for key, value in params.iteritems():
+        query_field = query_fields.get(key)
+        if query_field and value:
+            search_params.update({query_field: value})
+    return search_params
