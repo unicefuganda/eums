@@ -2,7 +2,7 @@
 
 var loginPage = require('./pages/login-page.js');
 var homePage = require('./pages/home-page.js');
-var endUserFeedbackPage = require('./pages/end-user-feedback-report-page.js');
+var itemFeedbackPage = require('./pages/item-feedback-report-page.js');
 var ipFeedbackReportByDeliveryPage = require('./pages/ip-feedback-report-by-delivery-page.js');
 
 describe('Home Page', function () {
@@ -68,10 +68,10 @@ describe('Home Page', function () {
                 homePage.clickMapLayer('amuru');
                 homePage.goToResponseDetailsPage();
 
-                expect(endUserFeedbackPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
-                expect(endUserFeedbackPage.resultsCount).toEqual(2);
-                expect(endUserFeedbackPage.consignees).toContain('AMURU DHO');
-                expect(endUserFeedbackPage.consignees).toContain('WAKISO DHO');
+                expect(itemFeedbackPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
+                expect(itemFeedbackPage.resultsCount).toEqual(2);
+                expect(itemFeedbackPage.consignees).toContain('AMURU DHO');
+                expect(itemFeedbackPage.consignees).toContain('WAKISO DHO');
             });
         });
 
@@ -134,9 +134,9 @@ describe('Home Page', function () {
                 homePage.goToResponseDetailsPage();
 
                 expect(ipFeedbackReportByDeliveryPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
-                expect(endUserFeedbackPage.resultsCount).toEqual(2);
-                expect(endUserFeedbackPage.consignees).toContain('RAKAI DHO');
-                expect(endUserFeedbackPage.consignees).toContain('KAABONG DHO');
+                expect(itemFeedbackPage.resultsCount).toEqual(2);
+                expect(itemFeedbackPage.consignees).toContain('RAKAI DHO');
+                expect(itemFeedbackPage.consignees).toContain('KAABONG DHO');
             });
 
         });

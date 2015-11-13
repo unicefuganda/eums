@@ -4,7 +4,7 @@ angular.module('ReportService', ['eums.config'])
     .factory('ReportService', function ($http, $q, EumsConfig) {
 
         function buildIPReportUrlParams(params, byItem, pageNo) {
-            var reportEndpoint = byItem ? EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT : EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY;
+            var reportEndpoint = byItem ? EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT : EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY;
             var queryParams = jQuery.param(buildSearchParams(params, pageNo));
             var query = queryParams ? '?' + queryParams : '';
             return reportEndpoint + query;
@@ -43,6 +43,8 @@ angular.module('ReportService', ['eums.config'])
                 var result = $q.defer();
                 $http.get(EumsConfig.BACKEND_URLS.IP_RESPONSES).then(function (response) {
                     result.resolve(response.data);
+                }, function() {
+                    result.reject();
                 });
                 return result.promise
             },
@@ -72,7 +74,7 @@ angular.module('ReportService', ['eums.config'])
                 return result.promise
             },
 
-            endUserFeedbackReport: function (params) {
+            itemFeedbackReport: function (params) {
                 var result = $q.defer();
                 var url = buildEndUserReportUrlParams(params);
                 $http.get(url)

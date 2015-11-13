@@ -1,7 +1,7 @@
-var EndUserFeedbackReportPage = function () {};
+var ItemFeedbackReportPage = function () {};
 
-EndUserFeedbackReportPage.prototype = Object.create({}, {
-    url: { get: function(){ return '/#/end-user-feedback-report' }},
+ItemFeedbackReportPage.prototype = Object.create({}, {
+    url: { get: function(){ return '/#/item-feedback-report' }},
 
     visit: { value: function(){
         browser.get(this.url);
@@ -27,4 +27,4 @@ EndUserFeedbackReportPage.prototype = Object.create({}, {
     satisfiedWithProduct: { get: function () { return element.all(by.css('.glyphicon.glyphicon-size-17.glyphicon-top-5')).getAttribute('class'); }}
 });
 
-module.exports = new EndUserFeedbackReportPage;
+module.exports = new ItemFeedbackReportPage;

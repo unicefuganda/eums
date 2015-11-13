@@ -18,9 +18,9 @@ angular.module('Home', ['GlobalStats', 'Delivery', 'DeliveryNode', 'PurchaseOrde
         });
 
         $scope.showDetailedResponses = function () {
-            var end_user_url = '/end-user-feedback-report/';
+            var item_url = '/item-feedback-report/';
             var ip_url = '/ip-feedback-report-by-delivery/';
-            var url = $scope.data.ipView? ip_url : end_user_url;
+            var url = $scope.data.ipView? ip_url : item_url;
             $location.path(url + $scope.data.district);
         };
 

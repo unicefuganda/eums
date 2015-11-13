@@ -18,7 +18,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
     'ngToast', 'cgBusy', 'Responses', 'User', 'Contact', 'IpItems', 'ImportData',
     'Directives', 'WarehouseDeliveryManagement', 'EumsFilters', 'SingleIpDirectDelivery', 'IpDelivery',
     'Loader', 'IPResponses', 'ConsigneeItem', 'ItemsDeliveredToIp', 'DeliveriesByIp', 'Alerts', 'NewDeliveryByIp',
-    'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'EndUserFeedbackReport', 'ngPercentDisplay',
+    'NewSubConsigneeDeliveryByIp', 'IpFeedbackReportByDelivery', 'ItemFeedbackReport', 'ngPercentDisplay',
     'eums.currencyFilters', 'SupplyEfficiencyReport', 'SupplyEfficiencyReportFilters', 'SupplyEfficiencyQueries'])
 
 .config(function ($routeProvider, $httpProvider) {
@@ -93,18 +93,18 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
-        .when('/end-user-feedback-report', {
-            templateUrl: '/static/app/views/reports/end-user-feedback-report.html',
-            controller: 'EndUserFeedbackReportController',
+        .when('/item-feedback-report', {
+            templateUrl: '/static/app/views/reports/item-feedback-report.html',
+            controller: 'ItemFeedbackReportController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_reports');
                 }
             }
         })
-        .when('/end-user-feedback-report/:district', {
-            templateUrl: '/static/app/views/reports/end-user-feedback-report.html',
-            controller: 'EndUserFeedbackReportController',
+        .when('/item-feedback-report/:district', {
+            templateUrl: '/static/app/views/reports/item-feedback-report.html',
+            controller: 'ItemFeedbackReportController',
             resolve: {
                 permission: function (UserService) {
                     return UserService.checkUserPermission('auth.can_view_reports');

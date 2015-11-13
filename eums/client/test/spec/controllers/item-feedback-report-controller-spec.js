@@ -1,10 +1,10 @@
-describe('EndUserFeedbackReportController', function () {
+describe('ItemFeedbackReportController', function () {
     var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController;
 
     beforeEach(function () {
-        module('EndUserFeedbackReport');
+        module('ItemFeedbackReport');
 
-        mockReportService = jasmine.createSpyObj('mockReportService', ['endUserFeedbackReport']);
+        mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
@@ -13,10 +13,10 @@ describe('EndUserFeedbackReportController', function () {
             location = $location;
             timeout = $timeout;
 
-            mockReportService.endUserFeedbackReport.and.returnValue(deferredResult.promise);
+            mockReportService.itemFeedbackReport.and.returnValue(deferredResult.promise);
 
             initController = function (route) {
-                $controller('EndUserFeedbackReportController', {
+                $controller('ItemFeedbackReportController', {
                     $scope: scope,
                     $location: location,
                     ReportService: mockReportService,
@@ -46,7 +46,7 @@ describe('EndUserFeedbackReportController', function () {
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.endUserFeedbackReport).toHaveBeenCalled();
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalled();
             expect(scope.report).toEqual(response.results)
         });
 
@@ -57,7 +57,7 @@ describe('EndUserFeedbackReportController', function () {
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.endUserFeedbackReport).toHaveBeenCalledWith({'location': 'Gulu'});
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({'location': 'Gulu'});
             expect(scope.report).toEqual(response.results);
         });
 
@@ -78,8 +78,8 @@ describe('EndUserFeedbackReportController', function () {
             scope.$apply();
 
             timeout.flush();
-            expect(mockReportService.endUserFeedbackReport.calls.count()).toEqual(2);
-            expect(mockReportService.endUserFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
+            expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
         });
 
     });
@@ -92,8 +92,8 @@ describe('EndUserFeedbackReportController', function () {
             scope.goToPage(2);
             scope.$digest();
 
-            expect(mockReportService.endUserFeedbackReport).toHaveBeenCalledWith({page: 2});
-            expect(mockReportService.endUserFeedbackReport.calls.count()).toEqual(2);
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({page: 2});
+            expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
         });
     });
 

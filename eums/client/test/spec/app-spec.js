@@ -129,11 +129,11 @@ describe('Route Provider', function () {
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/ip-feedback-report-by-delivery.html');
     });
 
-    it('should have end user feedback report route pointing to the right controller', function () {
-        var route = '/end-user-feedback-report';
+    it('should have item feedback report route pointing to the right controller', function () {
+        var route = '/item-feedback-report';
         expect((Object.keys(routes.routes))).toContain(route);
-        expect(routes.routes[route].controller).toBe('EndUserFeedbackReportController');
-        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/end-user-feedback-report.html');
+        expect(routes.routes[route].controller).toBe('ItemFeedbackReportController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/item-feedback-report.html');
     });
 
     it('should have Stock report route pointing to the right controller', function () {

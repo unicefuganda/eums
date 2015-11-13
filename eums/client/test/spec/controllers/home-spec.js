@@ -23,11 +23,11 @@ describe('Module: Home', function () {
             });
         }));
 
-        it('should redirect to end user responses page', function () {
+        it('should redirect to item responses page', function () {
             scope.data = {district: 'Gulu'};
             scope.showDetailedResponses();
             scope.$apply();
-            expect(location.path()).toEqual('/end-user-feedback-report/' + scope.data.district);
+            expect(location.path()).toEqual('/item-feedback-report/' + scope.data.district);
         });
 
         it('should redirect to ip responses page', function () {

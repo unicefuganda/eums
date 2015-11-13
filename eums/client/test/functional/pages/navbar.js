@@ -13,7 +13,7 @@ Navbar.prototype = Object.create({}, {
     }},
     goToEndUserFeedbackReportPage: { value: function () {
         this.revealReportsPanel();
-        element(by.id('end-user-feedback-nav')).click();
+        element(by.id('item-feedback-nav')).click();
     }},
     goToIPStockReportPage: { value: function () {
         this.revealReportsPanel();

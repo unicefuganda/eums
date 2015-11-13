@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
-    .controller('EndUserFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                             ReportService, LoaderService) {
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
+    .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
+                                                          ReportService, LoaderService) {
         var timer;
         $scope.directiveValues = {};
 
@@ -45,7 +45,7 @@ angular.module('EndUserFeedbackReport', ['eums.config', 'ReportService', 'Loader
         function loadEndUserFeedbackReport(filterParams) {
             $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
             var allFilter = appendLocationFilter(filterParams);
-            ReportService.endUserFeedbackReport(allFilter).then(function (response) {
+            ReportService.itemFeedbackReport(allFilter).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;

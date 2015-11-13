@@ -26,7 +26,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with no filters', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item';
+        var url = '/api/item-feedback-report';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -39,7 +39,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with filters', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item?programme_id=2';
+        var url = '/api/item-feedback-report?programme_id=2';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -52,7 +52,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with multiple filters', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item?programme_id=2&consignee_id=1&item_description=something+interesting&po_waybill=309';
+        var url = '/api/item-feedback-report?programme_id=2&consignee_id=1&item_description=something+interesting&po_waybill=309';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -65,7 +65,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback with filters of multiple words', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item?item_description=something+interesting';
+        var url = '/api/item-feedback-report?item_description=something+interesting';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);
@@ -78,7 +78,7 @@ describe('Report Service', function () {
 
     it('should get ip feedback report paginated', function(){
         var fakeReport = {results:[{id:34}]};
-        var url = '/api/ip-feedback-report-by-item?page=2';
+        var url = '/api/item-feedback-report?page=2';
 
         mockBackend.whenGET(url).respond(200, fakeReport);
         mockBackend.expectGET(url);

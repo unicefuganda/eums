@@ -51,7 +51,7 @@ urlpatterns = patterns(
         name='ip_feedback_report_by_delivery'),
     url(r'^api/ip-feedback-report-by-item', 'eums.api.ip_feedback_report.ip_feedback_report_by_item_endpoint.ip_feedback_report_by_item',
         name='ip_feedback_report_by_item'),
-    url(r'^api/end-user-feedback-report', 'eums.api.end_user_feedback_report.end_user_feedback_report_endpoint.end_user_feedback_report',
+    url(r'^api/item-feedback-report', 'eums.api.end_user_feedback_report.end_user_feedback_report_endpoint.end_user_feedback_report',
         name='end_user_feedback_report'),
     url(r'^exports/deliveries/', ExportDeliveriesCSV.as_view(), name='warehouse_deliveries_csv'),
     url(r'^api/import-release-orders/', 'eums.api.import_data.import_orders_endpoint.import_release_orders',
