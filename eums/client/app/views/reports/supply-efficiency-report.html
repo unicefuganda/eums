@@ -36,41 +36,52 @@
                             <td class="centered" sort-by="identifier.delivery.delivery_date" sort-init="desc"
                                 ng-if="view == views.DELIVERY">Date
                             </td>
-                            <td class="centered"  sort-by="identifier.ip.name" ng-if="view == views.DELIVERY">IP</td>
-                            <td class="centered"  sort-by="identifier.delivery.location" ng-if="view == views.DELIVERY">District</td>
+                            <td class="centered" sort-by="identifier.ip.name" ng-if="view == views.DELIVERY">IP</td>
+                            <td class="centered" sort-by="identifier.delivery.location" ng-if="view == views.DELIVERY">
+                                District
+                            </td>
 
-                            <td class="centered"  sort-by="identifier.order_item.item.description" sort-init="asc"
+                            <td class="centered" sort-by="identifier.order_item.item.description" sort-init="asc"
                                 ng-if="view == views.ITEM">Description
                             </td>
-                            <td class="centered"  sort-by="identifier.order_item.item.material_code" ng-if="view == views.ITEM">Material
+                            <td class="centered" sort-by="identifier.order_item.item.material_code"
+                                ng-if="view == views.ITEM">Material
                                 Code
                             </td>
 
-                            <td class="centered"  sort-by="identifier.programme.name" sort-init="asc" ng-if="view == views.OUTCOME">
+                            <td class="centered" sort-by="identifier.programme.name" sort-init="asc"
+                                ng-if="view == views.OUTCOME">
                                 Outcome Name
                             </td>
 
-                            <td class="centered"  sort-by="identifier.order_item.order.order_number" sort-init="asc"
+                            <td class="centered" sort-by="identifier.order_item.order.order_number" sort-init="asc"
                                 ng-if="view == views.DOCUMENT">Doc. Number
                             </td>
-                            <td class="centered"  sort-by="identifier.order_item.order.order_type" ng-if="view == views.DOCUMENT">Type
+                            <td class="centered" sort-by="identifier.order_item.order.order_type"
+                                ng-if="view == views.DOCUMENT">Type
                             </td>
 
-                            <td class="centered"  sort-by="identifier.ip.name" sort-init="asc" ng-if="view == views.IP">Name</td>
-
-                            <td class="centered"  sort-by="identifier.location" sort-init="asc" ng-if="view == views.LOCATION">District
+                            <td class="centered" sort-by="identifier.ip.name" sort-init="asc" ng-if="view == views.IP">
                                 Name
                             </td>
 
-                            <td class="centered"  sort-by="delivery_stages.unicef.total_value">Value ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.ip_receipt.total_value_received">Value ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.ip_receipt.total_loss">Loss ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.ip_receipt.average_delay">Delay (days)</td>
-                            <td class="centered"  sort-by="delivery_stages.ip_distribution.total_value_distributed">Value ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.ip_distribution.balance">Balance ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.end_user.total_value_received">Value ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.end_user.total_loss">Loss ($)</td>
-                            <td class="centered"  sort-by="delivery_stages.end_user.average_delay">Delay (days)</td>
+                            <td class="centered" sort-by="identifier.location" sort-init="asc"
+                                ng-if="view == views.LOCATION">District
+                                Name
+                            </td>
+
+                            <td class="centered" sort-by="delivery_stages.unicef.total_value">Value ($)</td>
+                            <td class="centered" sort-by="delivery_stages.ip_receipt.total_value_received">Value ($)
+                            </td>
+                            <td class="centered" sort-by="delivery_stages.ip_receipt.confirmed">Confirmed (%)</td>
+                            <td class="centered" sort-by="delivery_stages.ip_receipt.average_delay">Transit (days)</td>
+                            <td class="centered" sort-by="delivery_stages.ip_distribution.total_value_distributed">Value
+                                ($)
+                            </td>
+                            <td class="centered" sort-by="delivery_stages.ip_distribution.balance">Balance ($)</td>
+                            <td class="centered" sort-by="delivery_stages.end_user.total_value_received">Value ($)</td>
+                            <td class="centered" sort-by="delivery_stages.end_user.confirmed">Confirmed (%)</td>
+                            <td class="centered" sort-by="delivery_stages.end_user.average_delay">Transit (days)</td>
                         </tr>
                         <tr ng-repeat="bucket in report">
                             <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery.delivery_date | date: 'dd-MMM-yyyy' }}</td>
@@ -93,15 +104,17 @@
 
                             <td class="align-right">{{ bucket.delivery_stages.unicef.total_value  | number:0 }}</td>
                             <td class="align-right">{{ bucket.delivery_stages.ip_receipt.total_value_received  | number:0 }}</td>
-                            <td class="align-right" ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.total_loss > 0, 'text-success': bucket.delivery_stages.ip_receipt.total_loss < 0}">{{ bucket.delivery_stages.ip_receipt.total_loss  | number:0 }}</td>
-                            <td class="align-right" ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.average_delay > 0, 'text-success': bucket.delivery_stages.ip_receipt.average_delay < 0}">
+                            <td class="align-right">{{ bucket.delivery_stages.ip_receipt.confirmed  | number:0 }}</td>
+                            <td class="align-right"
+                                ng-class="{'text-danger': bucket.delivery_stages.ip_receipt.average_delay > 0, 'text-success': bucket.delivery_stages.ip_receipt.average_delay < 0}">
                                 {{ bucket.delivery_stages.ip_receipt.average_delay  | number:0 }}
                             </td>
                             <td class="align-right">{{ bucket.delivery_stages.ip_distribution.total_value_distributed  | number:0 }}</td>
                             <td class="align-right">{{ bucket.delivery_stages.ip_distribution.balance  | number:0 }}</td>
                             <td class="align-right">{{ bucket.delivery_stages.end_user.total_value_received  | number:0 }}</td>
-                            <td class="align-right" ng-class="{'text-danger': bucket.delivery_stages.end_user.total_loss > 0, 'text-success': bucket.delivery_stages.end_user.total_loss < 0}">{{ bucket.delivery_stages.end_user.total_loss  | number:0 }}</td>
-                            <td class="align-right" ng-class="{'text-danger': bucket.delivery_stages.end_user.average_delay > 0 , 'text-success': bucket.delivery_stages.end_user.average_delay < 0}">
+                            <td class="align-right">{{ bucket.delivery_stages.end_user.confirmed  | number:0 }}</td>
+                            <td class="align-right"
+                                ng-class="{'text-danger': bucket.delivery_stages.end_user.average_delay > 0 , 'text-success': bucket.delivery_stages.end_user.average_delay < 0}">
                                 {{ bucket.delivery_stages.end_user.average_delay  | number:0 }}
                             </td>
                         </tr>
@@ -116,30 +129,28 @@
                     </table>
                 </div>
             </div>
-            <div class="row">
-                <div class="form-group col-lg-4 pull-right text-color-dark-grey" style="margin-top: 35px;">
-                    <div class="font-size-x-large bold pad-bottom-5">
-                        TOTAL
-                    </div>
-                    <div class="col-lg-9 bold text-uppercase total-value-box">
-                        <div class="col-lg-12 pad-bottom-5 pad-top-10">
-                            Value Shipped By UNICEF:
+            <div class="form-group col-lg-5 pull-right text-color-dark-grey">
+                <div class="font-size-x-large bold pad-bottom-5">
+                    TOTAL
+                </div>
+                <div class="col-lg-12 bold text-uppercase total-value-box">
+                    <div class="col-lg-12 pad-bottom-5 pad-top-10">
+                        Value Shipped By UNICEF:
                                 <span id="total_received" class="pull-right eums-font-size-large">
-                                    {{ totals.UNICEFShipped | currency:0 }}
+                                    {{ totals.UNICEFShipped | currency }}
                                 </span>
-                        </div>
-                        <div class="col-lg-12 pad-bottom-5">
-                            Value Received By IP:
+                    </div>
+                    <div class="col-lg-12 pad-bottom-5">
+                        Value Received By IP:
                                 <span id="total_dispensed" class="pull-right eums-font-size-large">
-                                    {{ totals.IPReceived | currency:0 }}
+                                    {{ totals.IPReceived | currency }}
                                 </span>
-                        </div>
-                        <div class="col-lg-12 pad-bottom-5">
-                            Value Received By End User:
+                    </div>
+                    <div class="col-lg-12 pad-bottom-5">
+                        Value Received By End User:
                                 <span id="total_dispensed" class="pull-right eums-font-size-large">
-                                    {{ totals.endUserReceived | currency:0 }}
+                                    {{ totals.endUserReceived | currency }}
                                 </span>
-                        </div>
                     </div>
                 </div>
             </div>

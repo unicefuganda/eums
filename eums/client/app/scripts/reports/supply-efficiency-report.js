@@ -137,7 +137,7 @@ angular.module('SupplyEfficiencyReport', [
                         },
                         ip_receipt: {
                             total_value_received: roundAggregate(value_received_by_ip),
-                            total_loss: roundAggregate(stages.ip.total_loss.value),
+                            confirmed: roundAggregate((value_received_by_ip/value_delivered_to_ip) * 100),
                             average_delay: roundAggregate(stages.ip.average_delay.value)
                         },
                         ip_distribution: {
@@ -146,7 +146,7 @@ angular.module('SupplyEfficiencyReport', [
                         },
                         end_user: {
                             total_value_received: roundAggregate(stages.end_users.total_value_delivered.value),
-                            total_loss: roundAggregate(stages.end_users.total_loss.value),
+                            confirmed: roundAggregate((stages.end_users.total_value_delivered.value/value_delivered_to_ip)*100),
                             average_delay: roundAggregate(stages.end_users.average_delay.value)
                         }
                     }
@@ -154,7 +154,7 @@ angular.module('SupplyEfficiencyReport', [
             });
 
             function roundAggregate(aggregate) {
-                return typeof aggregate == 'number' ? parseFloat(aggregate).toFixed() : null
+                return parseInt(aggregate) || 0;
             }
         }
     });

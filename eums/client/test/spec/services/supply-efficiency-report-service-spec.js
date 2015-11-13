@@ -192,21 +192,21 @@ describe('Supply Efficiency Service', function () {
                 identifier: fakeResponse.aggregations.deliveries.buckets[0].identifier.hits.hits.first()._source,
                 delivery_stages: {
                     unicef: {
-                        total_value: '954'
+                        total_value: 954
                     },
                     ip_receipt: {
-                        total_value_received: '854',
-                        total_loss: '100',
-                        average_delay: '8'
+                        total_value_received: 854,
+                        confirmed: 89,
+                        average_delay: 8
                     },
                     ip_distribution: {
-                        total_value_distributed: '42',
-                        balance: '812'
+                        total_value_distributed: 42,
+                        balance: 811
                     },
                     end_user: {
-                        total_value_received: '5',
-                        total_loss: '0',
-                        average_delay: '-2'
+                        total_value_received: 5,
+                        confirmed: 0,
+                        average_delay: -2
                     }
                 }
             },
@@ -214,21 +214,21 @@ describe('Supply Efficiency Service', function () {
                 identifier: fakeResponse.aggregations.deliveries.buckets[1].identifier.hits.hits.first()._source,
                 delivery_stages: {
                     unicef: {
-                        total_value: '3320'
+                        total_value: 3320
                     },
                     ip_receipt: {
-                        total_value_received: '3320',
-                        total_loss: '0',
-                        average_delay: '274'
+                        total_value_received: 3320,
+                        confirmed: 100,
+                        average_delay: 274
                     },
                     ip_distribution: {
-                        total_value_distributed: '3216',
-                        balance: '104'
+                        total_value_distributed: 3216,
+                        balance: 104
                     },
                     end_user: {
-                        total_value_received: '0',
-                        total_loss: '0',
-                        average_delay: null
+                        total_value_received: 0,
+                        confirmed: 0,
+                        average_delay: 0
                     }
                 }
             }
