@@ -3,7 +3,7 @@
 var endUserFeedbackReport = require('./pages/end-user-feedback-report-page.js');
 var loginPage = require('./pages/login-page.js');
 
-describe('End User Feedback Report', function () {
+xdescribe('End User Feedback Report', function () {
 
     it('should show the End User Feedback report', function() {
         loginPage.visit();
