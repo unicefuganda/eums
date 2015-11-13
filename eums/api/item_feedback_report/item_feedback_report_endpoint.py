@@ -108,7 +108,7 @@ def _filter_answers_by_id(answers, node_id):
 
 
 def _query_args(request):
-    kwargs = {'track': True}
+    kwargs = {}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
     kwargs.update(_filter_fields(params))
     return kwargs
