@@ -12,7 +12,7 @@ PAGE_SIZE = 10
 
 
 @api_view(['GET', ])
-def end_user_feedback_report(request):
+def item_feedback_report(request):
     logged_in_user = request.user
     user_profile = UserProfile.objects.filter(user=logged_in_user).first()
     ip = None

@@ -21,10 +21,10 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 from eums.test.factories.run_factory import RunFactory
 from eums.test.config import BACKEND_URL
 
-ENDPOINT_URL = BACKEND_URL + 'end-user-feedback-report/'
+ENDPOINT_URL = BACKEND_URL + 'item-feedback-report/'
 
 
-class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
+class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
     def tearDown(self):
         MultipleChoiceQuestion.objects.all().delete()
         TextQuestion.objects.all().delete()
@@ -88,7 +88,7 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         response = self.client.get(ENDPOINT_URL, content_type='application/json')
 
         self.assertEqual(len(response.data['results']), 10)
-        self.assertIn('/api/end-user-feedback-report/?page=2', response.data['next'])
+        self.assertIn('/api/item-feedback-report/?page=2', response.data['next'])
         self.assertEqual(response.data['previous'], None)
         self.assertEqual(response.data['count'], total_number_of_items)
         self.assertEqual(response.data['pageSize'], 10)
@@ -97,7 +97,7 @@ class EndUserFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data['results']), 10)
         self.assertEqual(response.data['next'], None)
-        self.assertIn('/api/end-user-feedback-report/?page=1', response.data['previous'])
+        self.assertIn('/api/item-feedback-report/?page=1', response.data['previous'])
         self.assertEqual(response.data['count'], total_number_of_items)
         self.assertEqual(response.data['pageSize'], 10)
 
