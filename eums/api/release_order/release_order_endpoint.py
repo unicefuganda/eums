@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
+from eums.api.standard_pagination import StandardResultsSetPagination
 
 from eums.models import ReleaseOrder
 
@@ -19,8 +20,23 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
 class ReleaseOrderViewSet(ModelViewSet):
     queryset = ReleaseOrder.objects.all().order_by('order_number')
     serializer_class = ReleaseOrderSerialiser
+    pagination_class = StandardResultsSetPagination
 
     def list(self, request, *args, **kwargs):
+        if request.GET.get('paginate', None) != 'true':
+            self.paginator.page_size = 0
+
+        queryset = self.filter_queryset(self.__get_release_orders(request))
+
+        page = self.paginate_queryset(queryset)
+
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(self.get_serializer(queryset, many=True).data)
+
+    def __get_release_orders(self, request):
         consignee_id = request.GET.get('consignee', None)
         delivered = request.GET.get('delivered', None)
         if consignee_id:
@@ -30,10 +46,8 @@ class ReleaseOrderViewSet(ModelViewSet):
                 orders = ReleaseOrder.objects.delivered().order_by('waybill')
             else:
                 orders = self.get_queryset()
+        return self._apply_filters_on(orders, request)
 
-        orders = self._apply_filters_on(orders, request)
-
-        return Response(self.get_serializer(orders, many=True).data)
 
     def _apply_filters_on(self, orders, request):
         query = request.GET.get('query')

@@ -19,26 +19,43 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         $scope.dateColumnTitle = 'Date Shipped';
         $scope.descriptionColumnTitle = 'Programme Name';
 
-        $scope.initialize = function (urlArgs) {
+        function loadReleaseOrder(options) {
             LoaderService.showLoader();
-            this.sortBy('orderNumber');
-            this.sort.descending = false;
 
-            ReleaseOrderService.all(undefined, urlArgs).then(function (releaseOrders) {
-                $scope.releaseOrders = releaseOrders.sort();
-                if(urlArgs) {
-                    if(urlArgs.from) {
-                        $scope.fromDate = moment(Date.parse(urlArgs.from)).format('DD-MMM-YYYY');
+            options = angular.extend({'paginate': 'true'}, options);
+
+            ReleaseOrderService.all(undefined, options).then(function (response) {
+                $scope.releaseOrders = response.results.sort();
+                $scope.count = response.count;
+                $scope.pageSize = response.pageSize;
+
+                if(options) {
+                    if(options.from) {
+                        $scope.fromDate = moment(Date.parse(options.from)).format('DD-MMM-YYYY');
                         initializing = true;
                     }
 
-                    if(urlArgs.to) {
-                        $scope.toDate = moment(Date.parse(urlArgs.to)).format('DD-MMM-YYYY');
+                    if(options.to) {
+                        $scope.toDate = moment(Date.parse(options.to)).format('DD-MMM-YYYY');
                         initializing = true;
                     }
                 }
                 LoaderService.hideLoader();
+            }).catch(function () {
+                ngToast.create({content: 'Failed to load release orders', class: 'danger'});
             });
+
+        }
+
+        $scope.initialize = function (urlArgs) {
+            this.sortBy('orderNumber');
+            this.sort.descending = false;
+
+            loadReleaseOrder(urlArgs);
+        };
+
+        $scope.goToPage = function (page) {
+            loadReleaseOrder(angular.extend({'page': page}, changedFilters()));
         };
 
         $scope.sortArrowClass = function (criteria) {

@@ -1,10 +1,12 @@
 describe('Warehouse Delivery Controller', function () {
     var scope, mockReleaseOrderService, location, deferredReleaseOrders, mockExportDeliveryService, mockToast, mockLoader,
         deferredExportResult, timeout;
-    var releaseOrders = [
-        {id: 1},
-        {id: 2}
-    ];
+
+    var releaseOrders = {
+        'count': 2,
+        'pageSize': 1,
+        'results': [{id: 1}, {id: 2}]
+    };
 
     var fakeElement = {
         modal: function () {
@@ -47,7 +49,7 @@ describe('Warehouse Delivery Controller', function () {
         scope.initialize();
         scope.$apply();
         expect(mockReleaseOrderService.all).toHaveBeenCalled();
-        expect(scope.releaseOrders).toEqual(releaseOrders);
+        expect(scope.releaseOrders).toEqual(releaseOrders.results);
     });
 
     it('should redirect to new warehouse delivery page when release order is selected', function () {
@@ -105,7 +107,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, { paginate: 'true', from: '2014-07-07' });
         });
 
         it('should still filter when fromDate is empty', function () {
@@ -117,7 +119,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {to: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, { paginate: 'true', to: '2014-07-07' });
         });
 
         it('should filter deliveries when date range is given', function () {
@@ -130,7 +132,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2014-05-07', to: '2014-07-07'});
         });
 
         it('should format dates before filtering deliveries ', function () {
@@ -143,7 +145,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2015-08-30', to: '2015-09-10'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2015-08-30', to: '2015-09-10'});
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
@@ -157,7 +159,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
         });
 
         it('should filter deliveries when fromDate is not given with additional query', function () {
@@ -170,7 +172,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme', to: '2014-07-07'})
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', query: 'wakiso programme', to: '2014-07-07'})
         });
 
         it('should filter deliveries when toDate is not given with additional query', function () {
@@ -183,7 +185,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {query: 'wakiso programme', from: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', query: 'wakiso programme', from: '2014-07-07'});
 
         });
     });

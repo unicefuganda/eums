@@ -23,7 +23,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.poTypeColumnTitle = 'PO Type';
         $scope.outcomeColumnTitle = 'Outcome';
 
-        function loadDeliveries(options) {
+        function loadPurchaseOrders(options) {
             LoaderService.showLoader();
             options = angular.extend({'paginate': 'true'}, options);
 
@@ -33,7 +33,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
                 $scope.pageSize = response.pageSize;
                 LoaderService.hideLoader();
             }).catch(function () {
-                ngToast.create({content: 'Failed to load deliveries', class: 'danger'});
+                ngToast.create({content: 'Failed to load purchase orders', class: 'danger'});
             });
         }
 
@@ -41,11 +41,11 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             this.sortBy('orderNumber');
             this.sort.descending = false;
 
-            loadDeliveries(urlArgs);
+            loadPurchaseOrders(urlArgs);
         };
 
         $scope.goToPage = function (page) {
-            loadDeliveries(angular.extend({'page': page}, changedFilters()));
+            loadPurchaseOrders(angular.extend({'page': page}, changedFilters()));
         };
 
         $scope.$watch('[fromDate,toDate,query]', function (newValue, oldValue) {
