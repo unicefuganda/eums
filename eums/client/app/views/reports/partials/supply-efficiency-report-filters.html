@@ -1,34 +1,34 @@
 <div class="pad-top-10">
     <strong class="blue-unicef">FILTER REPORT BY:</strong>
 </div>
-<div class="form-group pad-top-20">
+<div class="form-group pad-top-20" id="supply-efficiency-report-item-input">
     <div class="blue-unicef">Item</div>
     <input class="form-control" search-items type="text" ng-model="filters.item"/>
 </div>
 
-<div class="form-group">
+<div class="form-group" id="supply-efficiency-report-outcome-input">
     <div class="blue-unicef">Outcome</div>
     <input class="form-control" search-programmes-better type="text" ng-model="filters.programme"/>
 </div>
 
-<div class="form-group">
+<div class="form-group" id="supply-efficiency-report-ip-input">
     <div class="blue-unicef">IP</div>
     <input class="form-control" search-consignees only-ips type="text" placeholder="Select an IP"
            ng-model="filters.consignee"/>
 </div>
 
-<div class="form-group">
+<div class="form-group" id="supply-efficiency-report-po-or-waybill-input">
     <div class="blue-unicef">PO/Waybill</div>
     <input class="form-control" type="number" placeholder="Enter a PO/Waybill number" ng-model="filters.orderNumber"/>
 </div>
 
-<div class="form-group">
+<div class="form-group" id="supply-efficiency-report-district-input">
     <div class="blue-unicef">District</div>
     <input class="form-control" search-from-list list="$districts" type="hidden" ng-model="filters.location"
            placeholder="Select a district"/>
 </div>
 
-<div class="input-group col-md-12">
+<div class="input-group col-md-12" id="supply-efficiency-report-start-date-input">
     <div class="blue-unicef">Start Date</div>
     <input type="text" class="form-control" datepicker-popup='dd-MMM-yyyy'
            ng-model="filters.startDate" is-open="datepicker.from"
@@ -45,13 +45,13 @@
 
 <h3></h3>
 
-<div class="input-group col-md-12">
+<div class="input-group col-md-12" id="supply-efficiency-report-end-date-input">
     <div class="blue-unicef">End Date</div>
     <input type="text" class="form-control" datepicker-popup='dd-MMM-yyyy'
            ng-model="filters.endDate" is-open="datepicker.to"
            datepicker-options="dateOptions" show-button-bar="false"
            value="{{ filters.endDate | date : 'dd-MMM-yyyy' }}" eums-date-picker
-           placeholder="End date"/>
+           placeholder="End date" />
 
     <span class="input-group-btn pad-top-20">
         <button type="button" class="btn btn-default" ng-click="open($event, 'to')">
