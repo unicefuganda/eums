@@ -18,11 +18,9 @@ angular.module('SupplyEfficiencyReport', [
         var viewInUrl = $location.search().by;
         $scope.view = $scope.views[urlToViewMapping[viewInUrl]];
 
-        generateReport();
-
         $scope.$on('filters-changed', function (_, newFilters) {
-            $scope.filters = newFilters;
-            generateReport();
+                $scope.filters = newFilters;
+                generateReport();
         });
 
         function generateReport() {

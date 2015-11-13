@@ -2,7 +2,7 @@
 
 angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programme'])
     .controller('SupplyEfficiencyReportFiltersController', function ($scope) {
-        $scope.filters = {};
+        $scope.filters = {startDate: new moment(1, "MM").toDate(), endDate: new moment("Dec 31", "MMM DD").toDate()};
 
         $scope.clearFilters = function () {
             $scope.$broadcast('clear-list');

@@ -74,6 +74,7 @@ describe('Supply Efficiency Report Controller Spec', function () {
                 $location: mockLocation,
                 LoaderService: mockLoaderService
             });
+            scope.$emit('filters-changed', {});
         });
     });
 

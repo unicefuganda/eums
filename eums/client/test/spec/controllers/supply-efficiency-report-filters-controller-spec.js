@@ -14,6 +14,13 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         });
     });
 
+
+    it('should filter by the first and last date of this year by default', function() {
+        scope.$apply();
+        var today = new Date();
+        expect(scope.filters).toEqual({startDate: new Date(today.getFullYear(), 0, 1), endDate: new Date(today.getFullYear(), 11, 31)})
+    });
+
     it('should clear all filters', function () {
         scope.filters = {orderNumber: 810};
         scope.$apply();
