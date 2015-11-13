@@ -187,8 +187,20 @@ module.exports = function (grunt) {
             dropDb: {
                 command: 'echo "drop database eums_test" | psql -U postgres'
             },
+            dropES: {
+                command: 'curl -XDELETE "http://localhost:9200/eums_test/"'
+            },
             createDb: {
                 command: 'echo "create database eums_test" | psql -U postgres'
+            },
+            createAndSyncES: {
+                command: 'python manage.py shell_plus < eums/elasticsearch/run_sync.py --settings=eums.test_settings',
+                options: {
+                    stderr: false,
+                    execOptions: {
+                        cwd: '../..'
+                    }
+                }
             },
             runMigrations: {
                 command: 'python manage.py migrate --settings=eums.test_settings',
@@ -356,6 +368,8 @@ module.exports = function (grunt) {
         'shell:questionAndFlowData',
         'shell:seedData',
         'shell:mapData',
+        'shell:dropES',
+        'shell:createAndSyncES',
         'apimocker'
     ]);
 

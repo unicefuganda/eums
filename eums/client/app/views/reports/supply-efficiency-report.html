@@ -25,63 +25,63 @@
                             <th ng-if="view == views.IP" class="contextual-column">Implementing Partner</th>
                             <th ng-if="view == views.LOCATION" class="contextual-column">District</th>
 
-                            <th class="centered">UNICEF</th>
-                            <th class="centered" colspan="3">IP RECEIPT</th>
-                            <th class="centered" colspan="2">IP DISTRIBUTION</th>
-                            <th class="centered" colspan="3">END USER RECEIPT</th>
+                            <th class="centered standard-column">UNICEF</th>
+                            <th class="centered standard-column" colspan="3">IP RECEIPT</th>
+                            <th class="centered standard-column" colspan="2">IP DISTRIBUTION</th>
+                            <th class="centered standard-column" colspan="3">END USER RECEIPT</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr class="table-sub-header">
-                            <td class="centered" sort-by="identifier.delivery.delivery_date" sort-init="desc"
+                            <td class="centered contextual" sort-by="identifier.delivery.delivery_date" sort-init="desc"
                                 ng-if="view == views.DELIVERY">Date
                             </td>
-                            <td class="centered" sort-by="identifier.ip.name" ng-if="view == views.DELIVERY">IP</td>
-                            <td class="centered" sort-by="identifier.delivery.location" ng-if="view == views.DELIVERY">
+                            <td class="centered contextual" sort-by="identifier.ip.name" ng-if="view == views.DELIVERY">IP</td>
+                            <td class="centered contextual" sort-by="identifier.delivery.location" ng-if="view == views.DELIVERY">
                                 District
                             </td>
 
-                            <td class="centered" sort-by="identifier.order_item.item.description" sort-init="asc"
+                            <td class="centered contextual" sort-by="identifier.order_item.item.description" sort-init="asc"
                                 ng-if="view == views.ITEM">Description
                             </td>
-                            <td class="centered" sort-by="identifier.order_item.item.material_code"
+                            <td class="centered contextual" sort-by="identifier.order_item.item.material_code"
                                 ng-if="view == views.ITEM">Material
                                 Code
                             </td>
 
-                            <td class="centered" sort-by="identifier.programme.name" sort-init="asc"
+                            <td class="centered contextual" sort-by="identifier.programme.name" sort-init="asc"
                                 ng-if="view == views.OUTCOME">
                                 Outcome Name
                             </td>
 
-                            <td class="centered" sort-by="identifier.order_item.order.order_number" sort-init="asc"
+                            <td class="centered contextual" sort-by="identifier.order_item.order.order_number" sort-init="asc"
                                 ng-if="view == views.DOCUMENT">Doc. Number
                             </td>
-                            <td class="centered" sort-by="identifier.order_item.order.order_type"
+                            <td class="centered contextual" sort-by="identifier.order_item.order.order_type"
                                 ng-if="view == views.DOCUMENT">Type
                             </td>
 
-                            <td class="centered" sort-by="identifier.ip.name" sort-init="asc" ng-if="view == views.IP">
+                            <td class="centered contextual" sort-by="identifier.ip.name" sort-init="asc" ng-if="view == views.IP">
                                 Name
                             </td>
 
-                            <td class="centered" sort-by="identifier.location" sort-init="asc"
+                            <td class="centered contextual" sort-by="identifier.location" sort-init="asc"
                                 ng-if="view == views.LOCATION">District
                                 Name
                             </td>
 
-                            <td class="centered" sort-by="delivery_stages.unicef.total_value">Value ($)</td>
-                            <td class="centered" sort-by="delivery_stages.ip_receipt.total_value_received">Value ($)
+                            <td class="centered standard" sort-by="delivery_stages.unicef.total_value">Value ($)</td>
+                            <td class="centered standard" sort-by="delivery_stages.ip_receipt.total_value_received">Value ($)
                             </td>
-                            <td class="centered" sort-by="delivery_stages.ip_receipt.confirmed">Confirmed (%)</td>
-                            <td class="centered" sort-by="delivery_stages.ip_receipt.average_delay">Transit (days)</td>
-                            <td class="centered" sort-by="delivery_stages.ip_distribution.total_value_distributed">Value
+                            <td class="centered standard" sort-by="delivery_stages.ip_receipt.confirmed">Confirmed (%)</td>
+                            <td class="centered standard" sort-by="delivery_stages.ip_receipt.average_delay">Transit (days)</td>
+                            <td class="centered standard" sort-by="delivery_stages.ip_distribution.total_value_distributed">Value
                                 ($)
                             </td>
-                            <td class="centered" sort-by="delivery_stages.ip_distribution.balance">Balance ($)</td>
-                            <td class="centered" sort-by="delivery_stages.end_user.total_value_received">Value ($)</td>
-                            <td class="centered" sort-by="delivery_stages.end_user.confirmed">Confirmed (%)</td>
-                            <td class="centered" sort-by="delivery_stages.end_user.average_delay">Transit (days)</td>
+                            <td class="centered standard" sort-by="delivery_stages.ip_distribution.balance">Balance ($)</td>
+                            <td class="centered standard" sort-by="delivery_stages.end_user.total_value_received">Value ($)</td>
+                            <td class="centered standard" sort-by="delivery_stages.end_user.confirmed">Confirmed (%)</td>
+                            <td class="centered standard" sort-by="delivery_stages.end_user.average_delay">Transit (days)</td>
                         </tr>
                         <tr ng-repeat="bucket in report">
                             <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery.delivery_date | date: 'dd-MMM-yyyy' }}</td>
