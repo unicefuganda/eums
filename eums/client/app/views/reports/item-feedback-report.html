@@ -23,15 +23,15 @@
                     </div>
                 </div>
                 <div class="col-xs-1 margin-bottom-20 pad-small pull-right" id="filter-recipient-type">
-                    <select id="filter-recipient" class="form-control" ng-model="searchTerm.recipientType" value="{{ item.recipient }}">
+                    <select id="filter-recipient" class="form-control" ng-model="searchTerm.treePosition" value="{{ item.recipient }}">
                         <option value="" selected>Recipient Type</option>
                         <option value="IMPLEMENTING_PARTNER">IP</option>
                         <option value="MIDDLE_MAN">Middle Man</option>
                         <option value="END_USER">End User</option>
                     </select>
                 </div>
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-consignee-container">
-                    <input id="filter-by-consignee" type="hidden" select-i-p ng-model="searchTerm.consigneeId"
+                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-ip-container">
+                    <input id="filter-by-ip" type="hidden" select-i-p ng-model="searchTerm.ipId"
                            value="{{ item.consignee.id }}">
                 </div>
 
@@ -157,9 +157,9 @@
                 <tr>
                     <td colspan="13" class="centered">
                         <pagination total-items="count"
-                                    ng-model="currentPage"
+                                    ng-model="pagination.page"
                                     boundary-links="true"
-                                    ng-change="goToPage(currentPage)"
+                                    ng-change="goToPage(pagination.page)"
                                     max-size="5"
                                     rotate="false"
                                     items-per-page="pageSize">

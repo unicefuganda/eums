@@ -13,7 +13,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
-        $scope.$watchCollection('searchTerm', function (newSearchTerm, oldSearchTerm) {
+        $scope.$watchCollection('searchTerm', function () {
             if (initializing) {
                 loadIpFeedbackReportByDelivery();
                 initializing = false;
@@ -22,21 +22,21 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                     $timeout.cancel(timer);
                 }
 
-                startSearchTimer(newSearchTerm, oldSearchTerm);
+                startSearchTimer();
             }
-        }, true);
+        });
 
-        function startSearchTimer(newSearchTerm, oldSearchTerm) {
+        function startSearchTimer() {
             timer = $timeout(function () {
-                startSearch(newSearchTerm, oldSearchTerm);
+                startSearch();
             }, 2000);
         }
 
-        function startSearch(newSearchTerm, oldSearchTerm) {
+        function startSearch() {
             $scope.pagination.page = 1;
             if (hasFields($scope.searchTerm)) {
                 $scope.searching = true;
-                loadIpFeedbackReportByDelivery($scope.searchTerm, newSearchTerm, oldSearchTerm);
+                loadIpFeedbackReportByDelivery($scope.searchTerm);
             } else {
                 loadIpFeedbackReportByDelivery();
             }

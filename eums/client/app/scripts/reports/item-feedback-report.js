@@ -1,27 +1,33 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage'])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService) {
+                                                          ReportService, LoaderService, ErrorMessageService) {
         var timer;
+        $scope.searchTerm = {};
         $scope.directiveValues = {};
+        $scope.pagination = {page: 1};
 
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
-        $scope.$watch('searchTerm', function () {
-            if ($scope.searchTerm && $scope.searchTerm.trim()) {
+        var initializing = true;
+
+        $scope.$watchCollection('searchTerm', function () {
+            if (initializing) {
+                loadItemFeedbackReport();
+                initializing = false;
+            } else {
                 $scope.searching = true;
                 if (timer) {
                     $timeout.cancel(timer);
                 }
                 startTimer();
-            } else {
-                loadEndUserFeedbackReport()
             }
         });
 
         $scope.goToPage = function (page) {
-            loadEndUserFeedbackReport({page: page})
+            $scope.pagination.page = page;
+            loadItemFeedbackReport($scope.searchTerm)
         };
 
         $scope.convertToDate = function (dateString) {
@@ -29,8 +35,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
         };
 
         function startTimer() {
+            $scope.pagination.page = 1;
             timer = $timeout(function () {
-                loadEndUserFeedbackReport({query: $scope.searchTerm})
+                loadItemFeedbackReport($scope.searchTerm)
             }, 1000);
         }
 
@@ -42,13 +49,16 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader'])
             return filterParams;
         }
 
-        function loadEndUserFeedbackReport(filterParams) {
-            $scope.searching ? LoaderService.hideLoader() : LoaderService.showLoader();
+        function loadItemFeedbackReport(filterParams) {
+            LoaderService.showLoader();
             var allFilter = appendLocationFilter(filterParams);
-            ReportService.itemFeedbackReport(allFilter).then(function (response) {
+            ReportService.itemFeedbackReport(allFilter, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
+            }, function () {
+                ErrorMessageService.showError();
+            }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
             });

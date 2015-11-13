@@ -57,7 +57,7 @@ describe('ItemFeedbackReportController', function () {
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({'location': 'Gulu'});
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({'location': 'Gulu'}, 1);
             expect(scope.report).toEqual(response.results);
         });
 
@@ -69,17 +69,17 @@ describe('ItemFeedbackReportController', function () {
     });
 
     describe('on filtering', function () {
-        it('should call endpoint with query params after ', function () {
+        it('should call endpoint with search term after ', function () {
             deferredResult.resolve({results: []});
             scope.$apply();
 
-            var searchTerm = 'something';
+            var searchTerm = {ip: 2};
             scope.searchTerm = searchTerm;
             scope.$apply();
 
             timeout.flush();
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
-            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({query: searchTerm});
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith(searchTerm, 1);
         });
 
     });
@@ -87,12 +87,13 @@ describe('ItemFeedbackReportController', function () {
     describe('on paginate', function () {
         it('should call the service with page number', function () {
             deferredResult.resolve({});
+            scope.searchTerm = {};
             scope.$apply();
 
             scope.goToPage(2);
             scope.$digest();
 
-            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({page: 2});
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({}, 2);
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
         });
     });

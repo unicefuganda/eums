@@ -18,7 +18,9 @@ angular.module('ReportService', ['eums.config'])
                 po_waybill: params.poWaybill,
                 query: params.query,
                 location: params.location,
-                page: pageNo
+                page: pageNo,
+                ip_id: params.ipId,
+                tree_position: params.treePosition
             } : {};
 
             var search = {};
@@ -43,7 +45,7 @@ angular.module('ReportService', ['eums.config'])
                 var result = $q.defer();
                 $http.get(EumsConfig.BACKEND_URLS.IP_RESPONSES).then(function (response) {
                     result.resolve(response.data);
-                }, function() {
+                }, function () {
                     result.reject();
                 });
                 return result.promise
@@ -74,9 +76,9 @@ angular.module('ReportService', ['eums.config'])
                 return result.promise
             },
 
-            itemFeedbackReport: function (params) {
+            itemFeedbackReport: function (params, pageNo) {
                 var result = $q.defer();
-                var url = buildEndUserReportUrlParams(params);
+                var url = buildIPReportUrlParams(params, true, pageNo);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
