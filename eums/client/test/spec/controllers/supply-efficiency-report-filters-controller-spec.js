@@ -31,7 +31,8 @@ describe('Supply Efficiency Report Filter Controller Spec', function () {
         expect(scope.$broadcast).toHaveBeenCalledWith('clear-list');
         expect(scope.$broadcast).toHaveBeenCalledWith('clear-programme');
         expect(scope.$broadcast).toHaveBeenCalledWith('clear-item');
-        expect(scope.filters).toEqual({});
+        var today = new Date();
+        expect(scope.filters).toEqual({startDate: new Date(today.getFullYear(), 0, 1), endDate: new Date(today.getFullYear(), 11, 31)});
     });
 
     it('should emit an event when filter data changes', function () {

@@ -9,7 +9,7 @@ angular.module('SupplyEfficiencyReportFilters', ['Directives', 'Item', 'Programm
             $scope.$broadcast('clear-programme');
             $scope.$broadcast('clear-item');
             $scope.$broadcast('clear-consignee');
-            $scope.filters = {};
+            $scope.filters = {startDate: new moment(1, "MM").toDate(), endDate: new moment("Dec 31", "MMM DD").toDate()};
         };
 
         $scope.$watch('filters', function (newFilters) {
