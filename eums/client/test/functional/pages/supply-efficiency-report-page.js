@@ -1,5 +1,3 @@
-var functionalTestUtils = require('./../functional-test-utils.js');
-
 var StockReportPage = function () {};
 
 StockReportPage.prototype = Object.create({}, {
@@ -7,6 +5,17 @@ StockReportPage.prototype = Object.create({}, {
     visit: {
         value: function () { browser.get(this.url);
     }},
+
+    goToItemView: {value: function(){element(by.id('supply-efficiency-report-by-item')).click();}},
+    goToOutcomeView: {value: function(){element(by.id('supply-efficiency-report-by-outcome')).click();}},
+    goToPoWayBillView: {value: function(){element(by.id('supply-efficiency-report-by-po-or-waybill')).click();}},
+    goToIPView: {value: function(){element(by.id('supply-efficiency-report-by-ip')).click();}},
+    goToDistrictView: {value: function(){element(by.id('supply-efficiency-report-by-district')).click();}},
+
+    filterByEndDate:{value: function(date){element(by.css('#supply-efficiency-report-end-date-input input.form-control')).clear().sendKeys(date);}},
+    filterByStartDate:{value: function(date){element(by.css('#supply-efficiency-report-start-date-input input.form-control')).clear().sendKeys(date);}},
+    filterBy: {value: function (id, input) {fillSelect2Chosen('supply-efficiency-report-' + id + '-input', input);}},
+    input: {value: function (id, input) {element(by.css('#supply-efficiency-report-' + id + '-input input')).clear().sendKeys(input);}},
 
     contextualHeaderColumns: {get: function(){return element.all(by.css('.contextual-column'));}},
     standardHeaderColumns: {get: function(){return element.all(by.css('.standard-column'));}},
@@ -16,7 +25,7 @@ StockReportPage.prototype = Object.create({}, {
 
     deliveryDates: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.delivery.delivery_date')).getText(); }},
     ipNames: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.ip.name')).getText(); }},
-    districts: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.delivery.location')).getText(); }},
+    districts: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.location')).getText(); }},
     itemDescriptions: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.order_item.item.description')).getText(); }},
     materialCodes: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.order_item.item.material_code')).getText(); }},
     programmeNames: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.programme.name')).getText(); }},
@@ -33,5 +42,12 @@ StockReportPage.prototype = Object.create({}, {
     endUserConfirmed: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.delivery_stages.end_user.confirmed')).getText(); }},
     endUserDelayed: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.delivery_stages.end_user.average_delay')).getText(); }}
 });
+
+function fillSelect2Chosen(id, input) {
+    element(by.id(id)).click();
+    element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
+    element(by.css('.select2-results li')).click();
+}
+
 
 module.exports = new StockReportPage;
