@@ -137,19 +137,19 @@
                     <div class="col-lg-12 pad-bottom-5 pad-top-10">
                         Value Shipped By UNICEF:
                                 <span id="total_received" class="pull-right eums-font-size-large">
-                                    {{ totals.UNICEFShipped | currency }}
+                                    ${{ totals.UNICEFShipped | number:0}}
                                 </span>
                     </div>
                     <div class="col-lg-12 pad-bottom-5">
                         Value Received By IP:
                                 <span id="total_dispensed" class="pull-right eums-font-size-large">
-                                    {{ totals.IPReceived | currency }}
+                                    ${{ totals.IPReceived | number:0 }}
                                 </span>
                     </div>
                     <div class="col-lg-12 pad-bottom-5">
                         Value Received By End User:
                                 <span id="total_dispensed" class="pull-right eums-font-size-large">
-                                    {{ totals.endUserReceived | currency }}
+                                    ${{ totals.endUserReceived | number:0 }}
                                 </span>
                     </div>
                 </div>
