@@ -34,7 +34,7 @@ describe('ManualReportingDetailsController', function () {
             salesOrder: stubSalesOrder,
             date: '2014-10-06',
             purchaseorderitemSet: [1],
-            programme: programmeName
+            programmeName: programmeName
         };
 
         stubReleaseOrder = {
@@ -246,7 +246,7 @@ describe('ManualReportingDetailsController', function () {
                 salesOrder: 1,
                 date: '2014-10-06',
                 purchaseorderitemSet: [{id: 1, salesOrderItem: 1}],
-                programme: programmeName
+                programmeName: programmeName
             };
 
             var stubSOItem = {
@@ -282,7 +282,7 @@ describe('ManualReportingDetailsController', function () {
 
                 expect(scope.reportingDetailsTitle).toEqual('Report By PO:');
                 expect(scope.orderNumber).toEqual(stubPO.orderNumber);
-                expect(scope.orderProgramme).toEqual(stubPO.programme);
+                expect(scope.orderProgramme).toEqual(stubPO.programmeName);
                 expect(scope.salesOrder).toEqual(stubSalesOrder);
             });
 
@@ -291,7 +291,7 @@ describe('ManualReportingDetailsController', function () {
                     description: stubSOItem.item.description,
                     materialCode: stubSOItem.item.materialCode,
                     quantity: stubSOItem.quantity,
-                    unit: stubSOItem.item.unit,
+                    unit: stubSOItem.item.unit.name,
                     salesOrderItem: stubSOItem,
                     distributionplannodes: stubSOItem.distributionplannodeSet
                 };

@@ -85,7 +85,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
 
             PurchaseOrderService.get($routeParams.purchaseOrderId, ['purchaseorderitem_set']).then(function (response) {
                 $scope.orderNumber = response.orderNumber;
-                $scope.orderProgramme = response.programme;
+                $scope.orderProgramme = response.programmeName;
                 SalesOrderService.get(response.salesOrder, ['programme']).then(function (salesOrder) {
                     $scope.salesOrder = salesOrder;
                 });
@@ -97,7 +97,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
                             description: salesOrderItem.item.description,
                             materialCode: salesOrderItem.item.materialCode,
                             quantity: purchaseOrderItem.quantity ? purchaseOrderItem.quantity : salesOrderItem.quantity,
-                            unit: salesOrderItem.item.unit,
+                            unit: salesOrderItem.item.unit.name,
                             salesOrderItem: salesOrderItem,
                             distributionplannodes: salesOrderItem.distributionplannodeSet
                         };
