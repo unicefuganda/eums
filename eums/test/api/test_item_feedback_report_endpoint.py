@@ -155,7 +155,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results), 1)
         self.assertDictContainsSubset({'order_number': ip_node_two.item.number()}, results[0])
 
-    def test_should_filter_answers_by_tree_position(self):
+    def test_should_filter_answers_by_tree_position_implementing_partner(self):
         node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
 
         response = self.client.get(ENDPOINT_URL + '?tree_position=IMPLEMENTING_PARTNER',
@@ -164,6 +164,15 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         results = response.data['results']
         self.assertEqual(len(results), 2)
         self.assertDictContainsSubset({'consignee': ip_node_two.consignee.name}, results[0])
+
+    def test_should_filter_answers_by_tree_position_middle_man(self):
+        node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?tree_position=MIDDLE_MAN', content_type='application/json')
+
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+        self.assertDictContainsSubset({'consignee': 'middle man one'}, results[0])
 
     def setup_nodes_with_answers(self):
         ip = ConsigneeFactory(name='ip one')

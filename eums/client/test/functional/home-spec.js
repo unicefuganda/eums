@@ -69,9 +69,9 @@ describe('Home Page', function () {
                 homePage.goToResponseDetailsPage();
 
                 expect(itemFeedbackPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
-                expect(itemFeedbackPage.resultsCount).toEqual(5);
-                expect(itemFeedbackPage.consignees).toContain('AMURU DHO');
+                expect(itemFeedbackPage.resultsCount).toEqual(4);
                 expect(itemFeedbackPage.consignees).toContain('WAKISO DHO');
+                expect(itemFeedbackPage.consignees).toContain('KAABONG DHO');
             });
         });
 
