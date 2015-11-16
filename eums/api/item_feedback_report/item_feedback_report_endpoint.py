@@ -82,10 +82,10 @@ def build_answers_for_nodes(nodes, response):
 def item_tracked_nodes(request, ip=None):
     nodes = DistributionPlanNode.objects.filter(**_query_args(request))
 
-    po_way_bill = request.GET.get('po_way_bill')
-    if po_way_bill:
-        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
-        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_way_bill)
+    po_waybill = request.GET.get('po_waybill')
+    if po_waybill:
+        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_waybill)
+        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_waybill)
         nodes = nodes.filter(Q(item=purchase_order_item) |
                              Q(item=release_order_item))
 

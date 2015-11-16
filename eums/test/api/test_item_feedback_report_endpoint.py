@@ -140,7 +140,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
     def test_should_filter_answers_by_purchase_order_number(self):
         node_one, _, _, node_two, _, _ = self.setup_nodes_with_answers()
 
-        response = self.client.get(ENDPOINT_URL + '?po_way_bill=329', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?po_waybill=329', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 4)
@@ -149,7 +149,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
     def test_should_filter_answers_by_waybill(self):
         node_one, _, _, _, ip_node_two, _ = self.setup_nodes_with_answers()
 
-        response = self.client.get(ENDPOINT_URL + '?po_way_bill=5540', content_type='application/json')
+        response = self.client.get(ENDPOINT_URL + '?po_waybill=5540', content_type='application/json')
 
         results = response.data['results']
         self.assertEqual(len(results), 1)
