@@ -237,7 +237,7 @@ class SalesOrderFacade(OrderFacade):
 
     @staticmethod
     def _trim_programme_wbs(extended_programme_wbs):
-        wbs_element_list = extended_programme_wbs.split('/')[:5]
+        wbs_element_list = extended_programme_wbs.split('/')[:4]
         return '/'.join(wbs_element_list)
 
 

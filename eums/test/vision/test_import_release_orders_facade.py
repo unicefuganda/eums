@@ -419,9 +419,15 @@ class TestReleaseOrdersVisionFacade(TestCase):
                                             purchase_order_item=self.purchase_order_item_three, quantity=20,
                                             value=Decimal('1188.79'), item_number=10)
 
-        self.assert_release_order_items_are_equal(order_item_one, ReleaseOrderItem.objects.all()[0])
-        self.assert_release_order_items_are_equal(order_item_two, ReleaseOrderItem.objects.all()[1])
-        self.assert_release_order_items_are_equal(order_item_three, ReleaseOrderItem.objects.all()[2])
+        self.assertEqual(ReleaseOrderItem.objects.count(), 3)
+
+        actual_order_item_one = ReleaseOrderItem.objects.get(release_order=ReleaseOrder.objects.first(), item_number=10)
+        actual_order_item_two = ReleaseOrderItem.objects.get(release_order=ReleaseOrder.objects.first(), item_number=20)
+        actual_order_item_three = ReleaseOrderItem.objects.get(release_order=ReleaseOrder.objects.last(), item_number=10)
+
+        self.assert_release_order_items_are_equal(order_item_one, actual_order_item_one)
+        self.assert_release_order_items_are_equal(order_item_two, actual_order_item_two)
+        self.assert_release_order_items_are_equal(order_item_three, actual_order_item_three)
 
     def assert_consignees_are_equal(self, consignee_one, consignee_two):
         self.assertEqual(consignee_one.name, consignee_two.name)
