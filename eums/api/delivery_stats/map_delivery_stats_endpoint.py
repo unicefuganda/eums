@@ -89,9 +89,11 @@ class DeliveryState:
     def get_state(data):
         if not data['deliveries']:
             return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
-
         non_response_percent = 100 * data['nonResponse'] / data['deliveries']
         is_awaiting_response = non_response_percent < X_PERCENT and not data['notReceived'] and not data['received']
+
+        if is_awaiting_response:
+            return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
         if non_response_percent > X_PERCENT or is_awaiting_response:
             return STATE_CSS_MAPPING['NON_RESPONSE']
         if data['notReceived'] > data['received']:

@@ -115,10 +115,10 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
                                          'received': 4, 'hasIssues': 3, 'noIssues': 1})
         self.assertEqual('map-received-with-issues', state)
 
-    def test_should_return_grey_if_non_response_below_threshold_and_no_responses_exist(self):
+    def test_should_return_white_if_non_response_below_threshold_and_no_responses_exist(self):
         state = DeliveryState.get_state({'deliveries': 10, 'nonResponse': 3, 'notReceived': 0,
                                          'received': 0, 'hasIssues': 0, 'noIssues': 0})
-        self.assertEqual('map-non-response', state)
+        self.assertEqual('map-no-response-expected', state)
 
     def setup_responses(self):
         DeliveryNode.objects.all().delete()
