@@ -65,7 +65,14 @@ Local Environment Setup
 	$ python manage.py setup_permissions
 	```
 
-* Run the tests to verify setup. 
+* Install and run Elasticsearch (version 1.7.3).
+
+	```
+	$ brew install elasticsearch17
+	$ elasticsearch --config=/usr/local/opt/elasticsearch17/config/elasticsearch.yml
+	```
+
+* Run the tests to verify setup.
 
 	```
 	$ ./go bt # runs the backend tests
