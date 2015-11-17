@@ -13,17 +13,21 @@
                 </div>
             </div>
             <div class="row margin-right-20">
-                <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">Feedback Report from Deliveries to
+                <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">Feedback Report from
+                    Deliveries to
                     <span class="blue-unicef bold">{{ district }}</span></div>
                 <div class="col-xs-1 margin-bottom-20 pad-small pull-right">
                     <div class="inner-addon right-addon">
-                        <i class="glyphicon " ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                        <input type="text" id="filter-po-waybill" class="form-control" name="filter" ng-model="searchTerm.poWaybill"
+                        <i class="glyphicon "
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <input type="text" id="filter-po-waybill" class="form-control" name="filter"
+                               ng-model="searchTerm.poWaybill"
                                placeholder="PO or Waybill"/>
                     </div>
                 </div>
-                <div class="col-xs-1 margin-bottom-20 pad-small pull-right" id="filter-recipient-type">
-                    <select id="filter-recipient" class="form-control" ng-model="searchTerm.treePosition" value="{{ item.recipient }}">
+                <div class="col-xs-1 margin-bottom-20 pad-small pull-right" id="filter-recipient-type-container">
+                    <select id="filter-recipient" class="form-control" ng-model="searchTerm.treePosition"
+                            value="{{ item.recipient }}">
                         <option value="" selected>Recipient Type</option>
                         <option value="IMPLEMENTING_PARTNER">IP</option>
                         <option value="MIDDLE_MAN">Middle Man</option>
@@ -41,8 +45,10 @@
                 </div>
                 <div class="col-xs-2 margin-bottom-20 pad-small pull-right">
                     <div class="inner-addon right-addon">
-                        <i class="glyphicon " ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                        <input type="text" id="filter-po-waybill" class="form-control" name="filter" ng-model="searchTerm.itemDescription"
+                        <i class="glyphicon "
+                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                        <input type="text" id="filter-po-waybill" class="form-control" name="filter"
+                               ng-model="searchTerm.itemDescription"
                                placeholder="Item Description"/>
                     </div>
                 </div>
@@ -56,7 +62,8 @@
                     <th class="align-left"><span class="padded-multi-line-5">ITEM DESCRIPTION</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">OUTCOME</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">IMPLEMENTING PARTNER</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">END USER</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">LAST RECIPIENT</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">DISTRIBUTION STAGE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">VALUE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
@@ -75,13 +82,14 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.implementing_partner }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.tree_position }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
 
                     <td>
-                        <span ng-if="itemReport.answers.productReceived == 'Yes'"
+                        <span ng-if="itemReport.answers.productReceived == 'Yes' || itemReport.answers.itemReceived == 'Yes'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Yes</span>
-                        <span ng-if="itemReport.answers.productReceived == 'No'"
+                        <span ng-if="itemReport.answers.productReceived == 'No' || itemReport.answers.itemReceived == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
                     <td><span
                             class="padded-multi-line-5">{{ !itemReport.answers.dateOfReceipt ? '': convertToDate(itemReport.answers.dateOfReceipt) | date : 'dd-MMM-yyyy'}}</span>
@@ -155,7 +163,7 @@
                 </tbody>
                 <tfoot>
                 <tr>
-                    <td colspan="13" class="centered">
+                    <td colspan="14" class="centered">
                         <pagination total-items="count"
                                     ng-model="pagination.page"
                                     boundary-links="true"

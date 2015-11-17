@@ -79,6 +79,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         self.assertDictContainsSubset({'order_number': purchase_order_item.purchase_order.order_number}, results)
         self.assertDictContainsSubset({'quantity_shipped': node_one.quantity_in()}, results)
         self.assertDictContainsSubset({'value': node_one.total_value}, results)
+        self.assertDictContainsSubset({'tree_position': node_one.tree_position}, results)
         self.assertEqual(len(results['answers']), 5)
 
     def test_should_return_paginated_items_and_all_their_answers(self):
@@ -170,9 +171,11 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         response = self.client.get(ENDPOINT_URL + '?tree_position=MIDDLE_MAN', content_type='application/json')
 
-        results = response.data['results']
-        self.assertEqual(len(results), 1)
-        self.assertDictContainsSubset({'consignee': 'middle man one'}, results[0])
+        results = response.data['results'][0]
+
+        self.assertEqual(len(response.data['results']), 1)
+        self.assertDictContainsSubset({'consignee': 'middle man one'}, results)
+        self.assertEqual(len(results['answers']), 3)
 
     def setup_nodes_with_answers(self):
         ip = ConsigneeFactory(name='ip one')

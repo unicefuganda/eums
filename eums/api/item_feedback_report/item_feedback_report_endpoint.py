@@ -75,7 +75,8 @@ def build_answers_for_nodes(nodes, response):
                 'quantity_shipped': node.quantity_in(),
                 'value': node.total_value,
                 'answers': answer_list,
-                'location': node.location
+                'location': node.location,
+                'tree_position': node.tree_position
             })
 
 
@@ -89,17 +90,10 @@ def item_tracked_nodes(request, ip=None):
         nodes = nodes.filter(Q(item=purchase_order_item) |
                              Q(item=release_order_item))
 
-    if request.GET.get('query'):
-        params = request.GET.get('query')
-        purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=params)
-        release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=params)
-        nodes = DistributionPlanNode.objects.filter(Q(item__item__description__icontains=params) |
-                                                    Q(consignee__name__icontains=params) |
-                                                    Q(item=purchase_order_item) |
-                                                    Q(item=release_order_item) |
-                                                    Q(programme__name__icontains=params))
     if ip:
         nodes = nodes.filter(ip=ip)
+
+    nodes = nodes.order_by('programme__name')
     return nodes
 
 
