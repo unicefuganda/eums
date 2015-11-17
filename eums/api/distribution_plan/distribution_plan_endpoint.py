@@ -6,7 +6,6 @@ from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
 from eums.models import DistributionPlan, UserProfile
 
@@ -18,7 +17,8 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
         model = DistributionPlan
         fields = ('id', 'programme', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
                   'track', 'contact_person_id', 'remark', 'total_value', 'is_received', 'type', 'number',
-                  'number_of_items', 'confirmed', 'shipment_received', 'is_retriggered')
+                  'number_of_items', 'confirmed', 'shipment_received', 'is_retriggered',
+                  'time_limitation_on_distribution')
 
 
 class DistributionPlanViewSet(ModelViewSet):

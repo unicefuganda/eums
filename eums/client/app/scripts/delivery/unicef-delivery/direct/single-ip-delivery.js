@@ -5,6 +5,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         $scope.consignee = {};
         $scope.district = {};
         $scope.errors = false;
+        $scope.valid_time_limitation = true;
 
         loadOrderData();
 
@@ -123,17 +124,26 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             return $q.when(items);
         }
 
+
         function scopeDataIsValid() {
+
             var someInputsAreEmpty = !(
             $scope.delivery.contact_person_id
             && $scope.delivery.consignee
             && $scope.delivery.delivery_date
             && $scope.delivery.location
             );
+
             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
                 return item.isInvalid(item.quantityShipped);
-            });
+            }) || !isTimeLimitationValid();
+
             return !someInputsAreEmpty && !someItemsAreInvalid;
+        }
+
+        function isTimeLimitationValid() {
+            $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution;
+            return $scope.valid_time_limitation;
         }
 
         function getDeliveryFields() {
@@ -144,7 +154,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                 delivery_date: moment(new Date($scope.delivery.delivery_date)).format('YYYY-MM-DD'),
                 contact_person_id: $scope.delivery.contact_person_id,
                 remark: $scope.delivery.remark,
-                track: $scope.tracked
+                track: $scope.tracked,
+                time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null
             };
         }
 

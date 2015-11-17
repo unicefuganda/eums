@@ -11,8 +11,7 @@ from eums.models.programme import Programme
 class DistributionPlan(Runnable):
     programme = models.ForeignKey(Programme)
     confirmed = models.BooleanField(default=False, null=False)
-    distribution_required = models.BooleanField(default=False)
-    days_needed_for_distribution = models.IntegerField(null=True)
+    time_limitation_on_distribution = models.IntegerField(null=True)
 
     class Meta:
         app_label = 'eums'
