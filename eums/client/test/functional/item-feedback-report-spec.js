@@ -9,8 +9,8 @@ describe('Item Feedback Report', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
-        expect(itemFeedbackReport.itemDescriptions).toContain('Item 297');
-        expect(itemFeedbackReport.programmes).toContain('Special Programme');
+        expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
+        expect(itemFeedbackReport.programmes).toContain('AAASpecial Programme');
         expect(itemFeedbackReport.implementingPartners).toContain('Consignee 62');
         expect(itemFeedbackReport.consignees).toContain('AMUDAT DHO');
         expect(itemFeedbackReport.orderNumbers).toContain('2014111');
@@ -30,9 +30,9 @@ describe('Item Feedback Report', function () {
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
 
-        itemFeedbackReport.searchByItemDescription('MUAC,Child 11.5 Red/PAC-50');
-        expect(itemFeedbackReport.itemDescriptions).toContain('MUAC,Child 11.5 Red/PAC-50');
-        expect(itemFeedbackReport.resultsCount).toEqual(3);
+        itemFeedbackReport.searchByItemDescription('Another Funny Item');
+        expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
+        expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 
     it('should search the Item report by programme', function() {
@@ -40,9 +40,9 @@ describe('Item Feedback Report', function () {
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
 
-        itemFeedbackReport.searchByProgramme('Special Programme');
-        expect(itemFeedbackReport.programmes).toContain('Special Programme');
-        expect(itemFeedbackReport.resultsCount).toEqual(1);
+        itemFeedbackReport.searchByProgramme('AAASpecial Programme');
+        expect(itemFeedbackReport.programmes).toContain('AAASpecial Programme');
+        expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 
     it('should search the Item report by Order Number', function() {
@@ -62,6 +62,6 @@ describe('Item Feedback Report', function () {
 
         itemFeedbackReport.searchByRecipientType('MIDDLE_MAN');
         expect(itemFeedbackReport.distributionStage).toContain('MIDDLE_MAN');
-        expect(itemFeedbackReport.resultsCount).toEqual(1);
+        expect(itemFeedbackReport.resultsCount).toEqual(3);
     });
 });

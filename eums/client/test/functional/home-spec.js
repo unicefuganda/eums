@@ -28,18 +28,18 @@ describe('Home Page', function () {
                 expect(homePage.valueNonResponse).toEqual('70');
             });
 
-            it('should click on kamapala district', function () {
-                homePage.clickMapLayer('kampala');
-                expect(homePage.mapLocation).toEqual('KAMPALA');
-                expect(homePage.getMapZoomLevel()).toBe(12);
-                expect(homePage.numberSent).toEqual('5 deliveries');
+            it('should click on Kisoro district', function () {
+                homePage.clickMapLayer('kisoro');
+                expect(homePage.mapLocation).toEqual('KISORO');
+                expect(homePage.getMapZoomLevel()).toBe(11);
+                expect(homePage.numberSent).toEqual('3 deliveries');
                 expect(homePage.numberDelivered).toEqual('3 responses');
-                expect(homePage.numberNotDelivered).toEqual('1 response');
-                expect(homePage.numberNonResponse).toEqual('1 non-response');
-                expect(homePage.valueSent).toEqual('$150');
+                expect(homePage.numberNotDelivered).toEqual('0 responses');
+                expect(homePage.numberNonResponse).toEqual('0 non-responses');
+                expect(homePage.valueSent).toEqual('$110');
                 expect(homePage.valueDelivered).toEqual('110');
-                expect(homePage.valueNotDelivered).toEqual('20');
-                expect(homePage.valueNonResponse).toEqual('20');
+                expect(homePage.valueNotDelivered).toEqual('0');
+                expect(homePage.valueNonResponse).toEqual('0');
             });
 
             it('when I click on district number of responses should be 10 or less', function () {
@@ -59,7 +59,7 @@ describe('Home Page', function () {
                 homePage.clickMapLayer('kampala');
                 expect(homePage.latestDeliveriesCount).toEqual(2);
                 homePage.latestDeliveryResponses.then(function (responses) {
-                    expect(responses[0].getText()).toEqual('Item 293\n2 SENT NOT RECEIVED');
+                    expect(responses[0].getText()).toEqual('A funny Item\n2 SENT NOT RECEIVED');
                 });
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
@@ -69,7 +69,7 @@ describe('Home Page', function () {
                 homePage.goToResponseDetailsPage();
 
                 expect(itemFeedbackPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
-                expect(itemFeedbackPage.resultsCount).toEqual(4);
+                expect(itemFeedbackPage.resultsCount).toEqual(10);
                 expect(itemFeedbackPage.consignees).toContain('WAKISO DHO');
                 expect(itemFeedbackPage.consignees).toContain('KAABONG DHO');
             });

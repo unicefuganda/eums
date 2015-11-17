@@ -3,7 +3,7 @@ from eums.models import Programme
 programme_1 = Programme.objects.create(wbs_element_ex="A00", name="sample programme")
 programme_2 = Programme.objects.create(wbs_element_ex="A01", name="YI105 - PCR 1 KEEP CHILDREN AND MOTHERS")
 programme_3 = Programme.objects.create(wbs_element_ex="A02", name="YI107 - PCR 3 KEEP CHILDREN SAFE")
-programme_4 = Programme.objects.create(wbs_element_ex="A03", name="YI105 - PCR 1 KEEP CHILDREN AND MOTHERS")
+programme_4 = Programme.objects.create(wbs_element_ex="A03", name="AAAYI105 - PCR 1 KEEP CHILDREN AND MOTHERS")
 programme_5 = Programme.objects.create(wbs_element_ex="A04", name="Y108 - PCR 4 CROSS SECTORAL")
 programme_6 = Programme.objects.create(wbs_element_ex="A05", name="YP109 - PCR 5 SUPPORT")
 programme_9 = Programme.objects.create(wbs_element_ex="A06", name="YI106 - PCR 2 KEEP CHILDREN LEARNING")
@@ -19,4 +19,4 @@ programme_18 = Programme.objects.create(wbs_element_ex="4380/A0/04/108/003", nam
 
 sample_programme_2 = Programme.objects.create(wbs_element_ex="A100", name="sample programme 2")
 programme_unattached = Programme.objects.create(wbs_element_ex="A99", name="unattached programme")
-programme_19 = Programme.objects.create(wbs_element_ex="A98", name="Special Programme")
+programme_19 = Programme.objects.create(wbs_element_ex="A98", name="AAASpecial Programme")
