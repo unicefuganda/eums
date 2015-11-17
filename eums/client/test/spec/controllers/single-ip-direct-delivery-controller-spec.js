@@ -36,7 +36,8 @@ describe('Single IP Direct Delivery Controller', function () {
         location: 'Kampala',
         delivery_date: '2015-06-29',
         track: true,
-        remark: 'Some remarks'
+        remark: 'Some remarks',
+        time_limitation_on_distribution : null
     };
     var purchaseOrder = {id: 1, purchaseorderitemSet: purchaseOrderItems, programme: programmeId};
     var routeParams = {purchaseOrderId: purchaseOrder.id};
@@ -266,7 +267,8 @@ describe('Single IP Direct Delivery Controller', function () {
                 delivery_date: formattedDeliveryDate,
                 contact_person_id: contact.id,
                 remark: remark,
-                track: true
+                track: true,
+                time_limitation_on_distribution : null
             });
         });
 
@@ -280,7 +282,8 @@ describe('Single IP Direct Delivery Controller', function () {
                 delivery_date: formattedDeliveryDate,
                 contact_person_id: contact.id,
                 remark: remark,
-                track: false
+                track: false,
+                time_limitation_on_distribution : null
             });
         });
 
@@ -314,7 +317,8 @@ describe('Single IP Direct Delivery Controller', function () {
                 delivery_date: formattedDeliveryDate,
                 contact_person_id: contact.id,
                 remark: remark,
-                track: true
+                track: true,
+                time_limitation_on_distribution : null
             });
             expect(toast.create).toHaveBeenCalledWith({content: 'Delivery created', class: 'success'})
         });
