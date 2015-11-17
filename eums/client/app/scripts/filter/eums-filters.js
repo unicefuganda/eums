@@ -56,7 +56,7 @@ angular.module('EumsFilters', [])
                 case 'MIDDLE_MAN':
                     return 'Sub-consignee';
                 case 'END_USER':
-                    return 'End User';
+                    return 'End user';
                 default:
                     throw 'Unknown tree position';
             }
