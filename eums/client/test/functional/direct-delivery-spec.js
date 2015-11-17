@@ -29,6 +29,7 @@ describe('Direct Delivery', function () {
         directDeliveryPage.setConsignee('WAKISO');
         directDeliveryPage.setContact('John');
         directDeliveryPage.setDistrict('Wakiso');
+        directDeliveryPage.setTimeLimitationOnDistribution(10);
         directDeliveryPage.enableTracking();
 
         directDeliveryPage.saveDelivery();
@@ -37,6 +38,10 @@ describe('Direct Delivery', function () {
         directDeliveryPage.visit();
         directDeliveryPage.searchForThisPurchaseOrder(PURCHASE_ORDER_NUMBER1);
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
+
+        directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
+        directDeliveryPage.selectItem('How Business Affects Us');
+        expect(directDeliveryPage.timeLimitationOnDistribution).toContain(10);
     });
 
     it('Admin should be able to create a direct delivery to a single IP', function () {

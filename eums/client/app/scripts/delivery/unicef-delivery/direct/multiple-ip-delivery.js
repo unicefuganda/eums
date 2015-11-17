@@ -110,7 +110,12 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         function invalidFields(item) {
-            return item.quantityIn <= 0 || isNaN(item.quantityIn) || !item.consignee || !item.location || !item.contactPerson || !item.deliveryDate;
+            return item.quantityIn <= 0 || isNaN(item.quantityIn)
+            || !item.consignee
+            || !item.location
+            || !item.contactPerson
+            || !item.deliveryDate
+            || (item.timeLimitationOnDistribution !=null && item.timeLimitationOnDistribution <= 0);
         }
 
         function anyInvalidFields(lineItems) {
@@ -131,7 +136,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 quantityIn: 0,
                 destinationLocation: '',
                 contactPerson: '',
-                track: false
+                track: false,
+                timeLimitationOnDistribution: null
             };
 
             $scope.distributionPlanNodes.push(distributionPlanNode);
@@ -184,6 +190,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 programme: $scope.selectedPurchaseOrder.programme,
                 consignee: uiPlanNode.consignee.id,
                 location: uiPlanNode.location,
+                time_limitation_on_distribution: uiPlanNode.timeLimitationOnDistribution || null,
                 contact_person_id: uiPlanNode.contactPerson.id,
                 delivery_date: formatDateForSave(plannedDate),
                 track: uiPlanNode.track

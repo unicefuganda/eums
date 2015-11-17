@@ -50,6 +50,7 @@ angular.module('DeliveryNode', ['eums.config', 'Contact', 'Consignee', 'eums.ser
             this.orderType = json.orderType;
             this.hasChildren = json.hasChildren;
             this.balance = json.balance;
+            this.timeLimitationOnDistribution = json.timeLimitationOnDistribution;
 
             this.canReceiveSubConsignees = function () {
                 return this.id && !this.isEndUser;

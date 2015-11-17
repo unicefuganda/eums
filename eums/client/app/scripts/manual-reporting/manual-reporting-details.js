@@ -617,7 +617,7 @@ angular.module('ManualReportingDetails', ['ngTable', 'siTable', 'eums.ip', 'Cons
             restrict: 'A',
             link: function (scope, element, attr, ngModelCtrl) {
                 function inputValue(val) {
-                    if (val || val === 0) {
+                    if (val) {
                         var digits = val.toString().replace(/[^0-9]/g, '');
 
                         if (digits.toString() !== val.toString()) {

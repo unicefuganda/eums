@@ -494,7 +494,8 @@ describe('MultipleIpDirectDeliveryController', function () {
                 quantityIn: 0,
                 destinationLocation: '',
                 contactPerson: '',
-                track: false
+                track: false,
+                timeLimitationOnDistribution: null
             };
 
             scope.addDeliveryNode();
@@ -744,7 +745,8 @@ describe('MultipleIpDirectDeliveryController', function () {
                         location: 'Kampala',
                         contact_person_id: '0489284',
                         delivery_date: distributionDateFormattedForSave,
-                        track: false
+                        track: false,
+                        time_limitation_on_distribution: null
                     });
 
                     expect(mockNodeService.update).toHaveBeenCalledWith({

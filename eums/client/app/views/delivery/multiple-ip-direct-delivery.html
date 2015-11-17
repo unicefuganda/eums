@@ -81,6 +81,7 @@
                         <th class="table-contact-select-header-width">Contact Person</th>
                         <th class="table-select-header-width">District</th>
                         <th class="table-header-width">Track</th>
+                        <th class="table-header-width">Time limitation on Distribution</th>
                         </thead>
 
                         <tr ng-repeat="(itemIndex, item) in distributionPlanNodes">
@@ -149,6 +150,11 @@
                                            ng-model="item.track"
                                            ng-disabled="item.trackSubmitted">
                                 </div>
+                            </td>
+                            <td id="input-time-limitation-on-distribution">
+                                <input type="text" ng-model="item.daysNeededForDistribution"
+                                       value="{{ item.daysNeededForDistribution }}"
+                                       ng-disabled="item.trackSubmitted" only-digits>
                             </td>
                         </tr>
                     </table>

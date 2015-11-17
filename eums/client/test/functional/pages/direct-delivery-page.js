@@ -211,6 +211,12 @@ DirectDeliveryPage.prototype = Object.create({}, {
         }
     },
 
+    setTimeLimitationOnDistribution: {
+        value: function (input) {
+            fillInput('#input-time-limitation-on-distribution input', input);
+        }
+    },
+
     enableTracking: {
         value: function (input) {
             element.all(by.css('#input-track div input')).get(0).click();
@@ -284,6 +290,11 @@ DirectDeliveryPage.prototype = Object.create({}, {
         get: function () {
             return element.all(by.repeater('(index, node) in deliveryInView.distributionplannodeSet').column('node.item.deliveryValue(node.targetedQuantity)')).getText();
         }
+    },
+    timeLimitationOnDistribution: {
+        get: function() {
+            return element(by.css('#input-time-limitation-on-distribution input')).getText();
+        }
     }
 
 });
@@ -294,6 +305,10 @@ function fillSelect2Chosen(id, input) {
     element(by.id(id)).click();
     element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
     element(by.css('.select2-results li')).click();
+}
+
+function fillInput(css, input) {
+    element.all(by.css(css)).get(0).clear().sendKeys(input);
 }
 
 function waitForPageToLoad() {

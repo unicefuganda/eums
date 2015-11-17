@@ -93,7 +93,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                                     $scope.deliveryNodes.add(childNodes);
                                     $scope.selectedLocation.id = firstChildNode.location;
                                     $scope.contact.id = firstChildNode.contactPersonId;
-                                    $scope.delivery.time_limitation_on_distribution = time_limitation_on_distribution;
+                                    $scope.delivery.time_limitation_on_distribution = firstChildNode.timeLimitationOnDistribution;
                                     setLocationAndContactFields();
                                 }
                             });
@@ -138,6 +138,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 $scope.delivery.track = $scope.track;
                 return DeliveryService.update($scope.delivery)
                     .then(function (createdDelivery) {
+                        $scope.delivery = createdDelivery;
                         return updateDeliveryNodes();
                 });
             }
