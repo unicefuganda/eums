@@ -82,7 +82,7 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.implementing_partner }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.tree_position }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.tree_position | treePositionFilter}}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>

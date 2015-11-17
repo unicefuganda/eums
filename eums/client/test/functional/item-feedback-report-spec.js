@@ -61,7 +61,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
 
         itemFeedbackReport.searchByRecipientType('MIDDLE_MAN');
-        expect(itemFeedbackReport.distributionStage).toContain('MIDDLE_MAN');
+        expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
         expect(itemFeedbackReport.resultsCount).toEqual(3);
     });
 });

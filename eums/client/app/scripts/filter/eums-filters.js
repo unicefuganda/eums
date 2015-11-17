@@ -47,4 +47,18 @@ angular.module('EumsFilters', [])
             });
             return intersection(filteredArrays);
         };
+    })
+    .filter('treePositionFilter', function () {
+        return function (input) {
+            switch (input) {
+                case 'IMPLEMENTING_PARTNER':
+                    return 'IP';
+                case 'MIDDLE_MAN':
+                    return 'Sub-consignee';
+                case 'END_USER':
+                    return 'End User';
+                default:
+                    throw 'Unknown tree position';
+            }
+        };
     });
