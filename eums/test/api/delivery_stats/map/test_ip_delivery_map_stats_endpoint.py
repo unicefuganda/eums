@@ -120,6 +120,11 @@ class IpDeliveryMapStatsEndPointTest(DeliveryStatsTestCase):
                                          'received': 0, 'hasIssues': 0, 'noIssues': 0})
         self.assertEqual('map-no-response-expected', state)
 
+    def test_should_return_red_if_received_and_unreceived_is_equal_exist(self):
+        state = DeliveryState.get_state({'deliveries': 10, 'nonResponse': 0, 'notReceived': 5,
+                                         'received': 5, 'hasIssues': 0, 'noIssues': 0})
+        self.assertEqual('map-not-received', state)
+
     def setup_responses(self):
         DeliveryNode.objects.all().delete()
         MultipleChoiceQuestion.objects.all().delete()

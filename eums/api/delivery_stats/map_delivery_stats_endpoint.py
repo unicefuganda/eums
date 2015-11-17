@@ -94,9 +94,9 @@ class DeliveryState:
 
         if is_awaiting_response:
             return STATE_CSS_MAPPING['NO_RESPONSE_EXPECTED']
-        if non_response_percent > X_PERCENT or is_awaiting_response:
+        if non_response_percent > X_PERCENT:
             return STATE_CSS_MAPPING['NON_RESPONSE']
-        if data['notReceived'] > data['received']:
+        if data['notReceived'] >= data['received']:
             return STATE_CSS_MAPPING['NOT_RECEIVED']
         if data['noIssues'] > data['hasIssues']:
             return STATE_CSS_MAPPING['RECEIVED']
