@@ -18,6 +18,7 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     remark = models.TextField(blank=True, null=True)
     is_retriggered = models.BooleanField(default=False)
     total_value = models.DecimalField(max_digits=12, decimal_places=2, null=False, default=0)
+    time_limitation_on_distribution = models.IntegerField(null=True)
 
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     WEB = 'WEB'

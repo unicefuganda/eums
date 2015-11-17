@@ -335,7 +335,7 @@ angular.module('Directives', ['eums.ip'])
             restrict: 'A',
             link: function (scope, element, attr, ngModelCtrl) {
                 function inputValue(val) {
-                    if (val) {
+                    if (val || val === 0) {
                         var digits = val.toString().replace(/[^0-9]/g, '');
 
                         if (digits.toString() !== val.toString()) {

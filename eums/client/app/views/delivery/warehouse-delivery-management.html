@@ -84,6 +84,16 @@
                         </div>
 
                     </div>
+
+                    <div class="col-md-12 margin-bottom-10">
+                        <div class="bold-label pad-small">Time Limitation on Distribution</div>
+                        <div class="col-md-10 pad-small" ng-class="{'has-error': !valid_time_limitation}">
+                             <input type="text" size="2" required="required"
+                                       ng-model="delivery.time_limitation_on_distribution" class="form-control"
+                                       value="{{ delivery.time_limitation_on_distribution }}" placeholder="days" only-digits/>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

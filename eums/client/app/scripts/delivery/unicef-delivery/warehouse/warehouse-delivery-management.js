@@ -14,6 +14,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         $scope.releaseOrderItems = [];
         $scope.districtsLoaded = false;
         $scope.track = $scope.track ? true : false;
+        $scope.valid_time_limitation = true;
 
         function createToast(message, klass) {
             ngToast.create({
@@ -32,6 +33,11 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 angular.element('#loading').modal('hide');
                 angular.element('#loading.modal').removeClass('in');
             }
+        }
+
+         function isTimeLimitationValid() {
+            $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution === 0 ? false : true;
+            return $scope.valid_time_limitation;
         }
 
         $scope.addContact = function (node, nodeIndex) {
@@ -79,6 +85,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                     if ($scope.delivery) {
                         $scope.track = $scope.delivery.track;
+                        var time_limitation_on_distribution = $scope.delivery.timeLimitationOnDistribution;
                         DeliveryNodeService.filter({distribution_plan: $scope.delivery.id}, deliveryNodeParams)
                             .then(function (childNodes) {
                                 var firstChildNode = childNodes.first();
@@ -86,6 +93,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                                     $scope.deliveryNodes.add(childNodes);
                                     $scope.selectedLocation.id = firstChildNode.location;
                                     $scope.contact.id = firstChildNode.contactPersonId;
+                                    $scope.delivery.time_limitation_on_distribution = time_limitation_on_distribution;
                                     setLocationAndContactFields();
                                 }
                             });
@@ -126,10 +134,10 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
         function createOrUpdateDeliveries() {
             if ($scope.delivery && $scope.delivery.id) {
+                $scope.delivery.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
                 $scope.delivery.track = $scope.track;
                 return DeliveryService.update($scope.delivery)
                     .then(function (createdDelivery) {
-                        $scope.delivery = createdDelivery;
                         return updateDeliveryNodes();
                 });
             }
@@ -140,7 +148,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     location: $scope.selectedLocation.id,
                     contact_person_id: $scope.contact.id,
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
-                    track: $scope.track
+                    track: $scope.track,
+                    time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null
                 };
                 return DeliveryService.create(deliveryDetails)
                     .then(function (createdDelivery) {
@@ -151,7 +160,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         }
 
         $scope.saveDelivery = function () {
-            if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id)) {
+            if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id) || !isTimeLimitationValid()) {
                 createToast('Please fill in required field!', 'danger');
             } else {
                 showLoadingModal(true);
@@ -185,6 +194,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             node.contact_person_id = $scope.contact.id;
             node.delivery_date = $scope.selectedReleaseOrder.deliveryDate;
             node.track = $scope.track;
+            node.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
 
             return DeliveryNodeService.update(node)
 
@@ -200,7 +210,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 distribution_plan: $scope.delivery.id,
                 tree_position: 'IMPLEMENTING_PARTNER',
                 item: releaseOrderItem,
-                quantity: parseInt(releaseOrderItem.quantity)
+                quantity: parseInt(releaseOrderItem.quantity),
+                time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null
             };
 
             return DeliveryNodeService.create(node)

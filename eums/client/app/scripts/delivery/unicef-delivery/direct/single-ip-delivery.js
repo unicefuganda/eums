@@ -142,7 +142,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         }
 
         function isTimeLimitationValid() {
-            $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution;
+
+            $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution === 0 ? false : true;
             return $scope.valid_time_limitation;
         }
 
