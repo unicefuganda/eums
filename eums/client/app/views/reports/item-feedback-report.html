@@ -65,10 +65,10 @@
                     <th class="align-left"><span class="padded-multi-line-5">LAST RECIPIENT</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">DISTRIBUTION STAGE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
+                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY SHIPPED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">VALUE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">DATE RECEIVED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY SHIPPED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUANTITY RECEIVED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
@@ -84,6 +84,7 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.tree_position }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>
 
                     <td>
@@ -94,7 +95,6 @@
                     <td><span
                             class="padded-multi-line-5">{{ !itemReport.answers.dateOfReceipt ? '': convertToDate(itemReport.answers.dateOfReceipt) | date : 'dd-MMM-yyyy'}}</span>
                     </td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
                     <td>
                         <span ng-if="itemReport.answers.qualityOfProduct == 'Good'"
