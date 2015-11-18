@@ -60,7 +60,7 @@ describe('Item Feedback Report', function () {
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
 
-        itemFeedbackReport.searchByRecipientType('MIDDLE_MAN');
+        itemFeedbackReport.searchByRecipientType('Sub-consignee');
         expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
         expect(itemFeedbackReport.resultsCount).toEqual(3);
     });
