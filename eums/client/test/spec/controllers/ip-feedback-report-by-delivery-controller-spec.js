@@ -89,12 +89,12 @@ describe('IpFeedbackReportController', function () {
             scope.$apply();
 
             var searchTerm = 'something';
-            scope.searchTerm = {query: searchTerm};
+            scope.searchTerm = {poWaybill: searchTerm};
             scope.$apply();
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({query: searchTerm}, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({poWaybill: searchTerm}, 1);
         });
 
         it('should call endpoint when searchTerm programme_id changes', function () {
@@ -105,7 +105,6 @@ describe('IpFeedbackReportController', function () {
             scope.searchTerm = {programme_id: programme_id};
             scope.$apply();
 
-            timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
             expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({programme_id: programme_id}, 1);
         });

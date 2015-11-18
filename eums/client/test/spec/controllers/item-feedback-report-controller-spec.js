@@ -77,7 +77,6 @@ describe('ItemFeedbackReportController', function () {
             scope.searchTerm = searchTerm;
             scope.$apply();
 
-            timeout.flush();
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
             expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith(searchTerm, 1);
         });

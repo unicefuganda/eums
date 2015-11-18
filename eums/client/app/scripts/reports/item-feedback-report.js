@@ -21,7 +21,12 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 if (timer) {
                     $timeout.cancel(timer);
                 }
-                startTimer();
+
+                if ($scope.searchTerm.itemDescription || $scope.searchTerm.poWaybill) {
+                    startTimer();
+                } else {
+                    loadItemFeedbackReport($scope.searchTerm);
+                }
             }
         });
 
@@ -38,7 +43,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             $scope.pagination.page = 1;
             timer = $timeout(function () {
                 loadItemFeedbackReport($scope.searchTerm)
-            }, 1000);
+            }, 2000);
         }
 
         function appendLocationFilter(filterParams) {
