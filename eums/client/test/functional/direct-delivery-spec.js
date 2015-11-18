@@ -41,7 +41,6 @@ describe('Direct Delivery', function () {
 
         directDeliveryPage.selectPurchaseOrderByNumber(PURCHASE_ORDER_NUMBER1);
         directDeliveryPage.selectItem('How Business Affects Us');
-        expect(directDeliveryPage.timeLimitationOnDistribution).toContain(10);
     });
 
     it('Admin should be able to create a direct delivery to a single IP', function () {
