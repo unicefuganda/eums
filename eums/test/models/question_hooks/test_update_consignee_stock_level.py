@@ -86,9 +86,3 @@ class UpdateConsigneeStockLevelTestWithoutAnsweringItemReceivedQuestion(TestCase
     def test_should_throw_an_error_when_amount_received_question_is_answered_before_the_item_received_question(self):
         create_answer = lambda: NumericAnswerFactory(question=self.amount_received, value=100, run=self.run)
         self.assertRaises(AssertionError, create_answer)
-
-    def tearDown(self):
-        Item.objects.all().delete()
-        Flow.objects.all().delete()
-        ConsigneeItem.objects.all().delete()
-        NumericAnswer.objects.all().delete()
