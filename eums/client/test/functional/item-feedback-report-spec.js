@@ -71,7 +71,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
 
         itemFeedbackReport.searchByReceived('No');
-        expect(itemFeedbackReport.received).toNotContain('Yes');
+        expect(itemFeedbackReport.received).not.toContain('Yes');
         expect(itemFeedbackReport.resultsCount).toEqual(1);
     });
 
@@ -81,8 +81,8 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
 
         itemFeedbackReport.searchBySatisfied('Yes');
-        expect(itemFeedbackReport.satisfied).toNotContain('No');
-        expect(itemFeedbackReport.resultsCount).toEqual(4);
+        expect(itemFeedbackReport.satisfied).not.toContain('No');
+        expect(itemFeedbackReport.resultsCount).toEqual(10);
     });
 
     it('should search the Item report by quality of product', function () {
@@ -91,7 +91,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
 
         itemFeedbackReport.searchByQuality('DAMAGED');
-        expect(itemFeedbackReport.quality).toNotContain('GOOD');
-        expect(itemFeedbackReport.resultsCount).toEqual(1);
+        expect(itemFeedbackReport.quality).not.toContain('GOOD');
+        expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 });

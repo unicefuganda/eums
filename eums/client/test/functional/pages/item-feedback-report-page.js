@@ -40,20 +40,19 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
 
     searchByReceived: {
         value: function (received) {
-            functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-received-container', received);
+            element(by.model('searchTerm.received')).sendKeys(received);
         }
     },
     searchBySatisfied: {
         value: function (satisfied) {
-            functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-satisfied-container', satisfied);
+            element(by.model('searchTerm.satisfied')).sendKeys(satisfied);
+
         }
     },
     searchByQuality: {
         value: function (quality) {
-            functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-quality-container', quality);
+            element(by.model('searchTerm.quality')).sendKeys(quality);
+
         }
     },
 
