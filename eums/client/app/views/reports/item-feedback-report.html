@@ -7,51 +7,108 @@
 <div class="container-fluid">
     <div class="content">
         <div class="row">
-            <div class="row margin-right-20 margin-top-20">
-                <div class="col-xs-8 pull-right pad-left-0 pad-bottom-5">
-                    <label class="blue-unicef">Filter Report By:</label>
+            <div class="form-group margin-right-20 margin-top-20">
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Item Description:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small">
+                        <div class="inner-addon right-addon">
+                            <i class="glyphicon "
+                               ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                            <input type="text" id="filter-item-description" class="form-control" name="filter"
+                                   ng-model="searchTerm.itemDescription"
+                                   placeholder="Item Description"/>
+                        </div>
+                    </div>
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Recipient Type:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small " id="filter-recipient-type-container">
+                        <select id="filter-recipient" class="form-control" ng-model="searchTerm.treePosition"
+                                value="{{ item.recipient }}">
+                            <option value="" selected>Recipient Type</option>
+                            <option value="IMPLEMENTING_PARTNER">IP</option>
+                            <option value="MIDDLE_MAN">Sub-consignee</option>
+                            <option value="END_USER">End-user</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">IP:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-ip-container">
+                        <input id="filter-by-ip" type="hidden" select-i-p ng-model="searchTerm.ipId"
+                               value="{{ item.consignee.id }}">
+                    </div>
+
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Received:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-received-container">
+                        <select id="filter-received" class="form-control" ng-model="searchTerm.received">
+                            <option value="" selected>Received</option>
+                            <option ng-repeat="option in receiveOptions"
+                                    value="{{ option.text }}">{{ option.text }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Outcome:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-programme-container">
+                        <input id="filter-programme" type="hidden" search-programmes ng-model="searchTerm.programmeId"
+                               value="{{ item.programme.id }}">
+                    </div>
+
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Satisfied:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-satisfied-container">
+                        <select id="filter-satisfied" class="form-control" ng-model="searchTerm.satisfied">
+                            <option value="" selected>Satisfied</option>
+                            <option ng-repeat="option in satisfiedOptions"
+                                    value="{{ option.text }}">{{ option.text }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">PO or Waybill:</label>
+                    </div>
+
+                    <div class="col-xs-3 margin-bottom-20 pad-small">
+                        <div class="inner-addon right-addon">
+                            <i class="glyphicon "
+                               ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                            <input type="text" id="filter-po-waybill" class="form-control" name="filter"
+                                   ng-model="searchTerm.poWaybill"
+                                   placeholder="PO or Waybill"/>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Quality:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-quality-container">
+                        <select id="filter-quality" class="form-control" ng-model="searchTerm.quality">
+                            <option value="" selected>Quality</option>
+                            <option ng-repeat="option in qualityOptions"
+                                    value="{{ option.text }}">{{ option.text }}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="row margin-right-20">
                 <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">Feedback Report from
                     Deliveries to
                     <span class="blue-unicef bold">{{ district }}</span></div>
-                <div class="col-xs-1 margin-bottom-20 pad-small pull-right">
-                    <div class="inner-addon right-addon">
-                        <i class="glyphicon "
-                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                        <input type="text" id="filter-po-waybill" class="form-control" name="filter"
-                               ng-model="searchTerm.poWaybill"
-                               placeholder="PO or Waybill"/>
-                    </div>
-                </div>
-                <div class="col-xs-1 margin-bottom-20 pad-small pull-right" id="filter-recipient-type-container">
-                    <select id="filter-recipient" class="form-control" ng-model="searchTerm.treePosition"
-                            value="{{ item.recipient }}">
-                        <option value="" selected>Recipient Type</option>
-                        <option value="IMPLEMENTING_PARTNER">IP</option>
-                        <option value="MIDDLE_MAN">Sub-consignee</option>
-                        <option value="END_USER">End-user</option>
-                    </select>
-                </div>
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-ip-container">
-                    <input id="filter-by-ip" type="hidden" select-i-p ng-model="searchTerm.ipId"
-                           value="{{ item.consignee.id }}">
-                </div>
 
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-programme-container">
-                    <input id="filter-programme" type="hidden" search-programmes ng-model="searchTerm.programmeId"
-                           value="{{ item.programme.id }}">
-                </div>
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right">
-                    <div class="inner-addon right-addon">
-                        <i class="glyphicon "
-                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                        <input type="text" id="filter-po-waybill" class="form-control" name="filter"
-                               ng-model="searchTerm.itemDescription"
-                               placeholder="Item Description"/>
-                    </div>
-                </div>
+
             </div>
         </div>
 
@@ -82,7 +139,8 @@
                     <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.implementing_partner }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.tree_position | treePositionFilter}}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.tree_position | treePositionFilter }}</span>
+                    </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.order_number }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.quantity_shipped }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.value | currency }}</span></td>

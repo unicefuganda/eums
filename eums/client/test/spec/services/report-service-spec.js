@@ -125,4 +125,22 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
+    it('should get item feedback with filters received, quality and satisfied', function () {
+        var fakeReport = {results: [{id: 2}]};
+        var url = '/api/item-feedback-report?page=2&received=Yes&quality=damaged&satisfied=No';
+
+        mockBackend.whenGET(url).respond(200, fakeReport);
+        mockBackend.expectGET(url);
+
+        var params = {
+            received: 'Yes',
+            quality: 'damaged',
+            satisfied: 'No'
+        };
+        reportService.itemFeedbackReport(params, 2).then(function (response) {
+            expect(response).toEqual(fakeReport);
+        });
+        mockBackend.flush();
+    });
+
 });

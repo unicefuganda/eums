@@ -48,7 +48,7 @@ def filter_answers(nodes, request, param_name, question_labels):
     param = request.GET.get(param_name)
     if param:
         runs_quality = MultipleChoiceAnswer.objects.filter(question__label__in=question_labels,
-                                                           value__text=param,
+                                                           value__text__iexact=param,
                                                            run__runnable__in=nodes).values_list('run_id')
         nodes = nodes.filter(run__in=runs_quality)
     return nodes

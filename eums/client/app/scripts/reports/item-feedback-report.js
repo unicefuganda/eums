@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option'])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService) {
+                                                          ReportService, LoaderService, ErrorMessageService, OptionService) {
         var timer;
         $scope.searchTerm = {};
         $scope.directiveValues = {};
@@ -12,7 +12,24 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
 
         var initializing = true;
 
-        $scope.$watchCollection('searchTerm', function () {
+        OptionService.receivedOptions().then(function (receiveOptions) {
+            $scope.receiveOptions = _.uniq(receiveOptions, function (option) {
+                return option.text;
+            });
+        });
+        OptionService.satisfiedOptions().then(function (satisfiedOptions) {
+            $scope.satisfiedOptions = _.uniq(satisfiedOptions, function (option) {
+                return option.text;
+            });
+        });
+        OptionService.qualityOptions().then(function (qualityOptions) {
+            $scope.qualityOptions = _.uniq(qualityOptions, function (option) {
+                return option.text;
+            });
+        });
+
+
+        $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             if (initializing) {
                 loadItemFeedbackReport();
                 initializing = false;
@@ -22,7 +39,8 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                     $timeout.cancel(timer);
                 }
 
-                if ($scope.searchTerm.itemDescription || $scope.searchTerm.poWaybill) {
+                if (oldSearchTerm.itemDescription != newSearchTerm.itemDescription
+                    || oldSearchTerm.poWaybill != newSearchTerm.poWaybill) {
                     startTimer();
                 } else {
                     loadItemFeedbackReport($scope.searchTerm);

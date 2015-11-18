@@ -38,6 +38,25 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
         }
     },
 
+    searchByReceived: {
+        value: function (received) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-received-container', received);
+        }
+    },
+    searchBySatisfied: {
+        value: function (satisfied) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-satisfied-container', satisfied);
+        }
+    },
+    searchByQuality: {
+        value: function (quality) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-quality-container', quality);
+        }
+    },
+
     districtHeader: {
         get: function () {
             return element(by.id('feedback-district-header'));
@@ -112,7 +131,23 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
         get: function () {
             return element.all(by.repeater('($index, itemReport) in report').column('itemReport.tree_position')).getText();
         }
+    },
+    received: {
+        get: function () {
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.productReceived')).getText();
+        }
+    },
+    satisfied: {
+        get: function () {
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.satisfiedWithProduct')).getText();
+        }
+    },
+    quality: {
+        get: function () {
+            return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.qualityOfProduct')).getText();
+        }
     }
+
 });
 
 module.exports = new ItemFeedbackReportPage;

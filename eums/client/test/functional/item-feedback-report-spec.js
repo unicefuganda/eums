@@ -5,7 +5,7 @@ var loginPage = require('./pages/login-page.js');
 
 describe('Item Feedback Report', function () {
 
-    it('should show the Item Feedback report', function() {
+    it('should show the Item Feedback report', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
@@ -25,7 +25,7 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.satisfiedWithProduct).toContain('glyphicon glyphicon-size-17 glyphicon-top-5 glyphicon-remove-sign eums-text-color-no');
     });
 
-    it('should search the Item report by item description', function() {
+    it('should search the Item report by item description', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
@@ -35,7 +35,7 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 
-    it('should search the Item report by programme', function() {
+    it('should search the Item report by programme', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
@@ -45,7 +45,7 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 
-    it('should search the Item report by Order Number', function() {
+    it('should search the Item report by Order Number', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
@@ -55,7 +55,7 @@ describe('Item Feedback Report', function () {
         expect(itemFeedbackReport.resultsCount).toBeGreaterThan(6);
     });
 
-    it('should search the Item report by recipient type', function() {
+    it('should search the Item report by recipient type', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
@@ -63,5 +63,35 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.searchByRecipientType('Sub-consignee');
         expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
         expect(itemFeedbackReport.resultsCount).toEqual(3);
+    });
+
+    it('should search the Item report by product received', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        itemFeedbackReport.visit();
+
+        itemFeedbackReport.searchByReceived('No');
+        expect(itemFeedbackReport.received).toNotContain('Yes');
+        expect(itemFeedbackReport.resultsCount).toEqual(1);
+    });
+
+    it('should search the Item report by satisfied With Product', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        itemFeedbackReport.visit();
+
+        itemFeedbackReport.searchBySatisfied('Yes');
+        expect(itemFeedbackReport.satisfied).toNotContain('No');
+        expect(itemFeedbackReport.resultsCount).toEqual(4);
+    });
+
+    it('should search the Item report by quality of product', function () {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+        itemFeedbackReport.visit();
+
+        itemFeedbackReport.searchByQuality('DAMAGED');
+        expect(itemFeedbackReport.quality).toNotContain('GOOD');
+        expect(itemFeedbackReport.resultsCount).toEqual(1);
     });
 });

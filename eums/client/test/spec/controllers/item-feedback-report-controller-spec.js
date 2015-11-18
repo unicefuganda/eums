@@ -1,11 +1,12 @@
 describe('ItemFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController, mockOptionService;
 
     beforeEach(function () {
         module('ItemFeedbackReport');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
+        mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'satisfiedOptions', 'qualityOptions']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -14,6 +15,9 @@ describe('ItemFeedbackReportController', function () {
             timeout = $timeout;
 
             mockReportService.itemFeedbackReport.and.returnValue(deferredResult.promise);
+            mockOptionService.receivedOptions.and.returnValue(deferredResult.promise);
+            mockOptionService.satisfiedOptions.and.returnValue(deferredResult.promise);
+            mockOptionService.qualityOptions.and.returnValue(deferredResult.promise);
 
             initController = function (route) {
                 $controller('ItemFeedbackReportController', {
@@ -21,7 +25,8 @@ describe('ItemFeedbackReportController', function () {
                     $location: location,
                     ReportService: mockReportService,
                     LoaderService: mockLoader,
-                    $routeParams: route
+                    $routeParams: route,
+                    OptionService: mockOptionService
                 });
             };
             initController({});
@@ -65,6 +70,30 @@ describe('ItemFeedbackReportController', function () {
             expect(scope.district).toEqual('All Districts');
             initController({district: 'Fort Portal'});
             expect(scope.district).toEqual('Fort Portal');
+        });
+
+        it('should load received options', function () {
+            deferredResult.resolve([{'text': 'Yes'}, {'text': 'No'}, {'text': 'Yes'}]);
+
+            scope.$apply();
+            expect(mockOptionService.receivedOptions).toHaveBeenCalled();
+            expect(scope.receiveOptions).toEqual([{'text': 'Yes'}, {'text': 'No'}]);
+        });
+
+        it('should load satisfied options', function () {
+            deferredResult.resolve([{'text': 'Yes'}, {'text': 'No'}, {'text': 'No'}]);
+
+            scope.$apply();
+            expect(mockOptionService.satisfiedOptions).toHaveBeenCalled();
+            expect(scope.satisfiedOptions).toEqual([{'text': 'Yes'}, {'text': 'No'}]);
+        });
+
+        it('should load quality options', function () {
+            deferredResult.resolve([{'text': 'Good'}, {'text': 'Damaged'}, {'text': 'Good'}]);
+
+            scope.$apply();
+            expect(mockOptionService.qualityOptions).toHaveBeenCalled();
+            expect(scope.qualityOptions).toEqual([{'text': 'Good'}, {'text': 'Damaged'}]);
         });
     });
 

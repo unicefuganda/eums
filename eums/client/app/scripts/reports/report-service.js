@@ -20,7 +20,10 @@ angular.module('ReportService', ['eums.config'])
                 location: params.location,
                 page: pageNo,
                 ip_id: params.ipId,
-                tree_position: params.treePosition
+                tree_position: params.treePosition,
+                received: params.received,
+                quality: params.quality,
+                satisfied: params.satisfied
             } : {};
 
             var search = {};
