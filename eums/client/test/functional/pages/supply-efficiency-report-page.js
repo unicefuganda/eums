@@ -25,7 +25,7 @@ StockReportPage.prototype = Object.create({}, {
 
     deliveryDates: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.delivery.delivery_date')).getText(); }},
     ipNames: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.ip.name')).getText(); }},
-    districts: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.location')).getText(); }},
+    districts: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.delivery.location')).getText(); }},
     itemDescriptions: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.order_item.item.description')).getText(); }},
     materialCodes: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.order_item.item.material_code')).getText(); }},
     programmeNames: { get: function () { return element.all(by.repeater('bucket in report').column('bucket.identifier.programme.name')).getText(); }},
@@ -44,7 +44,7 @@ StockReportPage.prototype = Object.create({}, {
 });
 
 function fillSelect2Chosen(id, input) {
-    element(by.id(id)).click();
+    element(by.css('#' + id + ' .select2-chosen' )).click();
     element(by.css('.select2-input.select2-focused')).clear().sendKeys(input);
     element(by.css('.select2-results li')).click();
 }

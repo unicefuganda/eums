@@ -4,7 +4,7 @@ var supplyEfficiencyReportPage = require('./pages/supply-efficiency-report-page.
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-fdescribe('Supply Efficiency Report', function () {
+describe('Supply Efficiency Report', function () {
 
     beforeEach(function () {
         loginPage.visit();
@@ -70,47 +70,46 @@ fdescribe('Supply Efficiency Report', function () {
             expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
         });
 
-        //fdescribe('On filter by outcome and/or Item', function () {
-        //
-        //    it('should show records filtered by outcome', function () {
-        //        supplyEfficiencyReportPage.input('outcome', 'sample programme');
-        //
-        //        expect(supplyEfficiencyReportPage.reportsCount).toEqual(2);
-        //
-        //        expect(supplyEfficiencyReportPage.deliveryDates.get(0).getText()).toEqual('11-Jul-2015');
-        //        expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('KAABONG DHO');
-        //        expect(supplyEfficiencyReportPage.districts.get(0).getText()).toEqual('Bukomansimbi');
-        //        expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('151');
-        //        expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('151');
-        //        expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');
-        //        expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('144');
-        //        expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('151');
-        //        expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('0');
-        //    });
-        //
-        //    it('should show records filtered by both outcome and item', function () {
-        //        supplyEfficiencyReportPage.input('item', 'Safety box f.used syrgs/ndls 5lt/BOX-25');
-        //        browser.sleep(6000);
-        //
-        //        expect(supplyEfficiencyReportPage.reportsCount).toEqual(1);
-        //
-        //        expect(supplyEfficiencyReportPage.deliveryDates.get(0).getText()).toEqual('11-Jul-2015');
-        //        expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('WAKISO DHO');
-        //        expect(supplyEfficiencyReportPage.districts.get(0).getText()).toEqual('Bukomansimbi');
-        //        expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('50');
-        //        expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
-        //        expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('144');
-        //    });
-        //});
+        describe('On filter by outcome and/or Item', function () {
+
+            it('should show records filtered by outcome', function () {
+                supplyEfficiencyReportPage.filterBy('outcome', 'YI107 - PCR 3 KEEP CHILDREN SAFE');
+
+                expect(supplyEfficiencyReportPage.reportsCount).toEqual(2);
+
+                expect(supplyEfficiencyReportPage.deliveryDates.get(1).getText()).toEqual('11-Jul-2015');
+                expect(supplyEfficiencyReportPage.ipNames.get(1).getText()).toEqual('WAKISO DHO');
+                expect(supplyEfficiencyReportPage.districts.get(1).getText()).toEqual('Bukomansimbi');
+                expect(supplyEfficiencyReportPage.unicefValues.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipReceivedValues.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipConfirmed.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipReceivedDelays.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipDistributedValues.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipDistributedBalance.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.endUserValueReceived.get(1).getText()).toEqual('62');
+                expect(supplyEfficiencyReportPage.endUserConfirmed.get(1).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.endUserDelayed.get(1).getText()).toEqual('144');
+            });
+
+            it('should show records filtered by both outcome and item', function () {
+                supplyEfficiencyReportPage.filterBy('item', 'Safety box f.used syrgs/ndls 5lt/BOX-25');
+
+                expect(supplyEfficiencyReportPage.reportsCount).toEqual(1);
+
+                expect(supplyEfficiencyReportPage.deliveryDates.get(0).getText()).toEqual('11-Jul-2015');
+                expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('WAKISO DHO');
+                expect(supplyEfficiencyReportPage.districts.get(0).getText()).toEqual('Bukomansimbi');
+                expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipReceivedDelays.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipDistributedValues.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('12');
+                expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
+                expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('144');
+            });
+        });
 
     });
 
@@ -374,7 +373,7 @@ fdescribe('Supply Efficiency Report', function () {
             });
 
             it('should show district details in rows', function () {
-                expect(supplyEfficiencyReportPage.districts.get(0).getText()).toEqual('Amuru');
+                expect(supplyEfficiencyReportPage.locations.get(0).getText()).toEqual('Amuru');
                 expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('72');
                 expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('72');
                 expect(supplyEfficiencyReportPage.ipConfirmed.get(0).getText()).toEqual('100');
