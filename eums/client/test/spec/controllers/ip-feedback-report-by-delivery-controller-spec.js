@@ -127,4 +127,41 @@ describe('IpFeedbackReportController', function () {
            expect(mockEumsErrorMessageService.showError).toHaveBeenCalled();
        });
     });
+
+    describe('on sorting', function () {
+        it('should sort by shipment date desc', function () {
+            scope.sortBy("shipmentDate");
+
+            expect(scope.sortOptions).toEqual({sortBy: 'shipmentDate', order: 'desc'});
+        });
+
+        it('should sort by shipment date asc', function () {
+            scope.sortBy("shipmentDate");
+            scope.sortBy("shipmentDate");
+
+            expect(scope.sortOptions).toEqual({sortBy: 'shipmentDate', order: 'asc'});
+
+        });
+
+        it('should sort by shipment date', function () {
+            scope.sortBy("shipmentDate");
+            scope.sortBy("shipmentDate");
+            scope.sortBy("shipmentDate");
+
+            expect(scope.sortOptions).toEqual({});
+        });
+
+        it('should sort when sort field changed', function () {
+            scope.sortBy("shipmentDate");
+            scope.sortBy("dateOfReceipt");
+
+            expect(scope.sortOptions).toEqual({sortBy: 'dateOfReceipt', order: 'desc'});
+        });
+
+        it('should not sort when field is not supported', function() {
+            scope.sortBy("notSupported");
+            expect(scope.sortOptions).toEqual({});
+        })
+
+    });
 });

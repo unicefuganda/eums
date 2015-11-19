@@ -3,17 +3,22 @@
 angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage'])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
                                                                   ErrorMessageService) {
-            var timer;
+            var timer,
+                ORDER = ['desc', 'asc', null],
+                INITIAL_ORDER = ORDER[0],
+                SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
+
 
             $scope.searchTerm = {};
             $scope.directiveValues = {};
             $scope.pagination = {page: 1};
+            $scope.sortOptions = {};
 
             var initializing = true;
 
             $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
-            $scope.$watchCollection('searchTerm', function () {
+            function refreshReport() {
                 if (initializing) {
                     loadIpFeedbackReportByDelivery();
                     initializing = false;
@@ -28,7 +33,31 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                         loadIpFeedbackReportByDelivery($scope.searchTerm);
                     }
                 }
+            }
+
+            $scope.$watchCollection('searchTerm', function () {
+                refreshReport();
             });
+
+            $scope.sortBy = function (sortField) {
+                if (SUPPORTED_FIELD.indexOf(sortField) === -1) {
+                    $scope.sortOptions = {};
+                    return;
+                }
+
+                if ($scope.sortOptions.sortBy === sortField) {
+                    var orderIndex = ORDER.indexOf($scope.sortOptions.order);
+                    $scope.sortOptions.order = ORDER[(orderIndex + 1) % ORDER.length];
+
+                } else {
+                    $scope.sortOptions.sortBy = sortField;
+                    $scope.sortOptions.order = INITIAL_ORDER;
+                }
+
+                if (!$scope.sortOptions.order) {
+                    $scope.sortOptions = {};
+                }
+            };
 
             function startTimer() {
                 timer = $timeout(function () {

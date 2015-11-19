@@ -67,6 +67,15 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
         get: function () {
             return byRepeater('value');
         }
+    },
+    sortBy: {
+        value: function(sort, order) {
+            var toBeSorted = element.all(by.css('.' + sort.replace(" ", "-"))).first();
+            toBeSorted.click();
+            if (order === 'asc') {
+                toBeSorted.click();
+            }
+        }
     }
 });
 

@@ -144,6 +144,10 @@ module.exports = function (grunt) {
             unit: {
                 configFile: 'test/karma.conf.js',
                 singleRun: true
+            },
+            watch: {
+                configFile: 'test/karma.conf.js',
+                singleRun: false
             }
         },
 
@@ -337,7 +341,7 @@ module.exports = function (grunt) {
         'clean:server',
         'connect:test',
         'ngconstant:dev',
-        'karma'
+        'karma:unit'
     ]);
 
     grunt.registerTask('watch', [
