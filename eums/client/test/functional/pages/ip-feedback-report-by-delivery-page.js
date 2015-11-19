@@ -23,16 +23,55 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
     },
 
     pageNumber: {
-        get: function() {
+        get: function () {
             return element(by.css('ul.pagination li.active')).getText();
         }
     },
 
-    districtHeader: { get: function () {
-        return element(by.id('feedback-district-header'));
-    }},
-    consignees: { get: function () { return element.all(by.repeater('($index, itemReport) in report').column('itemReport.consignee.name')).getText(); }},
-    resultsCount: {get: function () { return element.all(by.repeater('($index, itemReport) in report')).count()}}
+    districtHeader: {
+        get: function () {
+            return element(by.id('feedback-district-header'));
+        }
+    },
+    consignees: {
+        get: function () {
+            return byRepeater('consignee.name');
+        }
+    },
+    resultsCount: {
+        get: function () {
+            return element.all(by.repeater('($index, itemReport) in report')).count()
+        }
+    },
+    received: {
+        get: function () {
+            return byRepeater('deliveryReceived');
+        }
+    },
+    shipmentDate: {
+        get: function () {
+            return byRepeater('shipmentDate');
+        }
+    },
+    dateReceived: {
+        get: function () {
+            return byRepeater('dateOfReceipt');
+        }
+    },
+    outcome: {
+        get: function () {
+            return byRepeater('programme.name');
+        }
+    },
+    value: {
+        get: function () {
+            return byRepeater('value');
+        }
+    }
 });
 
 module.exports = new IpFeedbackReportByDeliveryPage;
+
+function byRepeater(column) {
+    return element.all(by.repeater('($index, itemReport) in report').column('itemReport.' + column)).first().getText();
+}
