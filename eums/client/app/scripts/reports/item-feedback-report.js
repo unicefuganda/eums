@@ -12,23 +12,6 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
 
         var initializing = true;
 
-        OptionService.receivedOptions().then(function (receiveOptions) {
-            $scope.receiveOptions = _.uniq(receiveOptions, function (option) {
-                return option.text;
-            });
-        });
-        OptionService.satisfiedOptions().then(function (satisfiedOptions) {
-            $scope.satisfiedOptions = _.uniq(satisfiedOptions, function (option) {
-                return option.text;
-            });
-        });
-        OptionService.qualityOptions().then(function (qualityOptions) {
-            $scope.qualityOptions = _.uniq(qualityOptions, function (option) {
-                return option.text;
-            });
-        });
-
-
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
             if (initializing) {
                 loadItemFeedbackReport();
@@ -91,7 +74,6 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             var remarksModalId = 'remarks-modal-' + index;
             LoaderService.showModal(remarksModalId)
         };
-
 
         function getAllResponsesByDate() {
             return DeliveryService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {

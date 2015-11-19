@@ -20,8 +20,8 @@ angular.module('Directives', ['eums.ip'])
             link: function (scope, element, attrs, ngModel) {
                 var list;
                 if (attrs.list == '$districts') {
-                    IPService.loadAllDistricts().then(function(response) {
-                        list = response.data.map(function(district) {
+                    IPService.loadAllDistricts().then(function (response) {
+                        list = response.data.map(function (district) {
                             return {id: district, name: district};
                         });
                     });
@@ -335,7 +335,7 @@ angular.module('Directives', ['eums.ip'])
             restrict: 'A',
             link: function (scope, element, attr, ngModelCtrl) {
                 function inputValue(val) {
-                    if (val !== null && val !== undefined) {
+                    if (val) {
                         var digits = val.toString().replace(/[^0-9]/g, '');
 
                         if (digits.toString() !== val.toString()) {
@@ -350,6 +350,116 @@ angular.module('Directives', ['eums.ip'])
                 ngModelCtrl.$parsers.push(inputValue);
             }
         };
+    })
+    .directive('selectReceiveOption', function (OptionService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                OptionService.receivedOptions().then(function (options) {
+                    return _.uniq(options, function (option) {
+                        return option.text;
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'Received',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    var option = $(elem).select2('data');
+                    var text = option ? option.text : "";
+                    ngModel.$setViewValue(text);
+                    scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectSatisfiedOption', function (OptionService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                OptionService.satisfiedOptions().then(function (options) {
+                    return _.uniq(options, function (option) {
+                        return option.text;
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'Satisfied',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    var option = $(elem).select2('data');
+                    var text = option ? option.text : "";
+                    ngModel.$setViewValue(text);
+                    scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectQualityOption', function (OptionService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                OptionService.qualityOptions().then(function (options) {
+                    return _.uniq(options, function (option) {
+                        return option.text;
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'Quality',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    var option = $(elem).select2('data');
+                    var text = option ? option.text : "";
+                    ngModel.$setViewValue(text);
+                    scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectRecipientType', function () {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                Promise.resolve([
+                    {id: 'IMPLEMENTING_PARTNER', text: 'IP'},
+                    {id: 'MIDDLE_MAN', text: 'Sub-consignee'},
+                    {id: 'END_USER', text: 'End-user'}])
+                    .then(function (treePositions) {
+                        return treePositions;
+                    }).then(function (data) {
+                        $(elem).select2({
+                            placeholder: 'Recipient Type',
+                            allowClear: true,
+                            data: data
+                        });
+                    });
+
+                elem.change(function () {
+                    var recipientType = $(elem).select2('data');
+                    var id = recipientType ? recipientType.id : "";
+                    ngModel.$setViewValue(id);
+                    scope.$apply();
+                });
+            }
+        }
     });
 
 

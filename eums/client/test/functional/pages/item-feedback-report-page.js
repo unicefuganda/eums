@@ -21,9 +21,9 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
         }
     },
     searchByProgramme: {
-        value: function (programme) {
+        value: function (searchTerm) {
             functionalTestUtils.wait(3000);
-            fillSelect2Chosen('filter-programme-container', programme);
+            fillSelect2Chosen('filter-programme-container', searchTerm);
         }
     },
     searchByWaybill: {
@@ -33,26 +33,28 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
     },
 
     searchByRecipientType: {
-        value: function (recipientType) {
-            element(by.model('searchTerm.treePosition')).sendKeys(recipientType);
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-recipient-type-container', searchTerm);
         }
     },
 
     searchByReceived: {
-        value: function (received) {
-            element(by.model('searchTerm.received')).sendKeys(received);
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-received-container', searchTerm);
         }
     },
     searchBySatisfied: {
-        value: function (satisfied) {
-            element(by.model('searchTerm.satisfied')).sendKeys(satisfied);
-
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-satisfied-container', searchTerm);
         }
     },
     searchByQuality: {
-        value: function (quality) {
-            element(by.model('searchTerm.quality')).sendKeys(quality);
-
+        value: function (searchTerm) {
+            functionalTestUtils.wait(3000);
+            fillSelect2Chosen('filter-quality-container', searchTerm);
         }
     },
 
