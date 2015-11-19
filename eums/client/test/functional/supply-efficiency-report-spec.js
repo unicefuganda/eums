@@ -88,7 +88,7 @@ describe('Supply Efficiency Report', function () {
                 expect(supplyEfficiencyReportPage.ipDistributedBalance.get(1).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserValueReceived.get(1).getText()).toEqual('62');
                 expect(supplyEfficiencyReportPage.endUserConfirmed.get(1).getText()).toEqual('0');
-                expect(supplyEfficiencyReportPage.endUserDelayed.get(1).getText()).toEqual('144');
+                expect(supplyEfficiencyReportPage.endUserDelayed.get(1).getText()).toEqual('1');
             });
 
             it('should show records filtered by both outcome and item', function () {
@@ -107,7 +107,7 @@ describe('Supply Efficiency Report', function () {
                 expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('12');
                 expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('0');
-                expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('144');
+                expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('-285');
             });
         });
 
@@ -266,7 +266,7 @@ describe('Supply Efficiency Report', function () {
             expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('242');
             expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('62');
             expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('25');
-            expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('144');
+            expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('1');
 
         });
 
@@ -330,7 +330,7 @@ describe('Supply Efficiency Report', function () {
             });
 
             it('should show records filtered by start date', function () {
-                expect(supplyEfficiencyReportPage.reportsCount).toEqual(12);
+                expect(supplyEfficiencyReportPage.reportsCount).toEqual(13);
                 expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('BUNDIBUGYO DHO');
                 expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('0');
@@ -382,7 +382,7 @@ describe('Supply Efficiency Report', function () {
                 expect(supplyEfficiencyReportPage.ipDistributedBalance.get(0).getText()).toEqual('72');
                 expect(supplyEfficiencyReportPage.endUserValueReceived.get(0).getText()).toEqual('12');
                 expect(supplyEfficiencyReportPage.endUserConfirmed.get(0).getText()).toEqual('16');
-                expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('144');
+                expect(supplyEfficiencyReportPage.endUserDelayed.get(0).getText()).toEqual('-285');
 
             });
         });

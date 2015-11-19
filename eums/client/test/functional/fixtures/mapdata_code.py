@@ -1,4 +1,5 @@
 from eums.client.test.functional.fixtures.mapdata_runs import *
+from eums.elasticsearch.sync_info import SyncInfo
 from eums.fixtures import web_questions, ip_questions, middle_man_questions
 from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.fixtures.ip_questions import seed_ip_questions
@@ -318,3 +319,5 @@ middle_man_run = RunFactory(runnable=mm_node, status=Run.STATUS.scheduled)
 MultipleChoiceAnswerFactory(run=middle_man_run, question=mm_question_1, value=mm_q1_option_1)
 TextAnswerFactory(run=middle_man_run, question=mm_question_2, value='2014-09-29')
 NumericAnswerFactory(run=middle_man_run, question=mm_question_3, value=7)
+
+SyncInfo.objects.all().delete()
