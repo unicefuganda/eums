@@ -10,6 +10,11 @@ angular.module('Delivery', ['eums.config', 'DeliveryNode', 'ngTable', 'siTable',
                 distributionplannode_set: DeliveryNodeService
             },
             methods: {
+                retriggerDelivery: function (deliveryId) {
+                    return $http({
+                        method: 'PATCH',
+                        url: EumsConfig.BACKEND_URLS.DISTRIBUTION_PLAN + deliveryId + '/retrigger_delivery/'});
+                },
                 aggregateStats: function (data, location) {
                     //TODO Remove. This should happen at the backend
                     return aggregateAllResponses(getResponseFor(data, location), location);

@@ -15,13 +15,16 @@ def schedule_run_for(runnable):
     if _should_schedule(runnable):
         _cancel_current_run(runnable)
         run_delay = _calculate_delay(runnable)
+        schedule_run_directly_for(runnable, run_delay)
 
-        if Run.has_scheduled_run(runnable.contact_person_id):
-            RunQueue.enqueue(runnable, run_delay)
-        elif settings.RAPIDPRO_LIVE:
-            task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
-            Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
-                               status=Run.STATUS.scheduled, phone=runnable.contact.phone)
+
+def schedule_run_directly_for(runnable, run_delay):
+    if Run.has_scheduled_run(runnable.contact_person_id):
+        RunQueue.enqueue(runnable, run_delay)
+    elif settings.RAPIDPRO_LIVE:
+        task = _schedule_run.apply_async(args=[runnable.id], countdown=run_delay)
+        Run.objects.create(scheduled_message_task_id=task.id, runnable=runnable,
+                           status=Run.STATUS.scheduled, phone=runnable.contact.phone)
 
 
 def _should_schedule(runnable):

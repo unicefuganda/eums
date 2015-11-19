@@ -1,6 +1,8 @@
 import datetime
 import json
 
+from mock import patch
+
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
     DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
@@ -443,6 +445,12 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn(first_delivery.id, ids)
         self.assertIn(second_delivery.id, ids)
+
+    def test_should_set_retriggered_flag_on_retrigger_delivery(self):
+        delivery = DeliveryFactory(is_retriggered=False)
+        response = self.client.patch('%s%d/%s/' % (ENDPOINT_URL, delivery.id, 'retrigger_delivery'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(DistributionPlan.objects.get(id=delivery.id).is_retriggered)
 
     def clean_up(self):
         DistributionPlan.objects.all().delete()

@@ -97,7 +97,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         };
 
         $scope.retriggerDelivery = function (runnable_id) {
-            DeliveryService.update({id: runnable_id, is_retriggered: true}, 'PATCH')
+            DeliveryService.retriggerDelivery(runnable_id)
                 .then(function () {
                     createToast('The delivery has been retriggered', 'success');
                     AlertsService.get('count').then(function (alertsCount) {

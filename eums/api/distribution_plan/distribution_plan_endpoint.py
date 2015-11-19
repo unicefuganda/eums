@@ -1,5 +1,3 @@
-from datetime import datetime
-from rest_framework import status
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.permissions import DjangoModelPermissions
@@ -8,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
 from eums.models import DistributionPlan, UserProfile
+from eums.services.flow_scheduler import schedule_run_directly_for
 
 
 class DistributionPlanSerialiser(serializers.ModelSerializer):
@@ -36,6 +35,14 @@ class DistributionPlanViewSet(ModelViewSet):
     def node_answers(self, request, *args, **kwargs):
         delivery = DistributionPlan.objects.get(pk=(kwargs['pk']))
         return Response(delivery.node_answers())
+
+    @detail_route(['PATCH', ])
+    def retrigger_delivery(self, request, *args, **kwargs):
+        delivery = DistributionPlan.objects.get(pk=(kwargs['pk']))
+        delivery.is_retriggered = True
+        delivery.save()
+        schedule_run_directly_for(delivery, 0)
+        return Response()
 
     def list(self, request, *args, **kwargs):
         logged_in_user = request.user

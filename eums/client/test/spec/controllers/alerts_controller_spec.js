@@ -101,7 +101,7 @@ describe('AlertsController', function () {
 
         mockAlertsService = jasmine.createSpyObj('mockAlertsService', ['all', 'update', 'get']);
         mockLoaderService = jasmine.createSpyObj('mockLoaderService', ['showLoader', 'hideLoader', 'showModal']);
-        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['update']);
+        mockDeliveryService = jasmine.createSpyObj('mockDeliveryService', ['retriggerDelivery']);
 
         inject(function ($controller, $rootScope, $q, ngToast) {
 
@@ -224,11 +224,11 @@ describe('AlertsController', function () {
         });
 
         it('should retrigger a manual flow when retrigger button is clicked and then create successful toast', function () {
-            mockDeliveryService.update.and.returnValue(q.when({'runnable_id': 10, 'is_retriggered': true}));
+            mockDeliveryService.retriggerDelivery.and.returnValue(q.when());
             scope.retriggerDelivery(10);
             scope.$apply();
 
-            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 10, is_retriggered: true}, 'PATCH');
+            expect(mockDeliveryService.retriggerDelivery).toHaveBeenCalledWith(10);
             expect(mockToast.create).toHaveBeenCalledWith({
                 content: 'The delivery has been retriggered',
                 class: 'success'
@@ -236,11 +236,11 @@ describe('AlertsController', function () {
         });
 
         it('should create fail toast upon failure to update the retrigger state', function () {
-            mockDeliveryService.update.and.returnValue(q.reject());
+            mockDeliveryService.retriggerDelivery.and.returnValue(q.reject());
             scope.retriggerDelivery(11);
             scope.$apply();
 
-            expect(mockDeliveryService.update).toHaveBeenCalledWith({id: 11, is_retriggered: true}, 'PATCH');
+            expect(mockDeliveryService.retriggerDelivery).toHaveBeenCalledWith(11);
             expect(mockToast.create).toHaveBeenCalledWith({content: 'Failed to retrigger alert', class: 'danger'});
         });
 
