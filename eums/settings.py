@@ -42,7 +42,7 @@ MIDDLEWARE_CLASSES = (
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'eums_test',
+        'NAME': 'eums',
         'USER': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432'
