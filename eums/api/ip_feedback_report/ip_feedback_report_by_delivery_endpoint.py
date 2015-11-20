@@ -57,6 +57,7 @@ def _build_delivery_answers(deliveries):
     delivery_answers = []
     for delivery in deliveries:
         answers = delivery.answers()
+
         delivery_answers.append({Question.LABEL.deliveryReceived: _value(Question.LABEL.deliveryReceived, answers),
                                  'shipmentDate': delivery.delivery_date,
                                  Question.LABEL.dateOfReceipt: _value(Question.LABEL.dateOfReceipt, answers),
@@ -99,7 +100,7 @@ def _get_filtered_deliveries(request, ip=None):
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_way_bill)
         nodes = nodes.filter(Q(item=purchase_order_item) |
-                            Q(item=release_order_item))
+                             Q(item=release_order_item))
     delivery_ids = nodes.values_list('distribution_plan', flat=True)
     deliveries = DistributionPlan.objects.filter(id__in=delivery_ids)
     if ip:
@@ -116,7 +117,8 @@ def _query_args(request):
 
 
 def _filter_fields(params):
-    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id', 'location': 'location__iexact'}
+    query_fields = {'programme_id': 'programme_id', 'consignee_id': 'distribution_plan__consignee_id',
+                    'location': 'location__iexact'}
     search_params = {}
     for key, value in params.iteritems():
         query_field = query_fields.get(key)

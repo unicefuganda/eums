@@ -7,11 +7,10 @@ from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
-
 from eums.test.factories.consignee_factory import ConsigneeFactory
 
-class DeliveryRunMessageTest(TestCase):
 
+class DeliveryRunMessageTest(TestCase):
     def test_should_return_description_of_release_order_item_with_waybill_and_order_number(self):
         release_order = ReleaseOrderFactory(waybill=444555888)
         item = ReleaseOrderItemFactory(release_order=release_order)
@@ -62,4 +61,3 @@ class DeliveryRunMessageTest(TestCase):
         message = DeliveryRunMessage(child_node)
 
         self.assertEqual(message.sender_name(), "Arsenal Fan Club")
-

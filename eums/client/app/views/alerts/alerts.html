@@ -2,13 +2,25 @@
     <div class="eums page-header">Your Alerts</div>
     <div class="content">
         <ul class="nav nav-pills" style="margin-top: 1em;">
-            <li role="presentation" id="delivery-alerts-button" ng-class="{active : isActiveAlertType('delivery')}">
-                <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType('delivery')">Alerts by
+            <li role="presentation" id="delivery-alerts-button"
+                ng-class="{active : isActiveAlertType(constant_type_delivery)}">
+                <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType(constant_type_delivery)">Alerts
+                    by
                     Delivery</a>
             </li>
-            <li role="presentation" id="item-alerts-button" ng-class="{active :  isActiveAlertType('item')}" class="pad-left-10">
-                <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType('item')">Alerts by
+            <li role="presentation" id="item-alerts-button" ng-class="{active :  isActiveAlertType(constant_type_item)}"
+                class="pad-left-10">
+                <a class="btn btn-default blue-border-button btn-xs" ng-click="changeAlertType(constant_type_item)">Alerts
+                    by
                     Item</a>
+            </li>
+            <li role="presentation" id="distribution-alerts-button"
+                ng-class="{active :  isActiveAlertType(constant_type_distribution)}"
+                class="pad-left-10">
+                <a class="btn btn-default blue-border-button btn-xs"
+                   ng-click="changeAlertType(constant_type_distribution)">Alerts
+                    by
+                    Distribution</a>
             </li>
         </ul>
     </div>
@@ -24,24 +36,25 @@
         <table si-table class="table table-bordered table-hover table-striped">
             <thead ng-init="initialize()">
             <tr ng-show="alerts">
-                <th class="centered">STATUS</th>
+                <th class="centered" ng-hide="isActiveAlertType(constant_type_distribution)">STATUS</th>
                 <th class="centered">ALERT DATE</th>
                 <th class="centered">PO/WAYBILL</th>
                 <th class="centered">DATE SHIPPED</th>
-                <th class="centered" ng-hide="isActiveAlertType('delivery')">QTY</th>
+                <th class="centered" ng-if="isActiveAlertType(constant_type_distribution)">DATE RECEIVED</th>
+                <th class="centered" ng-if="isActiveAlertType(constant_type_item)">QTY</th>
                 <th class="centered">VALUE</th>
-                <th ng-hide="isActiveAlertType('delivery')">ITEM</th>
-                <th>REPORTED BY</th>
+                <th ng-if="isActiveAlertType(constant_type_item)">ITEM</th>
+                <th ng-hide="isActiveAlertType(constant_type_distribution)">REPORTED BY</th>
                 <th>IMPLEMENTING PARTNER</th>
                 <th>DISTRICT</th>
                 <th></th>
-                <th ng-show="isRetriggerColumnAvailable()"></th>
+                <th ng-show="isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)"></th>
             </tr>
             </thead>
 
             <tbody>
             <tr ng-repeat="($index, alert) in alerts | orderBy:['-isResolved', '-isRetriggered']">
-                <td>
+                <td ng-hide="isActiveAlertType(constant_type_distribution)">
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>
                 <td>
@@ -53,16 +66,19 @@
                 <td>
                     <span class="alerts-bolder">{{ alert.dateShipped | date: 'dd-MMM-yyyy' }}</span>
                 </td>
-                <td class="text-left pad-10" ng-hide="isActiveAlertType('delivery')">
+                <td ng-if="isActiveAlertType(constant_type_distribution)">
+                    <span class="alerts-bolder">{{ alert.dateReceived | date: 'dd-MMM-yyyy' }}</span>
+                </td>
+                <td class="text-left pad-10" ng-if="isActiveAlertType(constant_type_item)">
                     <span class="alerts-bolder">{{ alert.quantityDelivered }}</span>
                 </td>
                 <td>
                     <span class="alerts-bolder">{{ alert.totalValue | currency }}</span>
                 </td>
-                <td class="text-left pad-10" ng-hide="isActiveAlertType('delivery')">
+                <td class="text-left pad-10" ng-if="isActiveAlertType(constant_type_item)">
                     <span class="alerts-bolder">{{ alert.itemDescription }}</span>
                 </td>
-                <td class="text-left pad-10">
+                <td class="text-left pad-10" ng-hide="isActiveAlertType(constant_type_distribution)">
                     <span class="alerts-bolder">{{ alert.contactName }}</span>
                 </td>
                 <td class="text-left pad-10">
@@ -80,8 +96,8 @@
                     </button>
 
                     <a id="resolved-alert-link-{{$index}}"
-                            ng-if="alert.isResolved"
-                            ng-click="showRemark($index)">
+                       ng-if="alert.isResolved"
+                       ng-click="showRemark($index)">
                         View Resolution
                     </a>
 
@@ -158,7 +174,7 @@
                         </div>
                     </div>
                 </td>
-                <td ng-show="isRetriggerColumnAvailable()">
+                <td ng-show="isRetriggerColumnAvailable() && !isActiveAlertType(constant_type_distribution)">
                     <button class="btn btn-primary btn-sm retrigger-btn"
                             type="button"
                             ng-if="isRetriggerBtnAvailable(alert)"

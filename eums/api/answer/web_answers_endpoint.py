@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+
 from eums.models import Run, Flow, Runnable, RunQueue
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
@@ -19,8 +20,8 @@ def save_answers(request):
                              phone=runnable.contact.phone, scheduled_message_task_id='Web')
 
     flow = _get_flow(runnable)
-    rapidpro_formatted_answers = _process_answers(request['answers'], flow, run)
-    _create_alert(run.runnable, rapidpro_formatted_answers)
+    rapid_pro_formatted_answers = _process_answers(request['answers'], flow, run)
+    _create_alert(run.runnable, rapid_pro_formatted_answers)
     runnable.confirm()
     _dequeue_next_run_for(runnable)
 
@@ -35,7 +36,7 @@ def _dequeue_next_run_for(runnable):
 
 
 def _process_answers(raw_answers, flow, run):
-    rapidpro_formatted_answers = []
+    rapid_pro_formatted_answers = []
     for answer in raw_answers:
         question = flow.question_with(label=answer['question_label'])
         params = {'values': [u'[{"category": {"eng":"%s", "base": "%s"}, "label": "%s"}]' %
@@ -43,8 +44,8 @@ def _process_answers(raw_answers, flow, run):
                   'text': answer['value']}
         question.create_answer(params, run)
         params_values = ast.literal_eval(params['values'][0])
-        rapidpro_formatted_answers.append(params_values[0])
-    return rapidpro_formatted_answers
+        rapid_pro_formatted_answers.append(params_values[0])
+    return rapid_pro_formatted_answers
 
 
 def _create_alert(runnable, params):

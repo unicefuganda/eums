@@ -1,7 +1,6 @@
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-
 from eums.models import Option
 
 

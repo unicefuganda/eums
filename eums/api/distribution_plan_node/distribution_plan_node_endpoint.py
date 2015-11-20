@@ -4,7 +4,6 @@ from eums.api.standard_pagination import StandardResultsSetPagination
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
-
 from eums.models import DistributionPlanNode as DeliveryNode, UserProfile
 
 
@@ -22,7 +21,6 @@ class DistributionPlanNodeSerialiser(serializers.ModelSerializer):
                   'contact_person_id', 'item', 'delivery_date', 'remark', 'track', 'quantity', 'quantity_out',
                   'balance', 'has_children', 'consignee_name', 'item_description', 'order_number', 'order_type',
                   'time_limitation_on_distribution')
-
 
 
 class DistributionPlanNodeViewSet(ModelViewSet):

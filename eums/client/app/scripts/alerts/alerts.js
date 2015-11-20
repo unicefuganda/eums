@@ -11,10 +11,15 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
     })
     .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast, DeliveryService) {
 
+        $scope.constant_type_delivery = 'delivery'
+        $scope.constant_type_item = 'item'
+        $scope.constant_type_distribution = 'distribution'
+
         $scope.remarks = '';
-        $scope.type = 'delivery';
+        $scope.type = $scope.constant_type_delivery;
 
         loadInitialAlerts();
+
         function loadInitialAlerts() {
             LoaderService.showLoader();
             var urlArgs = {type: $scope.type, paginate: 'true', page: 1};

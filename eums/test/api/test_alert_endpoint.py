@@ -11,7 +11,6 @@ ENDPOINT_URL = BACKEND_URL + 'alert/'
 
 
 class AlertEndpointTest(AuthenticatedAPITestCase):
-
     def test_should_return_information_on_an_alert(self):
         AlertFactory(
             order_type=ReleaseOrderItem.WAYBILL,
@@ -79,7 +78,8 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
     def test_should_not_update_alert_when_remark_does_not_exist(self):
         alert = AlertFactory()
 
-        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id), data={'id': alert.id, 'alert_remarks': 'some remarks'})
+        response = self.client.patch('%s%s/' % (ENDPOINT_URL, alert.id),
+                                     data={'id': alert.id, 'alert_remarks': 'some remarks'})
         updated_alert = Alert.objects.get(pk=alert.id)
 
         self.assertEqual(response.status_code, 400)
@@ -106,27 +106,36 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(updated_alert.remarks, None)
         self.assertEqual(updated_alert.is_resolved, False)
 
-    def test_should_filter_alerts_by_runnable_type(self):
-        delivery_alert = AlertFactory(runnable=DeliveryFactory())
+    def test_should_filter_alerts_by_runnable_type_when_item(self):
         item_alert = AlertFactory(runnable=DeliveryNodeFactory())
-
-        item_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'item'))
-        item_alerts = item_alerts_response.data
-        item_alert_ids = [alert['id'] for alert in item_alerts]
-
-        delivery_alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, 'delivery'))
-        delivery_alerts = delivery_alerts_response.data
-        delivery_alert_ids = [alert['id'] for alert in delivery_alerts]
-
-        self.assertEqual(Alert.objects.count(), 2)
+        item_alert_ids, item_alerts = self.__respond_by_alert_type('item')
+        self.assertEqual(Alert.objects.count(), 1)
         self.assertEqual(len(item_alerts), 1)
-        self.assertEqual(len(delivery_alerts), 1)
         self.assertIn(item_alert.id, item_alert_ids)
+
+    def test_should_filter_alerts_by_runnable_type_when_delivery(self):
+        delivery_alert = AlertFactory(runnable=DeliveryFactory())
+        delivery_alert_ids, delivery_alerts = self.__respond_by_alert_type('delivery')
+        self.assertEqual(Alert.objects.count(), 1)
+        self.assertEqual(len(delivery_alerts), 1)
         self.assertIn(delivery_alert.id, delivery_alert_ids)
+
+    def test_should_filter_alerts_by_runnable_type_when_distribution(self):
+        distribution_alert = AlertFactory(issue=Alert.ISSUE_TYPES.distribution_expired,
+                                          runnable=DeliveryFactory(time_limitation_on_distribution=3))
+        distribution_alert_ids, distribution_alerts = self.__respond_by_alert_type('distribution')
+        self.assertEqual(Alert.objects.count(), 1)
+        self.assertEqual(len(distribution_alerts), 1)
+        self.assertIn(distribution_alert.id, distribution_alert_ids)
+
+    def __respond_by_alert_type(self, alert_type):
+        alerts_response = self.client.get('%s?type=%s' % (ENDPOINT_URL, alert_type))
+        alerts = alerts_response.data
+        alert_ids = [alert['id'] for alert in alerts]
+        return alert_ids, alerts
 
 
 class AlertCountEndpointTest(AuthenticatedAPITestCase):
-
     def test_should_show_alerts_count(self):
         AlertFactory(is_resolved=False)
         AlertFactory(is_resolved=True)

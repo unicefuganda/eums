@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import Alert, UserProfile, DistributionPlanNode, DistributionPlan
+from django.db.models import Q
 
 
 class AlertSerializer(serializers.ModelSerializer):
@@ -45,7 +46,12 @@ class AlertViewSet(ReadOnlyModelViewSet):
                 runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
         elif type == 'delivery':
             return Alert.objects.filter(
-                runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
+                Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
+                , ~Q(issue=Alert.ISSUE_TYPES.distribution_expired))
+        elif type == 'distribution':
+            return Alert.objects.filter(
+                Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
+                Q(issue=Alert.ISSUE_TYPES.distribution_expired))
         else:
             return self.queryset._clone()
 

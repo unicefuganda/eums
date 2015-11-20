@@ -2,14 +2,15 @@ import datetime
 from django.db import models
 from model_utils import Choices
 from model_utils.fields import StatusField
-from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, DistributionPlanNode
+from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, DistributionPlanNode, DistributionPlan, Question
 
 
 class Alert(models.Model):
     ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
     ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'),
                           ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'),
-                          ('incomplete', 'Incomplete'), ('not_satisfied', 'Not Satisfied'))
+                          ('incomplete', 'Incomplete'), ('not_satisfied', 'Not Satisfied'),
+                          ('distribution_expired', 'Distribution Expired'))
 
     order_type = StatusField(choices_name='ORDER_TYPES')
     order_number = models.IntegerField()
@@ -40,6 +41,9 @@ class Alert(models.Model):
 
     def date_shipped(self):
         return self.runnable.delivery_date
+
+    def date_received(self):
+        return DistributionPlan.objects.get(id=self.runnable.id).received_date()
 
     def runnable_id(self):
         return self.runnable.id

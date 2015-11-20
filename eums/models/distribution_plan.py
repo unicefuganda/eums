@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models import Q
-
 from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, TextAnswer, \
     MultipleChoiceQuestion, NumericAnswer, NumericQuestion, Run
 from eums.models import Runnable, DistributionPlanNode
@@ -63,8 +62,8 @@ class DistributionPlan(Runnable):
         delivery_nodes = DistributionPlanNode.objects.filter(distribution_plan=self)
         for node in delivery_nodes:
             node_answers = MultipleChoiceAnswer.objects.filter(Q(run__runnable__id=node.id),
-                                                         Q(question__label='itemReceived'),
-                                                         ~ Q(run__status='cancelled'))
+                                                               Q(question__label='itemReceived'),
+                                                               ~ Q(run__status='cancelled'))
             if not node_answers.exists():
                 return False
         return True
@@ -118,6 +117,10 @@ class DistributionPlan(Runnable):
 
         answers = text_answers + multiple_choice_answers + numeric_answers
         return sorted(answers, key=lambda field: field['position'])
+
+    def received_date(self):
+        return filter(lambda answer: answer['question_label'] == Question.LABEL.dateOfReceipt, self.answers())[0][
+            'value']
 
     def node_answers(self):
         node_answers = []

@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from eums.models.flow import Flow
 from eums.models import Runnable, Arc, Programme
 from eums.models.delivery_node_manager import DeliveryNodeManager
@@ -41,8 +42,21 @@ class DistributionPlanNode(Runnable):
 
         super(DistributionPlanNode, self).save(*args, **kwargs)
 
-        self._update_parent_balances(self.get_parents())
+        parents = self.get_parents()
+        self._update_parent_balances(parents)
         self._update_distribution_plan()
+        if len(parents) > 0:
+            self.distribution_expired_resolve_alert_if_exist(distribution_plan_id=parents[0].distribution_plan_id)
+
+    @staticmethod
+    def distribution_expired_resolve_alert_if_exist(distribution_plan_id, remarks='The IP has distributed!'):
+        from eums.models import Alert
+        alerts = Alert.objects.filter(Q(runnable_id=distribution_plan_id),
+                                      Q(issue=Alert.ISSUE_TYPES.distribution_expired))
+        for alert in alerts:
+            alert.remarks = remarks
+            alert.is_resolved = True
+            alert.save()
 
     def _update_distribution_plan(self):
         if self.is_root() and self.distribution_plan:

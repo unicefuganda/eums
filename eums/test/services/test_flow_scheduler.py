@@ -1,11 +1,9 @@
 from unittest import TestCase
 import datetime
-
 import celery
 from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
 from django.conf import settings
-
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -209,4 +207,3 @@ class FlowSchedulerTest(TestCase):
         mock_expire_overdue_runs()
 
         MockPeriodicTask.assert_called_with(crontab(minute=0, hour=0))
-
