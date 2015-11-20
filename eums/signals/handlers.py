@@ -21,7 +21,7 @@ def on_post_save_node(sender, **kwargs):
 def on_post_save_delivery(sender, **kwargs):
     delivery = kwargs['instance']
     _resolve_alert_if_possible(delivery)
-    if delivery.track and (not delivery.has_existing_run() or delivery.is_retriggered):
+    if delivery.track and (not delivery.has_existing_run()):
         schedule_run_for(delivery)
 
 def _resolve_alert_if_possible(delivery):
