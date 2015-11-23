@@ -1,12 +1,15 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage'])
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort'])
     .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService) {
+                                                   ErrorMessageService, SortService) {
+        var SUPPORTED_FIELD = ['last_shipment_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
+        $scope.sortOptions = {};
+
 
         function init() {
             loadDistricts();
@@ -35,6 +38,13 @@ angular.module('StockReport', [
             fetchReport({page: page});
         };
 
+        $scope.sortBy = function (sortField) {
+                if(SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                    $scope.sortOptions = SortService.sortBy(sortField);
+                    fetchReport()
+                }
+            };
+
         function fetchReport(params) {
             LoaderService.showLoader();
             var requestParams = {};
@@ -56,6 +66,7 @@ angular.module('StockReport', [
             if (params) {
                 Object.merge(requestParams, params);
             }
+            requestParams = angular.extend($scope.sortOptions, requestParams);
             StockReportService.getStockReport(requestParams).then(function (response) {
                 $scope.count = response.data.count;
                 $scope.pageSize = response.data.pageSize;
@@ -67,7 +78,7 @@ angular.module('StockReport', [
             }).finally(function () {
                 LoaderService.hideLoader();
             });
-        };
+        }
 
         $scope.hasEmptyDataResponse = function () {
             return ($scope.reportData != undefined && $scope.reportData.length === 0);
@@ -100,6 +111,18 @@ angular.module('StockReport', [
 
         $scope.toggleOpenDocument = function (documentId) {
             $scope.openDocument = $scope.openDocument === documentId ? undefined : documentId;
+        };
+
+        $scope.sortArrowClass = function (criteria) {
+            var output = '';
+            if ($scope.sortOptions.field === criteria) {
+                if($scope.sortOptions.order === 'desc') {
+                    output = 'active glyphicon glyphicon-arrow-down';
+                } else if ($scope.sortOptions.order === 'asc') {
+                output = 'active glyphicon glyphicon-arrow-up';
+                }
+            return output;
+            }
         };
 
         function formatDate(date) {

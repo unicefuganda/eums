@@ -134,10 +134,10 @@
                             <tr>
                                 <th class="col-lg-1 centered">PO / Waybill</th>
                                 <th class="col-lg-3 centered">Outcome</th>
-                                <th class="col-lg-3 centered">Last Shipment Date</th>
-                                <th class="col-lg-2 centered">Value Received</th>
-                                <th class="col-lg-2 centered">Value Dispensed</th>
-                                <th class="col-lg-1 centered">Balance</th>
+                                <th ng-click="sortBy('last_shipment_date')" class="col-lg-3 centered">Last Shipment Date<i ng-class="sortArrowClass('last_shipment_date')"></i></th>
+                                <th ng-click="sortBy('total_value_received')" class="col-lg-2 centered">Value Received<i ng-class="sortArrowClass('total_value_received')"></i></th>
+                                <th ng-click="sortBy('total_value_dispensed')" class="col-lg-2 centered">Value Dispensed<i ng-class="sortArrowClass('total_value_dispensed')"></i></th>
+                                <th ng-click="sortBy('balance')" class="col-lg-1 centered">Balance</th>
                             </tr>
                             </thead>
                             <tbody ng-repeat="reportItem in reportData">

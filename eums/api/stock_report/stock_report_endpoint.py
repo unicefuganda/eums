@@ -4,8 +4,10 @@ from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from eums.api.sorting.standard_dic_sort import StandardDicSort
 
 PAGE_SIZE = 10
+sort = StandardDicSort('last_shipment_date', 'total_value_received', 'total_value_dispensed', 'balance')
 
 
 class StockReport(APIView):
@@ -19,6 +21,7 @@ class StockReport(APIView):
         reduced_stock_report = _reduce_stock_report(stock_report)
         totals = _compute_totals(reduced_stock_report)
 
+        reduced_stock_report = sort.sort_by(request, reduced_stock_report)
         paginated_results = Paginator(reduced_stock_report, PAGE_SIZE)
 
         page_number = _get_page_number(request)
