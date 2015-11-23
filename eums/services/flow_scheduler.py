@@ -1,14 +1,14 @@
 from __future__ import absolute_import
 import datetime
-
 from celery.schedules import crontab
 from celery.task import periodic_task
 from django.conf import settings
-
+from django.db.models import Q
 from eums.celery import app
-from eums.models import Run, RunQueue, Runnable
+from eums.models import Run, RunQueue, Runnable, DistributionPlan, DistributionPlanNode
 from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.services.delivery_run_message import DeliveryRunMessage
+from eums.models.alert import Alert
 
 
 def schedule_run_for(runnable):
@@ -74,6 +74,36 @@ def expire_overdue_runs():
             next_run.update_status(RunQueue.STATUS.started)
 
 
+@periodic_task(run_every=crontab(minute=0, hour=0))
+def distribution_alert_raise():
+    distribution_plans = DistributionPlan.objects.all()
+    for distribution_plan in distribution_plans:
+        runnable = Runnable.objects.get(id=distribution_plan.runnable_ptr_id)
+        if __is_distribution_expired_alert_not_raised(runnable) and __is_shipment_received_but_not_distributed(
+                distribution_plan) and __is_distribution_expired(distribution_plan):
+            runnable.create_alert(Alert.ISSUE_TYPES.distribution_expired)
 
 
+def __is_distribution_expired_alert_not_raised(runnable):
+    return not Alert.objects.filter(Q(issue=Alert.ISSUE_TYPES.distribution_expired),
+                                    Q(runnable=runnable))
 
+
+def __is_shipment_received_but_not_distributed(distribution_plan):
+    runnable_id = distribution_plan.runnable_ptr_id
+    not_distributed = DistributionPlanNode.objects.filter(Q(distribution_plan_id=runnable_id) & (
+        Q(tree_position=Runnable.MIDDLE_MAN) | Q(tree_position=Runnable.END_USER))).count() == 0
+    return distribution_plan.shipment_received() and not_distributed
+
+
+def __is_distribution_expired(distribution_plan):
+    time_limitation = distribution_plan.time_limitation_on_distribution
+    date_received_str = distribution_plan.received_date()
+    if time_limitation and date_received_str:
+        today = datetime.date.today()
+        date_received_array = date_received_str.split('T')[0].split('-')
+        date_received = datetime.date(int(date_received_array[0]), int(date_received_array[1]),
+                                      int(date_received_array[2]))
+        if (today - date_received).days >= time_limitation:
+            return True
+    return False
