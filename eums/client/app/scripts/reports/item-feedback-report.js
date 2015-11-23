@@ -1,12 +1,14 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort'])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, OptionService) {
-        var timer;
+                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService) {
+        var timer,
+            SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         $scope.searchTerm = {};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
+        $scope.sortOptions = {};
 
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
@@ -31,6 +33,18 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             }
         });
 
+        $scope.sortArrowClass = function (criteria) {
+            var output = '';
+            if ($scope.sortOptions.field === criteria) {
+                if($scope.sortOptions.order === 'desc') {
+                    output = 'active glyphicon glyphicon-arrow-down';
+                } else if ($scope.sortOptions.order === 'asc') {
+                output = 'active glyphicon glyphicon-arrow-up';
+                }
+            return output;
+            }
+        };
+
         $scope.goToPage = function (page) {
             $scope.pagination.page = page;
             loadItemFeedbackReport($scope.searchTerm)
@@ -39,6 +53,13 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.convertToDate = function (dateString) {
             return Date.parse(dateString);
         };
+
+        $scope.sortBy = function (sortField) {
+                if(SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                    $scope.sortOptions = SortService.sortBy(sortField);
+                    loadItemFeedbackReport()
+                }
+            };
 
         function startTimer() {
             $scope.pagination.page = 1;
@@ -58,6 +79,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         function loadItemFeedbackReport(filterParams) {
             LoaderService.showLoader();
             var allFilter = appendLocationFilter(filterParams);
+            allFilter = angular.extend($scope.sortOptions, allFilter);
             ReportService.itemFeedbackReport(allFilter, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;

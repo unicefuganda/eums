@@ -109,11 +109,11 @@
                     <th class="align-left"><span class="padded-multi-line-5">LAST RECIPIENT</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">DISTRIBUTION STAGE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY SHIPPED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">VALUE</span></th>
+                    <th class="align-left"><span ng-click="sortBy('quantity_shipped')" class="padded-multi-line-5">QUANTITY SHIPPED<i ng-class="sortArrowClass('quantity_shipped')"></i></span></th>
+                    <th class="align-left"><span ng-click="sortBy('value')" class="padded-multi-line-5">VALUE<i ng-class="sortArrowClass('value')"></i></span></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">DATE RECEIVED</span></th>
-                    <th class="align-left"><span class="padded-multi-line-5">QUANTITY RECEIVED</span></th>
+                    <th class="align-left"><span ng-click="sortBy('dateOfReceipt')" class="padded-multi-line-5">DATE RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></span></th>
+                    <th class="align-left"><span ng-click="sortBy('amountReceived')" class="padded-multi-line-5">QUANTITY RECEIVED<i ng-class="sortArrowClass('amountReceived')"></i></span></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">REMARKS</span></th>

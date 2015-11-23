@@ -6,9 +6,10 @@ from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
 from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
     ReleaseOrderItem, Option, Run, MultipleChoiceAnswer
+from eums.api.sorting.standard_dic_sort import StandardDicSort
 
 PAGE_SIZE = 10
-
+sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived')
 
 @api_view(['GET', ])
 def item_feedback_report(request):
@@ -27,7 +28,7 @@ def item_feedback_report(request):
 
     if nodes:
         build_answers_for_nodes(nodes, response)
-
+    response = sort.sort_by(request, response)
     paginated_results = Paginator(response, PAGE_SIZE)
     page_number = get_page_number(request)
 
@@ -75,23 +76,28 @@ def _get_delivery_date(delivery_answers):
 def build_answers_for_nodes(nodes, response):
     for node in nodes:
         node_responses = node.responses()
-        answer_list = {}
-        for run, answers in node_responses.iteritems():
-            for answer in answers:
-                answer_list.update(
-                    {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
-        response.append({
-            'item_description': node.item.item.description,
-            'programme': node.programme.name,
-            'consignee': node.consignee.name,
-            'implementing_partner': node.ip.name,
-            'order_number': node.item.number(),
-            'quantity_shipped': node.quantity_in(),
-            'value': node.total_value,
-            'answers': answer_list,
-            'location': node.location,
-            'tree_position': node.tree_position
-        })
+        answer_list = _build_answer_list(node_responses)
+        delivery_node = {
+                        'item_description': node.item.item.description,
+                        'programme': node.programme.name,
+                        'consignee': node.consignee.name,
+                        'implementing_partner': node.ip.name,
+                        'order_number': node.item.number(),
+                        'quantity_shipped': node.quantity_in(),
+                        'value': node.total_value,
+                        'answers': answer_list,
+                        'location': node.location,
+                        'tree_position': node.tree_position}
+        delivery_node.update(answer_list)
+        response.append(delivery_node)
+
+def _build_answer_list(node_responses):
+     answer_list = {}
+     for run, answers in node_responses.iteritems():
+         for answer in answers:
+             answer_list.update(
+                 {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
+     return answer_list;
 
 
 def item_tracked_nodes(request, ip=None):
