@@ -132,14 +132,14 @@ describe('IpFeedbackReportController', function () {
         it('should sort by shipment date desc', function () {
             scope.sortBy("shipmentDate");
 
-            expect(scope.sortOptions).toEqual({sortBy: 'shipmentDate', order: 'desc'});
+            expect(scope.sortOptions).toEqual({field: 'shipmentDate', order: 'desc'});
         });
 
         it('should sort by shipment date asc', function () {
             scope.sortBy("shipmentDate");
             scope.sortBy("shipmentDate");
 
-            expect(scope.sortOptions).toEqual({sortBy: 'shipmentDate', order: 'asc'});
+            expect(scope.sortOptions).toEqual({field: 'shipmentDate', order: 'asc'});
 
         });
 
@@ -155,7 +155,7 @@ describe('IpFeedbackReportController', function () {
             scope.sortBy("shipmentDate");
             scope.sortBy("dateOfReceipt");
 
-            expect(scope.sortOptions).toEqual({sortBy: 'dateOfReceipt', order: 'desc'});
+            expect(scope.sortOptions).toEqual({field: 'dateOfReceipt', order: 'desc'});
         });
 
         it('should not sort when field is not supported', function() {
