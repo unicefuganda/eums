@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort'])
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow'])
     .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService, SortService) {
+                                                   ErrorMessageService, SortService, SortArrowService) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
@@ -114,15 +114,7 @@ angular.module('StockReport', [
         };
 
         $scope.sortArrowClass = function (criteria) {
-            var output = '';
-            if ($scope.sortOptions.field === criteria) {
-                if($scope.sortOptions.order === 'desc') {
-                    output = 'active glyphicon glyphicon-arrow-down';
-                } else if ($scope.sortOptions.order === 'asc') {
-                output = 'active glyphicon glyphicon-arrow-up';
-                }
-            return output;
-            }
+             return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
         };
 
         function formatDate(date) {

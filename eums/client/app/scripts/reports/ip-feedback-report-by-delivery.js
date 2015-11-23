@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort'])
+angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow'])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
-                                                                  ErrorMessageService, SortService) {
+                                                                  ErrorMessageService, SortService, SortArrowService) {
             var timer,
                 SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
 
@@ -45,16 +45,8 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             };
 
             $scope.sortArrowClass = function (criteria) {
-            var output = '';
-            if ($scope.sortOptions.field === criteria) {
-                if($scope.sortOptions.order === 'desc') {
-                    output = 'active glyphicon glyphicon-arrow-down';
-                } else if ($scope.sortOptions.order === 'asc') {
-                output = 'active glyphicon glyphicon-arrow-up';
-                }
-            return output;
-            }
-        };
+                return SortArrowService.setSortArrow(criteria, $scope.sortOptions)
+            };
 
             function startTimer() {
                 timer = $timeout(function () {

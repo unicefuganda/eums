@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow'])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService) {
+                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService, SortArrowService) {
         var timer,
             SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         $scope.searchTerm = {};
@@ -34,15 +34,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         });
 
         $scope.sortArrowClass = function (criteria) {
-            var output = '';
-            if ($scope.sortOptions.field === criteria) {
-                if($scope.sortOptions.order === 'desc') {
-                    output = 'active glyphicon glyphicon-arrow-down';
-                } else if ($scope.sortOptions.order === 'asc') {
-                output = 'active glyphicon glyphicon-arrow-up';
-                }
-            return output;
-            }
+            return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
         };
 
         $scope.goToPage = function (page) {
