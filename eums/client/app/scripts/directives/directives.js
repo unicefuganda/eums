@@ -358,8 +358,11 @@ angular.module('Directives', ['eums.ip'])
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {
                 OptionService.receivedOptions().then(function (options) {
-                    return _.uniq(options, function (option) {
+                    var originOptions = _.uniq(options, function (option) {
                         return option.text;
+                    });
+                    return _.reject(originOptions, function(option) {
+                        return option.text == 'UNCATEGORISED';
                     });
                 }).then(function (data) {
                     $(elem).select2({
@@ -385,8 +388,11 @@ angular.module('Directives', ['eums.ip'])
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {
                 OptionService.satisfiedOptions().then(function (options) {
-                    return _.uniq(options, function (option) {
+                    var originOptions = _.uniq(options, function (option) {
                         return option.text;
+                    });
+                    return _.reject(originOptions, function(option) {
+                        return option.text == 'UNCATEGORISED';
                     });
                 }).then(function (data) {
                     $(elem).select2({
@@ -412,8 +418,11 @@ angular.module('Directives', ['eums.ip'])
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {
                 OptionService.qualityOptions().then(function (options) {
-                    return _.uniq(options, function (option) {
+                    var originOptions = _.uniq(options, function (option) {
                         return option.text;
+                    });
+                    return _.reject(originOptions, function(option) {
+                        return option.text == 'UNCATEGORISED';
                     });
                 }).then(function (data) {
                     $(elem).select2({
