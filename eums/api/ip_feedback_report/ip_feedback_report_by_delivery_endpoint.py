@@ -6,8 +6,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
+from eums.api.sorting.standard_dic_sort import StandardDicSort
 
 PAGE_SIZE = 10
+sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
 
 
 @api_view(['GET'])
@@ -18,9 +20,8 @@ def ip_feedback_by_delivery_endpoint(request):
     if user_profile:
         ip = user_profile.consignee
     deliveries = _get_filtered_deliveries(request, ip)
-    results = _build_delivery_answers(deliveries)
+    results = sort.sort_by(request, _build_delivery_answers(deliveries))
     paginated_results = Paginator(results, PAGE_SIZE)
-
     page_number = _get_page_number(request)
     results_current_page = paginated_results.page(page_number)
 

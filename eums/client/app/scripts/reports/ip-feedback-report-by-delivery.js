@@ -1,11 +1,9 @@
 'use strict';
 
-angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage'])
+angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort'])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
-                                                                  ErrorMessageService) {
+                                                                  ErrorMessageService, SortService) {
             var timer,
-                ORDER = ['desc', 'asc', null],
-                INITIAL_ORDER = ORDER[0],
                 SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
 
 
@@ -18,9 +16,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
             $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
-            function refreshReport() {
+            function refreshReport(sortOptions) {
                 if (initializing) {
-                    loadIpFeedbackReportByDelivery();
+                    loadIpFeedbackReportByDelivery(sortOptions);
                     initializing = false;
                 } else {
                     if (timer) {
@@ -30,34 +28,33 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                     if ($scope.searchTerm.poWaybill) {
                         startTimer();
                     } else {
-                        loadIpFeedbackReportByDelivery($scope.searchTerm);
+                        loadIpFeedbackReportByDelivery(angular.extend(sortOptions, $scope.searchTerm));
                     }
                 }
             }
 
             $scope.$watchCollection('searchTerm', function () {
-                refreshReport();
+                refreshReport($scope.sortOptions);
             });
 
             $scope.sortBy = function (sortField) {
-                if (SUPPORTED_FIELD.indexOf(sortField) === -1) {
-                    $scope.sortOptions = {};
-                    return;
-                }
-
-                if ($scope.sortOptions.sortBy === sortField) {
-                    var orderIndex = ORDER.indexOf($scope.sortOptions.order);
-                    $scope.sortOptions.order = ORDER[(orderIndex + 1) % ORDER.length];
-
-                } else {
-                    $scope.sortOptions.sortBy = sortField;
-                    $scope.sortOptions.order = INITIAL_ORDER;
-                }
-
-                if (!$scope.sortOptions.order) {
-                    $scope.sortOptions = {};
+                if(SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                    $scope.sortOptions = SortService.sortBy(sortField);
+                    refreshReport($scope.sortOptions)
                 }
             };
+
+            $scope.sortArrowClass = function (criteria) {
+            var output = '';
+            if ($scope.sortOptions.field === criteria) {
+                if($scope.sortOptions.order === 'desc') {
+                    output = 'active glyphicon glyphicon-arrow-down';
+                } else if ($scope.sortOptions.order === 'asc') {
+                output = 'active glyphicon glyphicon-arrow-up';
+                }
+            return output;
+            }
+        };
 
             function startTimer() {
                 timer = $timeout(function () {
@@ -92,9 +89,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 return filterParams;
             }
 
-            function loadIpFeedbackReportByDelivery(filterParams) {
+            function loadIpFeedbackReportByDelivery(queryParams) {
                 LoaderService.showLoader();
-                var allFilter = appendLocationFilter(filterParams);
+                var allFilter = appendLocationFilter(queryParams);
                 ReportService.ipFeedbackReportByDelivery(allFilter, $scope.pagination.page).then(function (response) {
                     $scope.report = response.results;
                     $scope.count = response.count;

@@ -23,7 +23,9 @@ angular.module('ReportService', ['eums.config'])
                 tree_position: params.treePosition,
                 received: params.received,
                 quality: params.quality,
-                satisfied: params.satisfied
+                satisfied: params.satisfied,
+                field: params.field,
+                order: params.order
             } : {};
 
             var search = {};

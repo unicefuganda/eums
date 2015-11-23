@@ -42,12 +42,12 @@
                 <thead>
                 <tr>
                     <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
-                    <th class="align-left"><span ng-click="sortBy('shipmentDate')" class="pad-left-10 shipment-date">SHIPMENT DATE</span></th>
-                    <th class="align-left"><span ng-click="sortBy('dateOfReceipt')" class="pad-left-10 date-of-receipt">DATE RECEIVED</span></th>
+                    <th class="align-left"><span ng-click="sortBy('shipmentDate')" class="pad-left-10 shipment-date">SHIPMENT DATE<i ng-class="sortArrowClass('shipmentDate')"></i></span></th>
+                    <th class="align-left"><span ng-click="sortBy('dateOfReceipt')" class="pad-left-10 date-of-receipt">DATE RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></span></th>
                     <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
                     <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
                     <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
-                    <th class="align-left"><span class="pad-left-10">VALUE</span></th>
+                    <th class="align-left"><span ng-click="sortBy('value')" class="pad-left-10 value">VALUE<i ng-class="sortArrowClass('value')"></i></span></th>
                     <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
                     <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
                     <th class="align-left"><span class="pad-left-10">REMARKS</span></th>
