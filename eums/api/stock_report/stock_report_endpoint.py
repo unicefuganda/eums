@@ -104,7 +104,7 @@ def _compute_quantity_received(node):
 
 def _get_date_received(node):
     responses = _get_responses(node)
-    return responses.get('dateOfReceipt', None)
+    return responses.get('dateOfReceipt', '')
 
 
 def _reduce_stock_report(stock_report):

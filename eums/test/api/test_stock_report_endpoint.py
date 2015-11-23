@@ -151,7 +151,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                            'quantity_dispatched': 30,
                            'quantity_delivered': 40,
                            'date_delivered': '2014-09-25',
-                           'date_confirmed': 'None',
+                           'date_confirmed': '',
                            'balance': 10,
                            'quantity_confirmed': 40
                            }]
@@ -513,7 +513,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'quantity_delivered': 30,
                         'date_delivered': str(end_node_one.delivery_date),
                         'quantity_confirmed': 30,
-                        'date_confirmed': 'None',
+                        'date_confirmed': '',
                         'quantity_dispatched': 20,
                         'balance': 10
                         },
@@ -524,7 +524,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                         'quantity_delivered': 40,
                         'date_delivered': str(end_node_one.delivery_date),
                         'quantity_confirmed': 40,
-                        'date_confirmed': 'None',
+                        'date_confirmed': '',
                         'quantity_dispatched': 35,
                         'balance': 5
                         }]
