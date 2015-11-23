@@ -69,8 +69,8 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
         }
     },
     sortBy: {
-        value: function(sort, order) {
-            var toBeSorted = element.all(by.css('.' + sort.replace(" ", "-"))).first();
+        value: function(className, order) {
+            var toBeSorted = element(by.css('.pad-left-10.' + className));
             toBeSorted.click();
             if (order === 'asc') {
                 toBeSorted.click();

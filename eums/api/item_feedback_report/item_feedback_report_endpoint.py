@@ -97,7 +97,7 @@ def _build_answer_list(node_responses):
          for answer in answers:
              answer_list.update(
                  {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
-     return answer_list;
+     return answer_list
 
 
 def item_tracked_nodes(request, ip=None):

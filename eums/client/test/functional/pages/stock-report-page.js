@@ -41,7 +41,16 @@ StockReportPage.prototype = Object.create({}, {
     itemDeliveredQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_delivered')).getText(); }},
     itemConfirmedQty: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.quantity_confirmed')).getText(); }},
     itemDeliveryDate: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.date_delivered')).getText(); }},
-    itemBalances: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.balance')).getText(); }}
+    itemBalances: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.balance')).getText(); }},
+    sortBy: {
+        value: function(className, order) {
+            var toBeSorted = element(by.css('.col-lg-3.centered.' + className));
+            toBeSorted.click();
+            if (order === 'asc') {
+                toBeSorted.click();
+            }
+        }
+    }
 });
 
 module.exports = new StockReportPage;

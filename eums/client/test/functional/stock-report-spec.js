@@ -7,11 +7,15 @@ var ftUtils = require('./functional-test-utils.js');
 
 describe('Stock Report', function () {
 
-    it('should show the report with IP filtering', function () {
+    beforeAll(function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
         stockReportPage.visit();
+    });
+
+    it('should show the report with IP filtering', function () {
+
 
         ftUtils.waitForPageToLoad();
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeFalsy();
@@ -54,10 +58,6 @@ describe('Stock Report', function () {
     });
 
     it('should only show stock for specific logged in IP', function () {
-        loginPage.visit();
-        loginPage.loginAs('wakiso', 'wakiso');
-
-        stockReportPage.visit();
         ftUtils.waitForPageToLoad();
 
         expect(stockReportPage.ipFilterSelection).toContain('WAKISO DHO');
@@ -72,4 +72,15 @@ describe('Stock Report', function () {
 
         ipShipmentsPage.searchForShipment('12345');
     });
+
+    it('should sort by shipment balance', function() {
+
+        ftUtils.wait(1500);
+
+        stockReportPage.sortBy('balance', 'desc');
+
+        expect(stockReportPage.stockBalances).toContain('$150.00');
+        expect(stockReportPage.stockReceivedValues).toContain('$300.00');
+    });
+
 });

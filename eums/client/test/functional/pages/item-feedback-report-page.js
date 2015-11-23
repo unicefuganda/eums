@@ -98,6 +98,11 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
             return element.all(by.repeater('($index, itemReport) in report').column('itemReport.quantity_shipped')).getText();
         }
     },
+    value: {
+        get: function () {
+            return byRepeater('value');
+        }
+    },
     values: {
         get: function () {
             return element.all(by.repeater('($index, itemReport) in report').column('itemReport.value')).getText();
@@ -146,6 +151,15 @@ ItemFeedbackReportPage.prototype = Object.create({}, {
     quality: {
         get: function () {
             return element.all(by.repeater('($index, itemReport) in report').column('itemReport.answers.qualityOfProduct')).getText();
+        }
+    },
+    sortBy: {
+        value: function(className, order) {
+            var toBeSorted = element(by.css('.padded-multi-line-5.' + className));
+            toBeSorted.click();
+            if (order === 'asc') {
+                toBeSorted.click();
+            }
         }
     }
 
