@@ -5,7 +5,7 @@ var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-fdescribe('Stock Report', function () {
+describe('Stock Report', function () {
 
     it('should show the report with IP filtering', function () {
 
