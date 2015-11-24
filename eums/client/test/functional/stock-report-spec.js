@@ -5,17 +5,14 @@ var ipShipmentsPage = require('./pages/ip-shipments-page.js');
 var loginPage = require('./pages/login-page.js');
 var ftUtils = require('./functional-test-utils.js');
 
-describe('Stock Report', function () {
+fdescribe('Stock Report', function () {
 
-    beforeAll(function () {
+    it('should show the report with IP filtering', function () {
+
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
         stockReportPage.visit();
-    });
-
-    it('should show the report with IP filtering', function () {
-
 
         ftUtils.waitForPageToLoad();
         expect(stockReportPage.noDataMessage.isDisplayed()).toBeFalsy();
@@ -58,6 +55,11 @@ describe('Stock Report', function () {
     });
 
     it('should only show stock for specific logged in IP', function () {
+
+        loginPage.visit();
+-       loginPage.loginAs('wakiso', 'wakiso');
+-
+-       stockReportPage.visit();
         ftUtils.waitForPageToLoad();
 
         expect(stockReportPage.ipFilterSelection).toContain('WAKISO DHO');
@@ -74,6 +76,10 @@ describe('Stock Report', function () {
     });
 
     it('should sort by shipment balance', function() {
+        loginPage.visit();
+        loginPage.loginAs('admin', 'admin');
+
+        stockReportPage.visit();
 
         ftUtils.wait(1500);
 
