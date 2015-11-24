@@ -1,20 +1,20 @@
 from unittest import TestCase
-import datetime
 import celery
-from celery.schedules import crontab
 from mock import MagicMock, ANY, patch
-from django.conf import settings
+from eums.test.factories.alert_factory import AlertFactory
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
 from eums.test.factories.flow_factory import FlowFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
-from eums.models import DistributionPlanNode as Node, Flow, Runnable
-from eums.models import Run, RunQueue
+from eums.models import DistributionPlanNode as Node, Flow, Question
 from eums.rapid_pro import rapid_pro_facade
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
-from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory
+from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, DeliveryNodeFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.helpers.fake_datetime import FakeDatetime, FakeDate
 
@@ -25,7 +25,7 @@ celery.task.periodic_task = MockPeriodicTask
 mock_start_delivery_run = MagicMock()
 rapid_pro_facade.start_delivery_run = mock_start_delivery_run
 
-from eums.services.flow_scheduler import schedule_run_for, expire_overdue_runs
+from eums.services.flow_scheduler import *
 
 
 class FlowSchedulerTest(TestCase):
@@ -205,5 +205,66 @@ class FlowSchedulerTest(TestCase):
         mock_expire_overdue_runs.return_value = None
 
         mock_expire_overdue_runs()
+
+        MockPeriodicTask.assert_called_with(crontab(minute=0, hour=0))
+
+    def test_is_distribution_expired_alert_not_raised_should_return_true(self):
+        alert = AlertFactory(issue=Alert.ISSUE_TYPES.not_received)
+        self.assertTrue(is_distribution_expired_alert_not_raised(alert.runnable))
+
+    def test_is_distribution_expired_alert_not_raised_should_return_false(self):
+        alert = AlertFactory(issue=Alert.ISSUE_TYPES.distribution_expired)
+        self.assertFalse(is_distribution_expired_alert_not_raised(alert.runnable))
+
+    def test_is_shipment_received_but_not_distributed_should_return_true(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label=Question.LABEL.deliveryReceived)
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        self.assertTrue(is_shipment_received_but_not_distributed(delivery))
+
+    def test_is_shipment_received_but_not_distributed_should_return_false(self):
+        delivery = DeliveryFactory()
+        question = MultipleChoiceQuestionFactory(label=Question.LABEL.deliveryReceived)
+        option = OptionFactory(text='Yes', question=question)
+        run = RunFactory(runnable=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        MultipleChoiceAnswerFactory(run=run, question=question, value=option)
+
+        self.assertFalse(is_shipment_received_but_not_distributed(delivery))
+
+    def test_is_distribution_expired_should_return_true(self):
+        delivery = DeliveryFactory(time_limitation_on_distribution=3)
+        self.__prepare_for_is_distribution_expired_test(delivery)
+
+        self.assertTrue(is_distribution_expired(delivery))
+
+    def test_is_distribution_expired_should_return_false(self):
+        delivery = DeliveryFactory(time_limitation_on_distribution=5)
+        self.__prepare_for_is_distribution_expired_test(delivery)
+
+        self.assertFalse(is_distribution_expired(delivery))
+
+    def __prepare_for_is_distribution_expired_test(self, delivery):
+        flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        question_is_received = MultipleChoiceQuestionFactory(label=Question.LABEL.deliveryReceived, flow=flow)
+        question_received_date = TextQuestionFactory(label=Question.LABEL.dateOfReceipt, flow=flow)
+        option_is_received = OptionFactory(text='Yes', question=question_is_received)
+        run = RunFactory(runnable=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        MultipleChoiceAnswerFactory(run=run, question=question_is_received, value=option_is_received)
+        TextAnswerFactory(run=run, question=question_received_date, value='2015-11-20T16:00:00')
+
+    @patch('eums.services.flow_scheduler.distribution_alert_raise')
+    def test_distribution_alert_raise_should_execute_at_midnight_every_day(self, mock_distribution_alert_raise):
+        mock_distribution_alert_raise.return_value = None
+
+        mock_distribution_alert_raise()
 
         MockPeriodicTask.assert_called_with(crontab(minute=0, hour=0))
