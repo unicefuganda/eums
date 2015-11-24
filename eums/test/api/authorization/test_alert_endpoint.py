@@ -15,7 +15,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
         FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
         FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
-        xsuper(AlertEndpointTest, self).setUp()
+        super(AlertEndpointTest, self).setUp()
 
     def test_admin_should_view_alert(self):
         AlertFactory()
