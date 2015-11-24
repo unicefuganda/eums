@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from eums.models import DistributionPlanNode, Runnable
+from eums.models import DistributionPlanNode, Runnable, DistributionPlan
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -17,6 +17,7 @@ class StockReport(APIView):
         outcome_id = request.GET.get('outcome')
         from_date = request.GET.get('fromDate')
         to_date = request.GET.get('toDate')
+
         stock_report = _build_stock_report(consignee_id, location, outcome_id, from_date, to_date)
         reduced_stock_report = _reduce_stock_report(stock_report)
         totals = _compute_totals(reduced_stock_report)
@@ -67,8 +68,8 @@ def _get_report_details_for_node(node):
     quantity_received = _compute_quantity_received(node)
     total_value_received = quantity_received * node.item.unit_value()
     quantity_dispensed = node.quantity_out()
-
     value_dispensed = quantity_dispensed * node.item.unit_value()
+    ip_delivery = DistributionPlan.objects.get(pk=node.distribution_plan.id)
 
     return {
         'document_number': purchase_order_number,
@@ -84,7 +85,7 @@ def _get_report_details_for_node(node):
                    'quantity_delivered': node.quantity_in(),
                    'date_delivered': str(node.delivery_date),
                    'quantity_confirmed': quantity_received,
-                   'date_confirmed': str(_get_date_received(node)),
+                   'date_confirmed': str(ip_delivery.received_date()),
                    'quantity_dispatched': quantity_dispensed,
                    'balance': quantity_received - quantity_dispensed}]
     }

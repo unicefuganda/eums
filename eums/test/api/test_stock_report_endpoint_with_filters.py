@@ -5,10 +5,15 @@ from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
 
 
 class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
+    def setUp(self):
+        super(StockReportEndpointWithFiltersTest, self).setUp()
+        self.setup_flow()
+
     def test_should_filter_based_on_outcome(self):
         outcome_one = ProgrammeFactory(name='Outcome One')
         outcome_two = ProgrammeFactory(name='Outcome Two')
@@ -102,3 +107,6 @@ class StockReportEndpointWithFiltersTest(AuthenticatedAPITestCase):
 
         results = response.data['results']
         self.assertEqual(len(results), 0)
+
+    def setup_flow(self):
+        self.ip_flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)

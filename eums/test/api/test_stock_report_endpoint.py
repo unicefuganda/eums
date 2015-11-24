@@ -1,15 +1,18 @@
 from decimal import Decimal
 
 from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, DistributionPlan, PurchaseOrder, \
-    PurchaseOrderItem, Run, SalesOrderItem, SalesOrder
+    PurchaseOrderItem, Run, SalesOrderItem, SalesOrder, Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
+from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.item_factory import ItemFactory
+from eums.test.factories.option_factory import OptionFactory
 from eums.test.factories.programme_factory import ProgrammeFactory
-from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory
+from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory, \
+    MultipleChoiceQuestionFactory
 from eums.test.factories.run_factory import RunFactory
 from eums.test.factories.answer_factory import NumericAnswerFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
@@ -23,6 +26,7 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(StockReportResponsesEndpointTest, self).setUp()
 
+        self.setup_flow()
         self.setup_questions()
         self.setup_actors()
         self.setup_purchase_orders_and_items()
@@ -556,6 +560,10 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         date_received_question.textanswer_set.create(value='2014-01-02', run=self.run_two)
         date_received_question.textanswer_set.create(value='2014-01-03', run=self.run_three)
 
+        date_received_question.textanswer_set.create(value='2014-01-01', run=self.run_delivery_one)
+        date_received_question.textanswer_set.create(value='2014-01-02', run=self.run_delivery_two)
+        date_received_question.textanswer_set.create(value='2014-01-03', run=self.run_delivery_three)
+
     def setup_runs(self):
         self.run_one = RunFactory(runnable=self.ip_node_one)
         self.run_two = RunFactory(runnable=self.ip_node_two)
@@ -563,6 +571,10 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         self.run_four = RunFactory(runnable=self.middle_man_node_one)
         self.run_five = RunFactory(runnable=self.middle_man_node_two)
         self.run_six = RunFactory(runnable=self.end_user_node)
+
+        self.run_delivery_one = RunFactory(runnable=self.plan_one)
+        self.run_delivery_two = RunFactory(runnable=self.plan_two)
+        self.run_delivery_three = RunFactory(runnable=self.plan_three)
 
     def setup_purchase_orders(self):
         self.po_one = PurchaseOrderFactory(sales_order=self.po_one)
@@ -628,5 +640,8 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
                                                  parents=[(self.ip_node_three, 2)], item=self.po_item_three)
 
     def setup_questions(self):
-        TextQuestionFactory(label='dateOfReceipt')
-        NumericQuestionFactory(label='amountReceived')
+        TextQuestionFactory(label='dateOfReceipt', flow=self.ip_flow)
+        NumericQuestionFactory(label='amountReceived', flow=self.ip_flow)
+
+    def setup_flow(self):
+        self.ip_flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
