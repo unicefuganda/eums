@@ -74,7 +74,8 @@ def _build_delivery_answers(deliveries):
                                  'value': int(delivery.total_value),
                                  'location': delivery.location
                                  })
-    return delivery_answers
+
+    return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
 
 
 def _value(question_label, answers):

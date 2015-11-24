@@ -28,6 +28,8 @@ def item_feedback_report(request):
 
     if nodes:
         build_answers_for_nodes(nodes, response)
+
+    response = sorted(response, key=lambda d: d.get('dateOfReceipt'), reverse=True)
     response = sort.sort_by(request, response)
     paginated_results = Paginator(response, PAGE_SIZE)
     page_number = get_page_number(request)

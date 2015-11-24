@@ -116,7 +116,7 @@ def _reduce_stock_report(stock_report):
             _update_report_item(matching_report_item, report_item)
         else:
             reduced_report.append(report_item)
-    return reduced_report
+    return sorted(reduced_report, key=lambda d: d.get('last_shipment_date'), reverse=True)
 
 
 def _compute_totals(stock_report):

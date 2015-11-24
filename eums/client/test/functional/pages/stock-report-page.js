@@ -44,7 +44,7 @@ StockReportPage.prototype = Object.create({}, {
     itemBalances: { get: function () { return element.all(by.repeater('item in reportItem.items').column('item.balance')).getText(); }},
     sortBy: {
         value: function(className, order) {
-            var toBeSorted = element(by.css('.col-lg-3.centered.' + className));
+            var toBeSorted = element(by.css('.padded-multi-line-5.centered.' + className));
             toBeSorted.click();
             if (order === 'asc') {
                 toBeSorted.click();
