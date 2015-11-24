@@ -43,7 +43,10 @@ class Alert(models.Model):
         return self.runnable.delivery_date
 
     def date_received(self):
-        return DistributionPlan.objects.get(id=self.runnable.id).received_date()
+        distribution_plans = DistributionPlan.objects.filter(id=self.runnable.id)
+        if len(distribution_plans) > 0:
+            return distribution_plans[0].received_date()
+        return ''
 
     def runnable_id(self):
         return self.runnable.id

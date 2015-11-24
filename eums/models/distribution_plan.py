@@ -119,8 +119,10 @@ class DistributionPlan(Runnable):
         return sorted(answers, key=lambda field: field['position'])
 
     def received_date(self):
-        return filter(lambda answer: answer['question_label'] == Question.LABEL.dateOfReceipt, self.answers())[0][
-            'value']
+        answers = filter(lambda answer: answer['question_label'] == Question.LABEL.dateOfReceipt, self.answers())
+        if len(answers) > 0:
+            return answers[0]['value']
+        return ''
 
     def node_answers(self):
         node_answers = []

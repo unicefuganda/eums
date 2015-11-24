@@ -1,13 +1,21 @@
+from eums.models import Runnable
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
+from eums.test.factories.flow_factory import FlowFactory
 
 ENDPOINT_URL = BACKEND_URL + 'alert/'
 
 
 class AlertEndpointTest(AuthenticatedAPITestCase):
+
+    def setUp(self):
+        FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
+        FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
+        xsuper(AlertEndpointTest, self).setUp()
 
     def test_admin_should_view_alert(self):
         AlertFactory()

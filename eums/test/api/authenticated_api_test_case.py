@@ -1,7 +1,8 @@
 from django.contrib.auth.models import User
+from eums.test.factories.flow_factory import FlowFactory
 from rest_framework.test import APITestCase
 
-from eums.models import UserProfile
+from eums.models import UserProfile, Runnable
 from eums.test.api.api_test_helpers import create_user_with_group
 
 

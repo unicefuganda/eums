@@ -1,16 +1,25 @@
-from eums.models import ReleaseOrderItem
+from eums.models import ReleaseOrderItem, Flow, Runnable, Question
 from eums.models.alert import Alert
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.alert_factory import AlertFactory
+from eums.test.factories.answer_factory import TextAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-from eums.test.factories.runnable_factory import RunnableFactory
+from eums.test.factories.flow_factory import FlowFactory
+from eums.test.factories.question_factory import TextQuestionFactory
+from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'alert/'
 
 
 class AlertEndpointTest(AuthenticatedAPITestCase):
+    def setUp(self):
+        self.flow_ip = FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
+        FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
+        super(AlertEndpointTest, self).setUp()
+
     def test_should_return_information_on_an_alert(self):
         AlertFactory(
             order_type=ReleaseOrderItem.WAYBILL,
@@ -121,10 +130,19 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         self.assertIn(delivery_alert.id, delivery_alert_ids)
 
     def test_should_filter_alerts_by_runnable_type_when_distribution(self):
-        distribution_alert = AlertFactory(issue=Alert.ISSUE_TYPES.distribution_expired,
-                                          runnable=DeliveryFactory(time_limitation_on_distribution=3))
+        delivery = DeliveryFactory(time_limitation_on_distribution=3)
+        question_received_date = TextQuestionFactory(label=Question.LABEL.dateOfReceipt, flow=self.flow_ip)
+        run = RunFactory(runnable=delivery)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        received_date = '2015-11-20T16:00:00'
+        TextAnswerFactory(run=run, question=question_received_date, value=received_date)
+
+        distribution_alert = AlertFactory(runnable=delivery, issue=Alert.ISSUE_TYPES.distribution_expired)
         distribution_alert_ids, distribution_alerts = self.__respond_by_alert_type('distribution')
+
         self.assertEqual(Alert.objects.count(), 1)
+        self.assertTrue(distribution_alerts[0]['date_received'])
+        self.assertEqual(distribution_alerts[0]['date_received'], received_date)
         self.assertEqual(len(distribution_alerts), 1)
         self.assertIn(distribution_alert.id, distribution_alert_ids)
 
