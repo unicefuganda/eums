@@ -259,7 +259,8 @@ class FlowSchedulerTest(TestCase):
         DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question_is_received, value=option_is_received)
-        TextAnswerFactory(run=run, question=question_received_date, value='2015-11-20T16:00:00')
+        datetime_span = (datetime.datetime.today() - datetime.timedelta(days=4)).strftime('%Y-%m-%dT%H:%M:%S')
+        TextAnswerFactory(run=run, question=question_received_date, value=datetime_span)
 
     @patch('eums.services.flow_scheduler.distribution_alert_raise')
     def test_distribution_alert_raise_should_execute_at_midnight_every_day(self, mock_distribution_alert_raise):
