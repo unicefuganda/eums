@@ -8,10 +8,10 @@ Local Environment Setup
 ------------
 ###Install and Setup PostgreSQL
 * For Mac users, run the following
-	*  `brew install postgres` - Install Postgres using homebrew
-	*  `postgres -D /usr/local/var/postgres` - Start the postgres server
-	*  `createuser -s -r postgres` - Create the `postgres` user
-	*  `createdb -O postgres eums` - Create the `eums` database
+	*  `$ brew install postgres` - Install Postgres using homebrew
+	*  `$ postgres -D /usr/local/var/postgres` - Start the postgres server
+	*  `$ createuser -s -r postgres` - Create the `postgres` user
+	*  `$ createdb -O postgres eums` - Create the `eums` database
 
 ###Install Node
 * [Node guides](http://nodejs.org/)
