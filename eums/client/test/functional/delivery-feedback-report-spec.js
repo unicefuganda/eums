@@ -14,12 +14,12 @@ describe('Delivery Feedback Report', function () {
 
     it('should show the Delivery Feedback Report', function() {
 
-        expect(report.received).toContain('YES');
-        expect(report.shipmentDate).toContain('28-Sep-2014');
-        expect(report.dateReceived).toContain('29-Sep-2014');
-        expect(report.consignees).toContain('WAKISO DHO');
+        expect(report.received).toContain('');
+        expect(report.shipmentDate).toContain('11-Jul-2015');
+        expect(report.dateReceived).toContain('');
+        expect(report.consignees).toContain('sample programme');
         expect(report.outcome).toContain('AAAYI105 - PCR 1 KEEP CHILDREN AND MOTHERS');
-        expect(report.value).toContain('$300.00');
+        expect(report.value).toContain('$30.00');
 
     });
 
