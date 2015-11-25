@@ -82,5 +82,5 @@ IpFeedbackReportByDeliveryPage.prototype = Object.create({}, {
 module.exports = new IpFeedbackReportByDeliveryPage;
 
 function byRepeater(column) {
-    return element.all(by.repeater('($index, itemReport) in report').column('itemReport.' + column)).first().getText();
+    return element.all(by.repeater('($index, itemReport) in report').column('itemReport.' + column)).getText();
 }
