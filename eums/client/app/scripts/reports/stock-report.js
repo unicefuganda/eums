@@ -66,7 +66,7 @@ angular.module('StockReport', [
             if (params) {
                 Object.merge(requestParams, params);
             }
-            requestParams = angular.extend($scope.sortOptions, requestParams);
+            requestParams = angular.extend(requestParams, $scope.sortOptions);
             StockReportService.getStockReport(requestParams).then(function (response) {
                 $scope.count = response.data.count;
                 $scope.pageSize = response.data.pageSize;

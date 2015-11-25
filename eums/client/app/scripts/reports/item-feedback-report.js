@@ -65,13 +65,13 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             if (location) {
                 return angular.extend({'location': location}, filterParams);
             }
-            return filterParams;
+            return filterParams ? filterParams : {};
         }
 
         function loadItemFeedbackReport(filterParams) {
             LoaderService.showLoader();
             var allFilter = appendLocationFilter(filterParams);
-            allFilter = angular.extend($scope.sortOptions, allFilter);
+            allFilter = angular.extend(allFilter, $scope.sortOptions);
             ReportService.itemFeedbackReport(allFilter, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;

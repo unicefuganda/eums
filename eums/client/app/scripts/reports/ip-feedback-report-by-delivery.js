@@ -28,7 +28,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                     if ($scope.searchTerm.poWaybill) {
                         startTimer();
                     } else {
-                        loadIpFeedbackReportByDelivery(angular.extend(sortOptions, $scope.searchTerm));
+                        loadIpFeedbackReportByDelivery(angular.extend($scope.searchTerm, sortOptions));
                     }
                 }
             }
