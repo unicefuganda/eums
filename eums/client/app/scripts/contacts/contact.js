@@ -66,9 +66,9 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                 $scope.contacts.splice(index, 1);
                 $scope.currentContact = {};
                 ngToast.create({content: 'Contact deleted', class: 'success'});
-            }).catch(function(reason) {
+            }).catch(function (reason) {
                 ngToast.create({content: reason, class: 'danger'})
-            }).finally(function() {
+            }).finally(function () {
                 angular.element('#delete-contact-modal').modal('hide');
             });
         };
@@ -172,6 +172,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     scope.object = object;
                     scope.objectIndex = objectIndex;
                     contactInput.val('');
+                    $('#model-name').text('Add Contact');
                     $('#add-contact-modal').modal();
                 });
 
@@ -179,6 +180,7 @@ angular.module('Contact', ['eums.config', 'eums.service-factory', 'ngTable', 'si
                     scope.contact = contact;
                     isEdit = true;
                     contactInput.intlTelInput('setNumber', contact.phone);
+                    $('#model-name').text('Edit Contact');
                     $('#add-contact-modal').modal();
                 });
 
