@@ -330,7 +330,7 @@ describe('Supply Efficiency Report', function () {
             });
 
             it('should show records filtered by start date', function () {
-                expect(supplyEfficiencyReportPage.reportsCount).toEqual(13);
+                expect(supplyEfficiencyReportPage.reportsCount).toEqual(14);
                 expect(supplyEfficiencyReportPage.ipNames.get(0).getText()).toEqual('BUNDIBUGYO DHO');
                 expect(supplyEfficiencyReportPage.unicefValues.get(0).getText()).toEqual('0');
                 expect(supplyEfficiencyReportPage.ipReceivedValues.get(0).getText()).toEqual('0');
