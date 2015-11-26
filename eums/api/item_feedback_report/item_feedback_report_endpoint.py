@@ -11,6 +11,7 @@ from eums.api.sorting.standard_dic_sort import StandardDicSort
 PAGE_SIZE = 10
 sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived')
 
+
 @api_view(['GET', ])
 def item_feedback_report(request):
     logged_in_user = request.user
@@ -50,10 +51,10 @@ def item_feedback_report(request):
 def filter_answers(nodes, request, param_name, question_labels):
     param = request.GET.get(param_name)
     if param:
-        runs_quality = MultipleChoiceAnswer.objects.filter(question__label__in=question_labels,
-                                                           value__text__iexact=param,
-                                                           run__runnable__in=nodes).values_list('run_id')
-        nodes = nodes.filter(run__in=runs_quality)
+        runs = MultipleChoiceAnswer.objects.filter(question__label__in=question_labels,
+                                                   value__text__iexact=param,
+                                                   run__runnable__in=nodes).values_list('run_id')
+        nodes = nodes.filter(run__in=runs)
     return nodes
 
 
@@ -80,26 +81,27 @@ def build_answers_for_nodes(nodes, response):
         node_responses = node.responses()
         answer_list = _build_answer_list(node_responses)
         delivery_node = {
-                        'item_description': node.item.item.description,
-                        'programme': node.programme.name,
-                        'consignee': node.consignee.name,
-                        'implementing_partner': node.ip.name,
-                        'order_number': node.item.number(),
-                        'quantity_shipped': node.quantity_in(),
-                        'value': node.total_value,
-                        'answers': answer_list,
-                        'location': node.location,
-                        'tree_position': node.tree_position}
+            'item_description': node.item.item.description,
+            'programme': node.programme.name,
+            'consignee': node.consignee.name,
+            'implementing_partner': node.ip.name,
+            'order_number': node.item.number(),
+            'quantity_shipped': node.quantity_in(),
+            'value': node.total_value,
+            'answers': answer_list,
+            'location': node.location,
+            'tree_position': node.tree_position}
         delivery_node.update(answer_list)
         response.append(delivery_node)
 
+
 def _build_answer_list(node_responses):
-     answer_list = {}
-     for run, answers in node_responses.iteritems():
-         for answer in answers:
-             answer_list.update(
-                 {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
-     return answer_list
+    answer_list = {}
+    for run, answers in node_responses.iteritems():
+        for answer in answers:
+            answer_list.update(
+                {answer.question.label: answer.value.text if isinstance(answer.value, Option) else answer.value})
+    return answer_list
 
 
 def item_tracked_nodes(request, ip=None):

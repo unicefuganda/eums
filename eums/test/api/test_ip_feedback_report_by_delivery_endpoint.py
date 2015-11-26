@@ -1,5 +1,6 @@
 from datetime import date
-from eums.models import Question, DistributionPlan, Runnable, Programme, Consignee
+
+from eums.models import Question, DistributionPlan, Runnable, Programme, Consignee, DistributionPlanNode
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory
@@ -49,7 +50,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
+                              'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar'}]
 
@@ -84,7 +86,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
             track=True, programme=ProgrammeFactory(name=programme_name),
             consignee=ConsigneeFactory(name=wakiso), delivery_date=date(2015, 3, 10))
         order_number = 34230335
-        DeliveryNodeFactory(distribution_plan=delivery,track=True, tree_position=Runnable.IMPLEMENTING_PARTNER,
+        DeliveryNodeFactory(distribution_plan=delivery, track=True, tree_position=Runnable.IMPLEMENTING_PARTNER,
                             item=PurchaseOrderItemFactory(
                                 purchase_order=PurchaseOrderFactory(order_number=order_number)))
         run = RunFactory(runnable=delivery)
@@ -99,7 +101,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         no = 'No'
         empty = ''
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': empty,
-                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
+                              'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: empty, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': empty, 'value': 100, 'location': 'Kampala'}]
 
@@ -127,7 +130,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
+                              'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
@@ -157,7 +161,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
+                              'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
@@ -187,7 +192,8 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         yes = 'Yes'
         no = 'No'
         expected_response = [{'deliveryReceived': yes, 'shipmentDate': date(2015, 3, 10), 'dateOfReceipt': '12/03/2015',
-                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name}, 'consignee': {'id': consignee.id, 'name': consignee.name},
+                              'orderNumber': order_number, 'programme': {'id': programme.id, 'name': programme.name},
+                              'consignee': {'id': consignee.id, 'name': consignee.name},
                               Question.LABEL.isDeliveryInGoodOrder: yes, 'satisfiedWithDelivery': no,
                               'additionalDeliveryComments': comment, 'value': 100, 'location': 'Madagascar'}]
         response = self.client.get(ENDPOINT_URL)
@@ -337,6 +343,39 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]['orderNumber'], order_number)
 
+    def test_should_filter_answers_by_received(self):
+        self._setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?received=Yes', content_type='application/json')
+        results = response.data['results']
+        self.assertEqual(len(results), 2)
+
+        response = self.client.get(ENDPOINT_URL + '?received=No', content_type='application/json')
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+
+    def test_should_filter_answer_by_satisfied(self):
+        self._setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?satisfied=Yes', content_type='application/json')
+        results = response.data['results']
+        self.assertEqual(len(results), 2)
+
+        response = self.client.get(ENDPOINT_URL + '?satisfied=No', content_type='application/json')
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+
+    def test_should_filter_answer_by_condition(self):
+        self._setup_nodes_with_answers()
+
+        response = self.client.get(ENDPOINT_URL + '?good_condition=Yes', content_type='application/json')
+        results = response.data['results']
+        self.assertEqual(len(results), 1)
+
+        response = self.client.get(ENDPOINT_URL + '?good_condition=No', content_type='application/json')
+        results = response.data['results']
+        self.assertEqual(len(results), 2)
+
     def _create_questions(self):
         flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
 
@@ -392,3 +431,40 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
             TextAnswerFactory(run=run, question=self.additional_comments, value=comment)
             number_of_deliveries -= 1
             order_number += 1
+
+    # The testing data below are only used for filters 'received', 'satisfied', 'condition'
+    # Refactor all testing data if needed
+    def _setup_nodes_with_answers(self):
+        self._create_questions()
+
+        programme_one = ProgrammeFactory(name='programme one')
+        programme_two = ProgrammeFactory(name='programme two')
+        programme_three = ProgrammeFactory(name='programme three')
+        delivery_one = DeliveryFactory(track=True, programme=programme_one, delivery_date=date(2015, 3, 10),
+                                       location='Wakiso')
+        delivery_two = DeliveryFactory(track=True, programme=programme_two, delivery_date=date(2015, 6, 20),
+                                       location='Kampala')
+        delivery_three = DeliveryFactory(track=True, programme=programme_three, delivery_date=date(2015, 9, 30),
+                                         location='Fort portal')
+
+        DeliveryNodeFactory(distribution_plan=delivery_one, programme=programme_one,
+                            tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery_two, programme=programme_two,
+                            tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery_three    , programme=programme_two,
+                            tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
+
+        run_one = RunFactory(runnable=delivery_one)
+        MultipleChoiceAnswerFactory(run=run_one, question=self.delivery_received_qtn, value=self.yes_one)
+        MultipleChoiceAnswerFactory(run=run_one, question=self.delivery_in_good_order, value=self.no_two)
+        MultipleChoiceAnswerFactory(run=run_one, question=self.satisfied_with_delivery, value=self.no_three)
+
+        run_two = RunFactory(runnable=delivery_two)
+        MultipleChoiceAnswerFactory(run=run_two, question=self.delivery_received_qtn, value=self.no_one)
+        MultipleChoiceAnswerFactory(run=run_two, question=self.delivery_in_good_order, value=self.yes_two)
+        MultipleChoiceAnswerFactory(run=run_two, question=self.satisfied_with_delivery, value=self.yes_three)
+
+        run_three = RunFactory(runnable=delivery_three)
+        MultipleChoiceAnswerFactory(run=run_three, question=self.delivery_received_qtn, value=self.yes_one)
+        MultipleChoiceAnswerFactory(run=run_three, question=self.delivery_in_good_order, value=self.no_two)
+        MultipleChoiceAnswerFactory(run=run_three, question=self.satisfied_with_delivery, value=self.yes_three)
