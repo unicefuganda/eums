@@ -1,5 +1,6 @@
 import ast
 
+from eums.services import flow_scheduler
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -25,6 +26,7 @@ def save_answers(request):
     runnable.confirm()
     _dequeue_next_run_for(runnable)
 
+    flow_scheduler.distribution_alert_raise()
     return Response(status=status.HTTP_201_CREATED)
 
 

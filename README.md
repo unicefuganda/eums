@@ -16,14 +16,14 @@ Local Environment Setup
 ###Install Node
 * [Node guides](http://nodejs.org/)
 
-###Install chromedriver for running feature tests.
+###Install chromedriver for running feature tests
 * `$ brew install chromedriver` 
 
 * A note on Python Virtual Environments:
 	* We recommend using and managing your virtual environments with [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/). 
 	* If you are using a shared Virtual Environments directory that is not the default location used by virtualenvwrapper `~/.virtualenvs/`, you will need to note this location for later use when running functional tests.
 
-### Set up the project and install necessary packages:
+### Set up the project and install necessary packages
 * **Clone the repository**
 	
 	```
