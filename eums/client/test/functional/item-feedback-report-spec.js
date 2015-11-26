@@ -12,7 +12,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
         expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
         expect(itemFeedbackReport.programmes).toContain('AAASpecial Programme');
-        expect(itemFeedbackReport.implementingPartners).toContain('Consignee 62');
+        expect(itemFeedbackReport.implementingPartners).toContain('Consignee 64');
         expect(itemFeedbackReport.consignees).toContain('AMUDAT DHO');
         expect(itemFeedbackReport.orderNumbers).toContain('2014111');
         expect(itemFeedbackReport.quantitiesShipped).toContain('7');
@@ -101,7 +101,7 @@ describe('Item Feedback Report', function () {
 
         expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
         expect(itemFeedbackReport.programmes).toContain('AAASpecial Programme');
-        expect(itemFeedbackReport.implementingPartners).toContain('Consignee 62');
+        expect(itemFeedbackReport.implementingPartners).toContain('WAKISO DHO');
         expect(itemFeedbackReport.orderNumbers).toContain('2014111');
         expect(itemFeedbackReport.quantitiesShipped).toContain('10');
         expect(itemFeedbackReport.values).toContain('$200.00');
