@@ -83,7 +83,7 @@
                             <td class="centered standard" sort-by="delivery_stages.end_user.confirmed">Confirmed (%)</td>
                             <td class="centered standard" sort-by="delivery_stages.end_user.average_delay">Transit (days)</td>
                         </tr>
-                        <tr ng-repeat="bucket in report">
+                        <tr si-sortable="single" ng-repeat="bucket in report">
                             <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery.delivery_date | date: 'dd-MMM-yyyy' }}</td>
                             <td ng-if="view == views.DELIVERY">{{ bucket.identifier.ip.name }}</td>
                             <td ng-if="view == views.DELIVERY">{{ bucket.identifier.delivery.location }}</td>
