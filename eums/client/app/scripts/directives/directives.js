@@ -469,6 +469,96 @@ angular.module('Directives', ['eums.ip'])
                 });
             }
         }
+    })
+    .directive('selectDeliveryReceiveOption', function (OptionService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                OptionService.deliveryReceivedOptions().then(function (options) {
+                    var originOptions = _.uniq(options, function (option) {
+                        return option.text;
+                    });
+                    return _.reject(originOptions, function(option) {
+                        return option.text == 'UNCATEGORISED';
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'Received',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    var option = $(elem).select2('data');
+                    var text = option ? option.text : "";
+                    ngModel.$setViewValue(text);
+                    scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectDeliverySatisfiedOption', function (OptionService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                OptionService.deliverySatisfiedOptions().then(function (options) {
+                    var originOptions = _.uniq(options, function (option) {
+                        return option.text;
+                    });
+                    return _.reject(originOptions, function(option) {
+                        return option.text == 'UNCATEGORISED';
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'Satisfied',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    var option = $(elem).select2('data');
+                    var text = option ? option.text : "";
+                    ngModel.$setViewValue(text);
+                    scope.$apply();
+                });
+            }
+        }
+    })
+    .directive('selectDeliveryConditionOption', function (OptionService) {
+        return {
+            restrict: 'A',
+            scope: false,
+            require: 'ngModel',
+            link: function (scope, elem, attrs, ngModel) {
+                OptionService.deliveryConditionOptions().then(function (options) {
+                    var originOptions = _.uniq(options, function (option) {
+                        return option.text;
+                    });
+                    return _.reject(originOptions, function(option) {
+                        return option.text == 'UNCATEGORISED';
+                    });
+                }).then(function (data) {
+                    $(elem).select2({
+                        placeholder: 'Good Condition',
+                        allowClear: true,
+                        data: data
+                    });
+                });
+
+                elem.change(function () {
+                    var option = $(elem).select2('data');
+                    var text = option ? option.text : "";
+                    ngModel.$setViewValue(text);
+                    scope.$apply();
+                });
+            }
+        }
     });
 
 
