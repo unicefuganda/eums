@@ -245,7 +245,7 @@ class FlowSchedulerTest(TestCase):
         self.assertTrue(is_distribution_expired(delivery))
 
     def test_is_distribution_expired_should_return_false(self):
-        delivery = DeliveryFactory(time_limitation_on_distribution=5)
+        delivery = DeliveryFactory(time_limitation_on_distribution=7)
         self.__prepare_for_is_distribution_expired_test(delivery)
 
         self.assertFalse(is_distribution_expired(delivery))
@@ -259,7 +259,7 @@ class FlowSchedulerTest(TestCase):
         DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question_is_received, value=option_is_received)
-        datetime_span = (datetime.datetime.today() - datetime.timedelta(days=4)).strftime('%Y-%m-%dT%H:%M:%S')
+        datetime_span = (datetime.datetime.today() - datetime.timedelta(days=5)).strftime('%Y-%m-%dT%H:%M:%S')
         TextAnswerFactory(run=run, question=question_received_date, value=datetime_span)
 
     @patch('eums.services.flow_scheduler.distribution_alert_raise')

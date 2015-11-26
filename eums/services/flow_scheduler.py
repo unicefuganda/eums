@@ -82,10 +82,14 @@ def distribution_alert_raise():
         if is_distribution_expired_alert_not_raised(runnable) \
                 and is_shipment_received_but_not_distributed(distribution_plan) \
                 and is_distribution_expired(distribution_plan):
+            print(str(datetime.datetime.now()) + '[INFO]: raise alert!')
             runnable.create_alert(Alert.ISSUE_TYPES.distribution_expired)
 
 
 def is_distribution_expired_alert_not_raised(runnable):
+    print 'is_distribution_expired_alert_not_raised:' + str(
+        not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired,
+                                 runnable=runnable))
     return not Alert.objects.filter(issue=Alert.ISSUE_TYPES.distribution_expired,
                                     runnable=runnable)
 
@@ -94,6 +98,7 @@ def is_shipment_received_but_not_distributed(distribution_plan):
     runnable_id = distribution_plan.runnable_ptr_id
     not_distributed = DistributionPlanNode.objects.filter(Q(distribution_plan_id=runnable_id) & (
         Q(tree_position=Runnable.MIDDLE_MAN) | Q(tree_position=Runnable.END_USER))).count() == 0
+    print 'is_shipment_received_but_not_distributed:' + str(distribution_plan.shipment_received() and not_distributed)
     return distribution_plan.shipment_received() and not_distributed
 
 
@@ -102,6 +107,7 @@ def is_distribution_expired(distribution_plan):
     date_received_str = distribution_plan.received_date()
     if time_limitation and date_received_str:
         date_received = datetime.datetime.strptime(date_received_str.split('T')[0], '%Y-%m-%d').date()
+        print 'is_distribution_expired:' + str((datetime.date.today() - date_received).days > time_limitation)
         if (datetime.date.today() - date_received).days >= time_limitation:
             return True
     return False
