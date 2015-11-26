@@ -1,13 +1,16 @@
 from eums.test.api.api_test_helpers import create_option
-from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
-from eums.models.question import MultipleChoiceQuestion
+from eums.test.factories.question_factory import MultipleChoiceQuestionFactory
 
 ENDPOINT_URL = BACKEND_URL + 'option/'
 RECEIVED_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'received-options/'
 QUALITY_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'quality-options/'
 SATISFIED_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'satisfied-options/'
+
+DELIVERY_RECEIVED_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'delivery-received-options/'
+DELIVERY_SATISFIED_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'delivery-satisfied-options/'
+DELIVERY_CONDITION_OPTIONS_ENDPOINT_URL = BACKEND_URL + 'delivery-condition-options/'
 
 
 class OptionsEndPointTest(AuthenticatedAPITestCase):
@@ -100,6 +103,78 @@ class SatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
         create_option(self, option_three_details)
 
         get_response = self.client.get(SATISFIED_OPTIONS_ENDPOINT_URL)
+
+        self.assertEqual(get_response.status_code, 200)
+        self.assertDictContainsSubset(option_one_details, get_response.data[0])
+        self.assertDictContainsSubset(option_two_details, get_response.data[2])
+        self.assertNotIn(option_three_details, get_response.data)
+
+
+class DeliveryReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
+    def test_should_only_get_delivery_received_options(self):
+        delivery_received_question = MultipleChoiceQuestionFactory(
+            uuids=['3ce26959-1e21-4cf6-98a1-c460b57e7ba5'],
+            text='Was delivery received?', label='deliveryReceived'
+        )
+        other_question = MultipleChoiceQuestionFactory()
+
+        option_one_details = {'text': "Yes", 'question': delivery_received_question.id}
+        option_two_details = {'text': "No", 'question': delivery_received_question.id}
+        option_three_details = {'text': "Other", 'question': other_question.id}
+
+        create_option(self, option_one_details)
+        create_option(self, option_two_details)
+        create_option(self, option_three_details)
+
+        get_response = self.client.get(DELIVERY_RECEIVED_OPTIONS_ENDPOINT_URL)
+
+        self.assertEqual(get_response.status_code, 200)
+        self.assertDictContainsSubset(option_one_details, get_response.data[0])
+        self.assertDictContainsSubset(option_two_details, get_response.data[2])
+        self.assertNotIn(option_three_details, get_response.data)
+
+
+class DeliverySatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
+    def test_should_only_get_delivery_satisfied_options(self):
+        delivery_satisfied_question = MultipleChoiceQuestionFactory(
+            uuids=['357b3eda-0a30-43c6-967d-6ec44e4c6162'],
+            text='Are you satisfied with the delivery?', label='satisfiedWithDelivery'
+        )
+        other_question = MultipleChoiceQuestionFactory()
+
+        option_one_details = {'text': "Yes", 'question': delivery_satisfied_question.id}
+        option_two_details = {'text': "No", 'question': delivery_satisfied_question.id}
+        option_three_details = {'text': "Other", 'question': other_question.id}
+
+        create_option(self, option_one_details)
+        create_option(self, option_two_details)
+        create_option(self, option_three_details)
+
+        get_response = self.client.get(DELIVERY_SATISFIED_OPTIONS_ENDPOINT_URL)
+
+        self.assertEqual(get_response.status_code, 200)
+        self.assertDictContainsSubset(option_one_details, get_response.data[0])
+        self.assertDictContainsSubset(option_two_details, get_response.data[2])
+        self.assertNotIn(option_three_details, get_response.data)
+
+
+class DeliveryConditionOptionsEndPointTest(AuthenticatedAPITestCase):
+    def test_should_only_get_delivery_condition_options(self):
+        delivery_condition_question = MultipleChoiceQuestionFactory(
+            uuids=['3762e25b-20e2-49fd-ad4f-0ccec08b4426'],
+            text='Was delivery in good condition?', label='isDeliveryInGoodOrder'
+        )
+        other_question = MultipleChoiceQuestionFactory()
+
+        option_one_details = {'text': "Yes", 'question': delivery_condition_question.id}
+        option_two_details = {'text': "No", 'question': delivery_condition_question.id}
+        option_three_details = {'text': "Other", 'question': other_question.id}
+
+        create_option(self, option_one_details)
+        create_option(self, option_two_details)
+        create_option(self, option_three_details)
+
+        get_response = self.client.get(DELIVERY_CONDITION_OPTIONS_ENDPOINT_URL)
 
         self.assertEqual(get_response.status_code, 200)
         self.assertDictContainsSubset(option_one_details, get_response.data[0])
