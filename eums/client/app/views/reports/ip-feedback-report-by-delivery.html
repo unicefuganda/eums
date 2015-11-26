@@ -7,73 +7,122 @@
 <div class="container-fluid">
     <div class="content">
         <div class="row">
-            <div class="row margin-right-20 margin-top-20">
-                <div class="col-xs-6 pull-right pad-left-0 pad-bottom-5">
-                    <label class="blue-unicef">Filter Report By:</label>
+            <div class="form-group margin-right-20 margin-top-20">
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Outcome:</label>
+                    </div>
+
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-programme-container">
+                        <input id="filter-programme" type="hidden" search-programmes
+                               ng-model="searchTerm.programmeId"
+                               value="{{ item.programme.id }}">
+                    </div>
+
+
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Received:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-received-container">
+                        <input id="filter-by-received" type="hidden" select-delivery-receive-option
+                               ng-model="searchTerm.received">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">IP:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-consignee-container">
+                        <input id="filter-by-consignee" type="hidden" select-i-p
+                               ng-model="searchTerm.consigneeId"
+                               value="{{ item.consignee.id }}">
+                    </div>
+
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Satisfied:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-satisfied-container">
+                        <input id="filter-by-satisfied" type="hidden" select-delivery-satisfied-option
+                               ng-model="searchTerm.satisfied">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">PO or Waybill:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small">
+                        <div class="inner-addon right-addon">
+                            <i class="glyphicon "
+                               ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
+                            <input type="text" id="filter-po-waybill" class="form-control" name="filter"
+                                   ng-model="searchTerm.poWaybill"
+                                   placeholder="PO or Waybill"/>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-2 filter-label">
+                        <label class="control-label description-label">Condition:</label>
+                    </div>
+                    <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-condition-container">
+                        <input id="filter-by-condition" type="hidden" select-delivery-condition-option
+                               ng-model="searchTerm.good_condition">
+                    </div>
                 </div>
             </div>
             <div class="row margin-right-20">
-                <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">Feedback Report from Deliveries to <span class="blue-unicef bold">{{ district }}</span></div>
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right">
-                    <div class="inner-addon right-addon">
-                        <i class="glyphicon "
-                           ng-class="{'glyphicon-cog glyphicon-spin': searching, 'glyphicon-search': !searching}"></i>
-                        <input type="text" id="filter-po-waybill" class="form-control" name="filter"
-                               ng-model="searchTerm.poWaybill"
-                               placeholder="PO or Waybill"/>
-                    </div>
-                </div>
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-consignee-container">
-                    <input id="filter-by-consignee" type="hidden" select-i-p
-                           ng-model="searchTerm.consigneeId"
-                           value="{{ item.consignee.id }}">
-                </div>
-
-                <div class="col-xs-2 margin-bottom-20 pad-small pull-right" id="filter-programme-container">
-                    <input id="filter-programme" type="hidden" search-programmes
-                           ng-model="searchTerm.programmeId"
-                           value="{{ item.programme.id }}">
-                </div>
+                <div id="feedback-district-header" class="margin-left-30 text-muted pull-left">Feedback Report from
+                    Deliveries to
+                    <span class="blue-unicef bold">{{ district }}</span></div>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="table-wrapper">
-            <table class="table table-bordered table-hover table-striped table-condensed">
-                <thead>
-                <tr>
-                    <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
-                    <th class="align-left"><a ng-click="sortBy('shipmentDate')" class="pad-left-10 shipment-date">SHIPMENT DATE<i ng-class="sortArrowClass('shipmentDate')"></i></a></th>
-                    <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="pad-left-10 date-of-receipt">DATE RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
-                    <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
-                    <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
-                    <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
-                    <th class="align-left"><a ng-click="sortBy('value')" class="pad-left-10 value">VALUE<i ng-class="sortArrowClass('value')"></i></a></th>
-                    <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
-                    <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
-                    <th class="align-left"><span class="pad-left-10">REMARKS</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="($index, itemReport) in report" class="align-left">
-                    <td><span class=" eums-border-status eums-border-center eums-border-width-35"
-                              ng-class="{ 'eums-bg-color-yes': itemReport.deliveryReceived == 'Yes',
+<div class="table-wrapper">
+    <table class="table table-bordered table-hover table-striped table-condensed">
+        <thead>
+        <tr>
+            <th class="align-center"><span class="pad-left-10">RECEIVED</span></th>
+            <th class="align-left"><a ng-click="sortBy('shipmentDate')" class="pad-left-10 shipment-date">SHIPMENT
+                DATE<i ng-class="sortArrowClass('shipmentDate')"></i></a></th>
+            <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="pad-left-10 date-of-receipt">DATE
+                RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
+            <th class="align-left"><span class="pad-left-10">PO/WAYBILL</span></th>
+            <th class="align-left"><span class="pad-left-10">OUTCOME</span></th>
+            <th class="align-left"><span class="pad-left-10">IMPLEMENTING PARTNER</span></th>
+            <th class="align-left"><a ng-click="sortBy('value')" class="pad-left-10 value">VALUE<i
+                    ng-class="sortArrowClass('value')"></i></a></th>
+            <th class="align-center"><span class="pad-left-10">CONDITION</span></th>
+            <th class="align-left"><span class="pad-left-10">SATISFIED</span></th>
+            <th class="align-left"><span class="pad-left-10">REMARKS</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="($index, itemReport) in report" class="align-left">
+            <td><span class=" eums-border-status eums-border-center eums-border-width-35"
+                      ng-class="{ 'eums-bg-color-yes': itemReport.deliveryReceived == 'Yes',
                               'eums-bg-color-no': itemReport.deliveryReceived == 'No'}">
                         {{ itemReport.deliveryReceived }}
                     </span></td>
-                    <td><span class="pad-left-10">{{ formatDate(itemReport.shipmentDate) | date: 'dd-MMM-yyyy' }}</span></td>
-                    <td><span class="pad-left-10">{{ formatDate(itemReport.dateOfReceipt) | date: 'dd-MMM-yyyy' }}</span></td>
-                    <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
-                    <td><span class="pad-left-10">{{ itemReport.programme.name }}</span></td>
-                    <td><span class="pad-left-10">{{ itemReport.consignee.name }}</span></td>
-                    <td><span class="pad-left-10">{{ itemReport.value | currency }}</span></td>
-                    <td>
+            <td><span class="pad-left-10">{{ formatDate(itemReport.shipmentDate) | date: 'dd-MMM-yyyy' }}</span>
+            </td>
+            <td><span
+                    class="pad-left-10">{{ formatDate(itemReport.dateOfReceipt) | date: 'dd-MMM-yyyy' }}</span>
+            </td>
+            <td><span class="pad-left-10">{{ itemReport.orderNumber }}</span></td>
+            <td><span class="pad-left-10">{{ itemReport.programme.name }}</span></td>
+            <td><span class="pad-left-10">{{ itemReport.consignee.name }}</span></td>
+            <td><span class="pad-left-10">{{ itemReport.value | currency }}</span></td>
+            <td>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'Yes'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-yes">Good</span>
                         <span ng-if="itemReport.isDeliveryInGoodOrder == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">Bad</span>
-                    </td>
-                    <td>
-                        <div class="align-center">
+            </td>
+            <td>
+                <div class="align-center">
                             <span class="glyphicon glyphicon-size-17 glyphicon-top-5"
                                   ng-class="{'glyphicon-ok-sign': itemReport.satisfiedWithDelivery == 'Yes',
                                                 'eums-text-color-ok': itemReport.satisfiedWithDelivery == 'Yes',
@@ -81,63 +130,63 @@
                                                 'eums-text-color-no': itemReport.satisfiedWithDelivery == 'No'
                                 }">
                             </span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="align-center">
-                            <a class="button" ng-click="showRemarks($index)"
-                               ng-hide="itemReport.additionalDeliveryComments == '' ">
+                </div>
+            </td>
+            <td>
+                <div class="align-center">
+                    <a class="button" ng-click="showRemarks($index)"
+                       ng-hide="itemReport.additionalDeliveryComments == '' ">
                                 <span class="button glyphicon glyphicon-comment glyphicon-comment-color
                                         glyphicon-size-17 glyphicon-top-5">
                                 </span>
-                            </a>
-                        </div>
-                        <div class="modal fade text-left" id="remarks-modal-{{$index}}">
-                            <div class="modal-dialog modal-sixty-percent-size">
-                                <div class="modal-content col-md-offset-3 col-md-6">
-                                    <div class="modal-header">
-                                        <button type="button"
-                                                class="close"
-                                                data-dismiss="modal">
-                                            <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
-                                            <span class="sr-only">Close</span>
-                                        </button>
-                                        <h4 class="eums-modal-header">Additional Remarks</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="eums-modal-content">
-                                            {{ itemReport.additionalDeliveryComments }}
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer centered">
-                                        <button type="button"
-                                                class="btn btn-primary"
-                                                data-dismiss="modal"><span
-                                                class='glyphicon glyphicon-ok-sign text-white'></span> OK
-                                        </button>
-                                    </div>
+                    </a>
+                </div>
+                <div class="modal fade text-left" id="remarks-modal-{{$index}}">
+                    <div class="modal-dialog modal-sixty-percent-size">
+                        <div class="modal-content col-md-offset-3 col-md-6">
+                            <div class="modal-header">
+                                <button type="button"
+                                        class="close"
+                                        data-dismiss="modal">
+                                    <span aria-hidden="true" class="glyphicon glyphicon-remove-sign"></span>
+                                    <span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="eums-modal-header">Additional Remarks</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="eums-modal-content">
+                                    {{ itemReport.additionalDeliveryComments }}
                                 </div>
                             </div>
+                            <div class="modal-footer centered">
+                                <button type="button"
+                                        class="btn btn-primary"
+                                        data-dismiss="modal"><span
+                                        class='glyphicon glyphicon-ok-sign text-white'></span> OK
+                                </button>
+                            </div>
                         </div>
-                    </td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                    <td colspan="10" class="centered">
-                        <pagination total-items="count"
-                                    ng-model="pagination.page"
-                                    boundary-links="true"
-                                    ng-change="goToPage(pagination.page)"
-                                    max-size="5"
-                                    rotate="false"
-                                    items-per-page="pageSize">
-                        </pagination>
-                    </td>
-                </tr>
-                </tfoot>
-            </table>
-        </div>
-        <!-- END TABLE -->
-    </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="10" class="centered">
+                <pagination total-items="count"
+                            ng-model="pagination.page"
+                            boundary-links="true"
+                            ng-change="goToPage(pagination.page)"
+                            max-size="5"
+                            rotate="false"
+                            items-per-page="pageSize">
+                </pagination>
+            </td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+<!-- END TABLE -->
+</div>
 </div>

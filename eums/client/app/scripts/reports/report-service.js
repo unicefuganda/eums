@@ -24,6 +24,7 @@ angular.module('ReportService', ['eums.config'])
                 received: params.received,
                 quality: params.quality,
                 satisfied: params.satisfied,
+                good_condition: params.good_condition,
                 field: params.field,
                 order: params.order
             } : {};

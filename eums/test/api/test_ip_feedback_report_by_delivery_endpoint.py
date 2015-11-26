@@ -451,7 +451,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                             tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
         DeliveryNodeFactory(distribution_plan=delivery_two, programme=programme_two,
                             tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
-        DeliveryNodeFactory(distribution_plan=delivery_three    , programme=programme_two,
+        DeliveryNodeFactory(distribution_plan=delivery_three, programme=programme_two,
                             tree_position=DistributionPlanNode.IMPLEMENTING_PARTNER)
 
         run_one = RunFactory(runnable=delivery_one)

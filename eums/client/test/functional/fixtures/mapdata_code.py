@@ -1,14 +1,14 @@
+from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.client.test.functional.fixtures.mapdata_runs import *
 from eums.elasticsearch.sync_info import SyncInfo
-from eums.fixtures import web_questions, ip_questions, middle_man_questions
-from eums.client.test.functional.fixtures.mapdata_release_order_items import *
+from eums.fixtures import web_questions, ip_questions
+from eums.fixtures.end_user_questions import *
 from eums.fixtures.ip_questions import seed_ip_questions
 from eums.fixtures.middle_man_questions import mm_question_1, mm_q1_option_1, mm_question_2, mm_question_3
 from eums.models import DistributionReport, Alert
+from eums.models import MultipleChoiceAnswer
 from eums.models import NumericAnswer
 from eums.models import TextAnswer
-from eums.models import MultipleChoiceAnswer
-from eums.fixtures.end_user_questions import *
 from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -194,8 +194,11 @@ delivery_pader = DeliveryFactory(location='PADER', track=True, programme=program
 
 delivery_Amuru = DeliveryFactory(location='Amuru', delivery_date=today, track=True)
 
+delivery_kampala = DeliveryFactory(location='Kampala', delivery_date=today, track=True)
+
 run_delivery_pader = RunFactory(runnable=delivery_pader, status=Run.STATUS.scheduled)
 run_delivery_amuru = RunFactory(runnable=delivery_Amuru, status=Run.STATUS.scheduled)
+run_delivery_kampala = RunFactory(runnable=delivery_kampala, status=Run.STATUS.scheduled)
 
 MultipleChoiceAnswerFactory(run=run_delivery_pader, question=ip_questions['WAS_DELIVERY_RECEIVED'],
                             value=options['DELIVERY_WAS_RECEIVED'])
@@ -208,6 +211,15 @@ TextAnswerFactory(run=run_delivery_pader, question=ip_questions['ADDITIONAL_DELI
 
 MultipleChoiceAnswerFactory(run=run_delivery_amuru, question=ip_questions['WAS_DELIVERY_RECEIVED'],
                             value=options['DELIVERY_WAS_NOT_RECEIVED'])
+
+MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=ip_questions['WAS_DELIVERY_RECEIVED'],
+                            value=options['DELIVERY_WAS_RECEIVED'])
+TextAnswerFactory(run=run_delivery_kampala, question=ip_questions['DATE_OF_RECEIPT'], value='2014-10-29')
+MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=ip_questions['IS_DELIVERY_IN_GOOD_ORDER'],
+                            value=options['NOT_IN_GOOD_CONDITION'])
+MultipleChoiceAnswerFactory(run=run_delivery_kampala, question=ip_questions['SATISFIED_WITH_DELIVERY'],
+                            value=options['NOT_SATISFIED'])
+TextAnswerFactory(run=run_delivery_kampala, question=ip_questions['ADDITIONAL_DELIVERY_COMMENTS'], value='none')
 
 non_response_delivery_one = DeliveryFactory(delivery_date=today + datetime.timedelta(days=4), location='PADER',
                                             track=True)
@@ -236,6 +248,9 @@ ip_node_two = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, t
 
 ip_node_three = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=10,
                                     distribution_plan=delivery_Amuru, item=po_item_two)
+
+ip_node_kampala = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=5,
+                                      distribution_plan=delivery_kampala, item=po_item_one)
 
 run_ip_node_one = RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled)
 run_ip_node_two = RunFactory(runnable=ip_node_two, status=Run.STATUS.scheduled)
@@ -302,7 +317,6 @@ non_response_node = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=T
                                         distribution_plan=None, parents=((ip_node_two, 2),),
                                         item=po_item_one)
 RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
-
 
 po_item_three = PurchaseOrderItemFactory(quantity=50, value=1000, item=ItemFactory(description='Another Funny Item'))
 

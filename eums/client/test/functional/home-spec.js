@@ -83,12 +83,12 @@ describe('Home Page', function () {
 
             it('should get global stats on map', function () {
                 expect(homePage.mapLocation).toEqual('');
-                expect(homePage.numberSent).toEqual('10 deliveries');
-                expect(homePage.numberDelivered).toEqual('4 responses');
+                expect(homePage.numberSent).toEqual('11 deliveries');
+                expect(homePage.numberDelivered).toEqual('5 responses');
                 expect(homePage.numberNotDelivered).toEqual('1 response');
                 expect(homePage.numberNonResponse).toEqual('4 non-responses');
                 expect(homePage.valueSent).toEqual('$1.9k');
-                expect(homePage.valueDelivered).toEqual('593');
+                expect(homePage.valueDelivered).toEqual('643');
                 expect(homePage.valueNotDelivered).toEqual('200');
                 expect(homePage.valueNonResponse).toEqual('292');
             });
@@ -124,7 +124,7 @@ describe('Home Page', function () {
                 homePage.clickMapLayer('Amuru');
                 expect(homePage.latestDeliveriesCount).toEqual(2);
                 homePage.latestDeliveryResponses.then(function (responses) {
-                    expect(responses[1].getText()).toEqual('Consignee 55 on 25-Sep-2014\nNOT RECEIVED');
+                    expect(responses[1].getText()).toEqual('Consignee 56 on 25-Sep-2014\nNOT RECEIVED');
                 });
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });
