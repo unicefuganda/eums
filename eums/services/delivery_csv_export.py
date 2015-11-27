@@ -48,14 +48,12 @@ class DeliveryCSVExport(object):
 
 
 class DeliveryExportFactory(object):
-
     @staticmethod
     def create(type_str, host_name):
         return eval(type_str + 'DeliveryExport')(host_name)
 
 
 class WarehouseDeliveryExport(DeliveryCSVExport):
-
     def __init__(self, host_name):
         self.export_header = 'Waybill'
         self.export_label = 'Warehouse'
@@ -65,7 +63,6 @@ class WarehouseDeliveryExport(DeliveryCSVExport):
 
 
 class DirectDeliveryExport(DeliveryCSVExport):
-
     def __init__(self, host_name):
         self.export_header = 'Purchase Order Number'
         self.export_label = 'Direct'

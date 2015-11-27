@@ -1,10 +1,14 @@
 <div class="container-fluid">
     <div class="content">
-        <h4 class="page-header">Consignees</h4>
+        <div><h4 class="eums page-header">Consignees</h4>
+        </div>
         <ng-toast></ng-toast>
-        <button id="add-consignee" ng-show="hasPermissionTo('eums.add_consignee')" class="btn btn-primary" ng-click="addConsignee()">
+        <div class="row-padding">
+            <button id="add-consignee" ng-show="hasPermissionTo('eums.add_consignee')" class="btn btn-primary"
+                ng-click="addConsignee()">
             Add Consignee
         </button>
+        </div>
 
         <div class="row filter-bar">
             <div class="col-xs-4 text-muted">

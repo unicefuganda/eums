@@ -1,5 +1,16 @@
 <div class="container-fluid">
-    <div class="eums page-header">Delivery</div>
+    <h4 class="eums page-header">
+        <div class="pull-left">Delivery</div>
+        <div class="content nopadding">
+            <ul class="nav nav-pills" ng-controller="NavigationTabsController">
+                <li class="pull-right active">
+                    <a ng-click="exportToCSV()" class="btn btn-default blue-border-button"><i
+                            class="glyphicon glyphicon-log-out"></i> Export to CSV</a>
+                </li>
+            </ul>
+        </div>
+    </h4>
+
     <div class="content margin-bottom-50">
         <ul class="nav nav-pills" style="margin-top: 1em;" ng-controller="NavigationTabsController">
             <li class="pad-small" role="presentation" ng-class="{active : isActive('/direct-delivery')}">
@@ -7,9 +18,6 @@
             </li>
             <li class="pad-small" role="presentation" ng-class="{active : isActive('/warehouse-delivery')}">
                 <a href="#/warehouse-delivery" class="btn btn-default blue-border-button">Warehouse Delivery</a>
-            </li>
-            <li class="pull-right active">
-                <a ng-click="exportToCSV()" class="btn btn-default blue-border-button"><i class="glyphicon glyphicon-log-out"></i> Export to CSV</a>
             </li>
         </ul>
     </div>
