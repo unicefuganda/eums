@@ -4,9 +4,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
-from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Option, Run, MultipleChoiceAnswer
+
 from eums.api.sorting.standard_dic_sort import StandardDicSort
+from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
+    ReleaseOrderItem, Option, MultipleChoiceAnswer
 
 PAGE_SIZE = 10
 sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived')
@@ -22,10 +23,9 @@ def item_feedback_report(request):
 
     response = []
     nodes = item_tracked_nodes(request, ip)
-
-    nodes = filter_answers(nodes, request, 'received', ('itemReceived', 'productReceived'))
-    nodes = filter_answers(nodes, request, 'satisfied', ('satisfiedWithProduct',))
-    nodes = filter_answers(nodes, request, 'quality', ('qualityOfProduct',))
+    nodes = filter_answers(request, nodes, {'received': ('itemReceived', 'productReceived'),
+                                            'satisfied': ('satisfiedWithProduct',),
+                                            'quality': ('qualityOfProduct',)})
 
     if nodes:
         build_answers_for_nodes(nodes, response)
@@ -48,13 +48,15 @@ def item_feedback_report(request):
     return Response(data, status=status.HTTP_200_OK)
 
 
-def filter_answers(nodes, request, param_name, question_labels):
-    param = request.GET.get(param_name)
-    if param:
-        runs = MultipleChoiceAnswer.objects.filter(question__label__in=question_labels,
-                                                   value__text__iexact=param,
-                                                   run__runnable__in=nodes).values_list('run_id')
-        nodes = nodes.filter(run__in=runs)
+def filter_answers(request, nodes, questions):
+    for key, value in questions.iteritems():
+        param = request.GET.get(key)
+        if param:
+            runs = MultipleChoiceAnswer.objects.filter(question__label__in=value,
+                                                       value__text__iexact=param,
+                                                       run__runnable__in=nodes).values_list('run_id')
+            nodes = nodes.filter(run__in=runs)
+
     return nodes
 
 

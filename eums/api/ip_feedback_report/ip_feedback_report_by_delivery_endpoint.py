@@ -1,12 +1,13 @@
 from django.core.paginator import Paginator
 from django.db.models import Q
-from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode, Runnable, MultipleChoiceAnswer
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
+
 from eums.api.sorting.standard_dic_sort import StandardDicSort
+from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
+    DistributionPlanNode, Runnable, MultipleChoiceAnswer
 
 PAGE_SIZE = 10
 sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
@@ -21,9 +22,9 @@ def ip_feedback_by_delivery_endpoint(request):
         ip = user_profile.consignee
     deliveries = _get_filtered_deliveries(request, ip)
 
-    deliveries = filter_answers(deliveries, request, 'received', 'deliveryReceived')
-    deliveries = filter_answers(deliveries, request, 'satisfied', 'satisfiedWithDelivery')
-    deliveries = filter_answers(deliveries, request, 'good_condition', 'isDeliveryInGoodOrder')
+    deliveries = filter_answers(request, deliveries, {'received': ('deliveryReceived',),
+                                                      'satisfied': ('satisfiedWithDelivery',),
+                                                      'good_condition': ('isDeliveryInGoodOrder',)})
 
     results = sort.sort_by(request, _build_delivery_answers(deliveries))
     paginated_results = Paginator(results, PAGE_SIZE)
@@ -43,13 +44,14 @@ def ip_feedback_by_delivery_endpoint(request):
     return Response(data=data, status=status.HTTP_200_OK)
 
 
-def filter_answers(deliveries, request, param_name, question_label):
-    param = request.GET.get(param_name)
-    if param:
-        runs = MultipleChoiceAnswer.objects.filter(question__label__iexact=question_label,
-                                                   value__text__iexact=param,
-                                                   run__runnable__in=deliveries).values_list('run_id')
-        deliveries = deliveries.filter(run__in=runs)
+def filter_answers(request, deliveries, questions):
+    for key, value in questions.iteritems():
+        param = request.GET.get(key)
+        if param:
+            runs = MultipleChoiceAnswer.objects.filter(question__label__in=value,
+                                                       value__text__iexact=param,
+                                                       run__runnable__in=deliveries).values_list('run_id')
+            deliveries = deliveries.filter(run__in=runs)
 
     return deliveries
 
