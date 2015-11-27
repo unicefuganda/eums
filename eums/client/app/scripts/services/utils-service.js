@@ -5,7 +5,7 @@ angular.module('SysUtils', [])
                 try {
                     return date.trim() ? moment(date.trim()).format('DD-MMM-YYYY') : "";
                 } catch (err) {
-                    return ""
+                    return "";
                 }
             }
         }

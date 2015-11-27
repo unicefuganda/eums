@@ -1,40 +1,38 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
-
 from eums.api.alert.alert_endpoint import alert_router, AlertCount
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
     NodeResponses, AllIPResponses
-from eums.api.answer.text_answers_endpoint import textAnswerRouter
-from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.multiple_choice_answers_endpoint import multipleChoiceAnswerRouter
+from eums.api.answer.numeric_answers_endpoint import numericAnswerRouter
 from eums.api.answer.plan_answers_endpoint import PlanResponses
+from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
+from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet
 from eums.api.delivery_stats.delivery_stats_details_endpoint import DeliveryStatsDetailsEndpoint
 from eums.api.delivery_stats.latest_deliveries import LatestDeliveriesEndpoint
 from eums.api.delivery_stats.map_delivery_stats_endpoint import MapDeliveryStatsEndpoint
-from eums.views.export_deliveries import ExportDeliveriesCSV
 from eums.api.distribution_plan.distribution_plan_endpoint import distributionPlanRouter
 from eums.api.distribution_plan_node.distribution_plan_node_endpoint import distributionPlanNodeRouter
+from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
 from eums.api.item.item_endpoint import itemRouter
 from eums.api.item_unit.item_unit_endpoint import itemUnitRouter
-from eums.api.run.run import runRouter
+from eums.api.option.option_endpoint import optionRouter
 from eums.api.programme.programme_endpoint import programmeRouter
-from eums.api.release_order.release_order_endpoint import releaseOrderRouter
-from eums.api.release_order_item.release_order_item_endpoint import releaseOrderItemRouter
-from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
-from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter, soItemPOItem
 from eums.api.purchase_order.purchase_order_endpoint import purchaseOrderRouter
 from eums.api.purchase_order_item.purchase_order_item_endpoint import purchaseOrderItemRouter
-from eums.api.distribution_report.distribution_report_endpoint import distributionReportRouter
-from eums.api.stock_report.stock_report_endpoint import StockReport
 from eums.api.question.question_endpoint import questionRouter
+from eums.api.release_order.release_order_endpoint import releaseOrderRouter
+from eums.api.release_order_item.release_order_item_endpoint import releaseOrderItemRouter
+from eums.api.run.run import runRouter
+from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
+from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter, soItemPOItem
+from eums.api.stock_report.stock_report_endpoint import StockReport
 from eums.api.user.user_endpoint import userRouter
-from eums.views.users import UsersList, CreateUser, EditUser
 from eums.views.home import Home
-from eums.api.option.option_endpoint import optionRouter
-
+from eums.views.users import UsersList, CreateUser, EditUser
 
 urlpatterns = patterns(
     '',
@@ -51,7 +49,6 @@ urlpatterns = patterns(
         name='ip_feedback_report_by_delivery'),
     url(r'^api/item-feedback-report', 'eums.api.item_feedback_report.item_feedback_report_endpoint.item_feedback_report',
         name='item_feedback_report'),
-    url(r'^exports/deliveries/', ExportDeliveriesCSV.as_view(), name='warehouse_deliveries_csv'),
     url(r'^api/import-release-orders/', 'eums.api.import_data.import_orders_endpoint.import_release_orders',
         name='import_release_orders'),
     url(r'^api/import-purchase-orders/', 'eums.api.import_data.import_orders_endpoint.import_purchase_orders',
@@ -112,4 +109,5 @@ urlpatterns = patterns(
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
+    url(r'^exports/deliveries/', ExportDeliveryViewSet.as_view(), name='warehouse_deliveries_csv')
 )
