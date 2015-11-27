@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow'])
+angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils'])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
-                                                                  ErrorMessageService, SortService, SortArrowService) {
+                                                                  ErrorMessageService, SortService, SortArrowService, UtilsService) {
             var timer,
                 SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
 
@@ -38,7 +38,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             });
 
             $scope.sortBy = function (sortField) {
-                if(SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
                     $scope.sortOptions = SortService.sortBy(sortField);
                     refreshReport($scope.sortOptions)
                 }
@@ -123,8 +123,8 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 LoaderService.showModal(remarksModalId)
             };
 
-            $scope.formatDate = function(date) {
-                return date ? new Date(date) : "";
+            $scope.formatDate = function (date) {
+                UtilsService.formatDate(date)
             };
         }
     )
