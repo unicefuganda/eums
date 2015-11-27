@@ -117,7 +117,10 @@ describe('StockReportController', function () {
             scope.reportParams = {};
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc'
+            });
         });
 
         it('should load districts', function () {
@@ -148,13 +151,13 @@ describe('StockReportController', function () {
         beforeEach(function () {
             // Initial Load
             deferredUser.resolve(adminUser);
-            scope.reportParams = {}
+            scope.reportParams = {};
             scope.$apply();
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
         });
 
         it('should set ip user to false when unicef user', function () {
-            scope.$apply()
+            scope.$apply();
             expect(scope.isIpUser).toBeFalsy();
         });
 
@@ -163,7 +166,11 @@ describe('StockReportController', function () {
             scope.reportParams.selectedIPId = 1;
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 1});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                consignee: 1
+            });
         });
 
         it('should load stock report for selected location', function () {
@@ -171,7 +178,11 @@ describe('StockReportController', function () {
             scope.reportParams.selectedLocation = 1;
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 1});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                location: 1
+            });
         });
 
         it('should load stock report for selected location and IP', function () {
@@ -181,27 +192,44 @@ describe('StockReportController', function () {
             scope.reportParams.selectedIPId = 1;
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 2, consignee: 1});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                location: 2,
+                consignee: 1
+            });
         });
 
         it('should load stock report for selected from date', function () {
             scope.reportParams.selectedFromDate = '01-Nov-2015';
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({fromDate: '2015-11-01'});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                fromDate: '2015-11-01'
+            });
         });
 
         it('should load stock report for selected to date', function () {
             scope.reportParams.selectedToDate = '01-Nov-2015';
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({toDate: '2015-11-01'});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                toDate: '2015-11-01'
+            });
         });
 
         it('should load stock report for selected outcome', function () {
             scope.reportParams.selectedOutcomeId = 7;
             scope.$apply();
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({outcome: 7});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                outcome: 7
+            });
         });
 
         it('should load stock report when clearing outcome filter', function () {
@@ -263,7 +291,11 @@ describe('StockReportController', function () {
             scope.goToPage(2);
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({page: 2});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                page: 2
+            });
             expect(scope.count).toBe(2);
             expect(scope.pageSize).toBe(10);
         });
@@ -277,7 +309,13 @@ describe('StockReportController', function () {
             scope.goToPage(3);
             scope.$apply();
 
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({location: 4, consignee: 5, page: 3});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                location: 4,
+                consignee: 5,
+                page: 3
+            });
         });
 
         it('should not have empty data response when data is undefined', function () {
@@ -323,7 +361,11 @@ describe('StockReportController', function () {
 
             expect(mockUserService.getCurrentUser.calls.count()).toEqual(1);
             expect(mockStockReportService.getStockReport.calls.count()).toEqual(1);
-            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({consignee: 5});
+            expect(mockStockReportService.getStockReport).toHaveBeenCalledWith({
+                field: 'last_shipment_date',
+                order: 'desc',
+                consignee: 5
+            });
         });
 
         it('should disable IP filter', function () {
@@ -345,7 +387,7 @@ describe('StockReportController', function () {
             var someConsignee = {name: 'Some Name'};
             deferredConsignee.resolve(someConsignee);
 
-            scope.$apply()
+            scope.$apply();
             expect(scope.$broadcast).toHaveBeenCalledWith('set-consignee', someConsignee)
         });
     });

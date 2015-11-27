@@ -16,9 +16,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
             $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
-            function refreshReport(sortOptions) {
+            function refreshReport() {
                 if (initializing) {
-                    loadIpFeedbackReportByDelivery(sortOptions);
+                    loadIpFeedbackReportByDelivery();
                     initializing = false;
                 } else {
                     if (timer) {
@@ -28,7 +28,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                     if ($scope.searchTerm.poWaybill) {
                         startTimer();
                     } else {
-                        loadIpFeedbackReportByDelivery(angular.extend($scope.searchTerm, sortOptions));
+                        loadIpFeedbackReportByDelivery($scope.searchTerm);
                     }
                 }
             }
@@ -81,9 +81,15 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 return filterParams;
             }
 
+            function appendSortParam() {
+                var sortParams = angular.extend({}, $scope.sortOptions);
+                return angular.extend(sortParams, $scope.searchTerm);
+            }
+
             function loadIpFeedbackReportByDelivery(queryParams) {
                 LoaderService.showLoader();
                 var allFilter = appendLocationFilter(queryParams);
+                allFilter = appendSortParam();
                 ReportService.ipFeedbackReportByDelivery(allFilter, $scope.pagination.page).then(function (response) {
                     $scope.report = response.results;
                     $scope.count = response.count;

@@ -54,12 +54,11 @@ describe('IpFeedbackReportController', function () {
         });
 
         it('should filter reports service by district if requested', function () {
-            initController({district: 'Fort Portal'});
             var response = {results: [{id: 4}, {id: 24}]};
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({location: 'Fort Portal'}, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({ field : 'shipmentDate', order : 'desc' }, 1);
             expect(scope.report).toEqual(response.results)
         });
 
@@ -78,7 +77,7 @@ describe('IpFeedbackReportController', function () {
             scope.goToPage(2);
             scope.$digest();
 
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({}, 2);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({ field : 'shipmentDate', order : 'desc' }, 2);
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
         });
     });
@@ -94,7 +93,7 @@ describe('IpFeedbackReportController', function () {
 
             timeout.flush();
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({poWaybill: searchTerm}, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith( { field : 'shipmentDate', order : 'desc' }, 1);
         });
 
         it('should call endpoint when searchTerm programme_id changes', function () {
@@ -106,7 +105,7 @@ describe('IpFeedbackReportController', function () {
             scope.$apply();
 
             expect(mockReportService.ipFeedbackReportByDelivery.calls.count()).toEqual(2);
-            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({programme_id: programme_id}, 1);
+            expect(mockReportService.ipFeedbackReportByDelivery).toHaveBeenCalledWith({ field : 'shipmentDate', order : 'desc', programme_id : 2 }, 1);
         });
 
     });
@@ -132,11 +131,10 @@ describe('IpFeedbackReportController', function () {
         it('should sort by shipment date desc', function () {
             scope.sortBy("shipmentDate");
 
-            expect(scope.sortOptions).toEqual({field: 'shipmentDate', order: 'desc'});
+            expect(scope.sortOptions).toEqual({field: 'shipmentDate', order: 'asc'});
         });
 
         it('should sort by shipment date asc', function () {
-            scope.sortBy("shipmentDate");
             scope.sortBy("shipmentDate");
 
             expect(scope.sortOptions).toEqual({field: 'shipmentDate', order: 'asc'});
@@ -144,7 +142,6 @@ describe('IpFeedbackReportController', function () {
         });
 
         it('should sort by shipment date', function () {
-            scope.sortBy("shipmentDate");
             scope.sortBy("shipmentDate");
             scope.sortBy("shipmentDate");
 
@@ -158,9 +155,9 @@ describe('IpFeedbackReportController', function () {
             expect(scope.sortOptions).toEqual({field: 'dateOfReceipt', order: 'desc'});
         });
 
-        it('should not sort when field is not supported', function() {
+        it('should sort as default when field is not supported', function() {
             scope.sortBy("notSupported");
-            expect(scope.sortOptions).toEqual({});
+            expect(scope.sortOptions).toEqual({field : 'shipmentDate', order : 'desc'});
         })
 
     });

@@ -69,10 +69,16 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             return filterParams ? filterParams : {};
         }
 
+        function appendSortParam() {
+            var sortParams = angular.extend({}, $scope.sortOptions);
+            return angular.extend(sortParams, $scope.searchTerm);
+        }
+
+
         function loadItemFeedbackReport(filterParams) {
             LoaderService.showLoader();
             var allFilter = appendLocationFilter(filterParams);
-            allFilter = angular.extend(allFilter, $scope.sortOptions);
+            allFilter = appendSortParam();
             ReportService.itemFeedbackReport(allFilter, $scope.pagination.page).then(function (response) {
                 $scope.report = response.results;
                 $scope.count = response.count;
@@ -90,7 +96,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             LoaderService.showModal(remarksModalId)
         };
 
-        $scope.formatDate = function(date){
+        $scope.formatDate = function (date) {
             return SysUtilsService.formatDate(date);
         };
 

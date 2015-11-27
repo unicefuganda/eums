@@ -56,13 +56,14 @@ describe('ItemFeedbackReportController', function () {
         });
 
         it('should call reports service filter by location if required', function () {
-            initController({district: 'Gulu'});
-
             var response = {results: [{id: 3}, {id: 33}]};
             deferredResult.resolve(response);
             scope.$apply();
 
-            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({'location': 'Gulu'}, 1);
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
+                field: 'dateOfReceipt',
+                order: 'desc'
+            }, 1);
             expect(scope.report).toEqual(response.results);
         });
 
@@ -83,7 +84,11 @@ describe('ItemFeedbackReportController', function () {
             scope.$apply();
 
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
-            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith(searchTerm, 1);
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
+                field: 'dateOfReceipt',
+                order: 'desc',
+                ip: 2
+            }, 1);
         });
 
     });
@@ -97,7 +102,10 @@ describe('ItemFeedbackReportController', function () {
             scope.goToPage(2);
             scope.$digest();
 
-            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({}, 2);
+            expect(mockReportService.itemFeedbackReport).toHaveBeenCalledWith({
+                field: 'dateOfReceipt',
+                order: 'desc'
+            }, 2);
             expect(mockReportService.itemFeedbackReport.calls.count()).toEqual(2);
         });
     });

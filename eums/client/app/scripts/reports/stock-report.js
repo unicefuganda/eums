@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow','SysUtils'])
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils'])
     .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService, SortService, SortArrowService,SysUtilsService) {
+                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
@@ -45,6 +45,12 @@ angular.module('StockReport', [
             }
         };
 
+        function appendSortParam(requestParams) {
+            var sortParams = angular.extend({}, $scope.sortOptions);
+            return angular.extend(sortParams, requestParams);
+        }
+
+
         function fetchReport(params) {
             LoaderService.showLoader();
             var requestParams = {};
@@ -66,7 +72,7 @@ angular.module('StockReport', [
             if (params) {
                 Object.merge(requestParams, params);
             }
-            requestParams = angular.extend(requestParams, $scope.sortOptions);
+            requestParams =appendSortParam(requestParams);
             StockReportService.getStockReport(requestParams).then(function (response) {
                 $scope.count = response.data.count;
                 $scope.pageSize = response.data.pageSize;
@@ -117,7 +123,7 @@ angular.module('StockReport', [
             return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
         };
 
-        $scope.formatDate = function(date){
+        $scope.formatDate = function (date) {
             return SysUtilsService.formatDate(date);
         };
 
