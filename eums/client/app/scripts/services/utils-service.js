@@ -1,5 +1,5 @@
 angular.module('SysUtils', [])
-    .service('UtilsService', function () {
+    .factory('UtilsService', function () {
         return {
             formatDate: function (date) {
                 if (!date) {
