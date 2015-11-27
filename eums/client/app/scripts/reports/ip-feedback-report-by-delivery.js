@@ -10,7 +10,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             $scope.searchTerm = {};
             $scope.directiveValues = {};
             $scope.pagination = {page: 1};
-            $scope.sortOptions = {};
+            $scope.sortOptions = {field: 'shipmentDate', order: 'desc'};
 
             var initializing = true;
 
@@ -39,7 +39,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
 
             $scope.sortBy = function (sortField) {
                 if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
-                    $scope.sortOptions = SortService.sortBy(sortField);
+                    $scope.sortOptions = SortService.sortBy(sortField, $scope.sortOptions);
                     refreshReport($scope.sortOptions)
                 }
             };

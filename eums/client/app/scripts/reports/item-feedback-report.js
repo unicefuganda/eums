@@ -8,7 +8,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         $scope.searchTerm = {};
         $scope.directiveValues = {};
         $scope.pagination = {page: 1};
-        $scope.sortOptions = {};
+        $scope.sortOptions = {field: 'dateOfReceipt', order: 'desc'};
 
         $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
 
@@ -33,6 +33,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             }
         });
 
+
         $scope.sortArrowClass = function (criteria) {
             return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
         };
@@ -48,7 +49,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
 
         $scope.sortBy = function (sortField) {
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
-                $scope.sortOptions = SortService.sortBy(sortField);
+                $scope.sortOptions = SortService.sortBy(sortField, $scope.sortOptions);
                 loadItemFeedbackReport()
             }
         };
@@ -91,7 +92,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
 
         $scope.formatDate = function(date){
             return SysUtilsService.formatDate(date);
-        }
+        };
 
         function getAllResponsesByDate() {
             return DeliveryService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {

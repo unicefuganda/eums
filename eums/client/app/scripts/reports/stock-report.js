@@ -8,7 +8,7 @@ angular.module('StockReport', [
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
-        $scope.sortOptions = {};
+        $scope.sortOptions = {field: 'last_shipment_date', order: 'desc'};
 
 
         function init() {
@@ -39,11 +39,11 @@ angular.module('StockReport', [
         };
 
         $scope.sortBy = function (sortField) {
-                if(SUPPORTED_FIELD.indexOf(sortField) !== -1) {
-                    $scope.sortOptions = SortService.sortBy(sortField);
-                    fetchReport()
-                }
-            };
+            if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                $scope.sortOptions = SortService.sortBy(sortField, $scope.sortOptions);
+                fetchReport()
+            }
+        };
 
         function fetchReport(params) {
             LoaderService.showLoader();
@@ -114,12 +114,12 @@ angular.module('StockReport', [
         };
 
         $scope.sortArrowClass = function (criteria) {
-             return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
+            return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
         };
 
         $scope.formatDate = function(date){
             return SysUtilsService.formatDate(date);
-        }
+        };
 
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
