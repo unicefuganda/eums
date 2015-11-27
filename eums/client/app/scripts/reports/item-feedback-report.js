@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow', 'SysUtils'])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService, SortArrowService) {
+                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService, SortArrowService, SysUtilsService) {
         var timer,
             SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         $scope.searchTerm = {};
@@ -47,11 +47,11 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         };
 
         $scope.sortBy = function (sortField) {
-                if(SUPPORTED_FIELD.indexOf(sortField) !== -1) {
-                    $scope.sortOptions = SortService.sortBy(sortField);
-                    loadItemFeedbackReport()
-                }
-            };
+            if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                $scope.sortOptions = SortService.sortBy(sortField);
+                loadItemFeedbackReport()
+            }
+        };
 
         function startTimer() {
             $scope.pagination.page = 1;
@@ -88,6 +88,10 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
             var remarksModalId = 'remarks-modal-' + index;
             LoaderService.showModal(remarksModalId)
         };
+
+        $scope.formatDate = function(date){
+            return SysUtilsService.formatDate(date);
+        }
 
         function getAllResponsesByDate() {
             return DeliveryService.orderAllResponsesByDate($routeParams.district).then(function (allResponses) {

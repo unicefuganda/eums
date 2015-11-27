@@ -107,7 +107,7 @@ def is_distribution_expired(distribution_plan):
     date_received_str = distribution_plan.received_date()
     if time_limitation and date_received_str:
         date_received = datetime.datetime.strptime(date_received_str.split('T')[0], '%Y-%m-%d').date()
-        print 'is_distribution_expired:' + str((datetime.date.today() - date_received).days > time_limitation)
-        if (datetime.date.today() - date_received).days >= time_limitation:
+        print 'is_distribution_expired:' + str((datetime.date.today() - date_received).days - 2 > time_limitation)
+        if (datetime.date.today() - date_received).days - 2 >= time_limitation:
             return True
     return False

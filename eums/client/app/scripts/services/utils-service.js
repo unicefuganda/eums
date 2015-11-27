@@ -1,11 +1,12 @@
 angular.module('SysUtils', [])
-    .factory('UtilsService', function () {
+    .factory('SysUtilsService', function () {
         return {
             formatDate: function (date) {
-                if (!date) {
-                    return "";
+                try {
+                    return date.trim() ? moment(date.trim()).format('DD-MMM-YYYY') : "";
+                } catch (err) {
+                    return ""
                 }
-                return moment(date).format('DD-MMM-YYYY');
             }
         }
     });

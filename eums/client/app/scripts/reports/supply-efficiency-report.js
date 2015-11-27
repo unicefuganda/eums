@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('SupplyEfficiencyReport', [
-    'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SupplyEfficiencyQueries'])
-    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService, $location) {
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'SupplyEfficiencyQueries', 'SysUtils'])
+    .controller('SupplyEfficiencyReportController', function ($scope, LoaderService, SupplyEfficiencyReportService, SysUtilsService, $location) {
         $scope.views = SupplyEfficiencyReportService.VIEWS;
         $scope.filters = {};
         $scope.totals = {};
@@ -19,9 +19,13 @@ angular.module('SupplyEfficiencyReport', [
         $scope.view = $scope.views[urlToViewMapping[viewInUrl]];
 
         $scope.$on('filters-changed', function (_, newFilters) {
-                $scope.filters = newFilters;
-                generateReport();
+            $scope.filters = newFilters;
+            generateReport();
         });
+
+        $scope.formatDate = function (date) {
+            return SysUtilsService.formatDate(date);
+        }
 
         function generateReport() {
             LoaderService.showLoader();
@@ -33,16 +37,18 @@ angular.module('SupplyEfficiencyReport', [
         }
 
         function setTotals() {
-            if($scope.report && $scope.report.length > 0) {
+            if ($scope.report && $scope.report.length > 0) {
                 $scope.totals.UNICEFShipped = getTotal($scope.report, 'delivery_stages.unicef.total_value');
                 $scope.totals.IPReceived = getTotal($scope.report, 'delivery_stages.ip_receipt.total_value_received');
                 $scope.totals.endUserReceived = getTotal($scope.report, 'delivery_stages.end_user.total_value_received');
             }
         }
 
-        function getTotal(array, field){
+        function getTotal(array, field) {
             var fields = field.split('.');
-            return array.reduce(function (total, current){return current[fields[0]][fields[1]][fields[2]] + total;}, 0);
+            return array.reduce(function (total, current) {
+                return current[fields[0]][fields[1]][fields[2]] + total;
+            }, 0);
         }
 
     })
@@ -133,7 +139,7 @@ angular.module('SupplyEfficiencyReport', [
                         },
                         ip_receipt: {
                             total_value_received: roundAggregate(value_received_by_ip),
-                            confirmed: roundAggregate((value_received_by_ip/value_delivered_to_ip) * 100),
+                            confirmed: roundAggregate((value_received_by_ip / value_delivered_to_ip) * 100),
                             average_delay: roundAggregate(stages.ip.average_delay.value)
                         },
                         ip_distribution: {
@@ -142,7 +148,7 @@ angular.module('SupplyEfficiencyReport', [
                         },
                         end_user: {
                             total_value_received: roundAggregate(stages.end_users.total_value_delivered.value),
-                            confirmed: roundAggregate((stages.end_users.total_value_delivered.value/value_delivered_to_ip)*100),
+                            confirmed: roundAggregate((stages.end_users.total_value_delivered.value / value_delivered_to_ip) * 100),
                             average_delay: roundAggregate(stages.end_users.average_delay.value)
                         }
                     }

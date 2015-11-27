@@ -26,7 +26,8 @@
                     </div>
 
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-recipient-type-container">
-                        <input id="filter-recipient" type="hidden" select-recipient-type ng-model="searchTerm.treePosition"
+                        <input id="filter-recipient" type="hidden" select-recipient-type
+                               ng-model="searchTerm.treePosition"
                                value="{{ item.id }}">
                     </div>
                 </div>
@@ -61,7 +62,8 @@
                         <label class="control-label description-label">Satisfied:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-satisfied-container">
-                        <input id="filter-satisfied" type="hidden" select-satisfied-option ng-model="searchTerm.satisfied"
+                        <input id="filter-satisfied" type="hidden" select-satisfied-option
+                               ng-model="searchTerm.satisfied"
                                value="{{ item.text }}">
                     </div>
                 </div>
@@ -109,11 +111,18 @@
                     <th class="align-left"><span class="padded-multi-line-5">LAST RECIPIENT</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">DISTRIBUTION STAGE</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">PO/WAYBILL</span></th>
-                    <th class="align-left"><a ng-click="sortBy('quantity_shipped')" class="padded-multi-line-5 quantity_shipped">QUANTITY SHIPPED<i ng-class="sortArrowClass('quantity_shipped')"></i></a></th>
-                    <th class="align-left"><a ng-click="sortBy('value')" class="padded-multi-line-5 value">VALUE<i ng-class="sortArrowClass('value')"></i></a></th>
+                    <th class="align-left"><a ng-click="sortBy('quantity_shipped')"
+                                              class="padded-multi-line-5 quantity_shipped">QUANTITY SHIPPED<i
+                            ng-class="sortArrowClass('quantity_shipped')"></i></a></th>
+                    <th class="align-left"><a ng-click="sortBy('value')" class="padded-multi-line-5 value">VALUE<i
+                            ng-class="sortArrowClass('value')"></i></a></th>
                     <th class="align-left"><span class="padded-multi-line-5">RECEIVED</span></th>
-                    <th class="align-left"><a ng-click="sortBy('dateOfReceipt')" class="padded-multi-line-5 dateOfReceipt">DATE RECEIVED<i ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
-                    <th class="align-left"><a ng-click="sortBy('amountReceived')" class="padded-multi-line-5 amountReceived">QUANTITY RECEIVED<i ng-class="sortArrowClass('amountReceived')"></i></a></th>
+                    <th class="align-left"><a ng-click="sortBy('dateOfReceipt')"
+                                              class="padded-multi-line-5 dateOfReceipt">DATE RECEIVED<i
+                            ng-class="sortArrowClass('dateOfReceipt')"></i></a></th>
+                    <th class="align-left"><a ng-click="sortBy('amountReceived')"
+                                              class="padded-multi-line-5 amountReceived">QUANTITY RECEIVED<i
+                            ng-class="sortArrowClass('amountReceived')"></i></a></th>
                     <th class="align-left"><span class="padded-multi-line-5">QUALITY</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">SATISFIED</span></th>
                     <th class="align-left"><span class="padded-multi-line-5">REMARKS</span></th>
@@ -138,7 +147,7 @@
                         <span ng-if="itemReport.answers.productReceived == 'No' || itemReport.answers.itemReceived == 'No'"
                               class="eums-border-status eums-border-center eums-border-width-50 eums-bg-color-no">No</span>
                     <td><span
-                            class="padded-multi-line-5">{{ !itemReport.answers.dateOfReceipt ? '': convertToDate(itemReport.answers.dateOfReceipt) | date : 'dd-MMM-yyyy'}}</span>
+                            class="padded-multi-line-5">{{ formatDate(itemReport.answers.dateOfReceipt)}}</span>
                     </td>
                     <td><span class="padded-multi-line-5">{{ itemReport.answers.amountReceived }}</span></td>
                     <td>

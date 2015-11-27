@@ -124,7 +124,8 @@
                     <div ng-show="isIpUser">
                         No deliveries have been reported, confirm UNICEF shipments on the
                         <a class="unicef-shipments-link" ng-href="#/ip-deliveries">Report deliveries</a>
-                        page</div>
+                        page
+                    </div>
                 </div>
 
                 <div>
@@ -134,10 +135,18 @@
                             <tr>
                                 <th class="col-lg-1 centered">PO / Waybill</th>
                                 <th class="col-lg-3 centered">Outcome</th>
-                                <th class="col-lg-3 centered"><a ng-click="sortBy('last_shipment_date')" class="padded-multi-line-5 centered last_shipment_date">Last Shipment Date<i ng-class="sortArrowClass('last_shipment_date')"></i></a></th>
-                                <th class="col-lg-3 centered"><a ng-click="sortBy('total_value_received')" class="padded-multi-line-5 centered total_value_received">Value Received<i ng-class="sortArrowClass('total_value_received')"></i></a></th>
-                                <th class="col-lg-3 centered"><a ng-click="sortBy('total_value_dispensed')" class="padded-multi-line-5 centered total_value_dispensed">Value Dispensed<i ng-class="sortArrowClass('total_value_dispensed')"></i></a></th>
-                                <th class="col-lg-3 centered"><a ng-click="sortBy('balance')" class="padded-multi-line-5 centered balance">Balance<i ng-class="sortArrowClass('balance')"></i></a></th>
+                                <th class="col-lg-3 centered"><a ng-click="sortBy('last_shipment_date')"
+                                                                 class="padded-multi-line-5 centered last_shipment_date">Last
+                                    Shipment Date<i ng-class="sortArrowClass('last_shipment_date')"></i></a></th>
+                                <th class="col-lg-3 centered"><a ng-click="sortBy('total_value_received')"
+                                                                 class="padded-multi-line-5 centered total_value_received">Value
+                                    Received<i ng-class="sortArrowClass('total_value_received')"></i></a></th>
+                                <th class="col-lg-3 centered"><a ng-click="sortBy('total_value_dispensed')"
+                                                                 class="padded-multi-line-5 centered total_value_dispensed">Value
+                                    Dispensed<i ng-class="sortArrowClass('total_value_dispensed')"></i></a></th>
+                                <th class="col-lg-3 centered"><a ng-click="sortBy('balance')"
+                                                                 class="padded-multi-line-5 centered balance">Balance<i
+                                        ng-class="sortArrowClass('balance')"></i></a></th>
                             </tr>
                             </thead>
                             <tbody ng-repeat="reportItem in reportData">
@@ -182,9 +191,9 @@
                                             <td>{{ item.location }}</td>
                                             <td>{{ item.consignee }}</td>
                                             <td><span class="pull-right">{{ item.quantity_delivered }}</span></td>
-                                            <td>{{ item.date_delivered | date: 'dd-MMM-yyyy'}}</td>
+                                            <td>{{ formatDate(item.date_delivered)}}</td>
                                             <td><span class="pull-right">{{ item.quantity_confirmed }}</span></td>
-                                            <td>{{ item.date_confirmed | date: 'dd-MMM-yyyy'}}</td>
+                                            <td>{{ formatDate(item.date_confirmed)}}</td>
                                             <td><span class="pull-right">{{ item.quantity_dispatched }}</span></td>
                                             <td><span class="pull-right">{{ item.balance }}</span></td>
                                         </tr>

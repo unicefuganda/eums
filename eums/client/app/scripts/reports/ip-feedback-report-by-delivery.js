@@ -2,7 +2,7 @@
 
 angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils'])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
-                                                                  ErrorMessageService, SortService, SortArrowService, UtilsService) {
+                                                                  ErrorMessageService, SortService, SortArrowService, SysUtilsService) {
             var timer,
                 SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
 
@@ -124,7 +124,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             };
 
             $scope.formatDate = function (date) {
-                UtilsService.formatDate(date)
+                return SysUtilsService.formatDate(date)
             };
         }
     )

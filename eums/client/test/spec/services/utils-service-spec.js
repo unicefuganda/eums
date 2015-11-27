@@ -1,20 +1,30 @@
 describe('Utils Service', function () {
-    var utilService;
+    var sysUtilService;
 
     beforeEach(function () {
         module('SysUtils');
-        inject(function (UtilsService) {
-            utilService = UtilsService
+        inject(function (SysUtilsService) {
+            sysUtilService = SysUtilsService
         });
     });
 
-    it('should format 10/10/2015 as 10-Oct-2015', function () {
-        var resultData = utilService.formatDate("10/10/2015");
+    it('should format as 10-Oct-2015 when 10/10/2015 is given', function () {
+        var resultData = sysUtilService.formatDate("10/10/2015");
         expect(resultData).toEqual("10-Oct-2015");
     });
 
-    it('should format empty string as empty string', function () {
-        var resultData = utilService.formatDate("");
+    it('should format as empty string when empty string is given', function () {
+        var resultData = sysUtilService.formatDate("");
+        expect(resultData).toEqual("");
+    });
+
+    it('should format as empty string when nothing is given', function () {
+        var resultData = sysUtilService.formatDate();
+        expect(resultData).toEqual("");
+    });
+
+    it('should format as empty string when null is given', function () {
+        var resultData = sysUtilService.formatDate(null);
         expect(resultData).toEqual("");
     });
 });
