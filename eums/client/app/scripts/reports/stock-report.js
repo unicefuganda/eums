@@ -4,7 +4,7 @@ angular.module('StockReport', [
         'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow','SysUtils'])
     .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, IPService, LoaderService, UserService,
                                                    ErrorMessageService, SortService, SortArrowService,SysUtilsService) {
-        var SUPPORTED_FIELD = ['last_shipment_date', 'total_value_received', 'total_value_dispensed', 'balance'];
+        var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;

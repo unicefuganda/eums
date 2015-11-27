@@ -138,6 +138,9 @@
                                 <th class="col-lg-3 centered"><a ng-click="sortBy('last_shipment_date')"
                                                                  class="padded-multi-line-5 centered last_shipment_date">Last
                                     Shipment Date<i ng-class="sortArrowClass('last_shipment_date')"></i></a></th>
+                                <th class="col-lg-3 centered"><a ng-click="sortBy('last_received_date')"
+                                                                 class="padded-multi-line-5 centered last_received_date">Last
+                                    Received Date<i ng-class="sortArrowClass('last_received_date')"></i></a></th>
                                 <th class="col-lg-3 centered"><a ng-click="sortBy('total_value_received')"
                                                                  class="padded-multi-line-5 centered total_value_received">Value
                                     Received<i ng-class="sortArrowClass('total_value_received')"></i></a></th>
@@ -160,6 +163,7 @@
                                 </td>
                                 <td>{{ reportItem.programme }}</td>
                                 <td class="centered">{{ reportItem.last_shipment_date | date: 'dd-MMM-yyyy' }}</td>
+                                <td class="centered">{{ reportItem.last_received_date | date: 'dd-MMM-yyyy' }}</td>
                                 <td><span class="pull-right">{{ reportItem.total_value_received | currency }}</span>
                                 </td>
                                 <td><span class="pull-right">{{ reportItem.total_value_dispensed | currency }}</span>

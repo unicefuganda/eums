@@ -7,7 +7,7 @@ from rest_framework import status
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 
 PAGE_SIZE = 10
-sort = StandardDicSort('last_shipment_date', 'total_value_received', 'total_value_dispensed', 'balance')
+sort = StandardDicSort('last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance')
 
 
 class StockReport(APIView):
@@ -75,6 +75,7 @@ def _get_report_details_for_node(node):
         'document_number': purchase_order_number,
         'programme': node.programme.name,
         'last_shipment_date': str(node.delivery_date),
+        'last_received_date': str(ip_delivery.received_date()),
         'total_value_received': total_value_received,
         'total_value_dispensed': value_dispensed,
         'balance': (total_value_received - value_dispensed),
