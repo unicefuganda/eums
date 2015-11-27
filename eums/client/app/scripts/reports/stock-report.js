@@ -118,7 +118,7 @@ angular.module('StockReport', [
         };
 
         $scope.formatDate = function(date){
-            SysUtilsService.formatDate(date);
+            return SysUtilsService.formatDate(date);
         }
 
         function formatDate(date) {
