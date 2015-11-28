@@ -14,7 +14,7 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ReleaseOrder
         fields = ('id', 'order_number', 'sales_order', 'purchase_order', 'programme', 'consignee', 'waybill',
-                  'delivery_date', 'items', 'delivery', 'consignee_name')
+                  'delivery_date', 'items', 'delivery', 'consignee_name', 'track')
 
 
 class ReleaseOrderViewSet(ModelViewSet):
@@ -47,7 +47,6 @@ class ReleaseOrderViewSet(ModelViewSet):
             else:
                 orders = self.get_queryset()
         return self._apply_filters_on(orders, request)
-
 
     def _apply_filters_on(self, orders, request):
         query = request.GET.get('query')

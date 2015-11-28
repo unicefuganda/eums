@@ -31,6 +31,22 @@ class ReleaseOrderTest(TestCase):
 
         self.assertEqual(release_order.delivery(), delivery.id)
 
+    def test_should_get_correct_track_status_when_no_delivery_or_delivery_is_not_tracked(self):
+        release_order = ReleaseOrderFactory(order_number=2342)
+        release_order_item = ReleaseOrderItemFactory(release_order=release_order)
+        self.assertEqual(release_order.track(), None)
+
+        delivery = DeliveryFactory(track=False)
+        DeliveryNodeFactory(distribution_plan=delivery, item=release_order_item, track=False)
+        self.assertEqual(release_order.track(), False)
+
+    def test_should_get_correct_track_status_when_delivery_is_tracked(self):
+        release_order = ReleaseOrderFactory(order_number=2342)
+        release_order_item = ReleaseOrderItemFactory(release_order=release_order)
+        delivery = DeliveryFactory(track=True)
+        DeliveryNodeFactory(distribution_plan=delivery, item=release_order_item, track=True)
+        self.assertEqual(release_order.track(), True)
+
     def test_should_return_none_if_release_order_does_not_have_delivery(self):
         release_order = ReleaseOrderFactory(order_number=2342)
         ReleaseOrderItemFactory(release_order=release_order)
