@@ -99,6 +99,33 @@ class PurchaseOrderTest(TestCase):
         self.assertIn(node_three, second_delivery_nodes)
         self.assertIn(node_four, second_delivery_nodes)
 
+    def test_should_get_track_status_if_delivery_is_sent_and_tracked_fully(self):
+        order = PurchaseOrderFactory()
+        order_item = PurchaseOrderItemFactory(purchase_order=order, quantity=100)
+        self.assertEqual(order.track(), PurchaseOrder.NOT_TRACKED)
+
+        delivery_one = DeliveryFactory(track=True)
+        delivery_two = DeliveryFactory(track=True)
+        NodeFactory(item=order_item, distribution_plan=delivery_one, quantity=50, track=True)
+        NodeFactory(item=order_item, distribution_plan=delivery_two, quantity=50, track=True)
+        self.assertEqual(order.track(), PurchaseOrder.FULLY_TRACKED)
+
+    def test_should_get_track_status_if_delivery_is_sent_partially(self):
+        order = PurchaseOrderFactory()
+        order_item = PurchaseOrderItemFactory(purchase_order=order, quantity=100)
+        delivery_one = DeliveryFactory(track=True)
+        NodeFactory(item=order_item, distribution_plan=delivery_one, quantity=50, track=True)
+
+        self.assertEqual(order.track(), PurchaseOrder.PARTIALLY_TRACKED)
+
+    def test_should_get_track_status_if_delivery_is_just_saved(self):
+        order = PurchaseOrderFactory()
+        order_item = PurchaseOrderItemFactory(purchase_order=order, quantity=100)
+        delivery_one = DeliveryFactory(track=False)
+        NodeFactory(item=order_item, distribution_plan=delivery_one, quantity=100, track=False)
+
+        self.assertEqual(order.track(), PurchaseOrder.NOT_TRACKED)
+
     def test_should_get_orders__as_a_queryset__whose_items_have_been_delivered_to_a_specific_consignee(self):
         consignee = ConsigneeFactory()
         order_one = PurchaseOrderFactory()

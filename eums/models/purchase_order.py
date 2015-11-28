@@ -22,7 +22,12 @@ class PurchaseOrderManager(models.Manager):
         order_ids = PurchaseOrderItem.objects.filter(id__in=order_item_ids).values_list('purchase_order')
         return self.model.objects.filter(id__in=order_ids)
 
+
 class PurchaseOrder(TimeStampedModel):
+    NOT_TRACKED = 'Not'
+    PARTIALLY_TRACKED = 'Partially'
+    FULLY_TRACKED = 'Fully'
+
     order_number = models.IntegerField(unique=True)
     sales_order = models.ForeignKey(SalesOrder)
     date = models.DateField(auto_now=False, null=True)
@@ -53,6 +58,14 @@ class PurchaseOrder(TimeStampedModel):
 
     def total_value(self):
         return reduce(lambda total, item: total + item.value, self.purchaseorderitem_set.all(), 0)
+
+    def track(self):
+        track_list = [delivery[0] for delivery in self.deliveries(is_root=True).values_list('track')]
+        if len(track_list) == 0 or not (True in track_list):
+            return PurchaseOrder.NOT_TRACKED
+        if self.is_fully_delivered() and not (False in track_list):
+            return PurchaseOrder.FULLY_TRACKED
+        return PurchaseOrder.PARTIALLY_TRACKED
 
     class Meta:
         app_label = 'eums'

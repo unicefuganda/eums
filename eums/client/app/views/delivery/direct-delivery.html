@@ -106,8 +106,8 @@
             <tbody>
             <tr ng-repeat="purchaseOrder in purchaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
-                    <span ng-class="purchaseOrder.hasPlan ?  (purchaseOrder.isFullyDelivered ? 'glyphicon glyphicon-ok text-success' :
-                     'glyphicon glyphicon-warning-sign text-warning') : 'glyphicon glyphicon-remove text-danger'"></span>
+                    <span ng-class="purchaseOrder.track == 'Not' ?  'glyphicon glyphicon-remove text-danger' :
+                    (purchaseOrder.track == 'Fully' ? 'glyphicon glyphicon-ok text-success' : 'glyphicon glyphicon-warning-sign text-warning')"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
                     <a ng-click="selectPurchaseOrder(purchaseOrder)">{{ purchaseOrder.orderNumber }}</a>
@@ -173,8 +173,8 @@
             <tr>
                 <td class="pagination-row" colspan="5">
                     <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                    ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                                    items-per-page="pageSize">
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
                     </pagination>
                 </td>
             </tr>
