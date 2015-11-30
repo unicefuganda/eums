@@ -1,15 +1,16 @@
 from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.client.test.functional.fixtures.mapdata_runs import *
+from eums.client.test.functional.fixtures.mapdata_alerts import *
+from eums.client.test.functional.fixtures.mapdata_choice_answer import *
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.fixtures import web_questions, ip_questions
 from eums.fixtures.end_user_questions import *
 from eums.fixtures.ip_questions import seed_ip_questions
 from eums.fixtures.middle_man_questions import mm_question_1, mm_q1_option_1, mm_question_2, mm_question_3
-from eums.models import DistributionReport, Alert
+from eums.models import DistributionReport
 from eums.models import MultipleChoiceAnswer
 from eums.models import NumericAnswer
 from eums.models import TextAnswer
-from eums.test.factories.alert_factory import AlertFactory
 from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -128,17 +129,7 @@ DeliveryNodeFactory(parents=[(wakiso_node_1, 60)], tree_position="END_USER", ite
 DeliveryNodeFactory(parents=[(wakiso_node_1, 40)], tree_position="MIDDLE_MAN", item=po_item_1, distribution_plan=plan)
 DeliveryNodeFactory(parents=[(wakiso_node_2, 58)], tree_position="END_USER", item=po_item_2, distribution_plan=plan)
 
-# alerts
-AlertFactory(order_type=PurchaseOrderItem.PURCHASE_ORDER, order_number=654321, issue=Alert.ISSUE_TYPES.bad_condition,
-             is_resolved=True)
-AlertFactory(order_type=ReleaseOrderItem.WAYBILL, order_number=123456, issue=Alert.ISSUE_TYPES.not_received,
-             is_resolved=False,
-             consignee_name='Some Consignee Name', contact_name='Some Contact Name',
-             item_description="Some Description")
-
-
 # web answers
-
 MultipleChoiceAnswerFactory(question=web_questions.web_question_1, value=web_questions.yes_1, run=run_77)
 NumericAnswerFactory(question=web_questions.web_question_2, value=50, run=run_77)
 MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_questions.expired, run=run_77)

@@ -57,4 +57,4 @@ def seed_ip_questions():
 
     return questions, options, ip_flow
 
-questions1, options1, ip_flow = seed_ip_questions()
+ip_questions, ip_options, ip_flow = seed_ip_questions()

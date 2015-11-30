@@ -11,6 +11,7 @@ class ResponseAlertHandler(object):
         Question.LABEL.satisfiedWithDelivery: Alert.ISSUE_TYPES.not_satisfied
     }
 
+    # TODO: enrich answer instead of a dictionary
     def __init__(self, runnable, answer_values):
         self.runnable = runnable
         self.answer_values = answer_values

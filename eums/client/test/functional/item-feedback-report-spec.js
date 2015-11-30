@@ -10,9 +10,10 @@ describe('Item Feedback Report', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         itemFeedbackReport.visit();
+
         expect(itemFeedbackReport.itemDescriptions).toContain('Another Funny Item');
         expect(itemFeedbackReport.programmes).toContain('AAASpecial Programme');
-        expect(itemFeedbackReport.implementingPartners).toContain('Consignee 64');
+        expect(itemFeedbackReport.implementingPartners).toContain('Consignee 62');
         expect(itemFeedbackReport.consignees).toContain('AMUDAT DHO');
         expect(itemFeedbackReport.orderNumbers).toContain('2014111');
         expect(itemFeedbackReport.quantitiesShipped).toContain('7');
@@ -59,7 +60,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
         itemFeedbackReport.searchByRecipientType('Sub-consignee');
         expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
-        expect(itemFeedbackReport.resultsCount).toEqual(3);
+        expect(itemFeedbackReport.resultsCount).toEqual(1);
     });
 
     it('should search the Item report by product received', function () {
@@ -86,7 +87,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
         itemFeedbackReport.searchByQuality('DAMAGED');
         expect(itemFeedbackReport.quality).not.toContain('GOOD');
-        expect(itemFeedbackReport.resultsCount).toEqual(2);
+        expect(itemFeedbackReport.resultsCount).toEqual(1);
     });
 
     it('should sort by value', function() {

@@ -92,6 +92,10 @@ IpShipmentsPage.prototype = Object.create({}, {
     }},
     itemSatisfactions: { get: function () {
         return element.all(by.repeater('($index, node) in combinedDeliveryNodes')).get(0).$(".itemSatisfaction").getText();
+    }},
+
+    deliveries: { get: function () {
+        return element.all(by.repeater('delivery in deliveries'));
     }}
 
 });

@@ -84,24 +84,24 @@ describe('Home Page', function () {
                 expect(homePage.mapLocation).toEqual('');
                 expect(homePage.numberSent).toEqual('11 deliveries');
                 expect(homePage.numberDelivered).toEqual('5 responses');
-                expect(homePage.numberNotDelivered).toEqual('1 response');
-                expect(homePage.numberNonResponse).toEqual('4 non-responses');
+                expect(homePage.numberNotDelivered).toEqual('2 responses');
+                expect(homePage.numberNonResponse).toEqual('3 non-responses');
                 expect(homePage.valueSent).toEqual('$1.9k');
                 expect(homePage.valueDelivered).toEqual('643');
-                expect(homePage.valueNotDelivered).toEqual('200');
-                expect(homePage.valueNonResponse).toEqual('292');
+                expect(homePage.valueNotDelivered).toEqual('230');
+                expect(homePage.valueNonResponse).toEqual('262');
             });
 
-            it('should click on wakiso district', function () {
-                homePage.clickMapLayer('wakiso');
-                expect(homePage.mapLocation).toEqual('WAKISO');
-                expect(homePage.getMapZoomLevel()).toBe(10);
-                expect(homePage.numberSent).toEqual('2 deliveries');
+            it('should click on kampala district', function () {
+                homePage.clickMapLayer('kampala');
+                expect(homePage.mapLocation).toEqual('KAMPALA');
+                expect(homePage.getMapZoomLevel()).toBe(12);
+                expect(homePage.numberSent).toEqual('1 deliveries');
                 expect(homePage.numberDelivered).toEqual('1 response');
                 expect(homePage.numberNotDelivered).toEqual('0 responses');
                 expect(homePage.numberNonResponse).toEqual('0 non-responses');
-                expect(homePage.valueSent).toEqual('$887');
-                expect(homePage.valueDelivered).toEqual('80');
+                expect(homePage.valueSent).toEqual('$50');
+                expect(homePage.valueDelivered).toEqual('50');
                 expect(homePage.valueNotDelivered).toEqual('0');
                 expect(homePage.valueNonResponse).toEqual('0');
             });
@@ -123,7 +123,7 @@ describe('Home Page', function () {
                 homePage.clickMapLayer('Amuru');
                 expect(homePage.latestDeliveriesCount).toEqual(2);
                 homePage.latestDeliveryResponses.then(function (responses) {
-                    expect(responses[1].getText()).toEqual('Consignee 56 on 25-Sep-2014\nNOT RECEIVED');
+                    expect(responses[1].getText()).toEqual('Consignee 54 on 25-Sep-2014\nNOT RECEIVED');
                 });
                 expect(homePage.responsesPageLink.getText()).toEqual('View District Responses');
             });

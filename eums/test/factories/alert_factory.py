@@ -1,7 +1,6 @@
 import factory
 from eums.models import Alert, ReleaseOrderItem
 from eums.test.factories.delivery_factory import DeliveryFactory
-from eums.test.factories.runnable_factory import RunnableFactory
 
 
 class AlertFactory(factory.DjangoModelFactory):

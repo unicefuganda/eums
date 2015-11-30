@@ -5,6 +5,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                                                   UserService, AnswerService, $timeout) {
         $scope.deliveries = [];
         $scope.answers = [];
+        $scope.oringalAnswers = [];
         $scope.activeDelivery = undefined;
         $scope.hasReceivedDelivery = undefined;
         var questionLabel = 'deliveryReceived';
@@ -51,6 +52,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     LoaderService.hideLoader();
                     $scope.activeDelivery = delivery;
                     $scope.answers = answers;
+                    $scope.oringalAnswers = angular.copy(answers);
                     LoaderService.showModal('ip-acknowledgement-modal');
                 });
         };
@@ -72,9 +74,16 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 });
         };
 
-        $scope.$watch('answers', function () {
+        function validateAnswers(newAnswers) {
+            if ($scope.hasReceivedDelivery) {
+                return _areValidAnswers($scope.answers);
+            }
+            return !angular.equals(newAnswers.first(), $scope.oringalAnswers.first()) && _isValidChoice($scope.answers);
+        }
+
+        $scope.$watch('answers', function (newAnswers) {
             $scope.hasReceivedDelivery = $scope.answers && _isDeliveryReceived(questionLabel, $scope.answers);
-            $scope.isValidChoice = $scope.hasReceivedDelivery ? _areValidAnswers($scope.answers) : _isValidChoice($scope.answers);
+            $scope.isValidChoice = validateAnswers(newAnswers);
         }, true);
 
         function _isDeliveryReceived(questionLabel, answers) {
