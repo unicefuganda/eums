@@ -43,7 +43,8 @@ def item_feedback_report(request):
         'previous': _has_page(reports_current_page.has_previous(), get_page_number(request) - 1, request),
         'count': len(response),
         'pageSize': PAGE_SIZE,
-        'results': reports_current_page.object_list
+        'results': reports_current_page.object_list,
+        'programmeIds': _get_programme_ids(response)
     }
 
     return Response(data, status=status.HTTP_200_OK)
@@ -90,7 +91,7 @@ def build_answers_for_nodes(nodes, response):
         answer_list = _build_answer_list(node_responses)
         delivery_node = {
             'item_description': node.item.item.description,
-            'programme': node.programme.name,
+            'programme': {'id': node.programme.id, 'name': node.programme.name},
             'consignee': node.consignee.name,
             'implementing_partner': node.ip.name,
             'order_number': node.item.number(),
@@ -151,3 +152,11 @@ def _filter_fields(params):
         if query_field and value:
             search_params.update({query_field: value})
     return search_params
+
+
+def _get_programme_ids(results):
+    programme_ids = []
+    for result in results:
+        if not programme_ids.__contains__(result['programme']['id']):
+            programme_ids.append(result['programme']['id'])
+    return programme_ids

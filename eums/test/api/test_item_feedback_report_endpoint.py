@@ -1,13 +1,13 @@
-import urllib
 from eums.models import MultipleChoiceQuestion, TextQuestion, NumericAnswer, Flow, Runnable, NumericQuestion, \
     TextAnswer, \
     MultipleChoiceAnswer, Option, Run, DistributionPlan, DistributionPlanNode, Consignee, Programme, PurchaseOrderItem, \
     ReleaseOrderItem, PurchaseOrder, SalesOrder, Item
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
+from eums.test.config import BACKEND_URL
+from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
-from eums.test.factories.answer_factory import MultipleChoiceAnswerFactory, TextAnswerFactory, NumericAnswerFactory
 from eums.test.factories.flow_factory import FlowFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.option_factory import OptionFactory
@@ -19,7 +19,6 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, 
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 from eums.test.factories.run_factory import RunFactory
-from eums.test.config import BACKEND_URL
 
 ENDPOINT_URL = BACKEND_URL + 'item-feedback-report/'
 
@@ -73,7 +72,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         self.assertEqual(len(response.data['results']), 6)
         self.assertFieldExists({'item_description': purchase_order_item.item.description}, results)
-        self.assertFieldExists({'programme': node_one.programme.name}, results)
+        self.assertFieldExists({'programme': {'id': node_one.programme.id, 'name': node_one.programme.name}}, results)
         self.assertFieldExists({'consignee': node_one.consignee.name}, results)
         self.assertFieldExists({'implementing_partner': node_one.ip.name}, results)
         self.assertFieldExists({'order_number': purchase_order_item.purchase_order.order_number}, results)
@@ -90,7 +89,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
                     field_exists = True
                     break
         self.assertTrue(field_exists)
-        
+
     def test_should_return_paginated_items_and_all_their_answers(self):
         total_number_of_items = 20
         self.setup_multiple_nodes_with_answers(total_number_of_items)
@@ -136,7 +135,8 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
 
         results = response.data['results']
         self.assertEqual(len(results), 4)
-        self.assertDictContainsSubset({'programme': node_one.programme.name}, results[0])
+        self.assertDictContainsSubset({'programme': {'id': node_one.programme.id, 'name': node_one.programme.name}},
+                                      results[0])
 
     def test_should_filter_answers_by_implementing_partner(self):
         node_one, _, _, node_two, _, ip = self.setup_nodes_with_answers()
@@ -234,8 +234,8 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
                                           location='Kampala', tree_position=Runnable.IMPLEMENTING_PARTNER, track=True)
 
         ip_node_three = DeliveryNodeFactory(consignee=ip, item=release_order_item, quantity=100,
-                                          distribution_plan=DeliveryFactory(track=True), programme=programme_two,
-                                          location='Gulu', tree_position=Runnable.IMPLEMENTING_PARTNER, track=True)
+                                            distribution_plan=DeliveryFactory(track=True), programme=programme_two,
+                                            location='Gulu', tree_position=Runnable.IMPLEMENTING_PARTNER, track=True)
 
         middle_man_node = DeliveryNodeFactory(consignee=middle_man, item=purchase_order_item,
                                               programme=programme_one, location='Wakiso', track=True,

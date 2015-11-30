@@ -77,12 +77,22 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 $scope.report = response.results;
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
+
+                updateProgrammes(response.programmeIds);
             }, function () {
                 ErrorMessageService.showError();
             }).finally(function () {
                 LoaderService.hideLoader();
                 $scope.searching = false;
             });
+        }
+
+        function updateProgrammes(programmeIds) {
+            $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
+                return _.contains(programmeIds, programme.id);
+            }) : [];
+
+            $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
         }
 
         function getLocationTerm() {
