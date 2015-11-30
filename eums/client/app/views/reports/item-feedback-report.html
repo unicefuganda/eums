@@ -142,7 +142,7 @@
                 <tbody>
                 <tr ng-repeat="($index, itemReport) in report" class="align-left">
                     <td><span class="padded-multi-line-5">{{ itemReport.item_description }}</span></td>
-                    <td><span class="padded-multi-line-5">{{ itemReport.programme }}</span></td>
+                    <td><span class="padded-multi-line-5">{{ itemReport.programme.name }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.implementing_partner }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.consignee }}</span></td>
                     <td><span class="padded-multi-line-5">{{ itemReport.tree_position | treePositionFilter }}</span>

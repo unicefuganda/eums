@@ -133,7 +133,7 @@ describe('Home Page', function () {
                 homePage.goToResponseDetailsPage();
 
                 expect(ipFeedbackReportByDeliveryPage.districtHeader.getText()).toEqual('Feedback Report from Deliveries to AMURU');
-                expect(itemFeedbackPage.resultsCount).toEqual(9);
+                expect(itemFeedbackPage.resultsCount).toEqual(2);
                 expect(itemFeedbackPage.consignees).toContain('RAKAI DHO');
                 expect(itemFeedbackPage.consignees).toContain('KAABONG DHO');
             });
