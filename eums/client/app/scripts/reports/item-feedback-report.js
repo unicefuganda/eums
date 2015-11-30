@@ -1,8 +1,11 @@
 'use strict';
 
-angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow', 'SysUtils'])
+angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Option', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+    .config(['ngToastProvider', function (ngToast) {
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+    }])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService, SortArrowService, SysUtilsService) {
+                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
 
@@ -109,8 +112,8 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         }
 
         $scope.exportToCSV = function () {
-            var allFilter = appendLocationFilter($scope.searchTerm);
-            ReportService.exportItemFeedbackReport(allFilter).then(function (response) {
+            var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm());
+            ReportService.exportItemFeedbackReport(allFilters).then(function (response) {
                 ngToast.create({content: response.message, class: 'info'});
             }, function () {
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
