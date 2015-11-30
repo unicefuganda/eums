@@ -15,8 +15,9 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             var initializing = true;
 
             $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
-
-            function refreshReport() {
+        
+            function refreshReport(sortOptions) {
+                $scope.pagination.page = 1;
                 if (initializing) {
                     loadIpFeedbackReportByDelivery();
                     initializing = false;
@@ -55,7 +56,6 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             }
 
             function startSearch() {
-                $scope.pagination.page = 1;
                 if (hasFields($scope.searchTerm)) {
                     $scope.searching = true;
                     loadIpFeedbackReportByDelivery($scope.searchTerm);

@@ -15,6 +15,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         var initializing = true;
 
         $scope.$watchCollection('searchTerm', function (oldSearchTerm, newSearchTerm) {
+            $scope.pagination.page = 1;
             if (initializing) {
                 loadItemFeedbackReport();
                 initializing = false;
@@ -55,7 +56,6 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         };
 
         function startTimer() {
-            $scope.pagination.page = 1;
             timer = $timeout(function () {
                 loadItemFeedbackReport($scope.searchTerm)
             }, 2000);

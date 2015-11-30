@@ -8,6 +8,7 @@ from rest_framework.utils.urls import replace_query_param
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
     DistributionPlanNode, Runnable, MultipleChoiceAnswer
+from eums.utils import get_lists_intersection
 
 PAGE_SIZE = 10
 sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
@@ -45,13 +46,18 @@ def ip_feedback_by_delivery_endpoint(request):
 
 
 def filter_answers(request, deliveries, questions):
+    runs_list = []
     for key, value in questions.iteritems():
         param = request.GET.get(key)
         if param:
             runs = MultipleChoiceAnswer.objects.filter(question__label__in=value,
                                                        value__text__iexact=param,
+                                                       run__status__in=('scheduled', 'completed'),
                                                        run__runnable__in=deliveries).values_list('run_id')
-            deliveries = deliveries.filter(run__in=runs)
+            runs_list.append(runs)
+
+    if runs_list:
+        deliveries = deliveries.filter(run__in=get_lists_intersection(runs_list))
 
     return deliveries
 
