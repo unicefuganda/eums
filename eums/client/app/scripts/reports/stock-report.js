@@ -8,7 +8,7 @@ angular.module('StockReport', [
         $scope.reportParams = {};
         $scope.totals = {};
         $scope.isIpUser = false;
-        $scope.sortOptions = {field: 'last_shipment_date', order: 'desc'};
+        $scope.sortTerm = {field: 'last_shipment_date', order: 'desc'};
 
 
         function init() {
@@ -40,16 +40,14 @@ angular.module('StockReport', [
 
         $scope.sortBy = function (sortField) {
             if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
-                $scope.sortOptions = SortService.sortBy(sortField, $scope.sortOptions);
+                $scope.sortTerm = SortService.sortBy(sortField, $scope.sortTerm);
                 fetchReport()
             }
         };
 
         function appendSortParam(requestParams) {
-            var sortParams = angular.extend({}, $scope.sortOptions);
-            return angular.extend(sortParams, requestParams);
+            return angular.extend({}, requestParams, $scope.sortTerm);
         }
-
 
         function fetchReport(params) {
             LoaderService.showLoader();
@@ -72,7 +70,7 @@ angular.module('StockReport', [
             if (params) {
                 Object.merge(requestParams, params);
             }
-            requestParams =appendSortParam(requestParams);
+            requestParams = appendSortParam(requestParams);
             StockReportService.getStockReport(requestParams).then(function (response) {
                 $scope.count = response.data.count;
                 $scope.pageSize = response.data.pageSize;
@@ -120,7 +118,7 @@ angular.module('StockReport', [
         };
 
         $scope.sortArrowClass = function (criteria) {
-            return SortArrowService.setSortArrow(criteria, $scope.sortOptions);
+            return SortArrowService.setSortArrow(criteria, $scope.sortTerm);
         };
 
         $scope.formatDate = function (date) {
