@@ -10,7 +10,7 @@ describe('ExportDeliveryService', function () {
         })
     });
 
-    it('should call export deliveries endpoint', function(){
+    it('should call exporter deliveries endpoint', function(){
         var type_filter = 'haha';
         mockBackend.whenGET(exportCSVEndpoint + '?type=' + type_filter).respond(fakeResponse);
         exportService.export(type_filter).then(function(response){

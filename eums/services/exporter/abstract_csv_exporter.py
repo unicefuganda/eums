@@ -1,4 +1,6 @@
 from abc import ABCMeta, abstractmethod
+
+import time
 from django.conf import settings
 
 
@@ -22,8 +24,6 @@ class AbstractCSVExporter(object):
 
     def _set_export_header(self):
         header = []
-        if self.export_header:
-            header = [self.export_header]
         header.extend(self._init_header())
         return header
 
@@ -35,3 +35,6 @@ class AbstractCSVExporter(object):
 
     def notification_details(self):
         return self._subject(), self._message()
+
+    def make_csv_suffix(self):
+        return '_' + str(int(round(time.time() * 1000))) + '.csv'

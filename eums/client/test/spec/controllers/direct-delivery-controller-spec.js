@@ -232,9 +232,9 @@ describe('DirectDeliveryController', function () {
         });
     });
 
-    describe('export to CSV', function () {
+    describe('exporter to CSV', function () {
 
-        it('should call the export direct deliveries to csv', function () {
+        it('should call the exporter direct deliveries to exporter', function () {
             scope.exportToCSV();
             expect(mockExportDeliveryService.export).toHaveBeenCalledWith('direct');
 

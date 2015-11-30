@@ -1,8 +1,9 @@
+import os
 from unittest import TestCase
 
-import os
 from django.test import override_settings
 from mock import patch, MagicMock
+
 from eums.services.csv_export_service import CSVExportService
 
 DEFAULT_FROM_EMAIL = "hoho@ha.ha"
@@ -14,7 +15,7 @@ class ExportServiceTest(TestCase):
         row_one = ['value1', 'value2']
 
         data = [header, row_one]
-        filename = 'direct_deliveries.csv'
+        filename = 'direct_deliveries.exporter'
         CSVExportService.generate(data, filename)
 
         csv_filename = 'eums/client/exports/' + filename
@@ -32,7 +33,7 @@ class ExportServiceTest(TestCase):
                    'some name', 'phone', 'location', 'Yes', 'No']
 
         expected_data = [header, row_one]
-        filename = 'warehouse_deliveries.csv'
+        filename = 'warehouse_deliveries.exporter'
         CSVExportService.generate(expected_data, filename)
 
         csv_filename = 'eums/client/exports/' + filename

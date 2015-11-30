@@ -1,10 +1,11 @@
 import csv
-from django.core import mail
+
 from django.conf import settings
+from django.core import mail
 from eums.celery import app
-from eums.services.delivery_csv_export import DeliveryCSVExport
-from eums.services.delivery_feedback_report_csv_export import DeliveryFeedbackReportExport
-from eums.services.item_feedback_report_csv_export import ItemFeedbackReportExport
+from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
+from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
+from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 
 
 class CSVExportService(object):
@@ -25,7 +26,7 @@ class CSVExportService(object):
 
 @app.task
 def generate_delivery_export_csv(user, delivery_type, host_name):
-    csv_export_service = DeliveryCSVExport.make_delivery_export_by_type(delivery_type.capitalize(), host_name)
+    csv_export_service = DeliveryCSVExporter.create_delivery_exporter_by_type(delivery_type.capitalize(), host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(),
                               csv_export_service.export_filename)
     CSVExportService.notify(user, *csv_export_service.notification_details())
@@ -33,7 +34,7 @@ def generate_delivery_export_csv(user, delivery_type, host_name):
 
 @app.task
 def generate_delivery_feedback_report_export_csv(user, host_name, deliveries_feedback):
-    csv_export_service = DeliveryFeedbackReportExport(host_name)
+    csv_export_service = DeliveryFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(deliveries_feedback),
                               csv_export_service.export_filename)
     # CSVExportService.notify(user, *csv_export_service.notification_details())
@@ -41,7 +42,7 @@ def generate_delivery_feedback_report_export_csv(user, host_name, deliveries_fee
 
 @app.task
 def generate_item_feedback_report_export_csv(user, host_name, items_feedback):
-    csv_export_service = ItemFeedbackReportExport(host_name)
+    csv_export_service = ItemFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(items_feedback),
                               csv_export_service.export_filename)
     # CSVExportService.notify(user, *csv_export_service.notification_details())

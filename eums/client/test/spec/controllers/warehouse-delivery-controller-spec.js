@@ -59,8 +59,8 @@ describe('Warehouse Delivery Controller', function () {
         expect(location.path()).toBe('/warehouse-delivery/new/' + id);
     });
 
-    describe('export to csv', function () {
-        it('should call the export warehouse deliveries to csv', function () {
+    describe('exporter to exporter', function () {
+        it('should call the exporter warehouse deliveries to exporter', function () {
 
             scope.exportToCSV();
             expect(mockExportDeliveryService.export).toHaveBeenCalledWith('warehouse');
