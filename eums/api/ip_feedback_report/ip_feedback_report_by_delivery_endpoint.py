@@ -4,7 +4,6 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
-
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
     DistributionPlanNode, Runnable, MultipleChoiceAnswer
@@ -16,18 +15,9 @@ sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
 
 @api_view(['GET'])
 def ip_feedback_by_delivery_endpoint(request):
-    logged_in_user = request.user
-    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
-    ip = None
-    if user_profile:
-        ip = user_profile.consignee
-    deliveries = _get_filtered_deliveries(request, ip)
+    deliveries = filter_delivery_feedback_report(request)
 
-    deliveries = filter_answers(request, deliveries, {'received': ('deliveryReceived',),
-                                                      'satisfied': ('satisfiedWithDelivery',),
-                                                      'good_condition': ('isDeliveryInGoodOrder',)})
-
-    results = sort.sort_by(request, _build_delivery_answers(deliveries))
+    results = sort.sort_by(request, deliveries)
     paginated_results = Paginator(results, PAGE_SIZE)
     page_number = _get_page_number(request)
     results_current_page = paginated_results.page(page_number)
@@ -43,6 +33,19 @@ def ip_feedback_by_delivery_endpoint(request):
     }
 
     return Response(data=data, status=status.HTTP_200_OK)
+
+
+def filter_delivery_feedback_report(request):
+    logged_in_user = request.user
+    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
+    ip = None
+    if user_profile:
+        ip = user_profile.consignee
+    deliveries = _get_filtered_deliveries(request, ip)
+    deliveries = filter_answers(request, deliveries, {'received': ('deliveryReceived',),
+                                                      'satisfied': ('satisfiedWithDelivery',),
+                                                      'good_condition': ('isDeliveryInGoodOrder',)})
+    return _build_delivery_answers(deliveries)
 
 
 def filter_answers(request, deliveries, questions):

@@ -3,11 +3,26 @@
 angular.module('ReportService', ['eums.config'])
     .factory('ReportService', function ($http, $q, EumsConfig) {
 
-        function buildIPReportUrlParams(params, byItem, pageNo) {
-            var reportEndpoint = byItem ? EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT : EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY;
+        function buildIPDeliveryReportUrlParams(params, pageNo) {
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT, params, pageNo)
+        }
+
+        function buildItemReportUrlParams(params, pageNo) {
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.IP_FEEDBACK_REPORT_BY_DELIVERY, params, pageNo)
+        }
+
+        function buildDeliverFeedbackReportExportUrlParams(params) {
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS, params, 1)
+        }
+
+        function buildItemFeedbackReportExportUrlParams(params) {
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params, 1)
+        }
+
+        function assembleQueryUrl(baseUrl, params, pageNo) {
             var queryParams = jQuery.param(buildSearchParams(params, pageNo));
             var query = queryParams ? '?' + queryParams : '';
-            return reportEndpoint + query;
+            return baseUrl + query;
         }
 
         function buildSearchParams(params, pageNo) {
@@ -39,13 +54,6 @@ angular.module('ReportService', ['eums.config'])
             return search;
         }
 
-        function buildEndUserReportUrlParams(params) {
-            var reportEndpoint = EumsConfig.BACKEND_URLS.END_USER_FEEDBACK_REPORT;
-            var query = params ? '?' + jQuery.param(buildSearchParams(params)) : '';
-
-            return reportEndpoint + query;
-        }
-
         return {
             allIpResponses: function () {
                 var result = $q.defer();
@@ -59,7 +67,7 @@ angular.module('ReportService', ['eums.config'])
 
             ipFeedbackReport: function (params, pageNo) {
                 var result = $q.defer();
-                var url = buildIPReportUrlParams(params, true, pageNo);
+                var url = buildIPDeliveryReportUrlParams(params, pageNo);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
@@ -71,7 +79,7 @@ angular.module('ReportService', ['eums.config'])
 
             ipFeedbackReportByDelivery: function (params, pageNo) {
                 var result = $q.defer();
-                var url = buildIPReportUrlParams(params, false, pageNo);
+                var url = buildItemReportUrlParams(params, pageNo);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
@@ -84,7 +92,7 @@ angular.module('ReportService', ['eums.config'])
 
             itemFeedbackReport: function (params, pageNo) {
                 var result = $q.defer();
-                var url = buildIPReportUrlParams(params, true, pageNo);
+                var url = buildIPDeliveryReportUrlParams(params, pageNo);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);
@@ -92,6 +100,30 @@ angular.module('ReportService', ['eums.config'])
                         result.reject();
                     });
 
+                return result.promise
+            },
+
+            exportDeliveriesFeedbackReport: function (params) {
+                var result = $q.defer();
+                var url = buildDeliverFeedbackReportExportUrlParams(params);
+                $http.get(url)
+                    .then(function (response) {
+                        result.resolve(response.data);
+                    }, function () {
+                        result.reject();
+                    });
+                return result.promise
+            },
+
+            exportItemFeedbackReport: function (params) {
+                var result = $q.defer();
+                var url = buildItemFeedbackReportExportUrlParams(params);
+                $http.get(url)
+                    .then(function (response) {
+                        result.resolve(response.data);
+                    }, function () {
+                        result.reject();
+                    });
                 return result.promise
             }
         };

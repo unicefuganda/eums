@@ -1,7 +1,11 @@
 'use strict';
 
-angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils'])
+angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'Loader', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+    .config(['ngToastProvider', function (ngToast) {
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+    }])
     .controller('IpFeedbackReportByDeliveryController', function ($scope, $q, $timeout, $routeParams, ReportService, LoaderService,
+<<<<<<< b27bacad2675556eb696c1f39f64c86d7f2a8dbf
                                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService) {
         var SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
         var timer;
@@ -26,6 +30,75 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 }
                 if ($scope.searchTerm.poWaybill) {
                     startTimer();
+=======
+                                                                  ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
+            var timer,
+                SUPPORTED_FIELD = ['shipmentDate', 'dateOfReceipt', 'value'];
+
+
+            $scope.searchTerm = {};
+            $scope.directiveValues = {};
+            $scope.pagination = {page: 1};
+            $scope.sortOptions = {field: 'shipmentDate', order: 'desc'};
+
+            var initializing = true;
+
+            $scope.district = $routeParams.district ? $routeParams.district : "All Districts";
+
+            function refreshReport() {
+                if (initializing) {
+                    loadIpFeedbackReportByDelivery();
+                    initializing = false;
+                } else {
+                    if (timer) {
+                        $timeout.cancel(timer);
+                    }
+                    if ($scope.searchTerm.poWaybill) {
+                        startTimer();
+                    } else {
+                        loadIpFeedbackReportByDelivery($scope.searchTerm);
+                    }
+                }
+            }
+
+            $scope.$watchCollection('searchTerm', function () {
+                refreshReport($scope.sortOptions);
+            });
+
+            $scope.sortBy = function (sortField) {
+                if (SUPPORTED_FIELD.indexOf(sortField) !== -1) {
+                    $scope.sortOptions = SortService.sortBy(sortField, $scope.sortOptions);
+                    refreshReport($scope.sortOptions)
+                }
+            };
+
+            $scope.sortArrowClass = function (criteria) {
+                return SortArrowService.setSortArrow(criteria, $scope.sortOptions)
+            };
+
+            $scope.exportToCSV = function () {
+                console.log($scope.searchTerm);
+                var allFilter = appendLocationFilter($scope.searchTerm);
+                ReportService.exportDeliveriesFeedbackReport(allFilter).then(function (response) {
+                    ngToast.create({content: response.message, class: 'info'});
+                }, function () {
+                    var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                    ngToast.create({content: errorMessage, class: 'danger'})
+                });
+            }
+
+            function startTimer() {
+                timer = $timeout(function () {
+                    startSearch();
+                }, 2000);
+            }
+
+            function startSearch() {
+                $scope.pagination.page = 1;
+                if (hasFields($scope.searchTerm)) {
+                    $scope.searching = true;
+                    loadIpFeedbackReportByDelivery($scope.searchTerm);
+>>>>>>> [#96262008] Yuan complete the backend service to generate report by filter
                 } else {
                     loadIpFeedbackReportByDelivery();
                 }

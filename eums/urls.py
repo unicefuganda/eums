@@ -10,7 +10,8 @@ from eums.api.answer.plan_answers_endpoint import PlanResponses
 from eums.api.answer.text_answers_endpoint import textAnswerRouter
 from eums.api.consignee.consignee_endpoint import consigneeRouter
 from eums.api.consignee_item.consignee_item_endpoint import consignee_items_router
-from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet
+from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet, ExportDeliveryFeedbackReportViewSet, \
+    ExportItemFeedbackReportViewSet
 from eums.api.delivery_stats.delivery_stats_details_endpoint import DeliveryStatsDetailsEndpoint
 from eums.api.delivery_stats.latest_deliveries import LatestDeliveriesEndpoint
 from eums.api.delivery_stats.map_delivery_stats_endpoint import MapDeliveryStatsEndpoint
@@ -47,7 +48,8 @@ urlpatterns = patterns(
     url(r'^api/ip-feedback-report-by-delivery',
         'eums.api.ip_feedback_report.ip_feedback_report_by_delivery_endpoint.ip_feedback_by_delivery_endpoint',
         name='ip_feedback_report_by_delivery'),
-    url(r'^api/item-feedback-report', 'eums.api.item_feedback_report.item_feedback_report_endpoint.item_feedback_report',
+    url(r'^api/item-feedback-report',
+        'eums.api.item_feedback_report.item_feedback_report_endpoint.item_feedback_report',
         name='item_feedback_report'),
     url(r'^api/import-release-orders/', 'eums.api.import_data.import_orders_endpoint.import_release_orders',
         name='import_release_orders'),
@@ -63,7 +65,8 @@ urlpatterns = patterns(
         name='permissions'),
     url(r'^api/current-user', 'eums.api.current_user.current_user_endpoint.current_user',
         name='current-user'),
-    url(r'^api/programme/with-ips/', 'eums.api.programme.programmes_with_ips_endpoint.programmes_with_ips', name='programmes_ips'),
+    url(r'^api/programme/with-ips/', 'eums.api.programme.programmes_with_ips_endpoint.programmes_with_ips',
+        name='programmes_ips'),
     url(r'^api/web-answers', 'eums.api.answer.web_answers_endpoint.save_answers', name='save_answers'),
     url(r'^api/so-item-po-item/(?P<sales_order_item_id>\d+)/$',
         soItemPOItem.as_view(), name='so_item_po_item'),
@@ -109,5 +112,11 @@ urlpatterns = patterns(
     url(r'^users/$', UsersList.as_view(), name="list_users_page"),
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
-    url(r'^exports/deliveries/', ExportDeliveryViewSet.as_view(), name='warehouse_deliveries_csv')
+
+
+    url(r'^exports/deliveries/', ExportDeliveryViewSet.as_view(), name='warehouse_deliveries_csv'),
+    url(r'^exports/deliveries-feedback-report/', ExportDeliveryFeedbackReportViewSet.as_view(),
+        name='deliveries_feedback_report_csv'),
+    url(r'^exports/items-feedback-report/', ExportItemFeedbackReportViewSet.as_view(),
+        name='items_feedback_report_csv'),
 )

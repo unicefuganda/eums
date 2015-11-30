@@ -1,10 +1,8 @@
 from unittest import TestCase
-
 from mock import patch
 from django.test import override_settings
-
 from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder
-from eums.services.delivery_csv_export import DeliveryExportFactory
+from eums.services.delivery_csv_export import DeliveryCSVExport
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -14,13 +12,11 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
-
 HOSTNAME = "http://ha.ha/"
 EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
 
 
 class WareHouseDeliveryExportTest(TestCase):
-
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
 
@@ -52,20 +48,19 @@ class WareHouseDeliveryExportTest(TestCase):
 
         expected_data = [header, row_one]
 
-        csv_exporter = DeliveryExportFactory.create('Warehouse', HOSTNAME)
+        csv_exporter = DeliveryCSVExport.make_delivery_export_by_type('Warehouse', HOSTNAME)
 
-        self.assertEqual(csv_exporter.data(), expected_data)
+        self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_warehouse_delivery(self):
-        warehouse_csv_export = DeliveryExportFactory.create('Warehouse', HOSTNAME)
+        warehouse_csv_export = DeliveryCSVExport.make_delivery_export_by_type('Warehouse', HOSTNAME)
         details = ('Warehouse Delivery Download',
                    '%s some content Warehouse other content http://ha.ha/static/exports/warehouse_deliveries.csv')
         self.assertEqual(warehouse_csv_export.notification_details(), details)
 
 
 class DirectDeliveryExportTest(TestCase):
-
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
@@ -99,13 +94,13 @@ class DirectDeliveryExportTest(TestCase):
 
         expected_data = [header, row_one]
 
-        csv_exporter = DeliveryExportFactory.create('Direct', HOSTNAME)
+        csv_exporter = DeliveryCSVExport.make_delivery_export_by_type('Direct', HOSTNAME)
 
-        self.assertEqual(csv_exporter.data(), expected_data)
+        self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     def test_should_return_correct_notification_details_for_direct_delivery(self):
-        warehouse_csv_export = DeliveryExportFactory.create('Direct', HOSTNAME)
+        warehouse_csv_export = DeliveryCSVExport.make_delivery_export_by_type('Direct', HOSTNAME)
         details = ('Direct Delivery Download',
                    '%s some content Direct other content http://ha.ha/static/exports/direct_deliveries.csv')
         self.assertEqual(warehouse_csv_export.notification_details(), details)

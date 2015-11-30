@@ -22,7 +22,7 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
     @patch('eums.services.csv_export_service.CSVExportService.notify')
     @patch('eums.services.delivery_csv_export.DeliveryCSVExport.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
-    @patch('eums.services.delivery_csv_export.WarehouseDeliveryExport.data')
+    @patch('eums.services.delivery_csv_export.WarehouseDeliveryExport.assemble_csv_data')
     def test_should_start_async_csv_generation_with_warehouse_deliveries(self, mock_data, mock_generate_csv, mock_notification_details, mock_notify_user):
         expected_data = {'message': 'Generating CSV, you will be notified via email once it is done.'}
 
@@ -43,7 +43,7 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
     @patch('eums.services.csv_export_service.CSVExportService.notify')
     @patch('eums.services.delivery_csv_export.DeliveryCSVExport.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
-    @patch('eums.services.delivery_csv_export.DirectDeliveryExport.data')
+    @patch('eums.services.delivery_csv_export.DirectDeliveryExport.assemble_csv_data')
     def test_should_start_async_csv_generation_with_direct_deliveries(self, mock_data, mock_generate_csv, mock_notification_details, mock_notify_user):
         expected_data = {'message': 'Generating CSV, you will be notified via email once it is done.'}
 

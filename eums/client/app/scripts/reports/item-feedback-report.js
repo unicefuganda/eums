@@ -107,4 +107,14 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         function getSortTerm() {
             return $scope.sortTerm;
         }
+
+        $scope.exportToCSV = function () {
+            var allFilter = appendLocationFilter($scope.searchTerm);
+            ReportService.exportItemFeedbackReport(allFilter).then(function (response) {
+                ngToast.create({content: response.message, class: 'info'});
+            }, function () {
+                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                ngToast.create({content: errorMessage, class: 'danger'})
+            });
+        }
     });

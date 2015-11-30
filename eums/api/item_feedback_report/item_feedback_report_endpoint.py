@@ -16,20 +16,7 @@ sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountRece
 
 @api_view(['GET', ])
 def item_feedback_report(request):
-    logged_in_user = request.user
-    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
-    ip = None
-    if user_profile:
-        ip = user_profile.consignee
-
-    response = []
-    nodes = item_tracked_nodes(request, ip)
-    nodes = filter_answers(request, nodes, {'received': ('itemReceived', 'productReceived'),
-                                            'satisfied': ('satisfiedWithProduct',),
-                                            'quality': ('qualityOfProduct',)})
-
-    if nodes:
-        build_answers_for_nodes(nodes, response)
+    response = filter_item_feedback_report(request)
 
     response = sorted(response, key=lambda d: d.get('dateOfReceipt'), reverse=True)
     response = sort.sort_by(request, response)
@@ -48,6 +35,22 @@ def item_feedback_report(request):
     }
 
     return Response(data, status=status.HTTP_200_OK)
+
+
+def filter_item_feedback_report(request):
+    logged_in_user = request.user
+    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
+    ip = None
+    if user_profile:
+        ip = user_profile.consignee
+    response = []
+    nodes = item_tracked_nodes(request, ip)
+    nodes = filter_answers(request, nodes, {'received': ('itemReceived', 'productReceived'),
+                                            'satisfied': ('satisfiedWithProduct',),
+                                            'quality': ('qualityOfProduct',)})
+    if nodes:
+        build_answers_for_nodes(nodes, response)
+    return response
 
 
 def filter_answers(request, nodes, questions):
