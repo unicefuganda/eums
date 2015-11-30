@@ -92,18 +92,18 @@ describe('Home Page', function () {
                 expect(homePage.valueNonResponse).toEqual('262');
             });
 
-            it('should click on kampala district', function () {
-                homePage.clickMapLayer('kampala');
-                expect(homePage.mapLocation).toEqual('KAMPALA');
-                expect(homePage.getMapZoomLevel()).toBe(12);
-                expect(homePage.numberSent).toEqual('1 deliveries');
+            it('should click on bukomansimbi district', function () {
+                homePage.clickMapLayer('bukomansimbi');
+                expect(homePage.mapLocation).toEqual('BUKOMANSIMBI');
+                expect(homePage.getMapZoomLevel()).toBe(11);
+                expect(homePage.numberSent).toEqual('2 deliveries');
                 expect(homePage.numberDelivered).toEqual('1 response');
                 expect(homePage.numberNotDelivered).toEqual('0 responses');
-                expect(homePage.numberNonResponse).toEqual('0 non-responses');
-                expect(homePage.valueSent).toEqual('$50');
-                expect(homePage.valueDelivered).toEqual('50');
+                expect(homePage.numberNonResponse).toEqual('1 non-response');
+                expect(homePage.valueSent).toEqual('$213');
+                expect(homePage.valueDelivered).toEqual('151');
                 expect(homePage.valueNotDelivered).toEqual('0');
-                expect(homePage.valueNonResponse).toEqual('0');
+                expect(homePage.valueNonResponse).toEqual('62');
             });
 
             it('when I click on district number of responses should be 3 or less', function () {

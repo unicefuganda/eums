@@ -60,7 +60,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
         itemFeedbackReport.searchByRecipientType('Sub-consignee');
         expect(itemFeedbackReport.distributionStage).toContain('Sub-consignee');
-        expect(itemFeedbackReport.resultsCount).toEqual(1);
+        expect(itemFeedbackReport.resultsCount).toEqual(3);
     });
 
     it('should search the Item report by product received', function () {
@@ -87,7 +87,7 @@ describe('Item Feedback Report', function () {
         itemFeedbackReport.visit();
         itemFeedbackReport.searchByQuality('DAMAGED');
         expect(itemFeedbackReport.quality).not.toContain('GOOD');
-        expect(itemFeedbackReport.resultsCount).toEqual(1);
+        expect(itemFeedbackReport.resultsCount).toEqual(2);
     });
 
     it('should sort by value', function() {
