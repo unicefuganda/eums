@@ -63,7 +63,6 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
         $scope.exportToCSV = function () {
             var allFilters = angular.extend({}, getLocationTerm(), getSearchTerm());
             ReportService.exportDeliveriesFeedbackReport(allFilters).then(function (response) {
-                console.log(response);
                 ngToast.create({content: response.message, class: 'info'});
             }, function () {
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
