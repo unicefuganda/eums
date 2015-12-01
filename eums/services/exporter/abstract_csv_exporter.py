@@ -1,5 +1,4 @@
 from abc import ABCMeta, abstractmethod
-
 import time
 from django.conf import settings
 
@@ -24,6 +23,8 @@ class AbstractCSVExporter(object):
 
     def _set_export_header(self):
         header = []
+        if self.export_header:
+            header.extend(self.export_header)
         header.extend(self._init_header())
         return header
 
@@ -31,7 +32,7 @@ class AbstractCSVExporter(object):
         return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, self.csv_url)
 
     def _subject(self):
-        return "%s Delivery Download" % self.export_label
+        return "%s Download" % self.export_label
 
     def notification_details(self):
         return self._subject(), self._message()

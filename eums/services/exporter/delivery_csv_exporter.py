@@ -4,7 +4,7 @@ from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
 class DeliveryCSVExporter(AbstractCSVExporter):
     END_USER_RESPONSE = {True: 'Yes', False: 'No'}
-    COMMON_HEADER = ['PO/Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
+    COMMON_HEADER = ['Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
                      'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
                      'Is Tracked', 'Remarks']
 
@@ -34,7 +34,8 @@ class DeliveryCSVExporter(AbstractCSVExporter):
 
 class WarehouseDeliveryExporter(DeliveryCSVExporter):
     def __init__(self, host_name):
-        self.export_label = 'Warehouse'
+        self.export_label = 'Warehouse Delivery'
+        self.export_header = 'Waybill'
         self.export_filename = 'warehouse_deliveries' + self.make_csv_suffix()
         self.item_class = ReleaseOrderItem
         super(WarehouseDeliveryExporter, self).__init__(host_name)
@@ -42,7 +43,8 @@ class WarehouseDeliveryExporter(DeliveryCSVExporter):
 
 class DirectDeliveryExporter(DeliveryCSVExporter):
     def __init__(self, host_name):
-        self.export_label = 'Direct'
+        self.export_label = 'Direct Delivery'
+        self.export_header = 'Purchase Order Number'
         self.export_filename = 'direct_deliveries' + self.make_csv_suffix()
         self.item_class = PurchaseOrderItem
         super(DirectDeliveryExporter, self).__init__(host_name)

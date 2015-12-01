@@ -16,7 +16,7 @@ HOSTNAME = "http://ha.ha/"
 EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
 
 
-class WareHouseDeliveryExportTest(TestCase):
+class WareHouseDeliveryExporterTest(TestCase):
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
 
@@ -39,7 +39,7 @@ class WareHouseDeliveryExportTest(TestCase):
                             consignee=consignee, item=ro_item, location=luweero, remark=remark)
 
         header = [
-            'PO/Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
+            'Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
             'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
             'Is Tracked', 'Remarks']
         row_one = [waybill, mama_kit, material_code, 10, delivery_date, consignee_name,
@@ -64,7 +64,7 @@ class WareHouseDeliveryExportTest(TestCase):
         self.assertEqual(warehouse_csv_export.notification_details(), details)
 
 
-class DirectDeliveryExportTest(TestCase):
+class DirectDeliveryExporterTest(TestCase):
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
@@ -89,7 +89,7 @@ class DirectDeliveryExportTest(TestCase):
                             consignee=consignee, item=ro_item, location=luweero, remark=remark)
 
         header = [
-            'PO/Waybill', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
+            'Purchase Order Number', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
             'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
             'Is Tracked', 'Remarks']
         row_one = [order_number, mama_kit, material_code, 10, delivery_date, consignee_name,

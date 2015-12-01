@@ -3,7 +3,7 @@ angular.module('SysUtils', [])
         return {
             formatDate: function (date) {
                 try {
-                    return date.trim() ? moment(date.trim()).format('DD-MMM-YYYY') : "";
+                    return date.trim() ? moment(date.trim(), "DD-MM-YYYY").format('DD-MMM-YYYY') : "";
                 } catch (err) {
                     return "";
                 }

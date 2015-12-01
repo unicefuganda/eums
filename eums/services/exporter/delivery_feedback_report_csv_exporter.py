@@ -1,5 +1,4 @@
 import time
-
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
 
@@ -9,7 +8,7 @@ class DeliveryFeedbackReportExporter(AbstractCSVExporter):
                                        'VALUE', 'CONDITION', 'SATISFIED', 'REMARKS']
 
     def __init__(self, host_name):
-        self.export_label = 'DeliveryFeedbackReport'
+        self.export_label = 'Delivery Feedback Report'
         self.export_filename = 'deliveries_feedback_report' + self.make_csv_suffix()
         super(DeliveryFeedbackReportExporter, self).__init__(host_name)
 

@@ -11,7 +11,7 @@ class ItemFeedbackReportExporter(AbstractCSVExporter):
                                    'QUALITY', 'SATISFIED', 'REMARKS']
 
     def __init__(self, host_name):
-        self.export_label = 'ItemFeedbackReport'
+        self.export_label = 'Item Feedback Report'
         self.export_filename = 'items_feedback_report' + self.make_csv_suffix()
         super(ItemFeedbackReportExporter, self).__init__(host_name)
 
