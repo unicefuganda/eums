@@ -24,7 +24,7 @@ class AbstractCSVExporter(object):
     def _set_export_header(self):
         header = []
         if self.export_header:
-            header.extend(self.export_header)
+            header = [self.export_header]
         header.extend(self._init_header())
         return header
 

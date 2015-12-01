@@ -59,7 +59,7 @@ class WareHouseDeliveryExporterTest(TestCase):
         mock_make_csv_suffix.return_value = csv_suffix
         warehouse_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Warehouse', HOSTNAME)
         details = ('Warehouse Delivery Download',
-                   '%s some content Warehouse other content http://ha.ha/static/exports/warehouse_deliveries' +
+                   '%s some content Warehouse Delivery other content http://ha.ha/static/exports/warehouse_deliveries' +
                    csv_suffix)
         self.assertEqual(warehouse_csv_export.notification_details(), details)
 
@@ -109,5 +109,5 @@ class DirectDeliveryExporterTest(TestCase):
         mock_make_csv_suffix.return_value = csv_suffix
         warehouse_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
         details = ('Direct Delivery Download',
-                   '%s some content Direct other content http://ha.ha/static/exports/direct_deliveries' + csv_suffix)
+                   '%s some content Direct Delivery other content http://ha.ha/static/exports/direct_deliveries' + csv_suffix)
         self.assertEqual(warehouse_csv_export.notification_details(), details)
