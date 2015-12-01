@@ -24,6 +24,7 @@ class CSVExportService(object):
             mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
 
 
+
 @app.task
 def generate_delivery_export_csv(user, delivery_type, host_name):
     csv_export_service = DeliveryCSVExporter.create_delivery_exporter_by_type(delivery_type.capitalize(), host_name)

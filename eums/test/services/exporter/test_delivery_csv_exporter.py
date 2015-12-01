@@ -100,6 +100,9 @@ class DirectDeliveryExporterTest(TestCase):
 
         csv_exporter = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
 
+        print 'query_date-->%' % csv_exporter.assemble_csv_data()
+        print 'expected_data-->%' % expected_data
+        print 'is_equal-->%' % (expected_data == csv_exporter.assemble_csv_data())
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
@@ -109,5 +112,6 @@ class DirectDeliveryExporterTest(TestCase):
         mock_make_csv_suffix.return_value = csv_suffix
         warehouse_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
         details = ('Direct Delivery Download',
-                   '%s some content Direct Delivery other content http://ha.ha/static/exports/direct_deliveries' + csv_suffix)
+                   '%s some content Direct Delivery other content http://ha.ha/static/exports/direct_deliveries' +
+                   csv_suffix)
         self.assertEqual(warehouse_csv_export.notification_details(), details)
