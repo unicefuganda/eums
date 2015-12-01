@@ -117,7 +117,7 @@ function resetdb {
 function testbackend {
   source ~/.virtualenvs/eums/bin/activate
   pip install -r requirements.txt
-  python manage.py test -v 2
+  python manage.py test -v 2 --noinput
 }
 
 function testjsunit {
