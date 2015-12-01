@@ -68,7 +68,7 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 var errorMessage = "Error while generating CSV. Please contact the system's admin.";
                 ngToast.create({content: errorMessage, class: 'danger'})
             });
-        }
+        };
 
         function startTimer() {
             timer = $timeout(function () {

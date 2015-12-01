@@ -560,5 +560,3 @@ angular.module('Directives', ['eums.ip'])
             }
         }
     });
-
-

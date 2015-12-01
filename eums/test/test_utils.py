@@ -8,7 +8,7 @@ class TestUtils(TestCase):
         text = "Chris George Kawa"
         self.assertEqual(snakify(text), "chris_george_kawa")
 
-    def test_get_list_intersection(self):
+    def test_get_lists_intersection(self):
         source_list = [[1, 2, 3]]
         self.assertEqual(get_lists_intersection(source_list), [1, 2, 3])
 
