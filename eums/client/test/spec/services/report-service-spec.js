@@ -145,7 +145,7 @@ describe('Report Service', function () {
 
     it('should get export successfully message when export delivery feedback report', function () {
         var message = {'message': 'Generating CSV, you will be notified via email once it is done.'};
-        var url = config.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS + "?page=1";
+        var url = config.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS;
 
         mockBackend.whenGET(url).respond(200, message);
         mockBackend.expectGET(url);
@@ -159,7 +159,7 @@ describe('Report Service', function () {
 
     it('should get export successfully message when export item feedback report', function () {
         var message = {'message': 'Generating CSV, you will be notified via email once it is done.'};
-        var url = config.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS + "?page=1";
+        var url = config.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS;
 
         mockBackend.whenGET(url).respond(200, message);
         mockBackend.expectGET(url);

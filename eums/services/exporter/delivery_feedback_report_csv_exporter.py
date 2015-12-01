@@ -1,29 +1,22 @@
-import time
-from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
+from eums.services.exporter.feedback_report_csv_exporter import FeedbackReportExporter
 
 
-class DeliveryFeedbackReportExporter(AbstractCSVExporter):
-    DELIVERY_FEEDBACK_REPORT_HEADER = ['RECEIVED', 'SHIPMENT_DATE', 'DATE_RECEIVED', 'PO/WAYBILL', 'OUTCOME',
-                                       'IMPLEMENTING_PARTNER',
-                                       'VALUE', 'CONDITION', 'SATISFIED', 'REMARKS']
-
+class DeliveryFeedbackReportExporter(FeedbackReportExporter):
     def __init__(self, host_name):
-        self.export_header = None
         self.export_label = 'Delivery Feedback Report'
         self.export_filename = 'deliveries_feedback_report' + self.make_csv_suffix()
         super(DeliveryFeedbackReportExporter, self).__init__(host_name)
 
-    def _init_header(self):
-        return self.DELIVERY_FEEDBACK_REPORT_HEADER
-
-    def assemble_csv_data(self, deliveries_feedback_report):
-        total_rows = [self.header]
-        for each in deliveries_feedback_report:
-            row_value = [each.get('deliveryReceived'), each.get('shipmentDate'), each.get('dateOfReceipt'),
-                         each.get('orderNumber'),
-                         each.get('programme')['name'], each.get('consignee')['name'], each.get('value'),
-                         each.get('isDeliveryInGoodOrder'),
-                         each.get('satisfiedWithDelivery'), each.get('additionalDeliveryComments')
-                         ]
-            total_rows.append(row_value)
-        return total_rows
+    def _init_header_dic_key_map(self):
+        return {
+            'RECEIVED': 'deliveryReceived',
+            'SHIPMENT_DATE': 'shipmentDate',
+            'DATE_RECEIVED': 'dateOfReceipt',
+            'PO/WAYBILL': 'orderNumber',
+            'OUTCOME': 'programme.name',
+            'IMPLEMENTING_PARTNER': 'consignee.name',
+            'VALUE': 'value',
+            'CONDITION': 'isDeliveryInGoodOrder',
+            'SATISFIED': 'satisfiedWithDelivery',
+            'REMARKS': 'additionalDeliveryComments'
+        }

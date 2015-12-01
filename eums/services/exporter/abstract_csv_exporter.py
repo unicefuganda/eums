@@ -4,27 +4,21 @@ from django.conf import settings
 
 
 class AbstractCSVExporter(object):
-    __metaclass__ = ABCMeta
-
     def __init__(self, host_name):
         self.header = self._set_export_header()
         self.csv_url = self._set_csv_url(host_name)
 
-    @abstractmethod
     def _init_header(self):
-        pass
+        return []
 
-    @abstractmethod
     def assemble_csv_data(self, data=None):
-        pass
+        return []
 
     def _set_csv_url(self, host_name):
         return '%sstatic/exports/%s' % (host_name, self.export_filename)
 
     def _set_export_header(self):
         header = []
-        if self.export_header:
-            header = [self.export_header]
         header.extend(self._init_header())
         return header
 

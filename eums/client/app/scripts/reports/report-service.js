@@ -12,11 +12,11 @@ angular.module('ReportService', ['eums.config'])
         }
 
         function buildDeliverFeedbackReportExportUrlParams(params) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS, params, 1)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS, params)
         }
 
         function buildItemFeedbackReportExportUrlParams(params) {
-            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params, 1)
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params)
         }
 
         function assembleQueryUrl(baseUrl, params, pageNo) {

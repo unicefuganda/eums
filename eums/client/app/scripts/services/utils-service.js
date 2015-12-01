@@ -5,10 +5,11 @@ angular.module('SysUtils', [])
                 try {
                     var result = "";
                     if (date.trim()) {
-                        result = moment(date.trim()).format('DD-MMM-YYYY')
+                        date = date.trim().replace(/\//g, "-");
+                        result = moment(date).format('DD-MMM-YYYY')
                     }
                     if (result == "Invalid date") {
-                        result = moment(date.trim(),"DD-MM-YYYY").format('DD-MMM-YYYY')
+                        result = moment(date, "DD-MM-YYYY").format('DD-MMM-YYYY')
                     }
                     return result;
                 } catch (err) {

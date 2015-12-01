@@ -1,5 +1,4 @@
 import csv
-
 from django.conf import settings
 from django.core import mail
 from eums.celery import app
@@ -22,7 +21,6 @@ class CSVExportService(object):
         message = message % user.username
         if getattr(user, 'email', None):
             mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
-
 
 
 @app.task

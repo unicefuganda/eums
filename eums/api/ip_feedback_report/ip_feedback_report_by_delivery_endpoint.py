@@ -31,7 +31,6 @@ def ip_feedback_by_delivery_endpoint(request):
         'ipIds': _get_ip_ids(results),
         'programmeIds': _get_programme_ids(results),
     }
-
     return Response(data=data, status=status.HTTP_200_OK)
 
 

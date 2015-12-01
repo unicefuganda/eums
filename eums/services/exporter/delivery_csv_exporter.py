@@ -1,3 +1,5 @@
+import copy
+
 from eums.models import ReleaseOrderItem, PurchaseOrderItem, DistributionPlanNode
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
@@ -7,9 +9,6 @@ class DeliveryCSVExporter(AbstractCSVExporter):
     COMMON_HEADER = ['Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
                      'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
                      'Is Tracked', 'Remarks']
-
-    def _init_header(self):
-        return self.COMMON_HEADER
 
     def assemble_csv_data(self, data=None):
         item_ids = self.item_class.objects.values_list('id', flat=True)
@@ -40,11 +39,20 @@ class WarehouseDeliveryExporter(DeliveryCSVExporter):
         self.item_class = ReleaseOrderItem
         super(WarehouseDeliveryExporter, self).__init__(host_name)
 
+    def _init_header(self):
+        header = copy.deepcopy(self.COMMON_HEADER)
+        header.insert(0, 'Waybill')
+        return header
+
 
 class DirectDeliveryExporter(DeliveryCSVExporter):
     def __init__(self, host_name):
         self.export_label = 'Direct Delivery'
-        self.export_header = 'Purchase Order'
         self.export_filename = 'direct_deliveries' + self.make_csv_suffix()
         self.item_class = PurchaseOrderItem
         super(DirectDeliveryExporter, self).__init__(host_name)
+
+    def _init_header(self):
+        header = copy.deepcopy(self.COMMON_HEADER)
+        header.insert(0, 'Purchase Order')
+        return header
