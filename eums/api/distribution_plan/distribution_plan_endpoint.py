@@ -17,7 +17,7 @@ class DistributionPlanSerialiser(serializers.ModelSerializer):
         fields = ('id', 'programme', 'distributionplannode_set', 'location', 'consignee', 'delivery_date',
                   'track', 'contact_person_id', 'remark', 'total_value', 'is_received', 'type', 'number',
                   'number_of_items', 'confirmed', 'shipment_received', 'is_retriggered',
-                  'time_limitation_on_distribution')
+                  'time_limitation_on_distribution', 'tracked_date')
 
 
 class DistributionPlanViewSet(ModelViewSet):

@@ -1,6 +1,6 @@
 from django.db import models
 
-from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlanNode, ReleaseOrderItem, Runnable
+from eums.models import SalesOrder, PurchaseOrder, Consignee,DistributionPlan ,DistributionPlanNode, ReleaseOrderItem, Runnable
 from eums.models.time_stamped_model import TimeStampedModel
 
 
@@ -37,6 +37,10 @@ class ReleaseOrder(TimeStampedModel):
     def track(self):
         delivery_id = self.delivery()
         return getattr(Runnable.objects.get(pk=delivery_id), 'track', None) if delivery_id else None
+
+    def tracked_date(self):
+        delivery_id = self.delivery()
+        return getattr(DistributionPlan.objects.get(pk=delivery_id), 'tracked_date', None) if delivery_id else None
 
     class Meta:
         app_label = 'eums'

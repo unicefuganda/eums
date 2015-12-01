@@ -85,6 +85,11 @@
                         <i ng-class="sortArrowClass('date');"></i>
                     </a>
                 </th>
+                <th>
+                    <a ng-click="sortBy('trackedDate')">{{ trackedDateColumnTitle }}
+                        <i ng-class="sortArrowClass('trackedDate');"></i>
+                    </a>
+                </th>
                 <th ng-if="descriptionColumnTitle">
                     {{ descriptionColumnTitle }}
                 </th>
@@ -105,6 +110,9 @@
                 </td>
                 <td data-header="Date Created">
                     {{ releaseOrder.deliveryDate | date : 'dd-MMM-yyyy' }}
+                </td>
+                <td data-header="Date Tracked">
+                    {{ releaseOrder.trackedDate | date : 'dd-MMM-yyyy' }}
                 </td>
                 <td data-header="{{ descriptionColumnTitle }}" ng-if="descriptionColumnTitle">
                     {{ releaseOrder.programme }}

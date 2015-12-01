@@ -113,6 +113,9 @@ class DistributionPlanNode(Runnable):
     def time_limitation_on_distribution(self):
         return self.distribution_plan.time_limitation_on_distribution
 
+    def tracked_date(self):
+        return self.distribution_plan.tracked_date
+
     def _set_delivery(self):
         parents = self.get_parents()
         if parents and parents.count() == 1:
@@ -133,6 +136,7 @@ class DistributionPlanNode(Runnable):
         if not self.is_root():
             self.track = self.arcs_in.filter(source__track=True).exists()
             self.save()
+
 
     def update_balance(self):
         if self.is_root:

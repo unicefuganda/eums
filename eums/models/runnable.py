@@ -19,6 +19,7 @@ class Runnable(PolymorphicModel, TimeStampedModel):
     is_retriggered = models.BooleanField(default=False)
     total_value = models.DecimalField(max_digits=12, decimal_places=2, null=False, default=0)
 
+
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     WEB = 'WEB'
     MIDDLE_MAN = 'MIDDLE_MAN'

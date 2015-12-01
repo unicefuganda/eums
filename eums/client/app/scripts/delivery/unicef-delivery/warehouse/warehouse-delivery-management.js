@@ -15,6 +15,9 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         $scope.districtsLoaded = false;
         $scope.track = $scope.track ? true : false;
         $scope.valid_time_limitation = true;
+        var date = new Date();
+        var dateFormat = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
+
 
         function createToast(message, klass) {
             ngToast.create({
@@ -85,7 +88,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                     if ($scope.delivery) {
                         $scope.track = $scope.delivery.track;
-                        var time_limitation_on_distribution = $scope.delivery.timeLimitationOnDistribution;
                         DeliveryNodeService.filter({distribution_plan: $scope.delivery.id}, deliveryNodeParams)
                             .then(function (childNodes) {
                                 var firstChildNode = childNodes.first();
@@ -94,6 +96,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                                     $scope.selectedLocation.id = firstChildNode.location;
                                     $scope.contact.id = firstChildNode.contactPersonId;
                                     $scope.delivery.time_limitation_on_distribution = firstChildNode.timeLimitationOnDistribution;
+                                    $scope.delivery.tracked_date = firstChildNode.tracked_date;
                                     setLocationAndContactFields();
                                 }
                             });
@@ -134,6 +137,12 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
         function createOrUpdateDeliveries() {
             if ($scope.delivery && $scope.delivery.id) {
+                if(!$scope.delivery.track&& $scope.track) {
+                    $scope.delivery.tracked_date = dateFormat;
+                }
+                if(!$scope.track) {
+                    $scope.delivery.tracked_date = null;
+                }
                 $scope.delivery.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
                 $scope.delivery.track = $scope.track;
                 return DeliveryService.update($scope.delivery)
@@ -150,7 +159,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     contact_person_id: $scope.contact.id,
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
                     track: $scope.track,
-                    time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null
+                    time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null,
+                    tracked_date: ($scope.track) ? dateFormat : null
                 };
                 return DeliveryService.create(deliveryDetails)
                     .then(function (createdDelivery) {
@@ -196,7 +206,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             node.delivery_date = $scope.selectedReleaseOrder.deliveryDate;
             node.track = $scope.track;
             node.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
-
+            node.tracked_date = $scope.delivery.tracked_date;
             return DeliveryNodeService.update(node)
 
         };
@@ -212,7 +222,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                 tree_position: 'IMPLEMENTING_PARTNER',
                 item: releaseOrderItem,
                 quantity: parseInt(releaseOrderItem.quantity),
-                time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null
+                time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null,
+                tracked_date: $scope.delivery.tracked_date
             };
 
             return DeliveryNodeService.create(node)

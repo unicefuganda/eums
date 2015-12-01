@@ -17,6 +17,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
 
         $scope.documentColumnTitle = 'Waybill #';
         $scope.dateColumnTitle = 'Date Shipped';
+        $scope.trackedDateColumnTitle = 'Tracked Date';
         $scope.descriptionColumnTitle = 'Outcome Name';
 
         function loadReleaseOrder(options) {

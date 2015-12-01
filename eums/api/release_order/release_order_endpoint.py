@@ -14,7 +14,7 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = ReleaseOrder
         fields = ('id', 'order_number', 'sales_order', 'purchase_order', 'programme', 'consignee', 'waybill',
-                  'delivery_date', 'items', 'delivery', 'consignee_name', 'track')
+                  'delivery_date', 'items', 'delivery', 'consignee_name', 'track', 'tracked_date')
 
 
 class ReleaseOrderViewSet(ModelViewSet):
@@ -27,7 +27,6 @@ class ReleaseOrderViewSet(ModelViewSet):
             self.paginator.page_size = 0
 
         queryset = self.filter_queryset(self.__get_release_orders(request))
-
         page = self.paginate_queryset(queryset)
 
         if page is not None:
