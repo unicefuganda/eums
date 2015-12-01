@@ -100,9 +100,10 @@ class DirectDeliveryExporterTest(TestCase):
 
         csv_exporter = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
 
-        print 'query_date-->%' % csv_exporter.assemble_csv_data()
-        print 'expected_data-->%' % expected_data
-        print 'is_equal-->%' % (expected_data == csv_exporter.assemble_csv_data())
+        print 'query_date-->%s' % str(csv_exporter.assemble_csv_data())
+        print 'expected_data-->%s' % str(expected_data)
+        print 'is_equal-->%s' % str(expected_data == csv_exporter.assemble_csv_data())
+        TestCase.maxDiff = None
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
