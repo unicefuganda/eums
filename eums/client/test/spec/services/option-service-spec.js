@@ -21,7 +21,8 @@ describe('Option Service', function() {
         };
 
         mockBackend.whenGET(receivedOptionsEndpointUrl).respond([stubOption]);
-        optionService.receivedOptions().then(function (response) {
+        var service = optionService.getService('item', 'received');
+        service().then(function (response) {
             expect(response).toEqual([stubOption]);
             done();
         });
@@ -35,7 +36,8 @@ describe('Option Service', function() {
         };
 
         mockBackend.whenGET(qualityOptionsEndpointUrl).respond([stubOption]);
-        optionService.qualityOptions().then(function (response) {
+        var service = optionService.getService('item', 'quality');
+        service().then(function (response) {
             expect(response).toEqual([stubOption]);
             done();
         });
@@ -49,7 +51,8 @@ describe('Option Service', function() {
         };
 
         mockBackend.whenGET(satisfiedOptionsEndpointUrl).respond([stubOption]);
-        optionService.satisfiedOptions().then(function (response) {
+        var service = optionService.getService('item', 'satisfied');
+        service().then(function (response) {
             expect(response).toEqual([stubOption]);
             done();
         });

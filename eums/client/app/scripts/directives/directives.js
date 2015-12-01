@@ -351,96 +351,6 @@ angular.module('Directives', ['eums.ip'])
             }
         };
     })
-    .directive('selectReceiveOption', function (OptionService) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function (scope, elem, attrs, ngModel) {
-                OptionService.receivedOptions().then(function (options) {
-                    var originOptions = _.uniq(options, function (option) {
-                        return option.text;
-                    });
-                    return _.reject(originOptions, function(option) {
-                        return option.text == 'UNCATEGORISED';
-                    });
-                }).then(function (data) {
-                    $(elem).select2({
-                        placeholder: 'Received',
-                        allowClear: true,
-                        data: data
-                    });
-                });
-
-                elem.change(function () {
-                    var option = $(elem).select2('data');
-                    var text = option ? option.text : "";
-                    ngModel.$setViewValue(text);
-                    scope.$apply();
-                });
-            }
-        }
-    })
-    .directive('selectSatisfiedOption', function (OptionService) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function (scope, elem, attrs, ngModel) {
-                OptionService.satisfiedOptions().then(function (options) {
-                    var originOptions = _.uniq(options, function (option) {
-                        return option.text;
-                    });
-                    return _.reject(originOptions, function(option) {
-                        return option.text == 'UNCATEGORISED';
-                    });
-                }).then(function (data) {
-                    $(elem).select2({
-                        placeholder: 'Satisfied',
-                        allowClear: true,
-                        data: data
-                    });
-                });
-
-                elem.change(function () {
-                    var option = $(elem).select2('data');
-                    var text = option ? option.text : "";
-                    ngModel.$setViewValue(text);
-                    scope.$apply();
-                });
-            }
-        }
-    })
-    .directive('selectQualityOption', function (OptionService) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function (scope, elem, attrs, ngModel) {
-                OptionService.qualityOptions().then(function (options) {
-                    var originOptions = _.uniq(options, function (option) {
-                        return option.text;
-                    });
-                    return _.reject(originOptions, function(option) {
-                        return option.text == 'UNCATEGORISED';
-                    });
-                }).then(function (data) {
-                    $(elem).select2({
-                        placeholder: 'Quality',
-                        allowClear: true,
-                        data: data
-                    });
-                });
-
-                elem.change(function () {
-                    var option = $(elem).select2('data');
-                    var text = option ? option.text : "";
-                    ngModel.$setViewValue(text);
-                    scope.$apply();
-                });
-            }
-        }
-    })
     .directive('selectRecipientType', function () {
         return {
             restrict: 'A',
@@ -470,13 +380,15 @@ angular.module('Directives', ['eums.ip'])
             }
         }
     })
-    .directive('selectDeliveryReceiveOption', function (OptionService) {
+    .directive('selectOption', function (OptionService) {
         return {
             restrict: 'A',
             scope: false,
             require: 'ngModel',
             link: function (scope, elem, attrs, ngModel) {
-                OptionService.deliveryReceivedOptions().then(function (options) {
+                var optionAttrs = attrs.selectOption.split(' ');
+                var deliveryOptionService = OptionService.getService(optionAttrs[0], optionAttrs[1]);
+                deliveryOptionService().then(function (options) {
                     var originOptions = _.uniq(options, function (option) {
                         return option.text;
                     });
@@ -485,67 +397,7 @@ angular.module('Directives', ['eums.ip'])
                     });
                 }).then(function (data) {
                     $(elem).select2({
-                        placeholder: 'Received',
-                        allowClear: true,
-                        data: data
-                    });
-                });
-
-                elem.change(function () {
-                    var option = $(elem).select2('data');
-                    var text = option ? option.text : "";
-                    ngModel.$setViewValue(text);
-                    scope.$apply();
-                });
-            }
-        }
-    })
-    .directive('selectDeliverySatisfiedOption', function (OptionService) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function (scope, elem, attrs, ngModel) {
-                OptionService.deliverySatisfiedOptions().then(function (options) {
-                    var originOptions = _.uniq(options, function (option) {
-                        return option.text;
-                    });
-                    return _.reject(originOptions, function(option) {
-                        return option.text == 'UNCATEGORISED';
-                    });
-                }).then(function (data) {
-                    $(elem).select2({
-                        placeholder: 'Satisfied',
-                        allowClear: true,
-                        data: data
-                    });
-                });
-
-                elem.change(function () {
-                    var option = $(elem).select2('data');
-                    var text = option ? option.text : "";
-                    ngModel.$setViewValue(text);
-                    scope.$apply();
-                });
-            }
-        }
-    })
-    .directive('selectDeliveryConditionOption', function (OptionService) {
-        return {
-            restrict: 'A',
-            scope: false,
-            require: 'ngModel',
-            link: function (scope, elem, attrs, ngModel) {
-                OptionService.deliveryConditionOptions().then(function (options) {
-                    var originOptions = _.uniq(options, function (option) {
-                        return option.text;
-                    });
-                    return _.reject(originOptions, function(option) {
-                        return option.text == 'UNCATEGORISED';
-                    });
-                }).then(function (data) {
-                    $(elem).select2({
-                        placeholder: 'Good Condition',
+                        placeholder: attrs.placeholder || '',
                         allowClear: true,
                         data: data
                     });

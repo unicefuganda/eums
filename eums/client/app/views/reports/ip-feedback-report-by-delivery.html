@@ -33,7 +33,8 @@
                         <label class="control-label description-label">Received:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-received-container">
-                        <input id="filter-by-received" type="hidden" select-delivery-receive-option
+                        <input id="filter-by-received" type="hidden" placeholder="Received"
+                               select-option="delivery received"
                                ng-model="searchTerm.received">
                     </div>
                 </div>
@@ -52,7 +53,8 @@
                         <label class="control-label description-label">Satisfied:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-satisfied-container">
-                        <input id="filter-by-satisfied" type="hidden" select-delivery-satisfied-option
+                        <input id="filter-by-satisfied" type="hidden" placeholder="Satisfied"
+                               select-option="delivery satisfied"
                                ng-model="searchTerm.satisfied">
                     </div>
                 </div>
@@ -75,7 +77,8 @@
                         <label class="control-label description-label">Condition:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-condition-container">
-                        <input id="filter-by-condition" type="hidden" select-delivery-condition-option
+                        <input id="filter-by-condition" type="hidden" placeholder="Good Condition"
+                               select-option="delivery good_condition"
                                ng-model="searchTerm.good_condition">
                     </div>
                 </div>

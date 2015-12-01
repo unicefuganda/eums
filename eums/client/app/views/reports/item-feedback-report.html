@@ -54,7 +54,8 @@
                         <label class="control-label description-label">Received:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-received-container">
-                        <input id="filter-received" type="hidden" select-receive-option ng-model="searchTerm.received"
+                        <input id="filter-received" type="hidden" placeholder="Received" select-option="item received"
+                               ng-model="searchTerm.received"
                                value="{{ item.text }}">
                     </div>
                 </div>
@@ -72,7 +73,8 @@
                         <label class="control-label description-label">Satisfied:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-satisfied-container">
-                        <input id="filter-satisfied" type="hidden" select-satisfied-option
+                        <input id="filter-satisfied" type="hidden" placeholder="Satisfied"
+                               select-option="item satisfied"
                                ng-model="searchTerm.satisfied"
                                value="{{ item.text }}">
                     </div>
@@ -97,7 +99,8 @@
                         <label class="control-label description-label">Quality:</label>
                     </div>
                     <div class="col-xs-3 margin-bottom-20 pad-small" id="filter-quality-container">
-                        <input id="filter-quality" type="hidden" select-quality-option ng-model="searchTerm.quality"
+                        <input id="filter-quality" type="hidden" placeholder="Quality" select-option="item quality"
+                               ng-model="searchTerm.quality"
                                value="{{ item.text }}">
                     </div>
                 </div>

@@ -1,12 +1,11 @@
 describe('ItemFeedbackReportController', function () {
-    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController, mockOptionService;
+    var scope, location, mockReportService, deferredResult, mockLoader, timeout, initController;
 
     beforeEach(function () {
         module('ItemFeedbackReport');
 
         mockReportService = jasmine.createSpyObj('mockReportService', ['itemFeedbackReport']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
-        mockOptionService = jasmine.createSpyObj('mockOptionService', ['receivedOptions', 'satisfiedOptions', 'qualityOptions']);
 
         inject(function ($controller, $q, $location, $rootScope, $timeout) {
             deferredResult = $q.defer();
@@ -15,9 +14,6 @@ describe('ItemFeedbackReportController', function () {
             timeout = $timeout;
 
             mockReportService.itemFeedbackReport.and.returnValue(deferredResult.promise);
-            mockOptionService.receivedOptions.and.returnValue(deferredResult.promise);
-            mockOptionService.satisfiedOptions.and.returnValue(deferredResult.promise);
-            mockOptionService.qualityOptions.and.returnValue(deferredResult.promise);
 
             initController = function (route) {
                 $controller('ItemFeedbackReportController', {
@@ -26,7 +22,6 @@ describe('ItemFeedbackReportController', function () {
                     ReportService: mockReportService,
                     LoaderService: mockLoader,
                     $routeParams: route,
-                    OptionService: mockOptionService
                 });
             };
             initController({});

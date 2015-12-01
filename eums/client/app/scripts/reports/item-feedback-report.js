@@ -5,7 +5,7 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
     .controller('ItemFeedbackReportController', function ($scope, $q, $location, $timeout, $routeParams,
-                                                          ReportService, LoaderService, ErrorMessageService, OptionService, SortService, SortArrowService, SysUtilsService, ngToast) {
+                                                          ReportService, LoaderService, ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived'];
         var timer;
 
