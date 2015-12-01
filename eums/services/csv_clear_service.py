@@ -8,12 +8,8 @@ from eums.celery import app
 from eums.settings import BASE_DIR
 
 EXPORTS_DIR = os.path.join(BASE_DIR, 'eums/client/exports')
-print EXPORTS_DIR
-print isinstance(EXPORTS_DIR, tuple)
-
-
 class CSVClearService(object):
-    EXPORTS_DIR = os.path.join(BASE_DIR, 'eums/client/exports')
+
 
     CLEAR_DIRECTORIES = []
 

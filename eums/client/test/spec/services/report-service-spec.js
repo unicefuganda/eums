@@ -143,4 +143,31 @@ describe('Report Service', function () {
         mockBackend.flush();
     });
 
+    it('should get export successfully message when export delivery feedback report', function () {
+        var message = {'message': 'Generating CSV, you will be notified via email once it is done.'};
+        var url = config.BACKEND_URLS.DELIVERIES_FEEDBACK_REPORT_EXPORTS + "?page=1";
+
+        mockBackend.whenGET(url).respond(200, message);
+        mockBackend.expectGET(url);
+
+        reportService.exportDeliveriesFeedbackReport({}).then(function (response) {
+            expect(response.message).toEqual(message.message);
+        });
+        mockBackend.flush();
+    });
+
+
+    it('should get export successfully message when export item feedback report', function () {
+        var message = {'message': 'Generating CSV, you will be notified via email once it is done.'};
+        var url = config.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS + "?page=1";
+
+        mockBackend.whenGET(url).respond(200, message);
+        mockBackend.expectGET(url);
+
+        reportService.exportItemFeedbackReport({}).then(function (response) {
+            expect(response.message).toEqual(message.message);
+        });
+        mockBackend.flush();
+    });
+
 });

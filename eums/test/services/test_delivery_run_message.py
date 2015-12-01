@@ -1,4 +1,6 @@
 from unittest import TestCase
+
+from eums.models import ReleaseOrder, DistributionPlanNode, PurchaseOrderItem, PurchaseOrder, ReleaseOrderItem
 from eums.services.delivery_run_message import DeliveryRunMessage
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -11,6 +13,13 @@ from eums.test.factories.consignee_factory import ConsigneeFactory
 
 
 class DeliveryRunMessageTest(TestCase):
+    def tearDown(self):
+        DistributionPlanNode.objects.all().delete()
+        ReleaseOrder.objects.all().delete()
+        ReleaseOrderItem.objects.all().delete()
+        PurchaseOrder.objects.all().delete()
+        PurchaseOrderItem.objects.all().delete()
+
     def test_should_return_description_of_release_order_item_with_waybill_and_order_number(self):
         release_order = ReleaseOrderFactory(waybill=444555888)
         item = ReleaseOrderItemFactory(release_order=release_order)

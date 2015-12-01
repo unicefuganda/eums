@@ -44,7 +44,7 @@ class WarehouseDeliveryExporter(DeliveryCSVExporter):
 class DirectDeliveryExporter(DeliveryCSVExporter):
     def __init__(self, host_name):
         self.export_label = 'Direct Delivery'
-        self.export_header = 'Purchase Order Number'
+        self.export_header = 'Purchase Order'
         self.export_filename = 'direct_deliveries' + self.make_csv_suffix()
         self.item_class = PurchaseOrderItem
         super(DirectDeliveryExporter, self).__init__(host_name)

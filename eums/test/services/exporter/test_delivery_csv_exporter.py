@@ -1,7 +1,7 @@
 from unittest import TestCase
 from django.test import override_settings
 from mock import patch
-from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder
+from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder, ReleaseOrderItem
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -19,6 +19,8 @@ EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
 class WareHouseDeliveryExporterTest(TestCase):
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
+        ReleaseOrderItem.objects.all().delete()
+        PurchaseOrder.objects.all().delete()
 
     @patch('eums.models.DistributionPlanNode.build_contact')
     def test_should_get_export_list_for_warehouse(self, mock_build_contact):
@@ -89,7 +91,7 @@ class DirectDeliveryExporterTest(TestCase):
                             consignee=consignee, item=ro_item, location=luweero, remark=remark)
 
         header = [
-            'Purchase Order Number', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
+            'Purchase Order', 'Item Description', 'Material Code', 'Quantity Shipped', 'Shipment Date',
             'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
             'Is Tracked', 'Remarks']
         row_one = [order_number, mama_kit, material_code, 10, delivery_date, consignee_name,
