@@ -99,10 +99,17 @@ def _build_delivery_answers(deliveries):
                                  Question.LABEL.additionalDeliveryComments:
                                      _value(Question.LABEL.additionalDeliveryComments, answers),
                                  'value': int(delivery.total_value),
-                                 'location': delivery.location
+                                 'location': delivery.location,
+                                 'RC': _answer_count(Question.LABEL.deliveryReceived, answers),
+                                 'SC': _answer_count(Question.LABEL.satisfiedWithDelivery, answers),
+                                 'CC': _answer_count(Question.LABEL.isDeliveryInGoodOrder, answers)
                                  })
 
     return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
+
+
+def _answer_count(question_label, answers):
+    return len(filter(lambda answer: answer['question_label'] == question_label, answers))
 
 
 def _value(question_label, answers):
