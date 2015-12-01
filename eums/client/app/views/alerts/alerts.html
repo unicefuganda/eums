@@ -53,7 +53,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="($index, alert) in alerts | orderBy:['isResolved', 'isRetriggered']">
+            <tr ng-repeat="($index, alert) in alerts">
                 <td ng-hide="isActiveAlertType(constant_type_distribution)">
                     <span class="{{ alert.issue }} alerts-issue">{{ alert.issueDisplayName }}</span>
                 </td>

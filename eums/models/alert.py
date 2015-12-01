@@ -6,6 +6,9 @@ from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, Distribut
 
 
 class Alert(models.Model):
+    class Meta:
+        ordering = ['is_resolved', 'runnable__is_retriggered', 'created_on']
+
     ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
     ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'),
                           ('damaged', 'Damaged'), ('substandard', 'Substandard'), ('expired', 'Expired'),
@@ -59,6 +62,3 @@ class Alert(models.Model):
             self.remarks = "delivery confirmed on %s" % datetime.date.today().strftime('%d-%b-%Y')
             self.is_resolved = True
             self.save()
-
-    class Meta:
-        ordering = ['is_resolved']
