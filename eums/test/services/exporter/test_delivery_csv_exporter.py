@@ -55,14 +55,16 @@ class WareHouseDeliveryExporterTest(TestCase):
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
-    @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.make_csv_suffix')
-    def test_should_return_correct_notification_details_for_warehouse_delivery(self, mock_make_csv_suffix):
-        csv_suffix = '_1448892495779.csv'
-        mock_make_csv_suffix.return_value = csv_suffix
+    @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
+    def test_should_return_correct_notification_details_for_warehouse_delivery(self,
+                                                                               mock_generate_exported_csv_file_name):
+        file_name = 'warehouse_deliveries_1448892495779.csv'
+        mock_generate_exported_csv_file_name.return_value = file_name
         warehouse_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Warehouse', HOSTNAME)
+        category = 'delivery'
         details = ('Warehouse Delivery Download',
-                   '%s some content Warehouse Delivery other content http://ha.ha/static/exports/warehouse_deliveries' +
-                   csv_suffix)
+                   '%s some content Warehouse Delivery other content http://ha.ha/static/exports/' + category +
+                   '/' + file_name)
         self.assertEqual(warehouse_csv_export.notification_details(), details)
 
 
@@ -109,12 +111,13 @@ class DirectDeliveryExporterTest(TestCase):
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
     @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
-    @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.make_csv_suffix')
-    def test_should_return_correct_notification_details_for_direct_delivery(self, mock_make_csv_suffix):
-        csv_suffix = '_1448892495779.csv'
-        mock_make_csv_suffix.return_value = csv_suffix
+    @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
+    def test_should_return_correct_notification_details_for_direct_delivery(self, mock_generate_exported_csv_file_name):
+        file_name = 'direct_deliveries_1448892495779.csv'
+        mock_generate_exported_csv_file_name.return_value = file_name
+        category = 'delivery'
         warehouse_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
         details = ('Direct Delivery Download',
-                   '%s some content Direct Delivery other content http://ha.ha/static/exports/direct_deliveries' +
-                   csv_suffix)
+                   '%s some content Direct Delivery other content http://ha.ha/static/exports/' + category +
+                   '/' + file_name)
         self.assertEqual(warehouse_csv_export.notification_details(), details)

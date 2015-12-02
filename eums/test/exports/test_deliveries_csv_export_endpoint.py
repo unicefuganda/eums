@@ -20,8 +20,8 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
     @patch('eums.services.exporter.delivery_csv_exporter.DeliveryCSVExporter.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
     @patch('eums.services.exporter.delivery_csv_exporter.WarehouseDeliveryExporter.assemble_csv_data')
-    @patch('eums.services.exporter.delivery_csv_exporter.WarehouseDeliveryExporter.make_csv_suffix')
-    def test_should_start_async_csv_generation_with_warehouse_deliveries(self, mock_make_csv_suffix,
+    @patch('eums.services.exporter.delivery_csv_exporter.WarehouseDeliveryExporter.generate_exported_csv_file_name')
+    def test_should_start_async_csv_generation_with_warehouse_deliveries(self, mock_generate_exported_csv_file_name,
                                                                          mock_assemble_csv_data,
                                                                          mock_generate_csv,
                                                                          mock_notification_details, mock_notify_user):
@@ -31,8 +31,8 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
         mock_assemble_csv_data.return_value = some_data
         mock_notification_details.return_value = ('subject', 'message')
 
-        csv_suffix = '_1448892495779.csv'
-        mock_make_csv_suffix.return_value = csv_suffix
+        file_name = 'warehouse_deliveries_1448892495779.csv'
+        mock_generate_exported_csv_file_name.return_value = file_name
 
         response = self.client.get(ENDPOINT_URL + '?type=warehouse')
         user = User.objects.get(username='test')
@@ -40,8 +40,8 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, expected_data)
         self.assertTrue(mock_assemble_csv_data.called)
-        self.assertTrue(mock_make_csv_suffix.called)
-        mock_generate_csv.assert_called_once_with(some_data, 'warehouse_deliveries' + csv_suffix)
+        self.assertTrue(mock_generate_exported_csv_file_name.called)
+        mock_generate_csv.assert_called_once_with(some_data, 'delivery', file_name)
         mock_notify_user.assert_called_once_with(user, 'subject', 'message')
 
     @override_settings(CELERY_ALWAYS_EAGER=True)
@@ -49,8 +49,8 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
     @patch('eums.services.exporter.delivery_csv_exporter.DeliveryCSVExporter.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
     @patch('eums.services.exporter.delivery_csv_exporter.DirectDeliveryExporter.assemble_csv_data')
-    @patch('eums.services.exporter.delivery_csv_exporter.DirectDeliveryExporter.make_csv_suffix')
-    def test_should_start_async_csv_generation_with_direct_deliveries(self, mock_make_csv_suffix,
+    @patch('eums.services.exporter.delivery_csv_exporter.DirectDeliveryExporter.generate_exported_csv_file_name')
+    def test_should_start_async_csv_generation_with_direct_deliveries(self, mock_generate_exported_csv_file_name,
                                                                       mock_assemble_csv_data,
                                                                       mock_generate_csv,
                                                                       mock_notification_details, mock_notify_user):
@@ -59,8 +59,8 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
         some_data = ['some data']
         mock_assemble_csv_data.return_value = some_data
 
-        csv_suffix = '_1448892495779.csv'
-        mock_make_csv_suffix.return_value = csv_suffix
+        file_name = 'direct_deliveries_1448892495779.csv'
+        mock_generate_exported_csv_file_name.return_value = file_name
 
         mock_notification_details.return_value = ('subject', 'message')
 
@@ -70,6 +70,6 @@ class TestDeliveriesCSVEndpoint(AuthenticatedAPITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, expected_data)
         self.assertTrue(mock_assemble_csv_data.called)
-        self.assertTrue(mock_make_csv_suffix.called)
-        mock_generate_csv.assert_called_once_with(some_data, 'direct_deliveries' + csv_suffix)
+        self.assertTrue(mock_generate_exported_csv_file_name.called)
+        mock_generate_csv.assert_called_once_with(some_data, 'delivery', file_name)
         mock_notify_user.assert_called_once_with(user, 'subject', 'message')

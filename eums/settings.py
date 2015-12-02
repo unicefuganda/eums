@@ -101,10 +101,9 @@ RAPIDPRO_EXTRAS = {'CONTACT_NAME': 'contactName', 'SENDER': 'sender', 'PRODUCT':
 # WARNING: Never turn this on unless it is a live instance of the app (Staging or Prod. Not Dev, Test, or QA).
 RAPIDPRO_LIVE = False
 
-NON_RESPONSE_GRACE_PERIOD = DELIVERY_STATUS_CHECK_DELAY# in days
+NON_RESPONSE_GRACE_PERIOD = DELIVERY_STATUS_CHECK_DELAY  # in days
 
 NON_RESPONSE_PERCENTAGE_THRESHOLD = 70
-
 
 LOGIN_REDIRECT_URL = "/"
 

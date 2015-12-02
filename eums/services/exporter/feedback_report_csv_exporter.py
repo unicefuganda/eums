@@ -3,6 +3,10 @@ from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
 
 class FeedbackReportExporter(AbstractCSVExporter):
+    def __init__(self, host_name):
+        self.export_category = 'report/feedback'
+        super(FeedbackReportExporter, self).__init__(host_name)
+
     def assemble_csv_data(self, deliveries_feedback_report):
         total_rows = [self._init_header_dic_key_map().keys()]
         for each in deliveries_feedback_report:

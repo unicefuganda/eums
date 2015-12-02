@@ -1,36 +1,37 @@
-import csv
 import os
-
 import time
-from django.conf import settings
-from django.core import mail
+
 from eums.celery import app
-from eums.settings import BASE_DIR
+from eums.export_settings import *
 
-EXPORTS_DIR = os.path.join(BASE_DIR, 'eums/client/exports')
+
 class CSVClearService(object):
-
-
-    CLEAR_DIRECTORIES = []
+    @classmethod
+    def config_clear_dir_expired_time_map(cls):
+        csv_clear_dirs_expired_time_map = {
+            CSVClearService.__absolute_category_path('report/feedback/'): 10
+        }
+        return csv_clear_dirs_expired_time_map
 
     @classmethod
-    def generate(cls, data, filename):
-        file_location = settings.EXPORTS_DIR + filename
-        export_file = open(file_location, 'wb')
-        export_file.write('sep=,\n')
-        wr = csv.writer(export_file, quoting=csv.QUOTE_ALL)
-        wr.writerows(data)
-
-    @classmethod
-    def notify(cls, user, subject, message):
-        message = message % user.username
-        if getattr(user, 'email', None):
-            mail.send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+    def __absolute_category_path(cls, category):
+        return join(EXPORTS_DIR, category)
 
 
 @app.task
 def clear_expired_csv():
-    for file in os.listdir(EXPORTS_DIR):
-        create_time = time.ctime(os.path.getctime(file))
+    clear_dirs_expired_time_map = CSVClearService.config_clear_dir_expired_time_map()
+    for directory in clear_dirs_expired_time_map.keys():
+        __clear_files_by_directory(directory, clear_dirs_expired_time_map.get(directory))
 
-    pass
+
+def __clear_files_by_directory(directory, expired_seconds=DEFAULT_EXPIRED_SECONDS):
+    if not os.path.exists(directory) or not os.path.isdir(directory):
+        return
+
+    for file_name in os.listdir(directory):
+        abstract_file_path = directory + file_name
+        create_time_seconds = os.path.getctime(abstract_file_path)
+        current_time_seconds = int(round(time.time()))
+        if current_time_seconds - create_time_seconds > expired_seconds:
+            os.remove(abstract_file_path) if os.path.exists(abstract_file_path) else None

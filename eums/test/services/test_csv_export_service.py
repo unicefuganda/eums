@@ -1,9 +1,7 @@
 import os
 from unittest import TestCase
-
 from django.test import override_settings
 from mock import patch, MagicMock
-
 from eums.services.csv_export_service import CSVExportService
 
 DEFAULT_FROM_EMAIL = "hoho@ha.ha"
@@ -16,9 +14,10 @@ class ExportServiceTest(TestCase):
 
         data = [header, row_one]
         filename = 'direct_deliveries.exporter'
-        CSVExportService.generate(data, filename)
+        category = 'delivery'
+        CSVExportService.generate(data, category, filename)
 
-        csv_filename = 'eums/client/exports/' + filename
+        csv_filename = 'eums/client/exports/' + category + '/' + filename
         first_row, written_data = self._read_csv(csv_filename)
         self.assertEqual(first_row, 'sep=,\n')
 
@@ -34,9 +33,10 @@ class ExportServiceTest(TestCase):
 
         expected_data = [header, row_one]
         filename = 'warehouse_deliveries.exporter'
-        CSVExportService.generate(expected_data, filename)
+        category = 'delivery'
+        CSVExportService.generate(expected_data, category, filename)
 
-        csv_filename = 'eums/client/exports/' + filename
+        csv_filename = 'eums/client/exports/' + category + '/' + filename
         first_row, actual_data = self._read_csv(csv_filename)
         self.assertEqual(actual_data, expected_data)
 

@@ -1,26 +1,20 @@
-from abc import ABCMeta, abstractmethod
+import os
 import time
 from django.conf import settings
+
+from eums import export_settings
 
 
 class AbstractCSVExporter(object):
     def __init__(self, host_name):
-        self.header = self._set_export_header()
         self.csv_url = self._set_csv_url(host_name)
-
-    def _init_header(self):
-        return []
+        AbstractCSVExporter.create_category_dir(self.export_category)
 
     def assemble_csv_data(self, data=None):
         return []
 
     def _set_csv_url(self, host_name):
-        return '%sstatic/exports/%s' % (host_name, self.export_filename)
-
-    def _set_export_header(self):
-        header = []
-        header.extend(self._init_header())
-        return header
+        return '%sstatic/exports/%s/%s' % (host_name, self.export_category, self.generate_exported_csv_file_name())
 
     def _message(self):
         return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, self.csv_url)
@@ -31,5 +25,11 @@ class AbstractCSVExporter(object):
     def notification_details(self):
         return self._subject(), self._message()
 
-    def make_csv_suffix(self):
-        return '_' + str(int(round(time.time() * 1000))) + '.csv'
+    def generate_exported_csv_file_name(self):
+        return self.file_name + '_' + str(int(round(time.time() * 1000))) + '.csv'
+
+    @staticmethod
+    def create_category_dir(category):
+        target_dir = export_settings.EXPORTS_DIR + category
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)

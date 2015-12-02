@@ -1,5 +1,4 @@
 import copy
-
 from eums.models import ReleaseOrderItem, PurchaseOrderItem, DistributionPlanNode
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
@@ -10,10 +9,14 @@ class DeliveryCSVExporter(AbstractCSVExporter):
                      'Implementing Partner', 'Contact Person', 'Contact Number', 'District', 'Is End User',
                      'Is Tracked', 'Remarks']
 
+    def __init__(self, host_name):
+        self.export_category = 'delivery'
+        super(DeliveryCSVExporter, self).__init__(host_name)
+
     def assemble_csv_data(self, data=None):
         item_ids = self.item_class.objects.values_list('id', flat=True)
         nodes = DistributionPlanNode.objects.filter(item__id__in=item_ids)
-        total_rows = [self.header]
+        total_rows = [self._init_header()]
         for node in nodes:
             total_rows.append(self.__export_row_data(node))
         return total_rows
@@ -35,7 +38,7 @@ class WarehouseDeliveryExporter(DeliveryCSVExporter):
     def __init__(self, host_name):
         self.export_label = 'Warehouse Delivery'
         self.export_header = 'Waybill'
-        self.export_filename = 'warehouse_deliveries' + self.make_csv_suffix()
+        self.file_name = 'warehouse_deliveries'
         self.item_class = ReleaseOrderItem
         super(WarehouseDeliveryExporter, self).__init__(host_name)
 
@@ -48,7 +51,7 @@ class WarehouseDeliveryExporter(DeliveryCSVExporter):
 class DirectDeliveryExporter(DeliveryCSVExporter):
     def __init__(self, host_name):
         self.export_label = 'Direct Delivery'
-        self.export_filename = 'direct_deliveries' + self.make_csv_suffix()
+        self.file_name = 'direct_deliveries'
         self.item_class = PurchaseOrderItem
         super(DirectDeliveryExporter, self).__init__(host_name)
 

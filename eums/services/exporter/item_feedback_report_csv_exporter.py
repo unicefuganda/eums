@@ -4,7 +4,7 @@ from eums.services.exporter.feedback_report_csv_exporter import FeedbackReportEx
 class ItemFeedbackReportExporter(FeedbackReportExporter):
     def __init__(self, host_name):
         self.export_label = 'Item Feedback Report'
-        self.export_filename = 'items_feedback_report' + self.make_csv_suffix()
+        self.file_name = 'items_feedback_report'
         super(ItemFeedbackReportExporter, self).__init__(host_name)
 
     def _init_header_dic_key_map(self):
