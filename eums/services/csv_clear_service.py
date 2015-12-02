@@ -1,6 +1,9 @@
 import os
 import time
 
+from celery.schedules import crontab
+from celery.task import periodic_task
+
 from eums.celery import app
 from eums.export_settings import *
 
@@ -18,7 +21,7 @@ class CSVClearService(object):
         return join(EXPORTS_DIR, category)
 
 
-@app.task
+@periodic_task(run_every=crontab(minute="*/60"))
 def clear_expired_csv():
     clear_dirs_expired_time_map = CSVClearService.config_clear_dir_expired_time_map()
     for directory in clear_dirs_expired_time_map.keys():
