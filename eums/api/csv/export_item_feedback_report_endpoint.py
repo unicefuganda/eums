@@ -8,10 +8,10 @@ from eums.services.csv_export_service import generate_delivery_export_csv, \
     generate_item_feedback_report
 
 
-class ExportDeliveryViewSet(APIView):
+class ExportItemFeedbackReportViewSet(APIView):
     def get(self, request, *args, **kwargs):
         host_name = request.build_absolute_uri(reverse('home'))
-        export_type = request.GET.get('type')
-        generate_delivery_export_csv.delay(request.user, export_type, host_name)
+        items_feedback = filter_item_feedback_report(request)
+        generate_item_feedback_report.delay(request.user, host_name, items_feedback)
         message = {'message': 'Generating CSV, you will be notified via email once it is done.'}
         return Response(message, status=200)
