@@ -41,7 +41,6 @@ angular.module('Option', ['eums.config', 'eums.service-factory'])
                     case 'item':
                         return getItemService(question);
                     case 'delivery':
-                        console.log('getDeliveryService', question);
                         return getDeliveryService(question);
                     default:
                         throw 'unknown type';

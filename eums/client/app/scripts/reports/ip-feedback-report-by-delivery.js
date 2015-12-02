@@ -85,7 +85,6 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
                 $scope.pageSize = response.pageSize;
 
                 updateProgrammes(response.programmeIds);
-                updateConsignees(response.ipIds);
             }, function () {
                 ErrorMessageService.showError();
             }).finally(function () {
@@ -94,23 +93,14 @@ angular.module('IpFeedbackReportByDelivery', ['eums.config', 'ReportService', 'L
             });
         }
 
-        function updateConsignees(ipIds) {
-            if (ipIds && $scope.displayIps) {
-                $scope.displayIps = ipIds ? $scope.directiveValues.allIps.filter(function (ip) {
-                    return _.contains(ipIds, ip.id);
-                }) : [];
-            } else {
-                $scope.displayIps = $scope.directiveValues.allIps;
-            }
-            $scope.populateIpsSelect2 && $scope.populateIpsSelect2($scope.displayIps);
-        }
-
         function updateProgrammes(programmeIds) {
             $scope.displayProgrammes = programmeIds ? $scope.directiveValues.allProgrammes.filter(function (programme) {
                 return _.contains(programmeIds, programme.id);
             }) : [];
 
-            $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
+            if (!_.isEmpty($scope.displayProgrammes)) {
+                $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
+            }
         }
 
         function getLocationTerm() {

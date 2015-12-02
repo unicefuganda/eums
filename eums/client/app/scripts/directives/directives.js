@@ -288,7 +288,6 @@ angular.module('Directives', ['eums.ip'])
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, element, attrs, ngModel) {
-
                 ConsigneeService.filter({type: 'IMPLEMENTING_PARTNER'}).then(function (displayedData) {
                     scope.directiveValues.allIps = displayedData.map(function (consignee) {
                         return {id: consignee.id, text: consignee.name}

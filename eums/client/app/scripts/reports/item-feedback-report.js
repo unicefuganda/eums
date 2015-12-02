@@ -95,7 +95,9 @@ angular.module('ItemFeedbackReport', ['eums.config', 'ReportService', 'Loader', 
                 return _.contains(programmeIds, programme.id);
             }) : [];
 
-            $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
+            if (!_.isEmpty($scope.displayProgrammes)) {
+                $scope.populateProgrammesSelect2 && $scope.populateProgrammesSelect2($scope.displayProgrammes);
+            }
         }
 
         function getLocationTerm() {
