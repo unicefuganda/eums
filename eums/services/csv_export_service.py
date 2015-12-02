@@ -35,7 +35,7 @@ def generate_delivery_export_csv(user, delivery_type, host_name):
 
 
 @app.task
-def generate_delivery_feedback_report_export_csv(user, host_name, deliveries_feedback):
+def generate_delivery_feedback_report(user, host_name, deliveries_feedback):
     csv_export_service = DeliveryFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(deliveries_feedback),
                               csv_export_service.export_category,
@@ -45,7 +45,7 @@ def generate_delivery_feedback_report_export_csv(user, host_name, deliveries_fee
 
 
 @app.task
-def generate_item_feedback_report_export_csv(user, host_name, items_feedback):
+def generate_item_feedback_report(user, host_name, items_feedback):
     csv_export_service = ItemFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(items_feedback),
                               csv_export_service.export_category,

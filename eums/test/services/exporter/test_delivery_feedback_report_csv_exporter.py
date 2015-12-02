@@ -1,9 +1,11 @@
 from unittest import TestCase
-
 from django.db.backends.dummy.base import ignore
+from django.test import override_settings
+from mock import patch
 
 from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
+from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -13,45 +15,62 @@ from eums.test.factories.release_order_item_factory import ReleaseOrderItemFacto
 
 
 class DeliveryFeedbackReportExporterTest(TestCase):
-    DELIVERY_FEEDBACK_REPORT_HEADER = ['RECEIVED', 'SHIPMENT_DATE', 'DATE_RECEIVED', 'PO/WAYBILL', 'OUTCOME',
-                                       'IMPLEMENTING_PARTNER',
-                                       'VALUE', 'CONDITION', 'SATISFIED', 'REMARKS']
-    HOSTNAME = "http://ha.ha/"
-    EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
+    HOSTNAME = 'http://ha.ha/'
+    EMAIL_NOTIFICATION_CONTENT = '%s some content {0} other content {1}'
 
     def tearDown(self):
         DistributionPlan.objects.all().delete()
         DistributionPlanNode.objects.all().delete()
 
-    @ignore
-    def test_should_get_export_list_for_warehouse(self, mock_build_contact):
-        received = 'Yes'
-        shipment_date = '2015-09-06'
-        date_received = '2015-09-06'
-        po_waybill = 5404939
-        outcome = ''
-        ip = 'Wakiso'
-        value = 19874.8
-        condition = 'Good'
-        satisfied = 'Yes'
-        remark = 'It is a good delivery'
+    @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
+    @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
+    def test_generate_delivery_feedback_report_should_return_correct_notification_details(self,
+                                                                                          generate_exported_csv_file_name):
+        file_name = 'deliveries_feedback_report_1448892495779.csv'
+        generate_exported_csv_file_name.return_value = file_name
+        delivery_feedback_reort_csv_export = DeliveryFeedbackReportExporter(self.HOSTNAME)
+        category = 'report/feedback'
+        details = ('Delivery Feedback Report Download',
+                   '%s some content Delivery Feedback Report other content http://ha.ha/static/exports/' + category +
+                   '/' + file_name)
+        self.assertEqual(delivery_feedback_reort_csv_export.notification_details(), details)
 
-        delivery = DeliveryFactory()
-        consignee_name = ip
-        consignee = ConsigneeFactory(name=consignee_name)
-        waybill = 5404939
-        mama_kit = 'Mama kit'
-        material_code = 'Code 30'
-        ro_item = ReleaseOrderItemFactory(item=ItemFactory(description=mama_kit, material_code=material_code),
-                                          release_order=ReleaseOrderFactory(waybill=waybill))
+    def test_assemble_csv_data(self):
+        delivery_received = 'Yes'
+        shipment_date = '2015-11-20'
+        order_number = 81020737
+        satisfied_with_delivery = 'Yes'
+        consignee = {'id': 1, 'name': 'WAKISO DHO'}
+        additional_delivery_comments = 'good'
+        is_delivery_in_good_order = 'Yes'
+        value = 21990
+        date_of_receipt = '2015-11-19T16:00:00.000Z'
+        programme = {'id': 1, 'name': ''}
+        deliveries_feedback = [{'deliveryReceived': delivery_received,
+                                'shipmentDate': shipment_date,
+                                'orderNumber': order_number,
+                                'satisfiedWithDelivery': satisfied_with_delivery,
+                                'consignee': consignee,
+                                'additionalDeliveryComments': additional_delivery_comments,
+                                'isDeliveryInGoodOrder': is_delivery_in_good_order,
+                                'value': value,
+                                'dateOfReceipt': date_of_receipt,
+                                'programme': programme}, ]
 
-        DeliveryNodeFactory(distribution_plan=delivery, delivery_date=shipment_date,
-                            consignee=consignee, item=ro_item, remark=remark)
-
-        row_value = [received, shipment_date, date_received, po_waybill, outcome, ip, value, condition,
-                     satisfied,
-                     remark]
-        expected_data = [self.DELIVERY_FEEDBACK_REPORT_HEADER, row_value]
+        header = DeliveryFeedbackReportExporter.HEADER_DIC_KEY_MAP.keys()
         csv_exporter = DeliveryFeedbackReportExporter(self.HOSTNAME)
+        assembled_data = csv_exporter.assemble_csv_data(deliveries_feedback)
 
-        self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
+        self.assertTrue(len(assembled_data) is 2)
+        assemble_row_value = assembled_data[1]
+        self.assertTrue(len(assemble_row_value) is len(header))
+        self.assertTrue(delivery_received in assemble_row_value)
+        self.assertTrue(consignee.get('name') in assemble_row_value)
+        self.assertTrue(shipment_date in assemble_row_value)
+        self.assertTrue(is_delivery_in_good_order in assemble_row_value)
+        self.assertTrue(order_number in assemble_row_value)
+        self.assertTrue(additional_delivery_comments in assemble_row_value)
+        self.assertTrue(programme.get('name') in assemble_row_value)
+        self.assertTrue(satisfied_with_delivery in assemble_row_value)
+        self.assertTrue(value in assemble_row_value)
+        self.assertTrue(date_of_receipt in assemble_row_value)
