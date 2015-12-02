@@ -29,7 +29,7 @@ class CSVExportService(object):
 def generate_delivery_export_csv(user, delivery_type, host_name):
     csv_export_service = DeliveryCSVExporter.create_delivery_exporter_by_type(delivery_type.capitalize(), host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(), csv_export_service.export_category,
-                              csv_export_service.generate_exported_csv_file_name())
+                              csv_export_service.get_export_csv_file_name())
 
     CSVExportService.notify(user, *csv_export_service.notification_details())
 
@@ -39,7 +39,7 @@ def generate_delivery_feedback_report(user, host_name, deliveries_feedback):
     csv_export_service = DeliveryFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(deliveries_feedback),
                               csv_export_service.export_category,
-                              csv_export_service.generate_exported_csv_file_name())
+                              csv_export_service.get_export_csv_file_name())
 
     CSVExportService.notify(user, *csv_export_service.notification_details())
 
@@ -49,6 +49,6 @@ def generate_item_feedback_report(user, host_name, items_feedback):
     csv_export_service = ItemFeedbackReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(items_feedback),
                               csv_export_service.export_category,
-                              csv_export_service.generate_exported_csv_file_name())
+                              csv_export_service.get_export_csv_file_name())
 
     CSVExportService.notify(user, *csv_export_service.notification_details())

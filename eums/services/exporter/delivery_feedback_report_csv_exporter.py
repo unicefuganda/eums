@@ -12,6 +12,7 @@ class DeliveryFeedbackReportExporter(FeedbackReportExporter):
     def __init__(self, host_name):
         self.export_label = 'Delivery Feedback Report'
         self.file_name = 'deliveries_feedback_report'
+
         super(DeliveryFeedbackReportExporter, self).__init__(host_name)
 
     def init_header_dic_key_map(self):

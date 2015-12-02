@@ -1,12 +1,12 @@
 import os
 import time
 from django.conf import settings
-
 from eums import export_settings
 
 
 class AbstractCSVExporter(object):
     def __init__(self, host_name):
+        self.exported_csv_file_name = self.generate_exported_csv_file_name()
         self.csv_url = self._set_csv_url(host_name)
         AbstractCSVExporter.create_category_dir(self.export_category)
 
@@ -14,7 +14,10 @@ class AbstractCSVExporter(object):
         return []
 
     def _set_csv_url(self, host_name):
-        return '%sstatic/exports/%s/%s' % (host_name, self.export_category, self.generate_exported_csv_file_name())
+        return '%sstatic/exports/%s/%s' % (host_name, self.export_category, self.exported_csv_file_name)
+
+    def get_export_csv_file_name(self):
+        return self.exported_csv_file_name
 
     def _message(self):
         return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, self.csv_url)
