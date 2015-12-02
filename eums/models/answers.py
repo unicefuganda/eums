@@ -36,6 +36,10 @@ class Answer(TimeStampedModel):
                                                 Q(question=question),
                                                 ~ Q(run__status='cancelled'),
                                                 ~ Q(run__status='expired'))
+
+            if answer.count() > 1:
+                answer = answer.order_by('-modified')
+
             answers.append(
                 Answer._build_answer_response(answer, question)
             )

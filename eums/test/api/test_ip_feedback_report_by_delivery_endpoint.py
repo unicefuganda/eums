@@ -21,7 +21,7 @@ from eums.test.factories.run_factory import RunFactory
 
 ENDPOINT_URL = BACKEND_URL + 'ip-feedback-report-by-delivery'
 
-@unittest.skip("temporary")
+
 class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
     def tearDown(self):
         DistributionPlan.objects.all().delete()

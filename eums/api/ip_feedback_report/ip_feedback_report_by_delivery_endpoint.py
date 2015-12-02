@@ -4,12 +4,16 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
+
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
     DistributionPlanNode, Runnable, MultipleChoiceAnswer
 from eums.utils import get_lists_intersection
 
 PAGE_SIZE = 10
+DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,
+                      'satisfied': Question.LABEL.satisfiedWithDelivery,
+                      'good_condition': Question.LABEL.isDeliveryInGoodOrder}
 sort = StandardDicSort('shipmentDate', 'dateOfReceipt', 'value')
 
 
@@ -35,33 +39,20 @@ def ip_feedback_by_delivery_endpoint(request):
 
 
 def filter_delivery_feedback_report(request):
-    logged_in_user = request.user
-    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
-    ip = None
-    if user_profile:
-        ip = user_profile.consignee
-    deliveries = _get_filtered_deliveries(request, ip)
-    deliveries = filter_answers(request, deliveries, {'received': ('deliveryReceived',),
-                                                      'satisfied': ('satisfiedWithDelivery',),
-                                                      'good_condition': ('isDeliveryInGoodOrder',)})
-    return _build_delivery_answers(deliveries)
+    deliveries = _filter_po_way_bill(request)
+    deliveries = _filter_ip(request, deliveries)
+    deliveries = _filter_answers(request, deliveries)
+
+    return _build_delivery_result(request, deliveries)
 
 
-def filter_answers(request, deliveries, questions):
-    runs_list = []
-    for key, value in questions.iteritems():
+def _get_answer_filters(request):
+    answers_filters = {}
+    for key, value in DELIVERY_QUESTIONS.iteritems():
         param = request.GET.get(key)
         if param:
-            runs = MultipleChoiceAnswer.objects.filter(question__label__in=value,
-                                                       value__text__iexact=param,
-                                                       run__status__in=('scheduled', 'completed'),
-                                                       run__runnable__in=deliveries).values_list('run_id')
-            runs_list.append(runs)
-
-    if runs_list:
-        deliveries = deliveries.filter(run__in=get_lists_intersection(runs_list))
-
-    return deliveries
+            answers_filters[value] = param
+    return answers_filters
 
 
 def _get_ip_ids(results):
@@ -80,35 +71,29 @@ def _get_programme_ids(results):
     return programme_ids
 
 
-def _build_delivery_answers(deliveries):
+def _build_delivery_result(request, deliveries):
     delivery_answers = []
     for delivery in deliveries:
         answers = delivery.answers()
 
-        delivery_answers.append({Question.LABEL.deliveryReceived: _value(Question.LABEL.deliveryReceived, answers),
-                                 'shipmentDate': delivery.delivery_date,
-                                 Question.LABEL.dateOfReceipt: _value(Question.LABEL.dateOfReceipt, answers),
-                                 'orderNumber': delivery.number(),
-                                 'programme': {'id': delivery.programme.id, 'name': delivery.programme.name},
-                                 'consignee': {'id': delivery.consignee.id, 'name': delivery.consignee.name},
-                                 Question.LABEL.isDeliveryInGoodOrder:
-                                     _value(Question.LABEL.isDeliveryInGoodOrder, answers),
-                                 Question.LABEL.satisfiedWithDelivery:
-                                     _value(Question.LABEL.satisfiedWithDelivery, answers),
-                                 Question.LABEL.additionalDeliveryComments:
-                                     _value(Question.LABEL.additionalDeliveryComments, answers),
-                                 'value': int(delivery.total_value),
-                                 'location': delivery.location,
-                                 'RC': _answer_count(Question.LABEL.deliveryReceived, answers),
-                                 'SC': _answer_count(Question.LABEL.satisfiedWithDelivery, answers),
-                                 'CC': _answer_count(Question.LABEL.isDeliveryInGoodOrder, answers)
-                                 })
+        delivery_answers.append(
+            {Question.LABEL.deliveryReceived: _value(Question.LABEL.deliveryReceived, answers),
+             'shipmentDate': delivery.delivery_date,
+             Question.LABEL.dateOfReceipt: _value(Question.LABEL.dateOfReceipt, answers),
+             'orderNumber': delivery.number(),
+             'programme': {'id': delivery.programme.id, 'name': delivery.programme.name},
+             'consignee': {'id': delivery.consignee.id, 'name': delivery.consignee.name},
+             Question.LABEL.isDeliveryInGoodOrder:
+                 _value(Question.LABEL.isDeliveryInGoodOrder, answers),
+             Question.LABEL.satisfiedWithDelivery:
+                 _value(Question.LABEL.satisfiedWithDelivery, answers),
+             Question.LABEL.additionalDeliveryComments:
+                 _value(Question.LABEL.additionalDeliveryComments, answers),
+             'value': int(delivery.total_value),
+             'location': delivery.location
+             })
 
     return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
-
-
-def _answer_count(question_label, answers):
-    return len(filter(lambda answer: answer['question_label'] == question_label, answers))
 
 
 def _value(question_label, answers):
@@ -127,10 +112,35 @@ def _has_page(has_page, page, request):
     return None if has_page is False else base_url
 
 
-def _get_filtered_deliveries(request, ip=None):
-    po_way_bill = request.GET.get('po_waybill')
-    nodes = DistributionPlanNode.objects.filter(**_query_args(request))
+def _filter_answers(request, deliveries):
+    runs_list = []
+    for key, value in _get_answer_filters(request).iteritems():
+        runs = MultipleChoiceAnswer.objects.filter(question__label__iexact=key,
+                                                   value__text__iexact=value,
+                                                   run__status__in=('scheduled', 'completed'),
+                                                   run__runnable__in=deliveries).values_list('run_id')
+        runs_list.append(runs)
 
+    if runs_list:
+        deliveries = deliveries.filter(run__in=get_lists_intersection(runs_list))
+
+    return deliveries
+
+
+def _filter_ip(request, deliveries):
+    logged_in_user = request.user
+    user_profile = UserProfile.objects.filter(user=logged_in_user).first()
+    ip = None
+    if user_profile:
+        ip = user_profile.consignee
+    if ip:
+        deliveries = deliveries.filter(ip=ip)
+    return deliveries
+
+
+def _filter_po_way_bill(request):
+    nodes = DistributionPlanNode.objects.filter(**_query_args(request))
+    po_way_bill = request.GET.get('po_waybill')
     if po_way_bill:
         purchase_order_item = PurchaseOrderItem.objects.filter(purchase_order__order_number__icontains=po_way_bill)
         release_order_item = ReleaseOrderItem.objects.filter(release_order__waybill__icontains=po_way_bill)
@@ -138,8 +148,6 @@ def _get_filtered_deliveries(request, ip=None):
                              Q(item=release_order_item))
     delivery_ids = nodes.values_list('distribution_plan', flat=True)
     deliveries = DistributionPlan.objects.filter(id__in=delivery_ids)
-    if ip:
-        deliveries = deliveries.filter(ip=ip)
     return deliveries
 
 

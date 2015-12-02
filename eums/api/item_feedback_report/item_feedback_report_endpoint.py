@@ -4,12 +4,16 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.utils.urls import replace_query_param
+
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlanNode, PurchaseOrderItem, \
-    ReleaseOrderItem, Option, MultipleChoiceAnswer
+    ReleaseOrderItem, Option, MultipleChoiceAnswer, Question
 from eums.utils import get_lists_intersection
 
 PAGE_SIZE = 10
+ITEM_QUESTIONS = {'received': (Question.LABEL.itemReceived, Question.LABEL.productReceived),
+                  'satisfied': (Question.LABEL.satisfiedWithProduct,),
+                  'quality': (Question.LABEL.qualityOfProduct,)}
 sort = StandardDicSort('quantity_shipped', 'value', 'dateOfReceipt', 'amountReceived')
 
 
@@ -44,9 +48,7 @@ def filter_item_feedback_report(request):
         ip = user_profile.consignee
     response = []
     nodes = item_tracked_nodes(request, ip)
-    nodes = filter_answers(request, nodes, {'received': ('itemReceived', 'productReceived'),
-                                            'satisfied': ('satisfiedWithProduct',),
-                                            'quality': ('qualityOfProduct',)})
+    nodes = filter_answers(request, nodes, ITEM_QUESTIONS)
     if nodes:
         build_answers_for_nodes(nodes, response)
     return response
