@@ -99,8 +99,7 @@
                 <td>
                     <button ng-click="confirm(delivery)"
                             class="btn btn-default blue-border-button viewDeliveryDetailsBtn"
-                            ng-hide="delivery.confirmed"
-                            >Delivery Details
+                            ng-hide="delivery.confirmed">Delivery Details
                     </button>
                     <span ng-show="delivery.confirmed">Confirmed</span>
                 </td>
@@ -108,7 +107,7 @@
             </tbody>
             <tfoot>
             <tr>
-                <td colspan="7">
+                <td class="pagination-row centered" colspan="7">
                     <si-table-pagination limit="15" indices="3"/>
                 </td>
             </tr>
