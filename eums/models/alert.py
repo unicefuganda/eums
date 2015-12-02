@@ -7,7 +7,7 @@ from eums.models import Runnable, PurchaseOrderItem, ReleaseOrderItem, Distribut
 
 class Alert(models.Model):
     class Meta:
-        ordering = ['is_resolved', 'runnable__is_retriggered', 'created_on']
+        ordering = ['is_resolved', 'runnable__is_retriggered', '-created_on']
 
     ORDER_TYPES = Choices(ReleaseOrderItem.WAYBILL, PurchaseOrderItem.PURCHASE_ORDER)
     ISSUE_TYPES = Choices(('not_received', 'Not Received'), ('bad_condition', 'In Bad Condition'),
