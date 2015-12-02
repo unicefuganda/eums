@@ -22,6 +22,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.districtsLoaded = false;
         $scope.IPsLoaded = false;
         var rootPath = '/direct-delivery/new/';
+        var date = new Date();
+        var dateFormat = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 
         function createToast(message, klass) {
             ngToast.create({
@@ -137,7 +139,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 destinationLocation: '',
                 contactPerson: '',
                 track: false,
-                timeLimitationOnDistribution: null
+                timeLimitationOnDistribution: null,
+                trackedDate:null
             };
 
             $scope.distributionPlanNodes.push(distributionPlanNode);
@@ -186,6 +189,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 distribution_plan: uiPlanNode.distributionPlan
             };
 
+            uiPlanNode.trackedDate = (!uiPlanNode.id && uiPlanNode.track) ? dateFormat : uiPlanNode.trackedDate;
+
             var delivery = {
                 programme: $scope.selectedPurchaseOrder.programme,
                 consignee: uiPlanNode.consignee.id,
@@ -193,7 +198,8 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 time_limitation_on_distribution: uiPlanNode.timeLimitationOnDistribution || null,
                 contact_person_id: uiPlanNode.contactPerson.id,
                 delivery_date: formatDateForSave(plannedDate),
-                track: uiPlanNode.track
+                track: uiPlanNode.track,
+                tracked_date: uiPlanNode.trackedDate
             };
 
             // Update

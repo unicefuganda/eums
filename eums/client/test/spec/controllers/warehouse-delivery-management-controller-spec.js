@@ -133,7 +133,8 @@ describe('Warehouse Delivery Management Controller', function () {
                 contact_person_id: '634362487',
                 delivery_date: '2014-08-19',
                 track: false,
-                time_limitation_on_distribution : null
+                time_limitation_on_distribution : null,
+                tracked_date : null
             });
             expect(mockDeliveryNodeService.create.calls.count()).toEqual(1);
             expect(toast.create).toHaveBeenCalledWith({

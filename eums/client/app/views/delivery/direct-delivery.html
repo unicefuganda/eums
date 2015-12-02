@@ -91,6 +91,11 @@
                     </a>
                 </th>
                 <th>
+                    <a ng-click="sortBy('trackedDate')">{{ trackedDateColumnTitle }}
+                        <i ng-class="sortArrowClass('trackedDate');"></i>
+                    </a>
+                </th>
+                <th>
                     <a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i ng-class="sortArrowClass('poType');"></i></a>
                 </th>
                 <th>
@@ -157,6 +162,9 @@
                 </td>
                 <td data-header="Date Created">
                     {{ purchaseOrder.date | date : 'dd-MMM-yyyy' }}
+                </td>
+                <td data-header="Tracked Date">
+                    {{ purchaseOrder.trackedDate | date : 'dd-MMM-yyyy' }}
                 </td>
                 <td data-header="{{ poTypeColumnTitle }}">
                     {{ purchaseOrder.poType }}

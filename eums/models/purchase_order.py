@@ -49,8 +49,7 @@ class PurchaseOrder(TimeStampedModel):
 
     def deliveries(self, is_root=False):
         if is_root:
-            plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all(),
-                                                   arcs_in__source__isnull=True).values_list('distribution_plan_id').distinct()
+            plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all(),arcs_in__source__isnull=True).values_list('distribution_plan_id').distinct()
         else:
             plan_ids = DeliveryNode.objects.filter(item__in=self.purchaseorderitem_set.all()).values_list('distribution_plan_id').distinct()
 
@@ -66,6 +65,14 @@ class PurchaseOrder(TimeStampedModel):
         if self.is_fully_delivered() and not (False in track_list):
             return PurchaseOrder.FULLY_TRACKED
         return PurchaseOrder.PARTIALLY_TRACKED
+
+    def tracked_date(self):
+        # node_ids = DeliveryNode.objects.filter(arcs_in__source__isnull=True).values_list('distribution_plan_id').distinct()
+        # track_list = [delivery.tracked_date for delivery in DistributionPlan.objects.filter(id__in=node_ids)]
+        track_list = [delivery[0] for delivery in self.deliveries(is_root=True).values_list('tracked_date')]
+        while None in track_list:
+            track_list.remove(None)
+        return track_list.pop() if (len(track_list)) else ''
 
     class Meta:
         app_label = 'eums'

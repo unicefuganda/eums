@@ -20,6 +20,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
         $scope.documentColumnTitle = 'Purchase Order';
         $scope.dateColumnTitle = 'Date Created';
+        $scope.trackedDateColumnTitle = 'Tracked Date';
         $scope.poTypeColumnTitle = 'PO Type';
         $scope.outcomeColumnTitle = 'Outcome';
 

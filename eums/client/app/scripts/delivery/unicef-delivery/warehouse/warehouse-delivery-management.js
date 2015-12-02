@@ -135,14 +135,20 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             return $q.all(deliveryNodePromises);
         };
 
+        function setTrackedDate(oldTrack, newTrack) {
+            if(!oldTrack && newTrack) {
+                $scope.delivery.tracked_date = dateFormat;
+            }
+            if(!newTrack) {
+                $scope.delivery.tracked_date = null;
+            }
+        }
+
         function createOrUpdateDeliveries() {
             if ($scope.delivery && $scope.delivery.id) {
-                if(!$scope.delivery.track&& $scope.track) {
-                    $scope.delivery.tracked_date = dateFormat;
-                }
-                if(!$scope.track) {
-                    $scope.delivery.tracked_date = null;
-                }
+
+                setTrackedDate($scope.delivery.track, $scope.track);
+
                 $scope.delivery.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
                 $scope.delivery.track = $scope.track;
                 return DeliveryService.update($scope.delivery)

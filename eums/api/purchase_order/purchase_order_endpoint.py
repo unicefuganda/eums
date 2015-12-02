@@ -17,7 +17,7 @@ class PurchaseOrderSerialiser(serializers.ModelSerializer):
     class Meta:
         model = PurchaseOrder
         fields = ('id', 'order_number', 'date', 'sales_order', 'po_type', 'programme_name', 'purchaseorderitem_set',
-                  'release_orders', 'programme', 'is_single_ip', 'has_plan', 'is_fully_delivered', 'track')
+                  'release_orders', 'programme', 'is_single_ip', 'has_plan', 'is_fully_delivered', 'track', 'tracked_date')
 
 
 class PurchaseOrderViewSet(ModelViewSet):
