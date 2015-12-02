@@ -26,8 +26,8 @@ echo "Tagging new image as latest..."
 sudo docker tag -f %IMAGENAME%:%IMAGEVERSION% %IMAGENAME%:latest
 
 echo "Stopping and removing existing eums container..."
-if [ $(sudo docker ps | grep eums | awk '{print$1}') ]; then
-  sudo docker rm -f $(sudo docker ps | grep eums | awk '{print$1}')
+if [ $(sudo docker ps -a | grep eums | awk '{print$1}') ]; then
+  sudo docker rm -f $(sudo docker ps -a | grep eums | awk '{print$1}')
 fi
 
 echo "Running image..."
