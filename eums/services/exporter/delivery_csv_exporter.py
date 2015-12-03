@@ -43,7 +43,9 @@ class WarehouseDeliveryExporter(DeliveryCSVExporter):
         super(WarehouseDeliveryExporter, self).__init__(host_name)
 
     def _init_header(self):
-        return self.COMMON_HEADER[:].insert(0, 'Waybill')
+        header = self.COMMON_HEADER[:]
+        header.insert(0, 'Waybill')
+        return header
 
 
 class DirectDeliveryExporter(DeliveryCSVExporter):
@@ -54,4 +56,6 @@ class DirectDeliveryExporter(DeliveryCSVExporter):
         super(DirectDeliveryExporter, self).__init__(host_name)
 
     def _init_header(self):
-        return self.COMMON_HEADER[:].insert(0, 'Purchase Order')
+        header = self.COMMON_HEADER[:]
+        header.insert(0, 'Purchase Order')
+        return header
