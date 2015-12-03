@@ -9,8 +9,8 @@ class FeedbackReportExporter(AbstractCSVExporter):
 
     def assemble_csv_data(self, deliveries_feedback_report):
         total_rows = [self.init_header_dic_key_map().keys()]
-        for each in deliveries_feedback_report:
-            total_rows.append(self.__extract_row(each))
+        for each_delivery_feedback_back in deliveries_feedback_report:
+            total_rows.append(self.__extract_row(each_delivery_feedback_back))
         return total_rows
 
     def __extract_row(self, row_data):

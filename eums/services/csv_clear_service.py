@@ -29,13 +29,14 @@ class CSVClearService(object):
             return
 
         for file_name in os.listdir(directory):
-            abstract_file_path = directory + '/' + file_name
-            create_time_seconds = os.path.getctime(abstract_file_path)
+            absolute_file_path = directory + '/' + file_name
+            create_time_seconds = os.path.getctime(absolute_file_path)
             current_time_seconds = int(round(time.time()))
             if current_time_seconds - create_time_seconds > expired_seconds:
-                os.remove(abstract_file_path) if os.path.exists(abstract_file_path) else None
+                os.remove(absolute_file_path) if os.path.exists(absolute_file_path) else None
 
 
-@periodic_task(run_every=crontab(minute="*/60"))
+@periodic_task(run_every=crontab(minute="*/30"))
 def execute_csv_clear_task():
+    print 'execute_csv_clear_task'
     CSVClearService.clear_expired_files()

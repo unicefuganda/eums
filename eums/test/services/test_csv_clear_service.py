@@ -1,12 +1,13 @@
 import os
 import shutil
 from unittest import TestCase
-
 import time
-from mock import patch
 
+from celery.schedules import crontab
+from mock import patch
 from eums.export_settings import EXPORTS_DIR
 from eums.services.csv_clear_service import CSVClearService
+from eums.test.services.mock_celery import MockPeriodicTask
 
 
 class CSVClearServiceTest(TestCase):
@@ -41,6 +42,13 @@ class CSVClearServiceTest(TestCase):
         self.assertTrue(os.path.exists(absolute_file_path))
         config_clear_dir_expired_time_map.assert_called_once_with()
         os.remove(absolute_file_path) if os.path.exists(absolute_file_path) else None
+
+    @patch('eums.services.csv_clear_service.execute_csv_clear_task')
+    def test_execute_csv_clear_task_should_execute_every_30_inutes(self, mock_execute_csv_clear_task):
+        mock_execute_csv_clear_task.return_value = None
+        mock_execute_csv_clear_task()
+
+        MockPeriodicTask.assert_called_with(crontab(minute="*/30"))
 
     def __generate_file(self):
         os.mkdir(self.clear_directory) if not os.path.exists(self.clear_directory) else None
