@@ -7,8 +7,7 @@ from rest_framework.utils.urls import replace_query_param
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode, Runnable, MultipleChoiceAnswer
-from eums.utils import get_lists_intersection
+    DistributionPlanNode, Runnable
 
 PAGE_SIZE = 10
 DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,
@@ -43,16 +42,7 @@ def filter_delivery_feedback_report(request):
     deliveries = _filter_ip(request, deliveries)
     deliveries = _filter_answers(request, deliveries)
 
-    return _build_delivery_result(request, deliveries)
-
-
-def _get_answer_filters(request):
-    answers_filters = {}
-    for key, value in DELIVERY_QUESTIONS.iteritems():
-        param = request.GET.get(key)
-        if param:
-            answers_filters[value] = param
-    return answers_filters
+    return _build_delivery_result(deliveries)
 
 
 def _get_ip_ids(results):
@@ -71,33 +61,29 @@ def _get_programme_ids(results):
     return programme_ids
 
 
-def _build_delivery_result(request, deliveries):
+def _build_delivery_result(deliveries):
     delivery_answers = []
     for delivery in deliveries:
         answers = delivery.answers()
 
         delivery_answers.append(
-            {Question.LABEL.deliveryReceived: _value(Question.LABEL.deliveryReceived, answers),
+            {Question.LABEL.deliveryReceived: _get_answer(Question.LABEL.deliveryReceived, answers),
              'shipmentDate': delivery.delivery_date,
-             Question.LABEL.dateOfReceipt: _value(Question.LABEL.dateOfReceipt, answers),
+             Question.LABEL.dateOfReceipt: _get_answer(Question.LABEL.dateOfReceipt, answers),
              'orderNumber': delivery.number(),
              'programme': {'id': delivery.programme.id, 'name': delivery.programme.name},
              'consignee': {'id': delivery.consignee.id, 'name': delivery.consignee.name},
              Question.LABEL.isDeliveryInGoodOrder:
-                 _value(Question.LABEL.isDeliveryInGoodOrder, answers),
+                 _get_answer(Question.LABEL.isDeliveryInGoodOrder, answers),
              Question.LABEL.satisfiedWithDelivery:
-                 _value(Question.LABEL.satisfiedWithDelivery, answers),
+                 _get_answer(Question.LABEL.satisfiedWithDelivery, answers),
              Question.LABEL.additionalDeliveryComments:
-                 _value(Question.LABEL.additionalDeliveryComments, answers),
+                 _get_answer(Question.LABEL.additionalDeliveryComments, answers),
              'value': int(delivery.total_value),
              'location': delivery.location
              })
 
     return sorted(delivery_answers, key=lambda d: d.get('shipmentDate'), reverse=True)
-
-
-def _value(question_label, answers):
-    return filter(lambda answer: answer['question_label'] == question_label, answers)[0]['value']
 
 
 def _get_page_number(request):
@@ -113,18 +99,17 @@ def _has_page(has_page, page, request):
 
 
 def _filter_answers(request, deliveries):
-    runs_list = []
-    for key, value in _get_answer_filters(request).iteritems():
-        runs = MultipleChoiceAnswer.objects.filter(question__label__iexact=key,
-                                                   value__text__iexact=value,
-                                                   run__status__in=('scheduled', 'completed'),
-                                                   run__runnable__in=deliveries).values_list('run_id')
-        runs_list.append(runs)
+    ids = []
+    for delivery in deliveries:
+        answers = delivery.answers()
+        expected_delivery = True
+        for key, value in _get_query_answer_from_url(request, DELIVERY_QUESTIONS).iteritems():
+            if _get_answer(key, answers) != value:
+                expected_delivery = False
+        if expected_delivery:
+            ids.append(delivery.id)
 
-    if runs_list:
-        deliveries = deliveries.filter(run__in=get_lists_intersection(runs_list))
-
-    return deliveries
+    return deliveries.filter(id__in=ids)
 
 
 def _filter_ip(request, deliveries):
@@ -168,3 +153,17 @@ def _filter_fields(params):
         if query_field and value:
             search_params.update({query_field: value})
     return search_params
+
+
+def _get_query_answer_from_url(request, questions):
+    answers_filters = {}
+    for key, value in questions.iteritems():
+        param = request.GET.get(key)
+        if param:
+            answers_filters[value] = param
+
+    return answers_filters
+
+
+def _get_answer(question_label, answers):
+    return filter(lambda answer: answer['question_label'] == question_label, answers)[0]['value']
