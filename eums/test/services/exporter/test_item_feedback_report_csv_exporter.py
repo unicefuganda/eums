@@ -64,12 +64,30 @@ class ItemFeedbackReportExporterTest(TestCase):
                            'item_description': item_description,
                            'quantity_shipped': quantity_shipped}, ]
 
-        header = ItemFeedbackReportExporter.HEADER_DIC_KEY_MAP.keys()
+        row_value = [
+            item_description,
+            programme.get('name'),
+            implementing_partner,
+            consignee,
+            tree_position,
+            order_number,
+            quantity_shipped,
+            value,
+            answers.get('itemReceived'),
+            answers.get('dateOfReceipt'),
+            amount_received,
+            quality_of_product,
+            satisfied_with_product,
+            additional_delivery_comments,
 
+        ]
         csv_exporter = ItemFeedbackReportExporter(self.HOSTNAME)
         assembled_data = csv_exporter.assemble_csv_data(items_feedback)
-        assemble_row_value = assembled_data[1]
+        header = csv_exporter.config_headers()
+        expect_data = [header, row_value]
+        self.assertEqual(expect_data, assembled_data)
 
+        assemble_row_value = assembled_data[1]
         self.assertTrue(len(assembled_data) is 2)
         self.assertTrue(len(assemble_row_value) is len(header))
 

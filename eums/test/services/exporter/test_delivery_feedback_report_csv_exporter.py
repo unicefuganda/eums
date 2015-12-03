@@ -2,7 +2,6 @@ from unittest import TestCase
 from django.db.backends.dummy.base import ignore
 from django.test import override_settings
 from mock import patch
-
 from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
@@ -56,10 +55,23 @@ class DeliveryFeedbackReportExporterTest(TestCase):
                                 'value': value,
                                 'dateOfReceipt': date_of_receipt,
                                 'programme': programme}, ]
+        row_value = [delivery_received,
+                     shipment_date,
+                     date_of_receipt,
+                     order_number,
+                     programme.get('name'),
+                     consignee.get('name'),
+                     value,
+                     is_delivery_in_good_order,
+                     satisfied_with_delivery,
+                     additional_delivery_comments
+                     ]
 
-        header = DeliveryFeedbackReportExporter.HEADER_DIC_KEY_MAP.keys()
         csv_exporter = DeliveryFeedbackReportExporter(self.HOSTNAME)
+        header = csv_exporter.config_headers()
+        expect_data = [header, row_value]
         assembled_data = csv_exporter.assemble_csv_data(deliveries_feedback)
+        self.assertEqual(expect_data, assembled_data)
 
         self.assertTrue(len(assembled_data) is 2)
         assemble_row_value = assembled_data[1]

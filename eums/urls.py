@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.http import HttpResponse
+from django.template import loader, Context
 from django.views.generic import RedirectView
 from eums.api.alert.alert_endpoint import alert_router, AlertCount
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \
@@ -114,10 +116,10 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 
-
     url(r'^exports/deliveries/', ExportDeliveryViewSet.as_view(), name='warehouse_deliveries_csv'),
     url(r'^exports/deliveries-feedback-report/', ExportDeliveryFeedbackReportViewSet.as_view(),
         name='deliveries_feedback_report_csv'),
     url(r'^exports/items-feedback-report/', ExportItemFeedbackReportViewSet.as_view(),
         name='items_feedback_report_csv'),
 )
+
