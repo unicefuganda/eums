@@ -6,8 +6,6 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         $scope.district = {};
         $scope.errors = false;
         $scope.valid_time_limitation = true;
-        var date = new Date();
-        var dateFormat = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 
         loadOrderData();
 
@@ -20,7 +18,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
 
         $scope.save = function (tracked) {
             $scope.tracked = tracked || false;
-            $scope.delivery.tracked_date = tracked ? dateFormat : $scope.delivery.tracked_date;
+            $scope.delivery.tracked_date = tracked ? new Date() : $scope.delivery.tracked_date;
             if (scopeDataIsValid()) {
                 $scope.errors = false;
                 saveDelivery();

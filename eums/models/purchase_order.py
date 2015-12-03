@@ -70,7 +70,8 @@ class PurchaseOrder(TimeStampedModel):
         track_list = [delivery[0] for delivery in self.deliveries(is_root=True).values_list('tracked_date')]
         while None in track_list:
             track_list.remove(None)
-        return track_list.pop() if (len(track_list)) else ''
+        track_list.sort()
+        return track_list[0] if (len(track_list)) else ''
 
     class Meta:
         app_label = 'eums'

@@ -15,9 +15,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         $scope.districtsLoaded = false;
         $scope.track = $scope.track ? true : false;
         $scope.valid_time_limitation = true;
-        var date = new Date();
-        var dateFormat = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
-
 
         function createToast(message, klass) {
             ngToast.create({
@@ -137,7 +134,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
         function setTrackedDate(oldTrack, newTrack) {
             if(!oldTrack && newTrack) {
-                $scope.delivery.tracked_date = dateFormat;
+                $scope.delivery.tracked_date = new Date();
             }
             if(!newTrack) {
                 $scope.delivery.tracked_date = null;
@@ -166,7 +163,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     delivery_date: $scope.selectedReleaseOrder.deliveryDate,
                     track: $scope.track,
                     time_limitation_on_distribution: $scope.delivery.time_limitation_on_distribution || null,
-                    tracked_date: ($scope.track) ? dateFormat : null
+                    tracked_date: ($scope.track) ? new Date() : null
                 };
                 return DeliveryService.create(deliveryDetails)
                     .then(function (createdDelivery) {

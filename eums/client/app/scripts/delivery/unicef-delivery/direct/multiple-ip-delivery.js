@@ -22,8 +22,6 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.districtsLoaded = false;
         $scope.IPsLoaded = false;
         var rootPath = '/direct-delivery/new/';
-        var date = new Date();
-        var dateFormat = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
 
         function createToast(message, klass) {
             ngToast.create({
@@ -189,7 +187,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
                 distribution_plan: uiPlanNode.distributionPlan
             };
 
-            uiPlanNode.trackedDate = (!uiPlanNode.id && uiPlanNode.track) ? dateFormat : uiPlanNode.trackedDate;
+            uiPlanNode.trackedDate = (!uiPlanNode.id && uiPlanNode.track) ? new Date() : uiPlanNode.trackedDate;
 
             var delivery = {
                 programme: $scope.selectedPurchaseOrder.programme,

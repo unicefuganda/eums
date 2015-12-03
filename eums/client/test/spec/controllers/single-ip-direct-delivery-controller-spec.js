@@ -3,8 +3,6 @@ describe('Single IP Direct Delivery Controller', function () {
         toast, mockDeliveryService, DeliveryNodeModel, mockDeliveryNodeService, q;
     var nodeOne, nodeTwo, itemOne, itemTwo, consignee, district, deliveryDate, formattedDeliveryDate, contact, remark;
     var purchaseOrderValue = 1300.5;
-    var date = new Date();
-    var dateFormat = date.getFullYear()+'-'+(date.getMonth()+1)+'-'+date.getDate();
     var trackedDelivery = {
         id: 1,
         location: 'Kampala',
@@ -271,7 +269,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 remark: remark,
                 track: true,
                 time_limitation_on_distribution : null,
-                tracked_date: dateFormat
+                tracked_date: jasmine.any(Date)
             });
         });
 
@@ -314,7 +312,9 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.save(true);
             scope.$apply();
 
-            expect(mockDeliveryService.create).toHaveBeenCalledWith({
+            var delivery = mockDeliveryService.create;
+
+            expect(delivery).toHaveBeenCalledWith({
                 programme: programmeId,
                 consignee: consignee.id,
                 location: district.id,
@@ -323,7 +323,7 @@ describe('Single IP Direct Delivery Controller', function () {
                 remark: remark,
                 track: true,
                 time_limitation_on_distribution : null,
-                tracked_date: dateFormat
+                tracked_date: jasmine.any(Date)
             });
             expect(toast.create).toHaveBeenCalledWith({content: 'Delivery created', class: 'success'})
         });
