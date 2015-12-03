@@ -67,8 +67,6 @@ class PurchaseOrder(TimeStampedModel):
         return PurchaseOrder.PARTIALLY_TRACKED
 
     def tracked_date(self):
-        # node_ids = DeliveryNode.objects.filter(arcs_in__source__isnull=True).values_list('distribution_plan_id').distinct()
-        # track_list = [delivery.tracked_date for delivery in DistributionPlan.objects.filter(id__in=node_ids)]
         track_list = [delivery[0] for delivery in self.deliveries(is_root=True).values_list('tracked_date')]
         while None in track_list:
             track_list.remove(None)
