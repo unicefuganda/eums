@@ -21,6 +21,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.documentColumnTitle = 'Purchase Order';
         $scope.dateColumnTitle = 'Date Created';
         $scope.trackedDateColumnTitle = 'Tracked Date';
+        $scope.lastShipmentDateColumnTitle = 'Last Shipment Date';
         $scope.poTypeColumnTitle = 'PO Type';
         $scope.outcomeColumnTitle = 'Outcome';
 
@@ -39,7 +40,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         }
 
         $scope.initialize = function (urlArgs) {
-            this.sortBy('orderNumber');
+            this.sortBy('trackedDate');
             this.sort.descending = false;
 
             loadPurchaseOrders(urlArgs);

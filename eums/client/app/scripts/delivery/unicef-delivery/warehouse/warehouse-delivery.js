@@ -49,7 +49,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         }
 
         $scope.initialize = function (urlArgs) {
-            this.sortBy('orderNumber');
+            this.sortBy('trackedDate');
             this.sort.descending = false;
 
             loadReleaseOrder(urlArgs);
