@@ -96,6 +96,11 @@
                     </a>
                 </th>
                 <th>
+                    <a ng-click="sortBy('lastShipmentDate')">{{ lastShipmentDateColumnTitle }}
+                        <i ng-class="sortArrowClass('lastShipmentDate');"></i>
+                    </a>
+                </th>
+                <th>
                     <a ng-click="sortBy('poType')">{{ poTypeColumnTitle }} <i ng-class="sortArrowClass('poType');"></i></a>
                 </th>
                 <th>
@@ -165,6 +170,9 @@
                 </td>
                 <td data-header="Tracked Date">
                     {{ purchaseOrder.trackedDate | date : 'dd-MMM-yyyy' }}
+                </td>
+                <td data-header="Last Shipment Date">
+                    {{ purchaseOrder.lastShipmentDate | date : 'dd-MMM-yyyy' }}
                 </td>
                 <td data-header="{{ poTypeColumnTitle }}">
                     {{ purchaseOrder.poType }}
