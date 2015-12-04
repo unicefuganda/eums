@@ -1,0 +1,5 @@
+{
+    "districtNameLocator": "NAME_1",
+    "inputFilePath": "/districts.json",
+    "outFilePath": "./district_name.json"
+}
