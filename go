@@ -65,6 +65,9 @@ function main {
     "performance" )
       performance $2;;
 
+    "setupmap" )
+      setupmap $2 $3;;
+
     esac
 }
 
@@ -190,6 +193,12 @@ function runserver {
 function seed {
   python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py
 }
+
+function setupmap {
+  cd ./scripts/setupmap
+  . ./setupmap.sh
+}
+
 
 main $@
 exit 0
