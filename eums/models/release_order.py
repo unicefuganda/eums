@@ -42,5 +42,9 @@ class ReleaseOrder(TimeStampedModel):
         delivery_id = self.delivery()
         return getattr(DistributionPlan.objects.get(pk=delivery_id), 'tracked_date', None) if delivery_id else None
 
+    def last_shipment_date(self):
+        delivery_id = self.delivery()
+        return getattr(DistributionPlan.objects.get(pk=delivery_id), 'last_shipment_date', None) if delivery_id else None
+
     class Meta:
         app_label = 'eums'

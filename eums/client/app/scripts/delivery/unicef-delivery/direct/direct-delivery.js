@@ -10,7 +10,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
 
 
         $scope.sortBy = $sorter;
-        $scope.searchFields = ['orderNumber', 'date'];
+        $scope.searchFields = ['orderNumber', 'lastShipmentDate'];
         $scope.errorMessage = '';
         $scope.planId = '';
 

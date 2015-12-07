@@ -26,6 +26,8 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
             options = angular.extend({'paginate': 'true'}, options);
 
             ReleaseOrderService.all(undefined, options).then(function (response) {
+                console.log('-------------------');
+                console.log(response.results);
                 $scope.releaseOrders = response.results.sort();
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;

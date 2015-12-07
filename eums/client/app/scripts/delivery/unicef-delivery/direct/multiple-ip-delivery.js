@@ -21,7 +21,9 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         $scope.isReport = false;
         $scope.districtsLoaded = false;
         $scope.IPsLoaded = false;
+        $scope.shipmentDate = [];
         var rootPath = '/direct-delivery/new/';
+        var lastShipmentDate = '';
 
         function createToast(message, klass) {
             ngToast.create({
@@ -189,6 +191,14 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
 
             uiPlanNode.trackedDate = (!uiPlanNode.id && uiPlanNode.track) ? new Date() : uiPlanNode.trackedDate;
 
+            if(uiPlanNode.id) {
+                $scope.shipmentDate.push(node.delivery_date);
+            } else {
+                $scope.shipmentDate.push(node.delivery_date);
+                $scope.shipmentDate.sort();
+                lastShipmentDate = $scope.shipmentDate.pop();
+            }
+
             var delivery = {
                 programme: $scope.selectedPurchaseOrder.programme,
                 consignee: uiPlanNode.consignee.id,
@@ -232,10 +242,11 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         $scope.save = function () {
-            if ($scope.selectedPurchaseOrder.isSingleIp == null) {
+            if (!$scope.selectedPurchaseOrder.isSingleIp == true) {
                 updateDeliveryStatus();
             }
             $scope.saveDeliveryNodes();
+            updateDeliveryStatus();
         };
 
         $scope.saveDeliveryNodes = function () {
@@ -252,7 +263,7 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         };
 
         var updateDeliveryStatus = function () {
-            PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false}, 'PATCH');
+            PurchaseOrderService.update({id: $scope.selectedPurchaseOrder.id, isSingleIp: false, lastShipmentDate: lastShipmentDate}, 'PATCH');
             $scope.selectedPurchaseOrder.isSingleIp = false;
         }
     }

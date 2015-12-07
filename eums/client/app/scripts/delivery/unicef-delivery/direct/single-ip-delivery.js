@@ -19,6 +19,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         $scope.save = function (tracked) {
             $scope.tracked = tracked || false;
             $scope.delivery.tracked_date = tracked ? new Date() : $scope.delivery.tracked_date;
+            setLastShipmentDate($scope.trackedDeliveries, $scope.delivery);
             if (scopeDataIsValid()) {
                 $scope.errors = false;
                 saveDelivery();
@@ -179,6 +180,21 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
             });
         }
 
+        function setLastShipmentDate(trackedDeliveries, currentDelivery) {
+            var shipmentDate = [];
+            for(var i = 0; i < trackedDeliveries.length; i++) {
+                shipmentDate.push(trackedDeliveries[i].delivery_date);
+            }
+
+            var currentDeliveryDate = currentDelivery.delivery_date;
+            if(typeof (currentDeliveryDate) == 'object') {
+                currentDeliveryDate = currentDeliveryDate.getFullYear()+'-'+(currentDeliveryDate.getMonth()+1)+'-'+currentDeliveryDate.getDate();
+            }
+            shipmentDate.push(currentDeliveryDate);
+            shipmentDate.sort();
+            $scope.last_shipment_date = shipmentDate.length > 0 ? shipmentDate.pop() : null;
+        }
+
         function setItemQuantityShipped(item) {
             var quantityShipped = item.node ? item.node.quantityIn : item.availableBalance;
             return Object.merge(item, {quantityShipped: quantityShipped})
@@ -297,7 +313,7 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         }
 
         function updatePurchaseOrderDeliveryMode() {
-            return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true}, 'PATCH');
+            return PurchaseOrderService.update({id: $scope.purchaseOrder.id, isSingleIp: true, lastShipmentDate: $scope.last_shipment_date}, 'PATCH');
         }
 
         function notifyOnSuccess(message) {
