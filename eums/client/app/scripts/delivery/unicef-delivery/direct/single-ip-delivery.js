@@ -129,15 +129,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
         function scopeDataIsValid() {
 
             var someInputsAreEmpty = !(
-            $scope.delivery.contact_person_id
-            && $scope.delivery.consignee
-            && $scope.delivery.delivery_date
-            && $scope.delivery.location
+                $scope.delivery.contact_person_id
+                && $scope.delivery.consignee
+                && $scope.delivery.delivery_date
+                && $scope.delivery.location
             );
 
             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
-                return item.isInvalid(item.quantityShipped);
-            }) || !isTimeLimitationValid();
+                    return item.isInvalid(item.quantityShipped);
+                }) || !isTimeLimitationValid();
 
             return !someInputsAreEmpty && !someItemsAreInvalid;
         }
@@ -191,8 +191,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
                 });
 
                 $scope.delivery = deliveries.filter(function (delivery) {
-                    return !delivery.track;
-                }).first() || {};
+                        return !delivery.track;
+                    }).first() || {};
 
                 //Because line item partial sucks
                 $scope.lineItem.remark = $scope.delivery.remark;

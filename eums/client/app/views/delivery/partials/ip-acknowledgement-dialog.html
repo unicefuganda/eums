@@ -3,7 +3,7 @@
         <div class="modal-content col-md-10">
             <div class="modal-header">
                 <h4 class="modal-title">
-                    Confirm delivery: {{ activeDelivery.number}}
+                    Confirm delivery: {{ activeDelivery.number }}
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                         <span class="sr-only">No</span>
@@ -15,11 +15,10 @@
                 <div class="text-warning pad-bottom-5">Items will only appear in your stock upon confirmation of
                     delivery
                 </div>
-
                 <div ng-show=" hasReceivedDelivery" class="pad-top-20">
                     <table>
                         <tr ng-repeat="answer in answers" id="answer-{{ answer.position }}">
-                            <td class="pad-5">{{answer.text}}</td>
+                            <td class="pad-5">{{ answer.text }}</td>
                             <td class="pad-5">
                                 <span ng-if="answer.type == 'multipleChoice'">
                                     <select ng-model="answer.value"
@@ -72,7 +71,7 @@
                 <div ng-hide="hasReceivedDelivery" class="pad-top-20">
                     <table>
                         <tr>
-                            <td class="pad-10">{{answers[0].text}}</td>
+                            <td class="pad-10">{{ answers[0].text}}</td>
                             <td>
                                 <span>
                                     <select id="deliveryConfirmationSelect"

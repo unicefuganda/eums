@@ -1,0 +1,152 @@
+From 7dfc07bb6e3bdb92b6a0b272de7a58c6d78892d3 Mon Sep 17 00:00:00 2001
+From: Shenjian YUAN <sjyuan@thoughtworks.com>
+Date: Mon, 7 Dec 2015 16:25:14 +0800
+Subject: [PATCH] [#109232656] Yuan add auto track switch web service api
+
+---
+ eums/api/system_settings/__init__.py                     |  0
+ eums/api/system_settings/system_settings_endpoint.py     |  0
+ .../unicef-delivery/direct/single-ip-delivery.js         | 16 ++++++++--------
+ .../delivery/partials/ip-acknowledgement-dialog.html     |  7 +++----
+ .../app/views/delivery/single-ip-direct-delivery.html    |  1 -
+ eums/models/system_settings.py                           |  8 ++++++++
+ eums/templates/404.html                                  |  4 ----
+ 7 files changed, 19 insertions(+), 17 deletions(-)
+ create mode 100644 eums/api/system_settings/__init__.py
+ create mode 100644 eums/api/system_settings/system_settings_endpoint.py
+ create mode 100644 eums/models/system_settings.py
+
+diff --git a/eums/api/system_settings/__init__.py b/eums/api/system_settings/__init__.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/eums/api/system_settings/system_settings_endpoint.py b/eums/api/system_settings/system_settings_endpoint.py
+new file mode 100644
+index 0000000..e69de29
+diff --git a/eums/client/app/scripts/delivery/unicef-delivery/direct/single-ip-delivery.js b/eums/client/app/scripts/delivery/unicef-delivery/direct/single-ip-delivery.js
+index c8332d1..75ae3f9 100644
+--- a/eums/client/app/scripts/delivery/unicef-delivery/direct/single-ip-delivery.js
++++ b/eums/client/app/scripts/delivery/unicef-delivery/direct/single-ip-delivery.js
+@@ -129,15 +129,15 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
+         function scopeDataIsValid() {
+ 
+             var someInputsAreEmpty = !(
+-            $scope.delivery.contact_person_id
+-            && $scope.delivery.consignee
+-            && $scope.delivery.delivery_date
+-            && $scope.delivery.location
++                $scope.delivery.contact_person_id
++                && $scope.delivery.consignee
++                && $scope.delivery.delivery_date
++                && $scope.delivery.location
+             );
+ 
+             var someItemsAreInvalid = $scope.purchaseOrderItems.any(function (item) {
+-                return item.isInvalid(item.quantityShipped);
+-            }) || !isTimeLimitationValid();
++                    return item.isInvalid(item.quantityShipped);
++                }) || !isTimeLimitationValid();
+ 
+             return !someInputsAreEmpty && !someItemsAreInvalid;
+         }
+@@ -191,8 +191,8 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
+                 });
+ 
+                 $scope.delivery = deliveries.filter(function (delivery) {
+-                    return !delivery.track;
+-                }).first() || {};
++                        return !delivery.track;
++                    }).first() || {};
+ 
+                 //Because line item partial sucks
+                 $scope.lineItem.remark = $scope.delivery.remark;
+diff --git a/eums/client/app/views/delivery/partials/ip-acknowledgement-dialog.html b/eums/client/app/views/delivery/partials/ip-acknowledgement-dialog.html
+index 6c06917..9dd5513 100644
+--- a/eums/client/app/views/delivery/partials/ip-acknowledgement-dialog.html
++++ b/eums/client/app/views/delivery/partials/ip-acknowledgement-dialog.html
+@@ -3,7 +3,7 @@
+         <div class="modal-content col-md-10">
+             <div class="modal-header">
+                 <h4 class="modal-title">
+-                    Confirm delivery: {{ activeDelivery.number}}
++                    Confirm delivery: {{ activeDelivery.number }}
+                     <button type="button" class="close" data-dismiss="modal">
+                         <span aria-hidden="true">&times;</span>
+                         <span class="sr-only">No</span>
+@@ -15,11 +15,10 @@
+                 <div class="text-warning pad-bottom-5">Items will only appear in your stock upon confirmation of
+                     delivery
+                 </div>
+-
+                 <div ng-show=" hasReceivedDelivery" class="pad-top-20">
+                     <table>
+                         <tr ng-repeat="answer in answers" id="answer-{{ answer.position }}">
+-                            <td class="pad-5">{{answer.text}}</td>
++                            <td class="pad-5">{{ answer.text }}</td>
+                             <td class="pad-5">
+                                 <span ng-if="answer.type == 'multipleChoice'">
+                                     <select ng-model="answer.value"
+@@ -72,7 +71,7 @@
+                 <div ng-hide="hasReceivedDelivery" class="pad-top-20">
+                     <table>
+                         <tr>
+-                            <td class="pad-10">{{answers[0].text}}</td>
++                            <td class="pad-10">{{ answers[0].text}}</td>
+                             <td>
+                                 <span>
+                                     <select id="deliveryConfirmationSelect"
+diff --git a/eums/client/app/views/delivery/single-ip-direct-delivery.html b/eums/client/app/views/delivery/single-ip-direct-delivery.html
+index 5892f2c..6f9f4b3 100644
+--- a/eums/client/app/views/delivery/single-ip-direct-delivery.html
++++ b/eums/client/app/views/delivery/single-ip-direct-delivery.html
+@@ -33,7 +33,6 @@
+                 <label class="section-sub-header blue-unicef col-md-12">DELIVERY DETAILS</label>
+ 
+                 <div class="container-details eums-clearfix">
+-
+                     <div class="row">
+                         <div class="form-group col-xs-6 col-md-6 pad-small pad-bottom-none margin-top-4 margin-bottom-4 margin-left-30"
+                              ng-class="{'has-error': !delivery.contact_person_id && errors}">
+diff --git a/eums/models/system_settings.py b/eums/models/system_settings.py
+new file mode 100644
+index 0000000..501d9f1
+--- /dev/null
++++ b/eums/models/system_settings.py
+@@ -0,0 +1,8 @@
++from django.db import models
++
++
++class SystemSettings(models.Model):
++    auto_track = models.BooleanField(default=False)
++
++    def __unicode__(self):
++        return 'System deliveries are %s tracked automatically.' % '' if self.auto_track else 'not'
+diff --git a/eums/templates/404.html b/eums/templates/404.html
+index 6040e60..538bc0d 100644
+--- a/eums/templates/404.html
++++ b/eums/templates/404.html
+@@ -6,22 +6,18 @@
+             font-family: sans-serif;
+             font-size: 1.2em;
+         }
+-
+         .container {
+             width: 100%;
+             margin: 120px 0;
+         }
+-
+         .c-logo {
+             height: 130px;
+             display: block;
+             margin: 0 auto;
+         }
+-
+         .c-message {
+             margin: 60px auto;
+         }
+-
+         .c-message p {
+             color: #00AAE4;
+             text-align: center;
+-- 
+2.6.3
+
