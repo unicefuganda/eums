@@ -16,6 +16,10 @@ eums/include/
 eums/lib/
 eums/pip-selfcheck.json
 
+bin/
+include/
+lib/
+
 initaluser.json
 celerybeat-schedule.db
 
