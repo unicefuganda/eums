@@ -60,7 +60,7 @@
                     </thead>
 
                     <tbody>
-                    <tr ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
+                    <tr si-sortable="single" ng-repeat="document in documents | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                         <td data-header="Document Number">
                             <a ng-click="selectDocument(document)">{{ document.orderNumber }}</a>
                         </td>
@@ -74,7 +74,7 @@
                     </tbody>
                     <tfoot>
                     <tr>
-                        <td colspan="5">
+                        <td colspan="3">
                             <si-table-pagination limit="15" indices="5"/>
                         </td>
                     </tr>
