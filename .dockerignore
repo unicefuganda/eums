@@ -23,13 +23,10 @@
 */eums/client/.tmp*
 */eums/client/.sass-cache*
 */eums/client/bower_components*
-*/eums/client/app/scripts/config/config.js
 */eums/client/coverage*
 
 */eums/client/test/*
-*/eums/client/less/*.css
 */eums/client/app/css/app.css
 */eums/client/.node-version
 */eums/client/functional/
 */eums/client/exports/*
-*Dockerfile*
