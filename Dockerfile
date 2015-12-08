@@ -157,8 +157,14 @@ RUN rm /etc/nginx/sites-enabled/default
 ## Add the codebase to the image
 ##############################################################################
 # Add the code and dependencies
-COPY ./eums /opt/app/eums
+COPY ./eums/requirements.txt /opt/app/eums/requirements.txt
+RUN virtualenv ~/.virtualenvs/eums
+RUN /bin/bash -c "source ~/.virtualenvs/eums/bin/activate && cd /opt/app/eums && pip install -r requirements.txt"
 
+COPY ./eums/eums/client /opt/app/eums/eums/client
+RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
+
+COPY ./eums /opt/app/eums
 COPY ./contacts /opt/app/contacts
 COPY ./contacts/scripts/startContacts.sh /opt/scripts/startContacts.sh
 COPY ./eums/scripts/deployment/startPostgres.sh /opt/scripts/startPostgres.sh
@@ -166,13 +172,6 @@ COPY ./eums/scripts/deployment/buildConfigs.sh /opt/scripts/buildConfigs.sh
 COPY ./eums/scripts/deployment/celery.sh /opt/scripts/celery.sh
 RUN chmod a+x /opt/scripts/*.sh
 RUN chmod a+x /opt/app/eums/scripts/**/*.sh
-RUN sudo /opt/app/eums/scripts/packaging/initdb.sh 9.3
-
-
-##############################################################################
-# Install APP NPM and bower dependencies
-##############################################################################
-RUN cd /opt/app/eums/eums/client && npm install && npm install -g bower && bower install --allow-root && npm install -g grunt-cli
 
 COPY ./eums/scripts/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY ./eums/scripts/supervisor/celeryd.conf /etc/supervisor/conf.d/celeryd.conf

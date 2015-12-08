@@ -13,12 +13,20 @@ if [ -f Dockerfile ]; then
     rm Dockerfile
 fi
 
+if [ -f .dockerignore ]; then
+    echo "Removing docker ignore file ..."
+    rm .dockerignore
+fi
+
 if [ -d build ]; then
     echo "Removing old build directory ..."
     rm -rf build
 fi
 
+# merge
 cp eums/Dockerfile .
+cat eums/.dockerignore contacts/.dockerignore > .dockerignore
+
 #Build and save the image
 sudo docker build -t unicef/$artifactName:$artifactCounter .
 

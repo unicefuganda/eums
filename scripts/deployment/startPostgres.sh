@@ -1,4 +1,6 @@
 #!/bin/bash
+pgVersion=9.3
+dataDir=/var/lib/postgresql/${pgVersion}/main/
 
 # Workaround for the  postgres certificate 'permission denied' issues
 mkdir /etc/ssl/private-copy
@@ -12,14 +14,21 @@ chown -R postgres /etc/ssl/private
 chown -Rf postgres:postgres /var/lib/postgresql
 chmod -R 700 /var/lib/postgresql
 
-#start the server
-su - postgres -c "/etc/init.d/postgresql start"
-
-sleep 15
-
-#run the migrations
-source ~/.virtualenvs/eums/bin/activate
 cd /opt/app/eums
-python manage.py migrate
-python manage.py setup_permissions
+source ~/.virtualenvs/eums/bin/activate
+
+if [ -d ${dataDir} ]; then
+    #start the server
+    su - postgres -c "/usr/lib/postgresql/${pgVersion}/bin/pg_ctl start -D ${dataDir}"
+
+    sleep 15s
+
+    python manage.py migrate
+    python manage.py setup_permissions
+    python manage.py shell_plus < eums/elasticsearch/run_sync.py
+else
+    echo postgres does NOT initialized, start to init db
+    scripts/deployment/initdb.sh ${pgVersion} ${dataDir}
+fi
+
 deactivate
