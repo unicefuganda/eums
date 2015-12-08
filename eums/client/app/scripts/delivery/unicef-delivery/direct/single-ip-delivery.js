@@ -182,8 +182,10 @@ angular.module('SingleIpDirectDelivery', ['ngToast', 'DeliveryNode'])
 
         function setLastShipmentDate(trackedDeliveries, currentDelivery) {
             var shipmentDate = [];
-            for(var i = 0; i < trackedDeliveries.length; i++) {
-                shipmentDate.push(trackedDeliveries[i].delivery_date);
+            if(trackedDeliveries) {
+                for(var i = 0; i < trackedDeliveries.length; i++) {
+                    shipmentDate.push(trackedDeliveries[i].delivery_date);
+                }
             }
 
             var currentDeliveryDate = currentDelivery.delivery_date;

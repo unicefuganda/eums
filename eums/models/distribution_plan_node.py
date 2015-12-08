@@ -116,9 +116,6 @@ class DistributionPlanNode(Runnable):
     def tracked_date(self):
         return self.distribution_plan.tracked_date
 
-    def last_shipment_date(self):
-        return self.distribution_plan.last_shipment_date
-
     def _set_delivery(self):
         parents = self.get_parents()
         if parents and parents.count() == 1:

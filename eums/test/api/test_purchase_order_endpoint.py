@@ -56,9 +56,9 @@ class PurchaseOrderEndPointTest(AuthenticatedAPITestCase):
     def test_should_get_purchase_orders_without_release_orders_by_date_range(self):
         date = datetime.date(2014, 07, 9)
         PurchaseOrderFactory()
-        po_two = PurchaseOrderFactory(date=date)
+        po_two = PurchaseOrderFactory(last_shipment_date=date)
 
-        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?from=2014-07-6&to=2014-07-16')
+        response = self.client.get(ENDPOINT_URL + 'for_direct_delivery/?from=2014-07-6&to=2016-07-16')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 1)

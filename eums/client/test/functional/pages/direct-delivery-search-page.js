@@ -23,8 +23,8 @@ DirectDeliverySearchPage.prototype = Object.create({}, {
         element(by.model('toDate')).clear();
     }},
     verifyPOExists: { value: function (pONumber) {
-            var poNumber = element(by.linkText(pONumber));
-            expect(poNumber.isPresent()).toBeTruthy();
+        var poNumber = element(by.linkText(pONumber));
+        expect(poNumber.isPresent()).toBeTruthy();
     }},
     clickOutSideToChangeFocus: {value: function(){
         element(by.linkText('Next')).click();

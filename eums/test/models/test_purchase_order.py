@@ -166,8 +166,8 @@ class PurchaseOrderTest(TestCase):
     def test_for_direct_delivery_filtered_by_date(self):
         fake_today = FakeDate.today()
         fake_last_week = fake_today - datetime.timedelta(days=7)
-        po_one = PurchaseOrderFactory(order_number=12345, date=fake_today)
-        po_two = PurchaseOrderFactory(order_number=9876, date=fake_last_week)
+        po_one = PurchaseOrderFactory(order_number=12345, last_shipment_date=fake_today)
+        po_two = PurchaseOrderFactory(order_number=9876, last_shipment_date=fake_last_week)
 
         fake_two_days_ago = fake_today - datetime.timedelta(days=2)
 

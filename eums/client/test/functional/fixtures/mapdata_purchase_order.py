@@ -1,7 +1,7 @@
 from eums.client.test.functional.fixtures.mapdata_sales_order import *
 from eums.models import PurchaseOrder
 
-po_1 = PurchaseOrder.objects.create(date="2014-12-21", order_number=12345, is_single_ip=None, sales_order=sales_order_1, po_type="")
+po_1 = PurchaseOrder.objects.create(date="2014-12-21", order_number=12345, is_single_ip=None, sales_order=sales_order_1, po_type="", last_shipment_date="2015-7-11")
 po_2 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20148033, is_single_ip=None, sales_order=sales_order_2, po_type="")
 po_3 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20150358, is_single_ip=None, sales_order=sales_order_3, po_type="")
 po_4 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147539, is_single_ip=None, sales_order=sales_order_4, po_type="")
@@ -105,6 +105,6 @@ po_101 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147381, 
 po_102 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147188, is_single_ip=None, sales_order=sales_order_102, po_type="")
 po_103 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20147028, is_single_ip=None, sales_order=sales_order_103, po_type="")
 po_104 = PurchaseOrder.objects.create(date="2014-12-21", order_number=20146879, is_single_ip=None, sales_order=sales_order_104, po_type="")
-po_105 = PurchaseOrder.objects.create(date="2014-12-03", order_number=81026395, is_single_ip=None, sales_order=sales_order_106, po_type="ZLC")
+po_105 = PurchaseOrder.objects.create(date="2014-12-03", order_number=81026395, is_single_ip=None, sales_order=sales_order_106, po_type="ZLC", last_shipment_date="2015-7-21")
 po_106 = PurchaseOrder.objects.create(date="2014-04-07", order_number=81019250, is_single_ip=None, sales_order=sales_order_105, po_type="ZLC")
 po_107 = PurchaseOrder.objects.create(date="2014-12-23", order_number=81026399, is_single_ip=None, sales_order=sales_order_107, po_type="ZLC")

@@ -74,12 +74,6 @@ class PurchaseOrder(TimeStampedModel):
         track_list.sort()
         return track_list[0] if (len(track_list)) else ''
 
-
-    # def last_shipment_date(self):
-    #     delivery_date_list = [delivery[0] for delivery in self.deliveries(is_root=True).values_list('delivery_date')]
-    #     delivery_date_list.sort()
-    #     return delivery_date_list[0] if (len(delivery_date_list)) else ''
-
     class Meta:
         app_label = 'eums'
 

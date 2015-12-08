@@ -242,11 +242,10 @@ angular.module('MultipleIpDirectDelivery', ['eums.config', 'eums.ip', 'PurchaseO
         }
 
         $scope.save = function () {
-            if (!$scope.selectedPurchaseOrder.isSingleIp == true) {
+            $scope.saveDeliveryNodes();
+            if (!$scope.selectedPurchaseOrder.isSingleIp) {
                 updateDeliveryStatus();
             }
-            $scope.saveDeliveryNodes();
-            updateDeliveryStatus();
         };
 
         $scope.saveDeliveryNodes = function () {

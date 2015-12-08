@@ -408,7 +408,7 @@ describe('Single IP Direct Delivery Controller', function () {
             scope.save(true);
             scope.$apply();
 
-            var purchaseOrderPatch = {id: purchaseOrder.id, isSingleIp: true};
+            var purchaseOrderPatch = {id: purchaseOrder.id, isSingleIp: true, lastShipmentDate : 'Mon Jun 29 2015 00:00:00 GMT+0300 (EAT)'};
             expect(mockPurchaseOrderService.update).toHaveBeenCalledWith(purchaseOrderPatch, 'PATCH');
         });
 
