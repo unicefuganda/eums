@@ -1,45 +1,28 @@
 #!/bin/bash
 
-[ $# -eq 0 ] && { echo "Error $0: Map not specified"; exit 1; }
-
-test -d $1 || { echo "Error $0: Map not found"; exit 1; }
-
-MAP_DIR='./'$1'/'
-SHAPEFILE=${MAP_DIR}$1'.shp'
-ORIGINAL_GEOJSON=${MAP_DIR}$1'.json'
-GEOJSON='districts.json'
-EXTRACTOR_DIR='./geojson-feature-name-extractor/'
-GEOJSON_NAMES='district_name.json'
-RATIO=${2-2}'%'
-DATA_DIR='../../../eums/client/app/data/'
+PARENT_DIR='../'
+DATA_DIR='../../eums/client/app/data/'
 CONFIG_DIR='../../../eums/client/config/'
+EXTRACTOR_DIR='./geojson-feature-name-extractor/'
+GEOJSON='districts.json'
+GEOJSON_NAMES='district_name.json'
 
-#Convert Shapefile to GeoJSON file
-echo 1. Convert shapefile to GeoJson file
-if [ -f ${ORIGINAL_GEOJSON} ]; then
-    rm ${ORIGINAL_GEOJSON}
-fi
-ogr2ogr -f GeoJSON -progress -t_srs crs:84 ${ORIGINAL_GEOJSON} ${SHAPEFILE}
-#ogrinfo ${ORIGINAL_GEOJSON} OGRGeoJSON
-
-#Simplify GeoJSON to a size under 500K
-echo 2. Simplify GeoJson file
-mapshaper ${ORIGINAL_GEOJSON} -simplify ${RATIO} cartesian keep-shapes -o ${GEOJSON}
+test -f ${DATA_DIR}${GEOJSON} || { echo "Error $0: Map not found"; exit 1; }
 
 #Clone extractor app and get region names
-echo 3. Extract region names
+echo 1. Extract region names
 test -d ${EXTRACTOR_DIR} || git clone https://github.com/twkampala/geojson-feature-name-extractor.git
-mv ${GEOJSON} ${EXTRACTOR_DIR}${GEOJSON}
+cp ${DATA_DIR}${GEOJSON} ${EXTRACTOR_DIR}${GEOJSON}
 cd ${EXTRACTOR_DIR}
 node ./extractor.js
 
 #Copy to target directory
-echo 4. Copy to target directory
-cp ${GEOJSON} ${DATA_DIR}${GEOJSON}
-cp ${GEOJSON_NAMES} ${DATA_DIR}${GEOJSON_NAMES}
+echo 2. Copy to target directory
+rm ${GEOJSON}
+mv ${GEOJSON_NAMES} ${PARENT_DIR}${DATA_DIR}${GEOJSON_NAMES}
 
 #Configure constants for map rendering
-echo 5. Set constants for map rendering
+echo 3. Set constants for map rendering
 echo Please type map center latitude
 read latitude
 echo Please type map center longitude
@@ -56,3 +39,8 @@ sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${lon
 rm staging.json.bak
 sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${longitude}'],/g' test.json
 rm test.json.bak
+
+#Run grunt to rebuild static files
+echo 4. Rebuild to generate static config file
+cd ${PARENT_DIR}
+grunt build-staging
