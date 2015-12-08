@@ -34,6 +34,7 @@ from eums.api.run.run import runRouter
 from eums.api.sales_order.sales_order_endpoint import salesOrderRouter
 from eums.api.sales_order_item.sales_order_item_endpoint import salesOrderItemRouter, soItemPOItem
 from eums.api.stock_report.stock_report_endpoint import StockReport
+from eums.api.system_settings.system_settings_endpoint import system_settings_routers
 from eums.api.user.user_endpoint import userRouter
 from eums.views.home import Home
 from eums.views.users import UsersList, CreateUser, EditUser
@@ -84,6 +85,11 @@ urlpatterns = patterns(
     url(r'^api/ip-responses/$', AllIPResponses.as_view(), name='all_ip_responses'),
     url(r'^api/distribution-plan-responses/(?P<consignee_id>\d+)/sales_order_item/(?P<sales_order_item_id>\d+)/',
         PlanResponses.as_view(), name='distribution_plan_responses'),
+
+    url(r'^users/$', UsersList.as_view(), name="list_users_page"),
+    url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
+    url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^reset/done/$', RedirectView.as_view(url='/login')),
     url('', include('password_reset.urls')),
@@ -112,9 +118,8 @@ urlpatterns = patterns(
     url(r'^api/', include(consignee_items_router.urls)),
     url(r'^api/alert/count/$', AlertCount.as_view()),
     url(r'^api/', include(alert_router.urls)),
-    url(r'^users/$', UsersList.as_view(), name="list_users_page"),
-    url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
-    url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
+    url(r'^api/', include(alert_router.urls)),
+    url(r'^api/', include(system_settings_routers.urls)),
 
     url(r'^exports/deliveries/', ExportDeliveryViewSet.as_view(), name='warehouse_deliveries_csv'),
     url(r'^exports/deliveries-feedback-report/', ExportDeliveryFeedbackReportViewSet.as_view(),
@@ -122,4 +127,3 @@ urlpatterns = patterns(
     url(r'^exports/items-feedback-report/', ExportItemFeedbackReportViewSet.as_view(),
         name='items_feedback_report_csv'),
 )
-
