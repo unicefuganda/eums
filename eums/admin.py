@@ -1,10 +1,10 @@
 from django.contrib import admin
-
 from eums.models import DistributionPlan, Programme, DistributionPlanNode, Item, \
     ItemUnit, Consignee, Run, SalesOrder, SalesOrderItem, Option, TextAnswer, NumericAnswer, \
     MultipleChoiceAnswer, DistributionReport, PurchaseOrder, PurchaseOrderItem, ReleaseOrder, ReleaseOrderItem, Flow, \
     Question
 from eums.models.question import NumericQuestion, TextQuestion, MultipleChoiceQuestion
+from eums.models.system_settings import SystemSettings
 
 admin.site.register(DistributionPlan)
 admin.site.register(Programme)
@@ -29,3 +29,4 @@ admin.site.register(MultipleChoiceAnswer)
 admin.site.register(DistributionReport)
 admin.site.register(Flow)
 admin.site.register(Question)
+admin.site.register(SystemSettings)
