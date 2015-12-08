@@ -22,7 +22,7 @@ class SystemSettingsTest(AuthenticatedAPITestCase):
     def tearDown(self):
         SystemSettings.objects.all().delete()
 
-    def test_turn_on_auto_track_should_display_all_warehouse_deliveries_on_ip_dashboard(self):
+    def test_turn_off_auto_track_switch_should_return_false(self):
         SystemSettingsFactory(auto_track=False)
         response = self.client.get(ENDPOINT_URL)
         self.assertEqual(response.status_code, 200)
