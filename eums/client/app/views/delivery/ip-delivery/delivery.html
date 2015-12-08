@@ -86,7 +86,7 @@
             </thead>
 
             <tbody>
-            <tr ng-repeat="delivery in deliveries | orderFilter: query:dateQuery:searchFields">
+            <tr si-sortable="single" ng-repeat="delivery in deliveries | orderFilter: query:dateQuery:searchFields">
                 <td>
                     <span ng-class="delivery.shipmentReceived ?  'glyphicon glyphicon-ok text-success'
                      : 'glyphicon glyphicon-remove text-danger'"></span>
