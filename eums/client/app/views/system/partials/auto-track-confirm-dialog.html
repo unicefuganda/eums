@@ -16,40 +16,28 @@
                         <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries not manually tracked
                         will be hidden from the IP Delivery Page
                     </p>
-
                 </h3>
 
             </div>
-            <div class="modal-body">
-                TEST
+            <div class="modal-body align-center">
+                <h4>Confirm to proceed?</h4>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer align-center">
 
-                <button id="deliveryConfirmCancel"
+                <button id="autoTrackCancel"
                         type="button"
                         class="btn btn-default"
-                        data-dismiss="modal">
+                        data-dismiss="modal"
+                        ng-click="cancelAutoTrack()">
                     Cancel
                 </button>
                 &nbsp;&nbsp;
-                <button id="deliveryConfirmNo"
-                        ng-hide="hasReceivedDelivery"
+                <button id="autoTrackConfirm"
                         type="button"
-                        ng-disabled="!isValidChoice"
                         class="btn btn-primary"
-                        ng-click="saveAnswers()">
+                        ng-click="confirmAutoTrack()">
                     Confirm
                 </button>
-
-                <button id="deliveryConfirmYes"
-                        ng-show="hasReceivedDelivery"
-                        type="button"
-                        ng-disabled="!isValidChoice"
-                        class="btn btn-primary"
-                        ng-click="saveAnswers()">
-                    Proceed to Confirm Items
-                </button>
-
             </div>
         </div>
     </div>
