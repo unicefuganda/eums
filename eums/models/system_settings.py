@@ -8,4 +8,4 @@ class SystemSettings(models.Model):
         app_label = 'eums'
 
     def __unicode__(self):
-        return 'System deliveries are %s tracked automatically.' % '' if self.auto_track else 'not'
+        return 'SystemSettings = {id : %s, auto_track : %s}' % (str(self.id), str(self.auto_track))
