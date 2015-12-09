@@ -1,0 +1,44 @@
+<div class="container-fluid">
+    <div class="content">
+        <h4 class="eums page-header">System Configuration</h4>
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-offset-3 col-md-2">
+                    <label id="notification">Notification message to IPs</label>
+                </div>
+                <div class="col-md-7">
+                    <textarea class="form-control" rows="5" id="notification"></textarea>
+                    This message will be displayed on the IP's UNICEF Shipment page when IPs report on delivery.
+                    This will allow you to inform IPs on who to contact if deliveries are not showing up on their
+                    dashboard or put any other relevant info related to reporting on deliveries.
+                    <button class="btn btn-default"><i class="glyphicon glyphicon-remove"></i> Cancel</button>
+                    <button class="btn btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-offset-3 col-md-2">Auto Track Warehouse Delivery</div>
+                <div class="col-md-7">
+                    <input
+                            bs-switch
+                            ng-model="isSelected"
+                            type="checkbox"
+                            name="auto-track-switch"
+                            switch-active="{{ isActive }}"
+                            switch-on-text="{{ onText }}"
+                            switch-off-text="{{ offText }}"
+                            switch-animate="{{ animate }}"
+                            switch-size="{{ size }}"
+                            switch-radio-off="{{ radioOff }}"
+                            switch-label-width="{{ labelWidth }}"
+                            switch-handle-width="{{ handleWidth }}"
+                            switch-inverse="{{ !inverse }}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-include
+        src="'/static/app/views/system/partials/auto-track-confirm-dialog.html'">
+</ng-include>
+

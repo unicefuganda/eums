@@ -277,6 +277,15 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 }
             }
         })
+        .when('/system-settings', {
+            templateUrl: '/static/app/views/system/settings.html',
+            controller: 'SystemSettingsController',
+            resolve: {
+                permission: function (UserService) {
+                    return UserService.checkUserPermission('auth.can_view_reports');
+                }
+            }
+        })
         .otherwise({
             redirectTo: '/'
         });

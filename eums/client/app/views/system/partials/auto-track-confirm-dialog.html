@@ -1,0 +1,56 @@
+<div class="modal fade" id="auto-track-confirm-modal">
+    <div class="modal-dialog">
+        <div class="modal-content col-md-10">
+            <div class="modal-header">
+                <h3 class="modal-title text-warning">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span>
+                        <span class="sr-only">No</span>
+                    </button>
+                    <p id="switch-on-auto-track-text" ng-show="isON">
+                        <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries will automatically show
+                        on the corresponding IP Delivery Page
+                    </p>
+
+                    <p id="switch-off-auto-track-text" ng-hide="isON">
+                        <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries not manually tracked
+                        will be hidden from the IP Delivery Page
+                    </p>
+
+                </h3>
+
+            </div>
+            <div class="modal-body">
+                TEST
+            </div>
+            <div class="modal-footer">
+
+                <button id="deliveryConfirmCancel"
+                        type="button"
+                        class="btn btn-default"
+                        data-dismiss="modal">
+                    Cancel
+                </button>
+                &nbsp;&nbsp;
+                <button id="deliveryConfirmNo"
+                        ng-hide="hasReceivedDelivery"
+                        type="button"
+                        ng-disabled="!isValidChoice"
+                        class="btn btn-primary"
+                        ng-click="saveAnswers()">
+                    Confirm
+                </button>
+
+                <button id="deliveryConfirmYes"
+                        ng-show="hasReceivedDelivery"
+                        type="button"
+                        ng-disabled="!isValidChoice"
+                        class="btn btn-primary"
+                        ng-click="saveAnswers()">
+                    Proceed to Confirm Items
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
