@@ -27,17 +27,24 @@ echo Please type map center latitude
 read latitude
 echo Please type map center longitude
 read longitude
+echo Please type map zoom level
+read level
 
 cd ${CONFIG_DIR}
 sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${longitude}'],/g' development.json
+sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${level}'/g' development.json
 rm development.json.bak
 sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${longitude}'],/g' environment.json
+sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${level}'/g' environment.json
 rm environment.json.bak
 sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${longitude}'],/g' production.json
+sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${level}'/g' production.json
 rm production.json.bak
 sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${longitude}'],/g' staging.json
+sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${level}'/g' staging.json
 rm staging.json.bak
 sed -i.bak -e 's/"CENTER": \[\(.*\), \(.*\)\],/"CENTER": \['${latitude}', '${longitude}'],/g' test.json
+sed -i.bak -e 's/"ZOOM_LEVEL": \(.*\)/"ZOOM_LEVEL": '${level}'/g' test.json
 rm test.json.bak
 
 #Run grunt to rebuild static files
