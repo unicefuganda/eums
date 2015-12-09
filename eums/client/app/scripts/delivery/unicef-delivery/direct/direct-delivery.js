@@ -1,10 +1,10 @@
 'use strict';
 
-angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'ngToast'])
+angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programme', 'PurchaseOrder', 'User', 'SortBy', 'Directives', 'EumsFilters', 'Loader', 'ExportDeliveries', 'ngToast'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast, $timeout) {
+    .controller('DirectDeliveryController', function ($scope, $location, ProgrammeService, SortByService, PurchaseOrderService, UserService, $sorter, LoaderService, ExportDeliveriesService, ngToast, $timeout) {
 
         var rootPath = '/direct-delivery/new/';
 
@@ -17,6 +17,7 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
         $scope.purchaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
+        $scope.sortTerm = {field: 'trackedDate', orderIndex: 0};
 
         $scope.documentColumnTitle = 'Purchase Order';
         $scope.dateColumnTitle = 'Date Created';
@@ -44,6 +45,12 @@ angular.module('DirectDelivery', ['eums.config', 'ngTable', 'siTable', 'Programm
             this.sort.descending = false;
 
             loadPurchaseOrders(urlArgs);
+        };
+
+        $scope.sortedBy = function (sortField) {
+            var sort = SortByService.sortedBy($scope.sortTerm, sortField);
+            this.sortBy(sort.field);
+            this.sort.descending = sort.des;
         };
 
         $scope.goToPage = function (page) {

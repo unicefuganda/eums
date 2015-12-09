@@ -41,18 +41,18 @@
                     <thead ng-init="initialize()">
                     <tr>
                         <th class="centered" style="width: 20%">
-                            <a ng-if="currentDocumentType === 'PO'" ng-click="sortBy('orderNumber')">Purchase Order
+                            <a ng-if="currentDocumentType === 'PO'" ng-click="sortedBy('orderNumber')">Purchase Order
                                 <i ng-class="sortArrowClass('orderNumber')"></i></a>
-                            <a ng-if="currentDocumentType === 'WB'" ng-click="sortBy('orderNumber')">Waybill
+                            <a ng-if="currentDocumentType === 'WB'" ng-click="sortedBy('orderNumber')">Waybill
                                 <i ng-class="sortArrowClass('orderNumber')"></i></a>
                         </th>
                         <th class="centered" style="width: 30%">
-                            <a ng-click="sortBy('date')">Date Created
+                            <a ng-click="sortedBy('date')">Date Created
                                 <i ng-class="sortArrowClass('date');"></i>
                             </a>
                         </th>
                         <th class="col-xs-6">
-                            <a ng-click="sortBy('programme')">Outcome
+                            <a ng-click="sortedBy('programme')">Outcome
                                 <i ng-class="sortArrowClass('programme')"></i>
                             </a>
                         </th>

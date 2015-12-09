@@ -1,11 +1,12 @@
 'use strict';
 
-angular.module('ManualReporting', ['ngTable', 'siTable', 'eums.ip', 'PurchaseOrder', 'ReleaseOrder'])
-    .controller('ManualReportingController', function ($sorter, $scope, $q, $location, PurchaseOrderService, ReleaseOrderService) {
+angular.module('ManualReporting', ['ngTable', 'siTable', 'eums.ip', 'SortBy', 'PurchaseOrder', 'ReleaseOrder'])
+    .controller('ManualReportingController', function ($sorter, $scope, $q,  $location, SortByService, PurchaseOrderService, ReleaseOrderService) {
         $scope.sortBy = $sorter;
         var purchaseOrders = [];
         var waybills = [];
         $scope.searchFields = ['orderNumber', 'date'];
+        $scope.sortTerm = {field: 'order_number', orderIndex: 0};
 
         $scope.initialize = function () {
             angular.element('#loading').modal();
@@ -59,6 +60,12 @@ angular.module('ManualReporting', ['ngTable', 'siTable', 'eums.ip', 'PurchaseOrd
                 }
             }
             return output;
+        };
+
+        $scope.sortedBy = function (sortField) {
+            var sort = SortByService.sortedBy($scope.sortTerm, sortField);
+            this.sortBy(sort.field);
+            this.sort.descending = sort.des;
         };
 
         $scope.selectDocument = function (document) {

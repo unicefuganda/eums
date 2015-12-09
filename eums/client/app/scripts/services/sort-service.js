@@ -11,7 +11,6 @@ angular.module('Sort', [])
                     sortOptions.field = sortField;
                     sortOptions.order = INITIAL_ORDER;
                 }
-
                 if (!sortOptions.order) {
                     sortOptions = {};
                 }

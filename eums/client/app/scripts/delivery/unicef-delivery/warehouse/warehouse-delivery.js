@@ -1,11 +1,11 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
+angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'SortBy', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortByService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -14,11 +14,13 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
         $scope.releaseOrders = [];
         $scope.programmes = [];
         $scope.programmeSelected = null;
+        $scope.sortTerm = {field: 'trackedDate', orderIndex: 0};
 
         $scope.documentColumnTitle = 'Waybill #';
         $scope.dateColumnTitle = 'Date Shipped';
         $scope.trackedDateColumnTitle = 'Tracked Date';
         $scope.descriptionColumnTitle = 'Outcome Name';
+
 
         function loadReleaseOrder(options) {
             LoaderService.showLoader();
@@ -69,6 +71,12 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Cont
                 }
             }
             return output;
+        };
+
+        $scope.sortedBy = function (sortField) {
+            var sort = SortByService.sortedBy($scope.sortTerm, sortField);
+            this.sortBy(sort.field);
+            this.sort.descending = sort.des;
         };
 
         $scope.selectReleaseOrder = function (selectedReleaseOrderId) {
