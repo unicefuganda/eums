@@ -1,9 +1,8 @@
 from unittest import TestCase
-from django.test import override_settings
 from mock import patch
 
-from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT
-from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder, ReleaseOrderItem
+from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
+from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_factory import DeliveryFactory
@@ -11,8 +10,6 @@ from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.item_factory import ItemFactory
 from eums.test.factories.purchase_order_factory import PurchaseOrderFactory
 from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFactory
-from eums.test.factories.release_order_factory import ReleaseOrderFactory
-from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
 
 class DirectDeliveryExporterTest(TestCase):
@@ -66,5 +63,5 @@ class DirectDeliveryExporterTest(TestCase):
 
         details = (EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT.format(export_label,
                                                                            'http://ha.ha/static/exports/' + category +
-                                                                           '/' + file_name))
+                                                                           '/' + file_name, CSV_EXPIRED_HOURS))
         self.assertEqual(direct_csv_export.notification_details(), details)

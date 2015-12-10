@@ -2,6 +2,7 @@ from unittest import TestCase
 from django.test import override_settings
 from mock import patch
 from eums import export_settings
+from eums.export_settings import CSV_EXPIRED_HOURS
 from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
 
@@ -26,7 +27,7 @@ class ItemFeedbackReportExporterTest(TestCase):
         details = (export_settings.EMAIL_COMMON_SUBJECT,
                    export_settings.EMAIL_NOTIFICATION_CONTENT.format(export_label,
                                                                      'http://ha.ha/static/exports/' + category +
-                                                                     '/' + file_name))
+                                                                     '/' + file_name, CSV_EXPIRED_HOURS))
         self.assertEqual(item_feedback_report_csv_export.notification_details(), details)
 
     def test_assemble_csv_data(self):

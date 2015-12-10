@@ -15,7 +15,7 @@ Dear %s,
 Your export for {0} is ready.
 You can download your Excel file here:
 {1}
-Please note that the link will expire after 24 hours.
+Please note that the link will expire after {2} hours.
 Thank you,
 The EUMs team.
 """

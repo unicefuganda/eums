@@ -8,10 +8,9 @@ from eums.export_settings import *
 class CSVClearService(object):
     @classmethod
     def config_clear_dir_expired_time_map(cls):
-        csv_clear_dirs_expired_time_map = {
-            CSVClearService.__absolute_category_path('report/feedback'): 1 * 60 * 60
+        return {
+            CSVClearService.__absolute_category_path('report/feedback'): 24 * 60 * 60
         }
-        return csv_clear_dirs_expired_time_map
 
     @classmethod
     def __absolute_category_path(cls, category):

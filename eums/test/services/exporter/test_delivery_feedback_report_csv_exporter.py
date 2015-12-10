@@ -1,6 +1,6 @@
 from unittest import TestCase
 from mock import patch
-from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT
+from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
 from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 
@@ -22,7 +22,7 @@ class DeliveryFeedbackReportExporterTest(TestCase):
         export_label = delivery_feedback_report_csv_export.export_label
         details = (EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT.format(export_label,
                                                                            'http://ha.ha/static/exports/' + category +
-                                                                           '/' + file_name))
+                                                                           '/' + file_name, CSV_EXPIRED_HOURS))
         self.assertEqual(delivery_feedback_report_csv_export.notification_details(), details)
 
     def test_assemble_csv_data(self):
