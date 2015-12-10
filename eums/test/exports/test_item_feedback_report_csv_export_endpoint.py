@@ -11,7 +11,7 @@ class TestItemFeedbackCSVEndpoint(AuthenticatedAPITestCase):
     @patch('eums.services.csv_export_service.CSVExportService.notify')
     @patch('eums.services.exporter.item_feedback_report_csv_exporter.ItemFeedbackReportExporter.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
-    @patch('eums.services.exporter.item_feedback_report_csv_exporter.FeedbackReportExporter.assemble_csv_data')
+    @patch('eums.services.exporter.item_feedback_report_csv_exporter.ReportExporter.assemble_csv_data')
     @patch(
         'eums.services.exporter.item_feedback_report_csv_exporter.ItemFeedbackReportExporter.generate_exported_csv_file_name')
     @patch('eums.api.item_feedback_report.item_feedback_report_endpoint.filter_item_feedback_report')

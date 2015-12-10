@@ -2,13 +2,10 @@ from eums import export_settings
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
 
-class FeedbackReportExporter(AbstractCSVExporter):
-    KEY_HEADER = 'header'
-    KEY_DIC_KEYS = 'dic_keys'
-
+class ReportExporter(AbstractCSVExporter):
     def __init__(self, host_name):
         self.export_category = 'report/feedback'
-        super(FeedbackReportExporter, self).__init__(host_name)
+        super(ReportExporter, self).__init__(host_name)
 
     def assemble_csv_data(self, deliveries_feedback_report):
         total_rows = [self.config_headers()]

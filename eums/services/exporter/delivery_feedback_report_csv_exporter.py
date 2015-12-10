@@ -1,7 +1,7 @@
-from eums.services.exporter.feedback_report_csv_exporter import FeedbackReportExporter
+from eums.services.exporter.report_csv_exporter import ReportExporter
 
 
-class DeliveryFeedbackReportExporter(FeedbackReportExporter):
+class DeliveryFeedbackReportExporter(ReportExporter):
     def __init__(self, host_name):
         self.export_label = 'Delivery Feedback Report'
         self.file_name = 'deliveries_feedback_report'

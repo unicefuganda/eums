@@ -20,7 +20,7 @@ class TestItemFeedbackCSVEndpoint(AuthenticatedAPITestCase):
     @patch('eums.services.csv_export_service.CSVExportService.notify')
     @patch('eums.services.exporter.delivery_feedback_report_csv_exporter.DeliveryFeedbackReportExporter.notification_details')
     @patch('eums.services.csv_export_service.CSVExportService.generate')
-    @patch('eums.services.exporter.delivery_feedback_report_csv_exporter.FeedbackReportExporter.assemble_csv_data')
+    @patch('eums.services.exporter.delivery_feedback_report_csv_exporter.ReportExporter.assemble_csv_data')
     @patch('eums.services.exporter.delivery_feedback_report_csv_exporter.DeliveryFeedbackReportExporter.generate_exported_csv_file_name')
     @patch('eums.api.ip_feedback_report.ip_feedback_report_by_delivery_endpoint.filter_delivery_feedback_report')
     def test_should_start_async_csv_generation_with_direct_deliveries(
