@@ -6,6 +6,7 @@ angular.module('SortBy', [])
         var SORT_STATUS = 3;
         var des;
         var field;
+        var sortDes = [false, true, ''];
 
         return {
             sortedBy: function (sortTerm, sortField) {
@@ -17,16 +18,9 @@ angular.module('SortBy', [])
                     sortTerm.field = sortField;
                 }
 
-                switch (sortTerm.orderIndex) {
-                    case 0:
-                        des = false;
-                        break;
-                    case 1:
-                        des = true;
-                        break;
-                    default :
-                        field = '';
-                }
+                des = sortDes[sortTerm.orderIndex];
+                field = des === '' ? '' : field;
+
                 return {des: des, field: field};
             }
         }
