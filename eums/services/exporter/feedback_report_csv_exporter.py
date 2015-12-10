@@ -1,4 +1,4 @@
-import time
+from eums import export_settings
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
 
@@ -31,6 +31,9 @@ class FeedbackReportExporter(AbstractCSVExporter):
 
     def init_header_dic_key_map(self):
         return {self.KEY_HEADER: self.config_headers(), self.KEY_DIC_KEYS: self.config_dic_date_keys()}
+
+    def _subject(self):
+        return export_settings.EMAIL_COMMON_SUBJECT
 
     def config_headers(self):
         return []

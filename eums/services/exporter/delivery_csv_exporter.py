@@ -1,4 +1,6 @@
 import copy
+
+from eums import export_settings
 from eums.models import ReleaseOrderItem, PurchaseOrderItem, DistributionPlanNode
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
@@ -28,6 +30,9 @@ class DeliveryCSVExporter(AbstractCSVExporter):
         return [node.number(), node.item_description(), node.item.item.material_code, node.quantity_in(),
                 node.delivery_date.isoformat(), node.ip.name, contact.full_name(), contact.phone,
                 node.location, is_end_user, is_tracked, node.remark]
+
+    def _subject(self):
+        return export_settings.EMAIL_COMMON_SUBJECT
 
     @staticmethod
     def create_delivery_exporter_by_type(type_str, host_name):

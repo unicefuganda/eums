@@ -282,7 +282,7 @@ angular.module('eums', ['ngRoute', 'Home', 'Delivery', 'MultipleIpDirectDelivery
                 controller: 'SystemSettingsController',
                 resolve: {
                     permission: function (UserService) {
-                        return UserService.checkUserPermission('auth.can_view_reports');
+                        return UserService.checkUserPermission('auth.can_settings');
                     }
                 }
             })
