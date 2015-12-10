@@ -11,14 +11,14 @@ class FeedbackReportExporter(AbstractCSVExporter):
         super(FeedbackReportExporter, self).__init__(host_name)
 
     def assemble_csv_data(self, deliveries_feedback_report):
-        total_rows = [self.init_header_dic_key_map().get(self.KEY_HEADER)]
+        total_rows = [self.config_headers()]
         for each_delivery_feedback_back in deliveries_feedback_report:
             total_rows.append(self.__extract_row(each_delivery_feedback_back))
         return total_rows
 
     def __extract_row(self, row_data):
         row_value = []
-        for key in self.init_header_dic_key_map().get(self.KEY_DIC_KEYS):
+        for key in self.config_dic_date_keys():
             row_value.append(self.__extract_cell(row_data, key))
         return row_value
 
@@ -28,9 +28,6 @@ class FeedbackReportExporter(AbstractCSVExporter):
         first_key = key[0:key.index('.')]
         rest_keys = key[key.index('.') + 1:len(key)]
         return self.__extract_cell(row_data.get(first_key), rest_keys) if row_data.get(first_key) else ''
-
-    def init_header_dic_key_map(self):
-        return {self.KEY_HEADER: self.config_headers(), self.KEY_DIC_KEYS: self.config_dic_date_keys()}
 
     def _subject(self):
         return export_settings.EMAIL_COMMON_SUBJECT

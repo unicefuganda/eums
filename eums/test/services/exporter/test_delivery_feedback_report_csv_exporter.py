@@ -1,8 +1,5 @@
 from unittest import TestCase
-from django.test import override_settings
 from mock import patch
-
-from eums import export_settings
 from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT
 from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
@@ -10,7 +7,6 @@ from eums.services.exporter.delivery_feedback_report_csv_exporter import Deliver
 
 class DeliveryFeedbackReportExporterTest(TestCase):
     HOSTNAME = 'http://ha.ha/'
-    EMAIL_NOTIFICATION_CONTENT = '%s some content {0} other content {1}'
 
     def tearDown(self):
         DistributionPlan.objects.all().delete()

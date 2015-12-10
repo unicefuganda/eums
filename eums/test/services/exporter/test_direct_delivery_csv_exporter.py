@@ -1,6 +1,8 @@
 from unittest import TestCase
 from django.test import override_settings
 from mock import patch
+
+from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT
 from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder, ReleaseOrderItem
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -12,11 +14,10 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 from eums.test.factories.release_order_factory import ReleaseOrderFactory
 from eums.test.factories.release_order_item_factory import ReleaseOrderItemFactory
 
-HOSTNAME = "http://ha.ha/"
-EMAIL_NOTIFICATION_CONTENT = "%s some content {0} other content {1}"
-
 
 class DirectDeliveryExporterTest(TestCase):
+    HOSTNAME = "http://ha.ha/"
+
     def tearDown(self):
         DistributionPlanNode.objects.all().delete()
         PurchaseOrderItem.objects.all().delete()
@@ -50,22 +51,20 @@ class DirectDeliveryExporterTest(TestCase):
 
         expected_data = [header, row_one]
 
-        csv_exporter = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
+        csv_exporter = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', self.HOSTNAME)
 
-        print 'query_date-->%s' % str(csv_exporter.assemble_csv_data())
-        print 'expected_data-->%s' % str(expected_data)
-        print 'is_equal-->%s' % str(expected_data == csv_exporter.assemble_csv_data())
         TestCase.maxDiff = None
         self.assertEqual(csv_exporter.assemble_csv_data(), expected_data)
 
-    @override_settings(EMAIL_NOTIFICATION_CONTENT=EMAIL_NOTIFICATION_CONTENT)
     @patch('eums.services.exporter.delivery_csv_exporter.AbstractCSVExporter.generate_exported_csv_file_name')
     def test_should_return_correct_notification_details_for_direct_delivery(self, mock_generate_exported_csv_file_name):
         file_name = 'direct_deliveries_1448892495779.csv'
         mock_generate_exported_csv_file_name.return_value = file_name
         category = 'delivery'
-        warehouse_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', HOSTNAME)
-        details = ('Direct Delivery Download',
-                   '%s some content Direct Delivery other content http://ha.ha/static/exports/' + category +
-                   '/' + file_name)
-        self.assertEqual(warehouse_csv_export.notification_details(), details)
+        direct_csv_export = DeliveryCSVExporter.create_delivery_exporter_by_type('Direct', self.HOSTNAME)
+        export_label = direct_csv_export.export_label
+
+        details = (EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT.format(export_label,
+                                                                           'http://ha.ha/static/exports/' + category +
+                                                                           '/' + file_name))
+        self.assertEqual(direct_csv_export.notification_details(), details)
