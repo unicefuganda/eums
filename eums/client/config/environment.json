@@ -52,7 +52,8 @@
         "ITEM_FEEDBACK_REPORT_EXPORTS": "/exports/items-feedback-report",
         "DELIVERY_STATS_DETAILS": "/api/delivery-stats/details/",
         "MAP_DELIVERY_STATS": "/api/delivery-stats/map/",
-        "LATEST_DELIVERIES": "/api/latest-deliveries/"
+        "LATEST_DELIVERIES": "/api/latest-deliveries/",
+        "SYSTEM_SETTINGS": "/api/system-settings"
     },
     "CONTACT_SERVICE_URL": "http://localhost/contacts/",
     "ELASTIC_SEARCH_URL": "http://localhost/elasticsearch/eums/delivery_node/",
