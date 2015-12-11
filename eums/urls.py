@@ -1,7 +1,4 @@
 from django.conf.urls import patterns, include, url
-from django.contrib import admin
-from django.http import HttpResponse
-from django.template import loader, Context
 from django.views.generic import RedirectView
 from eums.api.alert.alert_endpoint import alert_router, AlertCount
 from eums.api.answer.answers_endpoint import ConsigneeResponses, AllConsigneeResponses, AllEndUserResponses, \

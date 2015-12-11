@@ -6,7 +6,6 @@ describe('Route Provider', function () {
 
         inject(function ($route) {
             routes = $route;
-
         });
     });
 
@@ -148,5 +147,12 @@ describe('Route Provider', function () {
         expect((Object.keys(routes.routes))).toContain(route);
         expect(routes.routes[route].controller).toBe('SupplyEfficiencyReportController');
         expect(routes.routes[route].templateUrl).toBe('/static/app/views/reports/supply-efficiency-report.html');
+    });
+
+    it('should have system settings route pointing to the right controller', function () {
+        var route = '/system-settings';
+        expect((Object.keys(routes.routes))).toContain(route);
+        expect(routes.routes[route].controller).toBe('SystemSettingsController');
+        expect(routes.routes[route].templateUrl).toBe('/static/app/views/system/settings.html');
     });
 });
