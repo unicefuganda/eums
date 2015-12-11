@@ -39,7 +39,5 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
                     LoaderService.showModal("auto-track-confirm-modal");
                 });
             });
-
         })();
-
     });

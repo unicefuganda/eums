@@ -105,7 +105,7 @@
             <tbody>
             <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
-                    {{ autoTrack }}<span ng-class="releaseOrder.track ? 'glyphicon glyphicon-ok text-success' :
+                    <span ng-class="releaseOrder.track ? 'glyphicon glyphicon-ok text-success' :
                      (autoTrack?'glyphicon glyphicon-globe text-warning':'glyphicon glyphicon-remove text-danger')"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
