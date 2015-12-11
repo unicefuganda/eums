@@ -25,8 +25,10 @@ from eums.models.release_order import ReleaseOrder
 from eums.models.distribution_report import DistributionReport
 from eums.models.users import UserProfile
 from eums.models.alert import Alert
+from eums.models.system_settings import SystemSettings
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.elasticsearch.delete_records import DeleteRecords
+
 
 __all__ = [
     'Consignee',
@@ -60,5 +62,7 @@ __all__ = [
     'PurchaseOrder',
     'Alert',
     'SyncInfo',
-    'DeleteRecords'
+    'DeleteRecords',
+    'SystemSettings'
+
 ]
