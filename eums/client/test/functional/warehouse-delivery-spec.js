@@ -13,7 +13,7 @@ describe('Warehouse Delivery', function () {
         loginPage.visit();
     });
 
-    fit('Admin should be able to create warehouse delivery to an IP', function () {
+    it('Admin should be able to create warehouse delivery to an IP', function () {
         loginPage.loginAs('admin', 'admin');
         warehouseDeliveryPage.visit();
 
@@ -31,7 +31,7 @@ describe('Warehouse Delivery', function () {
         expect(warehouseDeliveryPage.firstReleaseOrderAttributes).toContain('text-success');
     });
 
-    fit('Condition and satisfaction responses should assume the appropriate defaults', function () {
+    it('Condition and satisfaction responses should assume the appropriate defaults', function () {
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
         ipShipmentsPage.searchForShipment(WAYBILL_NUMBER);
@@ -58,7 +58,7 @@ describe('Warehouse Delivery', function () {
 
     });
 
-    fit('IP should be able to confirm Waybill delivery', function () {
+    it('IP should be able to confirm Waybill delivery', function () {
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();
 
@@ -83,7 +83,7 @@ describe('Warehouse Delivery', function () {
         ipShipmentsPage.saveItemConfirmation();
     });
 
-    fit('Acknowledged items are displayed in the IPs warehouse', function () {
+    it('Acknowledged items are displayed in the IPs warehouse', function () {
         ipWarehousePage.visit();
 
         ipWarehousePage.searchForItem('birth cushion');
