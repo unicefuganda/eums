@@ -21,13 +21,10 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         $scope.trackedDateColumnTitle = 'Tracked Date';
         $scope.descriptionColumnTitle = 'Outcome Name';
 
-        $scope.autoTrack = SystemSettingsService.isAutoTrack();
-
-
         function loadReleaseOrder(options) {
             LoaderService.showLoader();
 
-
+            initAutoTrack();
             options = angular.extend({'paginate': 'true'}, options);
 
             ReleaseOrderService.all(undefined, options).then(function (response) {
@@ -131,6 +128,12 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
 
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
+        }
+
+        function initAutoTrack() {
+            SystemSettingsService.isAutoTrack().then(function (auto_track) {
+                $scope.autoTrack = auto_track;
+            });
         }
     })
 ;

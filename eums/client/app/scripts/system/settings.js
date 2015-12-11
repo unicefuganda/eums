@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader'])
+angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader', 'frapontillo.bootstrap-switch'])
     .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService, LoaderService) {
         var current;
         $scope.isSelected = false;
