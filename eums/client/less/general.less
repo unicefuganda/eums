@@ -906,9 +906,25 @@ h4.page-header {
   clear: both;
 }
 
-.delivery th, .delivery td {
+.delivery.table > thead > tr > th,
+.delivery.table > tbody > tr > th,
+.delivery.table > tfoot > tr > th,
+.delivery.table > thead > tr > td,
+.delivery.table > tbody > tr > td,
+.delivery.table > tfoot > tr > td {
   text-align: left;
-  padding-left: 20px !important;
+  padding-left: 20px;
+}
+
+.delivery.table > thead > tr > th:first-child,
+.delivery.table > tbody > tr > th:first-child,
+.delivery.table > tfoot > tr > th:first-child,
+.delivery.table > thead > tr > td:first-child,
+.delivery.table > tbody > tr > td:first-child,
+.delivery.table > tfoot > tr > td:first-child {
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .row-padding {
