@@ -1,6 +1,5 @@
 'use strict';
 
-
 angular.module('SystemSettingsService', ['eums.config'])
     .factory('SystemSettingsService', function ($http, $q, $timeout, EumsConfig) {
         return {
@@ -22,8 +21,6 @@ angular.module('SystemSettingsService', ['eums.config'])
                     result.reject();
                 });
                 return result.promise
-            },
+            }
         }
     });
-
-

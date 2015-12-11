@@ -1,18 +1,18 @@
-<div class="modal fade" id="auto-track-confirm-modal">
-    <div class="modal-dialog">
+<div class="modal fade" id="auto-track-confirm-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
         <div class="modal-content col-md-10">
             <div class="modal-header">
+                <button type="button" class="close" ng-click="cancelAutoTrack()">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">No</span>
+                </button>
                 <h3 class="modal-title text-warning">
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span aria-hidden="true">&times;</span>
-                        <span class="sr-only">No</span>
-                    </button>
-                    <p id="switch-on-auto-track-text" ng-show="isON">
+                    <p id="switch-on-auto-track-text" ng-hide="isSelected">
                         <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries will automatically show
                         on the corresponding IP Delivery Page
                     </p>
 
-                    <p id="switch-off-auto-track-text" ng-hide="isON">
+                    <p id="switch-off-auto-track-text" ng-show="isSelected">
                         <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries not manually tracked
                         will be hidden from the IP Delivery Page
                     </p>
@@ -23,16 +23,14 @@
                 <h4>Confirm to proceed?</h4>
             </div>
             <div class="modal-footer align-center">
-
-                <button id="autoTrackCancel"
+                <button
                         type="button"
                         class="btn btn-default"
-                        data-dismiss="modal"
                         ng-click="cancelAutoTrack()">
                     Cancel
                 </button>
                 &nbsp;&nbsp;
-                <button id="autoTrackConfirm"
+                <button
                         type="button"
                         class="btn btn-primary"
                         ng-click="confirmAutoTrack()">

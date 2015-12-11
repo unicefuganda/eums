@@ -90,7 +90,6 @@ urlpatterns = patterns(
     url(r'^users/new/$', CreateUser.as_view(), name="create_user_page"),
     url(r'^users/(?P<user_id>\d+)/edit/$', EditUser.as_view(), name="edit_user"),
 
-    url(r'^admin/', include(admin.site.urls)),
     url(r'^reset/done/$', RedirectView.as_view(url='/login')),
     url('', include('password_reset.urls')),
     url('', include('django.contrib.auth.urls')),

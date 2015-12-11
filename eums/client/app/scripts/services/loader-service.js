@@ -14,7 +14,7 @@ angular.module('Loader', [])
             },
 
             showModal: function (id) {
-                $('#' + id).modal();
+                $('#' + id).modal({'backdrop':'static'});
             },
 
             hideModal: function (id) {

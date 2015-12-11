@@ -12,3 +12,67 @@
     }
   }
 }
+
+.modal-header .close {
+  margin-right: -15px;
+  margin-top: -5px;
+}
+
+
+@btn-eums-success-color:              @brand-success;
+@btn-eums-success-bg:                 #fff;
+@btn-eums-success-border:             darken(@btn-success-bg, 5%);
+@btn-eums-danger-color:               @brand-danger;
+@btn-eums-danger-bg:                  #fff;
+@btn-eums-danger-border:              darken(@btn-danger-bg, 5%);
+
+.eums-button-variant(@color; @background; @border) {
+  color: @color;
+  background-color: @background;
+  border-color: @border;
+  margin-right: 5px;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active& {
+    color: @color;
+    background-color: darken(@background, 8%);
+        border-color: darken(@border, 12%);
+  }
+  &:active,
+  &.active& {
+    background-image: none;
+  }
+  &.disabled,
+  &[disabled]& {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      background-color: @background;
+          border-color: @border;
+    }
+  }
+}
+
+.btn-eums-success {
+  .eums-button-variant(@btn-eums-success-color; @btn-eums-success-bg; @btn-eums-success-border);
+}
+
+.btn-eums-danger {
+  .eums-button-variant(@btn-eums-danger-color; @btn-eums-danger-bg; @btn-eums-danger-border);
+}
+
+.row-spaced {
+  margin-top: 3em;
+}
+
+.modal-title {
+  p {
+    margin: 10px 0;
+    color: @unicef-red;
+    font-size: 30px;
+  }
+}
