@@ -8,7 +8,10 @@
                 <li>
                     <span class="glyphicon glyphicon-ok text-success pad-right-5"></span>Tracked
                 </li>
-                <li>
+                <li ng-show="autoTrack">
+                    <span class="glyphicon glyphicon-globe text-warning pad-right-5"></span>Auto Tracked
+                </li>
+                <li ng-hide="autoTrack">
                     <span class="glyphicon glyphicon-remove text-danger pad-right-5"></span>Not Tracked
                 </li>
             </ul>
@@ -103,7 +106,7 @@
             <tr ng-repeat="releaseOrder in releaseOrders | orderFilter: query:dateQuery:searchFields | orderBy: sort.criteria:!sort.descending">
                 <td>
                     <span ng-class="releaseOrder.track ? 'glyphicon glyphicon-ok text-success' :
-                     'glyphicon glyphicon-remove text-danger';"></span>
+                     (autoTrack?'glyphicon glyphicon-globe text-warning':'glyphicon glyphicon-remove text-danger')"></span>
                 </td>
                 <td data-header="{{ documentColumnTitle }}">
                     <a ng-click="selectReleaseOrder(releaseOrder.id)">{{ releaseOrder.waybill }}</a>
@@ -124,8 +127,8 @@
             <tr>
                 <td class="pagination-row" colspan="6">
                     <pagination total-items="count" ng-model="currentPage" boundary-links="true"
-                                    ng-change="goToPage(currentPage)" max-size="5" rotate="false"
-                                    items-per-page="pageSize">
+                                ng-change="goToPage(currentPage)" max-size="5" rotate="false"
+                                items-per-page="pageSize">
                     </pagination>
                 </td>
             </tr>

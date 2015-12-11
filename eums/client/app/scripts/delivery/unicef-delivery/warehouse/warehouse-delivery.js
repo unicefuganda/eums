@@ -1,11 +1,11 @@
 'use strict';
 
 
-angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'SortBy', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
+angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'SortBy', 'SystemSettingsService', 'Contact', 'ExportDeliveries', 'ngToast', 'Loader'])
     .config(['ngToastProvider', function (ngToast) {
         ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
     }])
-    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SortByService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
+    .controller('WarehouseDeliveryController', function ($scope, $location, ReleaseOrderService, SystemSettingsService, SortByService, $sorter, ExportDeliveriesService, ngToast, LoaderService, $timeout) {
         $scope.sortBy = $sorter;
         $scope.errorMessage = '';
         $scope.planId = '';
@@ -21,9 +21,12 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         $scope.trackedDateColumnTitle = 'Tracked Date';
         $scope.descriptionColumnTitle = 'Outcome Name';
 
+        $scope.autoTrack = SystemSettingsService.isAutoTrack();
+
 
         function loadReleaseOrder(options) {
             LoaderService.showLoader();
+
 
             options = angular.extend({'paginate': 'true'}, options);
 
@@ -32,13 +35,13 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
                 $scope.count = response.count;
                 $scope.pageSize = response.pageSize;
 
-                if(options) {
-                    if(options.from) {
+                if (options) {
+                    if (options.from) {
                         $scope.fromDate = moment(Date.parse(options.from)).format('DD-MMM-YYYY');
                         initializing = true;
                     }
 
-                    if(options.to) {
+                    if (options.to) {
                         $scope.toDate = moment(Date.parse(options.to)).format('DD-MMM-YYYY');
                         initializing = true;
                     }
@@ -95,7 +98,7 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
         var timer, initializing = true;
 
         $scope.$watch('[fromDate,toDate,query]', function () {
-            if (initializing){
+            if (initializing) {
                 initializing = false;
             }
             else {

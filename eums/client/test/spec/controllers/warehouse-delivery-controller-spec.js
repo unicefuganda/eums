@@ -1,6 +1,6 @@
 describe('Warehouse Delivery Controller', function () {
-    var scope, mockReleaseOrderService, location, deferredReleaseOrders, mockExportDeliveryService, mockToast, mockLoader,
-        deferredExportResult, timeout;
+    var scope, mockReleaseOrderService, location, deferredReleaseOrders, deferredSystemSettings, mockExportDeliveryService, mockToast, mockLoader,
+        deferredExportResult, timeout, mockSystemSettingsService;
 
     var releaseOrders = {
         'count': 2,
@@ -18,11 +18,14 @@ describe('Warehouse Delivery Controller', function () {
 
         mockReleaseOrderService = jasmine.createSpyObj('mockReleaseOrderService', ['all']);
         mockExportDeliveryService = jasmine.createSpyObj('mockExportDeliveryService', ['export']);
+        mockSystemSettingsService = jasmine.createSpyObj('mockSystemSettingsService', ['isAutoTrack']);
         mockToast = jasmine.createSpyObj('mockToast', ['create']);
         mockLoader = jasmine.createSpyObj('mockLoader', ['showLoader', 'hideLoader']);
         inject(function ($controller, $rootScope, $location, $q, $sorter, $timeout) {
             deferredExportResult = $q.defer();
             deferredReleaseOrders = $q.defer();
+            deferredSystemSettings = $q.defer();
+            mockSystemSettingsService.isAutoTrack.and.returnValue(deferredSystemSettings.promise)
             mockReleaseOrderService.all.and.returnValue(deferredReleaseOrders.promise);
             mockExportDeliveryService.export.and.returnValue(deferredExportResult.promise);
             scope = $rootScope.$new();
@@ -39,6 +42,7 @@ describe('Warehouse Delivery Controller', function () {
                 LoaderService: mockLoader,
                 ReleaseOrderService: mockReleaseOrderService,
                 ExportDeliveriesService: mockExportDeliveryService,
+                SystemSettingsService: mockSystemSettingsService,
                 $timeout: timeout
             });
         });
@@ -107,7 +111,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, { paginate: 'true', from: '2014-07-07' });
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2014-07-07'});
         });
 
         it('should still filter when fromDate is empty', function () {
@@ -119,7 +123,7 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, { paginate: 'true', to: '2014-07-07' });
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', to: '2014-07-07'});
         });
 
         it('should filter deliveries when date range is given', function () {
@@ -132,7 +136,11 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2014-05-07', to: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                from: '2014-05-07',
+                to: '2014-07-07'
+            });
         });
 
         it('should format dates before filtering deliveries ', function () {
@@ -145,7 +153,11 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2015-08-30', to: '2015-09-10'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                from: '2015-08-30',
+                to: '2015-09-10'
+            });
         });
 
         it('should filter deliveries when date range is given with additional query', function () {
@@ -159,7 +171,12 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', from: '2014-05-07', to: '2014-07-07', query: 'wakiso programme'})
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                from: '2014-05-07',
+                to: '2014-07-07',
+                query: 'wakiso programme'
+            })
         });
 
         it('should filter deliveries when fromDate is not given with additional query', function () {
@@ -172,7 +189,11 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', query: 'wakiso programme', to: '2014-07-07'})
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                query: 'wakiso programme',
+                to: '2014-07-07'
+            })
         });
 
         it('should filter deliveries when toDate is not given with additional query', function () {
@@ -185,7 +206,11 @@ describe('Warehouse Delivery Controller', function () {
             timeout.flush();
 
             expect(mockReleaseOrderService.all.calls.count()).toEqual(2);
-            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {paginate: 'true', query: 'wakiso programme', from: '2014-07-07'});
+            expect(mockReleaseOrderService.all).toHaveBeenCalledWith(undefined, {
+                paginate: 'true',
+                query: 'wakiso programme',
+                from: '2014-07-07'
+            });
 
         });
     });

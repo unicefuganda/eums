@@ -22,7 +22,7 @@ describe('SystemSettings Service', function () {
         mockBackend.whenGET(url).respond(200, systemSettings);
         mockBackend.expectGET(url);
 
-        systemSettingsService.getSystemSetting().then(function (response) {
+        systemSettingsService.isAutoTrack().then(function (response) {
             expect(response).toEqual(systemSettings[0].auto_track);
         });
         mockBackend.flush();
@@ -35,8 +35,7 @@ describe('SystemSettings Service', function () {
         mockBackend.whenPUT(url).respond(200, systemSettings);
         mockBackend.expectPUT(url);
 
-        systemSettingsService.updateSystemSetting(systemSettings.auto_track).then(function (response) {
-            expect(response.status).toEqual(200);
+        systemSettingsService.updateAutoTrack(systemSettings.auto_track).then(function (response) {
             expect(response.data).toEqual(systemSettings);
         });
         mockBackend.flush();
