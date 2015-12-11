@@ -33,6 +33,8 @@ module.exports = function (config) {
             'bower_components/angular-gs-capitalize/build/angular-gs-capitalize.min.js',
             'bower_components/angular-gs-to-camel-case/build/angular-gs-to-camel-case.min.js',
             'bower_components/angular-gs-to-snake-case/build/angular-gs-to-snake-case.min.js',
+            'bower_components/bootstrap-switch/dist/js/bootstrap-switch.min.js',
+            'bower_components/angular-bootstrap-switch/dist/angular-bootstrap-switch.min.js',
             'app/media/lodash.js',
             'app/scripts/**/*.js',
             'app/vendor/scripts/**/*.js',
