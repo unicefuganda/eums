@@ -5,6 +5,7 @@ from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, Text
 from eums.models import Runnable, DistributionPlanNode
 from eums.models.answers import Answer
 from eums.models.programme import Programme
+import eums.models
 
 
 class DistributionPlan(Runnable):
@@ -19,6 +20,16 @@ class DistributionPlan(Runnable):
     def save(self, *args, **kwargs):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
+        if(self.track) :
+            self.update_purchase_order()
+
+    def update_purchase_order(self):
+        all_purchase_order = eums.models.PurchaseOrder.objects.all()
+        for purchase_order in all_purchase_order:
+            if self in purchase_order.deliveries():
+                if self.delivery_date > purchase_order.last_shipment_date :
+                    purchase_order.last_shipment_date = self.delivery_date
+                    purchase_order.save()
 
     def has_existing_run(self):
         return Run.objects.filter(runnable=self).exists()
