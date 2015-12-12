@@ -1,5 +1,4 @@
 import logging.config
-import macostools
 import os
 from collections import namedtuple
 from os.path import join, exists
