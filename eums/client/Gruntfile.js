@@ -157,7 +157,7 @@ module.exports = function (grunt) {
                 quiet: Infinity
             },
             djangoServer: {
-                exec: 'python ../../manage.py runserver 0.0.0.0:9000 --settings=eums.test_settings'
+                exec: 'python ../../manage.py runserver 0.0.0.0:9000 --settings=eums.settings_test'
             }
         },
 
@@ -198,7 +198,7 @@ module.exports = function (grunt) {
                 command: 'echo "create database eums_test" | psql -U postgres'
             },
             createAndSyncES: {
-                command: 'python manage.py shell_plus < eums/elasticsearch/run_sync.py --settings=eums.test_settings',
+                command: 'python manage.py shell_plus < eums/elasticsearch/run_sync.py --settings=eums.settings_test',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -207,7 +207,7 @@ module.exports = function (grunt) {
                 }
             },
             runMigrations: {
-                command: 'python manage.py migrate --settings=eums.test_settings',
+                command: 'python manage.py migrate --settings=eums.settings_test',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -216,7 +216,7 @@ module.exports = function (grunt) {
                 }
             },
             seedData: {
-                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.test_settings',
+                command: 'python manage.py loaddata eums/client/test/functional/fixtures/user.json --settings=eums.settings_test',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -225,7 +225,7 @@ module.exports = function (grunt) {
                 }
             },
             mapData: {
-                command: 'python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py --settings=eums.test_settings',
+                command: 'python manage.py shell < eums/client/test/functional/fixtures/mapdata_code.py --settings=eums.settings_test',
                 options: {
                     stderr: true,
                     execOptions: {
@@ -234,7 +234,7 @@ module.exports = function (grunt) {
                 }
             },
             questionAndFlowData: {
-                command: 'python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py --settings=eums.test_settings',
+                command: 'python manage.py shell_plus < eums/fixtures/load_flows_and_questions.py --settings=eums.settings_test',
                 options: {
                     stderr: false,
                     execOptions: {
@@ -243,7 +243,7 @@ module.exports = function (grunt) {
                 }
             },
             setupPermissions: {
-                command: 'python manage.py setup_permissions --settings=eums.test_settings',
+                command: 'python manage.py setup_permissions --settings=eums.settings_test',
                 options: {
                     stderr: false,
                     execOptions: {

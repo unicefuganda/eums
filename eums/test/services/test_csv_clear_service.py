@@ -1,11 +1,12 @@
 import os
 import shutil
-from unittest import TestCase
 import time
+from unittest import TestCase
 
 from celery.schedules import crontab
 from mock import patch
-from eums.export_settings import EXPORTS_DIR
+
+from eums.settings_export import EXPORTS_DIR
 from eums.services.csv_clear_service import CSVClearService
 from eums.test.services.mock_celery import MockPeriodicTask
 

@@ -1,8 +1,8 @@
 import os
 import time
-from django.conf import settings
-from eums import export_settings
-from eums.export_settings import CSV_EXPIRED_HOURS
+
+from eums import settings_export
+from eums.settings_export import CSV_EXPIRED_HOURS
 
 
 class AbstractCSVExporter(object):
@@ -21,7 +21,7 @@ class AbstractCSVExporter(object):
         return self.exported_csv_file_name
 
     def _message(self):
-        return settings.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, self.csv_url, CSV_EXPIRED_HOURS)
+        return settings_export.EMAIL_NOTIFICATION_CONTENT.format(self.export_label, self.csv_url, CSV_EXPIRED_HOURS)
 
     def _subject(self):
         return "%s Download" % self.export_label
@@ -34,6 +34,6 @@ class AbstractCSVExporter(object):
 
     @staticmethod
     def create_category_dir(category):
-        target_dir = export_settings.EXPORTS_DIR + category
+        target_dir = settings_export.EXPORTS_DIR + category
         if not os.path.exists(target_dir):
             os.makedirs(target_dir)

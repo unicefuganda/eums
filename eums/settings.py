@@ -1,8 +1,10 @@
+import logging.config
 import macostools
-from collections import namedtuple
-from os.path import exists, join
-from datetime import datetime
 import os
+from collections import namedtuple
+from os.path import join, exists
+
+from datetime import datetime
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -88,8 +90,6 @@ MAX_ALLOWED_REPLY_PERIOD = 7
 DELIVERY_BUFFER_IN_SECONDS = 10
 
 # Contacts service settings
-import os
-
 CONTACTS_SERVICE_URL = 'http://localhost:8005/api/contacts/'
 
 # RapidPro settings
@@ -144,15 +144,15 @@ EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'admin@eums.unicefuganda.org'
 
+# Logging configuration
 LOGGING_DIRS = {
     'debug': join(BASE_DIR, 'logs/debug/'),
     'django_request': join(BASE_DIR, 'logs/django_request/'),
 }
-logs_suffix = datetime.today().strftime('%Y%m%d')
+LOG_SUFFIX = datetime.today().strftime('%Y%m%d')
 map(lambda path: macostools.mkdirs(path) if not exists(path) else None,
     LOGGING_DIRS.itervalues())
 
-LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -162,23 +162,33 @@ LOGGING = {
             'datefmt': "%Y-%m-%d %H:%M:%S"
         },
     },
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
     'handlers': {
         'null': {
             'level': 'INFO',
             'class': 'django.utils.log.NullHandler'
         },
-        'debug_handler': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        'debug': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGGING_DIRS.get('debug') + "/debug.%s.log" % logs_suffix,
+            'filename': LOGGING_DIRS.get('debug') + "/debug.%s.log" % LOG_SUFFIX,
             'maxBytes': 1024 * 1024 * 5,
             'backupCount': 10,
             'formatter': 'standard'
         },
-        'request_handler': {
+        'request': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGGING_DIRS.get('django_request') + '/django_request.%s.log' % logs_suffix,
+            'filename': LOGGING_DIRS.get('django_request') + '/django_request.%s.log' % LOG_SUFFIX,
             'maxBytes': 1024 * 1024 * 5,
             'backupCount': 30,
             'formatter': 'standard'
@@ -195,24 +205,17 @@ LOGGING = {
             'level': 'DEBUG'
         },
         'django.request': {
-            'handlers': ['request_handler'],
+            'handlers': ['request'],
             'level': 'DEBUG',
             'propagate': True
         },
         'eums': {
-            'handlers': ['debug_handler'],
+            'handlers': ['debug'],
             'level': 'DEBUG',
             'propagate': True
         }
     }
 }
 
-import logging.config
-
+LOGGING_CONFIG = None
 logging.config.dictConfig(LOGGING)
-
-try:
-    from export_settings import *
-    from local_settings import *
-except ImportError:
-    pass

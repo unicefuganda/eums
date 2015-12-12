@@ -19,4 +19,3 @@ Please note that the link will expire after {2} hours.
 Thank you,
 The EUMs team.
 """
-

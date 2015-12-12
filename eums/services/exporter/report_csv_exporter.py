@@ -1,4 +1,4 @@
-from eums import export_settings
+from eums import settings_export
 from eums.services.exporter.abstract_csv_exporter import AbstractCSVExporter
 
 
@@ -27,7 +27,7 @@ class ReportExporter(AbstractCSVExporter):
         return self.__extract_cell(row_data.get(first_key), rest_keys) if row_data.get(first_key) else ''
 
     def _subject(self):
-        return export_settings.EMAIL_COMMON_SUBJECT
+        return settings_export.EMAIL_COMMON_SUBJECT
 
     def config_headers(self):
         return []

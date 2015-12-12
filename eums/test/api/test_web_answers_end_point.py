@@ -1,7 +1,6 @@
 import json
 from django.db.models import Q
 from mock import MagicMock, patch
-from eums import settings
 from eums.models import MultipleChoiceAnswer, TextAnswer, TextQuestion, MultipleChoiceQuestion, Runnable, Flow, Run, \
     NumericAnswer, Alert, RunQueue
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase

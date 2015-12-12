@@ -1,9 +1,11 @@
 import logging
 import os
 import time
+
 from celery.schedules import crontab
 from celery.task import periodic_task
-from eums.export_settings import *
+
+from eums.settings_export import *
 
 logger = logging.getLogger('eums.services.csv_clear_service')
 
@@ -42,5 +44,3 @@ class CSVClearService(object):
 def execute_csv_clear_task():
     logger.info('execute_csv_clear_task')
 
-
-execute_csv_clear_task()

@@ -1,8 +1,9 @@
 import csv
+
 from django.conf import settings
 from django.core import mail
 
-from eums import export_settings
+from eums import settings_export
 from eums.celery import app
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
@@ -12,7 +13,7 @@ from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbac
 class CSVExportService(object):
     @classmethod
     def generate(cls, data, category, filename):
-        file_location = export_settings.EXPORTS_DIR + category + '/' + filename
+        file_location = settings_export.EXPORTS_DIR + category + '/' + filename
         export_file = open(file_location, 'wb')
         export_file.write('sep=,\n')
         wr = csv.writer(export_file, quoting=csv.QUOTE_ALL)

@@ -1,7 +1,8 @@
 from unittest import TestCase
+
 from mock import patch
 
-from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
+from eums.settings_export import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
 from eums.models import DistributionPlanNode, PurchaseOrderItem, PurchaseOrder
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.test.factories.consignee_factory import ConsigneeFactory

@@ -1,6 +1,8 @@
 from unittest import TestCase
+
 from mock import patch
-from eums.export_settings import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
+
+from eums.settings_export import EMAIL_COMMON_SUBJECT, EMAIL_NOTIFICATION_CONTENT, CSV_EXPIRED_HOURS
 from eums.models import DistributionPlanNode, DistributionPlan
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 
