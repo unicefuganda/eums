@@ -111,7 +111,7 @@ DistributionReport.objects.create(total_distributed=80, total_not_received=67, c
 ip_questions, options, _ = seed_ip_questions()
 
 # WEB RUNS
-web_flow = Flow.objects.get(for_runnable_type='WEB')
+web_flow = Flow.objects.get(label='WEB')
 was_item_received = MultipleChoiceQuestion.objects.get(flow=web_flow, label='itemReceived')
 yes = Option.objects.get(question=was_item_received, text='Yes')
 
@@ -234,15 +234,15 @@ item_one = ItemFactory(description='A funny Item')
 po_item_one = PurchaseOrderItemFactory(quantity=100, value=1000, item=item_one)
 po_item_two = PurchaseOrderItemFactory(quantity=50, value=1000, item=item_one)
 
-ip_node_one = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=10,
+ip_node_one = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True, quantity=10,
                                   distribution_plan=delivery_pader, item=po_item_one)
-ip_node_two = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=20,
+ip_node_two = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True, quantity=20,
                                   distribution_plan=delivery_pader, item=po_item_one)
 
-ip_node_three = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=10,
+ip_node_three = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True, quantity=10,
                                     distribution_plan=delivery_Amuru, item=po_item_two)
 
-ip_node_kampala = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=5,
+ip_node_kampala = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True, quantity=5,
                                       distribution_plan=delivery_kampala, item=po_item_one)
 
 run_ip_node_one = RunFactory(runnable=ip_node_one, status=Run.STATUS.scheduled)
@@ -260,7 +260,7 @@ MultipleChoiceAnswerFactory(question=web_questions.web_question_3, value=web_que
 MultipleChoiceAnswerFactory(question=web_questions.web_question_4, value=web_questions.yes_2, run=run_ip_node_two)
 TextAnswerFactory(question=web_questions.web_question_5, value='nothing much', run=run_ip_node_two)
 
-end_user_node_one = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True, item=po_item_one,
+end_user_node_one = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True, item=po_item_one,
                                         parents=((ip_node_one, 5),), location='Kisoro')
 run_end_user_node_one = RunFactory(runnable=end_user_node_one, status=Run.STATUS.scheduled)
 
@@ -273,7 +273,7 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_one, question=end_user_questio
 NumericAnswerFactory(run=run_end_user_node_one, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=5)
 TextAnswerFactory(run=run_end_user_node_one, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
 
-end_user_node_three = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True, location='Kisoro',
+end_user_node_three = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True, location='Kisoro',
                                           distribution_plan=None, item=po_item_one, parents=((ip_node_two, 2),))
 run_end_user_node_three = RunFactory(runnable=end_user_node_three, status=Run.STATUS.scheduled)
 
@@ -286,7 +286,7 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_three, question=end_user_quest
 NumericAnswerFactory(run=run_end_user_node_three, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=2)
 TextAnswerFactory(run=run_end_user_node_three, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
 
-end_user_node_four = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True, location='Kisoro',
+end_user_node_four = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True, location='Kisoro',
                                          distribution_plan=None, parents=((ip_node_two, 1), (ip_node_one, 3)),
                                          item=po_item_one)
 run_end_user_node_four = RunFactory(runnable=end_user_node_four, status=Run.STATUS.scheduled)
@@ -300,13 +300,13 @@ MultipleChoiceAnswerFactory(run=run_end_user_node_four, question=end_user_questi
 NumericAnswerFactory(run=run_end_user_node_four, question=end_user_questions['EU_AMOUNT_RECEIVED'], value=4)
 TextAnswerFactory(run=run_end_user_node_four, question=end_user_questions['EU_DATE_RECEIVED'], value='2014-09-29')
 
-end_user_node_five = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
+end_user_node_five = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True,
                                          distribution_plan=None, item=po_item_one, parents=((ip_node_two, 2),))
 run_end_user_node_five = RunFactory(runnable=end_user_node_five, status=Run.STATUS.scheduled)
 MultipleChoiceAnswerFactory(run=run_end_user_node_five, question=end_user_questions['WAS_PRODUCT_RECEIVED'],
                             value=end_user_options['PRODUCT_WAS_NOT_RECEIVED'])
 
-non_response_node = DeliveryNodeFactory(tree_position=Runnable.END_USER, track=True,
+non_response_node = DeliveryNodeFactory(tree_position=Flow.Label.END_USER, track=True,
                                         distribution_plan=None, parents=((ip_node_two, 2),),
                                         item=po_item_one)
 RunFactory(runnable=non_response_node, status=Run.STATUS.scheduled)
@@ -315,9 +315,9 @@ po_item_three = PurchaseOrderItemFactory(quantity=50, value=1000, item=ItemFacto
 
 delivery_kisoro = DeliveryFactory(location='KISORO', track=True, programme=programme_19, consignee=consignee_40,
                                   ip=consignee_40, delivery_date=today + datetime.timedelta(days=3))
-ip_node_four = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, track=True, quantity=10,
+ip_node_four = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True, quantity=10,
                                    distribution_plan=delivery_kisoro, item=po_item_three, programme=programme_19)
-mm_node = DeliveryNodeFactory(tree_position=Runnable.MIDDLE_MAN, track=True, parents=((ip_node_four, 7),),
+mm_node = DeliveryNodeFactory(tree_position=Flow.Label.MIDDLE_MAN, track=True, parents=((ip_node_four, 7),),
                               distribution_plan=None, item=po_item_three, programme=programme_19,
                               consignee=consignee_40)
 

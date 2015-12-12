@@ -4,8 +4,8 @@ from eums.models.flow import Flow
 from eums.models import Runnable, Arc, Programme
 from eums.models.delivery_node_manager import DeliveryNodeManager
 
-positions = ((Runnable.MIDDLE_MAN, 'Middleman'), (Runnable.END_USER, 'End User'),
-             (Runnable.IMPLEMENTING_PARTNER, 'Implementing Partner'))
+positions = ((Flow.Label.MIDDLE_MAN, 'Middleman'), (Flow.Label.END_USER, 'End User'),
+             (Flow.Label.IMPLEMENTING_PARTNER, 'Implementing Partner'))
 
 
 class DistributionPlanNode(Runnable):
@@ -183,12 +183,12 @@ class DistributionPlanNode(Runnable):
         return self.item.item.description
 
     def is_end_user(self):
-        return self.tree_position == Runnable.END_USER
+        return self.tree_position == Flow.Label.END_USER
 
     def flow(self):
         if self.is_end_user():
-            return Flow.objects.get(for_runnable_type=self.tree_position)
-        return Flow.objects.get(for_runnable_type=Runnable.MIDDLE_MAN)
+            return Flow.objects.get(label=self.tree_position)
+        return Flow.objects.get(label=Flow.Label.MIDDLE_MAN)
 
     def _get_total_value(self):
         return self.item.unit_value() * self.quantity_in()

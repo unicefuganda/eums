@@ -22,13 +22,13 @@ ENDPOINT_URL = BACKEND_URL + 'web-answers'
 class WebAnswerEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
         super(WebAnswerEndpointTest, self).setUp()
-        self.setup_flow_with_questions(Runnable.IMPLEMENTING_PARTNER)
+        self.setup_flow_with_questions(Flow.Label.IMPLEMENTING_PARTNER)
         self.build_contact = Runnable.build_contact
         contact = {'name': 'Some name', 'phone': '098765433'}
         Runnable.build_contact = MagicMock(return_value=contact)
 
     def setup_flow_with_questions(self, flow_type):
-        flow = FlowFactory(for_runnable_type=flow_type)
+        flow = FlowFactory(label=flow_type)
         delivery_received_qn = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow)
         OptionFactory(question=delivery_received_qn, text='Yes')
         OptionFactory(question=delivery_received_qn, text='No')
@@ -198,7 +198,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(Run.objects.filter(runnable=delivery, status='completed')), 1)
 
     def test_should_save_delivery_node_answers(self):
-        self.setup_flow_with_questions(Runnable.WEB)
+        self.setup_flow_with_questions(Flow.Label.WEB)
         node = DeliveryNodeFactory()
         date_of_receipt = '10-10-2014'
         data = {
@@ -215,7 +215,7 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(MultipleChoiceAnswer.objects.filter(run__runnable=node)), 1)
 
     def test_should_save_delivery_node_answers_to_web_flow(self):
-        self.setup_flow_with_questions(Runnable.WEB)
+        self.setup_flow_with_questions(Flow.Label.WEB)
         node = DeliveryNodeFactory()
 
         date_of_receipt = '10-10-2014'
@@ -227,13 +227,13 @@ class WebAnswerEndpointTest(AuthenticatedAPITestCase):
 
         self.client.post(ENDPOINT_URL, data=json.dumps(data), content_type='application/json')
 
-        web_flow = Flow.objects.get(for_runnable_type=Runnable.WEB)
+        web_flow = Flow.objects.get(label=Flow.Label.WEB)
         self.assertEqual(len(TextAnswer.objects.filter(question__flow=web_flow)), 1)
         self.assertEqual(len(MultipleChoiceAnswer.objects.filter(question__flow=web_flow)), 1)
 
     def test_should_save_numeric_answers(self):
-        self.setup_flow_with_questions(Runnable.WEB)
-        web_flow = Flow.objects.filter(for_runnable_type=Runnable.WEB).first()
+        self.setup_flow_with_questions(Flow.Label.WEB)
+        web_flow = Flow.objects.filter(label=Flow.Label.WEB).first()
         NumericQuestionFactory(label='quantityDelivered', flow=web_flow)
 
         node = DeliveryNodeFactory()

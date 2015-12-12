@@ -88,7 +88,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
             track=True, programme=ProgrammeFactory(name=programme_name),
             consignee=ConsigneeFactory(name=wakiso), delivery_date=date(2015, 3, 10))
         order_number = 34230335
-        DeliveryNodeFactory(distribution_plan=delivery, track=True, tree_position=Runnable.IMPLEMENTING_PARTNER,
+        DeliveryNodeFactory(distribution_plan=delivery, track=True, tree_position=Flow.Label.IMPLEMENTING_PARTNER,
                             item=PurchaseOrderItemFactory(
                                 purchase_order=PurchaseOrderFactory(order_number=order_number)))
         run = RunFactory(runnable=delivery)
@@ -155,7 +155,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso, comment, True, True)
 
         self.create_node_and_answers(number_of_deliveries, 57848383, programme_two, napak, comment, True, True,
-                                     tree_position=Runnable.END_USER)
+                                     tree_position=Flow.Label.END_USER)
 
         programme = Programme.objects.get(name=programme_one)
         consignee = Consignee.objects.get(name=wakiso)
@@ -186,7 +186,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.create_node_and_answers(number_of_deliveries, order_number, programme_one, wakiso, comment, True, True)
 
         self.create_node_and_answers(number_of_deliveries, 57848383, programme_two, napak, comment, True, True,
-                                     tree_position=Runnable.MIDDLE_MAN)
+                                     tree_position=Flow.Label.MIDDLE_MAN)
 
         programme = Programme.objects.get(name=programme_one)
         consignee = Consignee.objects.get(name=wakiso)
@@ -379,7 +379,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
         self.assertEqual(len(results), 2)
 
     def _create_questions(self):
-        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+        flow = FlowFactory(label='IMPLEMENTING_PARTNER')
 
         self.delivery_received_qtn = MultipleChoiceQuestionFactory(text='Was delivery received?', flow=flow,
                                                                    position=1,
@@ -416,7 +416,7 @@ class IpFeedBackReportByDeliveryEndpointTest(AuthenticatedAPITestCase):
                 item=ReleaseOrderItemFactory(release_order=ReleaseOrderFactory(waybill=order_number)))
 
     def create_node_and_answers(self, number_of_deliveries, order_number, programme_name, consignee, comment,
-                                is_purchase, track, tree_position=Runnable.IMPLEMENTING_PARTNER, location='Madagascar'):
+                                is_purchase, track, tree_position=Flow.Label.IMPLEMENTING_PARTNER, location='Madagascar'):
         while number_of_deliveries > 0:
             delivery = DeliveryFactory(
                 track=track, programme=ProgrammeFactory(name=programme_name),

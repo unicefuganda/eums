@@ -12,9 +12,9 @@ ENDPOINT_URL = BACKEND_URL + 'alert/'
 class AlertEndpointTest(AuthenticatedAPITestCase):
 
     def setUp(self):
-        FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
-        FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
-        FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
+        FlowFactory(rapid_pro_id=12345, label=Flow.Label.IMPLEMENTING_PARTNER)
+        FlowFactory(rapid_pro_id=1234, label=Flow.Label.END_USER)
+        FlowFactory(rapid_pro_id=1236, label=Flow.Label.MIDDLE_MAN)
         super(AlertEndpointTest, self).setUp()
 
     def test_admin_should_view_alert(self):

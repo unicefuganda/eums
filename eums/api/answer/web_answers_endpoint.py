@@ -56,8 +56,8 @@ def _create_alert(runnable, params):
 
 
 def _get_flow(runnable):
-    flow_type = Runnable.WEB if getattr(runnable, 'item', None) else Runnable.IMPLEMENTING_PARTNER
-    return Flow.objects.get(for_runnable_type=flow_type)
+    flow_type = Flow.Label.WEB if getattr(runnable, 'item', None) else Flow.Label.IMPLEMENTING_PARTNER
+    return Flow.objects.get(label=flow_type)
 
 
 def cancel_existing_runs_for(delivery):

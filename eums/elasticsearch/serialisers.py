@@ -112,7 +112,7 @@ def _compute_delivery_delay(node, responses):
 
 def _determine_extra_positioning_info(node):
     parents = node.get_parents()
-    return False if not parents else parents.first().tree_position == Runnable.IMPLEMENTING_PARTNER
+    return False if not parents else parents.first().tree_position == Flow.Label.IMPLEMENTING_PARTNER
 
 
 def _serialise_node_responses(node):
@@ -125,8 +125,8 @@ def _serialise_node_responses(node):
 
 
 def _get_relevant_delivery_responses_for(node):
-    ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
-    qn_date_of_receipt = TextQuestion.objects.get(flow__for_runnable_type=ip_flow, label='dateOfReceipt')
+    ip_flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
+    qn_date_of_receipt = TextQuestion.objects.get(flow__label=ip_flow, label='dateOfReceipt')
     delivery = node.distribution_plan
     date_received_answer = TextAnswer.objects \
         .filter(run__runnable=delivery, question=qn_date_of_receipt) \

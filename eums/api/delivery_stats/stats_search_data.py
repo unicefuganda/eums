@@ -47,7 +47,7 @@ class StatsSearchData:
 class EndUserStatsSearchData(StatsSearchData):
     def __init__(self):
         StatsSearchData.__init__(self)
-        self.flow = Flow.objects.get(for_runnable_type=Runnable.END_USER)
+        self.flow = Flow.objects.get(label=Flow.Label.END_USER)
         self.nodes = DeliveryNode.objects.filter(tree_position=DeliveryNode.END_USER, track=True)
         self.received_label = Question.LABEL.productReceived
         self.quality_label = Question.LABEL.qualityOfProduct
@@ -95,7 +95,7 @@ class EndUserStatsSearchData(StatsSearchData):
 class IpStatsSearchData(StatsSearchData):
     def __init__(self):
         StatsSearchData.__init__(self)
-        self.flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        self.flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
         self.nodes = Delivery.objects.filter(track=True)
         self.received_label = Question.LABEL.deliveryReceived
         self.quality_label = Question.LABEL.isDeliveryInGoodOrder

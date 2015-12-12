@@ -53,7 +53,7 @@ class DeliveryNodeTest(TestCase):
         node = DeliveryNode.objects.create(parents=[(parent, 5)],
                                            consignee=ConsigneeFactory(),
                                            item=PurchaseOrderItemFactory(),
-                                           tree_position=Runnable.MIDDLE_MAN,
+                                           tree_position=Flow.Label.MIDDLE_MAN,
                                            location='Jinja',
                                            contact_person_id='89878528-864A-4320-8426-1DB5C9A5A337',
                                            delivery_date=datetime.today())
@@ -490,27 +490,27 @@ class DeliveryNodeTest(TestCase):
         self.assertFalse(untracked_node.track)
 
     def test_node_end_user(self):
-        node = DeliveryNode(tree_position=Runnable.END_USER)
+        node = DeliveryNode(tree_position=Flow.Label.END_USER)
 
         self.assertTrue(node.is_end_user())
 
-        node.tree_position = Runnable.MIDDLE_MAN
+        node.tree_position = Flow.Label.MIDDLE_MAN
 
         self.assertFalse(node.is_end_user())
 
     def test_node_flow_is_middleman_for_non_end_user_node(self):
-        middleman_flow = FlowFactory(for_runnable_type=Runnable.MIDDLE_MAN)
-        runnable = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER)
+        middleman_flow = FlowFactory(label=Flow.Label.MIDDLE_MAN)
+        runnable = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER)
 
         self.assertEqual(runnable.flow(), middleman_flow)
 
-        runnable.tree_position = Runnable.MIDDLE_MAN
+        runnable.tree_position = Flow.Label.MIDDLE_MAN
 
         self.assertEqual(runnable.flow(), middleman_flow)
 
     def test_node_flow_is_end_user_for_end_user_node(self):
-        end_user_flow = FlowFactory(for_runnable_type=Runnable.END_USER)
-        runnable = DeliveryNodeFactory(tree_position=Runnable.END_USER)
+        end_user_flow = FlowFactory(label=Flow.Label.END_USER)
+        runnable = DeliveryNodeFactory(tree_position=Flow.Label.END_USER)
 
         self.assertEqual(runnable.flow(), end_user_flow)
 

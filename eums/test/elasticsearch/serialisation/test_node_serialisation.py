@@ -130,9 +130,9 @@ class TestDeliveryNodeSerialisation(SerialisationTestCase):
         self.assertDictContainsSubset({'delivery_delay': 9}, serialised[0])
 
     def test_should_serialise_node_with_extra_tree_position_info_tag(self):
-        ip_node = DeliveryNodeFactory(tree_position=Runnable.IMPLEMENTING_PARTNER, quantity=100)
-        node_under_ip = DeliveryNodeFactory(parents=[(ip_node, 20)], tree_position=Runnable.MIDDLE_MAN)
-        deeper_node = DeliveryNodeFactory(parents=[(node_under_ip, 20)], tree_position=Runnable.END_USER)
+        ip_node = DeliveryNodeFactory(tree_position=Flow.Label.IMPLEMENTING_PARTNER, quantity=100)
+        node_under_ip = DeliveryNodeFactory(parents=[(ip_node, 20)], tree_position=Flow.Label.MIDDLE_MAN)
+        deeper_node = DeliveryNodeFactory(parents=[(node_under_ip, 20)], tree_position=Flow.Label.END_USER)
 
         serialised_node_under_ip = serialise_nodes([node_under_ip])[0]
         self.assertDictContainsSubset({'is_directly_under_ip': True}, serialised_node_under_ip)

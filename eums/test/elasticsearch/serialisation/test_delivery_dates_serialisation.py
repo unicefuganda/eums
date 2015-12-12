@@ -12,7 +12,7 @@ class TestDeliveryDatesSerialisation(SerialisationTestCase):
     def test_should_add_response_to_when_shipment_was_received_question_for_ip_nodes_to_responses_list(self):
         date_received = timezone.datetime(2015, 1, 10).date()
         delivery = DeliveryFactory()
-        ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        ip_flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
         qn_date_of_receipt = TextQuestion.objects.get(flow=ip_flow, label='dateOfReceipt')
         answer = TextAnswerFactory(run=RunFactory(runnable=delivery), question=qn_date_of_receipt, value=date_received)
         node = DeliveryNodeFactory(tree_position=DeliveryNode.IMPLEMENTING_PARTNER, distribution_plan=delivery,

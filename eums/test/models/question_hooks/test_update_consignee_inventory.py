@@ -15,7 +15,7 @@ from eums.test.factories.run_factory import RunFactory
 
 class UpdateConsigneeInventoryTest(TestCase):
     def setUp(self):
-        web_flow = FlowFactory(for_runnable_type=Runnable.WEB)
+        web_flow = FlowFactory(label=Flow.Label.WEB)
         question = MultipleChoiceQuestionFactory(label='itemReceived',
                                                  when_answered='update_consignee_inventory',
                                                  flow=web_flow)

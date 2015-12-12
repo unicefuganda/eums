@@ -11,7 +11,7 @@ from eums.services.response_alert_handler import ResponseAlertHandler
 
 logger = get_task_logger(__name__)
 
-
+# TODO-RAPID: code structure
 @csrf_exempt
 def hook(request):
     # TODO: Remove the try catch. This suppresses the errors and was added due to rapidPro flakiness
@@ -34,6 +34,7 @@ def hook(request):
 
 
 def _save_answer(flow, params, run):
+    # TODO-RAPID
     question = flow.question_with(uuid=[params['step']])
     return question.create_answer(params, run)
 

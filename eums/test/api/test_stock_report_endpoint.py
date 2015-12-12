@@ -644,4 +644,4 @@ class StockReportResponsesEndpointTest(AuthenticatedAPITestCase):
         NumericQuestionFactory(label='amountReceived', flow=self.ip_flow)
 
     def setup_flow(self):
-        self.ip_flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        self.ip_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
