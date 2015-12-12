@@ -21,8 +21,9 @@ class TestInMemoryCache(TestCase):
 
     def test_should_sync_from_rapid_pro_when_flow_id_is_not_cached(self):
         flow = ModelBuilder(Flow, label=Flow.Label.IMPLEMENTING_PARTNER).instance
+
         response = ModelBuilder(Response, status_code=200,
-                                json=MagicMock(return_value=json.loads(open('flow.json').read()))).instance
+                                json=MagicMock(return_value=json.loads(open('flow.json').read())))
 
         requests.get = MagicMock(return_value=response)
 
@@ -31,7 +32,7 @@ class TestInMemoryCache(TestCase):
     @patch('requests.get')
     def test_should_sync_when_flow_expired(self, mocked_get):
         self.cache.cache_flow_mapping = {Flow.Label.IMPLEMENTING_PARTNER: {'flow': FLOW_ID}}
-        flow = ModelBuilder(Flow, label=Flow.Label.IMPLEMENTING_PARTNER).instance
+        flow = ModelBuilder(Flow, label=Flow.Label.IMPLEMENTING_PARTNER).status
 
         self.cache.flow_id(flow)
 
