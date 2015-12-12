@@ -266,7 +266,7 @@ class DeliveryTest(TestCase):
 
     def test_should_return_answers_for_delivery(self):
         delivery = DeliveryFactory()
-        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+        flow = FlowFactory(label='IMPLEMENTING_PARTNER')
 
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow, text='Was Delivery Received?')
         question_2 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
@@ -311,7 +311,7 @@ class DeliveryTest(TestCase):
 
     def test_should_return_default_answers_for_delivery(self):
         delivery = DeliveryFactory()
-        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+        flow = FlowFactory(label='IMPLEMENTING_PARTNER')
 
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow, text='Was Delivery Received?')
         question_2 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
@@ -343,7 +343,7 @@ class DeliveryTest(TestCase):
 
     def test_should_return_answers_for_delivery_in_the_same_order_as_flow(self):
         delivery = DeliveryFactory()
-        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+        flow = FlowFactory(label='IMPLEMENTING_PARTNER')
 
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived',
                                                    flow=flow, text='Was Delivery Received?', position=3)
@@ -366,7 +366,7 @@ class DeliveryTest(TestCase):
 
     def test_should_return_answers_for_completed_or_scheduled_runs_only(self):
         delivery = DeliveryFactory()
-        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+        flow = FlowFactory(label='IMPLEMENTING_PARTNER')
 
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived',
                                                    flow=flow, text='Was Delivery Received?', position=3)
@@ -412,7 +412,7 @@ class DeliveryTest(TestCase):
         node_one = DeliveryNodeFactory(distribution_plan=delivery)
         node_two = DeliveryNodeFactory(distribution_plan=delivery)
 
-        flow = FlowFactory(for_runnable_type='WEB')
+        flow = FlowFactory(label='WEB')
 
         question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
                                                    position=1)
@@ -487,7 +487,7 @@ class DeliveryTest(TestCase):
         self.assertIsNone(delivery.item_description())
 
     def test_delivery_flow_is_ipflow_for_ip(self):
-        ip_flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        ip_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
         runnable = DeliveryFactory()
 
         self.assertEqual(runnable.flow(), ip_flow)

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db.models import Q
 from eums.celery import app
 from eums.models import Run, RunQueue, Runnable, DistributionPlan, DistributionPlanNode
-from eums.rapid_pro.rapid_pro_facade import start_delivery_run
+from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.services.delivery_run_message import DeliveryRunMessage
 from eums.models.alert import Alert
 
@@ -34,14 +34,11 @@ def _should_schedule(runnable):
 @app.task
 def _schedule_run(runnable_id):
     runnable = Runnable.objects.get(id=runnable_id)
-    flow = runnable.flow()
     message = DeliveryRunMessage(runnable)
-    start_delivery_run(
-        sender=message.sender_name(),
-        item_description=message.description(),
-        contact_person=runnable.build_contact(),
-        flow=flow.rapid_pro_id
-    )
+    rapid_pro_service.create_run(flow=runnable.flow(),
+                                 contact=runnable.build_contact(),
+                                 sender=message.sender_name(),
+                                 item=message.description())
 
 
 def _calculate_delay(runnable):
@@ -97,7 +94,7 @@ def is_distribution_expired_alert_not_raised(runnable):
 def is_shipment_received_but_not_distributed(distribution_plan):
     runnable_id = distribution_plan.runnable_ptr_id
     not_distributed = DistributionPlanNode.objects.filter(Q(distribution_plan_id=runnable_id) & (
-        Q(tree_position=Runnable.MIDDLE_MAN) | Q(tree_position=Runnable.END_USER))).count() == 0
+        Q(tree_position=Flow.Label.MIDDLE_MAN) | Q(tree_position=Flow.Label.END_USER))).count() == 0
     print 'is_shipment_received_but_not_distributed:' + str(distribution_plan.shipment_received() and not_distributed)
     return distribution_plan.shipment_received() and not_distributed
 

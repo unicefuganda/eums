@@ -2,7 +2,7 @@ from eums.models import MultipleChoiceQuestion, Option, TextQuestion, Flow, Runn
 
 
 def seed_ip_questions():
-    ip_flow, _ = Flow.objects.get_or_create(rapid_pro_id=16995, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+    ip_flow, _ = Flow.objects.get_or_create(rapid_pro_id=16995, label=Flow.Label.IMPLEMENTING_PARTNER)
 
     ip_question_1, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['3ce26959-1e21-4cf6-98a1-c460b57e7ba5', '31e426cd-6934-4252-869f-4e1843691d4a'],

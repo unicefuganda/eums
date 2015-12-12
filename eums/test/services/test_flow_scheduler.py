@@ -11,7 +11,7 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, 
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
 from eums.models import DistributionPlanNode as Node, Flow, Question
-from eums.rapid_pro import rapid_pro_facade
+from eums.rapid_pro import rapid_pro_service
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, DeliveryNodeFactory
@@ -23,10 +23,10 @@ local_celery.app.task = mock_celery.task
 celery.task.periodic_task = MockPeriodicTask
 
 mock_start_delivery_run = MagicMock()
-rapid_pro_facade.start_delivery_run = mock_start_delivery_run
+rapid_pro_service.start_delivery_run = mock_start_delivery_run
 
 from eums.services.flow_scheduler import *
-
+# TODO: removing start_delivery_run
 
 class FlowSchedulerTest(TestCase):
     def setUp(self):
@@ -39,9 +39,9 @@ class FlowSchedulerTest(TestCase):
         Node.objects.get = MagicMock(return_value=self.node)
         Runnable.objects.get = MagicMock(return_value=self.node)
 
-        ip_flow = FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
-        end_user_flow = FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
-        middle_man_flow = FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
+        ip_flow = FlowFactory(rapid_pro_id=12345, label=Flow.Label.IMPLEMENTING_PARTNER)
+        end_user_flow = FlowFactory(rapid_pro_id=1234, label=Flow.Label.END_USER)
+        middle_man_flow = FlowFactory(rapid_pro_id=1236, label=Flow.Label.MIDDLE_MAN)
 
         self.MIDDLEMAN_FLOW_ID = middle_man_flow.rapid_pro_id
         self.END_USER_FLOW_ID = end_user_flow.rapid_pro_id
@@ -221,8 +221,8 @@ class FlowSchedulerTest(TestCase):
         question = MultipleChoiceQuestionFactory(label=Question.LABEL.deliveryReceived)
         option = OptionFactory(text='Yes', question=question)
         run = RunFactory(runnable=delivery)
-        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
-        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
         self.assertTrue(is_shipment_received_but_not_distributed(delivery))
@@ -233,7 +233,7 @@ class FlowSchedulerTest(TestCase):
         option = OptionFactory(text='Yes', question=question)
         run = RunFactory(runnable=delivery)
         DeliveryNodeFactory(distribution_plan=delivery)
-        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question, value=option)
 
         self.assertFalse(is_shipment_received_but_not_distributed(delivery))
@@ -251,13 +251,13 @@ class FlowSchedulerTest(TestCase):
         self.assertFalse(is_distribution_expired(delivery))
 
     def __prepare_for_is_distribution_expired_test(self, delivery):
-        flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
         question_is_received = MultipleChoiceQuestionFactory(label=Question.LABEL.deliveryReceived, flow=flow)
         question_received_date = TextQuestionFactory(label=Question.LABEL.dateOfReceipt, flow=flow)
         option_is_received = OptionFactory(text='Yes', question=question_is_received)
         run = RunFactory(runnable=delivery)
-        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
-        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         MultipleChoiceAnswerFactory(run=run, question=question_is_received, value=option_is_received)
         datetime_span = (datetime.datetime.today() - datetime.timedelta(days=8)).strftime('%Y-%m-%dT%H:%M:%S')
         TextAnswerFactory(run=run, question=question_received_date, value=datetime_span)

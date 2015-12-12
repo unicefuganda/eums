@@ -15,9 +15,9 @@ ENDPOINT_URL = BACKEND_URL + 'alert/'
 
 class AlertEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
-        self.flow_ip = FlowFactory(rapid_pro_id=12345, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
-        FlowFactory(rapid_pro_id=1234, for_runnable_type=Runnable.END_USER)
-        FlowFactory(rapid_pro_id=1236, for_runnable_type=Runnable.MIDDLE_MAN)
+        self.flow_ip = FlowFactory(rapid_pro_id=12345, label=Flow.Label.IMPLEMENTING_PARTNER)
+        FlowFactory(rapid_pro_id=1234, label=Flow.Label.END_USER)
+        FlowFactory(rapid_pro_id=1236, label=Flow.Label.MIDDLE_MAN)
         super(AlertEndpointTest, self).setUp()
 
     def test_should_return_information_on_an_alert(self):
@@ -133,7 +133,7 @@ class AlertEndpointTest(AuthenticatedAPITestCase):
         delivery = DeliveryFactory(time_limitation_on_distribution=3)
         question_received_date = TextQuestionFactory(label=Question.LABEL.dateOfReceipt, flow=self.flow_ip)
         run = RunFactory(runnable=delivery)
-        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Runnable.IMPLEMENTING_PARTNER)
+        DeliveryNodeFactory(distribution_plan=delivery, tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         received_date = '2015-11-20T16:00:00'
         TextAnswerFactory(run=run, question=question_received_date, value=received_date)
 

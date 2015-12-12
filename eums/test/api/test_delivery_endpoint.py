@@ -356,7 +356,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
     def test_should_return_a_deliveries_answers(self):
         delivery = DeliveryFactory()
-        flow = FlowFactory(for_runnable_type='IMPLEMENTING_PARTNER')
+        flow = FlowFactory(label='IMPLEMENTING_PARTNER')
 
         question_1 = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow, text='Was Delivery Received?')
         question_2 = TextQuestionFactory(label='dateOfReceipt', flow=flow, text='When was Delivery Received?')
@@ -377,7 +377,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         node_one = DeliveryNodeFactory(distribution_plan=delivery)
         node_two = DeliveryNodeFactory(distribution_plan=delivery)
 
-        flow = FlowFactory(for_runnable_type='WEB')
+        flow = FlowFactory(label='WEB')
 
         question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
                                                    position=1)
@@ -431,7 +431,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         self.assertIn(first_delivery.id, ids)
         self.assertIn(second_delivery.id, ids)
 
-        flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
         delivery_received_qn = MultipleChoiceQuestionFactory(label='deliveryReceived', flow=flow)
         OptionFactory(question=delivery_received_qn, text='Yes')
         option_no = OptionFactory(question=delivery_received_qn, text='No')

@@ -19,7 +19,7 @@ class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
-        self.flow = FlowFactory(rapid_pro_id=self.flow_id, for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        self.flow = FlowFactory(rapid_pro_id=self.flow_id, label=Flow.Label.IMPLEMENTING_PARTNER)
 
     def tearDown(self):
         Alert.objects.all().delete()

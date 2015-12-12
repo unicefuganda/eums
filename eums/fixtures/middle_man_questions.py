@@ -1,6 +1,6 @@
 from eums.models import MultipleChoiceQuestion, Option, TextQuestion, NumericQuestion, Flow, Runnable
 
-middle_man_flow, _ = Flow.objects.get_or_create(rapid_pro_id=2662, for_runnable_type=Runnable.MIDDLE_MAN)
+middle_man_flow, _ = Flow.objects.get_or_create(rapid_pro_id=2662, label=Flow.Label.MIDDLE_MAN)
 
 middle_man_flow.end_nodes = []
 

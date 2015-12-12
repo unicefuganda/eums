@@ -24,7 +24,7 @@ def seed_questions():
     global EU_DISSATISFACTION_FEEDBACK, EU_OPT_DAMAGED, EU_OPT_GOOD, EU_OPT_SATISFIED, EU_OPT_NOT_SATISFIED
     global END_USER_FLOW
 
-    END_USER_FLOW, _ = Flow.objects.get_or_create(rapid_pro_id=2436, for_runnable_type=Runnable.END_USER)
+    END_USER_FLOW, _ = Flow.objects.get_or_create(rapid_pro_id=2436, label=Flow.Label.END_USER)
 
     WAS_PRODUCT_RECEIVED, _ = MultipleChoiceQuestion.objects.get_or_create(
         uuids=['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', '93bbd12e-417c-4789-9c42-6dc6959c03be',

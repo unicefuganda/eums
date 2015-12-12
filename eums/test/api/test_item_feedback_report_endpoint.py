@@ -228,18 +228,18 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         ip_node_one = DeliveryNodeFactory(consignee=ip, item=purchase_order_item, quantity=1500,
                                           programme=programme_one, track=True,
                                           distribution_plan=DeliveryFactory(track=True),
-                                          location='Fort portal', tree_position=Runnable.IMPLEMENTING_PARTNER)
+                                          location='Fort portal', tree_position=Flow.Label.IMPLEMENTING_PARTNER)
         ip_node_two = DeliveryNodeFactory(consignee=ip, item=release_order_item, quantity=100,
                                           distribution_plan=DeliveryFactory(track=True), programme=programme_two,
-                                          location='Kampala', tree_position=Runnable.IMPLEMENTING_PARTNER, track=True)
+                                          location='Kampala', tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True)
 
         ip_node_three = DeliveryNodeFactory(consignee=ip, item=release_order_item, quantity=100,
                                             distribution_plan=DeliveryFactory(track=True), programme=programme_two,
-                                            location='Gulu', tree_position=Runnable.IMPLEMENTING_PARTNER, track=True)
+                                            location='Gulu', tree_position=Flow.Label.IMPLEMENTING_PARTNER, track=True)
 
         middle_man_node = DeliveryNodeFactory(consignee=middle_man, item=purchase_order_item,
                                               programme=programme_one, location='Wakiso', track=True,
-                                              tree_position=Runnable.MIDDLE_MAN, parents=[(ip_node_one, 1500)],
+                                              tree_position=Flow.Label.MIDDLE_MAN, parents=[(ip_node_one, 1500)],
                                               distribution_plan=None)
         end_user_node_one = DeliveryNodeFactory(consignee=end_user_one,
                                                 item=purchase_order_item, parents=[(middle_man_node, 1000)],
@@ -250,7 +250,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
                                                 distribution_plan=None)
 
         # IP_ITEM Flow and Questions
-        ip_item_flow = FlowFactory(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        ip_item_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
         ip_item_question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived',
                                                            when_answered='update_consignee_inventory',
                                                            flow=ip_item_flow, position=1)
@@ -270,7 +270,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         ip_item_option_5 = OptionFactory(text='No', question=ip_item_question_4)
 
         # MIDDLE_MAN Flow and Questions
-        middle_man_flow = FlowFactory(for_runnable_type=Runnable.MIDDLE_MAN)
+        middle_man_flow = FlowFactory(label=Flow.Label.MIDDLE_MAN)
         mm_question_1 = MultipleChoiceQuestionFactory(text='Was product received?', label='productReceived',
                                                       flow=middle_man_flow, position=1)
         mm_option_1 = OptionFactory(text='Yes', question=mm_question_1)
@@ -280,7 +280,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         mm_question_3 = NumericQuestionFactory(text='What is the amount received?', label='amountReceived',
                                                flow=middle_man_flow, position=3)
 
-        end_user_flow = FlowFactory(for_runnable_type=Runnable.END_USER)
+        end_user_flow = FlowFactory(label=Flow.Label.END_USER)
         eu_question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived',
                                                       flow=end_user_flow, position=1)
         eu_option_1 = OptionFactory(text='Yes', question=eu_question_1)
@@ -336,7 +336,7 @@ class ItemFeedbackReportEndPointTest(AuthenticatedAPITestCase):
         po_item = PurchaseOrderItemFactory(item=ItemFactory(description='Mama kit'),
                                            purchase_order=PurchaseOrderFactory(order_number=329293))
 
-        flow = FlowFactory(for_runnable_type='WEB')
+        flow = FlowFactory(label='WEB')
         question_1 = MultipleChoiceQuestionFactory(text='Was the item received?', label='itemReceived', flow=flow,
                                                    position=1)
         option_1 = OptionFactory(text='Yes', question=question_1)

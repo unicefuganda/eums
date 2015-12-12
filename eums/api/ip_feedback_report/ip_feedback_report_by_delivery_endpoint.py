@@ -138,7 +138,7 @@ def _filter_po_way_bill(request):
 
 def _query_args(request):
     kwargs = {'distribution_plan__track': True,
-              'tree_position': Runnable.IMPLEMENTING_PARTNER}
+              'tree_position': Flow.Label.IMPLEMENTING_PARTNER}
     params = dict((key, value[0]) for key, value in dict(request.GET).iteritems())
     kwargs.update(_filter_fields(params))
     return kwargs

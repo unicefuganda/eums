@@ -107,7 +107,7 @@ class DistributionPlan(Runnable):
         return DistributionPlanNode.objects.filter(distribution_plan=self).count()
 
     def answers(self):
-        ip_flow = Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        ip_flow = Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)
         text_questions = TextQuestion.objects.filter(flow=ip_flow)
         multiple_choice_questions = MultipleChoiceQuestion.objects.filter(flow=ip_flow)
         numeric_questions = NumericQuestion.objects.filter(flow=ip_flow)
@@ -127,7 +127,7 @@ class DistributionPlan(Runnable):
 
     def node_answers(self):
         node_answers = []
-        web_flow = Flow.objects.get(for_runnable_type=Runnable.WEB)
+        web_flow = Flow.objects.get(label=Flow.Label.WEB)
         text_questions = TextQuestion.objects.filter(flow=web_flow)
         multiple_choice_questions = MultipleChoiceQuestion.objects.filter(flow=web_flow)
         numeric_questions = NumericQuestion.objects.filter(flow=web_flow)
@@ -145,4 +145,4 @@ class DistributionPlan(Runnable):
 
     @classmethod
     def flow(cls):
-        return Flow.objects.get(for_runnable_type=Runnable.IMPLEMENTING_PARTNER)
+        return Flow.objects.get(label=Flow.Label.IMPLEMENTING_PARTNER)

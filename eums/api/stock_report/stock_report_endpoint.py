@@ -47,7 +47,7 @@ def _aggregate_nodes_into_stock_report(stock_report, node):
 
 
 def _build_stock_report(consignee_id, location, outcome_id, from_date, to_date):
-    ip_nodes = DistributionPlanNode.objects.filter(tree_position=Runnable.IMPLEMENTING_PARTNER)
+    ip_nodes = DistributionPlanNode.objects.filter(tree_position=Flow.Label.IMPLEMENTING_PARTNER)
 
     if consignee_id:
         ip_nodes = ip_nodes.filter(consignee_id=consignee_id)
