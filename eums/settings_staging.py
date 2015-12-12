@@ -1,4 +1,4 @@
-from eums.system_settings import *
+from eums.settings import *
 
 RAPIDPRO_LIVE = True
 DEBUG = True
