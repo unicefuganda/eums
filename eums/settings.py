@@ -1,4 +1,7 @@
+import macostools
 from collections import namedtuple
+from os.path import exists, join
+from datetime import datetime
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -6,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '3=$_20f=x$+*wp(xm07^8m-n=n2zy+w6hc7u985p@4$wad3q3t'
 
-# SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run withe debug turned on in production!
 DEBUG = True
 
 TEMPLATE_DEBUG = True
@@ -117,12 +120,12 @@ REST_FRAMEWORK = {
 _es_settings = namedtuple('ES_SETTINGS', ['INDEX', 'NODE_TYPE', 'HOST', 'MAPPING', 'NODE_SEARCH', 'BULK'])
 _base_url = 'http://localhost:9200/'
 ELASTIC_SEARCH = _es_settings(
-    'eums',
-    'delivery_node',
-    _base_url,
-    '%s/_mapping' % _base_url,
-    '%s/delivery_node/_search' % _base_url,
-    '%s/_bulk' % _base_url,
+        'eums',
+        'delivery_node',
+        _base_url,
+        '%s/_mapping' % _base_url,
+        '%s/delivery_node/_search' % _base_url,
+        '%s/_bulk' % _base_url,
 )
 
 # EMAIL_BACKEND = 'django_mailgun.MailgunBackend'
@@ -141,6 +144,14 @@ EMAIL_USE_TLS = True
 
 DEFAULT_FROM_EMAIL = 'admin@eums.unicefuganda.org'
 
+LOGGING_DIRS = {
+    'debug': join(BASE_DIR, 'logs/debug/'),
+    'django_request': join(BASE_DIR, 'logs/django_request/'),
+}
+logs_suffix = datetime.today().strftime('%Y%m%d')
+map(lambda path: macostools.mkdirs(path) if not exists(path) else None,
+    LOGGING_DIRS.itervalues())
+
 LOGGING_CONFIG = None
 LOGGING = {
     'version': 1,
@@ -148,20 +159,29 @@ LOGGING = {
     'formatters': {
         'standard': {
             'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt': "%d/%b/%Y %H:%M:%S"
+            'datefmt': "%Y-%m-%d %H:%M:%S"
         },
     },
     'handlers': {
         'null': {
             'level': 'INFO',
-            'class': 'django.utils.log.NullHandler',
+            'class': 'django.utils.log.NullHandler'
         },
-        'file': {
+        'debug_handler': {
             'level': 'INFO',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': "debug.log",
-            'formatter': 'standard',
-            'mode': 'a'
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_DIRS.get('debug') + "/debug.%s.log" % logs_suffix,
+            'maxBytes': 1024 * 1024 * 5,
+            'backupCount': 10,
+            'formatter': 'standard'
+        },
+        'request_handler': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_DIRS.get('django_request') + '/django_request.%s.log' % logs_suffix,
+            'maxBytes': 1024 * 1024 * 5,
+            'backupCount': 30,
+            'formatter': 'standard'
         },
         'console': {
             'level': 'INFO',
@@ -170,11 +190,20 @@ LOGGING = {
         },
     },
     'loggers': {
-        '': {
-            'handlers': ['file', 'console'],
-            'level': 'INFO',
+        '': {  # root logger
+            'handlers': ['console'],
+            'level': 'DEBUG'
+        },
+        'django.request': {
+            'handlers': ['request_handler'],
+            'level': 'DEBUG',
             'propagate': True
         },
+        'eums': {
+            'handlers': ['debug_handler'],
+            'level': 'DEBUG',
+            'propagate': True
+        }
     }
 }
 
