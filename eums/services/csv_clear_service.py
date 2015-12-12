@@ -7,7 +7,7 @@ from celery.task import periodic_task
 
 from eums.settings_export import *
 
-logger = logging.getLogger('eums.services.csv_clear_service')
+logger = logging.getLogger(__name__)
 
 
 class CSVClearService(object):
@@ -43,4 +43,3 @@ class CSVClearService(object):
 @periodic_task(run_every=crontab(minute="*/30"))
 def execute_csv_clear_task():
     logger.info('execute_csv_clear_task')
-

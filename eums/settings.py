@@ -145,20 +145,17 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'admin@eums.unicefuganda.org'
 
 # Logging configuration
-LOGGING_DIRS = {
-    'debug': join(BASE_DIR, 'logs/debug/'),
-    'django_request': join(BASE_DIR, 'logs/django_request/'),
-}
+LOGGING_DIR = join(BASE_DIR, 'logs/')
+
 LOG_SUFFIX = datetime.today().strftime('%Y%m%d')
-map(lambda path: macostools.mkdirs(path) if not exists(path) else None,
-    LOGGING_DIRS.itervalues())
+os.mkdir(LOGGING_DIR) if not exists(LOGGING_DIR) else None
 
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
     'formatters': {
         'standard': {
-            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'format': "[%(asctime)s] %(levelname)s [%(filename)s : %(funcName)s():%(lineno)s] %(message)s",
             'datefmt': "%Y-%m-%d %H:%M:%S"
         },
     },
@@ -180,7 +177,7 @@ LOGGING = {
         'debug': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGGING_DIRS.get('debug') + "/debug.%s.log" % LOG_SUFFIX,
+            'filename': LOGGING_DIR + "/debug.%s.log" % LOG_SUFFIX,
             'maxBytes': 1024 * 1024 * 5,
             'backupCount': 10,
             'formatter': 'standard'
@@ -188,7 +185,7 @@ LOGGING = {
         'request': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': LOGGING_DIRS.get('django_request') + '/django_request.%s.log' % LOG_SUFFIX,
+            'filename': LOGGING_DIR + '/django_request.%s.log' % LOG_SUFFIX,
             'maxBytes': 1024 * 1024 * 5,
             'backupCount': 30,
             'formatter': 'standard'
@@ -201,7 +198,7 @@ LOGGING = {
     },
     'loggers': {
         '': {  # root logger
-            'handlers': ['console'],
+            'handlers': ['console', 'debug'],
             'level': 'DEBUG'
         },
         'django.request': {
@@ -209,11 +206,6 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True
         },
-        'eums': {
-            'handlers': ['debug'],
-            'level': 'DEBUG',
-            'propagate': True
-        }
     }
 }
 

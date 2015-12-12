@@ -12,7 +12,7 @@ from eums.rapid_pro.rapid_pro_facade import start_delivery_run
 from eums.services.delivery_run_message import DeliveryRunMessage
 from eums.models.alert import Alert
 
-logger = logging.getLogger('eums.services.flow_scheduler')
+logger = logging.getLogger(__name__)
 
 
 def schedule_run_for(runnable):
