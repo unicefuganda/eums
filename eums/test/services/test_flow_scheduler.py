@@ -11,7 +11,7 @@ from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, 
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
 from eums.models import DistributionPlanNode as Node, Flow, Question
-from eums.rapid_pro import rapid_pro_service
+from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory as NodeFactory, DeliveryNodeFactory

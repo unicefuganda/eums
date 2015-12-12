@@ -5,3 +5,4 @@ class ModelBuilder(object):
         for (key, value) in options.iteritems():
             if hasattr(self.instance, key):
                 setattr(self.instance, key, value)
+
