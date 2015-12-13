@@ -825,7 +825,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.save();
             scope.$apply();
 
-            expect(mockPurchaseOrderService.update).toHaveBeenCalledWith({id: 1, isSingleIp: false, lastShipmentDate: ''}, 'PATCH');
+            expect(mockPurchaseOrderService.update).toHaveBeenCalledWith({id: 1, isSingleIp: false}, 'PATCH');
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });
 
@@ -849,7 +849,7 @@ describe('MultipleIpDirectDeliveryController', function () {
             scope.save();
             scope.$apply();
 
-            expect(mockPurchaseOrderService.update).toHaveBeenCalled();
+            expect(mockPurchaseOrderService.update).not.toHaveBeenCalled();
             expect(scope.selectedPurchaseOrder.isSingleIp).toBeFalsy();
         });
 
