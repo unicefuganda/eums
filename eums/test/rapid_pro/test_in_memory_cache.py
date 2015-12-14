@@ -7,7 +7,7 @@ from mock import MagicMock, patch
 from requests import Response
 
 from eums.models import Flow
-from eums.rapid_pro.rapid_pro_service import InMemoryCache
+from eums.rapid_pro.rapid_pro_service import RapidProInMemoryCache
 from eums.test.helpers.model_builder import ModelBuilder
 
 FLOW_ID = 19772
@@ -15,7 +15,7 @@ FLOW_ID = 19772
 
 class TestInMemoryCache(TestCase):
     def setUp(self):
-        self.cache = InMemoryCache()
+        self.cache = RapidProInMemoryCache()
         self.expected_headers = {'Authorization': 'Token %s' % settings.RAPIDPRO_API_TOKEN,
                                  'Content-Type': 'application/json'}
 
@@ -23,17 +23,22 @@ class TestInMemoryCache(TestCase):
         flow = ModelBuilder(Flow, label=Flow.Label.IMPLEMENTING_PARTNER).instance
 
         response = ModelBuilder(Response, status_code=200,
-                                json=MagicMock(return_value=json.loads(open('flow.json').read())))
+                                json=MagicMock(return_value=json.loads(open('flow.json').read()))).instance
 
         requests.get = MagicMock(return_value=response)
 
         self.assertEqual(FLOW_ID, self.cache.flow_id(flow))
+        self.assertTrue(FLOW_ID in self.cache.flow_id_label_mapping)
+        self.assertTrue(Flow.Label.IMPLEMENTING_PARTNER in self.cache.cache_flow_mapping)
 
+    @patch('eums.models.Flow.objects.filter')
     @patch('requests.get')
-    def test_should_sync_when_flow_expired(self, mocked_get):
-        self.cache.cache_flow_mapping = {Flow.Label.IMPLEMENTING_PARTNER: {'flow': FLOW_ID}}
-        flow = ModelBuilder(Flow, label=Flow.Label.IMPLEMENTING_PARTNER).status
+    def test_should_sync_when_flow_expired(self, mocked_get, mocked_filter):
+        response = ModelBuilder(Response, status_code=200,
+                                json=MagicMock(return_value=json.loads(open('flow.json').read()))).instance
 
-        self.cache.flow_id(flow)
+        requests.get = MagicMock(return_value=response)
 
-        mocked_get.assert_called_with(settings.RAPIDPRO_URLS['FLOWS'], headers=self.expected_headers)
+        self.cache.flow(FLOW_ID)
+
+        mocked_filter.assert_called_with(label__in=[Flow.Label.IMPLEMENTING_PARTNER])

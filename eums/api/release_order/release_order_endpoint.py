@@ -2,6 +2,8 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
+
+from eums.api.filter.filter_mixin import RequestFilterMixin
 from eums.api.standard_pagination import StandardResultsSetPagination
 
 from eums.models import ReleaseOrder
@@ -17,10 +19,15 @@ class ReleaseOrderSerializer(serializers.ModelSerializer):
                   'delivery_date', 'items', 'delivery', 'consignee_name', 'track', 'tracked_date')
 
 
-class ReleaseOrderViewSet(ModelViewSet):
+class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
     queryset = ReleaseOrder.objects.all().order_by('order_number')
     serializer_class = ReleaseOrderSerializer
     pagination_class = StandardResultsSetPagination
+    supported_filter = {
+        'query': 'waybill__icontains',
+        'from': 'delivery_date__gte',
+        'to': 'delivery_date__lte'
+    }
 
     def list(self, request, *args, **kwargs):
         if request.GET.get('paginate', None) != 'true':
@@ -45,20 +52,8 @@ class ReleaseOrderViewSet(ModelViewSet):
                 orders = ReleaseOrder.objects.delivered().order_by('waybill')
             else:
                 orders = self.get_queryset()
-        return self._apply_filters_on(orders, request)
-
-    def _apply_filters_on(self, orders, request):
-        query = request.GET.get('query')
-        from_date = request.GET.get('from')
-        to_date = request.GET.get('to')
-
-        if query:
-            orders = orders.filter(waybill__icontains=query)
-        if from_date:
-            orders = orders.filter(delivery_date__gte=from_date)
-        if to_date:
-            orders = orders.filter(delivery_date__lte=to_date)
-        return orders
+        
+        return orders.filter(**self.build_filters(request.query_params()))
 
     def get_queryset(self):
         delivery_is_null = self.request.GET.get('delivery__isnull', None)
