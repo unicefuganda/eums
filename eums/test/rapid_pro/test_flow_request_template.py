@@ -22,7 +22,12 @@ class TestFlowRequestTemplate(TestCase):
         self.assertDictEqual(self.template.build(flow_name='flow name'), {'flow': {'test': 'flow name'}})
 
     def test_should_build_dict_with_function(self):
-        self.template.payload = {'flow_id': 'flow_id'}
+        self.template.payload = {'flow_id': {'__handler__': lambda flow_id: int(flow_id), '__value__': '${flow_id}'}}
+
+        self.assertDictEqual(self.template.build(flow_id=12), {'flow_id': 12})
+
+    def test_should_build_dict_with_original_value(self):
+        self.template.payload = {'flow_id': '${flow_id}'}
 
         self.assertDictEqual(self.template.build(flow_id=12), {'flow_id': 12})
 

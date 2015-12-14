@@ -52,7 +52,7 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
                 orders = ReleaseOrder.objects.delivered().order_by('waybill')
             else:
                 orders = self.get_queryset()
-        
+
         return orders.filter(**self.build_filters(request.query_params()))
 
     def get_queryset(self):

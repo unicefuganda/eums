@@ -24,7 +24,12 @@ class DictTemplate(object):
 
     def __replace(self, value, options):
         matches = re.search('\${([^}]*)}', value)
-        if matches is None: return value
+        if matches is None:
+            return value
+
+        search = re.search('^\${([^}]*)}$', value)
+        if search:
+            return options[list(search.groups()).pop()]
 
         generated_value = value
         for replacement in matches.groups([]):
