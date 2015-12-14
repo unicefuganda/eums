@@ -7,7 +7,7 @@ from rest_framework.utils.urls import replace_query_param
 
 from eums.api.sorting.standard_dic_sort import StandardDicSort
 from eums.models import UserProfile, DistributionPlan, Question, PurchaseOrderItem, ReleaseOrderItem, \
-    DistributionPlanNode, Runnable
+    DistributionPlanNode, Runnable, Flow
 
 PAGE_SIZE = 10
 DELIVERY_QUESTIONS = {'received': Question.LABEL.deliveryReceived,

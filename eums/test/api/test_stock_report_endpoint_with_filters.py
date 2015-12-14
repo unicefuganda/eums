@@ -1,5 +1,5 @@
 import datetime
-from eums.models import Runnable, Consignee
+from eums.models import Runnable, Consignee, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory

@@ -1,6 +1,9 @@
 import json
 from unittest import TestCase
+
+import requests
 from mock import patch, Mock
+
 from django.conf import settings
 from eums.models import Flow
 from eums.rapid_pro.rapid_pro_service import RapidProService

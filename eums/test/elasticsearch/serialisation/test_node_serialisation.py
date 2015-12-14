@@ -2,7 +2,7 @@ import json
 from django.conf import settings
 from django.utils import timezone
 from eums.elasticsearch.serialisers import serialise_nodes, convert_to_bulk_api_format, _serialise_datetime
-from eums.models import Runnable, DistributionPlanNode
+from eums.models import Runnable, DistributionPlanNode, Flow
 from eums.test.elasticsearch.serialisation.serialisation_test_case import SerialisationTestCase
 from eums.test.factories.answer_factory import NumericAnswerFactory, TextAnswerFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory

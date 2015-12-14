@@ -5,6 +5,7 @@ from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from eums.models import Run, RunQueue, Flow
+from eums.rapid_pro.rapid_pro_service import rapid_pro_service, RapidProService
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
 
@@ -18,7 +19,8 @@ def hook(request):
     try:
         params = request.POST
         logger.info("params %s:" % params)
-        flow = Flow.objects.get(rapid_pro_id=params['flow'])
+        flow = rapid_pro_service.flow(params['flow'])
+        # flow = Flow.objects.get(rapid_pro_id=params['flow'])
         run = Run.objects.filter(phone=params['phone'],
                                  status=Run.STATUS.scheduled).order_by('-id').first()
         answer = _save_answer(flow, params, run)
