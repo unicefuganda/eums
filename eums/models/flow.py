@@ -28,6 +28,7 @@ class Flow(models.Model):
     def __unicode__(self):
         return '%s' % str(self.label)
 
+    # TODO: to be removed
     def question_with(self, **kwargs):
         filter_params = self._remap(kwargs)
         question = self.questions.filter(**filter_params).first()
