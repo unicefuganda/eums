@@ -5,9 +5,7 @@ from eums.models import MultipleChoiceAnswer, Flow, Question, TextQuestion, Text
 from eums.models import Runnable, DistributionPlanNode
 from eums.models.answers import Answer
 from eums.models.programme import Programme
-from eums.models.purchase_order_item import PurchaseOrderItem
 import eums.models
-
 
 class DistributionPlan(Runnable):
     programme = models.ForeignKey(Programme)
@@ -22,18 +20,15 @@ class DistributionPlan(Runnable):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
 
-        # if(self.track) :
-            # self.update_purchase_order()
+        if (self.track):
+            self.update_purchase_order()
 
     def update_purchase_order(self):
-
-        distribution_plan_node_item_id = DistributionPlanNode.objects.filter(distribution_plan_id = self.id).values_list('item_id').distinct()
-        if(distribution_plan_node_item_id) :
-            purchase_order_id = PurchaseOrderItem.objects.filter(orderitem_ptr_id = distribution_plan_node_item_id).values_list('purchase_order_id').distinct()
-            purchase_order = eums.models.PurchaseOrder.objects.get(id = purchase_order_id)
-            if (purchase_order.last_shipment_date is None)  or (self.delivery_date > purchase_order.last_shipment_date) :
-                purchase_order.last_shipment_date = self.delivery_date
-                purchase_order.save()
+        purchase_order = eums.models.PurchaseOrder.objects.filter(
+            purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
+        if purchase_order and ((purchase_order.last_shipment_date is None) or (self.delivery_date > purchase_order.last_shipment_date)):
+            purchase_order.last_shipment_date = self.delivery_date
+            purchase_order.save()
 
     def has_existing_run(self):
         return Run.objects.filter(runnable=self).exists()
