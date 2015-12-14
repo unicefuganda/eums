@@ -1,9 +1,7 @@
 import json
-
 import requests
 from celery.utils.log import get_task_logger
 from django.conf import settings
-
 from eums.models import Flow, Question
 from eums.rapid_pro.exception.rapid_pro_exception import FlowLabelNonExistException, QuestionLabelNonExistException
 from eums.rapid_pro.flow_request_template import FlowRequestTemplate
@@ -31,8 +29,7 @@ class RapidProService(object):
             logger.info("Response from RapidPro: %s, %s" % (response.status_code, response.json()))
 
     def question(self, question_uuid):
-        if self.cache.expired:
-            self.__sync()
+        self.__sync_if_required()
 
         if question_uuid not in self.cache.question_label_mapping:
             raise QuestionLabelNonExistException()
@@ -40,8 +37,7 @@ class RapidProService(object):
         return Question.objects.filter(label=self.cache.question_label_mapping[question_uuid]).first()
 
     def flow(self, flow_id):
-        if self.cache.expired:
-            self.__sync()
+        self.__sync_if_required()
 
         if flow_id not in self.cache.flow_label_mapping:
             raise FlowLabelNonExistException()
@@ -49,14 +45,17 @@ class RapidProService(object):
         return Flow.objects.filter(label__in=self.cache.flow_label_mapping[flow_id]).first()
 
     def flow_id(self, flow):
-        if self.cache.expired:
-            self.__sync()
+        self.__sync_if_required()
 
         for flow_id, labels in self.cache.flow_label_mapping.iteritems():
             if flow.label in labels:
                 return flow_id
 
         raise FlowLabelNonExistException()
+
+    def __sync_if_required(self):
+        if self.cache.expired:
+            self.__sync()
 
     def __sync(self):
         response = requests.get(settings.RAPIDPRO_URLS['FLOWS'], headers=HEADER)
