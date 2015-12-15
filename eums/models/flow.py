@@ -11,8 +11,6 @@ class Flow(models.Model):
         END_USER = 'END_USER'
 
     NO_OPTION = -1
-    # TODO: to be removed
-    rapid_pro_id = models.IntegerField()
     end_nodes = IntegerArrayField(dimension=2)
     label = models.CharField(max_length=255,
                              choices=((Label.END_USER, 'End User'), (Label.MIDDLE_MAN, 'Middleman'),
