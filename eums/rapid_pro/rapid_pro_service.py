@@ -70,7 +70,8 @@ class RapidProService(object):
     def __question_mapping(self, flows):
         result = {}
         for rapid in flows:
-            result.update({ruleset['node']: ruleset['label'] for ruleset in rapid['rulesets']})
+            result.update(
+                {ruleset['node']: ruleset['label'] for ruleset in rapid['rulesets'] if len(rapid['labels']) > 0})
         return result
 
 

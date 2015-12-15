@@ -41,7 +41,7 @@ class OptionsEndPointTest(AuthenticatedAPITestCase):
 class ReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_received_options(self):
         received_question = MultipleChoiceQuestionFactory(
-            uuids=['6c1cf97d-59b8-4bd3-815b-783abd3dfad9'],
+
             text='Was product received?', label='productReceived'
         )
         other_question = MultipleChoiceQuestionFactory()
@@ -65,7 +65,7 @@ class ReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
 class QualityOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_quality_options_sorted_by_text(self):
         quality_question = MultipleChoiceQuestionFactory(
-            uuids=['6c1cf92d-59b8-4bd3-815b-783abd3dfad9'],
+
             text='What is the quality of the product?', label='qualityOfProduct'
         )
         other_question = MultipleChoiceQuestionFactory()
@@ -89,7 +89,7 @@ class QualityOptionsEndPointTest(AuthenticatedAPITestCase):
 class SatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_satisfied_options(self):
         satisfied_question = MultipleChoiceQuestionFactory(
-            uuids=['6c1cf27d-59b8-4bd3-815b-783abd3dfad9'],
+
             text='Are you satisfied with the product?', label='satisfiedWithProduct'
         )
         other_question = MultipleChoiceQuestionFactory()
@@ -113,7 +113,7 @@ class SatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
 class DeliveryReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_delivery_received_options(self):
         delivery_received_question = MultipleChoiceQuestionFactory(
-            uuids=['3ce26959-1e21-4cf6-98a1-c460b57e7ba5'],
+
             text='Was delivery received?', label='deliveryReceived'
         )
         other_question = MultipleChoiceQuestionFactory()
@@ -137,7 +137,7 @@ class DeliveryReceivedOptionsEndPointTest(AuthenticatedAPITestCase):
 class DeliverySatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_delivery_satisfied_options(self):
         delivery_satisfied_question = MultipleChoiceQuestionFactory(
-            uuids=['357b3eda-0a30-43c6-967d-6ec44e4c6162'],
+
             text='Are you satisfied with the delivery?', label='satisfiedWithDelivery'
         )
         other_question = MultipleChoiceQuestionFactory()
@@ -161,7 +161,6 @@ class DeliverySatisfiedOptionsEndPointTest(AuthenticatedAPITestCase):
 class DeliveryConditionOptionsEndPointTest(AuthenticatedAPITestCase):
     def test_should_only_get_delivery_condition_options(self):
         delivery_condition_question = MultipleChoiceQuestionFactory(
-            uuids=['3762e25b-20e2-49fd-ad4f-0ccec08b4426'],
             text='Was delivery in good condition?', label='isDeliveryInGoodOrder'
         )
         other_question = MultipleChoiceQuestionFactory()

@@ -32,13 +32,6 @@ class FlowTest(TestCase):
         flow = Flow(end_nodes=[[answer.question.id, Flow.NO_OPTION]])
         self.assertTrue(flow.is_end(answer))
 
-    def test_should_know_question_given_uuid(self):
-        uuid = ['some uuid']
-        flow = FlowFactory()
-        question = NumericQuestionFactory(uuids=uuid, flow=flow)
-
-        self.assertEqual(flow.question_with(uuid=uuid), question)
-
     def test_should_know_question_given_label(self):
         label = 'someLabel'
         flow = FlowFactory()

@@ -5,7 +5,7 @@ from celery.task import periodic_task
 from django.conf import settings
 from django.db.models import Q
 from eums.celery import app
-from eums.models import Run, RunQueue, Runnable, DistributionPlan, DistributionPlanNode
+from eums.models import Run, RunQueue, Runnable, DistributionPlan, DistributionPlanNode, Flow
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.services.delivery_run_message import DeliveryRunMessage
 from eums.models.alert import Alert
@@ -35,10 +35,8 @@ def _should_schedule(runnable):
 def _schedule_run(runnable_id):
     runnable = Runnable.objects.get(id=runnable_id)
     message = DeliveryRunMessage(runnable)
-    rapid_pro_service.create_run(contact=runnable.build_contact(),
-                                 flow=runnable.flow(),
-                                 item=message.description(),
-                                 sender=message.sender_name())
+    rapid_pro_service.create_run(runnable.build_contact(), runnable.flow(),
+                                 message.description(), message.sender_name())
 
 
 def _calculate_delay(runnable):

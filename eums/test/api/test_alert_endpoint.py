@@ -15,9 +15,9 @@ ENDPOINT_URL = BACKEND_URL + 'alert/'
 
 class AlertEndpointTest(AuthenticatedAPITestCase):
     def setUp(self):
-        self.flow_ip = FlowFactory(rapid_pro_id=12345, label=Flow.Label.IMPLEMENTING_PARTNER)
-        FlowFactory(rapid_pro_id=1234, label=Flow.Label.END_USER)
-        FlowFactory(rapid_pro_id=1236, label=Flow.Label.MIDDLE_MAN)
+        self.flow_ip = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
+        FlowFactory(label=Flow.Label.END_USER)
+        FlowFactory(label=Flow.Label.MIDDLE_MAN)
         super(AlertEndpointTest, self).setUp()
 
     def test_should_return_information_on_an_alert(self):

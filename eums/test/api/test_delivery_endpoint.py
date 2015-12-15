@@ -4,7 +4,7 @@ import json
 from mock import patch
 
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
-    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Runnable
+    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Runnable, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
