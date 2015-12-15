@@ -1,4 +1,4 @@
-from eums.models import Runnable
+from eums.models import Runnable, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
@@ -12,9 +12,9 @@ ENDPOINT_URL = BACKEND_URL + 'alert/'
 class AlertEndpointTest(AuthenticatedAPITestCase):
 
     def setUp(self):
-        FlowFactory(rapid_pro_id=12345, label=Flow.Label.IMPLEMENTING_PARTNER)
-        FlowFactory(rapid_pro_id=1234, label=Flow.Label.END_USER)
-        FlowFactory(rapid_pro_id=1236, label=Flow.Label.MIDDLE_MAN)
+        FlowFactory( label=Flow.Label.IMPLEMENTING_PARTNER)
+        FlowFactory( label=Flow.Label.END_USER)
+        FlowFactory( label=Flow.Label.MIDDLE_MAN)
         super(AlertEndpointTest, self).setUp()
 
     def test_admin_should_view_alert(self):

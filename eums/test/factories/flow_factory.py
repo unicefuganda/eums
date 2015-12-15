@@ -7,8 +7,6 @@ class FlowFactory(factory.DjangoModelFactory):
     class Meta:
         model = Flow
 
-    # TODO: to be removed
-    rapid_pro_id = 1234
     label = factory.Sequence(lambda n: "RUNNABLE_TYPE_{0}".format(n))
 
     @factory.post_generation

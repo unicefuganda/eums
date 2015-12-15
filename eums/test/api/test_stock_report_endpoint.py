@@ -1,7 +1,7 @@
 from decimal import Decimal
 
 from eums.models import DistributionPlanNode, Consignee, NumericQuestion, TextQuestion, DistributionPlan, PurchaseOrder, \
-    PurchaseOrderItem, Run, SalesOrderItem, SalesOrder, Runnable
+    PurchaseOrderItem, Run, SalesOrderItem, SalesOrder, Runnable, Flow
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.config import BACKEND_URL
 from eums.test.factories.consignee_factory import ConsigneeFactory

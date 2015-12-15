@@ -1,5 +1,5 @@
 from django.core.paginator import Paginator
-from eums.models import DistributionPlanNode, Runnable, DistributionPlan
+from eums.models import DistributionPlanNode, Runnable, DistributionPlan, Flow
 from rest_framework.utils.urls import replace_query_param
 from rest_framework.views import APIView
 from rest_framework.response import Response

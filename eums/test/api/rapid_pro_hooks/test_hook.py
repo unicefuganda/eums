@@ -1,6 +1,5 @@
 from mock import patch
 from rest_framework.test import APITestCase
-
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
 from eums.test.factories.question_factory import TextQuestionFactory, NumericQuestionFactory, \
@@ -19,7 +18,7 @@ class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
-        self.flow = FlowFactory(rapid_pro_id=self.flow_id, label=Flow.Label.IMPLEMENTING_PARTNER)
+        self.flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
 
     def tearDown(self):
         Alert.objects.all().delete()
@@ -28,7 +27,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self, *_):
         uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
 
-        question = MultipleChoiceQuestionFactory(uuids=[uuid], text='Was item received?', label='productReceived',
+        question = MultipleChoiceQuestionFactory(text='Was item received?', label='productReceived',
                                                  flow=self.flow)
 
         Option.objects.get_or_create(text='Yes', question=question)
@@ -41,10 +40,10 @@ class HookTest(APITestCase):
 
         response = self.client.post(HOOK_URL, url_params)
 
-        expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuid])
+        expected_question = MultipleChoiceQuestion.objects.get(label='productReceived')
         yes_option = expected_question.option_set.get(text='Yes')
 
-        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuid], run=run)
+        answers = MultipleChoiceAnswer.objects.filter(question__label='productReceived', run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -52,11 +51,12 @@ class HookTest(APITestCase):
         self.assertEqual(delivery.answers()[0]['value'], created_answer.value.text)
 
     @patch('eums.api.rapid_pro_hooks.hook.logger.info')
-    def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self, *_):
+    def test_should_record_an_answer_of_type_multiple_choice_for_a_node__with_multiple_uuids_from_request_data(self,
+                                                                                                               *_):
         uuids = ['2ff9fab3-4c12-400e-a2fe-4551fa1ebc18', 'abc9c005-7a7c-44f8-b946-e970a361b6cf']
 
         question = MultipleChoiceQuestionFactory(
-            uuids=[uuids], text='Was item received?', label='productReceived', flow=self.flow)
+            text='Was item received?', label='productReceived', flow=self.flow)
 
         Option.objects.get_or_create(text='Yes', question=question)
         Option.objects.get_or_create(text='No', question=question)
@@ -67,10 +67,10 @@ class HookTest(APITestCase):
         url_params = self._create_rapid_pro_url_params(self.PHONE, uuid_for_no, 'No', 'No', 'productReceived')
 
         response = self.client.post(HOOK_URL, url_params)
-        expected_question = MultipleChoiceQuestion.objects.get(uuids=[uuids])
+        expected_question = MultipleChoiceQuestion.objects.get(label='productReceived')
         no_option = expected_question.option_set.get(text='No')
 
-        answers = MultipleChoiceAnswer.objects.filter(question__uuids=[uuids], run=run)
+        answers = MultipleChoiceAnswer.objects.filter(question__label='productReceived', run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -80,7 +80,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self, *_):
         uuid = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
 
-        TextQuestionFactory(uuids=[uuid], text='What date was it received?', label='dateOfReceipt',
+        TextQuestionFactory(text='What date was it received?', label='dateOfReceipt',
                             flow=self.flow)
 
         run = RunFactory(phone=('%s' % self.PHONE))
@@ -88,7 +88,7 @@ class HookTest(APITestCase):
 
         response = self.client.post(HOOK_URL, url_params)
 
-        answers = TextAnswer.objects.filter(question__uuids=[uuid], run=run)
+        answers = TextAnswer.objects.filter(question__label='dateOfReceipt', run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -98,7 +98,7 @@ class HookTest(APITestCase):
     def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self, *_):
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        NumericQuestionFactory(uuids=[uuid], text='How much was received?', label='amountReceived',
+        NumericQuestionFactory(text='How much was received?', label='amountReceived',
                                flow=self.flow)
 
         run = RunFactory(phone=('%s' % self.PHONE))
@@ -106,7 +106,7 @@ class HookTest(APITestCase):
 
         response = self.client.post(HOOK_URL, url_params)
 
-        answers = NumericAnswer.objects.filter(question__uuids=[uuid], run=run)
+        answers = NumericAnswer.objects.filter(question__label='amountReceived', run=run)
         created_answer = answers.first()
 
         self.assertEqual(response.status_code, 200)
@@ -119,7 +119,7 @@ class HookTest(APITestCase):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question = NumericQuestionFactory(uuids=[uuid], text='How much was received?', label='amountReceived',
+        question = NumericQuestionFactory(text='How much was received?', label='amountReceived',
                                           flow=self.flow)
 
         node = DeliveryNodeFactory()
@@ -143,7 +143,7 @@ class HookTest(APITestCase):
         mock_schedule_next_run.return_value = None
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        question = NumericQuestionFactory(uuids=[uuid], text='How much was received?',
+        question = NumericQuestionFactory(text='How much was received?',
                                           label='amountReceived', flow=self.flow)
 
         node = DeliveryNodeFactory()
@@ -171,7 +171,7 @@ class HookTest(APITestCase):
 
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
-        NumericQuestionFactory(uuids=[uuid], text='How much was received?', flow=self.flow,
+        NumericQuestionFactory(text='How much was received?', flow=self.flow,
                                label='amountReceived')
 
         node = DeliveryNodeFactory()
@@ -195,16 +195,15 @@ class HookTest(APITestCase):
         uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
 
         mock_schedule_next_run.return_value = None
-        question = NumericQuestionFactory(uuids=[uuid], text='How much was received?',
-                                          label='amountReceived', flow=self.flow,)
+        question = NumericQuestionFactory(text='How much was received?',
+                                          label='amountReceived', flow=self.flow, )
 
         node = DeliveryNodeFactory()
         url_params = self._create_rapid_pro_url_params(self.PHONE, uuid, '42', None, 'amountReceived')
 
         RunFactory(runnable=node, phone=self.PHONE)
 
-        next_run = RunQueueFactory(runnable=node,
-                                   contact_person_id=node.contact_person_id)
+        next_run = RunQueueFactory(runnable=node, contact_person_id=node.contact_person_id)
         mock_run_queue_dequeue.return_value = next_run
 
         self.flow.end_nodes = [[question.id, Flow.NO_OPTION]]
@@ -223,7 +222,7 @@ class HookTest(APITestCase):
     def test_should_call_alert_handler_when_last_question_answered(self, mock_run_queue_dequeue,
                                                                    mock_schedule_next_run,
                                                                    mock_response_alert_handler_process, *_):
-        question = NumericQuestionFactory(uuids=['1234'], text='some text', label='someLabel', flow=self.flow)
+        question = NumericQuestionFactory(text='some text', label='someLabel', flow=self.flow)
 
         node = DeliveryNodeFactory()
         RunFactory(runnable=node, phone=self.PHONE, status=Run.STATUS.scheduled)

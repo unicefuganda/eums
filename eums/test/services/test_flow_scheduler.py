@@ -28,7 +28,7 @@ rapid_pro_service.create_run = mock_start_delivery_run
 from eums.services.flow_scheduler import *
 
 
-# TODO: removing start_delivery_run
+# TODO-RAPID: mock rapid service
 
 class FlowSchedulerTest(TestCase):
     def setUp(self):
@@ -41,13 +41,13 @@ class FlowSchedulerTest(TestCase):
         Node.objects.get = MagicMock(return_value=self.node)
         Runnable.objects.get = MagicMock(return_value=self.node)
 
-        ip_flow = FlowFactory(rapid_pro_id=12345, label=Flow.Label.IMPLEMENTING_PARTNER)
-        end_user_flow = FlowFactory(rapid_pro_id=1234, label=Flow.Label.END_USER)
-        middle_man_flow = FlowFactory(rapid_pro_id=1236, label=Flow.Label.MIDDLE_MAN)
+        # ip_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
+        # end_user_flow = FlowFactory(label=Flow.Label.END_USER)
+        # middle_man_flow = FlowFactory(label=Flow.Label.MIDDLE_MAN)
 
-        self.MIDDLEMAN_FLOW_ID = middle_man_flow.rapid_pro_id
-        self.END_USER_FLOW_ID = end_user_flow.rapid_pro_id
-        self.IMPLEMENTING_PARTNER_FLOW_ID = ip_flow.rapid_pro_id
+        self.MIDDLEMAN_FLOW_ID = 1
+        self.END_USER_FLOW_ID = 2
+        self.IMPLEMENTING_PARTNER_FLOW_ID = 3
 
     def tearDown(self):
         settings.RAPIDPRO_LIVE = False

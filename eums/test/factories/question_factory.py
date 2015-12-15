@@ -10,7 +10,6 @@ class NumericQuestionFactory(factory.DjangoModelFactory):
 
     text = 'How old are you?'
     label = factory.Sequence(lambda n: 'numeric_label {0}'.format(n))
-    uuids = [factory.Sequence(lambda n: '{0}'.format(n))]
     flow = factory.SubFactory(FlowFactory)
     when_answered = None
     position = 1
@@ -22,7 +21,6 @@ class TextQuestionFactory(factory.DjangoModelFactory):
 
     text = 'What is your name'
     label = factory.Sequence(lambda n: 'text_label {0}'.format(n))
-    uuids = [factory.Sequence(lambda n: '{0}'.format(n))]
     flow = factory.SubFactory(FlowFactory)
     when_answered = None
     position = 1
@@ -34,7 +32,6 @@ class MultipleChoiceQuestionFactory(factory.DjangoModelFactory):
 
     text = 'What is your name'
     label = factory.Sequence(lambda n: 'multiple_choice_label {0}'.format(n))
-    uuids = [factory.Sequence(lambda n: '{0}'.format(n))]
     flow = factory.SubFactory(FlowFactory)
     when_answered = None
     position = 1

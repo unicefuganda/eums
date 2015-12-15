@@ -39,10 +39,8 @@ def _should_schedule(runnable):
 def _schedule_run(runnable_id):
     runnable = Runnable.objects.get(id=runnable_id)
     message = DeliveryRunMessage(runnable)
-    rapid_pro_service.create_run(contact=runnable.build_contact(),
-                                 flow=runnable.flow(),
-                                 item=message.description(),
-                                 sender=message.sender_name())
+    rapid_pro_service.create_run(runnable.build_contact(), runnable.flow(),
+                                 message.description(), message.sender_name())
 
 
 def _calculate_delay(runnable):
