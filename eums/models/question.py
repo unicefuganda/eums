@@ -13,8 +13,6 @@ class Question(TimeStampedModel):
 
     text = models.TextField()
     label = models.CharField(max_length=255)
-    # TODO: removed
-    uuids = TextArrayField(dimension=1)
     flow = models.ForeignKey('Flow', related_name='questions')
     when_answered = models.CharField(max_length=255, null=True)
     position = models.IntegerField(default=1)
