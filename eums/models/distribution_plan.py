@@ -19,15 +19,15 @@ class DistributionPlan(Runnable):
     def save(self, *args, **kwargs):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
-
         if (self.track):
             self.update_purchase_order()
 
     def update_purchase_order(self):
         purchase_order = eums.models.PurchaseOrder.objects.filter(
             purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
-        if purchase_order and ((purchase_order.last_shipment_date is None) or (self.delivery_date > purchase_order.last_shipment_date)):
-            purchase_order.last_shipment_date = self.delivery_date
+        shipment_date = self.delivery_date
+        if purchase_order and purchase_order.last_shipment_date and ((purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
+            purchase_order.last_shipment_date = shipment_date
             purchase_order.save()
 
     def has_existing_run(self):
