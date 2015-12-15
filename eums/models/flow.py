@@ -28,16 +28,6 @@ class Flow(models.Model):
     def __unicode__(self):
         return '%s' % str(self.label)
 
-    # TODO: to be removed
     def question_with(self, **kwargs):
-        filter_params = self._remap(kwargs)
-        question = self.questions.filter(**filter_params).first()
+        question = self.questions.filter(**kwargs).first()
         return question.get_subclass_instance()
-
-    # TODO-RAPID
-    def _remap(self, kwargs):
-        new_params = kwargs
-        if new_params.get('uuid'):
-            uuid = new_params.pop('uuid')
-            new_params['uuids__contains'] = uuid
-        return new_params

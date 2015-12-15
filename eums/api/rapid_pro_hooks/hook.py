@@ -36,9 +36,7 @@ def hook(request):
 
 
 def _save_answer(flow, params, run):
-    # TODO-RAPID
     question = rapid_pro_service.question(params['step'])
-    question = flow.question_with(uuid=[params['step']])
     return question.create_answer(params, run)
 
 
