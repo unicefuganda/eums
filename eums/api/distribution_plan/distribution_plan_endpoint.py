@@ -9,7 +9,7 @@ from eums.models import DistributionPlan, UserProfile
 from eums.services.flow_scheduler import schedule_run_directly_for
 
 
-class DistributionPlanSerialiser(serializers.ModelSerializer):
+class DistributionPlanSerializer(serializers.ModelSerializer):
     distributionplannode_set = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
@@ -24,7 +24,7 @@ class DistributionPlanViewSet(ModelViewSet):
     permission_classes = (DjangoModelPermissions, ViewDeliveryPermission)
 
     queryset = DistributionPlan.objects.all()
-    serializer_class = DistributionPlanSerialiser
+    serializer_class = DistributionPlanSerializer
 
     @detail_route(['GET', ])
     def answers(self, request, *args, **kwargs):

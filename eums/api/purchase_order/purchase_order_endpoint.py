@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 from rest_framework.viewsets import ModelViewSet
 
-from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPlanSerialiser
+from eums.api.distribution_plan.distribution_plan_endpoint import DistributionPlanSerializer
 from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import PurchaseOrder
 
@@ -61,7 +61,7 @@ class PurchaseOrderViewSet(ModelViewSet):
         is_root = request.GET.get('is_root')
         purchase_order = self.get_object()
         deliveries = purchase_order.deliveries(is_root)
-        return Response(DistributionPlanSerialiser(deliveries, many=True).data)
+        return Response(DistributionPlanSerializer(deliveries, many=True).data)
 
     @detail_route()
     def total_value(self, _, pk=None):

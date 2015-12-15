@@ -7,6 +7,7 @@ from eums.models.answers import Answer
 from eums.models.programme import Programme
 import eums.models
 
+
 class DistributionPlan(Runnable):
     programme = models.ForeignKey(Programme)
     confirmed = models.BooleanField(default=False, null=False)
@@ -19,14 +20,15 @@ class DistributionPlan(Runnable):
     def save(self, *args, **kwargs):
         super(DistributionPlan, self).save(*args, **kwargs)
         DistributionPlanNode.objects.filter(distribution_plan=self).update(track=self.track)
-        if (self.track):
+        if self.track:
             self.update_purchase_order()
 
     def update_purchase_order(self):
         purchase_order = eums.models.PurchaseOrder.objects.filter(
-            purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
+                purchaseorderitem__distributionplannode__distribution_plan_id=self.id).distinct().first()
         shipment_date = self.delivery_date
-        if purchase_order and purchase_order.last_shipment_date and ((purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
+        if purchase_order and purchase_order.last_shipment_date and (
+            (purchase_order.last_shipment_date is None) or (shipment_date > purchase_order.last_shipment_date)):
             purchase_order.last_shipment_date = shipment_date
             purchase_order.save()
 

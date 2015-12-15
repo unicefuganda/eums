@@ -9,16 +9,15 @@ from eums.services.contacts import ContactService
 
 
 class Runnable(PolymorphicModel, TimeStampedModel):
-    location = models.CharField(max_length=255)
+    location = models.CharField(max_length=255, null=True)
     consignee = models.ForeignKey(Consignee)
     ip = models.ForeignKey(Consignee, null=True, blank=True, related_name='runnables')
-    contact_person_id = models.CharField(max_length=255)
+    contact_person_id = models.CharField(max_length=255, null=True)
     track = models.BooleanField(default=False)
     delivery_date = models.DateField(null=False)
     remark = models.TextField(blank=True, null=True)
     is_retriggered = models.BooleanField(default=False)
     total_value = models.DecimalField(max_digits=12, decimal_places=2, null=False, default=0)
-
 
     IMPLEMENTING_PARTNER = 'IMPLEMENTING_PARTNER'
     WEB = 'WEB'
@@ -72,9 +71,9 @@ class Runnable(PolymorphicModel, TimeStampedModel):
 
     def create_alert(self, issue):
         self.alert_set.create(
-            order_type=self.type(),
-            order_number=self.number(),
-            consignee_name=self.consignee.name,
-            contact_name=self.contact.full_name(),
-            item_description=self.item_description(),
-            issue=issue)
+                order_type=self.type(),
+                order_number=self.number(),
+                consignee_name=self.consignee.name,
+                contact_name=self.contact.full_name(),
+                item_description=self.item_description(),
+                issue=issue)

@@ -1,6 +1,5 @@
 from decimal import Decimal
 from django.db import models
-from django.db.models import Sum
 
 from eums.models import OrderItem
 from eums.models import DistributionPlanNode

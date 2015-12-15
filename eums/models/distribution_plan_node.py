@@ -137,7 +137,6 @@ class DistributionPlanNode(Runnable):
             self.track = self.arcs_in.filter(source__track=True).exists()
             self.save()
 
-
     def update_balance(self):
         if self.is_root:
             self.balance = self.acknowledged - self.quantity_out() if self.acknowledged else 0
