@@ -1,8 +1,8 @@
 'use strict';
 
-angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters'])
+angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact'])
     .controller('IpDeliveryController', function ($scope, $location, DeliveryService, LoaderService,
-                                                  UserService, AnswerService, $timeout) {
+                                                  UserService, AnswerService, $timeout, IPService, ContactService) {
         $scope.deliveries = [];
         $scope.answers = [];
         $scope.oringalAnswers = [];
@@ -11,22 +11,12 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         var questionLabel = 'deliveryReceived';
         $scope.searchFields = ['number', 'date'];
 
+
         function loadDeliveries(urlArgs) {
             LoaderService.showLoader();
             DeliveryService.all(undefined, urlArgs)
                 .then(function (deliveries) {
                     $scope.deliveries = deliveries;
-                    if(urlArgs) {
-                        if(urlArgs.from) {
-                            $scope.fromDate = moment(Date.parse(urlArgs.from)).format('DD-MMM-YYYY');
-                            initializing = true;
-                        }
-
-                        if(urlArgs.to) {
-                            $scope.toDate = moment(Date.parse(urlArgs.to)).format('DD-MMM-YYYY');
-                            initializing = true;
-                        }
-                    }
                     LoaderService.hideLoader();
                 });
         }
@@ -129,7 +119,7 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         var timer, initializing = true;
 
         $scope.$watch('[fromDate,toDate,query]', function () {
-            if (initializing){
+            if (initializing) {
                 initializing = false;
             }
             else {
@@ -163,6 +153,30 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
         }
+
+        $scope.districts = [];
+        $scope.contact = {};
+        $scope.selectedLocation = {};
+        $scope.deliveryNodes = [];
+        $scope.delivery = {};
+        $scope.districtsLoaded = false;
+
+        var setLocationAndContactFields = function () {
+            ContactService.get($scope.contact.id)
+                .then(function (contact) {
+                    $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+                });
+
+            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
+        };
+
+
+        IPService.loadAllDistricts().then(function (response) {
+            $scope.districts = response.data.map(function (district) {
+                return {id: district, name: district};
+            });
+            $scope.districtsLoaded = true;
+        });
     });
 
 

@@ -11,11 +11,39 @@
                 </h4>
 
             </div>
-            <div class="modal-body">
+            <div class="modal-body confirm-modal">
                 <div class="text-warning pad-bottom-5">Items will only appear in your stock upon confirmation of
                     delivery
                 </div>
-                <div ng-show=" hasReceivedDelivery" class="pad-top-20">
+
+                <div class="pad-top-20">
+                    <table>
+                        <tr>
+                            <td class="pad-5">Contact Person</td>
+                            <td class="pad-5">
+                                <div ng-class="{'has-error': !contact.id && errors}">
+                                    <input class="form-control" type="hidden" search-contacts required="required"
+                                           value="{{ contact.id }}" ng-model="contact.id" required="required"
+                                           ng-attr-id="{{ 'contact-select' }}">
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pad-5">Choose District</td>
+                            <td class="pad-5">
+                                <div id="input-location" ng-if="districtsLoaded"
+                                     ng-class="{'has-error': !selectedLocation.id && errors}">
+                                    <input class="form-control" type="hidden" search-from-list list="{{ districts }}"
+                                           ng-model="selectedLocation.id" required="required"
+                                           ng-attr-id="{{ 'location-select' }}"
+                                           value="{{ selectedLocation.id }}">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div ng-show=" hasReceivedDelivery">
                     <table>
                         <tr ng-repeat="answer in answers" id="answer-{{ answer.position }}">
                             <td class="pad-5">{{ answer.text }}</td>
@@ -23,7 +51,7 @@
                                 <span ng-if="answer.type == 'multipleChoice'">
                                     <select ng-model="answer.value"
                                             required="required"
-                                            class="form-control select-dropdown"
+                                            class="form-control"
                                             ng-options="option for option in answers[0].options ">
                                         <option value="">Select item</option>
                                     </select>
@@ -64,15 +92,13 @@
                             </td>
                         </tr>
                     </table>
-
-
                 </div>
 
-                <div ng-hide="hasReceivedDelivery" class="pad-top-20">
+                <div ng-hide="hasReceivedDelivery">
                     <table>
                         <tr>
-                            <td class="pad-10">{{ answers[0].text}}</td>
-                            <td>
+                            <td class="pad-5">{{ answers[0].text}}</td>
+                            <td class="pad-5">
                                 <span>
                                     <select id="deliveryConfirmationSelect"
                                             ng-model="answers[0].value"

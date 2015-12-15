@@ -1,6 +1,6 @@
 describe('IP Delivery Controller', function () {
     var mockDeliveryService, scope, location, mockLoaderService, q,
-        mockUserService, controller, mockAnswerService, timeout;
+        mockUserService, controller, mockAnswerService, timeout, mockIPService, mockContactService;
 
     var firstDelivery = {
         id: 1,
@@ -41,6 +41,9 @@ describe('IP Delivery Controller', function () {
         else if (selector === '#view-delivery-modal') return viewDeliveryModal;
         else return mockLoaderService;
     };
+    var districts = {
+        'data': ['wakiso']
+    };
 
     function initializeController(userService) {
         controller('IpDeliveryController', {
@@ -49,7 +52,9 @@ describe('IP Delivery Controller', function () {
             LoaderService: mockLoaderService,
             UserService: userService || mockUserService,
             AnswerService: mockAnswerService,
-            $timeout: timeout
+            $timeout: timeout,
+            IPService: mockIPService,
+            ContactService: mockContactService
         });
     }
 
@@ -58,7 +63,7 @@ describe('IP Delivery Controller', function () {
         module('IpDelivery');
 
         inject(function ($controller, $rootScope, $location, $q,
-                         LoaderService, UserService, AnswerService, DeliveryService, $timeout) {
+                         LoaderService, UserService, AnswerService, DeliveryService, $timeout, IPService, ContactService) {
             controller = $controller;
             scope = $rootScope.$new();
             location = $location;
@@ -68,6 +73,8 @@ describe('IP Delivery Controller', function () {
             mockAnswerService = AnswerService;
             mockDeliveryService = DeliveryService;
             timeout = $timeout;
+            mockIPService = IPService;
+            mockContactService = ContactService;
 
             spyOn(angular, 'element').and.callFake(jqueryFake);
 
@@ -81,9 +88,11 @@ describe('IP Delivery Controller', function () {
             spyOn(mockDeliveryService, 'all');
             spyOn(mockDeliveryService, 'getDetail');
             spyOn(location, 'path');
+            spyOn(mockIPService, 'loadAllDistricts');
 
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
             mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
+            mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
         });
     });
 
@@ -143,7 +152,7 @@ describe('IP Delivery Controller', function () {
             var answers = [
                 {
                     questionLabel: 'deliveryReceived',
-                    type:'multipleChoice',
+                    type: 'multipleChoice',
                     text: "Was delivery received?",
                     value: 'No',
                     options: ['Yes', 'No']
@@ -163,13 +172,13 @@ describe('IP Delivery Controller', function () {
             expect(scope.answers).toBe(answers);
         });
 
-        it('should set has received delivery based on the answer of delivery received', function(){
+        it('should set has received delivery based on the answer of delivery received', function () {
             mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
             initializeController();
             scope.answers = [
                 {
                     question_label: 'deliveryReceived',
-                    type:'multipleChoice',
+                    type: 'multipleChoice',
                     text: "Was delivery received?",
                     value: 'No',
                     options: ['Yes', 'No']
@@ -388,7 +397,7 @@ describe('IP Delivery Controller', function () {
                 scope.answers = [
                     {
                         question_label: 'deliveryReceived',
-                        type:'multipleChoice',
+                        type: 'multipleChoice',
                         text: "Was delivery received?",
                         value: 'Yes',
                         options: ['Yes', 'No']
@@ -408,7 +417,7 @@ describe('IP Delivery Controller', function () {
                 scope.answers = [
                     {
                         questionLabel: 'deliveryReceived',
-                        type:'multipleChoice',
+                        type: 'multipleChoice',
                         text: "Was delivery received?",
                         value: 'No',
                         options: ['Yes', 'No']

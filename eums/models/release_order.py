@@ -1,6 +1,7 @@
 from django.db import models
 
-from eums.models import SalesOrder, PurchaseOrder, Consignee,DistributionPlan ,DistributionPlanNode, ReleaseOrderItem, Runnable
+from eums.models import SalesOrder, PurchaseOrder, Consignee, DistributionPlan, DistributionPlanNode, ReleaseOrderItem, \
+    Runnable
 from eums.models.time_stamped_model import TimeStampedModel
 
 

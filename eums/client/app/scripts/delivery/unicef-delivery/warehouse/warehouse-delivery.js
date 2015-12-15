@@ -44,6 +44,8 @@ angular.module('WarehouseDelivery', ['ngTable', 'siTable', 'ReleaseOrder', 'Sort
                     }
                 }
                 LoaderService.hideLoader();
+
+
             }).catch(function () {
                 ngToast.create({content: 'Failed to load release orders', class: 'danger'});
             });

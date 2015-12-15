@@ -7,7 +7,7 @@ from eums.api.standard_pagination import StandardResultsSetPagination
 from eums.models import ReleaseOrder
 
 
-class ReleaseOrderSerialiser(serializers.ModelSerializer):
+class ReleaseOrderSerializer(serializers.ModelSerializer):
     programme = serializers.CharField(read_only=True, source='sales_order.programme.name')
     consignee_name = serializers.CharField(read_only=True, source='consignee.name')
 
@@ -19,7 +19,7 @@ class ReleaseOrderSerialiser(serializers.ModelSerializer):
 
 class ReleaseOrderViewSet(ModelViewSet):
     queryset = ReleaseOrder.objects.all().order_by('order_number')
-    serializer_class = ReleaseOrderSerialiser
+    serializer_class = ReleaseOrderSerializer
     pagination_class = StandardResultsSetPagination
 
     def list(self, request, *args, **kwargs):
