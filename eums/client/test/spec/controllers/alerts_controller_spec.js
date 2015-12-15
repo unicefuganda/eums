@@ -230,7 +230,7 @@ describe('AlertsController', function () {
 
             expect(mockDeliveryService.retriggerDelivery).toHaveBeenCalledWith(10);
             expect(mockToast.create).toHaveBeenCalledWith({
-                content: 'The delivery has been retriggered',
+                content: 'The confirmation to IP has been retriggered.',
                 class: 'success'
             });
         });

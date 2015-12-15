@@ -11,9 +11,9 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
     })
     .controller('AlertsController', function ($scope, $rootScope, AlertsService, LoaderService, ngToast, DeliveryService) {
 
-        $scope.constant_type_delivery = 'delivery'
-        $scope.constant_type_item = 'item'
-        $scope.constant_type_distribution = 'distribution'
+        $scope.constant_type_delivery = 'delivery';
+        $scope.constant_type_item = 'item';
+        $scope.constant_type_distribution = 'distribution';
 
         $scope.remarks = '';
         $scope.type = $scope.constant_type_delivery;
@@ -99,7 +99,7 @@ angular.module('Alerts', ['eums.config', 'eums.service-factory', 'ngToast', 'ui.
         $scope.retriggerDelivery = function (runnable_id) {
             DeliveryService.retriggerDelivery(runnable_id)
                 .then(function () {
-                    createToast('The delivery has been retriggered', 'success');
+                    createToast('The confirmation to IP has been retriggered.', 'success');
                     AlertsService.get('count').then(function (alertsCount) {
                         $rootScope.unresolvedAlertsCount = alertsCount.unresolved;
                     });
