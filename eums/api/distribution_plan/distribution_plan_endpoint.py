@@ -87,8 +87,7 @@ class DistributionPlanViewSet(ModelViewSet):
     @staticmethod
     def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
 
-        filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track().filter(
-                consignee=consignee)
+        filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track()
 
         filter_args = {
             'consignee': consignee
@@ -109,7 +108,8 @@ class DistributionPlanViewSet(ModelViewSet):
     def __filter_distribution_plans_depends_on_auto_track():
         if SystemSettings.objects.first().auto_track:
             return DistributionPlan.objects.filter(
-                    Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(track=True))
+                    Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(
+                        track=True)).distinct()
 
         return DistributionPlan.objects.filter(Q(track=True))
 
