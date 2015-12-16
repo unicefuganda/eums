@@ -1,9 +1,11 @@
 import json
+
 import requests
 from celery.utils.log import get_task_logger
 from django.conf import settings
-from eums.models import Flow, Question
-from eums.rapid_pro.exception.rapid_pro_exception import FlowLabelNonExistException, QuestionLabelNonExistException
+
+from eums.models import Flow
+from eums.rapid_pro.exception.rapid_pro_exception import FlowLabelNonExistException
 from eums.rapid_pro.flow_request_template import FlowRequestTemplate
 from eums.rapid_pro.in_memory_cache import InMemoryCache
 
@@ -28,17 +30,10 @@ class RapidProService(object):
             response = requests.post(settings.RAPIDPRO_URLS['RUNS'], data=json.dumps(payload), headers=HEADER)
             logger.info("Response from RapidPro: %s, %s" % (response.status_code, response.json()))
 
-    def question(self, question_uuid):
-        self.__sync_if_required()
-
-        if question_uuid not in self.cache.question_label_mapping:
-            raise QuestionLabelNonExistException()
-
-        return Question.objects.filter(label=self.cache.question_label_mapping[question_uuid]).first()
-
     def flow(self, flow_id):
         self.__sync_if_required()
 
+        flow_id = int(flow_id)
         if flow_id not in self.cache.flow_label_mapping:
             raise FlowLabelNonExistException()
 
@@ -55,6 +50,7 @@ class RapidProService(object):
 
     def __sync_if_required(self):
         if self.cache.expired:
+            logger.info("Rapid Pro cache has been expired, start to sync.")
             self.__sync()
 
     def __sync(self):
@@ -64,15 +60,8 @@ class RapidProService(object):
             flows = response.json()['results']
             self.cache.update(
                 flow_label_mapping={rapid['flow']: rapid['labels'] for rapid in flows if len(rapid['labels']) > 0})
-            self.cache.update(
-                question_label_mapping=self.__question_mapping(flows))
-
-    def __question_mapping(self, flows):
-        result = {}
-        for rapid in flows:
-            result.update(
-                {ruleset['node']: ruleset['label'] for ruleset in rapid['rulesets'] if len(rapid['labels']) > 0})
-        return result
+        else:
+            logger.warning("Failed to get flows information from Rapidpro, response=%s" % response)
 
 
 rapid_pro_service = RapidProService()

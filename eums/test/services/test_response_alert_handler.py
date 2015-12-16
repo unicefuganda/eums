@@ -1,7 +1,10 @@
 from unittest import TestCase
 
+import requests
 from django.conf import settings
 import requests_mock
+from mock import MagicMock
+from requests import patch
 
 from eums.models import Alert, Question, PurchaseOrder, Consignee, DistributionPlan, DistributionPlanNode
 from eums.services.response_alert_handler import ResponseAlertHandler
@@ -118,15 +121,14 @@ class ResponseAlertHandlerTest(TestCase):
         alert = Alert.objects.get(consignee_name="Liverpool FC", order_number=5679)
         self.assertEqual(alert.issue, "damaged")
 
-    @requests_mock.Mocker()
-    def test_should_fetch_name_from_contacts_and_adds_alert_attribute(self, requests_mocker):
+    def test_should_fetch_name_from_contacts_and_adds_alert_attribute(self):
         answer_values = [
             {"category": {"base": "No"}, "label": Question.LABEL.deliveryReceived},
             {"category": {"base": "Yes"}, "label": Question.LABEL.isDeliveryInGoodOrder}
         ]
         purchase_order = PurchaseOrderFactory(order_number=5678)
         purchase_order_item = PurchaseOrderItemFactory(purchase_order=purchase_order)
-        consignee = ConsigneeFactory(name="Liverpool FC")
+        consignee = ConsigneeFactory(name="Liverpool FC - Unique")
 
         contact_person_id = 'some_id'
         contact = {u'_id': contact_person_id,
@@ -137,12 +139,13 @@ class ResponseAlertHandlerTest(TestCase):
         delivery = DeliveryFactory(consignee=consignee, contact_person_id=contact_person_id)
         DeliveryNodeFactory(item=purchase_order_item, distribution_plan=delivery)
 
-        requests_mocker.get("%s%s/" % (settings.CONTACTS_SERVICE_URL, contact_person_id), json=contact)
+        response = MagicMock(json=MagicMock(return_value=contact), status_code=200)
+        requests.get = MagicMock(return_value=response)
 
-        response_alert_handler = ResponseAlertHandler(runnable=delivery, answer_values=answer_values)
-        response_alert_handler.process()
+        ResponseAlertHandler(runnable=delivery, answer_values=answer_values).process()
 
-        alert = Alert.objects.get(consignee_name="Liverpool FC", order_number=5678)
+        alert = Alert.objects.get(consignee_name="Liverpool FC - Unique", order_number=5678)
+
         self.assertEqual(alert.contact_name, "chris george")
 
     def test_should_not_create_alert_when_no_issues_with_delivery(self):

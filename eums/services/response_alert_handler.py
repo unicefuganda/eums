@@ -22,6 +22,7 @@ class ResponseAlertHandler(object):
             self.runnable.create_alert(snakify(issue))
 
     def _identify_issue(self):
+        print self.answer_values
         for answer in self.answer_values:
             if self._is_generally_unacceptable(answer):
                 return self.ALERT_TYPES[answer["label"]]
