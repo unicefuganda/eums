@@ -7,6 +7,7 @@ from eums.models.order_item import OrderItem
 
 class ReleaseOrderItem(OrderItem):
     WAYBILL = "Waybill"
+    TYPE_CODE = 27
     release_order = models.ForeignKey('ReleaseOrder', related_name='items')
     purchase_order_item = models.ForeignKey(PurchaseOrderItem)
     value = models.DecimalField(max_digits=12, decimal_places=2)

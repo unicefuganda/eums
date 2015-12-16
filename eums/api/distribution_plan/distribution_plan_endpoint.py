@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
-from eums.models import DistributionPlan, UserProfile, SystemSettings
+from eums.models import DistributionPlan, UserProfile, SystemSettings, ReleaseOrderItem
 from eums.services.flow_scheduler import schedule_run_directly_for
 
 
@@ -78,14 +78,16 @@ class DistributionPlanViewSet(ModelViewSet):
         DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
         if from_date and to_date:
             filter_args['delivery_date__range'] = [from_date, to_date]
-            return DistributionPlanViewSet.filter_deliveries(query=query, **filter_args)
 
-        return DistributionPlanViewSet.filter_deliveries(query=query, **filter_args)
+        deliveries = DistributionPlan.objects.filter(**filter_args) if len(
+                filter_args) > 0 else DistributionPlan.objects.all()
+
+        return DistributionPlanViewSet.__filter_deliveries_by_query(query, deliveries)
 
     @staticmethod
     def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
 
-        filtered_distribution_plans = DistributionPlanViewSet.filter_distribution_plans_depends_on_auto_track().filter(
+        filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track().filter(
                 consignee=consignee)
 
         filter_args = {}
@@ -98,14 +100,14 @@ class DistributionPlanViewSet(ModelViewSet):
             filter_args['delivery_date__lte'] = to_date
 
         deliveries = filtered_distribution_plans.filter(**filter_args) if len(
-                filter_args.keys()) > 0 else filtered_distribution_plans
-        return filter(lambda delivery: query in str(delivery.number()), deliveries) if query else deliveries
+                filter_args) > 0 else filtered_distribution_plans
+        return DistributionPlanViewSet.__filter_deliveries_by_query(query, deliveries)
 
     @staticmethod
-    def filter_distribution_plans_depends_on_auto_track():
+    def __filter_distribution_plans_depends_on_auto_track():
         if SystemSettings.objects.first().auto_track:
             return DistributionPlan.objects.filter(
-                    Q(distributionplannode__item__polymorphic_ctype=27) | Q(track=True))
+                    Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(track=True))
 
         return DistributionPlan.objects.filter(Q(track=True))
 
@@ -115,8 +117,7 @@ class DistributionPlanViewSet(ModelViewSet):
             filter_args['programme__name__icontains'] = programme
 
     @staticmethod
-    def filter_deliveries(query, **filter_args):
-        deliveries = DistributionPlan.objects.filter(**filter_args)
+    def __filter_deliveries_by_query(query, deliveries):
         return filter(lambda delivery: query in str(delivery.number()), deliveries) if query else deliveries
 
 
