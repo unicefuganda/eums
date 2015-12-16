@@ -19,6 +19,10 @@ angular.module('ReportService', ['eums.config'])
             return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params)
         }
 
+        function buildStockFeedbackReportExportUrlParams(params) {
+            return assembleQueryUrl(EumsConfig.BACKEND_URLS.STOCK_REPORT_EXPORTS, params)
+        }
+
         function assembleQueryUrl(baseUrl, params, pageNo) {
             var queryParams = jQuery.param(buildSearchParams(params, pageNo));
             var query = queryParams ? '?' + queryParams : '';
@@ -118,6 +122,18 @@ angular.module('ReportService', ['eums.config'])
             exportItemFeedbackReport: function (params) {
                 var result = $q.defer();
                 var url = buildItemFeedbackReportExportUrlParams(params);
+                $http.get(url)
+                    .then(function (response) {
+                        result.resolve(response.data);
+                    }, function () {
+                        result.reject();
+                    });
+                return result.promise
+            },
+
+            exportStockReport: function (params) {
+                var result = $q.defer();
+                var url = buildStockFeedbackReportExportUrlParams(params);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);

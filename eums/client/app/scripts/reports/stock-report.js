@@ -1,9 +1,12 @@
 'use strict';
 
 angular.module('StockReport', [
-        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils'])
-    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, IPService, LoaderService, UserService,
-                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService) {
+        'eums.config', 'ngTable', 'siTable', 'eums.ip', 'Consignee', 'Directives', 'Loader', 'ReportService', 'User', 'EumsErrorMessage', 'Sort', 'SortArrow', 'SysUtils', 'ngToast'])
+    .config(['ngToastProvider', function (ngToast) {
+        ngToast.configure({maxNumber: 1, horizontalPosition: 'center'});
+    }])
+    .controller('StockReportController', function (StockReportService, $scope, ConsigneeService, ReportService, IPService, LoaderService, UserService,
+                                                   ErrorMessageService, SortService, SortArrowService, SysUtilsService, ngToast) {
         var SUPPORTED_FIELD = ['last_shipment_date', 'last_received_date', 'total_value_received', 'total_value_dispensed', 'balance'];
         $scope.reportParams = {};
         $scope.totals = {};
@@ -127,6 +130,20 @@ angular.module('StockReport', [
 
         function formatDate(date) {
             return moment(date).format('YYYY-MM-DD')
+        }
+
+        $scope.exportToCSV = function () {
+            var allFilters = angular.extend({}, getSearchTerm());
+            ReportService.exportStockReport(allFilters).then(function (response) {
+                ngToast.create({content: response.message, class: 'info'});
+            }, function () {
+                var errorMessage = "Error while generating CSV. Please contact the system's admin.";
+                ngToast.create({content: errorMessage, class: 'danger'})
+            });
+        };
+
+        function getSearchTerm() {
+            return $scope.reportParams;
         }
 
         init();
