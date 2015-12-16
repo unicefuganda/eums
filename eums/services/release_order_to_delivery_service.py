@@ -3,7 +3,9 @@ import logging
 from celery.schedules import crontab
 from celery.task import periodic_task
 
-from eums.models import ReleaseOrder, DistributionPlan, DistributionPlanNode
+from eums.celery import app
+from eums.models import ReleaseOrder, DistributionPlan, DistributionPlanNode, Runnable
+from eums.models.distribution_plan_node import positions
 
 logger = logging.getLogger(__name__)
 
@@ -15,16 +17,22 @@ class ReleaseOrderToDeliveryService(object):
 
     @classmethod
     def sync_release_order_to_delivery(cls, release_order=None):
-        delivery = DistributionPlan(delivery_date=release_order.delivery_date, consignee=release_order.consignee,
-                                    programme=release_order.sales_order.programme).save()
-        DistributionPlanNode(distribution_plan=delivery, delivery_date=release_order.delivery_date,
-                             consignee=release_order.consignee, programme=release_order.sales_order.programme,
-                             item=release_order.items.first()).save()
+        logger.info('sync_release_order_to_delivery->' + str(release_order))
+        delivery = DistributionPlan.objects.create(delivery_date=release_order.delivery_date,
+                                                   consignee=release_order.consignee,
+                                                   programme=release_order.sales_order.programme)
+
+        for item in release_order.items.all():
+            DistributionPlanNode.objects.create(distribution_plan=delivery, delivery_date=release_order.delivery_date,
+                                                consignee=release_order.consignee,
+                                                programme=release_order.sales_order.programme, item=item,
+                                                tree_position=Runnable.IMPLEMENTING_PARTNER, quantity=item.quantity)
 
 
 @periodic_task(run_every=crontab())
 def execute_sync_release_order_to_delivery():
     logger.info('execute_sync_release_order_to_delivery')
+
     for release_order in ReleaseOrder.objects.all():
         if ReleaseOrderToDeliveryService.is_release_order_not_sync(release_order):
             ReleaseOrderToDeliveryService.sync_release_order_to_delivery(release_order)

@@ -43,6 +43,7 @@ class DistributionPlanNode(Runnable):
         super(DistributionPlanNode, self).save(*args, **kwargs)
 
         parents = self.get_parents()
+
         self._update_parent_balances(parents)
         self._update_distribution_plan()
         if len(parents) > 0:

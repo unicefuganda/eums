@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable', 'DeliveryNode', 'ui.bootstrap',
-    'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
+        'ReleaseOrder', 'ReleaseOrderItem', 'eums.ip', 'ngToast', 'Contact'])
     .controller('WarehouseDeliveryManagementController', function ($scope, $location, $q, $routeParams, DeliveryService,
                                                                    DeliveryNodeService, ReleaseOrderService, ReleaseOrderItemService,
                                                                    IPService, ngToast, ContactService) {
@@ -35,7 +35,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             }
         }
 
-         function isTimeLimitationValid() {
+        function isTimeLimitationValid() {
             $scope.valid_time_limitation = $scope.delivery.time_limitation_on_distribution === 0 ? false : true;
             return $scope.valid_time_limitation;
         }
@@ -81,7 +81,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     $scope.selectedReleaseOrder.totalValue = 0.0;
                     $scope.releaseOrderItems = releaseOrder.items;
                     $scope.selectedReleaseOrder.totalValue = releaseOrderItemsTotalValue();
-                    $scope.delivery = releaseOrder.delivery? releaseOrder.delivery : {};
+                    $scope.delivery = releaseOrder.delivery ? releaseOrder.delivery : {};
 
                     if ($scope.delivery) {
                         $scope.track = $scope.delivery.track;
@@ -125,6 +125,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
         var updateDeliveryNodes = function () {
             var deliveryNodePromises = [];
+            console.log('releaseOrderItems');
+            console.log($scope.releaseOrderItems);
             $scope.releaseOrderItems.forEach(function (releaseOrderItem) {
                 deliveryNodePromises.push(updateDeliveryNode(releaseOrderItem));
             });
@@ -133,10 +135,10 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
         };
 
         function setTrackedDate(oldTrack, newTrack) {
-            if(!oldTrack && newTrack) {
+            if (!oldTrack && newTrack) {
                 $scope.delivery.tracked_date = new Date();
             }
-            if(!newTrack) {
+            if (!newTrack) {
                 $scope.delivery.tracked_date = null;
             }
         }
@@ -148,11 +150,15 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                 $scope.delivery.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
                 $scope.delivery.track = $scope.track;
+                console.log('original delivery');
+                console.log($scope.delivery);
                 return DeliveryService.update($scope.delivery)
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
+                        console.log('updated delivery');
+                        console.log(createdDelivery);
                         return updateDeliveryNodes();
-                });
+                    });
             }
             else {
                 var deliveryDetails = {
@@ -169,7 +175,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
                         return saveDeliveryNodes();
-                });
+                    });
             }
         }
 
@@ -210,6 +216,8 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             node.track = $scope.track;
             node.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
             node.tracked_date = $scope.delivery.tracked_date;
+            console.log('deliveryNode');
+            console.log(node);
             return DeliveryNodeService.update(node)
 
         };
