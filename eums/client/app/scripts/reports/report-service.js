@@ -36,16 +36,19 @@ angular.module('ReportService', ['eums.config'])
                 item_description: params.itemDescription,
                 po_waybill: params.poWaybill,
                 query: params.query,
-                location: params.location,
+                location: params.location || params.selectedLocation,
                 page: pageNo,
-                ip_id: params.ipId,
+                ip_id: params.ipId || params.selectedIPId,
                 tree_position: params.treePosition,
                 received: params.received,
                 quality: params.quality,
                 satisfied: params.satisfied,
                 good_condition: params.good_condition,
                 field: params.field,
-                order: params.order
+                order: params.order,
+                outcome: params.selectedOutcomeId,
+                fromDate: moment(params.selectedFromDate).format('YYYY-MM-DD'),
+                toDate: moment(params.selectedToDate).format('YYYY-MM-DD')
             } : {};
 
             var search = {};
