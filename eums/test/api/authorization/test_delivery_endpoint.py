@@ -7,8 +7,9 @@ from rest_framework.test import APITestCase
 from django.core.management import call_command
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-from eums.models import Consignee, DistributionPlan, UserProfile
+from eums.models import Consignee, DistributionPlan, UserProfile, SystemSettings
 from eums.test.config import BACKEND_URL
+from eums.test.factories.system_settings_factory import SystemSettingsFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
@@ -25,11 +26,15 @@ class DeliveryEndpointTest(APITestCase):
         teardown_groups()
         teardown_permissions()
 
+    def setUp(self):
+        SystemSettingsFactory()
+
     def tearDown(self):
         UserProfile.objects.all().delete()
         User.objects.all().delete()
         Consignee.objects.all().delete()
         DistributionPlan.objects.all().delete()
+        SystemSettings.objects.all().delete()
 
     def test_should_allow_unicef_admin_to_create_deliveries(self):
         programme = ProgrammeFactory()

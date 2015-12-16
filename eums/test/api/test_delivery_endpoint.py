@@ -4,7 +4,7 @@ import json
 from mock import patch
 
 from eums.models import DistributionPlan as Delivery, Programme, Consignee, UserProfile, DistributionPlan, \
-    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Runnable
+    DistributionPlanNode, PurchaseOrder, PurchaseOrderItem, Runnable, SystemSettings
 from eums.test.api.authenticated_api_test_case import AuthenticatedAPITestCase
 from eums.test.api.authorization.permissions_test_case import PermissionsTestCase
 from eums.test.config import BACKEND_URL
@@ -20,7 +20,7 @@ from eums.test.factories.purchase_order_item_factory import PurchaseOrderItemFac
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory, \
     NumericQuestionFactory
 from eums.test.factories.run_factory import RunFactory
-
+from eums.test.factories.system_settings_factory import SystemSettingsFactory
 
 ENDPOINT_URL = BACKEND_URL + 'distribution-plan/'
 
@@ -33,6 +33,7 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
     def setUp(self):
         super(DeliveryEndPointTest, self).setUp()
         self.clean_up()
+        SystemSettingsFactory()
 
     def tearDown(self):
         self.clean_up()
@@ -438,7 +439,6 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
 
         run = RunFactory(runnable=first_delivery)
         MultipleChoiceAnswerFactory(run=run, question=delivery_received_qn, value=option_no)
-
         response = self.client.get(ENDPOINT_URL)
 
         ids = map(lambda delivery: delivery['id'], response.data)
@@ -460,3 +460,4 @@ class DeliveryEndPointTest(AuthenticatedAPITestCase, PermissionsTestCase):
         Programme.objects.all().delete()
         Consignee.objects.all().delete()
         UserProfile.objects.all().delete()
+        SystemSettings.objects.all().delete()

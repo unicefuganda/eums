@@ -44,15 +44,15 @@ class AlertViewSet(ReadOnlyModelViewSet):
         type = self.request.GET.get('type', None)
         if type == 'item':
             return Alert.objects.filter(
-                runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
+                    runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlanNode))
         elif type == 'delivery':
             return Alert.objects.filter(
-                Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
-                , ~Q(issue=Alert.ISSUE_TYPES.distribution_expired))
+                    Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan))
+                    , ~Q(issue=Alert.ISSUE_TYPES.distribution_expired))
         elif type == 'distribution':
             return Alert.objects.filter(
-                Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
-                Q(issue=Alert.ISSUE_TYPES.distribution_expired))
+                    Q(runnable__polymorphic_ctype=ContentType.objects.get_for_model(DistributionPlan)),
+                    Q(issue=Alert.ISSUE_TYPES.distribution_expired))
         else:
             return self.queryset._clone()
 

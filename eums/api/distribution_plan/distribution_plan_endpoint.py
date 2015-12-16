@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import serializers
 from rest_framework.decorators import detail_route
 from rest_framework.permissions import DjangoModelPermissions
@@ -5,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet
 from eums.permissions.view_delivery_permission import ViewDeliveryPermission
-from eums.models import DistributionPlan, UserProfile
+from eums.models import DistributionPlan, UserProfile, SystemSettings
 from eums.services.flow_scheduler import schedule_run_directly_for
 
 
@@ -73,86 +74,50 @@ class DistributionPlanViewSet(ModelViewSet):
 
     @staticmethod
     def _deliveries_for_admin(programme, query, from_date, to_date):
+        filter_args = {}
+        DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
         if from_date and to_date:
-            return DistributionPlanViewSet.filter_deliveries(
-                    DistributionPlan.objects.filter(programme__name__icontains=programme,
-                                                    delivery_date__range=[from_date, to_date]
-                                                    ) if programme else DistributionPlan.objects.filter(
-                            delivery_date__range=[from_date, to_date]), query)
-        else:
-            return DistributionPlanViewSet.filter_deliveries(
-                    DistributionPlan.objects.filter(programme__name__icontains=programme
-                                                    ) if programme else DistributionPlan.objects.all(), query)
+            filter_args['delivery_date__range'] = [from_date, to_date]
+            return DistributionPlanViewSet.filter_deliveries(query=query, **filter_args)
+
+        return DistributionPlanViewSet.filter_deliveries(query=query, **filter_args)
 
     @staticmethod
     def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
+
+        filtered_distribution_plans = DistributionPlanViewSet.filter_distribution_plans_depends_on_auto_track().filter(
+                consignee=consignee)
+
+        filter_args = {}
+        DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
         if from_date and to_date:
-            return DistributionPlanViewSet._filter_with_date_range(consignee, from_date, programme, query, to_date)
+            filter_args['delivery_date__range'] = [from_date, to_date]
         elif from_date:
-            return DistributionPlanViewSet._filter_with_start_date(consignee, from_date, programme, query)
+            filter_args['delivery_date__gte'] = from_date
         elif to_date:
-            return DistributionPlanViewSet._filter_with_end_date(consignee, programme, query, to_date)
-        else:
-            return DistributionPlanViewSet._filter_without_dates(consignee, programme, query)
+            filter_args['delivery_date__lte'] = to_date
+
+        deliveries = filtered_distribution_plans.filter(**filter_args) if len(
+                filter_args.keys()) > 0 else filtered_distribution_plans
+        return filter(lambda delivery: query in str(delivery.number()), deliveries) if query else deliveries
 
     @staticmethod
-    def _filter_without_dates(consignee, programme, query):
-        return DistributionPlanViewSet.filter_deliveries(
-                DistributionPlan.objects.filter(
-                        programme__name__icontains=programme,
-                        consignee=consignee,
-                        track=True
-                ) if programme else DistributionPlan.objects.filter(
-                        consignee=consignee,
-                        track=True),
-                query)
+    def filter_distribution_plans_depends_on_auto_track():
+        if SystemSettings.objects.first().auto_track:
+            return DistributionPlan.objects.filter(
+                    Q(distributionplannode__item__polymorphic_ctype=27) | Q(track=True))
+
+        return DistributionPlan.objects.filter(Q(track=True))
 
     @staticmethod
-    def _filter_with_end_date(consignee, programme, query, to_date):
-        return DistributionPlanViewSet.filter_deliveries(
-                DistributionPlan.objects.filter(
-                        programme__name__icontains=programme,
-                        delivery_date__lte=to_date,
-                        consignee=consignee,
-                        track=True
-                ) if programme else DistributionPlan.objects.filter(
-                        consignee=consignee,
-                        track=True,
-                        delivery_date__lte=to_date),
-                query)
+    def __add_programme_filter_if_exist(filter_args, programme):
+        if programme is not None:
+            filter_args['programme__name__icontains'] = programme
 
     @staticmethod
-    def _filter_with_start_date(consignee, from_date, programme, query):
-        return DistributionPlanViewSet.filter_deliveries(
-                DistributionPlan.objects.filter(
-                        programme__name__icontains=programme,
-                        delivery_date__gte=from_date,
-                        consignee=consignee,
-                        track=True
-                ) if programme else DistributionPlan.objects.filter(
-                        consignee=consignee,
-                        track=True,
-                        delivery_date__gte=from_date),
-                query)
-
-    @staticmethod
-    def _filter_with_date_range(consignee, from_date, programme, query, to_date):
-        return DistributionPlanViewSet.filter_deliveries(
-                DistributionPlan.objects.filter(
-                        programme__name__icontains=programme,
-                        delivery_date__range=[from_date, to_date],
-                        consignee=consignee,
-                        track=True
-                ) if programme else DistributionPlan.objects.filter(
-                        consignee=consignee,
-                        track=True,
-                        delivery_date__range=[from_date, to_date]),
-                query)
-
-    @staticmethod
-    def filter_deliveries(deliveries, query):
-        return filter(lambda delivery: query in str(delivery.number()),
-                      deliveries) if query else deliveries
+    def filter_deliveries(query, **filter_args):
+        deliveries = DistributionPlan.objects.filter(**filter_args)
+        return filter(lambda delivery: query in str(delivery.number()), deliveries) if query else deliveries
 
 
 distributionPlanRouter = DefaultRouter()
