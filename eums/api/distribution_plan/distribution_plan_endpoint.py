@@ -90,8 +90,11 @@ class DistributionPlanViewSet(ModelViewSet):
         filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track().filter(
                 consignee=consignee)
 
-        filter_args = {}
+        filter_args = {
+            'consignee': consignee
+        }
         DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
+
         if from_date and to_date:
             filter_args['delivery_date__range'] = [from_date, to_date]
         elif from_date:
@@ -99,9 +102,8 @@ class DistributionPlanViewSet(ModelViewSet):
         elif to_date:
             filter_args['delivery_date__lte'] = to_date
 
-        deliveries = filtered_distribution_plans.filter(**filter_args) if len(
-                filter_args) > 0 else filtered_distribution_plans
-        return DistributionPlanViewSet.__filter_deliveries_by_query(query, deliveries)
+        return DistributionPlanViewSet.__filter_deliveries_by_query(query,
+                                                                    filtered_distribution_plans.filter(**filter_args))
 
     @staticmethod
     def __filter_distribution_plans_depends_on_auto_track():
