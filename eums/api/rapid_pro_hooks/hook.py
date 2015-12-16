@@ -4,7 +4,7 @@ from celery.utils.log import get_task_logger
 from django.http.response import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from eums.models import Run, RunQueue, Flow
+from eums.models import Run, RunQueue, Flow, Question
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service, RapidProService
 from eums.services.flow_scheduler import schedule_run_for
 from eums.services.response_alert_handler import ResponseAlertHandler
@@ -35,7 +35,9 @@ def hook(request):
 
 
 def _save_answer(flow, params, run):
-    question = rapid_pro_service.question(params['step'])
+    answer_values = ast.literal_eval(params['values'])
+    latest_answer = answer_values[-1]
+    question = Question.objects.filter(flow=flow, label=latest_answer['label']).first().get_subclass_instance()
     return question.create_answer(params, run)
 
 

@@ -1,4 +1,5 @@
-from mock import patch
+import requests
+from mock import patch, MagicMock
 from rest_framework.test import APITestCase
 from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.delivery_node_factory import DeliveryNodeFactory
@@ -13,22 +14,56 @@ from eums.test.factories.flow_factory import FlowFactory
 
 HOOK_URL = BACKEND_URL + 'hook/'
 
+FLOW_RESPONSE = {
+    "results": [
+        {
+            "uuid": "b128ffd2-7ad8-4899-88ab-b7a863c623b5",
+            "name": "IMPLEMENTING PARTNER",
+            "labels": ['IMPLEMENTING_PARTNER'],
+            "rulesets": [
+                {
+                    "node": "5b0f1f19-767f-47f1-97a5-b9b32c45a47c",
+                    "id": 40551,
+                    "response_type": "C",
+                    "ruleset_type": "wait_message",
+                    "label": "productReceived"
+                },
+                {
+                    "node": "b3fad71f-ca0a-4212-b7f9-892dd3dc4c4b",
+                    "id": 40553,
+                    "response_type": "C",
+                    "ruleset_type": "wait_message",
+                    "label": "dateOfReceipt"
+                },
+                {
+                    "node": "18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c",
+                    "id": 40554,
+                    "response_type": "C",
+                    "ruleset_type": "wait_message",
+                    "label": "amountReceived"
+                }
+            ],
+            "flow": 2436
+        }
+    ]
+}
+
 
 class HookTest(APITestCase):
     def setUp(self):
         self.PHONE = '+12065551212'
         self.flow_id = 2436
         self.flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
+        requests.get = MagicMock(return_value=MagicMock(status_code=200, json=MagicMock(return_value=FLOW_RESPONSE)))
 
     def tearDown(self):
         Alert.objects.all().delete()
 
     @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     def test_should_record_an_answer_of_type_multiple_choice_for_a_node_from_request_data(self, *_):
-        uuid = '2ff9fab3-4c12-400e-a2fe-4551fa1ebc18'
+        uuid = '5b0f1f19-767f-47f1-97a5-b9b32c45a47c'
 
-        question = MultipleChoiceQuestionFactory(text='Was item received?', label='productReceived',
-                                                 flow=self.flow)
+        question = MultipleChoiceQuestionFactory(text='Was product received?', label='productReceived', flow=self.flow)
 
         Option.objects.get_or_create(text='Yes', question=question)
         Option.objects.get_or_create(text='No', question=question)
@@ -78,7 +113,7 @@ class HookTest(APITestCase):
 
     @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     def test_should_record_an_answer_of_type_text_for_a_node_from_request_data(self, *_):
-        uuid = 'abc9c005-7a7c-44f8-b946-e970a361b6cf'
+        uuid = 'b3fad71f-ca0a-4212-b7f9-892dd3dc4c4b'
 
         TextQuestionFactory(text='What date was it received?', label='dateOfReceipt',
                             flow=self.flow)
@@ -96,7 +131,7 @@ class HookTest(APITestCase):
 
     @patch('eums.api.rapid_pro_hooks.hook.logger.info')
     def test_should_record_an_answer_of_type_numeric_for_a_node_from_request_data(self, *_):
-        uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
+        uuid = '18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c'
 
         NumericQuestionFactory(text='How much was received?', label='amountReceived',
                                flow=self.flow)
@@ -117,7 +152,7 @@ class HookTest(APITestCase):
     @patch('eums.models.RunQueue.dequeue')
     def test_should_dequeue_next_node_when_question_is_final(self, mock_run_queue_dequeue, mock_schedule_next_run, *_):
         mock_schedule_next_run.return_value = None
-        uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
+        uuid = '18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c'
 
         question = NumericQuestionFactory(text='How much was received?', label='amountReceived',
                                           flow=self.flow)
@@ -141,7 +176,7 @@ class HookTest(APITestCase):
     def test_should_mark_run_as_complete_when_question_is_final(self, mock_run_queue_dequeue,
                                                                 mock_schedule_next_run, *_):
         mock_schedule_next_run.return_value = None
-        uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
+        uuid = '18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c'
 
         question = NumericQuestionFactory(text='How much was received?',
                                           label='amountReceived', flow=self.flow)
@@ -169,7 +204,7 @@ class HookTest(APITestCase):
                                                                         mock_schedule_next_run, *_):
         mock_schedule_next_run.return_value = None
 
-        uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
+        uuid = '18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c'
 
         NumericQuestionFactory(text='How much was received?', flow=self.flow,
                                label='amountReceived')
@@ -192,7 +227,7 @@ class HookTest(APITestCase):
     @patch('eums.api.rapid_pro_hooks.hook._schedule_next_run')
     @patch('eums.models.RunQueue.dequeue')
     def test_should_mark_run_returned_by_dequeue_as_started(self, mock_run_queue_dequeue, mock_schedule_next_run, *_):
-        uuid = '6c1cf92d-59b8-4bd3-815b-783abd3dfad9'
+        uuid = '18aed9e2-125c-4c6d-a73d-c7ecdb53aa8c'
 
         mock_schedule_next_run.return_value = None
         question = NumericQuestionFactory(text='How much was received?',

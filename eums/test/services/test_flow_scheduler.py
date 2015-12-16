@@ -10,7 +10,7 @@ from eums.test.factories.delivery_factory import DeliveryFactory
 from eums.test.factories.question_factory import MultipleChoiceQuestionFactory, TextQuestionFactory
 from eums.test.services.mock_celery import MockCelery, MockPeriodicTask
 from eums import celery as local_celery
-from eums.models import DistributionPlanNode as Node, Flow, Question
+from eums.models import DistributionPlanNode as Node, Question
 from eums.rapid_pro.rapid_pro_service import rapid_pro_service
 from eums.test.factories.RunQueueFactory import RunQueueFactory
 from eums.test.factories.consignee_factory import ConsigneeFactory
@@ -22,8 +22,8 @@ mock_celery = MockCelery()
 local_celery.app.task = mock_celery.task
 celery.task.periodic_task = MockPeriodicTask
 
-mock_start_delivery_run = MagicMock()
-rapid_pro_service.create_run = mock_start_delivery_run
+mocked_create_run = MagicMock()
+rapid_pro_service.create_run = mocked_create_run
 
 from eums.services.flow_scheduler import *
 
@@ -41,9 +41,9 @@ class FlowSchedulerTest(TestCase):
         Node.objects.get = MagicMock(return_value=self.node)
         Runnable.objects.get = MagicMock(return_value=self.node)
 
-        # ip_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
-        # end_user_flow = FlowFactory(label=Flow.Label.END_USER)
-        # middle_man_flow = FlowFactory(label=Flow.Label.MIDDLE_MAN)
+        self.ip_flow = FlowFactory(label=Flow.Label.IMPLEMENTING_PARTNER)
+        self.end_user_flow = FlowFactory(label=Flow.Label.END_USER)
+        self.middle_man_flow = FlowFactory(label=Flow.Label.MIDDLE_MAN)
 
         self.MIDDLEMAN_FLOW_ID = 1
         self.END_USER_FLOW_ID = 2
@@ -56,8 +56,7 @@ class FlowSchedulerTest(TestCase):
         RunQueue.objects.all().delete()
         Node.objects.all().delete()
 
-    @patch('eums.rapid_pro.rapid_pro_service.rapid_pro_service')
-    def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self, mocked_rapid_pro):
+    def test_should_schedule_middleman_flow_if_node_tree_position_is_middleman(self):
         node = NodeFactory(tree_position=Node.MIDDLE_MAN)
         node.build_contact = MagicMock(return_value=self.contact)
 
@@ -65,8 +64,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(node)
 
-        mocked_rapid_pro.create_run.assert_called_with(self.contact, flow=self.MIDDLEMAN_FLOW_ID,
-                                                       item_description=ANY, sender=ANY)
+        mocked_create_run.assert_called_with(self.contact, self.middle_man_flow, ANY, ANY)
 
     def test_should_schedule_end_user_flow_if_node_tree_position_is_end_user(self):
         node = NodeFactory(tree_position=Node.END_USER)
@@ -76,8 +74,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(node)
 
-        mock_start_delivery_run.assert_called_with(self.contact, self.END_USER_FLOW_ID,
-                                                   ANY, ANY)
+        mocked_create_run.assert_called_with(self.contact, self.end_user_flow, ANY, ANY)
 
     def test_should_schedule_implementing_partner_flow_if_runnable_is_delivery(self):
         delivery = DeliveryFactory()
@@ -88,16 +85,14 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(delivery)
 
-        mock_start_delivery_run.assert_called_with(self.contact, self.IMPLEMENTING_PARTNER_FLOW_ID,
-                                                   ANY, ANY)
+        mocked_create_run.assert_called_with(self.contact, self.ip_flow,
+                                             ANY, ANY)
 
     def test_should_schedule_a_flow_with_sender_as_unicef_if_node_has_no_parent(self):
         self.node.build_contact = MagicMock(return_value=self.contact)
         schedule_run_for(self.node)
 
-        mock_start_delivery_run.assert_called_with(self.contact, ANY,
-                                                   self.node.item.item.description,
-                                                   sender='UNICEF')
+        mocked_create_run.assert_called_with(self.contact, ANY, self.node.item.item.description, 'UNICEF')
 
     def test_should_schedule_flow_with_sender_as_parent_node_consignee_name_if_node_has_parent(self):
         sender_org_name = "Dwelling Places"
@@ -111,8 +106,7 @@ class FlowSchedulerTest(TestCase):
 
         schedule_run_for(node)
 
-        mock_start_delivery_run.assert_called_with(self.contact, ANY, node.item.item.description,
-                                                   sender=sender_org_name)
+        mocked_create_run.assert_called_with(self.contact, ANY, node.item.item.description, sender_org_name)
 
     def test_should_save_a_run_with_task_id_and_phone_as_cache_after_scheduling_the_flow(self):
         schedule_run_for(self.node)
