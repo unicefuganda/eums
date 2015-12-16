@@ -12,7 +12,7 @@ sort = StandardDicSort('last_shipment_date', 'last_received_date', 'total_value_
 
 class StockReport(APIView):
     def get(self, request):
-        reduced_stock_report = filter_stock_feedback_report(request)
+        reduced_stock_report = filter_stock_report(request)
         totals = _compute_totals(reduced_stock_report)
 
         reduced_stock_report = sort.sort_by(request, reduced_stock_report)
@@ -38,7 +38,7 @@ def _aggregate_nodes_into_stock_report(stock_report, node):
         stock_report.append(_get_report_details_for_node(node))
     return stock_report
 
-def filter_stock_feedback_report(request):
+def filter_stock_report(request):
     consignee_id = request.GET.get('consignee')
     location = request.GET.get('location')
     outcome_id = request.GET.get('outcome')

@@ -19,7 +19,7 @@ angular.module('ReportService', ['eums.config'])
             return assembleQueryUrl(EumsConfig.BACKEND_URLS.ITEM_FEEDBACK_REPORT_EXPORTS, params)
         }
 
-        function buildStockFeedbackReportExportUrlParams(params) {
+        function buildStockReportExportUrlParams(params) {
             return assembleQueryUrl(EumsConfig.BACKEND_URLS.STOCK_REPORT_EXPORTS, params)
         }
 
@@ -47,8 +47,8 @@ angular.module('ReportService', ['eums.config'])
                 field: params.field,
                 order: params.order,
                 outcome: params.selectedOutcomeId,
-                fromDate: moment(params.selectedFromDate).format('YYYY-MM-DD'),
-                toDate: moment(params.selectedToDate).format('YYYY-MM-DD')
+                fromDate: params.selectedFromDate ? moment(params.selectedFromDate).format('YYYY-MM-DD') : params.selectedFromDate,
+                toDate: params.selectedToDate ? moment(params.selectedToDate).format('YYYY-MM-DD') : params.selectedToDate
             } : {};
 
             var search = {};
@@ -136,7 +136,7 @@ angular.module('ReportService', ['eums.config'])
 
             exportStockReport: function (params) {
                 var result = $q.defer();
-                var url = buildStockFeedbackReportExportUrlParams(params);
+                var url = buildStockReportExportUrlParams(params);
                 $http.get(url)
                     .then(function (response) {
                         result.resolve(response.data);

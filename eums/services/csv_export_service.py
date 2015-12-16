@@ -8,7 +8,7 @@ from eums.celery import app
 from eums.services.exporter.delivery_csv_exporter import DeliveryCSVExporter
 from eums.services.exporter.delivery_feedback_report_csv_exporter import DeliveryFeedbackReportExporter
 from eums.services.exporter.item_feedback_report_csv_exporter import ItemFeedbackReportExporter
-from eums.services.exporter.stock_feedback_report_csv_exporter import StockFeedbackReportExporter
+from eums.services.exporter.stock_report_csv_exporter import StockReportExporter
 
 
 class CSVExportService(object):
@@ -57,7 +57,7 @@ def generate_item_feedback_report(user, host_name, items_feedback):
 
 @app.task
 def generate_stock_feedback_report(user, host_name, stocks_feedback):
-    csv_export_service = StockFeedbackReportExporter(host_name)
+    csv_export_service = StockReportExporter(host_name)
     CSVExportService.generate(csv_export_service.assemble_csv_data(stocks_feedback),
                               csv_export_service.export_category,
                               csv_export_service.get_export_csv_file_name())

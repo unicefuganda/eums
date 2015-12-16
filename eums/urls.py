@@ -12,7 +12,7 @@ from eums.api.consignee_item.consignee_item_endpoint import consignee_items_rout
 from eums.api.csv.export_delivery_endpoint import ExportDeliveryViewSet
 from eums.api.csv.export_delivery_feedback_report_endpoint import ExportDeliveryFeedbackReportViewSet
 from eums.api.csv.export_item_feedback_report_endpoint import ExportItemFeedbackReportViewSet
-from eums.api.csv.export_stock_feedback_report_endpoint import ExportStockFeedbackReportViewSet
+from eums.api.csv.export_stock_report_endpoint import ExportStockReportViewSet
 from eums.api.delivery_stats.delivery_stats_details_endpoint import DeliveryStatsDetailsEndpoint
 from eums.api.delivery_stats.latest_deliveries import LatestDeliveriesEndpoint
 from eums.api.delivery_stats.map_delivery_stats_endpoint import MapDeliveryStatsEndpoint
@@ -123,6 +123,6 @@ urlpatterns = patterns(
         name='deliveries_feedback_report_csv'),
     url(r'^exports/items-feedback-report/', ExportItemFeedbackReportViewSet.as_view(),
         name='items_feedback_report_csv'),
-    url(r'^exports/stocks-report/', ExportStockFeedbackReportViewSet.as_view(),
+    url(r'^exports/stocks-report/', ExportStockReportViewSet.as_view(),
         name='stocks_feedback_report_csv')
 )

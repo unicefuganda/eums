@@ -1,11 +1,11 @@
 from eums.services.exporter.report_csv_exporter import ReportExporter
 
 
-class StockFeedbackReportExporter(ReportExporter):
+class StockReportExporter(ReportExporter):
     def __init__(self, host_name):
-        self.export_label = 'Stock Feedback Report'
-        self.file_name = 'stocks_feedback_report'
-        super(StockFeedbackReportExporter, self).__init__(host_name)
+        self.export_label = 'Stock Report'
+        self.file_name = 'stocks_report'
+        super(StockReportExporter, self).__init__(host_name)
 
     def config_headers(self):
         return ['PO / WAYBILL', 'OUTCOME', 'LAST_SHIPMENT_DATE', 'LAST_RECEIVED_DATE', 'VALUE_RECEIVED',
