@@ -23,7 +23,7 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
     queryset = ReleaseOrder.objects.all().order_by('order_number')
     serializer_class = ReleaseOrderSerializer
     pagination_class = StandardResultsSetPagination
-    supported_filter = {
+    supported_filters = {
         'query': 'waybill__icontains',
         'from': 'delivery_date__gte',
         'to': 'delivery_date__lte'
@@ -53,7 +53,7 @@ class ReleaseOrderViewSet(ModelViewSet, RequestFilterMixin):
             else:
                 orders = self.get_queryset()
 
-        return orders.filter(**self.build_filters(request.query_params()))
+        return orders.filter(**(self.build_filters(request.query_params)))
 
     def get_queryset(self):
         delivery_is_null = self.request.GET.get('delivery__isnull', None)
