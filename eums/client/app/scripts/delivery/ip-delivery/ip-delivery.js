@@ -73,7 +73,6 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         };
 
         $scope.confirm = function (delivery) {
-            console.log(delivery);
             LoaderService.showLoader();
             $scope.activeDelivery = delivery;
             $scope.isInitContactEmpty = delivery.contactPersonId == null;

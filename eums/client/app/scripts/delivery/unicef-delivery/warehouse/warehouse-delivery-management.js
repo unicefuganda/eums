@@ -211,8 +211,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
             node.track = $scope.track;
             node.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
             node.tracked_date = $scope.delivery.tracked_date;
-            console.log('deliveryNode');
-            console.log(node);
             return DeliveryNodeService.update(node)
 
         };
