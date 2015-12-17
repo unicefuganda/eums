@@ -48,25 +48,45 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             $scope.districtsLoaded = true;
         });
 
+        $scope.$on('contact-saved', function (event, contact) {
+            $scope.contact = {id: contact._id};
+            var contactInput = $('#contact-select');
+            var contactSelect2Input = contactInput.siblings('div').find('a span.select2-chosen');
+            contactSelect2Input.text(contact.firstName + ' ' + contact.lastName);
+
+            contactInput.val(contact._id);
+
+            contact.id = contact._id;
+            event.stopPropagation();
+        });
+
+
         function setLocationAndContactFields() {
             if ($scope.contact.id)
                 ContactService.get($scope.contact.id)
                     .then(function (contact) {
-                        $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
-                        $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
+                        if (contact) {
+                            $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+                        }
                     });
+            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
         };
-        setLocationAndContactFields();
 
         $scope.confirm = function (delivery) {
+            console.log(delivery);
             LoaderService.showLoader();
             $scope.activeDelivery = delivery;
+            $scope.isInitContactEmpty = delivery.contactPersonId == null;
+
             DeliveryService.getDetail(delivery, 'answers')
                 .then(function (answers) {
                     LoaderService.hideLoader();
                     $scope.activeDelivery = delivery;
                     $scope.answers = answers;
                     $scope.oringalAnswers = angular.copy(answers);
+                    $scope.selectedLocation.id = delivery.location;
+                    $scope.contact.id = delivery.contactPersonId;
+                    setLocationAndContactFields()
                     LoaderService.showModal('ip-acknowledgement-modal');
                 });
         };
@@ -77,6 +97,8 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             }
             var answers;
             LoaderService.showLoader();
+            updateContactAndLocation();
+
             answers = _isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
             AnswerService.createWebAnswer($scope.activeDelivery, answers)
                 .then(function () {
@@ -90,6 +112,14 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     LoaderService.hideLoader();
                 });
         };
+
+        function updateContactAndLocation() {
+            if ($scope.isInitContactEmpty) {
+                $scope.activeDelivery.contact_person_id = $scope.contact.id;
+                $scope.activeDelivery.location = $scope.selectedLocation.id;
+                return DeliveryService.update($scope.activeDelivery);
+            }
+        }
 
         function isContactAndLocationInvalid() {
             if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id)) {

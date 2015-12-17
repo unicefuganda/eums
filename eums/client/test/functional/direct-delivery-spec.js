@@ -11,7 +11,7 @@ describe('Direct Delivery', function () {
     var PURCHASE_ORDER_NUMBER1 = '81026395';
     var PURCHASE_ORDER_NUMBER2 = '81029906';
 
-    it('Admin should be able to create direct deliveries to multiple IPs', function () {
+    fit('Admin should be able to create direct deliveries to multiple IPs', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
         directDeliveryPage.visit();
@@ -44,7 +44,7 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.timeLimitationOnDistribution).toContain(10);
     });
 
-    it('Admin should be able to create a direct delivery to a single IP', function () {
+    fit('Admin should be able to create a direct delivery to a single IP', function () {
         loginPage.visit();
         loginPage.loginAs('admin', 'admin');
 
@@ -101,7 +101,7 @@ describe('Direct Delivery', function () {
         expect(directDeliveryPage.firstPurchaseOrderAttributes).toContain('text-warning');
     });
 
-    it('should acknowledge direct delivery for PO and generate alerts', function () {
+    fit('should acknowledge direct delivery for PO and generate alerts', function () {
         loginPage.visit();
         loginPage.loginAs('wakiso', 'wakiso');
         ipShipmentsPage.visit();

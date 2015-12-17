@@ -23,6 +23,7 @@
                             <td class="pad-5">
                                 <div ng-class="{'has-error': !contact.id && errors}">
                                     <input class="form-control" type="hidden" search-contacts required="required"
+                                           ng-disabled="!isInitContactEmpty"
                                            value="{{ contact.id }}" ng-model="contact.id" required="required"
                                            ng-attr-id="{{ 'contact-select' }}">
                                 </div>
@@ -35,6 +36,7 @@
                                      ng-class="{'has-error': !selectedLocation.id && errors}">
                                     <input class="form-control" type="hidden" search-from-list list="{{ districts }}"
                                            ng-model="selectedLocation.id" required="required"
+                                           ng-disabled="!isInitContactEmpty"
                                            ng-attr-id="{{ 'location-select' }}"
                                            value="{{ selectedLocation.id }}">
                                 </div>

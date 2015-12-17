@@ -54,6 +54,7 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
             contact.id = contact._id;
             event.stopPropagation();
+
         });
 
         var setLocationAndContactFields = function () {
@@ -125,8 +126,6 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
         var updateDeliveryNodes = function () {
             var deliveryNodePromises = [];
-            console.log('releaseOrderItems');
-            console.log($scope.releaseOrderItems);
             $scope.releaseOrderItems.forEach(function (releaseOrderItem) {
                 deliveryNodePromises.push(updateDeliveryNode(releaseOrderItem));
             });
@@ -150,13 +149,9 @@ angular.module('WarehouseDeliveryManagement', ['Delivery', 'ngTable', 'siTable',
 
                 $scope.delivery.time_limitation_on_distribution = $scope.delivery.time_limitation_on_distribution || null;
                 $scope.delivery.track = $scope.track;
-                console.log('original delivery');
-                console.log($scope.delivery);
                 return DeliveryService.update($scope.delivery)
                     .then(function (createdDelivery) {
                         $scope.delivery = createdDelivery;
-                        console.log('updated delivery');
-                        console.log(createdDelivery);
                         return updateDeliveryNodes();
                     });
             }
