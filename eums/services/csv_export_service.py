@@ -56,9 +56,9 @@ def generate_item_feedback_report(user, host_name, items_feedback):
     CSVExportService.notify(user, *csv_export_service.notification_details())
 
 @app.task
-def generate_stock_feedback_report(user, host_name, stocks_feedback):
+def generate_stock_feedback_report(user, host_name, stocks):
     csv_export_service = StockReportExporter(host_name)
-    CSVExportService.generate(csv_export_service.assemble_csv_data(stocks_feedback),
+    CSVExportService.generate(csv_export_service.assemble_csv_data(stocks),
                               csv_export_service.export_category,
                               csv_export_service.get_export_csv_file_name())
 

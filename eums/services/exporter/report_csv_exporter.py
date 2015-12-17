@@ -7,9 +7,9 @@ class ReportExporter(AbstractCSVExporter):
         self.export_category = 'report/feedback'
         super(ReportExporter, self).__init__(host_name)
 
-    def assemble_csv_data(self, deliveries_feedback_report):
+    def assemble_csv_data(self, report_data):
         total_rows = [self.config_headers()]
-        for each_delivery_feedback_back in deliveries_feedback_report:
+        for each_delivery_feedback_back in report_data:
             total_rows.append(self.__extract_row(each_delivery_feedback_back))
         return total_rows
 
