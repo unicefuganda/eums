@@ -90,6 +90,7 @@ describe('IP Delivery Controller', function () {
             spyOn(location, 'path');
             spyOn(mockIPService, 'loadAllDistricts');
 
+
             mockDeliveryService.all.and.returnValue(q.when(deliveries));
             mockUserService.retrieveUserPermissions.and.returnValue(q.when(ipEditorPermissions));
             mockIPService.loadAllDistricts.and.returnValue(q.when(districts));
@@ -217,6 +218,8 @@ describe('IP Delivery Controller', function () {
                 initializeController();
                 var delivery = {id: 1};
                 scope.activeDelivery = delivery;
+                scope.contact = {id: 'sjyuan'};
+                scope.selectedLocation = {id: 'Xian'};
                 var answers = [
                     {
                         question_label: 'deliveryReceived',
@@ -245,6 +248,8 @@ describe('IP Delivery Controller', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
                 var delivery = {id: 1};
+                scope.contact = {id: 'sjyuan'};
+                scope.selectedLocation = {id: 'Xian'};
                 scope.activeDelivery = delivery;
                 var answers = [
                     {
@@ -274,6 +279,7 @@ describe('IP Delivery Controller', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
                 scope.activeDelivery = {id: 1};
+
                 scope.answers = [
                     {
                         question_label: 'deliveryReceived',
@@ -393,6 +399,8 @@ describe('IP Delivery Controller', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
                 var delivery = {id: 1};
+                scope.contact = {id: 'sjyuan'};
+                scope.selectedLocation = {id: 'Xian'};
                 scope.activeDelivery = delivery;
                 scope.answers = [
                     {
@@ -414,6 +422,8 @@ describe('IP Delivery Controller', function () {
                 mockAnswerService.createWebAnswer.and.returnValue(q.when({}));
                 initializeController();
                 scope.activeDelivery = {id: 1};
+                scope.contact = {id: 'sjyuan'};
+                scope.selectedLocation = {id: 'Xian'};
                 scope.answers = [
                     {
                         questionLabel: 'deliveryReceived',

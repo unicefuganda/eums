@@ -3,9 +3,7 @@ import logging
 from celery.schedules import crontab
 from celery.task import periodic_task
 
-from eums.celery import app
 from eums.models import ReleaseOrder, DistributionPlan, DistributionPlanNode, Runnable
-from eums.models.distribution_plan_node import positions
 
 logger = logging.getLogger(__name__)
 

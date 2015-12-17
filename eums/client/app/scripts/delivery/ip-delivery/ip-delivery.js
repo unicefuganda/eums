@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact'])
-    .controller('IpDeliveryController', function ($scope, $location, DeliveryService, LoaderService,
+angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', 'Loader', 'User', 'Answer', 'EumsFilters', 'eums.ip', 'Contact', 'ngToast'])
+    .controller('IpDeliveryController', function ($scope, $location, ngToast, DeliveryService, LoaderService,
                                                   UserService, AnswerService, $timeout, IPService, ContactService) {
         $scope.deliveries = [];
         $scope.answers = [];
@@ -10,6 +10,13 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         $scope.hasReceivedDelivery = undefined;
         var questionLabel = 'deliveryReceived';
         $scope.searchFields = ['number', 'date'];
+
+        $scope.districts = [];
+        $scope.contact = {};
+        $scope.selectedLocation = {};
+        $scope.deliveryNodes = [];
+        $scope.delivery = {};
+        $scope.districtsLoaded = false;
 
 
         function loadDeliveries(urlArgs) {
@@ -34,6 +41,23 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                 ]);
             });
 
+        IPService.loadAllDistricts().then(function (response) {
+            $scope.districts = response.data.map(function (district) {
+                return {id: district, name: district};
+            });
+            $scope.districtsLoaded = true;
+        });
+
+        function setLocationAndContactFields() {
+            if ($scope.contact.id)
+                ContactService.get($scope.contact.id)
+                    .then(function (contact) {
+                        $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
+                        $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
+                    });
+        };
+        setLocationAndContactFields();
+
         $scope.confirm = function (delivery) {
             LoaderService.showLoader();
             $scope.activeDelivery = delivery;
@@ -48,6 +72,9 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
         };
 
         $scope.saveAnswers = function () {
+            if (isContactAndLocationInvalid()) {
+                return;
+            }
             var answers;
             LoaderService.showLoader();
             answers = _isDeliveryReceived(questionLabel, $scope.answers) ? $scope.answers : [$scope.answers.first()];
@@ -62,6 +89,19 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
                     $scope.activeDelivery = undefined;
                     LoaderService.hideLoader();
                 });
+        };
+
+        function isContactAndLocationInvalid() {
+            if (isInvalid($scope.contact.id) || isInvalid($scope.selectedLocation.id)) {
+                createToast('Please fill in required field!', 'danger');
+                return true;
+            }
+            return false;
+        }
+
+        function isInvalid(field) {
+            $scope.errors = field ? false : true;
+            return field ? false : true;
         };
 
         function validateAnswers(newAnswers) {
@@ -154,29 +194,14 @@ angular.module('IpDelivery', ['eums.config', 'ngTable', 'siTable', 'Delivery', '
             return moment(date).format('YYYY-MM-DD')
         }
 
-        $scope.districts = [];
-        $scope.contact = {};
-        $scope.selectedLocation = {};
-        $scope.deliveryNodes = [];
-        $scope.delivery = {};
-        $scope.districtsLoaded = false;
-
-        var setLocationAndContactFields = function () {
-            ContactService.get($scope.contact.id)
-                .then(function (contact) {
-                    $('#contact-select').siblings('div').find('a span.select2-chosen').text(contact.firstName + ' ' + contact.lastName);
-                });
-
-            $('#location-select').siblings('div').find('a span.select2-chosen').text($scope.selectedLocation.id);
-        };
-
-
-        IPService.loadAllDistricts().then(function (response) {
-            $scope.districts = response.data.map(function (district) {
-                return {id: district, name: district};
+        function createToast(message, klass) {
+            ngToast.create({
+                content: message,
+                class: klass,
+                maxNumber: 1,
+                dismissOnTimeout: true
             });
-            $scope.districtsLoaded = true;
-        });
+        }
     });
 
 
