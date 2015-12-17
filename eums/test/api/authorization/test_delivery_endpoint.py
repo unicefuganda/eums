@@ -193,7 +193,7 @@ class DeliveryEndpointTest(APITestCase):
             'track': 'true'
         })
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 405)
 
     # Implementing partner viewer:
     def test_should_not_allow_implementing_partner_viewers_to_create_deliveries(self):
