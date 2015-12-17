@@ -7,12 +7,12 @@
                     <span class="sr-only">No</span>
                 </button>
                 <h3 class="modal-title text-warning">
-                    <p id="switch-on-auto-track-text" ng-hide="isSelected">
+                    <p id="switch-on-auto-track-text" ng-show="isON">
                         <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries will automatically show
                         on the corresponding IP Delivery Page
                     </p>
 
-                    <p id="switch-off-auto-track-text" ng-show="isSelected">
+                    <p id="switch-off-auto-track-text" ng-hide="isON">
                         <i class="glyphicon glyphicon-warning-sign"></i>All warehouse deliveries not manually tracked
                         will be hidden from the IP Delivery Page
                     </p>

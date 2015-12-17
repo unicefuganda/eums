@@ -2,7 +2,6 @@ from eums.client.test.functional.fixtures.mapdata_release_order_items import *
 from eums.client.test.functional.fixtures.mapdata_runs import *
 from eums.client.test.functional.fixtures.mapdata_alerts import *
 from eums.client.test.functional.fixtures.mapdata_choice_answer import *
-from eums.client.test.functional.fixtures.mapdata_system_settings import *
 from eums.elasticsearch.sync_info import SyncInfo
 from eums.fixtures import web_questions, ip_questions
 from eums.fixtures.end_user_questions import *

@@ -2,7 +2,9 @@
 
 angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService', 'Loader', 'frapontillo.bootstrap-switch'])
     .controller('SystemSettingsController', function ($scope, $timeout, UserService, SystemSettingsService, LoaderService) {
-        var current;
+
+        var isCancelled = false;
+
         $scope.isSelected = false;
         $scope.onText = 'ON';
         $scope.offText = 'OFF';
@@ -14,30 +16,36 @@ angular.module('SystemSettings', ['eums.config', 'User', 'SystemSettingsService'
         $scope.labelWidth = "auto";
         $scope.inverse = true;
 
-        $scope.cancelAutoTrack = function () {
+
+        $scope.isON = false;
+
+        SystemSettingsService.isAutoTrack().then(function (state) {
+            $scope.isSelected = state;
+            isCancelled = state;
+        });
+
+        $('input[name="auto-track-switch"]').on('switchChange.bootstrapSwitch', function (event, state) {
             $timeout(function () {
-                $scope.isSelected = !$scope.isSelected;
-                $scope.$digest();
+                if (isCancelled) {
+                    isCancelled = false;
+                    return;
+                }
+                $scope.isON = state;
+                LoaderService.showModal("auto-track-confirm-modal");
             });
+        });
+
+
+        $scope.cancelAutoTrack = function () {
             LoaderService.hideModal("auto-track-confirm-modal");
+            isCancelled = true;
+            $scope.isSelected = !$scope.isSelected;
         };
 
         $scope.confirmAutoTrack = function () {
-            SystemSettingsService.updateAutoTrack($scope.isSelected).then(function (state) {
-                current = $scope.isSelected;
+            var updated_status = $scope.isSelected
+            SystemSettingsService.updateAutoTrack(updated_status).then(function (state) {
+                LoaderService.hideModal("auto-track-confirm-modal");
             });
-            LoaderService.hideModal("auto-track-confirm-modal");
         };
-
-        (function init() {
-            SystemSettingsService.isAutoTrack().then(function (state) {
-                current = $scope.isSelected = state;
-            });
-
-            $('input[name="auto-track-switch"]').on('init.bootstrapSwitch', function (event, state) {
-                $('div.bootstrap-switch span').on('click', function () {
-                    LoaderService.showModal("auto-track-confirm-modal");
-                });
-            });
-        })();
     });

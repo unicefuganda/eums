@@ -200,9 +200,6 @@ LOGGING = {
             'handlers': ['console', 'debug'],
             'level': 'DEBUG'
         },
-        'django':{
-
-        },
         'django.request': {
             'handlers': ['request'],
             'level': 'ERROR',

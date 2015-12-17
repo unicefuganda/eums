@@ -69,13 +69,14 @@ class DistributionPlanViewSet(ModelViewSet):
             user_profile = UserProfile.objects.get(user=logged_in_user)
             consignee = user_profile.consignee
             return user_profile, consignee
-        except:
+        except StandardError:
             return None, None
 
     @staticmethod
     def _deliveries_for_admin(programme, query, from_date, to_date):
         filter_args = {}
         DistributionPlanViewSet.__add_programme_filter_if_exist(filter_args, programme)
+
         if from_date and to_date:
             filter_args['delivery_date__range'] = [from_date, to_date]
 
@@ -86,7 +87,6 @@ class DistributionPlanViewSet(ModelViewSet):
 
     @staticmethod
     def _deliveries_for_ip(programme, query, consignee, from_date, to_date):
-
         filtered_distribution_plans = DistributionPlanViewSet.__filter_distribution_plans_depends_on_auto_track()
 
         filter_args = {
@@ -109,7 +109,7 @@ class DistributionPlanViewSet(ModelViewSet):
         if SystemSettings.objects.first().auto_track:
             return DistributionPlan.objects.filter(
                     Q(distributionplannode__item__polymorphic_ctype=ReleaseOrderItem.TYPE_CODE) | Q(
-                        track=True)).distinct()
+                            track=True)).distinct()
 
         return DistributionPlan.objects.filter(Q(track=True))
 

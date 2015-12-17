@@ -46,6 +46,7 @@ GROUP_PERMISSIONS = {
         'can_view_dashboard',
         'can_view_consignees',
         'can_view_reports',
+        'can_view_contacts',
         'add_consignee',
         'change_consignee',
         'delete_consignee',
